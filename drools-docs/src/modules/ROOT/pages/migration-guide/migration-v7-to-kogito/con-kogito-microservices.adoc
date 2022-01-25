@@ -5,7 +5,7 @@
 
 {KOGITO} in {PRODUCT} is optimized for a hybrid cloud environment and adapts to your domain and tooling needs. The core objective of {KOGITO} microservices is to help you mold a set of decisions into your own domain-specific cloud-native set of services.
 
-IMPORTANT: In {PRODUCT} 7.11 version, {KOGITO} support is limited to decision services, including Decision Model and Notation (DMN), Drools Rule Language (DRL), and Predictive Model Markup Language (PMML). This support will be improved and extended to Business Process Modeling Notation (BPMN) in a future release.
+IMPORTANT: In {PRODUCT} {ENTERPRISE_VERSION} version, {KOGITO} support is limited to decision services, including Decision Model and Notation (DMN), Drools Rule Language (DRL), and Predictive Model Markup Language (PMML). This support will be improved and extended to Business Process Modeling Notation (BPMN) in a future release.
 
 When you use {KOGITO}, you are building a cloud-native application as a set of independent domain-specific microservices to achieve some business value. The decisions that you use to describe the target behavior are executed as part of the microservices that you create. The resulting microservices are highly distributed and scalable with no centralized orchestration service, and the runtime that your microservice uses is optimized for what is required.
 
