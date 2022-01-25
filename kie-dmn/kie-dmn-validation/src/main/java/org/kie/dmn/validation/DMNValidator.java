@@ -77,15 +77,14 @@ public interface DMNValidator {
      * is the same as invoking method
      * @{link #validate( File xmlFile, Validation... options )}
      * with option <code>Validation.VALIDATE_MODEL</code>
-     *
+     * 
      * @param xmlFile the file to validate
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
-     * 
-     * @deprecated Use {@link #validate(Resource)} instead
+     *         
+     * @see #validate(Resource)
      */
-    @Deprecated
     List<DMNMessage> validate( File xmlFile );
 
     /**
@@ -100,9 +99,8 @@ public interface DMNValidator {
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
      * 
-     * @deprecated Use {@link #validate(Resource, Validation...)} instead
+     * @see #validate(Resource, Validation...)
      */
-    @Deprecated
     List<DMNMessage> validate( File xmlFile, Validation... options );
 
     /**
@@ -115,10 +113,9 @@ public interface DMNValidator {
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
-     * 
-     * @deprecated Use {@link #validate(Resource)} instead
+     *         
+     * @see #validate(Resource)
      */
-    @Deprecated
     List<DMNMessage> validate( Reader reader );
 
     /**
@@ -133,9 +130,8 @@ public interface DMNValidator {
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
      * 
-     * @deprecated Use {@link #validate(Resource, Validation...)} instead
+     * @see #validate(Resource, Validation...)
      */
-    @Deprecated
     List<DMNMessage> validate( Reader reader, Validation... options );
 
 
