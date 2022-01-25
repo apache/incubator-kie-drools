@@ -11,6 +11,7 @@ when
     $p : Product( itemName == $o.itemName, quantity < 10 )
 then
     System.out.println("Shortage : itemName = " + $p.getItemName());
+    resultList.add($o);
 end
 
 rule "Wrong price"
@@ -19,4 +20,5 @@ when
     $p : Product( itemName == $o.itemName, itemPrice != $o.itemPrice )
 then
     System.out.println("Wrong Price Warning : order.id = " + $o.getId());
+    resultList.add($o);
 end
