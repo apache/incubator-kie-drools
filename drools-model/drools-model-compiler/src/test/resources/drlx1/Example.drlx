@@ -7,6 +7,24 @@ import java.time.Month;
 
 unit Example;
 
+
+rule alternatives {
+    LocalDate a : /dates[ year == 2021 ],
+    LocalDate b : /dates[ year == 2023, dayOfMonth == 1, month == Month.JANUARY ],
+
+    or (
+        LocalDate a : /dates[ year == 2021 ],
+        LocalDate b : /dates[ year == 2023, dayOfMonth == 1, month == Month.JANUARY ],
+        and (
+            LocalDate c : /dates[ year == 2024, dayOfMonth == 1, month == Month.JANUARY ],
+            LocalData x: /dates[ year == 2025 ],
+        ),
+    ),
+
+    do System.out.println("hello");
+
+}
+
 rule year2020 {
     LocalDate foo : /dates[ year > 2020 ],
     do {

@@ -428,6 +428,8 @@ TOKEN :
 | < HASHMARK: "#" >
 | < EXCL_DOT: "!." >
 | < PASSIVE_OOPATH: "?/" >
+| < RULE_OR : "or" >
+| < RULE_AND : "and" >
 }
 
 /* LITERALS */
@@ -1045,6 +1047,8 @@ TOKEN :
 {
   < ASSIGN: "=" >
 // GT - see below
+//| < OR: "or" >
+
 | < LT: "<" >
 | < BANG: "!" >
 | < TILDE: "~" >
@@ -6149,12 +6153,15 @@ NodeList<RuleItem> RuleItems():
     NodeList<RuleItem> items = emptyNodeList();
     RuleItem item;
     RuleConsequence consequnce;
+    RuleJoinedPatterns.Type tpe;
 }
 {
 
     "{"
     (
-        item = RulePattern() { items.add(item); }
+       (<RULE_OR> {tpe=RuleJoinedPatterns.Type.OR;} |<RULE_AND> {tpe=RuleJoinedPatterns.Type.AND;})
+                        "(" item=JoinedPatterns(tpe) ")" "," { items.add(item); }
+      |  item = RulePattern() { items.add(item); }
       | <DO> item = RuleConsequence() { items.add(item); }
     )*
     "}"
@@ -6177,6 +6184,28 @@ RulePattern RulePattern():
   ","
 
     { return new RulePattern(range(begin, token()), type, bind, expr); }
+}
+
+RuleJoinedPatterns JoinedPatterns(RuleJoinedPatterns.Type tpe):
+{
+    NodeList<RuleItem> items = emptyNodeList();
+    RuleItem item;
+}
+{
+    item=JoinedItem() { items.add(item); }
+    ( item=JoinedItem() { items.add(item); } )+
+    { return new RuleJoinedPatterns(null, tpe, items);  }
+}
+
+RuleItem JoinedItem():
+{
+    RuleItem item;
+    RuleJoinedPatterns.Type tpe;
+}
+{
+    item=RulePattern()     { return item; }
+    | (<RULE_OR> {tpe=RuleJoinedPatterns.Type.OR;} |<RULE_AND> {tpe=RuleJoinedPatterns.Type.AND;})
+     "("  item=JoinedPatterns(tpe) ")" ","  { return item; }
 }
 
 RuleConsequence RuleConsequence():
