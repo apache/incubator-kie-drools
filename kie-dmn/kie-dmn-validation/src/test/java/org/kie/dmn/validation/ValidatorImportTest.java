@@ -31,7 +31,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
-
+import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.Definitions;
@@ -193,5 +193,45 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("aaa").getResult(), is(new BigDecimal(2)));
+    }
+    
+    @Test
+    public void testImportNameOK() throws IOException {
+        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
+                                                   .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
+                                                                getReader("importingMyHelloDSbkmBoxedInvocation.dmn", DMNDecisionServicesTest.class));
+        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+    }
+    
+    @Test
+    public void testImportNameNotUniqueWithDRG() throws IOException {
+        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
+                                                   .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
+                                                                getReader("import/importingMyHelloDSbkmBoxedInvocation_wrongBKMname.dmn"));
+        assertTrue(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+    }
+    
+    @Test
+    public void testImportNameNotUniqueWithItemDef() throws IOException {
+        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
+                                                   .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
+                                                                getReader("import/importingMyHelloDSbkmBoxedInvocation_wrongItemDefName.dmn"));
+        assertTrue(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+    }
+    
+    @Test
+    public void testImportNameOKWithItemDefComponent() throws IOException {
+        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
+                                                   .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
+                                                                getReader("import/importingMyHelloDSbkmBoxedInvocation_okItemDefName.dmn"));
+        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+    }
+    
+    @Test
+    public void testImportNameNotUniqueWithOtherImport() throws IOException {
+        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
+                                                   .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
+                                                                getReader("import/importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn"));
+        assertTrue(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
     }
 }
