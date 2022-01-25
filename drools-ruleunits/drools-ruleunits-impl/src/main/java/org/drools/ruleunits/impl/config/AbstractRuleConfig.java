@@ -24,7 +24,7 @@ import java.util.stream.StreamSupport;
 
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.kogito.rules.RuleConfig;
+import org.drools.ruleunits.api.RuleConfig;
 import org.kie.kogito.rules.RuleEventListenerConfig;
 
 public abstract class AbstractRuleConfig implements RuleConfig {

@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl.config;
+package org.drools.ruleunits.api;
 
-import org.kie.kogito.rules.RuleConfig;
-import org.kie.kogito.rules.RuleEventListenerConfig;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnitData;
+import org.kie.kogito.rules.RuleUnitInstance;
 
-public class StaticRuleConfig implements RuleConfig {
+public interface RuleUnits {
 
-    private final RuleEventListenerConfig ruleEventListenerConfig;
+    <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);
 
-    public StaticRuleConfig(RuleEventListenerConfig ruleEventListenerConfig) {
-        this.ruleEventListenerConfig = ruleEventListenerConfig;
-    }
+    void register(String name, RuleUnitInstance<?> unitInstance);
 
-    public StaticRuleConfig() {
-        this(new DefaultRuleEventListenerConfig());
-    }
-
-    @Override
-    public RuleEventListenerConfig ruleEventListeners() {
-        return ruleEventListenerConfig;
-    }
+    RuleUnitInstance<?> getRegisteredInstance(String name);
 }

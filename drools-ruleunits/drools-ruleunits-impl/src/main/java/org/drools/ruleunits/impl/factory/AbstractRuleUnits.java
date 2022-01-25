@@ -21,7 +21,7 @@ import java.util.Map;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
-import org.kie.kogito.rules.RuleUnits;
+import org.drools.ruleunits.api.RuleUnits;
 
 public abstract class AbstractRuleUnits implements RuleUnits {
 

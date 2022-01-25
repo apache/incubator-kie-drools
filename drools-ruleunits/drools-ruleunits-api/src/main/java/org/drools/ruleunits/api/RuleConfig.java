@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.rules;
+package org.drools.ruleunits.api;
 
-public interface RuleUnits extends KieEngine {
+import org.kie.kogito.rules.RuleEventListenerConfig;
 
-    <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);
+public interface RuleConfig {
 
-    void register(String name, RuleUnitInstance<?> unitInstance);
-
-    RuleUnitInstance<?> getRegisteredInstance(String name);
+    RuleEventListenerConfig ruleEventListeners();
 }
