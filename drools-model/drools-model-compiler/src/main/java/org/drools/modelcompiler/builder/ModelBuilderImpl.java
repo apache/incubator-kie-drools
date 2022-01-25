@@ -131,17 +131,13 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private Collection<CompositePackageDescr> findPackages( Collection<CompositePackageDescr> compositePackages ) {
         if (compositePackages != null && !compositePackages.isEmpty()) {
             if (compositePackagesMap != null) {
+                compositePackages = new HashSet<>(compositePackages);
                 for (Map.Entry<String, CompositePackageDescr> entry : compositePackagesMap.entrySet()) {
                     Optional<CompositePackageDescr> optPkg = compositePackages.stream().filter(pkg -> pkg.getNamespace().equals(entry.getKey()) ).findFirst();
                     if (optPkg.isPresent()) {
                         optPkg.get().addPackageDescr(entry.getValue().getResource(), entry.getValue());
                     } else {
-                        try {
-                            compositePackages.add(entry.getValue());
-                        } catch (UnsupportedOperationException uoe) {
-                            compositePackages = new HashSet<>(compositePackages);
-                            compositePackages.add(entry.getValue());
-                        }
+                        compositePackages.add(entry.getValue());
                     }
                 }
             }
