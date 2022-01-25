@@ -53,7 +53,7 @@ pipeline {
                     if (isRelease()) {
                         // Verify version is set and if on right release branch
                         assert getProjectVersion()
-                        assert getKogitoVersion()
+                        assert getDroolsVersion()
 
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
@@ -169,7 +169,7 @@ pipeline {
                         prepareForPR(optaplannerRepository)
                         String nextSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
                         maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
-                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie.kogito', getNextMicroSnapshotVersion(getKogitoVersion()))
+                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.drools', getNextMicroSnapshotVersion(getDroolsVersion()))
 
                         String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(optaplannerRepository, prLink)
@@ -328,8 +328,8 @@ String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
 }
 
-String getKogitoVersion() {
-    return getParamOrDeployProperty('KOGITO_VERSION', 'kogito.version')
+String getDroolsVersion() {
+    return getParamOrDeployProperty('DROOLS_VERSION', 'drools.version')
 }
 
 String getNextMicroSnapshotVersion(String currentVersion) {

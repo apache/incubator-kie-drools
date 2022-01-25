@@ -72,8 +72,8 @@ Make sure you agree with this person on setting the correct OptaPlanner version 
 *_This step is yet to be automated._*
 
 After the pipeline finishes, upgrade the version on the `main` branch of OptaPlanner to the next minor snapshot version,
-e.g. 8.0.0.Final -> 8.1.0-SNAPSHOT. Upgrade also the version of Kogito by editing
-the value of the property `version.org.kie.kogito` in the `optaplanner-build-parent`.
+e.g. 8.0.0.Final -> 8.1.0-SNAPSHOT. Upgrade also the version of Drools by editing
+the value of the property `version.org.drools` in the `optaplanner-build-parent`.
 
 === 4. Release OptaPlanner Quickstarts
 *_This step is yet to be automated._*

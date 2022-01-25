@@ -56,7 +56,7 @@ pipeline {
                     if (isRelease() || isCreatePr()) {
                         // Verify version is set
                         assert getProjectVersion()
-                        assert getKogitoVersion()
+                        assert getDroolsVersion()
 
                         if (isRelease()) {
                             // Verify if on right release branch
@@ -73,7 +73,7 @@ pipeline {
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
-                        setDeployPropertyIfNeeded('kogito.version', getKogitoVersion())
+                        setDeployPropertyIfNeeded('drools.version', getDroolsVersion())
                     }
                 }
             }
@@ -107,7 +107,7 @@ pipeline {
             steps {
                 script {
                     maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
-                    maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.kie.kogito', getKogitoVersion())
+                    maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
 
                     mavenCleanInstallOptaPlannerParents()
 
@@ -525,8 +525,8 @@ String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
 
-String getKogitoVersion() {
-    return params.KOGITO_VERSION
+String getDroolsVersion() {
+    return params.DROOLS_VERSION
 }
 
 String getProjectVersion() {

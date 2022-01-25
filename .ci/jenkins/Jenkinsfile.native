@@ -4,7 +4,6 @@ import org.kie.jenkins.MavenCommand
 
 optaplannerRepo = 'optaplanner'
 quickstartsRepo = 'optaplanner-quickstarts'
-kogitoRuntimesRepo = 'kogito-runtimes'
 droolsRepo = 'drools'
 
 pipeline {
@@ -37,22 +36,6 @@ pipeline {
             steps {
                 script {
                     getMavenCommand(droolsRepo)
-                        .withProperty('quickly')
-                        .run('clean install')
-                }
-            }
-            post {
-                always {
-                    script {
-                        cleanContainers()
-                    }
-                }
-            }
-        }
-        stage('Build quickly kogito-runtimes') {
-            steps {
-                script {
-                    getMavenCommand(kogitoRuntimesRepo)
                         .withProperty('quickly')
                         .run('clean install')
                 }
@@ -120,12 +103,6 @@ void sendNotification() {
     mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${params.BUILD_BRANCH_NAME}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
 }
 
-void checkoutRuntimesRepo() {
-    dir(kogitoRuntimesRepo) {
-        checkout(githubscm.resolveRepository(kogitoRuntimesRepo, params.GIT_AUTHOR, getKogitoTargetBranch(), false))
-    }
-}
-
 void checkoutOptaplannerRepo() {
     dir(optaplannerRepo) {
         checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getOptaplannerTargetBranch(), false))
@@ -145,10 +122,6 @@ void checkoutDroolsRepo() {
     dir(droolsRepo) {
         checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getDroolsTargetBranch(), false))
     }
-}
-
-String getKogitoTargetBranch() {
-    return getTargetBranch(-7)
 }
 
 String getOptaplannerTargetBranch() {
