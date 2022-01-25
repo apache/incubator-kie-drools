@@ -37,29 +37,13 @@ Map getMultijobPRConfig() {
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
                 ]
             ], [
-                id: 'optaplanner',
-                dependsOn: 'kogito-runtimes',
-                repository: 'optaplanner',
-            ], [
                 id: 'kogito-apps',
-                dependsOn: 'optaplanner',
+                dependsOn: 'kogito-runtimes',
                 repository: 'kogito-apps'
             ], [
                 id: 'kogito-examples',
-                dependsOn: 'Optaplanner',
+                dependsOn: 'kogito-runtimes',
                 repository: 'kogito-examples'
-            ], [
-                id: 'optaweb-employee-rostering',
-                repository: 'optaweb-employee-rostering'
-            ], [
-                id: 'optaweb-vehicle-routing',
-                repository: 'optaweb-vehicle-routing'
-            ], [
-                id: 'optaplanner-quickstarts',
-                repository: 'optaplanner-quickstarts',
-                env : [
-                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull'
-                ]
             ]
         ],
     ]
