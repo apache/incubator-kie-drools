@@ -18,7 +18,7 @@ package org.drools.ruleunits.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.rules.DataSource;
+import org.drools.ruleunits.api.DataSource;
 
 public interface AssignableChecker {
 

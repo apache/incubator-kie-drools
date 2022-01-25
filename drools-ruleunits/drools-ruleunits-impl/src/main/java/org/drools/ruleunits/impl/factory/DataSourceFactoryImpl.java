@@ -18,10 +18,10 @@ package org.drools.ruleunits.impl.factory;
 import org.drools.ruleunits.impl.FieldDataStore;
 import org.drools.ruleunits.impl.ListDataStore;
 import org.drools.ruleunits.impl.ListDataStream;
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.SingletonStore;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.SingletonStore;
 
 public class DataSourceFactoryImpl implements DataSource.Factory {
 

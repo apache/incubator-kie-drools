@@ -17,7 +17,7 @@ package org.drools.ruleunits.impl.facthandles;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.ruleunits.impl.InternalStoreCallback;
-import org.kie.kogito.rules.DataHandle;
+import org.drools.ruleunits.api.DataHandle;
 
 public interface RuleUnitInternalFactHandle
         extends

@@ -25,13 +25,13 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.impl.facthandles.RuleUnitInternalFactHandle;
 import org.drools.ruleunits.impl.factory.DataHandleImpl;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataProcessor;
-import org.kie.kogito.rules.SingletonStore;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.api.SingletonStore;
 
 public class FieldDataStore<T> implements SingletonStore<T>, InternalStoreCallback {
 
-    private DataHandleImpl handle = null;
+    private DataHandle handle = null;
 
     private final List<EntryPointDataProcessor> entryPointSubscribers = new ArrayList<>();
     private final List<DataProcessor<T>> subscribers = new ArrayList<>();
@@ -50,9 +50,13 @@ public class FieldDataStore<T> implements SingletonStore<T>, InternalStoreCallba
     }
 
     private void insert(T t) {
-        handle = new DataHandleImpl(t);
+        handle = createDataHandle(t);
         entryPointSubscribers.forEach(s -> internalInsert(handle, s));
         subscribers.forEach(s -> internalInsert(handle, s));
+    }
+
+    protected DataHandle createDataHandle(T t) {
+        return new DataHandleImpl(t);
     }
 
     public void update() {
@@ -90,14 +94,14 @@ public class FieldDataStore<T> implements SingletonStore<T>, InternalStoreCallba
 
     @Override
     public void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        DataHandle dh = ((RuleUnitInternalFactHandle) fh).getDataHandle();
+        DataHandle dh = fh.getDataHandle();
         entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
         subscribers.forEach(s -> s.update(dh, (T) obj));
     }
 
     @Override
     public void delete(RuleUnitInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
-        DataHandle dh = ((RuleUnitInternalFactHandle) fh).getDataHandle();
+        DataHandle dh = fh.getDataHandle();
         if (dh != this.handle) {
             throw new IllegalArgumentException("The given handle is not contained in this DataStore");
         }

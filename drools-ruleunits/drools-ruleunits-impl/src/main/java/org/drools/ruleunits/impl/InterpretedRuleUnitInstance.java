@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 
 import org.drools.core.common.ReteEvaluator;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.kogito.rules.DataSource;
+import org.drools.ruleunits.api.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitData;
 

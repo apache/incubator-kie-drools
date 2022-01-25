@@ -17,8 +17,8 @@ package org.drools.ruleunits.impl;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataProcessor;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

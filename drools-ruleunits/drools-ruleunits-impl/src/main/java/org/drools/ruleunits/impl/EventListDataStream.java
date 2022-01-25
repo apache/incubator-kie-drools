@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.kie.api.time.SessionPseudoClock;
-import org.kie.kogito.rules.DataProcessor;
-import org.kie.kogito.rules.DataStream;
+import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.api.DataStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

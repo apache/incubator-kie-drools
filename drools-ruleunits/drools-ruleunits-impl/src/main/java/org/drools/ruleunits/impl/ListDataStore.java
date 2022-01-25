@@ -27,9 +27,9 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.impl.facthandles.RuleUnitInternalFactHandle;
 import org.drools.ruleunits.impl.factory.DataHandleImpl;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataProcessor;
-import org.kie.kogito.rules.DataStore;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.api.DataStore;
 
 public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
     private final Map<Object, DataHandle> store = new IdentityHashMap<>();
@@ -38,11 +38,15 @@ public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
     private final List<DataProcessor<T>> subscribers = new ArrayList<>();
 
     public DataHandle add(T t) {
-        DataHandle dh = new DataHandleImpl(t);
+        DataHandle dh = createDataHandle(t);
         store.put(t, dh);
         entryPointSubscribers.forEach(s -> internalInsert(dh, s));
         subscribers.forEach(s -> internalInsert(dh, s));
         return dh;
+    }
+
+    protected DataHandle createDataHandle(T t) {
+        return new DataHandleImpl(t);
     }
 
     public DataHandle findHandle(long id) {

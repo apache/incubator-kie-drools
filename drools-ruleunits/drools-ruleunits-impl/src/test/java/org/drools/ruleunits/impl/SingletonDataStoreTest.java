@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataProcessor;
-import org.kie.kogito.rules.SingletonStore;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.api.SingletonStore;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;

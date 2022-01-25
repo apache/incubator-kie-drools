@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.kie.kogito.rules.DataSource;
+import org.drools.ruleunits.api.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.RuleUnitData;

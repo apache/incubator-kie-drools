@@ -20,7 +20,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.rule.EntryPointId;
 import org.drools.ruleunits.impl.InternalStoreCallback;
-import org.kie.kogito.rules.DataHandle;
+import org.drools.ruleunits.api.DataHandle;
 
 public class RuleUnitDefaultFactHandle extends DefaultFactHandle implements RuleUnitInternalFactHandle {
 

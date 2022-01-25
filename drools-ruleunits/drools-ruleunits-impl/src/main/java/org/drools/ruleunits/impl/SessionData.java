@@ -15,9 +15,9 @@
  */
 package org.drools.ruleunits.impl;
 
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStore;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
 import org.kie.kogito.rules.RuleUnitData;
 
 public class SessionData implements RuleUnitData {

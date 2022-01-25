@@ -18,7 +18,7 @@ package org.drools.ruleunits.impl.factory;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.kie.kogito.rules.DataHandle;
+import org.drools.ruleunits.api.DataHandle;
 
 public class DataHandleImpl implements DataHandle {
     private static final AtomicLong counter = new AtomicLong();

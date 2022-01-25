@@ -18,8 +18,8 @@ package org.drools.ruleunits.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.kogito.rules.DataProcessor;
-import org.kie.kogito.rules.DataStream;
+import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.api.DataStream;
 
 public class ListDataStream<T> implements DataStream<T> {
 

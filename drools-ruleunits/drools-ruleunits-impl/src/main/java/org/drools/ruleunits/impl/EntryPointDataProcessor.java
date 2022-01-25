@@ -27,8 +27,8 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.impl.facthandles.RuleUnitInternalFactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataProcessor;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
 
 public class EntryPointDataProcessor implements DataProcessor {
     private final EntryPoint entryPoint;

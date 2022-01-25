@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.rules;
+package org.drools.ruleunits.api;
 
-public @interface Unit {
+/**
+ * A data store that contains at most one value
+ */
+public interface SingletonStore<T> extends DataSource<T> {
+    /**
+     * Set the value in this singleton data store
+     */
+    DataHandle set(T value);
+
+    /**
+     * Notifies the store that the contained value has changed
+     */
+    void update();
+
+    /**
+     * Clear the value in this singleton data store
+     */
+    void clear();
 
 }
