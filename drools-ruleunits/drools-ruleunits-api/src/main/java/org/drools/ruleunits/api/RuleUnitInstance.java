@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.api.time.SessionClock;
-import org.kie.kogito.rules.RuleUnitQuery;
 
 public interface RuleUnitInstance<T extends RuleUnitData> {
 
