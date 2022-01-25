@@ -19,6 +19,9 @@ package org.kie.dmn.validation;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 import java.util.List;
@@ -27,8 +30,13 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.core.DMNInputRuntimeTest;
+import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UsingResourceValidatorTest extends AbstractValidatorTest {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(UsingResourceValidatorTest.class);
 
     @Test
     public void testInvalidXml_single() {
@@ -44,6 +52,37 @@ public class UsingResourceValidatorTest extends AbstractValidatorTest {
         assertThat( ValidatorUtil.formatMessages( validateXML ), validateXML.size(), is( 1 ) );
         assertThat( validateXML.get( 0 ).toString(), validateXML.get( 0 ).getMessageType(), is( DMNMessageType.FAILED_XML_VALIDATION ) );
         assertThat( validateXML.get(0).getPath(), containsString("invalidXml.dmn") );
+    }
+    
+    @Test
+    public void testFailingModelValidation_single() {
+        final List<DMNMessage> messages = validator.validate( getResource("import/importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL );
+        LOG.debug("{}", messages);
+        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn") && p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+    }
+    
+    @Test
+    public void testFailingModelValidation_builder() {
+        final List<DMNMessage> messages = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL)
+                                                   .theseModels(getResource("myHelloDS.dmn", DMNDecisionServicesTest.class),
+                                                                getResource("import/importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn"));
+        LOG.debug("{}", messages);
+        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn") && p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+    }
+    
+    @Test
+    public void testFailingCompilation_single() {
+        final List<DMNMessage> messages = validator.validate( getResource("invalidFEEL.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
+        LOG.debug("{}", messages);
+        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("invalidFEEL.dmn") && p.getText().contains("Error compiling FEEL expression") && p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL)));
+    }
+    
+    @Test
+    public void testFailingCompilation_builder() {
+        final List<DMNMessage> messages = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
+                .theseModels(getResource("invalidFEEL.dmn"));
+        LOG.debug("{}", messages);
+        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("invalidFEEL.dmn") && p.getText().contains("Error compiling FEEL expression") && p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL)));
     }
 
 }

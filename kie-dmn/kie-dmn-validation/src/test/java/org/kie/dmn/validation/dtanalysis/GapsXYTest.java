@@ -16,6 +16,13 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -28,18 +35,28 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-
 public class GapsXYTest extends AbstractDTAnalysisTest {
 
     @Test
     public void test_GapsXY() {
         List<DMNMessage> validate = validator.validate(getReader("GapsXY.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkAnalysis(validate);
+    }
+    
+    @Test
+    public void test_GapsXY_usingResource() {
+        List<DMNMessage> validate = validator.validate(getResource("GapsXY.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        checkAnalysis(validate);
+        LOG.debug("{}", validate);
+        assertThat(validate).allMatch(m -> m.getPath().endsWith("GapsXY.dmn"));
+    }
+    
+    @Test
+    public void test_GapsXY_usingBuilderWithResource() {
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE).theseModels(getResource("GapsXY.dmn"));
+        checkAnalysis(validate);
+        LOG.debug("{}", validate);
+        assertThat(validate).allMatch(m -> m.getPath().endsWith("GapsXY.dmn"));
     }
 
     @Test
