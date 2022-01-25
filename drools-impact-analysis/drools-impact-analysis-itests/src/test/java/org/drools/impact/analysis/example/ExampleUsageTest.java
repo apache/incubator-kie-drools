@@ -58,14 +58,17 @@ public class ExampleUsageTest {
                                                                           "/org/drools/impact/analysis/example/StatusCheck.xls",
                                                                           "/org/drools/impact/analysis/example/inventory.drl");
 
-        // just to confirm this rule can run
+        //--- Just to confirm that this rule can run. This part is not actually required for impact analysis
         Order order = new Order(1, "Guitar", 6000, 65, 5);
         Product guitar = new Product("Guitar", 5500, 8);
         KieSession kieSession = RuleExecutionHelper.getKieSession(kfs);
+        List<Order> resultList = new ArrayList<>();
+        kieSession.setGlobal("resultList", resultList);
         kieSession.insert(order);
         kieSession.insert(guitar);
         kieSession.fireAllRules();
         kieSession.dispose();
+        //---
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(ImpactAnalysisProject.class);
         ImpactAnalysisKieModule analysisKieModule = (ImpactAnalysisKieModule) kieBuilder.getKieModule();
