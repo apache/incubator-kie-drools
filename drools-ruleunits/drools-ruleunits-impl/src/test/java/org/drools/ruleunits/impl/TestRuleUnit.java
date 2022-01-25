@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
-import org.kie.kogito.rules.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnitData;
 
 public class TestRuleUnit implements RuleUnitData {
 

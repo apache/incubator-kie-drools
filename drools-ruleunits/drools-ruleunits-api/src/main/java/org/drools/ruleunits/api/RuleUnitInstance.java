@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.rules;
+package org.drools.ruleunits.api;
 
-public interface RuleUnit<T extends RuleUnitData> {
+import java.util.List;
+import java.util.Map;
 
-    String id();
+import org.kie.api.time.SessionClock;
+import org.kie.kogito.rules.RuleUnitQuery;
 
-    default RuleUnitInstance<T> createInstance(T data) {
-        return createInstance(data, null);
-    }
+public interface RuleUnitInstance<T extends RuleUnitData> {
 
-    RuleUnitInstance<T> createInstance(T data, String name);
+    RuleUnit<T> unit();
+
+    T ruleUnitData();
+
+    int fire();
+
+    List<Map<String, Object>> executeQuery(String query, Object... arguments);
+
+    <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query);
+
+    <T extends SessionClock> T getClock();
+
+    void dispose();
 }

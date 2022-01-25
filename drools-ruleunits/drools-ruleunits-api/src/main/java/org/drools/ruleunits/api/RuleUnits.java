@@ -15,10 +15,6 @@
  */
 package org.drools.ruleunits.api;
 
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitData;
-import org.kie.kogito.rules.RuleUnitInstance;
-
 public interface RuleUnits {
 
     <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);

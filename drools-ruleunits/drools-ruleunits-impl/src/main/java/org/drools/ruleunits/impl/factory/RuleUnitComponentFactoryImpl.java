@@ -25,7 +25,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.ruleunits.api.DataSource;
-import org.kie.kogito.rules.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnitData;
 
 public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
 

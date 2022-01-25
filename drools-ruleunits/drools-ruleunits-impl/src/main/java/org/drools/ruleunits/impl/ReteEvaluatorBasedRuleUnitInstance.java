@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.drools.core.common.ReteEvaluator;
 import org.kie.api.time.SessionClock;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitData;
 
 public abstract class ReteEvaluatorBasedRuleUnitInstance<T extends RuleUnitData> extends AbstractRuleUnitInstance<ReteEvaluator, T> {
 

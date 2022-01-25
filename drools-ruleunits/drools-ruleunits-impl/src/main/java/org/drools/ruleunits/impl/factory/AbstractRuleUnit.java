@@ -15,9 +15,9 @@
  */
 package org.drools.ruleunits.impl.factory;
 
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitData;
-import org.kie.kogito.rules.RuleUnitInstance;
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnits;
 
 public abstract class AbstractRuleUnit<T extends RuleUnitData> implements RuleUnit<T> {

@@ -15,7 +15,7 @@
  */
 package org.drools.ruleunits.impl;
 
-import org.kie.kogito.rules.RuleUnit;
+import org.drools.ruleunits.api.RuleUnit;
 
 public abstract class SessionUnit implements RuleUnit<SessionData> {
 

@@ -27,9 +27,9 @@ import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitData;
-import org.kie.kogito.rules.RuleUnitInstance;
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnitInstance;
 
 /**
  * A fully-runtime, reflective implementation of a rule unit, useful for testing
