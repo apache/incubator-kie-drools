@@ -463,7 +463,6 @@ public class DMNModelImpl
         this.types     = compiledModel.types     ;
         this.runtimeTypeCheck = compiledModel.runtimeTypeCheck;
         this.importAliases = compiledModel.importAliases;
-        
     }
 
     public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {

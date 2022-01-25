@@ -77,7 +77,7 @@ public interface DMNValidator {
      * is the same as invoking method
      * @{link #validate( File xmlFile, Validation... options )}
      * with option <code>Validation.VALIDATE_MODEL</code>
-     * 
+     *
      * @param xmlFile the file to validate
      *
      * @return returns a list of messages from the validation, or an empty
@@ -194,9 +194,8 @@ public interface DMNValidator {
          * @return returns a list of messages from the validation, or an empty
          *         list otherwise.
          *         
-         * @deprecated use {@link ValidatorBuilder#theseModels(Resource...)} instead.
+         * @see #theseModels(Resource...)
          */
-        @Deprecated
         List<DMNMessage> theseModels(File... files);
 
         /**
@@ -209,9 +208,8 @@ public interface DMNValidator {
          * @return returns a list of messages from the validation, or an empty
          *         list otherwise.
          *         
-         * @deprecated use {@link ValidatorBuilder#theseModels(Resource...)} instead.
+         * @see #theseModels(Resource...)
          */
-        @Deprecated
         List<DMNMessage> theseModels(Reader... readers);
 
         /**
