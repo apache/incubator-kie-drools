@@ -885,4 +885,50 @@ class CounterfactualScoreCalculatorTest {
 
         assertEquals("Null numeric features are not supported in counterfactuals", exception.getMessage());
     }
+
+    /**
+     * Test precision errors for primary soft score.
+     * When the primary soft score is calculated between features with the same numerical
+     * value a similarity of 1 is expected. For a large number of features, due to floating point errors this distance may be
+     * in some cases slightly larger than 1, which will cause the distance (Math.sqrt(1.0-similarity)) to cause an exception.
+     * The score calculation method should not let this should not occur.
+     */
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void testPrimarySoftScore(int seed) {
+        final Random random = new Random(seed);
+        final List<Feature> features = new ArrayList<>();
+        final List<FeatureDomain> featureDomains = new ArrayList<>();
+        final List<Boolean> constraints = new ArrayList<>();
+
+        final int nFeatures = 1000;
+        // Create a large number of identical features
+        for (int n = 0; n < nFeatures; n++) {
+            features.add(FeatureFactory.newNumericalFeature("f-" + n, random.nextDouble() * 1e-100));
+            featureDomains.add(NumericalFeatureDomain.create(0.0, 10.0));
+            constraints.add(false);
+        }
+
+        final PredictionInput input = new PredictionInput(features);
+        final PredictionFeatureDomain domain = new PredictionFeatureDomain(featureDomains);
+        final List<CounterfactualEntity> entities =
+                CounterfactualEntityFactory.createEntities(input, domain, constraints, null);
+
+        // Create score calculator and model
+        final CounterFactualScoreCalculator scoreCalculator = new CounterFactualScoreCalculator();
+        PredictionProvider model = TestUtils.getFeatureSkipModel(0);
+
+        // Create goal
+        final List<Output> goal = new ArrayList<>();
+        for (int n = 1; n < nFeatures; n++) {
+            goal.add(new Output("f-" + n, Type.NUMBER, features.get(n).getValue(), 1.0));
+        }
+
+        final CounterfactualSolution solution =
+                new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
+
+        final BendableBigDecimalScore score = scoreCalculator.calculateScore(solution);
+
+        assertEquals(0.0, score.getSoftScore(0).doubleValue(), 1e-5);
+    }
 }
