@@ -95,7 +95,6 @@ public class TaskHandler extends AbstractNodeHandler {
                 if (label.equals(dataAssociation.getAssignments().get(0).getTo().getLabel())) {
                     DataDefinition from = dataAssociation.getAssignments().get(0).getFrom();
                     work.setParameter(label, from.hasExpression() ? from.getExpression() : from.getLabel());
-                    return;
                 }
             }
         }

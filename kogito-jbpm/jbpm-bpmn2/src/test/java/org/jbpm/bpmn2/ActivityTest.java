@@ -1648,6 +1648,26 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testCallSubprocessWithGroup() throws Exception {
+        kruntime = createKogitoProcessRuntime("subprocess/BPMN2-MainGroupAssignment.bpmn2", "subprocess/BPMN2-SubprocessGroupAssignment.bpmn2");
+
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+
+        KogitoProcessInstance processInstance = kruntime.startProcess("Main");
+        assertProcessInstanceActive(processInstance);
+
+        List<org.kie.kogito.internal.process.runtime.KogitoWorkItem> workItems = workItemHandler.getWorkItems();
+        for (org.kie.kogito.internal.process.runtime.KogitoWorkItem item : workItems) {
+            assertNotNull(item);
+            assertEquals("GRUPA TESTOWA", item.getParameter("GroupId"));
+            kruntime.getKogitoWorkItemManager().completeWorkItem(item.getStringId(), null);
+        }
+
+        assertProcessInstanceFinished(processInstance, kruntime);
+    }
+
+    @Test
     @RequirePersistence(false)
     public void testBusinessRuleTaskWithExpressionsForIO() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-BusinessRuleTaskWithDataInputIOExpression.bpmn2",

@@ -218,7 +218,13 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             if (!metaParameters.contains(e.getKey()) && e.getValue() != null) {
                 resolvedParameters.put(e.getKey(), e.getValue());
                 if (e.getValue() instanceof String) {
-                    resolvedParameters.put(e.getKey(), resolveValue(e.getValue()));
+                    // we try first is a variable
+                    Object value = this.getVariable((String) e.getValue());
+                    if (value != null) {
+                        resolvedParameters.put(e.getKey(), value);
+                    } else {
+                        resolvedParameters.put(e.getKey(), resolveValue(e.getValue()));
+                    }
                 }
             }
         }
