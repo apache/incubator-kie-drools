@@ -16,6 +16,10 @@
 
 package org.kie.dmn.validation;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -23,8 +27,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.drools.core.io.impl.FileSystemResource;
+import org.drools.core.io.impl.ReaderResource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -33,10 +40,6 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.utils.ChainedProperties;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class AbstractValidatorTest {
 
@@ -73,6 +76,14 @@ public abstract class AbstractValidatorTest {
 
     protected File getFile(final String resourceFileName ) {
         return new File(this.getClass().getResource(resourceFileName).getFile());
+    }
+    
+    protected Resource getResource(final String resourceFileName ) {
+        return new FileSystemResource(new File(this.getClass().getResource(resourceFileName).getFile()));
+    }
+    
+    protected Resource getResource(final String resourceFileName, Class<?> clazz) {
+        return new ReaderResource(new InputStreamReader(clazz.getResourceAsStream(resourceFileName)));
     }
 
     protected Definitions getDefinitions(final String resourceName, final String namespace, final String modelName ) {

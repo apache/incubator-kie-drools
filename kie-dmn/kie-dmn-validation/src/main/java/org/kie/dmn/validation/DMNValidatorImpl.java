@@ -49,7 +49,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.drools.core.io.impl.BaseResource;
-import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.io.impl.ReaderResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -227,8 +226,10 @@ public class DMNValidatorImpl implements DMNValidator {
                     if (flags.contains(VALIDATE_SCHEMA)) {
                     	results.addAll(validator.validateSchema( content, r.getSourcePath() ));
                     }
-                    DMNResource dmnResource = unmarshallDMNResource(validator.dmnCompilerConfig, r, content);
-                    models.add(dmnResource);
+                    if (!results.hasErrors()) { // pointless to unmarshall if failing the schema, and will eventually stop before VALIDATE_MODEL later.
+                        DMNResource dmnResource = unmarshallDMNResource(validator.dmnCompilerConfig, r, content);
+                        models.add(dmnResource);                        
+                    }
                 } catch (Exception t) {
                     MsgUtil.reportMessage(LOG,
                                           DMNMessage.Severity.ERROR,
@@ -506,9 +507,6 @@ public class DMNValidatorImpl implements DMNValidator {
     }
 
     private static DMNResource unmarshallDMNResource(DMNCompilerConfiguration config, Resource originalResource, String content) {
-        // TODO KOGITO-6145
-        ByteArrayResource byteArrayResource = new ByteArrayResource(content.getBytes(), null);
-        byteArrayResource.setSourcePath(originalResource.getSourcePath());
         Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(content);
         dmndefs.normalize();
         return wrapDefinitions(dmndefs, originalResource.getSourcePath());
@@ -518,6 +516,9 @@ public class DMNValidatorImpl implements DMNValidator {
         return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(new DMNValidatorResource(path), null, x -> {}, y -> {}));
     }
     
+    /**
+     * Used only to mark a reference to the original Resource's path, so to have the DMNMessage(s) correctly valorized using existing message-manager infrastructure.
+     */
     private static class DMNValidatorResource extends BaseResource {
         
         public DMNValidatorResource(String path) {
