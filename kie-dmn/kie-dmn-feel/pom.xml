@@ -57,10 +57,6 @@
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-mvel-parser</artifactId>
-    </dependency>
 
     <!-- BigMath dependency to obtain BigDecimal advanced math -->
     <dependency>
