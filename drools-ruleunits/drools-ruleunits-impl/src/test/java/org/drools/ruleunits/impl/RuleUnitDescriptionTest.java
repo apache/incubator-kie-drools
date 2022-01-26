@@ -47,7 +47,7 @@ public class RuleUnitDescriptionTest {
     @Test
     public void getRuleUnitVariable() {
         Assertions.assertThat(ruleUnitDescr.getVar("number")).isNotNull();
-        Assertions.assertThatThrownBy(() -> ruleUnitDescr.getVar("undefinedField")).isInstanceOf(UndefinedRuleUnitVariable.class);
+        Assertions.assertThatThrownBy(() -> ruleUnitDescr.getVar("undefinedField")).isInstanceOf(UndefinedRuleUnitVariableException.class);
     }
 
     @Test

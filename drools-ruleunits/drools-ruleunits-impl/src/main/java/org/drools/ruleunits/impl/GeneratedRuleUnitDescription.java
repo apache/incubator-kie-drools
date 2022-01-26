@@ -83,8 +83,8 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
     public RuleUnitVariable getVar(String name) {
         try {
             return super.getVar(name);
-        } catch (UndefinedRuleUnitVariable e) {
-            throw new UndefinedGeneratedRuleUnitVariable(e.getVariable(), e.getUnit());
+        } catch (UndefinedRuleUnitVariableException e) {
+            throw new UndefinedGeneratedRuleUnitVariableException(e.getVariable(), e.getUnit());
         }
     }
 

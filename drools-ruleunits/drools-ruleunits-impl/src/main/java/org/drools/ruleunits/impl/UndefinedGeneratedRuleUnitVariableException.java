@@ -15,12 +15,12 @@
  */
 package org.drools.ruleunits.impl;
 
-public class UndefinedGeneratedRuleUnitVariable extends IllegalArgumentException {
+public class UndefinedGeneratedRuleUnitVariableException extends IllegalArgumentException {
 
     private final String variable;
     private final String unit;
 
-    public UndefinedGeneratedRuleUnitVariable(String varName, String unitName) {
+    public UndefinedGeneratedRuleUnitVariableException(String varName, String unitName) {
         super(String.format("Unknown variable '%s' for generated rule unit '%s'", varName, unitName));
         variable = varName;
         unit = unitName;

@@ -25,9 +25,9 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.api.RuleUnitData;
-import org.kie.kogito.rules.conf.Clock;
-import org.kie.kogito.rules.conf.EventProcessing;
-import org.kie.kogito.rules.conf.SessionsPool;
+import org.drools.ruleunits.api.conf.Clock;
+import org.drools.ruleunits.api.conf.EventProcessing;
+import org.drools.ruleunits.api.conf.SessionsPool;
 
 import static org.drools.wiring.api.util.ClassUtils.getSetter;
 import static org.drools.wiring.api.util.ClassUtils.getter2property;

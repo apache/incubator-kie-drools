@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.rules.conf;
+package org.drools.ruleunits.api.conf;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -13,24 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
+package org.drools.ruleunits.api.conf;
 
-public class UndefinedRuleUnitVariable extends IllegalArgumentException {
-
-    private final String variable;
-    private final String unit;
-
-    public UndefinedRuleUnitVariable(String varName, String unitName) {
-        super(String.format("Unknown variable '%s' for rule unit '%s'", varName, unitName));
-        variable = varName;
-        unit = unitName;
-    }
-
-    public String getVariable() {
-        return variable;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
+public enum EventProcessingType {
+    CLOUD,
+    STREAM
 }

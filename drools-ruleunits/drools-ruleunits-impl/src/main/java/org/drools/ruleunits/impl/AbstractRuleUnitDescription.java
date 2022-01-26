@@ -50,7 +50,7 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
     public RuleUnitVariable getVar(String name) {
         RuleUnitVariable ruleUnitVariable = varDeclarations.get(name);
         if (ruleUnitVariable == null) {
-            throw new UndefinedRuleUnitVariable(name, this.getCanonicalName());
+            throw new UndefinedRuleUnitVariableException(name, this.getCanonicalName());
         }
         return ruleUnitVariable;
     }

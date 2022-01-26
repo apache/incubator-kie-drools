@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.rules.conf;
+package org.drools.ruleunits.api.conf;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value = ElementType.TYPE)
-public @interface EventProcessing {
-
-    EventProcessingType value();
+public enum ClockType {
+    PSEUDO,
+    REALTIME
 }
