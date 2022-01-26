@@ -2,7 +2,7 @@
 = Implementing message payload decorator for {KOGITO} events add-on
 
 [role="_abstract"]
-Any dependent add-on can implement the https://github.com/kiegroup/kogito-runtimes/blob/main/addons/common/messaging/common/src/main/java/org/kie/kogito/addon/cloudevents/message/MessagePayloadDecorator.java[_MessagePayloadDecorator_].
+Any dependent add-on can implement the https://github.com/kiegroup/kogito-runtimes/blob/main/addons/common/messaging/src/main/java/org/kie/kogito/addon/cloudevents/message/MessagePayloadDecorator.java[_MessagePayloadDecorator_].
 
 .Prerequisites
 
