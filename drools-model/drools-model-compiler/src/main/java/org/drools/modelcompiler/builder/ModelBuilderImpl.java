@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -130,6 +131,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private Collection<CompositePackageDescr> findPackages( Collection<CompositePackageDescr> compositePackages ) {
         if (compositePackages != null && !compositePackages.isEmpty()) {
             if (compositePackagesMap != null) {
+                compositePackages = new HashSet<>(compositePackages);
                 for (Map.Entry<String, CompositePackageDescr> entry : compositePackagesMap.entrySet()) {
                     Optional<CompositePackageDescr> optPkg = compositePackages.stream().filter(pkg -> pkg.getNamespace().equals(entry.getKey()) ).findFirst();
                     if (optPkg.isPresent()) {
