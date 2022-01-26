@@ -10,7 +10,7 @@ The operator uses the following custom resources to deploy domain-specific micro
 
 .Prerequisites
 * The RHPAM Kogito Operator is installed.
-* The `oc` OpenShift CLI is installed and you are logged in to the relevant OpenShift cluster. For `oc` installation and login instructions, see the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/cli_tools/openshift-cli-oc[OpenShift documentation].
+* The `oc` OpenShift CLI is installed and you are logged in to the relevant OpenShift cluster. For `oc` installation and login instructions, see the https://access.redhat.com/documentation/en-us/openshift_container_platform/{OPENSHIFT_VERSION}/html/cli_tools/openshift-cli-oc[OpenShift documentation].
 * You have access to the OpenShift web console with the necessary permissions to create and edit `KogitoBuild` and `KogitoRuntime`.
 
 .Procedure
