@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.kogito.rules.RuleEventListenerConfig;
+import org.drools.ruleunits.api.RuleEventListenerConfig;
 
 public class CachedRuleEventListenerConfig implements RuleEventListenerConfig {
 

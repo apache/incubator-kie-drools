@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.rules.RuleUnitConfig;
+import org.drools.ruleunits.api.RuleUnitConfig;
 
 public abstract class AbstractRuleUnitDescription implements RuleUnitDescription {
 

@@ -15,7 +15,7 @@
     <name>Drools :: Rule Units :: API</name>
 
     <description>
-        This module defines an API for wiring classloaders and other services used in Drools.
+        This module defines an API for Drools Rule Units.
     </description>
 
     <properties>

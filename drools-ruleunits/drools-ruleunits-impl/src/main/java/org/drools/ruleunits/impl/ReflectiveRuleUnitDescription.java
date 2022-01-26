@@ -23,7 +23,7 @@ import java.util.Optional;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
-import org.kie.kogito.rules.RuleUnitConfig;
+import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.kogito.rules.conf.Clock;
 import org.kie.kogito.rules.conf.EventProcessing;

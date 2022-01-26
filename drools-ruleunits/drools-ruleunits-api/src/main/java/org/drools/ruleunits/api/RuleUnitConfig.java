@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.rules;
+package org.drools.ruleunits.api;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -21,7 +21,7 @@ import java.util.OptionalInt;
 import org.kie.kogito.rules.conf.ClockType;
 import org.kie.kogito.rules.conf.EventProcessingType;
 
-public final class RuleUnitConfig {
+public class RuleUnitConfig {
 
     public static final RuleUnitConfig Default =
             new RuleUnitConfig(EventProcessingType.CLOUD, ClockType.REALTIME, null);

@@ -15,8 +15,6 @@
  */
 package org.drools.ruleunits.api;
 
-import org.kie.kogito.rules.RuleEventListenerConfig;
-
 public interface RuleConfig {
 
     RuleEventListenerConfig ruleEventListeners();

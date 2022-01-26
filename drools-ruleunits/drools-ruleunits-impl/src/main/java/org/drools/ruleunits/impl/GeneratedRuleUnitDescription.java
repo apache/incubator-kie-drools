@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 import org.drools.core.addon.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.rules.RuleUnitConfig;
+import org.drools.ruleunits.api.RuleUnitConfig;
 
 public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
 
