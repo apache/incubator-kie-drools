@@ -19,7 +19,7 @@ package org.kie.internal.builder;
 import java.util.Properties;
 
 import org.kie.api.KieBase;
-import org.kie.api.Service;
+import org.kie.api.internal.utils.KieService;
 
 /**
  * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFactory to "provide" it's concrete implementation.
@@ -27,7 +27,7 @@ import org.kie.api.Service;
  * This class is not considered stable and may change, the user is protected from this change by using
  * the Factory api, which is considered stable.
  */
-public interface KnowledgeBuilderFactoryService  extends Service {
+public interface KnowledgeBuilderFactoryService extends KieService {
     /**
      * Instantiate and return a new KnowledgeBuilderConfiguration
      * @return

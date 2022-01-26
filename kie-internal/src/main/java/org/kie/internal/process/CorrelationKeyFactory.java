@@ -18,7 +18,9 @@ package org.kie.internal.process;
 
 import java.util.List;
 
-public interface CorrelationKeyFactory {
+import org.kie.api.internal.utils.KieService;
+
+public interface CorrelationKeyFactory extends KieService {
 
     CorrelationKey newCorrelationKey(String businessKey);
 

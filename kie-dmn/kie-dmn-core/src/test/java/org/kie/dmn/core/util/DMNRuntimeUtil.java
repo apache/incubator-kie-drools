@@ -30,8 +30,6 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
-import org.kie.api.internal.utils.ServiceDiscoveryImpl;
-import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNMessage;
@@ -94,13 +92,6 @@ public final class DMNRuntimeUtil {
                                                    .collect(Collectors.toList());
         assertThat(dmnMessages.isEmpty(), is(false));
         return dmnMessages;
-    }
-
-    public static void resetServices() {
-        final ServiceDiscoveryImpl serviceDiscovery = ServiceDiscoveryImpl.getInstance();
-        serviceDiscovery.reset();
-        final ServiceRegistry.Impl instance = (ServiceRegistry.Impl)ServiceRegistry.getInstance();
-        instance.reload();
     }
 
     public static DMNRuntime createRuntimeWithAdditionalResources(final String resourceName, final Class testClass, final String... additionalResources) {

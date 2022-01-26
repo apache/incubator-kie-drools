@@ -79,7 +79,7 @@ import org.kie.api.definition.type.Expires.Policy;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
 import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
@@ -427,7 +427,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             }
 
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-                KieWeavers weavers = ServiceRegistry.getService( KieWeavers.class );
+                KieWeavers weavers = KieService.load( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                     weavers.weave( newPkg, rtkKpg );
                 }
@@ -794,7 +794,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-            KieWeavers weavers = ServiceRegistry.getService(KieWeavers.class);
+            KieWeavers weavers = KieService.load(KieWeavers.class);
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                 weavers.merge( pkg, rtkKpg );
             }

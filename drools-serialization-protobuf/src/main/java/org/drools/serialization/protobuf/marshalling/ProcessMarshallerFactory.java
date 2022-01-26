@@ -15,12 +15,12 @@
 
 package org.drools.serialization.protobuf.marshalling;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 public class ProcessMarshallerFactory {
 
     private static class LazyLoader {
-        private static ProcessMarshallerFactoryService service = ServiceRegistry.getService( ProcessMarshallerFactoryService.class );
+        private static ProcessMarshallerFactoryService service = KieService.load( ProcessMarshallerFactoryService.class );
     }
 
     public static ProcessMarshaller newProcessMarshaller() {

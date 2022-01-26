@@ -27,8 +27,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
-import org.kie.api.internal.assembler.KieAssemblers;
-import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNContext;
@@ -37,7 +35,6 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
@@ -49,18 +46,17 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class DMNRuntimePMMLTest {
 
@@ -135,9 +131,6 @@ public abstract class DMNRuntimePMMLTest {
      */
     @Test
     public void testSteppedCompilation() {
-        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getService(KieAssemblers.class);
-        assemblers.accept(new DMNAssemblerService());
-
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem();

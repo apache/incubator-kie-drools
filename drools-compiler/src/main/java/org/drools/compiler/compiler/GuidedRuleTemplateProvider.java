@@ -16,12 +16,12 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.api.Service;
-
 import java.io.IOException;
 import java.io.InputStream;
 
-public interface GuidedRuleTemplateProvider extends Service {
+import org.kie.api.internal.utils.KieService;
+
+public interface GuidedRuleTemplateProvider extends KieService {
 
     ResourceConversionResult loadFromInputStream(InputStream is) throws IOException;
 

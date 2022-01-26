@@ -21,14 +21,10 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.internal.assembler.KieAssemblers;
-import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
-import org.kie.internal.services.KieAssemblersImpl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -80,9 +76,6 @@ public class WBCompilationTest {
 
     @Test
     public void testSteppedCompilation() {
-        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getService(KieAssemblers.class);
-        assemblers.accept(new DMNAssemblerService());
-
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId id = ks.newReleaseId("org.test", "foo", "1.0-SNAPSHOT");
@@ -106,9 +99,6 @@ public class WBCompilationTest {
     @Test
     public void testSteppedCompilationFromEmptyKbuilder() {
         // DROOLS-5584
-        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getService(KieAssemblers.class);
-        assemblers.accept(new DMNAssemblerService());
-
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId id = ks.newReleaseId("org.test", "foo", "1.0-SNAPSHOT");

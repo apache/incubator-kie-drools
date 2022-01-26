@@ -18,14 +18,14 @@ package org.drools.compiler.compiler;
 import java.io.InputStream;
 import java.util.List;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.io.ResourceFactory;
 
 public class DecisionTableFactory {
 
-    private static DecisionTableProvider provider = ServiceRegistry.getService(DecisionTableProvider.class);
+    private static DecisionTableProvider provider = KieService.load(DecisionTableProvider.class);
     
     public static String loadFromInputStream(InputStream is, DecisionTableConfiguration configuration ) {
         return loadFromResource(ResourceFactory.newInputStreamResource( is ), configuration);

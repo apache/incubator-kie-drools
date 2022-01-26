@@ -18,4 +18,9 @@ public class RuleUnitRuntimeComponentFactory extends RuntimeComponentFactoryImpl
     public WorkingMemoryFactory getWorkingMemoryFactory() {
         return wmFactory;
     }
+
+    @Override
+    public int servicePriority() {
+        return 2;
+    }
 }

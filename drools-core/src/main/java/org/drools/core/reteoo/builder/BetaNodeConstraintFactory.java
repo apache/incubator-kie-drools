@@ -23,29 +23,29 @@ import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface BetaNodeConstraintFactory {
+public interface BetaNodeConstraintFactory extends KieService {
 
-    public SingleBetaConstraints createSingleBetaConstraints(final BetaNodeFieldConstraint constraint,
-                                                             final RuleBaseConfiguration conf,
-                                                             final boolean disableIndex);
+    SingleBetaConstraints createSingleBetaConstraints(final BetaNodeFieldConstraint constraint,
+                                                      final RuleBaseConfiguration conf,
+                                                      final boolean disableIndex);
 
-    public DoubleBetaConstraints createDoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
-                                                             final RuleBaseConfiguration conf,
-                                                             final boolean disableIndexing);
+    DoubleBetaConstraints createDoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                                      final RuleBaseConfiguration conf,
+                                                      final boolean disableIndexing);
 
-    public TripleBetaConstraints createTripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
-                                                             final RuleBaseConfiguration conf,
-                                                             final boolean disableIndexing);
+    TripleBetaConstraints createTripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                                      final RuleBaseConfiguration conf,
+                                                      final boolean disableIndexing);
 
-    public QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
-                                                                     final RuleBaseConfiguration conf,
-                                                                     final boolean disableIndexing);
+    QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                                              final RuleBaseConfiguration conf,
+                                                              final boolean disableIndexing);
 
-    public DefaultBetaConstraints createDefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
-                                                               final RuleBaseConfiguration conf,
-                                                               final boolean disableIndexing);
+    DefaultBetaConstraints createDefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                                        final RuleBaseConfiguration conf,
+                                                        final boolean disableIndexing);
 
     class Factory {
 
@@ -54,7 +54,7 @@ public interface BetaNodeConstraintFactory {
             private static final BetaNodeConstraintFactory INSTANCE = createInstance();
 
             private static BetaNodeConstraintFactory createInstance() {
-                BetaNodeConstraintFactory factory = ServiceRegistry.getService(BetaNodeConstraintFactory.class);
+                BetaNodeConstraintFactory factory = KieService.load(BetaNodeConstraintFactory.class);
                 return factory != null ? factory : new BetaNodeConstraintFactoryImpl();
             }
         }

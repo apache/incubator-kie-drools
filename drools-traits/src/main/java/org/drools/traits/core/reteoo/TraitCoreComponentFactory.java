@@ -33,4 +33,9 @@ public class TraitCoreComponentFactory implements CoreComponentFactory {
     public InternalKnowledgePackage createKnowledgePackage(String name) {
         return new TraitKnowledgePackageImpl(name);
     }
+
+    @Override
+    public int servicePriority() {
+        return 1;
+    }
 }

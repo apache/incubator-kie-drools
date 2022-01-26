@@ -17,7 +17,7 @@
 package org.kie.internal.marshalling;
 
 import org.kie.api.KieBase;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -126,6 +126,6 @@ public class MarshallerFactory {
     }
 
     private static void loadProvider() {
-        setMarshallerProvider(ServiceRegistry.getService(KieMarshallers.class));
+        setMarshallerProvider(KieService.load(KieMarshallers.class));
     }
 }

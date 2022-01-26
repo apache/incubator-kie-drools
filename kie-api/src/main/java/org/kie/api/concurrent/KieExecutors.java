@@ -19,9 +19,9 @@ package org.kie.api.concurrent;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorService;
 
-import org.kie.api.Service;
+import org.kie.api.internal.utils.KieService;
 
-public interface KieExecutors extends Service {
+public interface KieExecutors extends KieService {
 
     ExecutorService getExecutor();
 

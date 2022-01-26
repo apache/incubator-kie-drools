@@ -17,11 +17,11 @@
 package org.kie.internal.ruleunit;
 
 import org.kie.api.definition.KiePackage;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface RuleUnitComponentFactory {
+public interface RuleUnitComponentFactory extends KieService {
     class FactoryHolder {
-        private static final RuleUnitComponentFactory factory = ServiceRegistry.getService(RuleUnitComponentFactory.class);
+        private static final RuleUnitComponentFactory factory = KieService.load(RuleUnitComponentFactory.class);
     }
 
     static RuleUnitComponentFactory get() {

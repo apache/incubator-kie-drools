@@ -21,9 +21,9 @@ import java.net.URL;
 
 import org.drools.core.common.MissingDependencyException;
 import org.drools.core.util.Drools;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface XMLSupport {
+public interface XMLSupport extends KieService {
 
     String NO_XML_SUPPORT = "You're trying to perform a xml related operation without the necessary xml support for drools. Please add the module org.drools:drools-xml-support to your classpath.";
 
@@ -35,7 +35,7 @@ public interface XMLSupport {
     }
 
     class Holder {
-        private static final XMLSupport xmlSupport = ServiceRegistry.getService(XMLSupport.class);
+        private static final XMLSupport xmlSupport = KieService.load(XMLSupport.class);
     }
 
     static XMLSupport get() {

@@ -18,13 +18,13 @@ package org.drools.compiler.compiler;
 import java.io.InputStream;
 
 import org.kie.api.KieBase;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.ScoreCardConfiguration;
 
 public class ScoreCardFactory {
 
     private static class LazyHolder {
-        private static final ScoreCardProvider provider = ServiceRegistry.getService( ScoreCardProvider.class );
+        private static final ScoreCardProvider provider = KieService.load( ScoreCardProvider.class );
     }
 
     public static String loadFromInputStream(InputStream is, ScoreCardConfiguration configuration) {

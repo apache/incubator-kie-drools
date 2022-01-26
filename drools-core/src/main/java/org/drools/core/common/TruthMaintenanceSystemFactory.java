@@ -20,9 +20,9 @@ import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
 import org.drools.core.rule.QueryImpl;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface TruthMaintenanceSystemFactory {
+public interface TruthMaintenanceSystemFactory extends KieService {
     String NO_TMS = "You're trying to use the Truth Maintenance System without having imported it. Please add the module org.drools:drools-tms to your classpath.";
 
     TruthMaintenanceSystem getOrCreateTruthMaintenanceSystem(ReteEvaluator reteEvaluator);
@@ -30,7 +30,7 @@ public interface TruthMaintenanceSystemFactory {
     void clearTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint);
 
     class Holder {
-        private static final TruthMaintenanceSystemFactory INSTANCE = ServiceRegistry.getService( TruthMaintenanceSystemFactory.class );
+        private static final TruthMaintenanceSystemFactory INSTANCE = KieService.load( TruthMaintenanceSystemFactory.class );
     }
 
     static TruthMaintenanceSystemFactory get() {

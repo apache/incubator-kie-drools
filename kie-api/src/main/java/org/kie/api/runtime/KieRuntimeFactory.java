@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.kie.api.KieBase;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.api.internal.runtime.KieRuntimes;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 /**
  * Maintains a collection of Knowledge Runtimes
@@ -67,7 +67,7 @@ public class KieRuntimeFactory {
      */
     private Object createRuntimeInstance(Class<?> c) {
         KieRuntimeService kieRuntimeService =
-                ServiceRegistry.getService(KieRuntimes.class)
+                KieService.load(KieRuntimes.class)
                         .getRuntimes()
                         .get(c.getName());
         if (kieRuntimeService == null) {

@@ -21,9 +21,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface AgendaComponentFactory {
+public interface AgendaComponentFactory extends KieService {
 
     LeftTuple createTerminalTuple();
     LeftTuple createTerminalTuple(InternalFactHandle factHandle, Sink sink, boolean leftTupleMemoryEnabled);
@@ -38,7 +38,7 @@ public interface AgendaComponentFactory {
         private static final AgendaComponentFactory INSTANCE = createInstance();
 
         static AgendaComponentFactory createInstance() {
-            AgendaComponentFactory factory = ServiceRegistry.getService( AgendaComponentFactory.class );
+            AgendaComponentFactory factory = KieService.load( AgendaComponentFactory.class );
             return factory != null ? factory : new AgendaComponentFactoryImpl();
         }
     }

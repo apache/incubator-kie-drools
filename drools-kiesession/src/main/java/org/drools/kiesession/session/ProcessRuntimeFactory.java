@@ -17,7 +17,7 @@ package org.drools.kiesession.session;
 
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 
 public class ProcessRuntimeFactory {
@@ -25,7 +25,7 @@ public class ProcessRuntimeFactory {
     private static ProcessRuntimeFactoryService provider = initializeProvider();
 
     private static ProcessRuntimeFactoryService initializeProvider() {
-        return ServiceRegistry.getService( ProcessRuntimeFactoryService.class );
+        return KieService.load( ProcessRuntimeFactoryService.class );
     }
 
     /**

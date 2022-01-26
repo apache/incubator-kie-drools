@@ -34,8 +34,8 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.wiring.api.ResourceProvider;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
@@ -45,7 +45,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -148,7 +148,7 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     default ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {
         if( parent == null ) {
-            ClassLoaderResolver resolver = ServiceRegistry.getService(ClassLoaderResolver.class);
+            ClassLoaderResolver resolver = KieService.load(ClassLoaderResolver.class);
             if (resolver==null)  {
                 resolver = new NoDepsClassLoaderResolver();
             }

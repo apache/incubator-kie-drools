@@ -19,9 +19,9 @@ package org.drools.kiesession.factory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface KnowledgeHelperFactory {
+public interface KnowledgeHelperFactory extends KieService {
 
     KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator);
 
@@ -29,7 +29,7 @@ public interface KnowledgeHelperFactory {
         private static final KnowledgeHelperFactory INSTANCE = createInstance();
 
         static KnowledgeHelperFactory createInstance() {
-            KnowledgeHelperFactory factory = ServiceRegistry.getService( KnowledgeHelperFactory.class );
+            KnowledgeHelperFactory factory = KieService.load( KnowledgeHelperFactory.class );
             return factory != null ? factory : new KnowledgeHelperFactoryImpl();
         }
     }

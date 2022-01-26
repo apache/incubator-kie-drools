@@ -37,12 +37,12 @@ import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
@@ -58,7 +58,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.Service;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
@@ -74,6 +73,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -1521,17 +1521,17 @@ public class IncrementalCompilationTest {
     public void testIncrementalTypeDeclarationOnInterface() {
         // DROOLS-861
         final String drl1 =
-                "import " + Service.class.getCanonicalName() + "\n" +
+                "import " + KieService.class.getCanonicalName() + "\n" +
                         "rule A when\n" +
-                        "    Service( )\n" +
+                        "    KieService( )\n" +
                         "then\n" +
                         "end";
 
         final String drl2 =
-                "import " + Service.class.getCanonicalName() + "\n" +
+                "import " + KieService.class.getCanonicalName() + "\n" +
                         "declare Service @role( event ) end\n" +
                         "rule A when\n" +
-                        "    Service( )\n" +
+                        "    KieService( )\n" +
                         "then\n" +
                         "end";
 

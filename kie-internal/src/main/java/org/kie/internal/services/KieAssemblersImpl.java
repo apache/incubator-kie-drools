@@ -19,7 +19,7 @@ package org.kie.internal.services;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.ServiceLoader;
 
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
@@ -28,20 +28,12 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 
-public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerService> {
+public class KieAssemblersImpl implements KieAssemblers {
     private Map<ResourceType, KieAssemblerService> assemblers;
-
-    public KieAssemblersImpl() {
-        assemblers = new HashMap<>();
-    }
-
-    public Map<ResourceType, KieAssemblerService> getAssemblers() {
-        return assemblers;
-    }
 
     @Override
     public void addResourceBeforeRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        KieAssemblerService assembler = assemblers.get(type);
+        KieAssemblerService assembler = getAssembler(type);
         if (assembler != null) {
             assembler.addResourceBeforeRules(knowledgeBuilder,
                                              resource,
@@ -52,9 +44,20 @@ public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerSe
         }
     }
 
+    private KieAssemblerService getAssembler(ResourceType type) {
+        if (assemblers == null) {
+            assemblers = new HashMap<>();
+            ServiceLoader<KieAssemblerService> loader = ServiceLoader.load(KieAssemblerService.class);
+            for (KieAssemblerService kieAssemblerService : loader) {
+                assemblers.put( kieAssemblerService.getResourceType(), kieAssemblerService );
+            }
+        }
+        return assemblers.get(type);
+    }
+
     @Override
     public void addResourceAfterRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        KieAssemblerService assembler = assemblers.get(type);
+        KieAssemblerService assembler = getAssembler(type);
         if (assembler != null) {
             assembler.addResourceAfterRules(knowledgeBuilder,
                                             resource,
@@ -68,16 +71,11 @@ public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerSe
 
     @Override
     public void addResourcesAfterRules(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
-        KieAssemblerService assembler = assemblers.get(type);
+        KieAssemblerService assembler = getAssembler(type);
         if (assembler != null) {
             assembler.addResourcesAfterRules(knowledgeBuilder, resources, type);
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
-    }
-
-    @Override
-    public void accept( KieAssemblerService kieAssemblerService ) {
-        assemblers.put( kieAssemblerService.getResourceType(), kieAssemblerService );
     }
 }

@@ -15,10 +15,10 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.api.Service;
+import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.KnowledgeBuilder;
 
-public interface CMMNCaseProvider extends Service {
+public interface CMMNCaseProvider extends KieService {
 
     void configurePackageBuilder(KnowledgeBuilder packageBuilder);
 

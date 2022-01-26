@@ -17,13 +17,13 @@
 package org.kie.api.marshalling;
 
 import org.kie.api.KieBase;
-import org.kie.api.Service;
+import org.kie.api.internal.utils.KieService;
 
 /**
  *
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  */
-public interface KieMarshallers extends Service {
+public interface KieMarshallers extends KieService {
     ObjectMarshallingStrategyAcceptor newClassFilterAcceptor(String[] patterns);
 
     ObjectMarshallingStrategy newIdentityMarshallingStrategy();

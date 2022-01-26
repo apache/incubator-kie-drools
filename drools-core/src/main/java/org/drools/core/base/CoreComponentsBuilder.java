@@ -24,9 +24,9 @@ import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.Drools;
 import org.drools.core.util.MVELExecutor;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface CoreComponentsBuilder {
+public interface CoreComponentsBuilder extends KieService {
 
     String NO_MVEL = "You're trying to compile a Drools asset without mvel. Please add the module org.drools:drools-mvel to your classpath.";
 
@@ -38,7 +38,7 @@ public interface CoreComponentsBuilder {
     }
 
     class Holder {
-        private static final CoreComponentsBuilder cBuilder = ServiceRegistry.getService( CoreComponentsBuilder.class );
+        private static final CoreComponentsBuilder cBuilder = KieService.load( CoreComponentsBuilder.class );
     }
 
     static CoreComponentsBuilder get() {

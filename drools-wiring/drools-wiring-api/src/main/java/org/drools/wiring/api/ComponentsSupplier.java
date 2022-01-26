@@ -21,11 +21,12 @@ import java.util.Map;
 
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 
-public interface ComponentsSupplier {
+public interface ComponentsSupplier extends KieService {
     ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider );
 
     ByteArrayClassLoader createByteArrayClassLoader(ClassLoader parent );

@@ -21,11 +21,11 @@ import java.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface InternalKieModuleProvider {
+public interface InternalKieModuleProvider extends KieService {
 
     default InternalKieModule createClasspathKieModule() {
         return null;
@@ -75,7 +75,7 @@ public interface InternalKieModuleProvider {
         }
 
         private static InternalKieModuleProvider createZipKieModuleProvider() {
-            InternalKieModuleProvider provider = ServiceRegistry.getService(InternalKieModuleProvider.class);
+            InternalKieModuleProvider provider = KieService.load(InternalKieModuleProvider.class);
             return provider != null ? provider : new DrlBasedKieModuleProvider();
         }
 

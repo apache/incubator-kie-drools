@@ -41,28 +41,4 @@ public interface KieAssemblers extends KieService {
             Object knowledgeBuilder,
             List<ResourceWithConfiguration> resources,
             ResourceType type) throws Exception;
-
-    /**
-     * @deprecated As of version 7.51.0 replaced by {@link #addResourceAfterRules(Object, Resource, ResourceType, ResourceConfiguration)}
-     */
-    @Deprecated
-    default void addResource(
-            Object knowledgeBuilder,
-            Resource resource,
-            ResourceType type,
-            ResourceConfiguration configuration) throws Exception {
-        addResourceAfterRules(knowledgeBuilder, resource, type, configuration);
-    }
-
-    /**
-     * @deprecated As of version 7.51.0 replaced by {@link #addResourcesAfterRules(Object, List, ResourceType)}
-     */
-    @Deprecated
-    default void addResources(
-            Object knowledgeBuilder,
-            List<ResourceWithConfiguration> resources,
-            ResourceType type) throws Exception {
-        addResourcesAfterRules(knowledgeBuilder, resources, type);
-    }
-
 }

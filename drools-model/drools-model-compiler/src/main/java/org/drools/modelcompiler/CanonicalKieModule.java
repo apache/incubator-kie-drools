@@ -82,7 +82,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -263,7 +263,7 @@ public class CanonicalKieModule implements InternalKieModule {
         }
 
         KieContainerImpl.CompositeRunnable compositeUpdater = new KieContainerImpl.CompositeRunnable();
-        KieBaseUpdaters updaters = ServiceRegistry.getService(KieBaseUpdaters.class);
+        KieBaseUpdaters updaters = KieService.load(KieBaseUpdaters.class);
         updaters.getChildren()
                 .stream()
                 .map(kbu -> kbu.create(new KieBaseUpdatersContext(new KieBaseUpdaterOptions(options),

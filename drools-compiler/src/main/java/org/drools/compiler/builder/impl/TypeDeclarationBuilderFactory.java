@@ -16,7 +16,9 @@
 
 package org.drools.compiler.builder.impl;
 
-public interface TypeDeclarationBuilderFactory {
+import org.kie.api.internal.utils.KieService;
+
+public interface TypeDeclarationBuilderFactory extends KieService {
 
     TypeDeclarationBuilder createTypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder);
 

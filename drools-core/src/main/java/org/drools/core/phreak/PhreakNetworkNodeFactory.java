@@ -16,9 +16,9 @@
 
 package org.drools.core.phreak;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface PhreakNetworkNodeFactory {
+public interface PhreakNetworkNodeFactory extends KieService {
 
     PhreakJoinNode createPhreakJoinNode();
 
@@ -57,7 +57,7 @@ public interface PhreakNetworkNodeFactory {
             private static final PhreakNetworkNodeFactory INSTANCE = createInstance();
 
             private static PhreakNetworkNodeFactory createInstance() {
-                PhreakNetworkNodeFactory factory = ServiceRegistry.getService(PhreakNetworkNodeFactory.class);
+                PhreakNetworkNodeFactory factory = KieService.load(PhreakNetworkNodeFactory.class);
                 return factory != null ? factory : new PhreakNetworkNodeFactoryImpl();
             }
         }
