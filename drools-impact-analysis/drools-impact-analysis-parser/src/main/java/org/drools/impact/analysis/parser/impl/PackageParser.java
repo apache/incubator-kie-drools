@@ -54,6 +54,7 @@ public class PackageParser {
 
     private Rule parseRule( RuleDescr ruleDescr ) {
         RuleContext context = new ImpactAnalysisRuleContext(kbuilder, packageModel, pkgRegistry.getTypeResolver(), ruleDescr);
+        context.addGlobalDeclarations();
         context.setDialectFromAttributes( packageDescr.getAttributes() );
         Rule rule = new Rule( packageDescr.getName(), ruleDescr.getName(), ruleDescr.getResource().getSourcePath() );
 
