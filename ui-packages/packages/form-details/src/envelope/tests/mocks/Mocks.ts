@@ -33,9 +33,9 @@ export const MockedApiRequests = jest.fn<
 }));
 
 export const MockedMessageBusClientApi = jest.fn<
-    MessageBusClientApi<FormDetailsChannelApi>,
-    []
-    >(() => ({
+  MessageBusClientApi<FormDetailsChannelApi>,
+  []
+>(() => ({
   requests: new MockedApiRequests(),
   notifications: jest.fn(),
   subscribe: jest.fn(),
@@ -43,16 +43,18 @@ export const MockedMessageBusClientApi = jest.fn<
 }));
 
 export const MockedMessageBusServer = jest.fn<
-    MessageBusServer<FormDetailsEnvelopeApi, FormDetailsChannelApi>,
-    []
-    >(() => ({
+  MessageBusServer<FormDetailsEnvelopeApi, FormDetailsChannelApi>,
+  []
+>(() => ({
   receive: jest.fn()
 }));
 
 export const MockedEnvelopeBusMessageManager = jest.fn<
-    Partial<EnvelopeBusMessageManager<FormDetailsEnvelopeApi, FormDetailsChannelApi>>,
-    []
-    >(() => ({
+  Partial<
+    EnvelopeBusMessageManager<FormDetailsEnvelopeApi, FormDetailsChannelApi>
+  >,
+  []
+>(() => ({
   callbacks: jest.fn(),
   remoteSubscriptions: jest.fn(),
   localSubscriptions: jest.fn(),
@@ -78,7 +80,10 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   []
 >(() => ({
   bus: jest.fn(),
-  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<FormDetailsEnvelopeApi, FormDetailsChannelApi>,
+  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<
+    FormDetailsEnvelopeApi,
+    FormDetailsChannelApi
+  >,
   associate: jest.fn(),
   channelApi: new MockedMessageBusClientApi(),
   startListening: jest.fn(),
@@ -87,7 +92,10 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<FormDetailsEnvelopeApi, FormDetailsChannelApi>;
+export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+  FormDetailsEnvelopeApi,
+  FormDetailsChannelApi
+>;
 
 export const MockedFormDetailsEnvelopeViewApi = jest.fn<
   FormDetailsEnvelopeViewApi,

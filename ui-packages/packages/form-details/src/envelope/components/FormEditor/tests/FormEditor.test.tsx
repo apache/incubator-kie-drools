@@ -10,16 +10,13 @@ import FormDetailsContextProvider from '../../contexts/FormDetailsContextProvide
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@patternfly/react-code-editor', () => (
-  Object.assign(
-    jest.requireActual('@patternfly/react-code-editor'),
-    {
-      CodeEditor: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@patternfly/react-code-editor', () =>
+  Object.assign(jest.requireActual('@patternfly/react-code-editor'), {
+    CodeEditor: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 const formContent = {
   formInfo: {
@@ -189,7 +186,7 @@ describe('FormEditor test', () => {
     wrapper.update();
     const childs = wrapper.find('CodeEditor').props()['customControls'].props
       .children;
-    childs[4].props.onClick();
+    childs[3].props.onClick();
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
   });
@@ -255,33 +252,6 @@ describe('FormEditor test', () => {
     );
   });
 
-  it('Test copy option', async () => {
-    const props = {
-      code: '<React.FC><div><span>1</span></div></React.FC>',
-      isSource: true,
-      formType: 'tsx',
-      formContent: formContent,
-      setFormContent: jest.fn(),
-      saveFormContent: jest.fn()
-    };
-    const wrapper = mount(
-      <FormDetailsContextProvider>
-        <FormEditor {...props} />
-      </FormDetailsContextProvider>
-    );
-
-    await act(async () => {
-      wrapper
-        .find('CodeEditor')
-        .props()
-        ['onEditorDidMount'](editor, monaco);
-    });
-    wrapper.update();
-    const childs = wrapper.find('CodeEditor').props()['customControls'].props
-      .children;
-    childs[3].props.onClick();
-    expect(wrapper).toMatchSnapshot();
-  });
   it('render config', () => {
     const props = {
       code: JSON.stringify({

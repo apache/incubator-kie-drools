@@ -371,7 +371,7 @@ exports[`form details tests render form details - config 1`] = `
                             }
                           }
                         >
-                          <MockedFormEditor
+                          <ForwardRef
                             code="{
   \\"scripts\\": {},
   \\"styles\\": {}
@@ -424,7 +424,7 @@ exports[`form details tests render form details - config 1`] = `
                               }
                             }
                           >
-                            <MockedFormEditor
+                            <ForwardRef
                               code="{
   \\"scripts\\": {},
   \\"styles\\": {}
@@ -483,7 +483,7 @@ exports[`form details tests render form details - config 1`] = `
                               }
                             }
                           >
-                            <MockedFormEditor
+                            <ForwardRef
                               code="{
   \\"scripts\\": {},
   \\"styles\\": {}
@@ -896,7 +896,7 @@ exports[`form details tests render form details - source 1`] = `
                             }
                           }
                         >
-                          <MockedFormEditor
+                          <ForwardRef
                             code="html source code"
                             formContent={
                               Object {
@@ -947,7 +947,7 @@ exports[`form details tests render form details - source 1`] = `
                               }
                             }
                           >
-                            <MockedFormEditor
+                            <ForwardRef
                               code="html source code"
                               formContent={
                                 Object {
@@ -1004,7 +1004,7 @@ exports[`form details tests render form details - source 1`] = `
                               }
                             }
                           >
-                            <MockedFormEditor
+                            <ForwardRef
                               code="html source code"
                               formContent={
                                 Object {

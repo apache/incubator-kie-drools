@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 import React from 'react';
+import { FormEditorProps } from '../FormEditor';
+import { ResizableContent } from '../../FormDetails/FormDetails';
+import { OUIAProps } from '@kogito-apps/ouia-tools';
 
-const MockedFormEditor = (): React.ReactElement => {
+const MockedFormEditor = React.forwardRef<
+  ResizableContent,
+  FormEditorProps & OUIAProps
+>((props, ref) => {
   return <></>;
-};
+});
 
 export default MockedFormEditor;

@@ -25,8 +25,7 @@ import {
   PlayIcon,
   RedoIcon,
   SaveIcon,
-  UndoIcon,
-  CopyIcon
+  UndoIcon
 } from '@patternfly/react-icons';
 import { Form } from '../../../api';
 import { useFormDetailsContext } from '../contexts/FormDetailsContext';
@@ -146,14 +145,6 @@ export const FormEditor = React.forwardRef<
       }
     };
 
-    const onCopyCode = (): void => {
-      /* istanbul ignore else */
-      if (monacoEditor !== null) {
-        monacoEditor.focus();
-        monacoEditor.trigger('source', 'editor.action.clipboardCopyAction');
-      }
-    };
-
     const customControl = (
       <>
         <CodeEditorControl
@@ -175,12 +166,6 @@ export const FormEditor = React.forwardRef<
           onClick={onRedoChanges}
         />
         <CodeEditorControl
-          icon={<CopyIcon />}
-          aria-label="Copy to clipboard"
-          toolTipText="Copy to clipboard"
-          onClick={onCopyCode}
-        />
-        <CodeEditorControl
           icon={<SaveIcon />}
           aria-label="Save form"
           toolTipText="Save form"
@@ -195,6 +180,7 @@ export const FormEditor = React.forwardRef<
           isDarkTheme={false}
           isLineNumbersVisible={true}
           isReadOnly={false}
+          isCopyEnabled={true}
           isMinimapVisible={false}
           isLanguageLabelVisible
           customControls={customControl}
