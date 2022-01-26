@@ -41,6 +41,8 @@ public final class Msg {
     public static final Message1 IS_NULL = new Message1("%s is null");
     public static final Message0 BASE_NODE_EVALUATE_CALLED = new Message0("BaseNode evaluate called");
     public static final Message1 ERROR_RESOLVING_EXTERNAL_FUNCTION_AS_DEFINED_BY = new Message1("Error resolving external function as defined by: %s");
+    public static final Message1 CLASS_NOT_IN_CL = new Message1("The requested Java class was not found by the classloader, check the FQCN is valid; %s");
+    public static final Message1 INVALID_METHOD = new Message1("The requested Java method was not located or not valid in the classloader; the candidate methods are: %s");
     public static final Message1 UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY = new Message1("Unable to find external function as defined by: %s");
     public static final Message1 PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION = new Message1("Parameter count mismatch on function definition: %s");
     public static final Message1 CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER = new Message1("Can't invoke an unary test with %s parameters. Unary tests require 1 single parameter.");
