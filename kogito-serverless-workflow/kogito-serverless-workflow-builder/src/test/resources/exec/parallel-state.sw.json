@@ -10,12 +10,10 @@
       "type": "parallel",
       "branches": [
         {
-          "name": "branch1",
-          "workflowId": "branch1abc"
+          "name": "branch1"
         },
         {
-          "name": "branch2",
-          "workflowId": "branch2abc"
+          "name": "branch2"
         }
       ],
       "end": true

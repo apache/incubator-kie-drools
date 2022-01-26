@@ -17,7 +17,7 @@ states:
             script: System.out.println("Hello Serverless Workflow World");
     transition: SmallDelay
   - name: SmallDelay
-    type: delay
-    timeDelay: PT1S
+    type: sleep
+    duration: PT1S
     end:
       terminate: true

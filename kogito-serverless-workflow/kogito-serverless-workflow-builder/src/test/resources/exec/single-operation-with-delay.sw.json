@@ -31,8 +31,8 @@
     },
     {
       "name": "SmallDelay",
-      "type": "delay",
-      "timeDelay": "PT1S",
+      "type": "sleep",
+      "duration": "PT1S",
       "end": {
         "terminate": "true"
       }

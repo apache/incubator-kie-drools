@@ -7,7 +7,5 @@ states:
     type: parallel
     branches:
       - name: branch1
-        workflowId: branch1abc
       - name: branch2
-        workflowId: branch2abc
     end: true

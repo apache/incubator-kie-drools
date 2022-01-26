@@ -53,6 +53,7 @@ import io.serverlessworkflow.api.filters.ActionDataFilter;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 import io.serverlessworkflow.api.functions.FunctionRef;
+import io.serverlessworkflow.api.functions.SubFlowRef;
 import io.serverlessworkflow.api.interfaces.State;
 
 public abstract class CompositeContextNodeHandler<S extends State> extends StateHandler<S> {
@@ -123,9 +124,22 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         } else if (action.getEventRef() != null) {
             return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
                     (factory, inputVar, outputVar) -> getActionNode(factory, action.getEventRef(), inputVar));
+        } else if (action.getSubFlowRef() != null) {
+            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
+                    (factory, inputVar, outputVar) -> getActionNode(factory, action.getSubFlowRef(), inputVar, outputVar));
         } else {
             throw new IllegalArgumentException("Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
         }
+    }
+
+    private NodeFactory<?, ?> getActionNode(RuleFlowNodeContainerFactory<?, ?> factory,
+            SubFlowRef subFlowRef,
+            String inputVar,
+            String outputVar) {
+        return ServerlessWorkflowParser.subprocessNode(
+                factory.subProcessNode(parserContext.newId()).name(subFlowRef.getWorkflowId()).processId(subFlowRef.getWorkflowId()).waitForCompletion(true),
+                inputVar,
+                outputVar);
     }
 
     private NodeFactory<?, ?> getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,

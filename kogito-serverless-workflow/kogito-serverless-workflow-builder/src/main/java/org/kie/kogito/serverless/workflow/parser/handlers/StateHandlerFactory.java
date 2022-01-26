@@ -24,13 +24,12 @@ import org.slf4j.LoggerFactory;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.states.CallbackState;
-import io.serverlessworkflow.api.states.DelayState;
 import io.serverlessworkflow.api.states.EventState;
 import io.serverlessworkflow.api.states.ForEachState;
 import io.serverlessworkflow.api.states.InjectState;
 import io.serverlessworkflow.api.states.OperationState;
 import io.serverlessworkflow.api.states.ParallelState;
-import io.serverlessworkflow.api.states.SubflowState;
+import io.serverlessworkflow.api.states.SleepState;
 import io.serverlessworkflow.api.states.SwitchState;
 
 public class StateHandlerFactory {
@@ -49,14 +48,11 @@ public class StateHandlerFactory {
             case OPERATION:
                 result = new OperationHandler((OperationState) state, workflow, parserContext);
                 break;
-            case DELAY:
-                result = new DelayHandler((DelayState) state, workflow, parserContext);
+            case SLEEP:
+                result = new SleepHandler((SleepState) state, workflow, parserContext);
                 break;
             case INJECT:
                 result = new InjectHandler((InjectState) state, workflow, parserContext);
-                break;
-            case SUBFLOW:
-                result = new SubflowHandler((SubflowState) state, workflow, parserContext);
                 break;
             case SWITCH:
                 result = new SwitchHandler((SwitchState) state, workflow, parserContext);

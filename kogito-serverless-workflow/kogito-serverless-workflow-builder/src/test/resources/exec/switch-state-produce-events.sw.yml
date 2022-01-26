@@ -41,7 +41,7 @@ states:
             - eventRef: TestKafkaEvent2
             - eventRef: TestKafkaEvent3
             - eventRef: TestKafkaEvent4
-    default:
+    defaultCondition:
       transition: Approve
   - name: Approve
     type: inject

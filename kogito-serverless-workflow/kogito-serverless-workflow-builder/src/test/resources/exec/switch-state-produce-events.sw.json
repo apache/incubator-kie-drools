@@ -81,7 +81,7 @@
           }
         }
       ],
-      "default": {
+      "defaultCondition": {
         "transition": "Approve"
       }
     },

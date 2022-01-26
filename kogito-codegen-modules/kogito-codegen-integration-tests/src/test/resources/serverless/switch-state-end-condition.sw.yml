@@ -18,5 +18,5 @@ states:
         end: true
       - condition: "{{ $.[?(@.age  < 18)] }}"
         end: true
-    default:
+    defaultCondition:
       end: true

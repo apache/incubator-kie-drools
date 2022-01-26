@@ -29,7 +29,6 @@ import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.api.AfterAll;
@@ -46,7 +45,7 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.end.End;
 import io.serverlessworkflow.api.start.Start;
 import io.serverlessworkflow.api.states.DefaultState.Type;
-import io.serverlessworkflow.api.states.DelayState;
+import io.serverlessworkflow.api.states.SleepState;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -178,29 +177,6 @@ public class ServerlessWorkflowParsingTest {
         assertEquals("org.something.other.TestService", workItemNode.getWork().getParameter("interfaceImplementationRef"));
         assertEquals("get", workItemNode.getWork().getParameter("operationImplementationRef"));
         assertEquals("Java", workItemNode.getWork().getParameter("implementation"));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "/exec/single-subflow.sw.json", "/exec/single-subflow.sw.yml" })
-    public void testSingleSubFlowWorkflow(String workflowLocation) throws Exception {
-        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
-
-        assertEquals(3, process.getNodes().length);
-
-        Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = process.getNodes()[2];
-        assertTrue(node instanceof SubProcessNode);
-        node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
-
-        SubProcessNode subProcessNode = (SubProcessNode) process.getNodes()[2];
-        assertEquals("abc", subProcessNode.getProcessId());
     }
 
     @ParameterizedTest
@@ -502,9 +478,9 @@ public class ServerlessWorkflowParsingTest {
         node = process.getNodes()[3];
         assertTrue(node instanceof Join);
         node = process.getNodes()[4];
-        assertTrue(node instanceof SubProcessNode);
+        assertTrue(node instanceof CompositeContextNode);
         node = process.getNodes()[5];
-        assertTrue(node instanceof SubProcessNode);
+        assertTrue(node instanceof CompositeContextNode);
     }
 
     @ParameterizedTest
@@ -731,9 +707,9 @@ public class ServerlessWorkflowParsingTest {
         start.setStateName("javierito");
         End end = new End();
         end.setTerminate(true);
-        DelayState startState = new DelayState();
-        startState.setType(Type.DELAY);
-        startState.setTimeDelay("1s");
+        SleepState startState = new SleepState();
+        startState.setType(Type.SLEEP);
+        startState.setDuration("1s");
         startState.setName("javierito");
         startState.setEnd(end);
         workflow.setStates(Collections.singletonList(startState));

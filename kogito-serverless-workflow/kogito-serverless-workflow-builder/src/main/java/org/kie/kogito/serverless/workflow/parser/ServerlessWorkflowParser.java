@@ -115,19 +115,22 @@ public class ServerlessWorkflowParser {
         return process;
     }
 
-    public static <T extends RuleFlowNodeContainerFactory<T, ?>> SubProcessNodeFactory<T> subprocessNode(SubProcessNodeFactory<T> nodeFactory) {
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> SubProcessNodeFactory<T> subprocessNode(SubProcessNodeFactory<T> nodeFactory, String inputVar, String outputVar) {
         Map<String, String> types = Collections.singletonMap(DEFAULT_WORKFLOW_VAR, JSON_NODE);
-        DataAssociation da = new DataAssociation(
-                new DataDefinition(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR, JSON_NODE),
+        DataAssociation inputDa = new DataAssociation(
+                new DataDefinition(inputVar, inputVar, JSON_NODE),
                 new DataDefinition(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR, JSON_NODE), null, null);
+        DataAssociation outputDa = new DataAssociation(
+                new DataDefinition(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR, JSON_NODE),
+                new DataDefinition(outputVar, outputVar, JSON_NODE), null, null);
 
         VariableScope variableScope = new VariableScope();
         return nodeFactory
                 .independent(true)
                 .metaData("BPMN.InputTypes", types)
                 .metaData("BPMN.OutputTypes", types)
-                .mapDataInputAssociation(da)
-                .mapDataOutputAssociation(da)
+                .mapDataInputAssociation(inputDa)
+                .mapDataOutputAssociation(outputDa)
                 .context(variableScope)
                 .defaultContext(variableScope);
     }

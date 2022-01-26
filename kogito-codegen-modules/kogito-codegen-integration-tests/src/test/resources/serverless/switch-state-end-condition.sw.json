@@ -27,7 +27,7 @@
           "end": true
         }
       ],
-      "default": {
+      "defaultCondition": {
         "end": true
       }
     }

@@ -94,13 +94,13 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         final NodeFactory<?, ?> startNode = getNode();
         final long splitId = startNode.getNode().getId();
         // set default connection
-        if (state.getDefault() != null) {
-            Transition transition = state.getDefault().getTransition();
+        if (state.getDefaultCondition() != null) {
+            Transition transition = state.getDefaultCondition().getTransition();
             StateHandler<?> stateHandler = parserContext.getStateHandler(transition);
             if (stateHandler != null) {
                 startNode.metaData(XORSPLITDEFAULT, concatId(splitId, stateHandler.getNode().getNode().getId()));
-            } else if (state.getDefault().getEnd() != null) {
-                EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, state.getDefault().getEnd().getProduceEvents());
+            } else if (state.getDefaultCondition().getEnd() != null) {
+                EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, state.getDefaultCondition().getEnd().getProduceEvents());
                 startNode.metaData(XORSPLITDEFAULT, concatId(splitId, endNodeFactory.getNode().getId()));
             }
         }
@@ -152,12 +152,12 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     }
 
     private static boolean isDefaultCondition(SwitchState switchState, DataCondition condition) {
-        return switchState.getDefault() != null &&
-                (switchState.getDefault().getTransition() != null &&
+        return switchState.getDefaultCondition() != null &&
+                (switchState.getDefaultCondition().getTransition() != null &&
                         condition.getTransition() != null &&
-                        condition.getTransition().getNextState().equals(switchState.getDefault().getTransition()
+                        condition.getTransition().getNextState().equals(switchState.getDefaultCondition().getTransition()
                                 .getNextState())
-                        || switchState.getDefault().getEnd() != null && condition.getEnd() != null);
+                        || switchState.getDefaultCondition().getEnd() != null && condition.getEnd() != null);
     }
 
     @Override

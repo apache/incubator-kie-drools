@@ -16,7 +16,7 @@ states:
         transition: Approve
       - condition: "{{ $.[?(@.age  < 18)] }}"
         transition: Deny
-    default:
+    defaultCondition:
       transition: Approve
   - name: Approve
     type: inject

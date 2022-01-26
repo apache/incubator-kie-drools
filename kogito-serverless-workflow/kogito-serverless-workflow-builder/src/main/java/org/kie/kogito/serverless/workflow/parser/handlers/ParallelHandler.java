@@ -16,6 +16,7 @@
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
+import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.node.Split;
@@ -26,7 +27,7 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.branches.Branch;
 import io.serverlessworkflow.api.states.ParallelState;
 
-public class ParallelHandler extends StateHandler<ParallelState> {
+public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> {
 
     protected ParallelHandler(ParallelState state, Workflow workflow, ParserContext parserContext) {
         super(state, workflow, parserContext);
@@ -37,12 +38,9 @@ public class ParallelHandler extends StateHandler<ParallelState> {
         SplitFactory<?> nodeFactory = factory.splitNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_START_NAME).type(Split.TYPE_AND);
         JoinFactory<?> connectionNode = factory.joinNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_END_NAME).type(Split.TYPE_AND);
         for (Branch branch : state.getBranches()) {
-            long branchId = parserContext.newId();
-            if (branch.getWorkflowId() == null || branch.getWorkflowId().isEmpty()) {
-                throw new IllegalStateException("Currently  supporting only branches with workflowid. Check branch " + branch.getName());
-            }
-            ServerlessWorkflowParser.subprocessNode(factory.subProcessNode(branchId).name(branch.getName()).processId(branch
-                    .getWorkflowId()).waitForCompletion(true)).done().connection(nodeFactory.getNode().getId(), branchId).connection(branchId, connectionNode.getNode().getId());
+            CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), branch.getActions());
+            long branchId = embeddedSubProcess.getNode().getId();
+            embeddedSubProcess.done().connection(nodeFactory.getNode().getId(), branchId).connection(branchId, connectionNode.getNode().getId());
         }
         return new MakeNodeResult(nodeFactory, connectionNode);
     }

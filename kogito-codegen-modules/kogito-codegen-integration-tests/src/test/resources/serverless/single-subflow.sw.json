@@ -14,9 +14,8 @@
     },
     {
       "name":"SimpleSubFlow",
-      "type":"subflow",
-      "workflowId": "calledsubflow",
-      "waitForCompletion":true,
+      "type":"operation",
+      "actions" : [ {"subFlowRef":"calledsubflow"}],
       "end": {
         "terminate": "true"
       }
