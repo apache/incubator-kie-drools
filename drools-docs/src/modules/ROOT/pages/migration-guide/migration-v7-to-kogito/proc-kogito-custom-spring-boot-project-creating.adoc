@@ -81,8 +81,7 @@ $ mvn archetype:generate \
 ----
 The new project includes the dependencies required to run the decision microservices. You can combine multiple Spring Boot starters using a comma-separated list, such as `starters=decisions,rules`.
 --
-+
-COMMENT: Ricardo, should we keep or delete this section:
+
 * To generate a project containing Prometheus monitoring using the `addons` property, enter the following command:
 +
 --
