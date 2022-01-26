@@ -3,12 +3,13 @@
 
 You can create custom Maven projects using the Spring Boot archetype for your {KOGITO} microservices. The Spring Boot archetype enables you to add Spring Boot starters or add-ons to your project.
 
-A Spring Boot starter is an all-in-one descriptor for your project and requires business automation engines provided by {KOGITO}. The Spring Boot starters include decisions, rules, processes, and predictions.
+A Spring Boot starter is an all-in-one descriptor for your project and requires business automation engines provided by {KOGITO}. The Spring Boot starters include decisions, rules, and predictions.
 
 When your project contains all the assets and you want a quick way to get started with {KOGITO}, you can use the `kogito-spring-boot-starter` starter. For a more granular approach, you can use a specific starter, such as `kogito-decisions-spring-boot-starter` for decisions, or a combination of starters.
 
 {KOGITO} supports the following Spring Boot starters:
 
+////
 Processes Spring Boot starter::
 Starter for providing BPMN support to your Spring Boot project. The following is an example of adding a processes Spring boot starter to your project:
 +
@@ -21,6 +22,7 @@ Starter for providing BPMN support to your Spring Boot project. The following is
   </dependency>
 </dependencies>
 ----
+////
 
 Decisions Spring Boot starter::
 Starter for providing DMN support to your Spring Boot project. The following is an example of adding a decisions Spring boot starter to your project:
@@ -75,11 +77,12 @@ $ mvn archetype:generate \
     -DgroupId=org.acme -DartifactId=sample-kogito \
     -DarchetypeVersion={KOGITO_VERSION_LONG} \
     -Dversion=1.0-SNAPSHOT
-    -Dstarters=processes
+    -Dstarters=decisions
 ----
-The new project includes the dependencies required to run the process microservices. You can combine multiple Spring Boot starters using a comma-separated list, such as `starters=processes,rules`.
+The new project includes the dependencies required to run the decision microservices. You can combine multiple Spring Boot starters using a comma-separated list, such as `starters=decisions,rules`.
 --
-
++
+COMMENT: Ricardo, should we keep or delete this section:
 * To generate a project containing Prometheus monitoring using the `addons` property, enter the following command:
 +
 --
@@ -91,7 +94,7 @@ $ mvn archetype:generate \
     -DgroupId=org.acme -DartifactId=sample-kogito \
     -DarchetypeVersion={KOGITO_VERSION_LONG} \
     -Dversion=1.0-SNAPSHOT
-    -Dstarters=processes
+    -Dstarters=descisions
     -Daddons=monitoring-prometheus,persistence-infinispan
 ----
 
