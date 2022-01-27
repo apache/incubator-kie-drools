@@ -32,7 +32,7 @@ endif::[]
 |Execution in an embedded Java application
 |If you deployed {PRODUCT} project assets in your own Java virtual machine (JVM) environment, microservice, or application server, you can use custom APIs or application interactions with core KIE APIs (not {KIE_SERVER} APIs) to execute assets in the embedded engine.
 a|
-link:http://docs.jboss.org/drools/release/latestFinal/kie-api-javadoc/[_KIE Public API_]
+link:http://docs.jboss.org/drools/release/{COMMUNITY_VERSION_FINAL}/kie-api-javadoc/[_KIE Public API_]
 
 ifdef::JBPM[]
 xref:jBPMCoreEngine[]
