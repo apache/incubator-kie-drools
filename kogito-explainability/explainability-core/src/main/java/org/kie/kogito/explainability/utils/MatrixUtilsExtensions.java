@@ -16,9 +16,11 @@
 
 package org.kie.kogito.explainability.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
@@ -152,6 +154,21 @@ public class MatrixUtilsExtensions {
     }
 
     /**
+     * Sums the columns of a RealMatrix together
+     *
+     * @param m the matrix to be column-summed
+     * @return RealVector, the sum of all columns
+     *
+     */
+    public static RealVector colSum(RealMatrix m) {
+        RealVector out = org.apache.commons.math3.linear.MatrixUtils.createRealVector(new double[m.getRowDimension()]);
+        for (int i = 0; i < m.getColumnDimension(); i++) {
+            out = out.add(m.getColumnVector(i));
+        }
+        return out;
+    }
+
+    /**
      * Sums the squared rows of a RealMatrix together
      *
      * @param m the matrix to be row-square-summed
@@ -189,6 +206,40 @@ public class MatrixUtilsExtensions {
             }
             return out;
         }
+    }
+
+    /**
+     * Perform element-wise product of a vector and each row of a matrix
+     *
+     * @param m the matrix to operate on
+     * @param v the vector to multiply
+     * @return RealMatrix m*v
+     *
+     */
+    public static RealMatrix vectorRowProduct(RealMatrix m, RealVector v) {
+        int mRows = m.getRowDimension();
+        int mCols = m.getColumnDimension();
+        int vSize = v.getDimension();
+
+        if (mCols != vSize) {
+            throw new IllegalArgumentException("Columns of matrix A must match size of vector b" +
+                    String.format(SHAPE_STRING, "A", mRows, mCols) +
+                    String.format("Size of vector b: %d", vSize));
+        }
+
+        RealMatrix out = MatrixUtils.createRealMatrix(mRows, mCols);
+        for (int row = 0; row < mRows; row++) {
+            out.setRowVector(row, m.getRowVector(row).ebeMultiply(v));
+        }
+        return out;
+    }
+
+    public static RealMatrix map(RealMatrix m, UnivariateFunction op) {
+        RealMatrix output = m.copy();
+        for (int i = 0; i < m.getRowDimension(); i++) {
+            output.setRowVector(i, m.getRowVector(i).map(op));
+        }
+        return output;
     }
 
     /*
@@ -265,6 +316,23 @@ public class MatrixUtilsExtensions {
             }
         }
         return minPos;
+    }
+
+    /**
+     * Find nonzero indexs of a vector.
+     *
+     * @param v the vector to find nonzeros in
+     * @return a list of nonzero indexes
+     *
+     */
+    public static List<Integer> nonzero(RealVector v) {
+        List<Integer> output = new ArrayList<>();
+        for (int i = 0; i < v.getDimension(); i++) {
+            if (v.getEntry(i) != 0) {
+                output.add(i);
+            }
+        }
+        return output;
     }
 
     /**

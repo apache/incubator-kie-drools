@@ -31,6 +31,10 @@ public class LassoLarsIC {
         BIC
     }
 
+    public static LassoLarsICResults fit(RealMatrix X, RealVector y, Criterion c) {
+        return LassoLarsIC.fit(X, y, c, X.getColumnDimension() * 200);
+    }
+
     public static LassoLarsICResults fit(RealMatrix X, RealVector y, Criterion c, int maxIterations) {
         int nSamples = X.getRowDimension();
         double epsilon32 = Math.ulp((float) 1.0);

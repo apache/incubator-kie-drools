@@ -16,6 +16,7 @@
 
 package org.kie.kogito.explainability.local.shap;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -43,12 +45,18 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
+import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShapKernelExplainerTest {
+    public String pythonPrint(String s) {
+        return "[" + s.replace(";", ",").substring(1, s.length() - 1) + "]";
+    }
+
     double[][] backgroundRaw = {
             { 1., 2., 3., -4., 5. },
             { 10., 11., 12., -4., 13. },
@@ -522,5 +530,146 @@ class ShapKernelExplainerTest {
             double score = Arrays.stream(testResults).sum() / 600.;
             assertEquals(interval, score, .05);
         }
+    }
+
+    double[][] toExplainRegTests = { { 0.5488135, 0.71518937, 0.60276338, 0.54488318, 0.4236548, 0.64589411, 0.43758721, 0.891773, 0.96366276 },
+    };
+    double[][] backgroundRegTests = { { 0.38344152, 0.79172504, 0.52889492, 0.56804456, 0.92559664, 0.07103606, 0.0871293, 0.0202184, 0.83261985 },
+            { 0.77815675, 0.87001215, 0.97861834, 0.79915856, 0.46147936, 0.78052918, 0.11827443, 0.63992102, 0.14335329 },
+            { 0.94466892, 0.52184832, 0.41466194, 0.26455561, 0.77423369, 0.45615033, 0.56843395, 0.0187898, 0.6176355, },
+            { 0.61209572, 0.616934, 0.94374808, 0.6818203, 0.3595079, 0.43703195, 0.6976312, 0.06022547, 0.66676672 },
+            { 0.67063787, 0.21038256, 0.1289263, 0.31542835, 0.36371077, 0.57019677, 0.43860151, 0.98837384, 0.10204481 },
+            { 0.20887676, 0.16130952, 0.65310833, 0.2532916, 0.46631077, 0.24442559, 0.15896958, 0.11037514, 0.65632959 },
+            { 0.13818295, 0.19658236, 0.36872517, 0.82099323, 0.09710128, 0.83794491, 0.09609841, 0.97645947, 0.4686512, },
+            { 0.97676109, 0.60484552, 0.73926358, 0.03918779, 0.28280696, 0.12019656, 0.2961402, 0.11872772, 0.31798318 },
+            { 0.41426299, 0.0641475, 0.69247212, 0.56660145, 0.26538949, 0.52324805, 0.09394051, 0.5759465, 0.9292962, },
+            { 0.31856895, 0.66741038, 0.13179786, 0.7163272, 0.28940609, 0.18319136, 0.58651293, 0.02010755, 0.82894003 },
+    };
+
+    ShapConfig sk0 = testConfig
+            .withBackground(createPIFromMatrix(backgroundRegTests))
+            .withRegularizer(ShapConfig.RegularizerType.AIC)
+            .build();
+    ShapConfig sk1 = testConfig
+            .withBackground(createPIFromMatrix(backgroundRegTests))
+            .withRegularizer(ShapConfig.RegularizerType.BIC)
+            .build();
+    ShapConfig sk2 = testConfig
+            .withBackground(createPIFromMatrix(backgroundRegTests))
+            .withRegularizer(4)
+            .build();
+    ShapConfig sk3 = testConfig
+            .withBackground(createPIFromMatrix(backgroundRegTests))
+            .withRegularizer(7)
+            .build();
+    ShapConfig sk4 = testConfig
+            .withBackground(createPIFromMatrix(backgroundRegTests))
+            .withRegularizer(ShapConfig.RegularizerType.AUTO)
+            .build();
+    List<ShapConfig> sks = List.of(sk0, sk1, sk2, sk3, sk4);
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3 })
+    void testRegularizations(int config) throws InterruptedException, ExecutionException {
+        PredictionProvider model = TestUtils.getSumSkipModel(1);
+        List<PredictionInput> toExplain = createPIFromMatrix(toExplainRegTests);
+        RealMatrix toExplainMatrix = MatrixUtils.createRealMatrix(toExplainRegTests);
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
+        Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+        ShapConfig skConfig = sks.get(config);
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
+        ShapResults shapResults = ske.explainAsync(p, model).get();
+        Saliency[] saliencies = shapResults.getSaliencies();
+        RealMatrix[] explanationsAndConfs = saliencyToMatrix(saliencies);
+        RealMatrix explanations = explanationsAndConfs[0];
+
+        double actualOut = predictionOutputVector.getEntry(0);
+        double predOut = MatrixUtilsExtensions.sum(explanations.getRowVector(0)) + shapResults.getFnull().getEntry(0);
+        assertTrue(Math.abs(predOut - actualOut) < 1e-6);
+    }
+
+    // a deterministic, psuedorandom number generator based on Blum Blum Shub.
+    // This allows for easy equivalence with Python tests
+    public double[][] generateN(int i, int j, String seed) {
+        BigInteger p = new BigInteger("26017");
+        BigInteger q = new BigInteger("98893");
+
+        BigInteger m = p.multiply(q);
+        BigInteger curr = new BigInteger(seed);
+        double[][] out = new double[i][j];
+        for (int idx = 0; idx < i; idx++) {
+            for (int jdx = 0; jdx < j; jdx++) {
+                curr = curr.pow(2).mod(m);
+                out[idx][jdx] = curr.longValue() / 1e9;
+            }
+        }
+        return out;
+    }
+
+    @Test
+    void testManyFeatureRegularization() throws ExecutionException, InterruptedException {
+        RealVector modelWeights = MatrixUtils.createRealMatrix(generateN(1, 25, "5021")).getRowVector(0);
+        PredictionProvider model = TestUtils.getLinearModel(modelWeights.toArray());
+        RealMatrix data = MatrixUtils.createRealMatrix(generateN(101, 25, "8629"));
+        List<PredictionInput> toExplain = createPIFromMatrix(data.getRowMatrix(100).getData());
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
+        Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+        List<PredictionInput> bg = createPIFromMatrix(data.getSubMatrix(0, 99, 0, 24).getData());
+
+        List<ShapConfig.Builder> testConfigs = List.of(
+                testConfig.copy().withBackground(bg).withRegularizer(ShapConfig.RegularizerType.AIC),
+                testConfig.copy().withBackground(bg).withRegularizer(ShapConfig.RegularizerType.BIC),
+                testConfig.copy().withBackground(bg).withRegularizer(10),
+                testConfig.copy().withBackground(bg).withRegularizer(ShapConfig.RegularizerType.NONE));
+        List<Integer> nsamples = List.of(2000, 5000, 10000);
+
+        for (Integer nsamp : nsamples) {
+            for (ShapConfig.Builder sk : testConfigs) {
+                ShapKernelExplainer ske = new ShapKernelExplainer(sk.withNSamples(nsamp).build());
+                ShapResults shapResults = ske.explainAsync(p, model).get();
+                Saliency[] saliencies = shapResults.getSaliencies();
+                RealMatrix[] explanationsAndConfs = saliencyToMatrix(saliencies);
+                RealMatrix explanations = explanationsAndConfs[0];
+
+                double actualOut = predictionOutputVector.getEntry(0);
+                double predOut = MatrixUtilsExtensions.sum(explanations.getRowVector(0)) + shapResults.getFnull().getEntry(0);
+                assertTrue(Math.abs(predOut - actualOut) < 1e-6);
+
+                double coefMSE = (data.getRowVector(100).ebeMultiply(modelWeights)).getDistance(explanations.getRowVector(0));
+                assertTrue(coefMSE < 10);
+            }
+        }
+    }
+
+    @Test
+    void testManyFeatureRegularization2() throws ExecutionException, InterruptedException {
+        RealVector modelWeights = MatrixUtils.createRealMatrix(generateN(1, 25, "5021")).getRowVector(0);
+        PredictionProvider model = TestUtils.getLinearModel(modelWeights.toArray());
+        RealMatrix data = MatrixUtils.createRealMatrix(generateN(101, 25, "8629"));
+        List<PredictionInput> toExplain = createPIFromMatrix(data.getRowMatrix(100).getData());
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
+        Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+        List<PredictionInput> bg = createPIFromMatrix(new double[100][25]);
+
+        ShapConfig sk = testConfig.copy()
+                .withBackground(bg)
+                .withRegularizer(ShapConfig.RegularizerType.AIC)
+                .withNSamples(10000)
+                .build();
+
+        ShapKernelExplainer ske = new ShapKernelExplainer(sk);
+        ShapResults shapResults = ske.explainAsync(p, model).get();
+        Saliency[] saliencies = shapResults.getSaliencies();
+        RealMatrix[] explanationsAndConfs = saliencyToMatrix(saliencies);
+        RealMatrix explanations = explanationsAndConfs[0];
+
+        double actualOut = predictionOutputVector.getEntry(0);
+        double predOut = MatrixUtilsExtensions.sum(explanations.getRowVector(0)) + shapResults.getFnull().getEntry(0);
+        assertTrue(Math.abs(predOut - actualOut) < 1e-6);
+        double coefMSE = (data.getRowVector(100).ebeMultiply(modelWeights)).getDistance(explanations.getRowVector(0));
+        assertTrue(coefMSE < .01);
     }
 }

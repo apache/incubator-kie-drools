@@ -46,6 +46,7 @@ public class LarsPath {
             lpdc.setcIdx(0);
         }
         lpdc.setC(Math.abs(lpdc.getC_()));
+        //System.out.printf("C %f %n",lpdc.getC());
         lpdc.getAlphas().setEntry(lpdc.getnIter(), lpdc.getC() / lpdc.getnSamples());
     }
 
@@ -428,15 +429,15 @@ public class LarsPath {
             // check preliminary break conditions
             if (minimumAlphaBreakCondition(lpdc) || maximumIterationBreakCondition(lpdc))
                 break;
-
             // get the decomposition of the X transpose subset
             getCholeskyDecomposition(lpdc);
             if (lpdc.isDegenerateRegressor()) {
                 continue;
             }
 
-            if (lpdc.isLasso() && earlyStoppingBreakCondition(lpdc))
+            if (lpdc.isLasso() && earlyStoppingBreakCondition(lpdc)) {
                 break;
+            }
 
             //adjust least squares of current solution
             getNormalizedLeastSquares(lpdc);

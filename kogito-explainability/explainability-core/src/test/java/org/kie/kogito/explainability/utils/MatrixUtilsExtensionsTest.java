@@ -69,6 +69,13 @@ class MatrixUtilsExtensionsTest {
             { 4., 5., 6. },
             { 7., 8., 9. },
     };
+
+    double[][] matSquareSingularPow = {
+            { 1., 4., 9. },
+            { 16., 25., 36. },
+            { 49., 64., 81. },
+    };
+
     double[] mssSumRow = { 12., 15., 18. };
 
     RealVector v = MatrixUtils.createRealVector(new double[] { 1, 2, 3 });
@@ -219,6 +226,11 @@ class MatrixUtilsExtensionsTest {
     void colDifference() {
         assertEquals(colDiffResult, MatrixUtilsExtensions.vectorDifference(mssMatrix, v,
                 MatrixUtilsExtensions.Axis.COLUMN));
+    }
+
+    @Test
+    void matMap() {
+        assertArrayEquals(matSquareSingularPow, MatrixUtilsExtensions.map(mssMatrix, x -> x * x).getData());
     }
 
     // Matrix Product tests ============================================================================================

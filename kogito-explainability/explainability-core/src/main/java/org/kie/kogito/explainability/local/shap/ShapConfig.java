@@ -33,7 +33,17 @@ public class ShapConfig {
         IDENTITY
     }
 
+    public enum RegularizerType {
+        AUTO,
+        AIC,
+        BIC,
+        TOP_N_FEATURES,
+        NONE
+    }
+
     private final LinkType link;
+    private final RegularizerType regularizerType;
+    private final Integer nRegularizationFeatures;
     private final Integer nSamples;
     private final double confidence;
     private final PerturbationContext pc;
@@ -56,8 +66,13 @@ public class ShapConfig {
      * @param pc: PerturbationContext for random number generator
      * @param executor: The executor to use for the Shap CompletableFutures
      * @param nSamples: int, the number of data samples to run when computing shap values
+     * @param confidence: The size of the confidence window to use for shap values
+     * @param regularizerType: The choice of regularizer to use when fitting data. This will select a certain fraction
+     *        of features to use, based on which are most important to the regression
+     * @param nRegularizationFeatures: If desired, the exact number of top regularization features can be specified
      */
-    protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor, Integer nSamples, double confidence) {
+    protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor,
+            Integer nSamples, double confidence, RegularizerType regularizerType, Integer nRegularizationFeatures) {
         this.link = link;
         this.background = background;
         this.backgroundMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(background);
@@ -65,6 +80,8 @@ public class ShapConfig {
         this.executor = executor;
         this.nSamples = nSamples;
         this.confidence = confidence;
+        this.regularizerType = regularizerType;
+        this.nRegularizationFeatures = nRegularizationFeatures;
     }
 
     public static Builder builder() {
@@ -80,10 +97,24 @@ public class ShapConfig {
         // optional
         private Executor builderExecutor = ForkJoinPool.commonPool();
         private Integer builderNSamples = null;
+        private RegularizerType builderRegularizerType = RegularizerType.AUTO;
+        private Integer builderNRegularizerFeatures = null;
         private double builderConfidence = .95;
         private PerturbationContext builderPC = new PerturbationContext(new SecureRandom(), 0);
 
         private Builder() {
+        }
+
+        public Builder copy() {
+            Builder output = new Builder()
+                    .withLink(this.builderLink)
+                    .withBackground(this.builderBackground)
+                    .withExecutor(this.builderExecutor)
+                    .withConfidence(this.builderConfidence)
+                    .withPC(this.builderPC);
+            output.builderRegularizerType = this.builderRegularizerType;
+            output.builderNRegularizerFeatures = this.builderNRegularizerFeatures;
+            return output;
         }
 
         /**
@@ -168,6 +199,35 @@ public class ShapConfig {
         }
 
         /**
+         * Add an AIC or BIC regularizatioon method to the builder
+         *
+         * @param rt: The regularization enum to choose, Default is 'AUTO', which uses AIC when less than 20% of the possible shap coalitions are enumerated
+         *
+         * @return Builder
+         */
+        public Builder withRegularizer(RegularizerType rt) {
+            if (rt == RegularizerType.TOP_N_FEATURES) {
+                throw new IllegalArgumentException("To use a top-n feature regularizer, simply pass the desired number " +
+                        "of features as an integer");
+            }
+            this.builderRegularizerType = rt;
+            return this;
+        }
+
+        /**
+         * Add a TOP_N_FEATURES regularization method to the builder
+         *
+         * @param nTopFeatures: use a regularizer that considers the specified number of top features
+         *
+         * @return Builder
+         */
+        public Builder withRegularizer(int nTopFeatures) {
+            this.builderRegularizerType = RegularizerType.TOP_N_FEATURES;
+            this.builderNRegularizerFeatures = nTopFeatures;
+            return this;
+        }
+
+        /**
          * Build
          *
          * @return ShapConfig
@@ -180,7 +240,8 @@ public class ShapConfig {
             if (this.builderBackground.isEmpty()) {
                 throw new IllegalArgumentException("Background data list cannot be empty.");
             }
-            return new ShapConfig(this.builderLink, this.builderBackground, this.builderPC, this.builderExecutor, this.builderNSamples, this.builderConfidence);
+            return new ShapConfig(this.builderLink, this.builderBackground, this.builderPC, this.builderExecutor,
+                    this.builderNSamples, this.builderConfidence, this.builderRegularizerType, this.builderNRegularizerFeatures);
         }
     }
 
@@ -213,5 +274,13 @@ public class ShapConfig {
 
     public double getConfidence() {
         return this.confidence;
+    }
+
+    public RegularizerType getRegularizerType() {
+        return this.regularizerType;
+    }
+
+    public Integer getNRegularizationFeatures() {
+        return this.nRegularizationFeatures;
     }
 }

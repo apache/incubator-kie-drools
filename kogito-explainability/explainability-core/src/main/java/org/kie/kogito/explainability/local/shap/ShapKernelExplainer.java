@@ -40,6 +40,8 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.utils.LarsPath;
+import org.kie.kogito.explainability.utils.LassoLarsIC;
 import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 import org.kie.kogito.explainability.utils.RandomChoice;
 import org.kie.kogito.explainability.utils.WeightedLinearRegression;
@@ -175,7 +177,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      */
     private RealVector normalizeWeightVector(RealVector v) {
         try {
-            return v.unitVector();
+            return v.mapDivide(MatrixUtilsExtensions.sum(v));
         } catch (MathArithmeticException e) {
             return v;
         }
@@ -191,8 +193,9 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      * @param fixed: Is this sample from a fully enumerated subset? If so, the final weight for the
      *        sample is known at creation time, and does not need to be changed. Otherwise, we'll
      *        need to readjust the given weight after we randomly choose samples.
+     * @return boolean, whether a sample was succesfully added or whether it collided with existing sample hashes
      */
-    private void addSample(PredictionInput pi, List<Integer> combination, double weight,
+    private boolean addSample(PredictionInput pi, List<Integer> combination, double weight,
             boolean inverse, boolean fixed, ShapDataCarrier sdc) {
         boolean[] mask = new boolean[sdc.getCols()];
         if (inverse) {
@@ -208,11 +211,13 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
         if (sdc.getMasksUsed().containsKey(maskHash)) {
             ShapSyntheticDataSample previousSample = sdc.getSamplesAdded(sdc.getMasksUsed(maskHash));
             previousSample.incrementWeight();
+            return false;
         } else {
             ShapSyntheticDataSample sample = new ShapSyntheticDataSample(pi, mask, this.config.getBackgroundMatrix(), weight, fixed);
             // map index in the samplesAdded list to the unique hash of this mask
             sdc.addMask(maskHash, sdc.getSamplesAddedSize());
             sdc.addSample(sample);
+            return true;
         }
     }
 
@@ -497,16 +502,16 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
                 sampleIdx += 1;
                 Collections.shuffle(maskSizes);
                 List<Integer> maskIdxs = maskSizes.subList(0, subsetSize);
-                this.addSample(pi, maskIdxs, 1., false, false, sdc);
-                shapStats.decreaseNumSamplesRemainingBy(1);
+                if (this.addSample(pi, maskIdxs, 1., false, false, sdc)) {
+                    shapStats.decreaseNumSamplesRemainingBy(1);
+                }
 
                 // add compliment if possible
-                if (shapStats.getNumSamplesRemaining() > 0 && subsetSize <= shapStats.getLargestPairedSubsetSize()) {
-                    this.addSample(pi, maskIdxs, 1., true, false, sdc);
+                if ((shapStats.getNumSamplesRemaining() > 0 && subsetSize <= shapStats.getLargestPairedSubsetSize()) &&
+                        (this.addSample(pi, maskIdxs, 1., true, false, sdc))) {
                     shapStats.decreaseNumSamplesRemainingBy(1);
                 }
             }
-
             this.normalizeSampleWeights(shapStats, sdc);
         }
     }
@@ -577,18 +582,47 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
     }
 
     /**
+     * Apply the specified regularization technique
+     *
+     * @param augX: The augmented mask matrix used as input to the regularizers
+     * @param augY: The augmented observation vector used as input to regularizer
+     *
+     * @return A List of features selected by the regularizer to be used in the regression
+     */
+    private List<Integer> getRegularizationIndexes(RealMatrix augX, RealVector augY) {
+        List<Integer> nonzeros = List.of();
+        switch (this.config.getRegularizerType()) {
+            case AUTO:
+            case AIC:
+                nonzeros = MatrixUtilsExtensions.nonzero(
+                        LassoLarsIC.fit(augX, augY, LassoLarsIC.Criterion.AIC).getCoefs());
+                break;
+            case BIC:
+                nonzeros = MatrixUtilsExtensions.nonzero(
+                        LassoLarsIC.fit(augX, augY, LassoLarsIC.Criterion.BIC).getCoefs());
+                break;
+            case TOP_N_FEATURES:
+                nonzeros = LarsPath.fit(augX, augY, this.config.getNRegularizationFeatures(), false)
+                        .getActive();
+                break;
+            case NONE:
+                throw new IllegalArgumentException("RegularizerType=NONE will never be able enter the switch statement");
+        }
+        return nonzeros;
+    }
+
+    /**
      * Create a WLR model to retrieve the SHAP values for a particular output of the model
      *
      * @param expectations: The expectations of each sample
      * @param output: The index of the particular output
      * @param poVector: The predictionOutputs for this explanation's prediction
      * @param fnull: The value stored in the CompletableFuture this.fnull
-     * @param dropIdx: The regularization feature to use in the wlr model
      *
      * @return the shap values as found by the WLR
      */
     private RealVector[] solve(RealMatrix expectations, int output, RealVector poVector, RealVector fnull,
-            int dropIdx, ShapDataCarrier sdc) {
+            ShapDataCarrier sdc) {
         RealMatrix xs = MatrixUtils.createRealMatrix(new double[sdc.getSamplesAddedSize()][sdc.getCols()]);
         RealVector ws = MatrixUtils.createRealVector(new double[sdc.getSamplesAddedSize()]);
         RealVector ys = MatrixUtils.createRealVector(new double[sdc.getSamplesAddedSize()]);
@@ -601,22 +635,52 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
             ws.setEntry(i, sdc.getSamplesAdded(i).getWeight());
         }
 
+        double sampleFraction = sdc.getSamplesAddedSize() / Math.pow(2, sdc.getCols());
         double outputChange = this.link(poVector.getEntry(output)) - this.link(fnull.getEntry(output));
 
+        List<Integer> nonzeros;
+        boolean autoRegularize = sampleFraction < .2 && config.getRegularizerType() == ShapConfig.RegularizerType.AUTO;
+        boolean specificRegularize = config.getRegularizerType() != ShapConfig.RegularizerType.NONE && config.getRegularizerType() != ShapConfig.RegularizerType.AUTO;
+        if (autoRegularize || specificRegularize) {
+            // perform augmentation
+            RealVector maskSum = MatrixUtilsExtensions.colSum(xs);
+
+            // augment weights
+            RealVector augWeights = MatrixUtils.createRealVector(new double[ws.getDimension() * 2]);
+            augWeights.setSubVector(0, ws.ebeMultiply(maskSum.map(x -> sdc.getNumVarying() - x)));
+            augWeights.setSubVector(ws.getDimension(), ws.ebeMultiply(maskSum));
+            RealVector sqrtAugWeights = augWeights.map(Math::sqrt);
+
+            // augment ys
+            RealVector augYs = MatrixUtils.createRealVector(new double[ys.getDimension() * 2]);
+            augYs.setSubVector(0, ys);
+            augYs.setSubVector(ys.getDimension(), ys.mapSubtract(outputChange));
+            augYs = augYs.ebeMultiply(sqrtAugWeights);
+
+            // augment xs
+            RealMatrix augXsRaw = MatrixUtils.createRealMatrix(xs.getRowDimension() * 2, xs.getColumnDimension());
+            augXsRaw.setSubMatrix(xs.getData(), 0, 0);
+            augXsRaw.setSubMatrix(MatrixUtilsExtensions.map(xs, x -> x - 1).getData(), xs.getRowDimension(), 0);
+            RealMatrix augXs = MatrixUtilsExtensions.vectorRowProduct(augXsRaw.transpose(), sqrtAugWeights).transpose();
+
+            nonzeros = getRegularizationIndexes(augXs, augYs);
+        } else {
+            nonzeros = sdc.getVaryingFeatureGroups();
+        }
+
+        // select features for regularization as specified by nonzeros
+        int dropIdx = nonzeros.get(nonzeros.size() - 1);
         RealVector dropMask = xs.getColumnVector(dropIdx);
         RealVector dropEffect = dropMask.mapMultiply(outputChange);
         RealVector adjY = ys.subtract(dropEffect);
-        List<Integer> included = new ArrayList<>();
-        sdc.getVaryingFeatureGroups().forEach(v -> {
-            if (v != dropIdx) {
-                included.add(v);
-            }
-        });
-        RealMatrix includeMask = MatrixUtilsExtensions.getCols(xs, included).transpose();
-        RealMatrix maskDiff = MatrixUtilsExtensions
-                .vectorDifference(includeMask, dropMask, MatrixUtilsExtensions.Axis.ROW)
-                .transpose();
-        return this.runWLRR(maskDiff, adjY, ws, outputChange, dropIdx, sdc);
+        List<Integer> allNZButLast = nonzeros.subList(0, nonzeros.size() - 1);
+        RealMatrix xsAdj = MatrixUtilsExtensions.vectorDifference(
+                MatrixUtilsExtensions.getCols(xs, allNZButLast),
+                dropMask,
+                MatrixUtilsExtensions.Axis.COLUMN);
+
+        // run the regression
+        return this.runWLRR(xsAdj, adjY, ws, outputChange, dropIdx, nonzeros, sdc);
     }
 
     /**
@@ -629,14 +693,12 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      */
     private CompletableFuture<RealMatrix[]> solveSystem(CompletableFuture<RealMatrix> expectations, RealVector poVector,
             ShapDataCarrier sdc) {
-        int dropIdx = sdc.getVaryingFeatureGroups(sdc.getVaryingFeatureGroups().size() - 1);
-
         return expectations.thenCompose(exps -> sdc.getFnull().thenCompose(fn -> sdc.getOutputSize().thenCompose(os -> {
             HashMap<Integer, CompletableFuture<RealVector[]>> shapSlices = new HashMap<>();
             for (int output = 0; output < os; output++) {
                 int finalOutput = output;
                 shapSlices.put(output, CompletableFuture.supplyAsync(
-                        () -> solve(exps, finalOutput, poVector, fn, dropIdx, sdc),
+                        () -> solve(exps, finalOutput, poVector, fn, sdc),
                         this.config.getExecutor()));
             }
 
@@ -671,7 +733,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      */
     // run the WLRR for a single output
     private RealVector[] runWLRR(RealMatrix maskDiff, RealVector adjY, RealVector ws, double outputChange,
-            int dropIdx, ShapDataCarrier sdc) {
+            int dropIdx, List<Integer> nonzeros, ShapDataCarrier sdc) {
 
         // temporary conversion to and from MAtrixUtils data structures; these will be used throughout after FAI-661
         WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(maskDiff, adjY, ws, false);
@@ -681,8 +743,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
         int usedCoefs = 0;
         RealVector shapSlice = MatrixUtils.createRealVector(new double[sdc.getCols()]);
         RealVector boundsReg = shapSlice.copy();
-        for (int i = 0; i < sdc.getVaryingFeatureGroups().size(); i++) {
-            int idx = sdc.getVaryingFeatureGroups(i);
+        for (int idx : nonzeros) {
             if (idx != dropIdx) {
                 shapSlice.setEntry(idx, coeffs.getEntry(usedCoefs));
                 boundsReg.setEntry(idx, bounds.getEntry(usedCoefs));

@@ -92,6 +92,23 @@ public class TestUtils {
         });
     }
 
+    public static PredictionProvider getLinearModel(double[] weights) {
+        return inputs -> supplyAsync(() -> {
+            List<PredictionOutput> predictionOutputs = new LinkedList<>();
+            for (PredictionInput predictionInput : inputs) {
+                List<Feature> features = predictionInput.getFeatures();
+                double result = 0;
+                for (int i = 0; i < features.size(); i++) {
+                    result += features.get(i).getValue().asNumber() * weights[i];
+                }
+                PredictionOutput predictionOutput = new PredictionOutput(
+                        List.of(new Output("linear-sum", Type.NUMBER, new Value(result), 1d)));
+                predictionOutputs.add(predictionOutput);
+            }
+            return predictionOutputs;
+        });
+    }
+
     public static PredictionProvider getSumSkipTwoOutputModel(int skipFeatureIndex) {
         return inputs -> supplyAsync(() -> {
             List<PredictionOutput> predictionOutputs = new LinkedList<>();
