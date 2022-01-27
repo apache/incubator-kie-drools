@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
+ * @param <ProblemId_> the ID type of submitted problem, such as {@link Long} or {@link UUID}.
  */
 public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Solution_, ProblemId_>, Callable<Solution_> {
 
@@ -50,19 +50,21 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final DefaultSolver<Solution_> solver;
     private final ProblemId_ problemId;
     private final Function<? super ProblemId_, ? extends Solution_> problemFinder;
+    private final Consumer<? super Solution_> bestSolutionConsumer;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
     private volatile SolverStatus solverStatus;
     private final CountDownLatch terminatedLatch;
     private final ReentrantLock solverStatusModifyingLock;
-
-    private Future<Solution_> future;
+    private Future<Solution_> finalBestSolutionFuture;
+    private ConsumerSupport<Solution_, ProblemId_> consumerSupport;
 
     public DefaultSolverJob(
             DefaultSolverManager<Solution_, ProblemId_> solverManager,
             Solver<Solution_> solver, ProblemId_ problemId,
             Function<? super ProblemId_, ? extends Solution_> problemFinder,
+            Consumer<? super Solution_> bestSolutionConsumer,
             Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
         this.solverManager = solverManager;
@@ -73,6 +75,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
         this.solver = (DefaultSolver<Solution_>) solver;
         this.problemFinder = problemFinder;
+        this.bestSolutionConsumer = bestSolutionConsumer;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
         solverStatus = SolverStatus.SOLVING_SCHEDULED;
@@ -80,8 +83,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         solverStatusModifyingLock = new ReentrantLock();
     }
 
-    public void setFuture(Future<Solution_> future) {
-        this.future = future;
+    public void setFinalBestSolutionFuture(Future<Solution_> finalBestSolutionFuture) {
+        this.finalBestSolutionFuture = finalBestSolutionFuture;
     }
 
     @Override
@@ -105,13 +108,19 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
         try {
             solverStatus = SolverStatus.SOLVING_ACTIVE;
+            // Create the consumer thread pool only when this solver job is active.
+            consumerSupport = new ConsumerSupport<>(getProblemId(), bestSolutionConsumer, finalBestSolutionConsumer,
+                    exceptionHandler);
+
             Solution_ problem = problemFinder.apply(problemId);
             // add a phase lifecycle listener that unlock the solver status lock when solving started
             solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
+            if (bestSolutionConsumer != null) {
+                solver.addEventListener(event -> consumerSupport.consumeIntermediateBestSolution(event.getNewBestSolution()));
+            }
             final Solution_ finalBestSolution = solver.solve(problem);
             if (finalBestSolutionConsumer != null) {
-                // TODO consumption should happen on different thread than solver thread
-                finalBestSolutionConsumer.accept(finalBestSolution);
+                consumerSupport.consumeFinalBestSolution(finalBestSolution);
             }
             return finalBestSolution;
         } catch (Exception e) {
@@ -158,7 +167,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     public void terminateEarly() {
         try {
             solverStatusModifyingLock.lock();
-            future.cancel(false);
+            finalBestSolutionFuture.cancel(false);
             switch (solverStatus) {
                 case SOLVING_SCHEDULED:
                     solvingTerminated();
@@ -174,7 +183,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
                     throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
             }
             try {
-                // Don't return until bestSolutionConsumer won't be called any more
+                // Don't return until bestSolutionConsumer won't be called anymore
                 terminatedLatch.await();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -187,7 +196,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException {
-        return future.get();
+        return finalBestSolutionFuture.get();
     }
 
     @Override
@@ -204,6 +213,13 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             endingSystemTimeMillis = System.currentTimeMillis();
         }
         return Duration.ofMillis(endingSystemTimeMillis - startingSystemTimeMillis);
+    }
+
+    void close() {
+        if (consumerSupport != null) {
+            consumerSupport.close();
+            consumerSupport = null;
+        }
     }
 
     /**
