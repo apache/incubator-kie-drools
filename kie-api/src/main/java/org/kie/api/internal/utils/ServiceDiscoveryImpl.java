@@ -49,12 +49,12 @@ public class ServiceDiscoveryImpl {
     private static final String[] KIE_MODULES = new String[] {
             "", // This is to reserve the path META-INF/kie/kie.conf for user specific customizations
             "drools-alphanetwork-compiler", "drools-beliefs", "drools-compiler", "drools-core", "drools-decisiontables",
-            "drools-kiesession", "drools-metric", "drools-model-compiler", "drools-mvel", "drools-persistence-jpa",
+            "drools-kiesession", "drools-metric", "drools-model-compiler", "drools-mvel", "drools-persistence-jpa", "drools-ruleunits-impl",
             "drools-scorecards", "drools-serialization-protobuf", "drools-tms", "drools-traits", "drools-wiring-dynamic", "drools-workbench-models-guided-dtable",
             "drools-workbench-models-guided-scorecard", "drools-workbench-models-guided-template", "drools-xml-support",
             "jbpm-bpmn2", "jbpm-case-mgmt-cmmn", "jbpm-flow", "jbpm-flow-builder", "jbpm-human-task-jpa",
             "kie-ci", "kie-dmn-core", "kie-dmn-jpmml", "kie-internal", "kie-pmml", "kie-pmml-evaluator-assembler",
-            "kie-pmml-evaluator-core", "kie-server-services-jbpm-cluster"
+            "kie-pmml-evaluator-core", "kie-server-services-jbpm-cluster", "kogito-drools"
     };
 
     private static final Logger log = LoggerFactory.getLogger(ServiceDiscoveryImpl.class);
