@@ -19,18 +19,19 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.ruleunits.api.conf.DefaultEntryPoint;
+import org.drools.ruleunits.api.conf.EntryPoint;
+import org.drools.ruleunits.impl.EntryPointDataProcessor;
+import org.drools.ruleunits.impl.KieSessionBasedRuleUnitInstance;
+import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.conf.DefaultEntryPoint;
-import org.kie.kogito.conf.EntryPoint;
 import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.units.EntryPointDataProcessor;
-import org.kie.kogito.rules.units.KieSessionBasedRuleUnitInstance;
-import org.kie.kogito.rules.units.ReteEvaluatorBasedRuleUnitInstance;
+import org.kie.kogito.rules.RuleUnitInstance;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -169,7 +170,7 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
                 .addAnnotation("Override")
                 .addModifier(Modifier.Keyword.PROTECTED)
                 .addTypeParameter("Q")
-                .addParameter("Class<? extends org.kie.kogito.rules.RuleUnitQuery<Q>>", "query")
+                .addParameter("Class<? extends org.drools.ruleunits.api.RuleUnitQuery<Q>>", "query")
                 .setType("org.kie.kogito.rules.RuleUnitQuery<Q>")
                 .setBody(methodBlock);
 
@@ -210,6 +211,9 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
         classDecl
                 .addExtendedType(
                         new ClassOrInterfaceType(null, unitInstanceAbstractClass.getCanonicalName())
+                                .setTypeArguments(new ClassOrInterfaceType(null, canonicalName)))
+                .addImplementedType(
+                        new ClassOrInterfaceType(null, RuleUnitInstance.class.getCanonicalName())
                                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName)))
                 .addConstructor(Modifier.Keyword.PUBLIC)
                 .addParameter(RuleUnitGenerator.ruleUnitType(canonicalName), "unit")

@@ -15,24 +15,7 @@
  */
 package org.kie.kogito.rules;
 
-import java.util.List;
-import java.util.Map;
+import org.drools.ruleunits.api.RuleUnitData;
 
-import org.kie.api.time.SessionClock;
-
-public interface RuleUnitInstance<T extends RuleUnitData> {
-
-    RuleUnit<T> unit();
-
-    T ruleUnitData();
-
-    int fire();
-
-    List<Map<String, Object>> executeQuery(String query, Object... arguments);
-
-    <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query);
-
-    <T extends SessionClock> T getClock();
-
-    void dispose();
+public interface RuleUnitInstance<T extends RuleUnitData> extends org.drools.ruleunits.api.RuleUnitInstance<T> {
 }

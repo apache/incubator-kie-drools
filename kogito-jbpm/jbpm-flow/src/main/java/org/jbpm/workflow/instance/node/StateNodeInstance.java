@@ -15,6 +15,7 @@
  */
 package org.jbpm.workflow.instance.node;
 
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.spi.Activation;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -24,7 +25,6 @@ import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.process.EventListener;
-import org.kie.kogito.drools.core.common.KogitoInternalAgenda;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class StateNodeInstance extends CompositeContextNodeInstance implements EventListener {
@@ -53,7 +53,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
                         getStateNode().getUniqueId() + "-" +
                         connection.getTo().getId() + "-" +
                         connection.getToType();
-                boolean isActive = ((KogitoInternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
                         .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getStringId());
                 if (isActive) {
                     selected = connection;
@@ -81,10 +81,10 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
                     boolean selected = false;
                     Constraint constraint = getStateNode().getConstraint(connection);
                     if (constraint == null) {
-                        if (((String) event).equals(connection.getTo().getName())) {
+                        if (event.equals(connection.getTo().getName())) {
                             selected = true;
                         }
-                    } else if (((String) event).equals(constraint.getName())) {
+                    } else if (event.equals(constraint.getName())) {
                         selected = true;
                     }
                     if (selected) {

@@ -15,15 +15,15 @@
  */
 package org.kie.kogito.codegen.unit;
 
+import org.drools.ruleunits.api.conf.Clock;
+import org.drools.ruleunits.api.conf.ClockType;
 import org.kie.kogito.codegen.data.StockTick;
 import org.kie.kogito.codegen.data.ValueDrop;
-import org.kie.kogito.conf.Clock;
-import org.kie.kogito.conf.ClockType;
+import org.kie.kogito.drools.core.data.EventListDataStream;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
 import org.kie.kogito.rules.RuleUnitData;
-import org.kie.kogito.rules.units.EventListDataStream;
 
 @Clock(ClockType.PSEUDO)
 public class StockUnit implements RuleUnitData {

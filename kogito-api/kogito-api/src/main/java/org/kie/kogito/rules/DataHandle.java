@@ -15,6 +15,5 @@
  */
 package org.kie.kogito.rules;
 
-public interface DataHandle {
-    Object getObject();
+public interface DataHandle extends org.drools.ruleunits.api.DataHandle {
 }

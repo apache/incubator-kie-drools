@@ -37,6 +37,11 @@ import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.ModelSourceClass;
+import org.drools.ruleunits.api.conf.ClockType;
+import org.drools.ruleunits.api.conf.EventProcessingType;
+import org.drools.ruleunits.impl.AbstractRuleUnitDescription;
+import org.drools.ruleunits.impl.AssignableChecker;
+import org.drools.ruleunits.impl.ReflectiveRuleUnitDescription;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -60,13 +65,8 @@ import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
-import org.kie.kogito.conf.ClockType;
-import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 import org.kie.kogito.rules.RuleUnitConfig;
-import org.kie.kogito.rules.units.AbstractRuleUnitDescription;
-import org.kie.kogito.rules.units.AssignableChecker;
-import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -392,7 +392,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
         // merge config from the descriptor with configs from application.conf
         // application.conf overrides any other config
-        RuleUnitConfig config =
+        org.drools.ruleunits.api.RuleUnitConfig config =
                 ((AbstractRuleUnitDescription) ruleUnitDescription).getConfig()
                         .merged(configs.get(ruleUnitDescription.getCanonicalName()));
 

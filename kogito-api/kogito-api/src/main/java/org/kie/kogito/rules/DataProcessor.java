@@ -17,15 +17,22 @@ package org.kie.kogito.rules;
 
 import org.kie.api.runtime.rule.FactHandle;
 
-public interface DataProcessor<T> {
-
-    default void insert(T object) {
-        insert(null, object);
-    }
-
+public interface DataProcessor<T> extends org.drools.ruleunits.api.DataProcessor<T> {
     FactHandle insert(DataHandle handle, T object);
 
     void update(DataHandle handle, T object);
 
     void delete(DataHandle handle);
+
+    default FactHandle insert(org.drools.ruleunits.api.DataHandle handle, T object) {
+        return insert((DataHandle) handle, object);
+    }
+
+    default void update(org.drools.ruleunits.api.DataHandle handle, T object) {
+        update((DataHandle) handle, object);
+    }
+
+    default void delete(org.drools.ruleunits.api.DataHandle handle) {
+        delete((DataHandle) handle);
+    }
 }

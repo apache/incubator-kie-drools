@@ -54,7 +54,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
-import org.kie.kogito.drools.core.common.KogitoInternalAgenda;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
@@ -146,7 +145,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
                 if (actAsWaitState()) {
                     addRuleSetListener();
-                    ((KogitoInternalAgenda) kruntime.getAgenda())
+                    ((InternalAgenda) kruntime.getAgenda())
                             .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getStringId(), getUniqueId());
                 } else {
                     int fireLimit = DEFAULT_FIRE_RULE_LIMIT;
@@ -155,7 +154,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     if (inputs.containsKey(FIRE_RULE_LIMIT_PARAMETER)) {
                         fireLimit = Integer.parseInt(inputs.get(FIRE_RULE_LIMIT_PARAMETER).toString());
                     }
-                    ((KogitoInternalAgenda) kruntime.getAgenda())
+                    ((InternalAgenda) kruntime.getAgenda())
                             .activateRuleFlowGroup(getRuleFlowGroup(), processInstance.getStringId(), getUniqueId());
 
                     int fired = ((KieSession) kruntime).fireAllRules(processInstance.getAgendaFilter(), fireLimit);

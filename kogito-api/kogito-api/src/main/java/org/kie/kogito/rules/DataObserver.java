@@ -17,9 +17,11 @@ package org.kie.kogito.rules;
 
 import java.util.function.Consumer;
 
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
 import org.kie.api.runtime.rule.FactHandle;
 
-public interface DataObserver {
+public interface DataObserver extends org.drools.ruleunits.api.DataObserver {
 
     static <T> DataProcessor<T> of(Consumer<T> consumer) {
         return new DataProcessor<T>() {
@@ -60,4 +62,5 @@ public interface DataObserver {
             }
         };
     }
+
 }

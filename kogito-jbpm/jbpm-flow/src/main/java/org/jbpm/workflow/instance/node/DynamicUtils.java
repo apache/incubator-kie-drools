@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.ruleunits.impl.sessions.RuleUnitStatefulKnowledgeSessionImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.util.PatternConstants;
@@ -43,7 +44,6 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.kogito.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -293,7 +293,7 @@ public class DynamicUtils {
                     processInstance.getStringId());
             subProcessInstance.setParentProcessInstanceId(processInstance.getStringId());
 
-            KogitoStatefulKnowledgeSessionImpl kogitoSession = (KogitoStatefulKnowledgeSessionImpl) ksession;
+            RuleUnitStatefulKnowledgeSessionImpl kogitoSession = (RuleUnitStatefulKnowledgeSessionImpl) ksession;
             String subProcessInstanceId = subProcessInstance.getStringId();
             subProcessInstance = (ProcessInstance) asKogitoProcessRuntime(kogitoSession).startProcessInstance(subProcessInstanceId);
             subProcessNodeInstance.internalSetProcessInstanceId(subProcessInstanceId);

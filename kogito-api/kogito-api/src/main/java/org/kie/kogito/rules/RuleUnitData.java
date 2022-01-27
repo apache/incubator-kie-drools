@@ -15,6 +15,5 @@
  */
 package org.kie.kogito.rules;
 
-public interface RuleUnitData {
-
+public interface RuleUnitData extends org.drools.ruleunits.api.RuleUnitData {
 }

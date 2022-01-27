@@ -23,7 +23,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.kogito.rules.RuleEventListenerConfig;
 
 @org.springframework.stereotype.Component
-class RuleConfig extends AbstractRuleConfig {
+class RuleConfig extends AbstractRuleConfig implements org.kie.kogito.rules.RuleConfig {
 
     @org.springframework.beans.factory.annotation.Autowired
     public RuleConfig(

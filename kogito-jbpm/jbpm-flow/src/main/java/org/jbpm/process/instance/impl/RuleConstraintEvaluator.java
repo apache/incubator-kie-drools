@@ -23,7 +23,6 @@ import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.api.definition.process.Connection;
-import org.kie.kogito.drools.core.common.KogitoInternalAgenda;
 
 /**
  * Default implementation of a constraint.
@@ -102,7 +101,7 @@ public class RuleConstraintEvaluator implements Constraint,
                 ((Node) instance.getNode()).getUniqueId() + "-" +
                 ((Node) connection.getTo()).getUniqueId() + "-" + connection.getToType();
 
-        return ((KogitoInternalAgenda) agenda).isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, processInstance.getStringId());
+        return agenda.isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, processInstance.getStringId());
     }
 
     public Object getMetaData(String name) {

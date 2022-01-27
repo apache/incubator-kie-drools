@@ -15,7 +15,7 @@
  */
 package $Package$;
 
-public class RuleUnits extends org.kie.kogito.rules.units.impl.AbstractRuleUnits {
+public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits implements org.kie.kogito.rules.RuleUnits {
 
     private final Application application;
 
@@ -26,7 +26,7 @@ public class RuleUnits extends org.kie.kogito.rules.units.impl.AbstractRuleUnits
     protected org.kie.kogito.rules.RuleUnit<?> create(String fqcn) {
         switch(fqcn) {
             case "$RuleUnit$":
-                return new $RuleUnit$RuleUnit(application);
+                return new $RuleUnit$RuleUnit(application.get(RuleUnits.class));
             default:
                 throw new java.lang.UnsupportedOperationException();
         }

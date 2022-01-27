@@ -15,6 +15,5 @@
  */
 package org.kie.kogito.rules;
 
-public interface DataStream<T> extends DataSource<T> {
-    void append(T value);
+public interface DataStream<T> extends org.drools.ruleunits.api.DataStream<T>, DataSource<T> {
 }

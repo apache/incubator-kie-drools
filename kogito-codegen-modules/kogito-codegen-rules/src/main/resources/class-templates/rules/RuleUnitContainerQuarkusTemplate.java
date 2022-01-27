@@ -18,7 +18,7 @@ package $Package$;
 import org.kie.kogito.rules.RuleUnit;
 
 @javax.enterprise.context.ApplicationScoped
-public class RuleUnits extends org.kie.kogito.rules.units.impl.AbstractRuleUnits {
+public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits implements org.kie.kogito.rules.RuleUnits {
 
     @javax.inject.Inject
     javax.enterprise.inject.Instance<org.kie.kogito.rules.RuleUnit<? extends org.kie.kogito.rules.RuleUnitData>> ruleUnits;

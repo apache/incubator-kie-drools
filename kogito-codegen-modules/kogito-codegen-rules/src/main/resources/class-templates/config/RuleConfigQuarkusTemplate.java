@@ -23,7 +23,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.kogito.rules.RuleEventListenerConfig;
 
 @javax.inject.Singleton
-class RuleConfig extends AbstractRuleConfig {
+class RuleConfig extends AbstractRuleConfig implements org.kie.kogito.rules.RuleConfig {
 
     @javax.inject.Inject
     public RuleConfig(

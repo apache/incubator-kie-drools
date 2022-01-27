@@ -19,10 +19,10 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.ruleunits.impl.AssignableChecker;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.rules.RuleUnits;
-import org.kie.kogito.rules.units.AssignableChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

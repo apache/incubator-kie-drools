@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
@@ -41,7 +42,6 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.Match;
-import org.kie.kogito.drools.core.common.KogitoInternalAgenda;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
@@ -102,7 +102,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         if (getEventBasedNode().getBoundaryEvents() != null) {
 
             for (String name : getEventBasedNode().getBoundaryEvents()) {
-                boolean isActive = ((KogitoInternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
                         .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", name, getProcessInstance().getId());
                 if (isActive) {
                     getProcessInstance().getKnowledgeRuntime().signalEvent(name, null);

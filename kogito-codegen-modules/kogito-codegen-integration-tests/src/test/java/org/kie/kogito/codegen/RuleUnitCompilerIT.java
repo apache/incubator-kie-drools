@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.ruleunits.impl.AbstractRuleUnitInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -50,7 +51,6 @@ import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnitQuery;
 import org.kie.kogito.rules.RuleUnits;
-import org.kie.kogito.rules.units.AbstractRuleUnitInstance;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;

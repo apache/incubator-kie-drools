@@ -19,17 +19,22 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.ruleunits.impl.sessions.RuleUnitStatefulKnowledgeSessionImpl;
+
 import org.kie.api.runtime.KieSession;
-import org.kie.kogito.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
+import org.kie.kogito.drools.core.unit.AbstractRuleUnit;
+import org.kie.kogito.rules.RuleUnits;
 import org.kie.kogito.rules.RuleEventListenerConfig;
-import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
 public class $Name$ extends AbstractRuleUnit<$ModelName$> {
 
     private static final InternalKnowledgeBase kb = createKnowledgeBase();
 
+    private final org.kie.kogito.Application app;
+
     public $Name$(org.kie.kogito.Application app) {
-        super($ModelName$.class.getCanonicalName(), app);
+        super($ModelName$.class.getCanonicalName(), app.get(RuleUnits.class));
+        this.app = app;
     }
 
     public $InstanceName$ internalCreateInstance($ModelName$ value) {
@@ -41,8 +46,8 @@ public class $Name$ extends AbstractRuleUnit<$ModelName$> {
         sessionConfig.setClockType($ClockType$);
 
         KieSession ks = kb.newKieSession(sessionConfig, new EnvironmentImpl());
-        ((KogitoStatefulKnowledgeSessionImpl)ks).setStateless( /*$IsStateful$*/ true );
-        ((KogitoStatefulKnowledgeSessionImpl)ks).setApplication( app );
+        ((RuleUnitStatefulKnowledgeSessionImpl)ks).setStateless( /*$IsStateful$*/ true );
+        ((RuleUnitStatefulKnowledgeSessionImpl)ks).setRuleUnits( ruleUnits );
 
         org.kie.kogito.Config config = app.config();
         if (config != null) {

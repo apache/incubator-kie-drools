@@ -36,9 +36,9 @@ public abstract class AbstractRuleConfig implements RuleConfig {
     }
 
     public AbstractRuleConfig(
-            Iterable<RuleEventListenerConfig> ruleEventListenerConfigs,
-            Iterable<AgendaEventListener> agendaEventListeners,
-            Iterable<RuleRuntimeEventListener> ruleRuntimeEventListeners) {
+            Iterable<? extends RuleEventListenerConfig> ruleEventListenerConfigs,
+            Iterable<? extends AgendaEventListener> agendaEventListeners,
+            Iterable<? extends RuleRuntimeEventListener> ruleRuntimeEventListeners) {
         this.ruleEventListenerConfig = extractRuleEventListenerConfig(
                 ruleEventListenerConfigs, agendaEventListeners, ruleRuntimeEventListeners);
     }
@@ -49,9 +49,9 @@ public abstract class AbstractRuleConfig implements RuleConfig {
     }
 
     private RuleEventListenerConfig extractRuleEventListenerConfig(
-            Iterable<RuleEventListenerConfig> ruleEventListenerConfigs,
-            Iterable<AgendaEventListener> agendaEventListeners,
-            Iterable<RuleRuntimeEventListener> ruleRuntimeEventListeners) {
+            Iterable<? extends RuleEventListenerConfig> ruleEventListenerConfigs,
+            Iterable<? extends AgendaEventListener> agendaEventListeners,
+            Iterable<? extends RuleRuntimeEventListener> ruleRuntimeEventListeners) {
         return this.mergeRuleEventListenerConfig(
                 StreamSupport.stream(ruleEventListenerConfigs.spliterator(), false)
                         .collect(Collectors.toList()),

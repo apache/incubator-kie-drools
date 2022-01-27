@@ -15,13 +15,13 @@
  */
 package org.jbpm.compiler.canonical;
 
+import org.drools.ruleunits.impl.AssignableChecker;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.DataObserver;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
 import org.kie.kogito.rules.SingletonStore;
-import org.kie.kogito.rules.units.AssignableChecker;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.VariableDeclarator;

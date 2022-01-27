@@ -15,9 +15,7 @@
  */
 package org.kie.kogito.rules;
 
-public interface RuleUnit<T extends RuleUnitData> {
-
-    String id();
+public interface RuleUnit<T extends org.drools.ruleunits.api.RuleUnitData> extends org.drools.ruleunits.api.RuleUnit<T> {
 
     default RuleUnitInstance<T> createInstance(T data) {
         return createInstance(data, null);

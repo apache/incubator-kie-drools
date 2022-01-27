@@ -19,7 +19,7 @@ import org.kie.kogito.rules.RuleUnit;
 
 @org.springframework.web.context.annotation.ApplicationScope
 @org.springframework.stereotype.Component
-public class RuleUnits extends org.kie.kogito.rules.units.impl.AbstractRuleUnits {
+public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits implements org.kie.kogito.rules.RuleUnits {
 
     @org.springframework.beans.factory.annotation.Autowired
     java.util.Collection<org.kie.kogito.rules.RuleUnit<? extends org.kie.kogito.rules.RuleUnitData>> ruleUnits;

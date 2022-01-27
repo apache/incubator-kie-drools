@@ -133,6 +133,16 @@
                 <artifactId>drools-alphanetwork-compiler</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-ruleunits-api</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-ruleunits-impl</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
 
             <!-- DMN -->
             <dependency>
