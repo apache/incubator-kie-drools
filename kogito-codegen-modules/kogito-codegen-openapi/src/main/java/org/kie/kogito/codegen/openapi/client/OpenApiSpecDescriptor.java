@@ -18,7 +18,6 @@ package org.kie.kogito.codegen.openapi.client;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,11 +42,11 @@ public class OpenApiSpecDescriptor {
     public OpenApiSpecDescriptor(final String resource) {
         try {
             this.uri = new URI(resource);
-            this.resourceName = Paths.get(this.uri.getPath()).getFileName().toString();
+            this.resourceName = getFileName(uri.toString());
             this.id = generateId(this.uri.toString(), resourceName);
             this.requiredOperations = new HashSet<>();
         } catch (URISyntaxException e) {
-            throw new OpenApiClientException("Fail to parse given resource into URI" + resource, e);
+            throw new OpenApiClientException("Fail to parse given resource into URI " + resource, e);
         }
     }
 
@@ -124,5 +123,9 @@ public class OpenApiSpecDescriptor {
                 ", uri=" + uri +
                 ", id='" + id + '\'' +
                 '}';
+    }
+
+    private static String getFileName(String resource) {
+        return resource.substring(resource.lastIndexOf('/') + 1);
     }
 }

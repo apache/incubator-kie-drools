@@ -30,7 +30,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
  */
 public class ServicesConfigurationHandler extends AbstractDependencyInjectionHandler {
 
-    private final static String API_CLIENT_PARAMETER = "ApiClient";
+    private static final String API_CLIENT_PARAMETER = "ApiClient";
 
     protected ServicesConfigurationHandler(KogitoBuildContext context) {
         super(context);
@@ -68,7 +68,7 @@ public class ServicesConfigurationHandler extends AbstractDependencyInjectionHan
             if (canonicalClassName == null || canonicalClassName.isEmpty()) {
                 return false;
             }
-            return file.getPath().endsWith(canonicalClassName.replace(".", "/") + JAVA_EXTENSION);
+            return file.toURI().toString().endsWith(canonicalClassName.replace(".", "/") + JAVA_EXTENSION);
         }
     }
 }
