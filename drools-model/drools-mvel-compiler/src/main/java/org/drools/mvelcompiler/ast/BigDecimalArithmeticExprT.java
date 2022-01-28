@@ -97,14 +97,12 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-
-        Expression methodCallExpr = new MethodCallExpr((Expression) scope.toJavaExpression(),
-                                                           name,
+        MethodCallExpr methodCallExpr = new MethodCallExpr((Expression) scope.toJavaExpression(), name,
                                                            nodeList((Expression) argument.toJavaExpression()));
-        if(isNegated) {
-            methodCallExpr = new UnaryExpr(new EnclosedExpr(methodCallExpr), UnaryExpr.Operator.LOGICAL_COMPLEMENT);
+        if (!"valueOf".equals(name) && !"equals".equals(name)) {
+            methodCallExpr.addArgument("java.math.MathContext.DECIMAL128");
         }
-        return methodCallExpr;
+        return isNegated ? new UnaryExpr(new EnclosedExpr(methodCallExpr), UnaryExpr.Operator.LOGICAL_COMPLEMENT) : methodCallExpr;
     }
 
     @Override
