@@ -17,11 +17,15 @@ public class DRLParserHelper {
     }
 
     public static ParseTree createParseTree(String drl) {
+        return createDrlParser(drl).compilationunit();
+    }
+
+    public static DRLParser createDrlParser(String drl) {
         CharStream inputStream = CharStreams.fromString(drl);
         DRLLexer drlLexer = new DRLLexer(inputStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(drlLexer);
         DRLParser drlParser = new DRLParser(commonTokenStream);
-        return drlParser.compilationunit();
+        return drlParser;
     }
 
     public static PackageDescr parseTree2PackageDescr(ParseTree parseTree) {
@@ -108,5 +112,12 @@ public class DRLParserHelper {
 
     public static boolean isAfterSymbol(ParseTree node, int symbol, int row, int col) {
         return isSymbol(node, symbol) && endsBefore(node, row, col);
+    }
+
+    public static int getNodeIndex(ParseTree node) {
+        if (node instanceof TerminalNode) {
+            return ((TerminalNode) node).getSymbol().getTokenIndex();
+        }
+        return getNodeIndex(node.getChild(node.getChildCount()-1));
     }
 }
