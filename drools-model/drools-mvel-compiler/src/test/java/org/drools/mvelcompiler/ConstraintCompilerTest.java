@@ -32,7 +32,7 @@ public class ConstraintCompilerTest implements CompilerTest {
     @Test
     public void testBigDecimalPromotion() {
         testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salary + salary",
-                       "_this.getSalary().add(_this.getSalary())");
+                       "_this.getSalary().add(_this.getSalary(), java.math.MathContext.DECIMAL128)");
     }
 
     @Test

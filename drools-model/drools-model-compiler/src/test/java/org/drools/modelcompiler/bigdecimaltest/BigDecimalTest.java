@@ -260,4 +260,59 @@ public class BigDecimalTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
     }
+
+    public static class Order {
+        private BigDecimal price;
+        private BigDecimal taxRate;
+        private BigDecimal tax;
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+        public BigDecimal getTaxRate() {
+            return taxRate;
+        }
+        public void setTaxRate(BigDecimal taxRate) {
+            this.taxRate = taxRate;
+        }
+        public BigDecimal getTax() {
+            return tax;
+        }
+        public void setTax(BigDecimal tax) {
+            this.tax= tax;
+        }
+
+        public String toString() {
+            return this.getClass().getName() + "[" +
+                    "price=" + price + "," +
+                    "taxRate=" + taxRate + "," +
+                    "tax=" + tax + "]";
+        }
+    }
+
+    @Test
+    public void testNonTerminatingDecimalExpansion() {
+        // DROOLS-6804
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + Order.class.getCanonicalName() + ";\n" +
+                        "rule R1 dialect \"mvel\" when\n" +
+                        "    $o : Order( $taxRate : taxRate, $price : price )\n" +
+                        "then\n" +
+                        "    $o.setTax($price - ($price / ($taxRate + 1)));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Order order = new Order();
+        order.setPrice(new BigDecimal("100000000"));
+        order.setTaxRate(new BigDecimal("0.1"));
+        ksession.insert(order);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal("9090909.09090909090909090909090909"), order.getTax());
+    }
 }
