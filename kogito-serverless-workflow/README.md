@@ -115,11 +115,8 @@ functions like this:
   "functions": [
     {
       "name": "myFunction",
-      "metadata": {
-        "interface": "com.acme.MyInterfaceOrClass",
-        "operation": "myMethod",
-        "type": "service"
-      }
+      "type": "custom",
+      "operation": "service:java:com.acme.MyInterfaceOrClass::myMethod"
     }
   ]
 }
