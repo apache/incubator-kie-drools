@@ -29,7 +29,6 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.AbstractSolver;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -176,13 +175,12 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     }
 
     private void collectMetrics(AbstractStepScope<Solution_> stepScope) {
-        if (stepScope.getPhaseScope().getSolverScope().isMetricEnabled(SolverMetric.STEP_SCORE)
-                && stepScope.getScore().isSolutionInitialized()) {
-            ScoreDefinition<?> scoreDefinition = stepScope.getPhaseScope().getScoreDefinition();
+        SolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
+        if (solverScope.isMetricEnabled(SolverMetric.STEP_SCORE) && stepScope.getScore().isSolutionInitialized()) {
             SolverMetric.registerScoreMetrics(SolverMetric.STEP_SCORE,
-                    stepScope.getPhaseScope().getSolverScope().getMonitoringTags(),
-                    scoreDefinition,
-                    stepScope.getPhaseScope().getSolverScope().getStepScoreMap(),
+                    solverScope.getMonitoringTags(),
+                    solverScope.getScoreDefinition(),
+                    solverScope.getStepScoreMap(),
                     stepScope.getScore());
         }
     }

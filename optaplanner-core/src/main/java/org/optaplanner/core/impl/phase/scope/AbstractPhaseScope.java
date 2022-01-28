@@ -22,7 +22,6 @@ import java.util.Random;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
@@ -101,10 +100,6 @@ public abstract class AbstractPhaseScope<Solution_> {
 
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solverScope.getSolutionDescriptor();
-    }
-
-    public <Score_ extends Score<Score_>> ScoreDefinition<Score_> getScoreDefinition() {
-        return solverScope.getScoreDefinition();
     }
 
     public long calculateSolverTimeMillisSpentUpToNow() {

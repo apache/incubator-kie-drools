@@ -74,7 +74,6 @@ public class BestScoreTerminationTest {
         Termination<TestdataSolution> termination =
                 new BestScoreTermination<>(scoreDefinition, SimpleScore.of(-1000), new double[] {});
         AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getScoreDefinition()).thenReturn((ScoreDefinition) new SimpleScoreDefinition());
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
         when(phaseScope.getStartingScore()).thenReturn(SimpleScore.of(-1100));
 

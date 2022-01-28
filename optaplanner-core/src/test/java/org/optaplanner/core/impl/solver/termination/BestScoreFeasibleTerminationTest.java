@@ -66,7 +66,6 @@ public class BestScoreFeasibleTerminationTest {
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
         Termination<TestdataSolution> termination = new BestScoreFeasibleTermination<>(scoreDefinition, new double[] {});
         AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getScoreDefinition()).thenReturn((ScoreDefinition) new HardSoftScoreDefinition());
         when(phaseScope.getStartingScore()).thenReturn(HardSoftScore.of(-100, -100));
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
 
