@@ -146,6 +146,54 @@
     </dependency>
 
   </dependencies>
+  
+  <profiles>
+    <profile>
+      <!-- prepare for JDK17 -->
+      <id>add-jdk17plus-dependencies</id>
+      <activation>
+        <jdk>[17,)</jdk>
+      </activation>
+      <dependencyManagement>
+        <dependencies>
+          <!-- the expected ones from default (non profile-specific from this pom.xml) -->
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-dmn-core</artifactId>
+            <classifier>tests</classifier>
+            <version>${project.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-dmn-validation-bootstrap</artifactId>
+            <optional>true</optional>
+            <version>${project.version}</version>
+          </dependency>
+          <!-- /end the expected ones from default -->
+          <!-- JDK17 compatibility: -->
+          <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.1</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>
