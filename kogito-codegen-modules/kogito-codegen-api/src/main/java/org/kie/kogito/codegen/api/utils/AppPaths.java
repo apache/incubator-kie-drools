@@ -39,12 +39,13 @@ public class AppPaths {
 
     private final boolean isJar;
     private final Path resourcesPath;
+    private final Path outputTarget;
 
-    public static AppPaths fromProjectDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "main");
+    public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "main", outputTarget);
     }
 
-    public static AppPaths fromQuarkus(Iterable<Path> paths, BuildTool bt) {
+    public static AppPaths fromQuarkus(Path outputTarget, Iterable<Path> paths, BuildTool bt) {
         Set<Path> projectPaths = new LinkedHashSet<>();
         Collection<Path> classesPaths = new ArrayList<>();
         boolean isJar = false;
@@ -69,17 +70,17 @@ public class AppPaths {
                     break;
             }
         }
-        return new AppPaths(projectPaths, classesPaths, isJar, bt, "main");
+        return new AppPaths(projectPaths, classesPaths, isJar, bt, "main", outputTarget);
     }
 
     /**
      * Builder to be used only for tests, where <b>all</b> resources must be present in "src/test/resources" directory
-     * 
+     *
      * @param projectDir
      * @return
      */
     public static AppPaths fromTestDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "test");
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "test", Paths.get(projectDir.toString(), TARGET_DIR));
     }
 
     private static PathType getPathType(Path archiveLocation) {
@@ -113,10 +114,11 @@ public class AppPaths {
      * @param resourcesBasePath "main" or "test"
      */
     private AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
-            String resourcesBasePath) {
+            String resourcesBasePath, Path outputTarget) {
         this.isJar = isJar;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
+        this.outputTarget = outputTarget;
         if (bt == BuildTool.GRADLE) {
             resourcesPath = Paths.get(""); // no prefix required
         } else {
@@ -134,18 +136,6 @@ public class AppPaths {
 
     public Path getFirstProjectPath() {
         return projectPaths.iterator().next();
-    }
-
-    public boolean hasProjectPaths() {
-        return !this.projectPaths.isEmpty();
-    }
-
-    public Path getFirstClassesPath() {
-        return classesPaths.iterator().next();
-    }
-
-    public boolean hasClassesPaths() {
-        return !this.classesPaths.isEmpty();
     }
 
     private Path[] getJarPaths() {
@@ -167,12 +157,12 @@ public class AppPaths {
         return transformPaths(projectPaths, p -> p.resolve("src"));
     }
 
-    public Collection<Path> getProjectPaths() {
-        return Collections.unmodifiableCollection(projectPaths);
-    }
-
     public Collection<Path> getClassesPaths() {
         return Collections.unmodifiableCollection(classesPaths);
+    }
+
+    public Path getOutputTarget() {
+        return outputTarget;
     }
 
     private Path[] transformPaths(Collection<Path> paths, UnaryOperator<Path> f) {

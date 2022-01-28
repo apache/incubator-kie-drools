@@ -51,6 +51,7 @@ import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
+import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
@@ -78,11 +79,17 @@ public class KogitoAssetsProcessor {
     CurateOutcomeBuildItem curateOutcomeBuildItem;
     @Inject
     CombinedIndexBuildItem combinedIndexBuildItem;
+    @Inject
+    OutputTargetBuildItem outputTargetBuildItem;
 
     @BuildStep
     public KogitoBuildContextBuildItem generateKogitoBuildContext() {
         // configure the application generator
-        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex(), curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
+        KogitoBuildContext context =
+                kogitoBuildContext(outputTargetBuildItem.getOutputDirectory(),
+                        root.getPaths(),
+                        combinedIndexBuildItem.getIndex(),
+                        curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
         return new KogitoBuildContextBuildItem(context);
     }
 

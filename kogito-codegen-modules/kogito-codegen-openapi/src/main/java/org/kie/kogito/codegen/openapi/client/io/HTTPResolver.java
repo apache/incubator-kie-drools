@@ -17,10 +17,10 @@ package org.kie.kogito.codegen.openapi.client.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URL;
 
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.openapi.client.OpenApiClientException;
 import org.kie.kogito.codegen.openapi.client.OpenApiSpecDescriptor;
 import org.kie.kogito.codegen.openapi.client.OpenApiUtils;
 
@@ -43,7 +43,7 @@ public class HTTPResolver extends AbstractPathResolver {
                 return this.saveFileToTempLocation(resource, is);
             }
         } catch (IOException e) {
-            throw new OpenApiClientException("Fail to resolve remote file: " + resource.getURI().toString(), e);
+            throw new UncheckedIOException("Fail to resolve remote file: " + resource.getURI().toString(), e);
         }
     }
 }

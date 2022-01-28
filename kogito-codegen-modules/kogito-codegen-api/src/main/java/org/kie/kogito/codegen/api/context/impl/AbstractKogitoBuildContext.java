@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.api.context.impl;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -220,7 +221,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         protected Predicate<String> classAvailabilityResolver = this::hasClass;
         // default fallback value (usually overridden)
-        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath());
+        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath(), Path.of(".", AppPaths.TARGET_DIR));
         protected KogitoGAV gav;
 
         protected AbstractBuilder() {

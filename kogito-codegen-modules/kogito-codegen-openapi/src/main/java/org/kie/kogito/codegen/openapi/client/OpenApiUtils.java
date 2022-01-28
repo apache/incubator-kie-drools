@@ -15,11 +15,7 @@
  */
 package org.kie.kogito.codegen.openapi.client;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.utils.AppPaths;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,17 +24,11 @@ public final class OpenApiUtils {
     private OpenApiUtils() {
     }
 
-    public static String getEndUserTargetDir(final KogitoBuildContext context) {
-        if (context.getAppPaths().hasClassesPaths()) {
-            final Path classesPath = context.getAppPaths().getFirstClassesPath();
-            if (classesPath.endsWith(Paths.get(AppPaths.TARGET_DIR))) {
-                return classesPath.toString();
-            }
-        }
-        if (context.getAppPaths().hasProjectPaths()) {
-            return context.getAppPaths().getFirstProjectPath().resolve(AppPaths.TARGET_DIR).toString();
-        }
-        throw new IllegalStateException("No valid paths found in the current application path: " + context.getAppPaths());
+    /**
+     * Abstraction of the user's project temporary location
+     */
+    public static String getTempDirLocation(KogitoBuildContext context) {
+        return context.getAppPaths().getOutputTarget().toString();
     }
 
     public static void requireValidSpecURI(final OpenApiSpecDescriptor resource) {

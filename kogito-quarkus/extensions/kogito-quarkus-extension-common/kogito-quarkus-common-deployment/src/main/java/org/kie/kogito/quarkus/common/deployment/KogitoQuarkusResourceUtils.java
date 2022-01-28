@@ -76,7 +76,7 @@ public class KogitoQuarkusResourceUtils {
                     System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito/"),
                     "target/generated-sources/kogito/");
 
-    public static KogitoBuildContext kogitoBuildContext(Iterable<Path> paths, IndexView index, Dependency appArtifact) {
+    public static KogitoBuildContext kogitoBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index, Dependency appArtifact) {
         // scan and parse paths
         AppPaths.BuildTool buildTool;
         if (System.getProperty("org.gradle.appname") == null) {
@@ -84,7 +84,7 @@ public class KogitoQuarkusResourceUtils {
         } else {
             buildTool = AppPaths.BuildTool.GRADLE;
         }
-        AppPaths appPaths = AppPaths.fromQuarkus(paths, buildTool);
+        AppPaths appPaths = AppPaths.fromQuarkus(outputTarget, paths, buildTool);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
                 .withApplicationPropertyProvider(new KogitoQuarkusApplicationPropertiesProvider())

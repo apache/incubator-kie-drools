@@ -17,10 +17,6 @@ package org.kie.kogito.codegen.openapi.client;
 
 public class OpenApiClientException extends RuntimeException {
 
-    public OpenApiClientException(Throwable cause) {
-        super(cause);
-    }
-
     public OpenApiClientException(String s, Throwable e) {
         super(s, e);
     }
