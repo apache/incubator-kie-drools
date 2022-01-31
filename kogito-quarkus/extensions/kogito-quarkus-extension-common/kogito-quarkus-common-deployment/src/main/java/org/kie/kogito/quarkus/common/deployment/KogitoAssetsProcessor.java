@@ -37,6 +37,10 @@ import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
+import org.kie.kogito.incubation.common.EmptyDataContext;
+import org.kie.kogito.incubation.common.EmptyMetaDataContext;
+import org.kie.kogito.incubation.common.ExtendedDataContext;
+import org.kie.kogito.incubation.common.MapDataContext;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.Capabilities;
@@ -140,6 +144,7 @@ public class KogitoAssetsProcessor {
                 liveReload.isLiveReload());
 
         registerDataEventsForReflection(optionalIndex.map(KogitoGeneratedClassesBuildItem::getIndexedClasses), context, reflectiveClass);
+        registerKogitoIncubationAPI(reflectiveClass);
 
         registerResources(generatedFiles, staticResProducer, resource, genResBI);
 
@@ -211,6 +216,17 @@ public class KogitoAssetsProcessor {
                 .filter(b -> restResourceClassNameSet.contains(b.getName()))
                 .forEach(b -> jaxrsProducer.produce(new GeneratedJaxRsResourceBuildItem(b.getName(), b.getData())));
         return Optional.of(indexBuildItems(context, generatedBeanBuildItems));
+    }
+
+    private void registerKogitoIncubationAPI(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, EmptyDataContext.class.getCanonicalName()));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, EmptyMetaDataContext.class.getCanonicalName()));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, ExtendedDataContext.class.getCanonicalName()));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, MapDataContext.class.getCanonicalName()));
     }
 
     private void registerDataEventsForReflection(Optional<IndexView> optionalIndex, KogitoBuildContext context, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
