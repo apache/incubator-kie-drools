@@ -1129,7 +1129,7 @@
       "name":"javax.xml.namespace.QName"
     },
     {
-      "name":"org.kie.kogito.dmn.rest.KogitoDMNResult",
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
@@ -1138,7 +1138,7 @@
       "allPublicFields" : true
     },
     {
-      "name":"org.kie.kogito.dmn.rest.KogitoDMNDecisionResult",
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.JITDMNDecisionResult",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
@@ -1147,7 +1147,7 @@
       "allPublicFields" : true
     },
     {
-      "name":"org.kie.kogito.dmn.rest.KogitoDMNMessage",
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,

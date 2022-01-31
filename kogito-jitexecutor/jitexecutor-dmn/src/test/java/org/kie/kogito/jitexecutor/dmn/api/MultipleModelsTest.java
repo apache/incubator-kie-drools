@@ -24,19 +24,34 @@ import java.util.Map;
 import org.drools.core.util.IoUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.kogito.jitexecutor.dmn.requests.JITDMNPayload;
 import org.kie.kogito.jitexecutor.dmn.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.dmn.requests.ResourceWithURI;
+import org.kie.kogito.jitexecutor.dmn.responses.JITDMNDecisionResult;
+import org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage;
+import org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 public class MultipleModelsTest {
@@ -54,6 +69,21 @@ public class MultipleModelsTest {
     private static final String CH11URI2 = "/multiple/Financial.dmn";
     private static ResourceWithURI ch11model1;
     private static ResourceWithURI ch11model2;
+
+    private static final ObjectMapper MAPPER;
+    static {
+        final var jitModule = new SimpleModule().addAbstractTypeMapping(DMNResult.class, JITDMNResult.class)
+                .addAbstractTypeMapping(DMNDecisionResult.class, JITDMNDecisionResult.class)
+                .addAbstractTypeMapping(DMNMessage.class, JITDMNMessage.class);
+
+        MAPPER = new ObjectMapper()
+                .registerModule(new Jdk8Module())
+                .registerModule(jitModule);
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+    private static final CollectionType LIST_OF_MSGS = MAPPER.getTypeFactory()
+            .constructCollectionType(List.class,
+                    JITDMNMessage.class);
 
     @BeforeAll
     public static void setup() throws IOException {
@@ -128,6 +158,9 @@ public class MultipleModelsTest {
                 .extract()
                 .asString();
         LOG.info("Validate response: {}", response);
+        List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
+        assertEquals(1, messages.size());
+        assertThat(messages.get(0)).hasFieldOrPropertyWithValue("path", URI1);
     }
 
     @Test
@@ -184,4 +217,28 @@ public class MultipleModelsTest {
         context.put("Supporting documents", null);
         return context;
     }
+
+    @Test
+    public void testjitdmnResultEndpointCH11_withErrors() throws Exception {
+        Map<String, Object> context = new HashMap<>(); // will omit `Applicant data` intentionally.
+        context.put("Bureau data", Map.of("Bankrupt", false,
+                "CreditScore", 600));
+        context.put("Requested product", Map.of("ProductType", "STANDARD LOAN",
+                "Rate", 0.08d,
+                "Term", 36,
+                "Amount", 100_00));
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(CH11URI1, List.of(ch11model1, ch11model2), context);
+        String response = given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn/dmnresult")
+                .then()
+                .statusCode(200)
+                .body("dmnContext.'Required monthly installment'", notNullValue())
+                .extract()
+                .asString();
+        JITDMNResult result = MAPPER.readValue(response, JITDMNResult.class);
+        assertThat(result.getMessages()).isNotEmpty().allMatch(m -> m.getPath().equals(CH11URI1));
+    }
+
 }

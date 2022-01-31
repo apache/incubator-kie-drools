@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.core.util.IoUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessageType;
-import org.kie.kogito.dmn.rest.KogitoDMNMessage;
+import org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class ValidatorResourceTest {
     }
     private static final CollectionType LIST_OF_MSGS = MAPPER.getTypeFactory()
             .constructCollectionType(List.class,
-                    KogitoDMNMessage.class);
+                    JITDMNMessage.class);
 
     @Test
     public void test() throws IOException {
@@ -65,7 +65,7 @@ public class ValidatorResourceTest {
                 .asString();
 
         LOG.info("Validate response: {}", response);
-        List<KogitoDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
+        List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertEquals(1, messages.size());
         assertTrue(messages.stream().anyMatch(m -> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
                 m.getMessage().equals("Decision Table Analysis of table 'Preapproval' finished with no messages to be reported.")));
@@ -86,7 +86,7 @@ public class ValidatorResourceTest {
                 .asString();
 
         LOG.info("Validate response: {}", response);
-        List<KogitoDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
+        List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertTrue(messages.size() > 0);
         assertTrue(messages.stream().anyMatch(m -> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
                 m.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)));
