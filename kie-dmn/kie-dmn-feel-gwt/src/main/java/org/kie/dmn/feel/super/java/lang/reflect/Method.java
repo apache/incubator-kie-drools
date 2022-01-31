@@ -76,4 +76,8 @@ public class Method {
     public Parameter[] getParameters() {
         return new Parameter[0];
     }
+
+    public void setAccessible(boolean flag) {
+
+    }
 }
