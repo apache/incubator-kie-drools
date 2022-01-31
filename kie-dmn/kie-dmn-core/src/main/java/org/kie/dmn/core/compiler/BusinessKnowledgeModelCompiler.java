@@ -64,6 +64,36 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
                 fnType = type;
                 type = ((SimpleFnTypeImpl) type).getReturnType();
             }
+            // consistency checks
+            if (bkm.getEncapsulatedLogic() != null && bkm.getEncapsulatedLogic().getTypeRef() != null) {
+                DMNType bkmELType = compiler.resolveTypeRef(model, bkm, bkm.getEncapsulatedLogic(), bkm.getEncapsulatedLogic().getTypeRef());
+                if (!areSameDMNType(fnType != null ? fnType : type, bkmELType)) {
+                    MsgUtil.reportMessage( LOG,
+                            DMNMessage.Severity.WARN,
+                            bkm.getEncapsulatedLogic(),
+                            model,
+                            null,
+                            null,
+                            Msg.VARIABLE_TYPE_MISMATCH_FOR_BKM_EL,
+                            bkm.getEncapsulatedLogic().getTypeRef(),
+                            bkm.getVariable().getTypeRef() );
+                }
+            }
+            if (fnType == null && bkm.getEncapsulatedLogic() != null && bkm.getEncapsulatedLogic().getExpression() != null && bkm.getEncapsulatedLogic().getExpression().getTypeRef() != null) {
+                // if fnType != null, this is already taken care of DROOLS-6488 in method checkFnConsistency, further below.
+                DMNType elExprType = compiler.resolveTypeRef(model, bkm, bkm.getEncapsulatedLogic().getExpression(), bkm.getEncapsulatedLogic().getExpression().getTypeRef());
+                if (!areSameDMNType(type, elExprType)) {
+                    MsgUtil.reportMessage( LOG,
+                            DMNMessage.Severity.WARN,
+                            bkm.getEncapsulatedLogic(),
+                            model,
+                            null,
+                            null,
+                            Msg.VARIABLE_TYPE_MISMATCH_FOR_BKM_EL_BODY,
+                            bkm.getEncapsulatedLogic().getExpression().getTypeRef(),
+                            type.getName() );
+                }
+            }
         } else if (bkm.getVariable().getTypeRef() == null && bkm.getEncapsulatedLogic().getExpression() != null && bkm.getEncapsulatedLogic().getExpression().getTypeRef() != null) {
             type = compiler.resolveTypeRef(model, bkm, bkm.getEncapsulatedLogic().getExpression(), bkm.getEncapsulatedLogic().getExpression().getTypeRef());
         } else {
@@ -73,6 +103,9 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
         bkmn.setType(fnType);
         bkmn.setResultType( type );
         model.addBusinessKnowledgeModel( bkmn );
+    }
+    private static boolean areSameDMNType(DMNType type, DMNType bkmELType) {
+        return type.getName().equals(bkmELType.getName()) && type.getNamespace().equals(bkmELType.getNamespace());
     }
     @Override
     public boolean accept(DMNNode node) {
