@@ -78,6 +78,7 @@ import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -1246,8 +1247,20 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(messages.size(), is(1));
 
         final List<String> sourceIDs = messages.stream().map(DMNMessage::getSourceId).collect(Collectors.toList());
+        // notice the other BKM in the DMN model is a LiteralExpression, would have failed only at runtime accordingly as expected:
         // FEEL FuncDefNode not checked at compile time: assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34320") );
         assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34321" ) );
+        assertThat(messages).anyMatch(m -> m.getText().contains("java.lang.Mathhh"));
+    }
+    
+    @Test
+    public void testJavaFunctionContext_withErrorsInParamType() {
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("java_function_context_with_errors_in_param_type.dmn", this.getClass());
+        assertThat(messages.size(), is(1));
+
+        final List<String> sourceIDs = messages.stream().map(DMNMessage::getSourceId).collect(Collectors.toList());
+        assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34321" ) );
+        assertThat(messages).anyMatch(m -> m.getText().contains("max(int,int)") && m.getText().contains("max(long,long)"));
     }
 
     @Test
