@@ -16,10 +16,8 @@
 package org.optaplanner.core.impl.domain.lookup;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +45,10 @@ public class LookUpManagerTest {
         TestdataObjectIntegerId o = new TestdataObjectIntegerId(0);
         TestdataObjectIntegerId p = new TestdataObjectIntegerId(1);
         // The objects should be added during the reset
-        lookUpManager.resetWorkingObjects(Arrays.asList(o, p));
+        lookUpManager.reset();
+        for (Object fact : Arrays.asList(o, p)) {
+            lookUpManager.addWorkingObject(fact);
+        }
         // So it's possible to look up and remove them
         assertThat(lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(0))).isSameAs(o);
         assertThat(lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1))).isSameAs(p);
@@ -55,12 +56,4 @@ public class LookUpManagerTest {
         lookUpManager.removeWorkingObject(p);
     }
 
-    @Test
-    public void clearWorkingObjects() {
-        lookUpManager.resetWorkingObjects(Collections.emptyList());
-        lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0));
-        lookUpManager.clearWorkingObjects();
-        assertThatNullPointerException()
-                .isThrownBy(() -> lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0)));
-    }
 }

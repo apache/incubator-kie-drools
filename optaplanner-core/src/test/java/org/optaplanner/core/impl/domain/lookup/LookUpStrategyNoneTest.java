@@ -17,8 +17,6 @@ package org.optaplanner.core.impl.domain.lookup;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
@@ -35,7 +33,6 @@ public class LookUpStrategyNoneTest {
     @BeforeEach
     public void setUpLookUpManager() {
         lookUpManager = new LookUpManager(new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.NONE));
-        lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 
     @Test

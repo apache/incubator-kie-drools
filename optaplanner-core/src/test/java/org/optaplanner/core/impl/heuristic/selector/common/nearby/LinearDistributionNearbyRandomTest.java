@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class LinearDistributionNearbyRandomTest {
 

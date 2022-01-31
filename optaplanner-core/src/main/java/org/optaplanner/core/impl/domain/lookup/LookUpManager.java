@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.lookup;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,13 +34,11 @@ public class LookUpManager {
 
     public LookUpManager(LookUpStrategyResolver lookUpStrategyResolver) {
         this.lookUpStrategyResolver = lookUpStrategyResolver;
+        reset();
     }
 
-    public void resetWorkingObjects(Collection<Object> allFacts) {
-        idToWorkingObjectMap = new HashMap<>(allFacts.size());
-        for (Object fact : allFacts) {
-            addWorkingObject(fact);
-        }
+    public void reset() {
+        idToWorkingObjectMap = new HashMap<>();
     }
 
     public void addWorkingObject(Object workingObject) {
@@ -52,10 +49,6 @@ public class LookUpManager {
     public void removeWorkingObject(Object workingObject) {
         LookUpStrategy lookUpStrategy = lookUpStrategyResolver.determineLookUpStrategy(workingObject);
         lookUpStrategy.removeWorkingObject(idToWorkingObjectMap, workingObject);
-    }
-
-    public void clearWorkingObjects() {
-        idToWorkingObjectMap = null;
     }
 
     /**

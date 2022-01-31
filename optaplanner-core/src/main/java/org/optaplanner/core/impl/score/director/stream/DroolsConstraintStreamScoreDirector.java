@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
@@ -78,10 +77,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
         session = sessionDescriptor.getSession();
         agendaFilter = sessionDescriptor.getAgendaFilter();
         scoreInliner = sessionDescriptor.getScoreInliner();
-        Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
-        for (Object fact : workingFacts) {
-            session.insert(fact);
-        }
+        getSolutionDescriptor().visitAllFacts(workingSolution, session::insert);
     }
 
     @Override

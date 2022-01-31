@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.core.impl.testutil;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

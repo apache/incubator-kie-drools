@@ -36,7 +36,6 @@ import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +86,6 @@ public class LookUpStrategyImmutableTest {
     public void setUpLookUpManager() {
         lookUpManager = new LookUpManager(
                 new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
-        lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 
     @ParameterizedTest(name = "{index}: {0}")

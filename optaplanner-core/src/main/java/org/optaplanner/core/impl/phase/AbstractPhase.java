@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.phase;
 
-import java.util.Iterator;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
@@ -204,8 +202,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
             InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
             SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
             Solution_ workingSolution = scoreDirector.getWorkingSolution();
-            for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
-                Object entity = it.next();
+            solutionDescriptor.visitAllEntities(workingSolution, entity -> {
                 EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(
                         entity.getClass());
                 if (!entityDescriptor.isEntityInitializedOrPinned(scoreDirector, entity)) {
@@ -223,7 +220,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
                             + "Maybe there is no Construction Heuristic configured before this phase to initialize the solution.\n"
                             + "Or maybe the getter/setters of your planning variables in your domain classes aren't implemented correctly.");
                 }
-            }
+            });
         }
     }
 

@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class AcceptedLocalSearchForagerTest {
 

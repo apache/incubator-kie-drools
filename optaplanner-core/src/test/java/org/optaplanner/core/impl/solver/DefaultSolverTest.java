@@ -80,7 +80,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-import org.optaplanner.core.impl.util.TestMeterRegistry;
+import org.optaplanner.core.impl.testutil.TestMeterRegistry;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;

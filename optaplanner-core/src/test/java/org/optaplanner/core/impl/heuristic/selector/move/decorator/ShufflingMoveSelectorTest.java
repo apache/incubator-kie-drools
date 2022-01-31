@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class ShufflingMoveSelectorTest {
 

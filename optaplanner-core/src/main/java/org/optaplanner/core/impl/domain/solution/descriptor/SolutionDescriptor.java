@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
@@ -34,13 +33,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,7 +61,6 @@ import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.ConcurrentMemoization;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
@@ -79,6 +78,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.util.MutableInt;
+import org.optaplanner.core.impl.util.MutableLong;
 import org.optaplanner.core.impl.util.MutablePair;
 import org.optaplanner.core.impl.util.Pair;
 import org.slf4j.Logger;
@@ -90,6 +91,7 @@ import org.slf4j.LoggerFactory;
 public class SolutionDescriptor<Solution_> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SolutionDescriptor.class);
+    private static final EntityDescriptor<?> NULL_ENTITY_DESCRIPTOR = new EntityDescriptor<>(null, PlanningEntity.class);
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             Class<?>... entityClasses) {
@@ -108,10 +110,8 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(DomainAccessType domainAccessType,
-            Class<Solution_> solutionClass,
-            Map<String, MemberAccessor> memberAccessorMap,
-            Map<String, SolutionCloner> solutionClonerMap,
-            List<Class<?>> entityClassList) {
+            Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap,
+            Map<String, SolutionCloner> solutionClonerMap, List<Class<?>> entityClassList) {
         memberAccessorMap = Objects.requireNonNullElse(memberAccessorMap, Collections.emptyMap());
         solutionClonerMap = Objects.requireNonNullElse(solutionClonerMap, Collections.emptyMap());
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
@@ -160,18 +160,17 @@ public class SolutionDescriptor<Solution_> {
     private LookUpStrategyResolver lookUpStrategyResolver;
 
     private MemberAccessor constraintConfigurationMemberAccessor;
-    private final Map<String, MemberAccessor> problemFactMemberAccessorMap;
-    private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
-    private final Map<String, MemberAccessor> entityMemberAccessorMap;
-    private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap;
+    private final Map<String, MemberAccessor> problemFactMemberAccessorMap = new LinkedHashMap<>();
+    private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap = new LinkedHashMap<>();
+    private final Map<String, MemberAccessor> entityMemberAccessorMap = new LinkedHashMap<>();
+    private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap = new LinkedHashMap<>();
     private Set<Class<?>> problemFactOrEntityClassSet;
     private ScoreDescriptor scoreDescriptor;
 
     private ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor;
-    private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
-    private final List<Class<?>> reversedEntityClassList;
-    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorMemoization =
-            new ConcurrentMemoization<>();
+    private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap = new LinkedHashMap<>();
+    private final List<Class<?>> reversedEntityClassList = new ArrayList<>();
+    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorMap = new ConcurrentHashMap<>();
 
     private SolutionCloner<Solution_> solutionCloner;
     private boolean assertModelForCloning = false;
@@ -182,12 +181,6 @@ public class SolutionDescriptor<Solution_> {
 
     public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
-        problemFactMemberAccessorMap = new LinkedHashMap<>();
-        problemFactCollectionMemberAccessorMap = new LinkedHashMap<>();
-        entityMemberAccessorMap = new LinkedHashMap<>();
-        entityCollectionMemberAccessorMap = new LinkedHashMap<>();
-        entityDescriptorMap = new LinkedHashMap<>();
-        reversedEntityClassList = new ArrayList<>();
         if (solutionClass.getPackage() == null) {
             LOGGER.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
         }
@@ -204,7 +197,7 @@ public class SolutionDescriptor<Solution_> {
         }
         entityDescriptorMap.put(entityClass, entityDescriptor);
         reversedEntityClassList.add(0, entityClass);
-        lowestEntityDescriptorMemoization.put(entityClass, entityDescriptor);
+        lowestEntityDescriptorMap.put(entityClass, entityDescriptor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy,
@@ -530,7 +523,7 @@ public class SolutionDescriptor<Solution_> {
             problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream,
                     Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()));
         }
-        problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(toSet());
+        problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(Collectors.toSet());
         // And finally log the successful completion of processing.
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
@@ -740,15 +733,38 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public EntityDescriptor<Solution_> findEntityDescriptor(Class<?> entitySubclass) {
-        return lowestEntityDescriptorMemoization.computeIfAbsent(entitySubclass, key -> {
-            // Reverse order to find the nearest ancestor
-            for (Class<?> entityClass : reversedEntityClassList) {
-                if (entityClass.isAssignableFrom(entitySubclass)) {
-                    return entityDescriptorMap.get(entityClass);
-                }
-            }
+        /*
+         * A slightly optimized variant of map.computeIfAbsent(...).
+         * computeIfAbsent(...) would require the creation of a capturing lambda every time this method is called,
+         * which is created, executed once, and immediately thrown away.
+         * This is a micro-optimization, but it is valuable on the hot path.
+         */
+        EntityDescriptor<Solution_> cachedEntityDescriptor = lowestEntityDescriptorMap.get(entitySubclass);
+        if (cachedEntityDescriptor == NULL_ENTITY_DESCRIPTOR) { // Cache hit, no descriptor found.
             return null;
-        });
+        } else if (cachedEntityDescriptor != null) { // Cache hit, descriptor found.
+            return cachedEntityDescriptor;
+        }
+        // Cache miss, look for the descriptor.
+        EntityDescriptor<Solution_> newEntityDescriptor = innerFindEntityDescriptor(entitySubclass);
+        if (newEntityDescriptor == null) {
+            // Dummy entity descriptor value, as ConcurrentMap does not allow null values.
+            lowestEntityDescriptorMap.put(entitySubclass, (EntityDescriptor<Solution_>) NULL_ENTITY_DESCRIPTOR);
+            return null;
+        } else {
+            lowestEntityDescriptorMap.put(entitySubclass, newEntityDescriptor);
+            return newEntityDescriptor;
+        }
+    }
+
+    private EntityDescriptor<Solution_> innerFindEntityDescriptor(Class<?> entitySubclass) {
+        // Reverse order to find the nearest ancestor
+        for (Class<?> entityClass : reversedEntityClassList) {
+            if (entityClass.isAssignableFrom(entitySubclass)) {
+                return entityDescriptorMap.get(entityClass);
+            }
+        }
+        return null;
     }
 
     public GenuineVariableDescriptor<Solution_> findGenuineVariableDescriptor(Object entity, String variableName) {
@@ -866,20 +882,41 @@ public class SolutionDescriptor<Solution_> {
     // Extraction methods
     // ************************************************************************
 
+    public void visitAllFacts(Solution_ solution, Consumer<Object> visitor) {
+        // Visit entities.
+        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
+            Object entity = extractMemberObject(entityMemberAccessor, solution);
+            if (entity != null) {
+                visitor.accept(entity);
+            }
+        }
+        // Visits facts.
+        for (MemberAccessor accessor : problemFactMemberAccessorMap.values()) {
+            Object object = extractMemberObject(accessor, solution);
+            if (object != null) {
+                visitor.accept(object);
+            }
+        }
+        // Visit all entities from entity collections.
+        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
+                    false);
+            for (Object entity : entityCollection) {
+                visitor.accept(entity);
+            }
+        }
+        // Visits problem facts from problem fact collections.
+        for (MemberAccessor accessor : problemFactCollectionMemberAccessorMap.values()) {
+            Collection<Object> objects = extractMemberCollectionOrArray(accessor, solution, true);
+            for (Object object : objects) {
+                visitor.accept(object);
+            }
+        }
+    }
+
     public Collection<Object> getAllFacts(Solution_ solution) {
-        Collection<Object> facts = new ArrayList<>();
-        // Adds both entities and facts
-        Arrays.asList(entityMemberAccessorMap, problemFactMemberAccessorMap)
-                .forEach(map -> map.forEach((key, memberAccessor) -> {
-                    Object object = extractMemberObject(memberAccessor, solution);
-                    if (object != null) {
-                        facts.add(object);
-                    }
-                }));
-        entityCollectionMemberAccessorMap.forEach(
-                (key, memberAccessor) -> facts.addAll(extractMemberCollectionOrArray(memberAccessor, solution, false)));
-        problemFactCollectionMemberAccessorMap.forEach(
-                (key, memberAccessor) -> facts.addAll(extractMemberCollectionOrArray(memberAccessor, solution, true)));
+        List<Object> facts = new ArrayList<>();
+        visitAllFacts(solution, facts::add);
         return facts;
     }
 
@@ -888,35 +925,30 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public int getEntityCount(Solution_ solution) {
-        int entityCount = 0;
-        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
-            Object entity = extractMemberObject(entityMemberAccessor, solution);
-            if (entity != null) {
-                entityCount++;
-            }
-        }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
-                    false);
-            entityCount += entityCollection.size();
-        }
-        return entityCount;
+        MutableInt entityCount = new MutableInt();
+        visitAllEntities(solution,
+                fact -> entityCount.increment(),
+                collection -> entityCount.add(collection.size()));
+        return entityCount.intValue();
     }
 
-    public List<Object> getEntityList(Solution_ solution) {
-        List<Object> entityList = new ArrayList<>();
+    public void visitAllEntities(Solution_ solution, Consumer<Object> visitor) {
+        visitAllEntities(solution, visitor, collection -> collection.forEach(visitor));
+    }
+
+    private void visitAllEntities(Solution_ solution, Consumer<Object> visitor,
+            Consumer<Collection<Object>> collectionVisitor) {
         for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
             Object entity = extractMemberObject(entityMemberAccessor, solution);
             if (entity != null) {
-                entityList.add(entity);
+                visitor.accept(entity);
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
             Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
                     false);
-            entityList.addAll(entityCollection);
+            collectionVisitor.accept(entityCollection);
         }
-        return entityList;
     }
 
     public List<Object> getEntityListByEntityClass(Solution_ solution, Class<?> entityClass) {
@@ -956,9 +988,10 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public long getGenuineVariableCount(Solution_ solution) {
-        return extractAllEntitiesStream(solution)
-                .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).getGenuineVariableCount())
-                .sum();
+        MutableLong result = new MutableLong();
+        visitAllEntities(solution,
+                entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).getGenuineVariableCount()));
+        return result.longValue();
     }
 
     public long getMaximumValueCount(Solution_ solution) {
@@ -987,9 +1020,10 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public long getProblemScale(Solution_ solution) {
-        return extractAllEntitiesStream(solution)
-                .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).getProblemScale(solution, entity))
-                .sum();
+        MutableLong result = new MutableLong();
+        visitAllEntities(solution,
+                entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).getProblemScale(solution, entity)));
+        return result.longValue();
     }
 
     /**
@@ -1008,38 +1042,32 @@ public class SolutionDescriptor<Solution_> {
     }
 
     private int countUninitializedVariables(Solution_ solution) {
-        long count = extractAllEntitiesStream(solution)
-                .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity))
-                .sum();
-        // Score.initScore is an int
-        return Math.toIntExact(count);
+        MutableInt result = new MutableInt();
+        visitAllEntities(solution,
+                entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity)));
+        return result.intValue();
     }
 
     private int countUnassignedValues(Solution_ solution, ListVariableDescriptor<Solution_> variableDescriptor) {
         long totalValueCount = variableDescriptor.getValueCount(solution, null);
+        MutableInt assignedValuesCount = new MutableInt();
+        visitAllEntities(solution,
+                entity -> assignedValuesCount.add(variableDescriptor.getListSize(entity)));
         // TODO maybe detect duplicates and elements that are outside the value range
-        int assignedValuesCount = extractAllEntitiesStream(solution)
-                .mapToInt(variableDescriptor::getListSize)
-                .sum();
-        return Math.toIntExact(totalValueCount - assignedValuesCount);
+        return Math.toIntExact(totalValueCount - assignedValuesCount.intValue());
     }
 
-    public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {
-        return extractAllEntitiesStream(solution)
-                .iterator();
-    }
-
-    public Stream<Object> extractAllEntitiesStream(Solution_ solution) {
+    private Stream<Object> extractAllEntitiesStream(Solution_ solution) {
         Stream<Object> stream = Stream.empty();
         for (MemberAccessor memberAccessor : entityMemberAccessorMap.values()) {
             Object entity = extractMemberObject(memberAccessor, solution);
             if (entity != null) {
-                stream = Stream.concat(stream, Stream.of(entity));
+                stream = concat(stream, Stream.of(entity));
             }
         }
         for (MemberAccessor memberAccessor : entityCollectionMemberAccessorMap.values()) {
             Collection<Object> entityCollection = extractMemberCollectionOrArray(memberAccessor, solution, false);
-            stream = Stream.concat(stream, entityCollection.stream());
+            stream = concat(stream, entityCollection.stream());
         }
         return stream;
     }

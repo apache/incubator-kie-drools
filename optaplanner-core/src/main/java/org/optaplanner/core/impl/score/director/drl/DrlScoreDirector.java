@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.director.drl;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -78,10 +77,7 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener());
         resetScoreHolder();
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
-        Collection<Object> workingFacts = getWorkingFacts();
-        for (Object fact : workingFacts) {
-            kieSession.insert(fact);
-        }
+        getSolutionDescriptor().visitAllFacts(workingSolution, kieSession::insert);
     }
 
     private void resetScoreHolder() {
@@ -93,10 +89,6 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
                     scoreHolder.configureConstraintWeight(rule, constraintWeight);
                 });
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
-    }
-
-    public Collection<Object> getWorkingFacts() {
-        return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
     @Override

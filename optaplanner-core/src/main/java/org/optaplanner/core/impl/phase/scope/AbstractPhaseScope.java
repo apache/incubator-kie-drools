@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.phase.scope;
 
-import java.util.List;
 import java.util.Random;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -143,10 +142,6 @@ public abstract class AbstractPhaseScope<Solution_> {
 
     public int getWorkingEntityCount() {
         return solverScope.getWorkingEntityCount();
-    }
-
-    public List<Object> getWorkingEntityList() {
-        return solverScope.getWorkingEntityList();
     }
 
     public int getWorkingValueCount() {

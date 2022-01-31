@@ -21,7 +21,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllEle
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class IntValueRangeTest {
 

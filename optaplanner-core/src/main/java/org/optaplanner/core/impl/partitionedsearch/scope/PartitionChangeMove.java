@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.partitionedsearch.scope;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +53,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
                 changeMap.put(variableDescriptor, new ArrayList<>(entityCount));
             }
         }
-        for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
-            Object entity = it.next();
+        solutionDescriptor.visitAllEntities(workingSolution, entity -> {
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(
                     entity.getClass());
             if (entityDescriptor.isMovable(scoreDirector, entity)) {
@@ -65,7 +63,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
                     changeMap.get(variableDescriptor).add(Pair.of(entity, value));
                 }
             }
-        }
+        });
         return new PartitionChangeMove<>(changeMap, partIndex);
     }
 

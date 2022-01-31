@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -172,21 +171,6 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * @return never null, planning clone
      */
     Solution_ cloneSolution(Solution_ originalSolution);
-
-    /**
-     * @return {@code >= 0}
-     */
-    int getWorkingEntityCount();
-
-    /**
-     * @return never null: an empty list if there are none
-     */
-    List<Object> getWorkingEntityList();
-
-    /**
-     * @return {@code >= 0}
-     */
-    int getWorkingValueCount();
 
     /**
      * @return at least 0L

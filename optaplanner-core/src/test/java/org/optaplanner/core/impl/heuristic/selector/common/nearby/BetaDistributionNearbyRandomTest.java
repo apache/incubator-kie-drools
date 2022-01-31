@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class BetaDistributionNearbyRandomTest {
 

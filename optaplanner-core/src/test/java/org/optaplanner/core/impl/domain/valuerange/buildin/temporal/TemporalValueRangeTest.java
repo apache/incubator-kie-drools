@@ -35,7 +35,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class TemporalValueRangeTest {
 

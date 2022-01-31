@@ -149,15 +149,11 @@ public class SolverScope<Solution_> {
     }
 
     public int getWorkingEntityCount() {
-        return scoreDirector.getWorkingEntityCount();
-    }
-
-    public List<Object> getWorkingEntityList() {
-        return scoreDirector.getWorkingEntityList();
+        return getSolutionDescriptor().getEntityCount(getWorkingSolution());
     }
 
     public int getWorkingValueCount() {
-        return scoreDirector.getWorkingValueCount();
+        return getSolutionDescriptor().getValueCount(getWorkingSolution());
     }
 
     public Score calculateScore() {

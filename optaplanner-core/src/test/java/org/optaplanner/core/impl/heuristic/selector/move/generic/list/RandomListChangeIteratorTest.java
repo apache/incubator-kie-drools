@@ -32,8 +32,8 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.testutil.TestRandom;
 import org.optaplanner.core.impl.util.Pair;
-import org.optaplanner.core.impl.util.TestRandom;
 
 class RandomListChangeIteratorTest {
 

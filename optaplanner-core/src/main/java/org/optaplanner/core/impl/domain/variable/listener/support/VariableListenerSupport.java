@@ -27,8 +27,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -248,18 +246,19 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     public void triggerAllVariableListeners() {
-        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
-        List<Object> entityList = scoreDirector.getWorkingEntityList();
-        for (Object entity : entityList) {
-            EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-            for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
-                    .getGenuineVariableDescriptorList()) {
-                beforeVariableChanged(variableDescriptor, entity);
-                // No change
-                afterVariableChanged(variableDescriptor, entity);
-            }
-        }
+        scoreDirector.getSolutionDescriptor()
+                .visitAllEntities(scoreDirector.getWorkingSolution(), this::triggerAllVariableListeners);
         triggerVariableListenersInNotificationQueues();
+    }
+
+    private void triggerAllVariableListeners(Object entity) {
+        EntityDescriptor<Solution_> entityDescriptor = scoreDirector.getSolutionDescriptor()
+                .findEntityDescriptorOrFail(entity.getClass());
+        for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptorList()) {
+            beforeVariableChanged(variableDescriptor, entity);
+            // No change
+            afterVariableChanged(variableDescriptor, entity);
+        }
     }
 
     public void assertNotificationQueuesAreEmpty() {

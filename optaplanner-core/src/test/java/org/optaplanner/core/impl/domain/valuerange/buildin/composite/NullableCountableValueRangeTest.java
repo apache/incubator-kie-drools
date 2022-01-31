@@ -25,7 +25,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class NullableCountableValueRangeTest {
 

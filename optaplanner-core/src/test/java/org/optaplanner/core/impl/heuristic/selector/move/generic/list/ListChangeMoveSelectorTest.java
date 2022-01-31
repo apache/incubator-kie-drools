@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 class ListChangeMoveSelectorTest {
 

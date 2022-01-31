@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
-import org.optaplanner.core.impl.domain.common.ConcurrentMemoization;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.util.Pair;

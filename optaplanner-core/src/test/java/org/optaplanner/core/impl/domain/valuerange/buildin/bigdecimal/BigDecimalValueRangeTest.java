@@ -23,7 +23,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElemen
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.util.TestRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
 
 public class BigDecimalValueRangeTest {
 

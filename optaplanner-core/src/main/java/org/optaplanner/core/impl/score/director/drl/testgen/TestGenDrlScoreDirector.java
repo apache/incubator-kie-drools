@@ -76,7 +76,7 @@ public class TestGenDrlScoreDirector<Solution_, Score_ extends Score<Score_>>
     public void setWorkingSolution(Solution_ workingSolution) {
         super.setWorkingSolution(workingSolution);
         journal.dispose();
-        Collection<Object> workingFacts = getWorkingFacts();
+        Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         journal.addFacts(workingFacts);
         for (Object fact : workingFacts) {
             journal.insertInitial(fact);

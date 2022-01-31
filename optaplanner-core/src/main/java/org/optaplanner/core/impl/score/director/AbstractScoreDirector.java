@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -177,41 +176,43 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         this.workingSolution = requireNonNull(workingSolution);
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = -solutionDescriptor.countUninitialized(workingSolution);
-        Collection<Object> allFacts = solutionDescriptor.getAllFacts(workingSolution);
-        if (lookUpEnabled) {
-            lookUpManager.resetWorkingObjects(allFacts);
+        if (isLookUpEnabled()) {
+            lookUpManager.reset();
+            solutionDescriptor.visitAllFacts(workingSolution, c -> {
+                lookUpManager.addWorkingObject(c);
+                assertNonNullPlanningId(c);
+            });
+        } else {
+            solutionDescriptor.visitAllFacts(workingSolution, this::assertNonNullPlanningId);
         }
-        assertNonNullPlanningIds(allFacts);
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
     }
 
     @Override
     public void assertNonNullPlanningIds() {
-        assertNonNullPlanningIds(getSolutionDescriptor().getAllFacts(workingSolution));
+        getSolutionDescriptor().visitAllFacts(workingSolution, this::assertNonNullPlanningId);
     }
 
-    private void assertNonNullPlanningIds(Collection<Object> allFacts) {
-        for (Object fact : allFacts) {
-            Class factClass = fact.getClass();
-            // Cannot use Map.computeIfAbsent(), as we also want to cache null values.
-            if (!planningIdAccessorCacheMap.containsKey(factClass)) {
-                planningIdAccessorCacheMap.put(factClass,
-                        ConfigUtils.findPlanningIdMemberAccessor(factClass, getSolutionDescriptor().getDomainAccessType(),
-                                getSolutionDescriptor().getGeneratedMemberAccessorMap()));
-            }
-            MemberAccessor planningIdAccessor = planningIdAccessorCacheMap.get(factClass);
-            if (planningIdAccessor == null) { // There is no planning ID annotation.
-                continue;
-            }
-            Object id = planningIdAccessor.executeGetter(fact);
-            if (id == null) { // Fail fast as planning ID is null.
-                throw new IllegalStateException("The planningId (" + id + ") of the member (" + planningIdAccessor
-                        + ") of the class (" + factClass + ") on object (" + fact + ") must not be null.\n"
-                        + "Maybe initialize the planningId of the class (" + planningIdAccessor.getDeclaringClass()
-                        + ") instance (" + fact + ") before solving.\n" +
-                        "Maybe remove the @" + PlanningId.class.getSimpleName() + " annotation.");
-            }
+    private void assertNonNullPlanningId(Object fact) {
+        Class factClass = fact.getClass();
+        // Cannot use Map.computeIfAbsent(), as we also want to cache null values.
+        if (!planningIdAccessorCacheMap.containsKey(factClass)) {
+            planningIdAccessorCacheMap.put(factClass,
+                    ConfigUtils.findPlanningIdMemberAccessor(factClass, getSolutionDescriptor().getDomainAccessType(),
+                            getSolutionDescriptor().getGeneratedMemberAccessorMap()));
+        }
+        MemberAccessor planningIdAccessor = planningIdAccessorCacheMap.get(factClass);
+        if (planningIdAccessor == null) { // There is no planning ID annotation.
+            return;
+        }
+        Object id = planningIdAccessor.executeGetter(fact);
+        if (id == null) { // Fail fast as planning ID is null.
+            throw new IllegalStateException("The planningId (" + id + ") of the member (" + planningIdAccessor
+                    + ") of the class (" + factClass + ") on object (" + fact + ") must not be null.\n"
+                    + "Maybe initialize the planningId of the class (" + planningIdAccessor.getDeclaringClass()
+                    + ") instance (" + fact + ") before solving.\n" +
+                    "Maybe remove the @" + PlanningId.class.getSimpleName() + " annotation.");
         }
     }
 
@@ -264,12 +265,10 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                         + ") is different from the clone's score (" + cloneScore + ").\n"
                         + "Check the " + SolutionCloner.class.getSimpleName() + ".");
             }
-            List<Object> originalEntityList = solutionDescriptor.getEntityList(originalSolution);
-            Map<Object, Object> originalEntityMap = new IdentityHashMap<>(originalEntityList.size());
-            for (Object originalEntity : originalEntityList) {
-                originalEntityMap.put(originalEntity, null);
-            }
-            for (Object cloneEntity : solutionDescriptor.getEntityList(cloneSolution)) {
+            Map<Object, Object> originalEntityMap = new IdentityHashMap<>();
+            solutionDescriptor.visitAllEntities(originalSolution,
+                    originalEntity -> originalEntityMap.put(originalEntity, null));
+            solutionDescriptor.visitAllEntities(cloneSolution, cloneEntity -> {
                 if (originalEntityMap.containsKey(cloneEntity)) {
                     throw new IllegalStateException("Cloning corruption: "
                             + "the same entity (" + cloneEntity
@@ -278,24 +277,9 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                             + "the cloned solution will change too.\n"
                             + "Check the " + SolutionCloner.class.getSimpleName() + ".");
                 }
-            }
+            });
         }
         return cloneSolution;
-    }
-
-    @Override
-    public int getWorkingEntityCount() {
-        return getSolutionDescriptor().getEntityCount(workingSolution);
-    }
-
-    @Override
-    public List<Object> getWorkingEntityList() {
-        return getSolutionDescriptor().getEntityList(workingSolution);
-    }
-
-    @Override
-    public int getWorkingValueCount() {
-        return getSolutionDescriptor().getValueCount(workingSolution);
     }
 
     @Override
@@ -347,7 +331,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         workingSolution = null;
         workingInitScore = null;
         if (lookUpEnabled) {
-            lookUpManager.clearWorkingObjects();
+            lookUpManager.reset();
         }
         variableListenerSupport.clearWorkingSolution();
     }
@@ -579,8 +563,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 comparing(ShadowVariableDescriptor::getGlobalShadowOrder));
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         Map<Object, Map<ShadowVariableDescriptor<Solution_>, Object>> entityToShadowVariableValuesMap = new IdentityHashMap<>();
-        for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
-            Object entity = it.next();
+        solutionDescriptor.visitAllEntities(workingSolution, entity -> {
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor
                     .getShadowVariableDescriptors();
@@ -591,10 +574,9 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 shadowVariableValuesMap.put(shadowVariableDescriptor, value);
             }
             entityToShadowVariableValuesMap.put(entity, shadowVariableValuesMap);
-        }
+        });
         variableListenerSupport.triggerAllVariableListeners();
-        for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
-            Object entity = it.next();
+        solutionDescriptor.visitAllEntities(workingSolution, entity -> {
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor
                     .getShadowVariableDescriptors();
@@ -617,7 +599,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                             + ") forgot to update it when one of its sources changed.\n");
                 }
             }
-        }
+        });
         if (violationListMap.isEmpty()) {
             return null;
         }

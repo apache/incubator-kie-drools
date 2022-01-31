@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.common;
+package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -25,7 +25,7 @@ import java.util.function.Function;
  * @param <K> the parameter of the calculation
  * @param <V> the result of the calculation
  */
-public final class ConcurrentMemoization<K, V> extends ConcurrentHashMap<K, V> {
+final class ConcurrentMemoization<K, V> extends ConcurrentHashMap<K, V> {
 
     /**
      * An overridden implementation that heavily favors read access over write access speed.
@@ -35,8 +35,6 @@ public final class ConcurrentMemoization<K, V> extends ConcurrentHashMap<K, V> {
      */
     @Override
     public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
-        // This might look like a Double Checked Idiom (which is broken), but it is not
-        // because value is not a global variable
         V value = get(key);
         if (value != null) {
             return value;
