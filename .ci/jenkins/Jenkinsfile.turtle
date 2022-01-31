@@ -9,7 +9,7 @@ pipeline {
         label 'kie-rhel7 && kie-mem16g'
     }
     tools {
-        maven 'kie-maven-3.6.3'
+        maven 'kie-maven-3.8.1'
         jdk 'kie-jdk11'
     }
     options {
