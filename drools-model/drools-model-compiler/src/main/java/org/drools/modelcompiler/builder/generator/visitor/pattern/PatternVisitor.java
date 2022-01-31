@@ -18,18 +18,13 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
-import org.drools.drl.ast.descr.FromDescr;
-import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.compiler.rule.builder.XpathAnalysis;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import org.drools.modelcompiler.util.PatternUtil;

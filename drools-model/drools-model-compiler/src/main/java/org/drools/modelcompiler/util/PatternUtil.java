@@ -29,6 +29,8 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 
 public class PatternUtil {
 
+    private PatternUtil() {}
+
     public static PatternDescr normalizeOOPathPattern(PatternDescr pattern, RuleContext context) {
         String oopathExpr = pattern.getDescrs().get(0).getText();
         XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(oopathExpr);
