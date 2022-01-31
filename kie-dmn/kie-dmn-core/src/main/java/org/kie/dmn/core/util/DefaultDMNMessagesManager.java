@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -33,9 +34,11 @@ public class DefaultDMNMessagesManager
 
     // should we use a sorted set instead?
     private List<DMNMessage> messages;
+    private String path;
 
-    public DefaultDMNMessagesManager() {
+    public DefaultDMNMessagesManager(Resource resource) {
         this.messages = new ArrayList<>();
+        this.path = resource != null ? resource.getSourcePath() : null;
     }
 
     @Override
@@ -81,19 +84,19 @@ public class DefaultDMNMessagesManager
 
     @Override
     public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source );
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source ).withPath(path);
         return addMessage( msg );
     }
 
     @Override
     public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, Throwable exception) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, exception );
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, exception ).withPath(path);
         return addMessage( msg );
     }
 
     @Override
     public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, FEELEvent feelEvent) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, feelEvent );
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, feelEvent ).withPath(path);
         return addMessage( msg );
     }
 

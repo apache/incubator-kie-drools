@@ -40,7 +40,7 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
 
     public DMNResultImpl(DMNModel model) {
         this.model = model;
-        messages = new DefaultDMNMessagesManager();
+        messages = new DefaultDMNMessagesManager(model != null ? model.getResource() : null);
         decisionResults = new HashMap<>(  );
     }
 
