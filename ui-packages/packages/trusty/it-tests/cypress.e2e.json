@@ -6,5 +6,10 @@
   "videosFolder": "videos",
   "supportFile": "support/index.ts",
   "baseUrl": "http://localhost:1338",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "target/surefire-reports/TEST-e2e-[hash].xml",
+    "toConsole": false
+  }
 }
