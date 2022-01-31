@@ -387,21 +387,52 @@ public class ConfigUtils {
         return annotationClass;
     }
 
-    public static Class<?> extractCollectionGenericTypeParameter(
+    public static Class<?> extractCollectionGenericTypeParameterStrictly(
             String parentClassConcept, Class<?> parentClass,
             Class<?> type, Type genericType,
             Class<? extends Annotation> annotationClass, String memberName) {
+        return extractCollectionGenericTypeParameter(
+                parentClassConcept, parentClass,
+                type, genericType,
+                annotationClass, memberName,
+                true);
+    }
+
+    public static Class<?> extractCollectionGenericTypeParameterLeniently(
+            String parentClassConcept, Class<?> parentClass,
+            Class<?> type, Type genericType,
+            Class<? extends Annotation> annotationClass, String memberName) {
+        return extractCollectionGenericTypeParameter(
+                parentClassConcept, parentClass,
+                type, genericType,
+                annotationClass, memberName,
+                false);
+    }
+
+    private static Class<?> extractCollectionGenericTypeParameter(
+            String parentClassConcept, Class<?> parentClass,
+            Class<?> type, Type genericType,
+            Class<? extends Annotation> annotationClass, String memberName, boolean strict) {
         if (!(genericType instanceof ParameterizedType)) {
-            return Object.class;
+            if (strict) {
+                throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                        + (annotationClass == null ? "auto discovered" : "@" + annotationClass.getSimpleName() + " annotated")
+                        + " member (" + memberName
+                        + ") with a member type (" + type
+                        + ") which has no generic parameters.\n"
+                        + "Maybe the member (" + memberName + ") should return a parameterized " + type.getSimpleName() + ".");
+            } else {
+                return Object.class;
+            }
         }
         ParameterizedType parameterizedType = (ParameterizedType) genericType;
         Type[] typeArguments = parameterizedType.getActualTypeArguments();
         if (typeArguments.length != 1) {
             throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
-                    + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
+                    + (annotationClass == null ? "auto discovered" : "@" + annotationClass.getSimpleName() + " annotated")
                     + " member (" + memberName
                     + ") with a member type (" + type
-                    + ") which is parameterized collection with an unsupported number of generic parameters ("
+                    + ") which is a parameterized collection with an unsupported number of generic parameters ("
                     + typeArguments.length + ").");
         }
         Type typeArgument = typeArguments[0];
@@ -415,10 +446,10 @@ public class ConfigUtils {
                 // Multiple upper bounds is impossible in traditional Java
                 // Other JVM languages or future java versions might enabling triggering this
                 throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
-                        + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
+                        + (annotationClass == null ? "auto discovered" : "@" + annotationClass.getSimpleName() + " annotated")
                         + " member (" + memberName
                         + ") with a member type (" + type
-                        + ") which is parameterized collection with a wildcard type argument ("
+                        + ") which is a parameterized collection with a wildcard type argument ("
                         + typeArgument + ") that has multiple upper bounds (" + Arrays.toString(upperBounds) + ").\n"
                         + "Maybe don't use wildcards with multiple upper bounds for the member (" + memberName + ").");
             }
@@ -428,10 +459,18 @@ public class ConfigUtils {
                 typeArgument = upperBounds[0];
             }
         }
-        if (!(typeArgument instanceof Class)) { // Turns SomeGenericType<T> into SomeGenericType.
-            return (Class) ((ParameterizedType) typeArgument).getRawType();
+        if (typeArgument instanceof Class) {
+            return ((Class<?>) typeArgument);
+        } else if (typeArgument instanceof ParameterizedType) {
+            // Turns SomeGenericType<T> into SomeGenericType.
+            return (Class<?>) ((ParameterizedType) typeArgument).getRawType();
         } else {
-            return ((Class) typeArgument);
+            throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                    + (annotationClass == null ? "auto discovered" : "@" + annotationClass.getSimpleName() + " annotated")
+                    + " member (" + memberName
+                    + ") with a member type (" + type
+                    + ") which is a parameterized collection with a type argument (" + typeArgument
+                    + ") that is not a class or interface.");
         }
     }
 

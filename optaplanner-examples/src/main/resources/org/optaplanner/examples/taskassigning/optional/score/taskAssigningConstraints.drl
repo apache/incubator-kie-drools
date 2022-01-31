@@ -54,7 +54,7 @@ end
 
 rule "Minimze makespan (starting with the latest ending employee first)"
     when
-        Task(employee != null, nextTask == null, $endTime : endTime)
+        Employee(tasks != null, $endTime : endTime)
     then
         // Fairness and load balancing trick (see docs): squared to assure correctness in corner cases
         scoreHolder.addSoftConstraintMatch(kcontext, 1, - ($endTime * $endTime));

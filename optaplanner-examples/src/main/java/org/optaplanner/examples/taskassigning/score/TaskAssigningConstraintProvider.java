@@ -21,6 +21,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Priority;
 import org.optaplanner.examples.taskassigning.domain.Task;
 
@@ -46,7 +47,7 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
 
     private UniConstraintStream<Task> getTaskWithPriority(ConstraintFactory constraintFactory, Priority priority) {
         return constraintFactory.forEach(Task.class)
-                .filter(task -> task.getPriority() == priority);
+                .filter(task -> task.getEmployee() != null && task.getPriority() == priority);
     }
 
     private Constraint noMissingSkills(ConstraintFactory constraintFactory) {
@@ -65,11 +66,10 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
     }
 
     private Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(Task.class)
-                .filter(task -> task.getNextTask() == null)
+        return constraintFactory.forEach(Employee.class)
                 .penalize("Minimize makespan, latest ending employee first",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 1, 1),
-                        task -> task.getEndTime() * task.getEndTime());
+                        employee -> employee.getEndTime() * employee.getEndTime());
     }
 
     private Constraint majorPriorityTaskEndTime(ConstraintFactory constraintFactory) {

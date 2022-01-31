@@ -1,0 +1,37 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.core.impl.domain.variable.index;
+
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
+import org.optaplanner.core.impl.domain.variable.supply.Supply;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+
+/**
+ * Only supported for {@link PlanningListVariable list variables}.
+ * <p>
+ * To get an instance, demand an {@link IndexVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
+ */
+public interface IndexVariableSupply extends Supply {
+
+    /**
+     * Get {@code planningValue}'s index in the {@link PlanningListVariable list variable} it is an element of.
+     *
+     * @param planningValue never null
+     * @return {@code planningValue}'s index in the list variable it is an element of or {@code null} if the value is unassigned
+     */
+    Integer getIndex(Object planningValue);
+}

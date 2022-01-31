@@ -182,6 +182,14 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                             + sourceEntityDescriptor.getEntityClass() + ").\n"
                             + sourceEntityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
                 }
+                if (sourceVariableDescriptor.isGenuineListVariable()) {
+                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                            + ") has a @" + CustomShadowVariable.class.getSimpleName()
+                            + " annotated property (" + variableMemberAccessor.getName()
+                            + ") with sourceVariableName (" + sourceVariableName
+                            + ") which is a list variable.\n"
+                            + "Custom shadow variables sourced on list variables are not yet supported.");
+                }
                 sourceVariableDescriptor.registerSinkVariableDescriptor(this);
                 sourceVariableDescriptorList.add(sourceVariableDescriptor);
             }

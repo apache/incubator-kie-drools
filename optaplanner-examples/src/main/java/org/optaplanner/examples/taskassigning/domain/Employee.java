@@ -16,22 +16,33 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@PlanningEntity
 @XStreamAlias("TaEmployee")
-public class Employee extends TaskOrEmployee implements Labeled {
+public class Employee extends AbstractPersistable implements Labeled {
 
     private String fullName;
 
     private Set<Skill> skillSet;
     private Map<Customer, Affinity> affinityMap;
+
+    @PlanningListVariable(valueRangeProviderRefs = "taskRange")
+    private List<Task> tasks;
+
+    // TODO pinning: https://issues.redhat.com/browse/PLANNER-2633.
 
     public Employee() {
     }
@@ -41,6 +52,7 @@ public class Employee extends TaskOrEmployee implements Labeled {
         this.fullName = fullName;
         skillSet = new LinkedHashSet<>();
         affinityMap = new LinkedHashMap<>();
+        tasks = new ArrayList<>();
     }
 
     public String getFullName() {
@@ -67,19 +79,17 @@ public class Employee extends TaskOrEmployee implements Labeled {
         this.affinityMap = affinityMap;
     }
 
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Employee getEmployee() {
-        return this;
-    }
-
-    @Override
-    public Integer getEndTime() {
-        return 0;
-    }
 
     /**
      * @param customer never null
@@ -91,6 +101,10 @@ public class Employee extends TaskOrEmployee implements Labeled {
             affinity = Affinity.NONE;
         }
         return affinity;
+    }
+
+    public Integer getEndTime() {
+        return tasks.isEmpty() ? 0 : tasks.get(tasks.size() - 1).getEndTime();
     }
 
     @Override

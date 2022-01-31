@@ -188,6 +188,10 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             // which includes all genuineVariableDescriptors
             List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                     entityDescriptor.getGenuineVariableDescriptorList();
+            if (entityDescriptor.hasAnyListGenuineVariables()) {
+                throw new IllegalArgumentException(
+                        "Exhaustive Search does not support list variables (" + variableDescriptorList + ").");
+            }
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptorList.size());
             for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();

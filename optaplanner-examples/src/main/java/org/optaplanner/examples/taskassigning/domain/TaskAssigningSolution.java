@@ -40,13 +40,12 @@ public class TaskAssigningSolution extends AbstractPersistable {
     private List<TaskType> taskTypeList;
     @ProblemFactCollectionProperty
     private List<Customer> customerList;
-    @ValueRangeProvider(id = "employeeRange")
+    @ValueRangeProvider(id = "taskRange")
     @ProblemFactCollectionProperty
-    private List<Employee> employeeList;
+    private List<Task> taskList;
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "taskRange")
-    private List<Task> taskList;
+    private List<Employee> employeeList;
 
     @XStreamConverter(BendableScoreXStreamConverter.class)
     @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 4)

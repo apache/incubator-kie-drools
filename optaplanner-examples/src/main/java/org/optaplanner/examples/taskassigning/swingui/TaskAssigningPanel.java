@@ -22,10 +22,12 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -92,6 +94,13 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
             }
         };
         consumePanel.add(new JToggleButton(consumeAction));
+        // FIXME remove this when https://issues.redhat.com/browse/PLANNER-2633 is done.
+        Arrays.stream(consumePanel.getComponents()).forEach(component -> {
+            component.setEnabled(false);
+            if (component instanceof JComponent) {
+                ((JComponent) component).setToolTipText("This feature is currently disabled.");
+            }
+        });
         headerPanel.add(consumePanel);
         JPanel producePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         producePanel.add(new JLabel("Produce rate:"));
@@ -132,18 +141,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         previousConsumedTime = consumedTime;
         doProblemChange((taskAssigningSolution, problemChangeDirector) -> {
             taskAssigningSolution.setFrozenCutoff(consumedTime);
-            for (Task task : taskAssigningSolution.getTaskList()) {
-                if (!task.isPinned()) {
-                    if (task.getStartTime() != null && task.getStartTime() < consumedTime) {
-                        problemChangeDirector.changeProblemProperty(task, workingTask -> workingTask.setPinned(true));
-                        logger.trace("Consumed task ({}).", task);
-                    } else if (task.getReadyTime() < consumedTime) {
-                        // Prevent a non-pinned task from being assigned retroactively
-                        problemChangeDirector.changeProblemProperty(task,
-                                workingTask -> workingTask.setReadyTime(consumedTime));
-                    }
-                }
-            }
+            // TODO update list variable pins: https://issues.redhat.com/browse/PLANNER-2633.
         });
     }
 

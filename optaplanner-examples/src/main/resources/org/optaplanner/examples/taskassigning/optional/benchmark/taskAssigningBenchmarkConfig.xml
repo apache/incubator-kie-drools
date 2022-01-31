@@ -7,7 +7,7 @@
   <inheritedSolverBenchmark>
     <solver>
       <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
-      <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
+      <entityClass>org.optaplanner.examples.taskassigning.domain.Employee</entityClass>
       <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
       <scoreDirectorFactory>
         <constraintProviderClass>org.optaplanner.examples.taskassigning.score.TaskAssigningConstraintProvider</constraintProviderClass>

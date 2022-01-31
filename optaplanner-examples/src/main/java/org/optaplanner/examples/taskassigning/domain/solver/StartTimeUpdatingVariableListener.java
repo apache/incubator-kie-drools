@@ -20,9 +20,9 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
-import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
 
 public class StartTimeUpdatingVariableListener implements VariableListener<TaskAssigningSolution, Task> {
 
@@ -56,23 +56,23 @@ public class StartTimeUpdatingVariableListener implements VariableListener<TaskA
         // Do nothing
     }
 
-    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Task sourceTask) {
-        TaskOrEmployee previous = sourceTask.getPreviousTaskOrEmployee();
-        Task shadowTask = sourceTask;
-        Integer previousEndTime = (previous == null ? null : previous.getEndTime());
-        Integer startTime = calculateStartTime(shadowTask, previousEndTime);
-        while (shadowTask != null && !Objects.equals(shadowTask.getStartTime(), startTime)) {
-            scoreDirector.beforeVariableChanged(shadowTask, "startTime");
-            shadowTask.setStartTime(startTime);
-            scoreDirector.afterVariableChanged(shadowTask, "startTime");
-            previousEndTime = shadowTask.getEndTime();
-            shadowTask = shadowTask.getNextTask();
-            startTime = calculateStartTime(shadowTask, previousEndTime);
+    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+        Integer startTime = calculateStartTime(task);
+        if (!Objects.equals(task.getStartTime(), startTime)) {
+            scoreDirector.beforeVariableChanged(task, "startTime");
+            task.setStartTime(startTime);
+            scoreDirector.afterVariableChanged(task, "startTime");
         }
     }
 
-    private Integer calculateStartTime(Task task, Integer previousEndTime) {
-        if (task == null || previousEndTime == null) {
+    private Integer calculateStartTime(Task task) {
+        Employee employee = task.getEmployee();
+        if (employee == null) {
+            return null;
+        }
+        Integer index = task.getIndex();
+        Integer previousEndTime = index == 0 ? Integer.valueOf(0) : employee.getTasks().get(index - 1).getEndTime();
+        if (previousEndTime == null) {
             return null;
         }
         return Math.max(task.getReadyTime(), previousEndTime);

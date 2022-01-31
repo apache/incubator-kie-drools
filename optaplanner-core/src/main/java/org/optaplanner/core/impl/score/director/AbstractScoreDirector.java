@@ -52,6 +52,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
@@ -175,7 +176,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void setWorkingSolution(Solution_ workingSolution) {
         this.workingSolution = requireNonNull(workingSolution);
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        workingInitScore = -solutionDescriptor.countUninitializedVariables(workingSolution);
+        workingInitScore = -solutionDescriptor.countUninitialized(workingSolution);
         Collection<Object> allFacts = solutionDescriptor.getAllFacts(workingSolution);
         if (lookUpEnabled) {
             lookUpManager.resetWorkingObjects(allFacts);
@@ -408,6 +409,8 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore++;
+        } else if (variableDescriptor.isGenuineListVariable()) {
+            workingInitScore -= ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
     }
@@ -416,6 +419,8 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore--;
+        } else if (variableDescriptor.isGenuineListVariable()) {
+            workingInitScore += ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }

@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
@@ -73,6 +74,7 @@ import org.optaplanner.core.impl.domain.score.descriptor.ScoreDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
@@ -351,7 +353,7 @@ public class SolutionDescriptor<Solution_> {
                                     + "Maybe the member (" + memberName + ") should return a typed "
                                     + Collection.class.getSimpleName() + ".");
                         }
-                        elementType = ConfigUtils.extractCollectionGenericTypeParameter(
+                        elementType = ConfigUtils.extractCollectionGenericTypeParameterLeniently(
                                 "solutionClass", solutionClass,
                                 type, genericType,
                                 null, member.getName());
@@ -518,7 +520,8 @@ public class SolutionDescriptor<Solution_> {
         Stream<Class<?>> problemFactOrEntityClassStream = concat(entityClassStream, factClassStream);
         Stream<Class<?>> factCollectionClassStream = problemFactCollectionMemberAccessorMap.values()
                 .stream()
-                .map(accessor -> ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
+                .map(accessor -> ConfigUtils.extractCollectionGenericTypeParameterLeniently(
+                        "solutionClass", getSolutionClass(),
                         accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class,
                         accessor.getName()));
         problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream, factCollectionClassStream);
@@ -776,6 +779,18 @@ public class SolutionDescriptor<Solution_> {
         return variableDescriptor;
     }
 
+    public List<ListVariableDescriptor<Solution_>> findListVariableDescriptors() {
+        return streamListVariableDescriptors().collect(Collectors.toList());
+    }
+
+    private Stream<ListVariableDescriptor<Solution_>> streamListVariableDescriptors() {
+        return getGenuineEntityDescriptors().stream()
+                .map(EntityDescriptor::getGenuineVariableDescriptorList)
+                .flatMap(Collection::stream)
+                .filter(GenuineVariableDescriptor::isListVariable)
+                .map(variableDescriptor -> ((ListVariableDescriptor<Solution_>) variableDescriptor));
+    }
+
     // ************************************************************************
     // Look up methods
     // ************************************************************************
@@ -977,12 +992,36 @@ public class SolutionDescriptor<Solution_> {
                 .sum();
     }
 
-    public int countUninitializedVariables(Solution_ solution) {
+    /**
+     * Calculates the number of elements that need to be processed in the Construction Heuristics phase.
+     * The negative value of this is the {@code initScore}. It represents how many Construction Heuristics steps need to
+     * be taken before the solution is fully initialized.
+     *
+     * @param solution never null
+     * @return {@code >= 0}
+     */
+    public int countUninitialized(Solution_ solution) {
+        return streamListVariableDescriptors()
+                .findFirst()
+                .map(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
+                .orElseGet(() -> countUninitializedVariables(solution));
+    }
+
+    private int countUninitializedVariables(Solution_ solution) {
         long count = extractAllEntitiesStream(solution)
                 .mapToLong(entity -> findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity))
                 .sum();
         // Score.initScore is an int
         return Math.toIntExact(count);
+    }
+
+    private int countUnassignedValues(Solution_ solution, ListVariableDescriptor<Solution_> variableDescriptor) {
+        long totalValueCount = variableDescriptor.getValueCount(solution, null);
+        // TODO maybe detect duplicates and elements that are outside the value range
+        int assignedValuesCount = extractAllEntitiesStream(solution)
+                .mapToInt(variableDescriptor::getListSize)
+                .sum();
+        return Math.toIntExact(totalValueCount - assignedValuesCount);
     }
 
     public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {

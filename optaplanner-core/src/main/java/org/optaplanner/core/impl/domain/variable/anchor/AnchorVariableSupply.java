@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * Only supported for chained variables.
  * <p>
- * To get an instance, demand a {@link AnchorVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
+ * To get an instance, demand an {@link AnchorVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
  */
 public interface AnchorVariableSupply extends Supply {
 

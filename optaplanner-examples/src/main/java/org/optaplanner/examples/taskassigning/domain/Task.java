@@ -17,42 +17,37 @@
 package org.optaplanner.examples.taskassigning.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.entity.PlanningPin;
-import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
-import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@PlanningEntity(difficultyComparatorClass = TaskDifficultyComparator.class)
+@PlanningEntity
 @XStreamAlias("TaTask")
-public class Task extends TaskOrEmployee implements Labeled {
+public class Task extends AbstractPersistable implements Labeled {
 
     private TaskType taskType;
     private int indexInTaskType;
     private Customer customer;
     private int readyTime;
     private Priority priority;
-    @PlanningPin
-    private boolean pinned;
-
-    // Planning variables: changes during planning, between score calculations.
-    @PlanningVariable(valueRangeProviderRefs = { "employeeRange", "taskRange" }, graphType = PlanningVariableGraphType.CHAINED)
-    private TaskOrEmployee previousTaskOrEmployee;
 
     // Shadow variables
-    // Task nextTask inherited from superclass
-    @AnchorShadowVariable(sourceVariableName = "previousTaskOrEmployee")
+    @InverseRelationShadowVariable(sourceVariableName = "tasks")
     private Employee employee;
+    @IndexShadowVariable(sourceVariableName = "tasks")
+    private Integer index;
+    // This API will change in https://issues.redhat.com/browse/PLANNER-2582.
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
-            // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
-            // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
-            sources = { @PlanningVariableReference(variableName = "previousTaskOrEmployee") })
+            sources = {
+                    @PlanningVariableReference(variableName = "employee"),
+                    @PlanningVariableReference(variableName = "index")
+            })
     private Integer startTime; // In minutes
 
     public Task() {
@@ -65,7 +60,6 @@ public class Task extends TaskOrEmployee implements Labeled {
         this.customer = customer;
         this.readyTime = readyTime;
         this.priority = priority;
-        pinned = false;
     }
 
     public TaskType getTaskType() {
@@ -108,29 +102,20 @@ public class Task extends TaskOrEmployee implements Labeled {
         this.priority = priority;
     }
 
-    public boolean isPinned() {
-        return pinned;
-    }
-
-    public void setPinned(boolean pinned) {
-        this.pinned = pinned;
-    }
-
-    public TaskOrEmployee getPreviousTaskOrEmployee() {
-        return previousTaskOrEmployee;
-    }
-
-    public void setPreviousTaskOrEmployee(TaskOrEmployee previousTaskOrEmployee) {
-        this.previousTaskOrEmployee = previousTaskOrEmployee;
-    }
-
-    @Override
     public Employee getEmployee() {
         return employee;
     }
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     public Integer getStartTime() {
@@ -172,7 +157,6 @@ public class Task extends TaskOrEmployee implements Labeled {
         return (employee == null) ? Affinity.NONE : employee.getAffinity(customer);
     }
 
-    @Override
     public Integer getEndTime() {
         if (startTime == null) {
             return null;

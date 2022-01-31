@@ -79,6 +79,10 @@ public abstract class VariableDescriptor<Solution_> {
 
     public abstract void linkVariableDescriptors(DescriptorPolicy descriptorPolicy);
 
+    public boolean isGenuineListVariable() {
+        return false;
+    }
+
     // ************************************************************************
     // Shadows
     // ************************************************************************
@@ -121,5 +125,4 @@ public abstract class VariableDescriptor<Solution_> {
     }
 
     public abstract boolean isGenuineAndUninitialized(Object entity);
-
 }

@@ -38,7 +38,9 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
@@ -50,9 +52,12 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.custom.CustomShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.BasicVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.index.IndexShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelationShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.CompositeSelectionFilter;
@@ -71,7 +76,10 @@ public class EntityDescriptor<Solution_> {
 
     private static final Class[] VARIABLE_ANNOTATION_CLASSES = {
             PlanningVariable.class,
-            InverseRelationShadowVariable.class, AnchorShadowVariable.class,
+            PlanningListVariable.class,
+            InverseRelationShadowVariable.class,
+            AnchorShadowVariable.class,
+            IndexShadowVariable.class,
             CustomShadowVariable.class };
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityDescriptor.class);
@@ -252,15 +260,31 @@ public class EntityDescriptor<Solution_> {
                     + "Maybe the annotation is defined on both the field and its getter.");
         }
         if (variableAnnotationClass.equals(PlanningVariable.class)) {
-            GenuineVariableDescriptor<Solution_> variableDescriptor = new GenuineVariableDescriptor<>(this,
-                    memberAccessor);
+            GenuineVariableDescriptor<Solution_> variableDescriptor = new BasicVariableDescriptor<>(
+                    this, memberAccessor);
             declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
+        } else if (variableAnnotationClass.equals(PlanningListVariable.class)) {
+            if (List.class.isAssignableFrom(memberAccessor.getType())) {
+                GenuineVariableDescriptor<Solution_> variableDescriptor = new ListVariableDescriptor<>(
+                        this, memberAccessor);
+                declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
+            } else {
+                throw new IllegalStateException("The entityClass (" + entityClass
+                        + ") has a @" + PlanningListVariable.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") that has an unsupported type (" + memberAccessor.getType() + ").\n"
+                        + "Maybe use " + List.class.getCanonicalName() + ".");
+            }
         } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
             ShadowVariableDescriptor<Solution_> variableDescriptor = new InverseRelationShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else if (variableAnnotationClass.equals(AnchorShadowVariable.class)) {
             ShadowVariableDescriptor<Solution_> variableDescriptor = new AnchorShadowVariableDescriptor<>(
+                    this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
+        } else if (variableAnnotationClass.equals(IndexShadowVariable.class)) {
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new IndexShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
@@ -519,6 +543,10 @@ public class EntityDescriptor<Solution_> {
         return false;
     }
 
+    public boolean hasAnyListGenuineVariables() {
+        return effectiveGenuineVariableDescriptorList.stream().anyMatch(GenuineVariableDescriptor::isListVariable);
+    }
+
     // ************************************************************************
     // Extraction methods
     // ************************************************************************
@@ -543,7 +571,16 @@ public class EntityDescriptor<Solution_> {
     public long getProblemScale(Solution_ solution, Object entity) {
         long problemScale = 1L;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
-            problemScale *= variableDescriptor.getValueCount(solution, entity);
+            long valueCount = variableDescriptor.getValueCount(solution, entity);
+            problemScale *= valueCount;
+            if (variableDescriptor.isListVariable()) {
+                // This formula probably makes no sense other than that it results in the same problem scale for both
+                // chained and list variable models.
+                // TODO fix https://issues.redhat.com/browse/PLANNER-2623 to get rid of this.
+                problemScale *= valueCount;
+                problemScale /= getSolutionDescriptor().getEntityCount(solution);
+                problemScale += valueCount;
+            }
         }
         return problemScale;
     }

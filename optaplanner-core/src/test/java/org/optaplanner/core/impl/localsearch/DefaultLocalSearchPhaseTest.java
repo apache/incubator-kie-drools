@@ -30,6 +30,11 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListEntityExternalized;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListSolutionExternalized;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
@@ -197,6 +202,28 @@ public class DefaultLocalSearchPhaseTest {
         solution = PlannerTestUtils.solve(solverConfig, solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getEntityList().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void solveListVariable() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataListSolution.class, TestdataListEntity.class, TestdataListValue.class);
+
+        TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(6, 2);
+
+        solution = PlannerTestUtils.solve(solverConfig, solution);
+        assertThat(solution).isNotNull();
+    }
+
+    @Test
+    public void solveListVariableWithExternalizedInverseAndIndexSupplies() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataListSolutionExternalized.class, TestdataListEntityExternalized.class);
+
+        TestdataListSolutionExternalized solution = TestdataListSolutionExternalized.generateUninitializedSolution(6, 2);
+
+        solution = PlannerTestUtils.solve(solverConfig, solution);
+        assertThat(solution).isNotNull();
     }
 
 }

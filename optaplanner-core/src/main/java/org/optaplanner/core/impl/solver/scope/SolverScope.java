@@ -116,8 +116,8 @@ public class SolverScope<Solution_> {
         this.workingRandom = workingRandom;
     }
 
-    public InnerScoreDirector<Solution_, ?> getScoreDirector() {
-        return scoreDirector;
+    public <Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_> getScoreDirector() {
+        return (InnerScoreDirector<Solution_, Score_>) scoreDirector;
     }
 
     public void setScoreDirector(InnerScoreDirector<Solution_, ?> scoreDirector) {

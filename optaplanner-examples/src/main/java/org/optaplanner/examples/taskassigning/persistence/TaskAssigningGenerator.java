@@ -229,6 +229,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                 affinityMap.put(customer, affinities[random.nextInt(affinities.length)]);
             }
             employee.setAffinityMap(affinityMap);
+            employee.setTasks(new ArrayList<>());
             logger.trace("Created employee with fullName ({}).", fullName);
             employeeList.add(employee);
         }

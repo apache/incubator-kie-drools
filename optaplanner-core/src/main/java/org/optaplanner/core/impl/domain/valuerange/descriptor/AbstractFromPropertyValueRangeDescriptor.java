@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +25,7 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -79,53 +77,11 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
                     + ", an array or a " + ValueRange.class.getSimpleName() + ".");
         }
         if (collectionWrapping) {
-            Type genericType = memberAccessor.getGenericType();
-            // TODO reuse ConfgUtils.extractCollectionGenericTypeParameter() if possible
-            if (!(genericType instanceof ParameterizedType)) {
-                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a @" + PlanningVariable.class.getSimpleName()
-                        + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
-                        + " annotated member (" + memberAccessor
-                        + ") that returns a " + Collection.class.getSimpleName()
-                        + " which has no generic parameters.\n"
-                        + "Maybe the member (" + memberAccessor + ") should return a typed "
-                        + Collection.class.getSimpleName() + ".");
-            }
-            ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            Type[] typeArguments = parameterizedType.getActualTypeArguments();
-            if (typeArguments.length != 1) {
-                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a @" + PlanningVariable.class.getSimpleName()
-                        + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
-                        + " annotated member (" + memberAccessor
-                        + ") that returns a parameterized " + Collection.class.getSimpleName()
-                        + ") with an unsupported number of generic parameters (" + typeArguments.length + ").");
-            }
-            Type typeArgument = typeArguments[0];
-
-            if (typeArgument instanceof WildcardType) {
-                typeArgument = ((WildcardType) typeArgument).getUpperBounds()[0];
-            }
-
-            if (typeArgument instanceof ParameterizedType) {
-                // TODO fail fast if the type arguments don't match
-                // with the variableDescriptor's generic type's type arguments
-                typeArgument = ((ParameterizedType) typeArgument).getRawType();
-            }
-            if (!(typeArgument instanceof Class)) {
-                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a @" + PlanningVariable.class.getSimpleName()
-                        + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
-                        + " annotated member (" + memberAccessor
-                        + ") that returns a parameterized " + Collection.class.getSimpleName()
-                        + " with an unsupported type arguments (" + typeArgument + ").");
-            }
-            Class<?> collectionElementClass = ((Class) typeArgument);
-            Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
-            if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
+            Class<?> collectionElementClass = ConfigUtils.extractCollectionGenericTypeParameterStrictly(
+                    "solutionClass or entityClass", memberAccessor.getDeclaringClass(),
+                    memberAccessor.getType(), memberAccessor.getGenericType(),
+                    ValueRangeProvider.class, memberAccessor.getName());
+            if (!variableDescriptor.acceptsValueType(collectionElementClass)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
@@ -134,20 +90,19 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
                         + ") that returns a " + Collection.class.getSimpleName()
                         + " with elements of type (" + collectionElementClass
                         + ") which cannot be assigned to the @" + PlanningVariable.class.getSimpleName()
-                        + "'s type (" + variablePropertyType + ").");
+                        + "'s type (" + variableDescriptor.getVariablePropertyType() + ").");
             }
         } else if (arrayWrapping) {
             Class<?> arrayElementClass = type.getComponentType();
-            Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
-            if (!variablePropertyType.isAssignableFrom(arrayElementClass)) {
+            if (!variableDescriptor.acceptsValueType(arrayElementClass)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
                         + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
-                        + ") that returns a array with elements of type (" + arrayElementClass
+                        + ") that returns an array with elements of type (" + arrayElementClass
                         + ") which cannot be assigned to the @" + PlanningVariable.class.getSimpleName()
-                        + "'s type (" + variablePropertyType + ").");
+                        + "'s type (" + variableDescriptor.getVariablePropertyType() + ").");
             }
         }
         countable = collectionWrapping || arrayWrapping || CountableValueRange.class.isAssignableFrom(type);

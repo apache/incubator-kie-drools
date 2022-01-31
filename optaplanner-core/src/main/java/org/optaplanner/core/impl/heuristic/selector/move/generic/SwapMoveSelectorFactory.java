@@ -21,19 +21,26 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
 public class SwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, SwapMoveSelectorConfig> {
@@ -58,8 +65,42 @@ public class SwapMoveSelectorFactory<Solution_>
                                 SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(leftEntitySelector.getEntityDescriptor(), config.getVariableNameIncludeList());
-        return new SwapMoveSelector<>(leftEntitySelector, rightEntitySelector, variableDescriptorList,
-                randomSelection);
+        if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
+            // TODO add ValueSelector to the config
+            ValueSelectorFactory<Solution_> valueSelectorFactory = ValueSelectorFactory.create(new ValueSelectorConfig());
+            EntityIndependentValueSelector<Solution_> leftValueSelector = buildEntityIndependentValueSelector(
+                    valueSelectorFactory, configPolicy, leftEntitySelector, minimumCacheType, randomSelection);
+            EntityIndependentValueSelector<Solution_> rightValueSelector = buildEntityIndependentValueSelector(
+                    valueSelectorFactory, configPolicy, rightEntitySelector, minimumCacheType, randomSelection);
+            return new ListSwapMoveSelector<>(
+                    (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
+                    leftValueSelector,
+                    rightValueSelector,
+                    randomSelection);
+        }
+        if (variableDescriptorList.stream().noneMatch(GenuineVariableDescriptor::isListVariable)) {
+            return new SwapMoveSelector<>(leftEntitySelector, rightEntitySelector, variableDescriptorList,
+                    randomSelection);
+        }
+        throw new IllegalArgumentException("The variableDescriptorList (" + variableDescriptorList
+                + ") has multiple variables and one or more of them is a @" + PlanningListVariable.class.getSimpleName()
+                + ", which is currently not supported.");
+    }
+
+    private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
+            ValueSelectorFactory<Solution_> valueSelectorFactory, HeuristicConfigPolicy<Solution_> configPolicy,
+            EntitySelector<Solution_> entitySelector, SelectionCacheType minimumCacheType,
+            boolean randomSelection) {
+        ValueSelector<Solution_> valueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
+                entitySelector.getEntityDescriptor(),
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("The changeMoveSelector (" + this
+                    + ") for a list variable needs to be based on an EntityIndependentValueSelector (" + valueSelector
+                    + "). Check your valueSelectorConfig.");
+
+        }
+        return (EntityIndependentValueSelector<Solution_>) valueSelector;
     }
 
     @Override

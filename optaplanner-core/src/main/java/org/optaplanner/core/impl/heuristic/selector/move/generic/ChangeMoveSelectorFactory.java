@@ -30,11 +30,14 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSel
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
@@ -64,6 +67,19 @@ public class ChangeMoveSelectorFactory<Solution_>
         ValueSelector<Solution_> valueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
                 entitySelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        if (valueSelector.getVariableDescriptor().isListVariable()) {
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The changeMoveSelector (" + this
+                        + ") for a list variable needs to be based on an EntityIndependentValueSelector (" + valueSelector
+                        + "). Check your valueSelectorConfig.");
+
+            }
+            return new ListChangeMoveSelector<>(
+                    (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor(),
+                    entitySelector,
+                    (EntityIndependentValueSelector<Solution_>) valueSelector,
+                    randomSelection);
+        }
         return new ChangeMoveSelector<>(entitySelector, valueSelector, randomSelection);
     }
 

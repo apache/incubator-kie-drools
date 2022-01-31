@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.list.mixed.TestdataMixedVariablesSolution;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataHerdEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataLeadEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntitySolution;
@@ -139,6 +140,19 @@ class SwapMoveSelectorFactoryTest extends AbstractSelectorFactoryTest {
         assertThat(moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
         assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
+    }
+
+    @Test
+    void mixingBasicAndListVariablesUnsupported() {
+        SolutionDescriptor<TestdataMixedVariablesSolution> solutionDescriptor =
+                TestdataMixedVariablesSolution.buildSolutionDescriptor();
+        SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> MoveSelectorFactory.<TestdataMixedVariablesSolution> create(moveSelectorConfig).buildMoveSelector(
+                        buildHeuristicConfigPolicy(solutionDescriptor),
+                        SelectionCacheType.JUST_IN_TIME,
+                        SelectionOrder.RANDOM))
+                .withMessageContaining("variableDescriptorList");
     }
 
 }

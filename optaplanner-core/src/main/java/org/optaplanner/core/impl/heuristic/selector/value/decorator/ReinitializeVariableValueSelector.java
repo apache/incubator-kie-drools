@@ -21,7 +21,6 @@ import java.util.Iterator;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -38,14 +37,11 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
     protected final ValueSelector<Solution_> childValueSelector;
-    protected final SelectionFilter<Solution_, Object> reinitializeVariableEntityFilter;
 
     protected ScoreDirector<Solution_> scoreDirector = null;
 
     public ReinitializeVariableValueSelector(ValueSelector<Solution_> childValueSelector) {
         this.childValueSelector = childValueSelector;
-        this.reinitializeVariableEntityFilter = childValueSelector.getVariableDescriptor()
-                .getReinitializeVariableEntityFilter();
         phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
@@ -82,26 +78,30 @@ public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueS
 
     @Override
     public long getSize(Object entity) {
-        if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
-            return 0L;
+        if (isReinitializable(entity)) {
+            return childValueSelector.getSize(entity);
         }
-        return childValueSelector.getSize(entity);
+        return 0L;
     }
 
     @Override
     public Iterator<Object> iterator(Object entity) {
-        if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
-            return Collections.emptyIterator();
+        if (isReinitializable(entity)) {
+            return childValueSelector.iterator(entity);
         }
-        return childValueSelector.iterator(entity);
+        return Collections.emptyIterator();
     }
 
     @Override
     public Iterator<Object> endingIterator(Object entity) {
-        if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
-            return Collections.emptyIterator();
+        if (isReinitializable(entity)) {
+            return childValueSelector.endingIterator(entity);
         }
-        return childValueSelector.endingIterator(entity);
+        return Collections.emptyIterator();
+    }
+
+    private boolean isReinitializable(Object entity) {
+        return childValueSelector.getVariableDescriptor().isReinitializable(scoreDirector, entity);
     }
 
     @Override

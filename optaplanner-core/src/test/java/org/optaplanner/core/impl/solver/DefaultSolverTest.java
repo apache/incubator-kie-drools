@@ -30,11 +30,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -66,6 +73,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
@@ -76,6 +86,7 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 
+@ExtendWith(SoftAssertionsExtension.class)
 public class DefaultSolverTest {
 
     @BeforeEach
@@ -708,5 +719,89 @@ public class DefaultSolverTest {
 
         solver.terminateEarly();
         executorService.shutdown();
+    }
+
+    @Test
+    public void solveRepeatedlyBasicVariable(SoftAssertions softly) {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
+        // Run only 2 steps at a time, although 5 are needed to initialize all entities.
+        int stepCountLimit = 2;
+        phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(stepCountLimit));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        final int entityCount = 5;
+        solution.setEntityList(IntStream.rangeClosed(1, entityCount)
+                .mapToObj(id -> new TestdataEntity("e" + id))
+                .collect(Collectors.toList()));
+
+        Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
+        assertThat(score.getInitScore()).isEqualTo(-entityCount);
+        assertThat(score.isSolutionInitialized()).isFalse();
+
+        // Keep restarting the solver until the solution is initialized.
+        for (int initScore = -entityCount; initScore < 0; initScore += stepCountLimit) {
+            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+            solution = solver.solve(solution);
+        }
+
+        // Finally, the initScore is 0.
+        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
+
+    @Test
+    public void solveRepeatedlyListVariable(SoftAssertions softly) {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataListSolution.class, TestdataListEntity.class, TestdataListValue.class);
+
+        // Run only 7 steps at a time, although the total number of steps needed to complete CH is equal to valueCount.
+        final int stepCountLimit = 7;
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
+        phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(stepCountLimit));
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataListSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataListSolution> solver = solverFactory.buildSolver();
+
+        final int valueCount = 24;
+        TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(valueCount, 8);
+
+        Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
+        assertThat(score.getInitScore()).isEqualTo(-valueCount);
+        assertThat(score.isSolutionInitialized()).isFalse();
+
+        // Keep restarting the solver until the solution is initialized.
+        for (int initScore = -valueCount; initScore < 0; initScore += stepCountLimit) {
+            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+            solution = solver.solve(solution);
+        }
+
+        // Finally, the initScore is 0.
+        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
+
+    @Test
+    void constructionHeuristicAllocateToValueFromQueue() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig()
+                .withConstructionHeuristicType(ConstructionHeuristicType.ALLOCATE_TO_VALUE_FROM_QUEUE);
+        solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1")));
+
+        solution = solver.solve(solution);
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 }

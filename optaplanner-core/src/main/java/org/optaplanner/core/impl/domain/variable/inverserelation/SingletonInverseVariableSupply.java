@@ -16,14 +16,16 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
- * Currently only supported for chained variables,
+ * Currently only supported for chained variables and {@link PlanningListVariable list variables},
  * which guarantee that no 2 entities use the same planningValue.
  * <p>
- * To get an instance, demand a {@link SingletonInverseVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
+ * To get an instance, demand a {@link SingletonInverseVariableDemand} (for a chained variable)
+ * or a {@link SingletonListInverseVariableDemand} (for a list variable) from {@link InnerScoreDirector#getSupplyManager()}.
  */
 public interface SingletonInverseVariableSupply extends Supply {
 

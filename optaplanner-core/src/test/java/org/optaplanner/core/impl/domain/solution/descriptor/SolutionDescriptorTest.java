@@ -18,10 +18,14 @@ package org.optaplanner.core.impl.domain.solution.descriptor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -30,11 +34,17 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
@@ -339,4 +349,95 @@ public class SolutionDescriptorTest {
         assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "f1", "p1", "e1", "e2");
     }
 
+    @Test
+    void countUninitializedVariables() {
+        int valueCount = 10;
+        int entityCount = 3;
+        TestdataSolution solution = TestdataSolution.generateSolution(valueCount, entityCount);
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+
+        assertThat(solutionDescriptor.countUninitialized(solution)).isZero();
+
+        solution.getEntityList().get(0).setValue(null);
+        assertThat(solutionDescriptor.countUninitialized(solution)).isOne();
+
+        solution.getEntityList().forEach(entity -> entity.setValue(null));
+        assertThat(solutionDescriptor.countUninitialized(solution)).isEqualTo(entityCount);
+    }
+
+    @Test
+    void countUnassignedValues() {
+        int valueCount = 10;
+        int entityCount = 3;
+        TestdataListSolution solution = TestdataListSolution.generateInitializedSolution(valueCount, entityCount);
+        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
+
+        assertThat(solutionDescriptor.countUninitialized(solution)).isZero();
+
+        List<TestdataListValue> valueList = solution.getEntityList().get(0).getValueList();
+        int unassignedValueCount = valueList.size();
+        assertThat(valueList).hasSizeGreaterThan(10 / 3);
+        valueList.forEach(value -> {
+            value.setEntity(null);
+            value.setIndex(null);
+        });
+        valueList.clear();
+        assertThat(solutionDescriptor.countUninitialized(solution)).isEqualTo(unassignedValueCount);
+    }
+
+    @Test
+    void problemScaleBasic() {
+        int valueCount = 10;
+        int entityCount = 20;
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        TestdataSolution solution = TestdataSolution.generateSolution(valueCount, entityCount);
+        assertSoftly(softly -> {
+            softly.assertThat(solutionDescriptor.getEntityCount(solution)).isEqualTo(entityCount);
+            softly.assertThat(solutionDescriptor.getGenuineVariableCount(solution)).isEqualTo(entityCount);
+            softly.assertThat(solutionDescriptor.getMaximumValueCount(solution)).isEqualTo(valueCount);
+            softly.assertThat(solutionDescriptor.getProblemScale(solution)).isEqualTo(entityCount * valueCount);
+        });
+    }
+
+    @Test
+    void problemScaleChained() {
+        int anchorCount = 20;
+        int entityCount = 500;
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
+        TestdataChainedSolution solution = generateChainedSolution(anchorCount, entityCount);
+        assertSoftly(softly -> {
+            softly.assertThat(solutionDescriptor.getEntityCount(solution)).isEqualTo(entityCount);
+            softly.assertThat(solutionDescriptor.getGenuineVariableCount(solution)).isEqualTo(entityCount * 2);
+            softly.assertThat(solutionDescriptor.getMaximumValueCount(solution)).isEqualTo(entityCount + anchorCount);
+            softly.assertThat(solutionDescriptor.getProblemScale(solution)).isEqualTo(260000);
+        });
+    }
+
+    static TestdataChainedSolution generateChainedSolution(int anchorCount, int entityCount) {
+        TestdataChainedSolution solution = new TestdataChainedSolution("test solution");
+        List<TestdataChainedAnchor> anchorList = IntStream.range(0, anchorCount)
+                .mapToObj(Integer::toString)
+                .map(TestdataChainedAnchor::new).collect(Collectors.toList());
+        solution.setChainedAnchorList(anchorList);
+        List<TestdataChainedEntity> entityList = IntStream.range(0, entityCount)
+                .mapToObj(Integer::toString)
+                .map(TestdataChainedEntity::new).collect(Collectors.toList());
+        solution.setChainedEntityList(entityList);
+        solution.setUnchainedValueList(Collections.singletonList(new TestdataValue("v")));
+        return solution;
+    }
+
+    @Test
+    void problemScaleList() {
+        int valueCount = 500;
+        int entityCount = 20;
+        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
+        TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(valueCount, entityCount);
+        assertSoftly(softly -> {
+            softly.assertThat(solutionDescriptor.getEntityCount(solution)).isEqualTo(entityCount);
+            softly.assertThat(solutionDescriptor.getGenuineVariableCount(solution)).isEqualTo(entityCount);
+            softly.assertThat(solutionDescriptor.getMaximumValueCount(solution)).isEqualTo(valueCount);
+            softly.assertThat(solutionDescriptor.getProblemScale(solution)).isEqualTo(260000);
+        });
+    }
 }

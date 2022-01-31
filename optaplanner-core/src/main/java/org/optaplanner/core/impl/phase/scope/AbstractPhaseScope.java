@@ -134,7 +134,7 @@ public abstract class AbstractPhaseScope<Solution_> {
     }
 
     public <Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_> getScoreDirector() {
-        return (InnerScoreDirector<Solution_, Score_>) solverScope.getScoreDirector();
+        return solverScope.getScoreDirector();
     }
 
     public Solution_ getWorkingSolution() {

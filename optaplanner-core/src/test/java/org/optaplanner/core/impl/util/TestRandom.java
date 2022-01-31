@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions;
  * Therefore we introduce this class to allow for that use case.
  *
  * It allows to provide a sequence of pre-defined "random" values.
- * It throws an exception of that sequence has been exhausted.
+ * It throws an exception if that sequence has been exhausted.
  *
  * Due to some internals of OptaPlanner where randoms are read from {@link org.optaplanner.core.impl.solver.scope.SolverScope}
  * and never updated in later phases and steps,
