@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -798,6 +799,7 @@ class CounterfactualExplainerTest {
         assertEquals(numberOfIntermediateSolutions + 1, (int) sequenceIds.stream().distinct().count());
     }
 
+    @Disabled("FAI-713")
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2 })
     void testIntermediateUniqueIds(int seed) throws ExecutionException, InterruptedException, TimeoutException {
@@ -874,6 +876,7 @@ class CounterfactualExplainerTest {
         assertEquals(executionIds.get(0), executionId);
     }
 
+    @Disabled("FAI-713")
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2 })
     void testFinalUniqueIds(int seed) throws ExecutionException, InterruptedException, TimeoutException {
