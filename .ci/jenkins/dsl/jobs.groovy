@@ -11,7 +11,7 @@ def getDefaultJobParams(String repoName = 'drools') {
     return KogitoJobTemplate.getDefaultJobParams(this, repoName)
 }
 
-Map getMultijobPRConfig() {
+Map getMultijobPRConfig(boolean isNative = false) {
     return [
         parallel: true,
         buildchain: true,
@@ -35,7 +35,10 @@ Map getMultijobPRConfig() {
             ], [
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
-                dependsOn: 'optaplanner'
+                dependsOn: 'optaplanner',
+                env : [
+                    ADDITIONAL_TIMEOUT: isNative ? '360' : '210',
+                ]
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
@@ -95,7 +98,7 @@ void setupMultijobPrDefaultChecks() {
 }
 
 void setupMultijobPrNativeChecks() {
-    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
+    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig(true)) { return getDefaultJobParams() }
 }
 
 void setupMultijobPrLTSChecks() {
