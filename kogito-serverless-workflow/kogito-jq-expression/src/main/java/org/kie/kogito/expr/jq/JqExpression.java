@@ -39,9 +39,11 @@ public class JqExpression implements Expression {
     private final String expr;
     private JsonQuery query;
     private Boolean isValid;
+    private String compiledExpr;
 
     public JqExpression(Supplier<Scope> scope, String expr) {
         this.expr = expr;
+        this.compiledExpr = expr;
         this.scope = scope;
     }
 
@@ -150,7 +152,7 @@ public class JqExpression implements Expression {
             query.apply(this.scope.get(), (JsonNode) context, output);
             return output.getResult();
         } catch (JsonQueryException e) {
-            throw new IllegalArgumentException("Unable to evaluate content " + context + " using query " + query, e);
+            throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);
         }
     }
 
@@ -160,8 +162,10 @@ public class JqExpression implements Expression {
     }
 
     private void compile() throws JsonQueryException {
-        if (this.query == null) {
-            this.query = JsonQuery.compile(expr, Versions.JQ_1_6);
+        String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr);
+        if (this.query == null || !resolvedExpr.equals(compiledExpr)) {
+            compiledExpr = resolvedExpr;
+            this.query = JsonQuery.compile(ExpressionHandlerUtils.prepareExpr(compiledExpr), Versions.JQ_1_6);
         }
     }
 

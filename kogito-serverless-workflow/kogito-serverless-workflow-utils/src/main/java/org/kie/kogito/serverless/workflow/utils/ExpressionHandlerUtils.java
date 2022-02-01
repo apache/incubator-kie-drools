@@ -16,6 +16,7 @@
 package org.kie.kogito.serverless.workflow.utils;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
@@ -30,6 +31,35 @@ public class ExpressionHandlerUtils {
 
     private static final String EXPR_PREFIX = "${";
     private static final String EXPR_SUFFIX = "}";
+    protected static final String SECRET_MAGIC = "$SECRET.";
+    protected static final String CONST_MAGIC = "$CONST.";
+
+    public static String prepareExpr(String expr) {
+        return replaceMagic(expr, SECRET_MAGIC, SecretResolverFactory.getSecretResolver());
+    }
+
+    private static <T extends Object> String replaceMagic(String expr, String magic, Function<String, T> replacer) {
+        int indexOf;
+        while ((indexOf = expr.indexOf(magic)) != -1) {
+            String key = extractKey(expr, indexOf + magic.length());
+            String toReplace = magic + key;
+            T value = replacer.apply(key);
+            expr = expr.replace(toReplace, value.toString());
+        }
+        return expr;
+    }
+
+    private static String extractKey(String expr, int indexOf) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = indexOf; i < expr.length(); i++) {
+            char ch = expr.charAt(i);
+            if (!Character.isAlphabetic(ch)) {
+                break;
+            }
+            sb.append(ch);
+        }
+        return sb.toString();
+    }
 
     public static String trimExpr(String expr) {
         expr = expr.trim();
@@ -39,7 +69,7 @@ public class ExpressionHandlerUtils {
                 expr = expr.substring(0, expr.length() - EXPR_SUFFIX.length());
             }
         }
-        return expr;
+        return expr.trim();
     }
 
     public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {

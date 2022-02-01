@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.expr.jsonpath;
+package org.kie.kogito.secret;
 
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
-import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import javax.annotation.PostConstruct;
 
-public class JsonPathExpressionHandler implements ExpressionHandler {
+import org.kie.kogito.serverless.workflow.utils.SecretResolverFactory;
 
-    @Override
-    public Expression get(String expr) {
-        return new JsonPathExpression(ExpressionHandlerUtils.trimExpr(expr));
+import io.quarkus.runtime.Startup;
+
+@Startup
+public class QuarkusSecretResolverRegister {
+
+    @PostConstruct
+    void init() {
+        SecretResolverFactory.setSecretResolver(new QuarkusSecretResolver());
     }
 
-    @Override
-    public String lang() {
-        return "jsonpath";
-    }
 }

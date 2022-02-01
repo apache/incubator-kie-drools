@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.expr.jsonpath;
+package org.kie.kogito.serverless.workflow.utils;
 
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
-import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+public class SecretResolverFactory {
 
-public class JsonPathExpressionHandler implements ExpressionHandler {
+    private static SecretResolver secretResolver = k -> k;
 
-    @Override
-    public Expression get(String expr) {
-        return new JsonPathExpression(ExpressionHandlerUtils.trimExpr(expr));
+    public static void setSecretResolver(SecretResolver secretResolver) {
+        SecretResolverFactory.secretResolver = secretResolver;
     }
 
-    @Override
-    public String lang() {
-        return "jsonpath";
+    public static SecretResolver getSecretResolver() {
+        return secretResolver;
+    }
+
+    private SecretResolverFactory() {
     }
 }

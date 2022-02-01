@@ -13,21 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.expr.jsonpath;
+package org.kie.kogito.quarkus.workflows;
 
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
-import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import io.quarkus.test.junit.NativeImageTest;
 
-public class JsonPathExpressionHandler implements ExpressionHandler {
+@NativeImageTest
+class NativeForExpressionRestIt extends ExpressionRestIT {
 
-    @Override
-    public Expression get(String expr) {
-        return new JsonPathExpression(ExpressionHandlerUtils.trimExpr(expr));
-    }
-
-    @Override
-    public String lang() {
-        return "jsonpath";
-    }
 }

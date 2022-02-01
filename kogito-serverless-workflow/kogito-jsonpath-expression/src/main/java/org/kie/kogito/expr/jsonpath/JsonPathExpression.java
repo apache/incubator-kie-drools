@@ -47,7 +47,7 @@ public class JsonPathExpression implements Expression {
 
     public JsonPathExpression(String expr) {
         jsonPath = JsonPath.using(jsonPathConfig);
-        this.expr = ExpressionHandlerUtils.trimExpr(expr);
+        this.expr = expr;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class JsonPathExpression implements Expression {
         DocumentContext parsedContext = jsonPath.parse(context);
         if (String.class.isAssignableFrom(returnClass)) {
             StringBuilder sb = new StringBuilder();
-            for (String part : expr.split("((?=\\$))")) {
+            for (String part : ExpressionHandlerUtils.prepareExpr(expr).split("((?=\\$))")) {
                 JsonNode partResult = parsedContext.read(part, JsonNode.class);
                 sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
             }
