@@ -60,10 +60,6 @@
       <artifactId>drools-ruleunits-impl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools-wiring-static</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId>
     </dependency>

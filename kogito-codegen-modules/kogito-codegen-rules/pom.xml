@@ -87,11 +87,6 @@
             <artifactId>drools-decisiontables</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-drools-wiring-static</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>

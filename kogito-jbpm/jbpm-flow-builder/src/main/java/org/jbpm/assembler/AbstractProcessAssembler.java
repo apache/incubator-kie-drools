@@ -32,7 +32,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public abstract class AbstractProcessAssembler implements KieAssemblerService {
 
-    public void addResource(
+    @Override
+    public void addResourceAfterRules(
             Object kbuilder,
             Resource resource,
             ResourceType type,

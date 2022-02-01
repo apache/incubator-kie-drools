@@ -33,4 +33,9 @@ public class DataSourceFactoryImpl implements DataSource.Factory {
     public <T> SingletonStore<T> createSingleton() {
         return new FieldDataStore<>();
     }
+
+    @Override
+    public int servicePriority() {
+        return 1;
+    }
 }

@@ -111,15 +111,15 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 
     public void buildProcess(final Process process, Resource resource) {
         if (resource != null) {
-            ((org.jbpm.process.core.Process) process).setResource(resource);
+            process.setResource(resource);
         }
         boolean hasErrors = false;
         ProcessValidator validator = ProcessValidatorRegistry.getInstance().getValidator(process, resource);
         if (validator == null) {
-            logger.warn("Could not find validator for process {}.", ((Process) process).getType());
+            logger.warn("Could not find validator for process {}.", process.getType());
             logger.warn("Continuing without validation of the process {} [{}]", process.getName(), process.getId());
         } else {
-            ProcessValidationError[] errors = validator.validateProcess((WorkflowProcess) process);
+            ProcessValidationError[] errors = validator.validateProcess(process);
             if (errors.length != 0) {
                 hasErrors = true;
                 for (int i = 0; i < errors.length; i++) {

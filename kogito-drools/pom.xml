@@ -24,7 +24,6 @@
   </properties>
 
   <modules>
-    <module>kogito-drools-wiring-static</module>
     <module>kogito-drools</module>
     <module>kogito-pmml-api-dependencies</module>
     <module>kogito-pmml-dependencies</module>

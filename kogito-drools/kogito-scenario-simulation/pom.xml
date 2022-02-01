@@ -52,12 +52,6 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-drools</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.kie.kogito</groupId>
-                    <artifactId>kogito-drools-wiring-static</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
