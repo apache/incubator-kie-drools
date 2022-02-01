@@ -204,7 +204,7 @@
         <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
         <version.org.jboss.maven.plugins.maven-jdocbook-plugin>2.3.9</version.org.jboss.maven.plugins.maven-jdocbook-plugin>
 
-        <maven.min.version>3.6.3</maven.min.version>
+        <maven.min.version>3.8.1</maven.min.version>
         <!-- Important: this is one and only place where the supported user agents (browsers) are configured.
              All webapps/showcases must use this property in their *.gwt.xml files.
              We only need to support IE11+, but there is no ie11 permutation. IE11 will use the Firefox one (gecko1_8) -->
