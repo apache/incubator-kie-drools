@@ -57,11 +57,7 @@
         <!-- Used by task assigning integration tests -->
         <module>persistence-commons</module>
         <module>apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common</module>
-        <module>data-index/data-index-service/data-index-service-common</module>
-        <module>data-index/data-index-service/data-index-service-infinispan</module>
-        <module>data-index/data-index-storage/data-index-storage-protobuf</module>
-        <module>data-index/data-index-storage/data-index-storage-api</module>
-        <module>data-index/data-index-storage/data-index-storage-infinispan</module>
+        <module>data-index</module>
         <!-- Used by task assigning integration tests -->
       </modules>
     </profile>

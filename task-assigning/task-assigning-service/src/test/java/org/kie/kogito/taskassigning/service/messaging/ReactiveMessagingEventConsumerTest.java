@@ -71,14 +71,15 @@ class ReactiveMessagingEventConsumerTest {
     void setUp() {
         taskAssigningServiceEventConsumer = mock(TaskAssigningServiceEventConsumer.class);
         consumer = new ReactiveMessagingEventConsumer(taskAssigningServiceEventConsumer, failFastRequestEvent);
-        UserTaskEvent event = new UserTaskEvent();
-        event.setTaskId(TASK_ID);
-        event.setLastUpdate(LAST_MODIFICATION_DATE);
-        doReturn(event).when(message).getPayload();
     }
 
     @Test
     void onUserTaskEvent() {
+        UserTaskEvent event = new UserTaskEvent();
+        event.setTaskId(TASK_ID);
+        event.setLastUpdate(LAST_MODIFICATION_DATE);
+        doReturn(event).when(message).getPayload();
+
         consumer.onUserTaskEvent(message);
         verify(taskAssigningServiceEventConsumer).accept(taskDataEventCaptor.capture());
         assertThat(taskDataEventCaptor.getValue().getTaskId()).isEqualTo(TASK_ID);
@@ -99,6 +100,10 @@ class ReactiveMessagingEventConsumerTest {
 
     @Test
     void onUserTaskEventFailure() {
+        UserTaskEvent event = new UserTaskEvent();
+        event.setTaskId(TASK_ID);
+        event.setLastUpdate(LAST_MODIFICATION_DATE);
+        doReturn(event).when(message).getPayload();
         String error = "Generic invented error";
         String expectedErrorMessage = "An error was produced during a UserTaskEvent event processing: " + error;
         doThrow(new RuntimeException(error)).when(taskAssigningServiceEventConsumer).accept(any());
