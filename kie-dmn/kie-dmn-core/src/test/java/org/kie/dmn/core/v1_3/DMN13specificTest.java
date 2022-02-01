@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -170,5 +171,59 @@ public class DMN13specificTest extends BaseVariantTest {
             Map<String, Object> allProperties = outputSet.allFEELProperties();
             assertThat(allProperties.get("Decision1"), is(new BigDecimal("3")));
         }
+    }
+    
+    @Test
+    public void testBKMFnTypeVirtuous() {
+        final DMNRuntime runtime = createRuntime("bkmFnTypeVirtuous.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_563323ba-325e-4a3f-938f-369854010eaf", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("name", "John");
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("do greet the name"), is("Hello, John"));
+    }
+    
+    @Test
+    public void testBKMFnTypeWrongEL() {
+        final DMNRuntime runtime = createRuntime("bkmFnTypeWrongEL.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_563323ba-325e-4a3f-938f-369854010eaf", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat("Expected WARNs of mismatches type in "+DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(Severity.WARN).isEmpty(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("name", "John");
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("do greet the name"), is("Hello, John"));
+    }
+    
+    @Test
+    public void testBKMWrongELExpr() {
+        final DMNRuntime runtime = createRuntime("bkmWrongELExprType.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_563323ba-325e-4a3f-938f-369854010eaf", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat("Expected WARNs of mismatches type in "+DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(Severity.WARN).isEmpty(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("name", "John");
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("do greet the name"), is("Hello, John"));
     }
 }
