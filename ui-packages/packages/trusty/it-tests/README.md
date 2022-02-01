@@ -29,7 +29,7 @@ This is e2e test suite. Each test communicates with UI of Trusty AI as real user
 
 - docker version >= 19.03.12
 - java version >= 11
-- maven version >= 3.6.3
+- maven version >= 3.8.1
 - docker-compose version >= 1.25.2
 
 Note: also previous versions of `docker` and `docker-compose` might work, but they were not tested.
