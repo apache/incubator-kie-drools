@@ -16,19 +16,13 @@
 
 package org.kie.internal.services;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.ResourceType;
 
-public class KieWeaversImpl implements KieWeavers {
-
-    private Map<ResourceType, KieWeaverService> weavers;
+public class KieWeaversImpl extends AbstractMultiService<ResourceType, KieWeaverService> implements KieWeavers {
 
     @Override
     public void weave(KiePackage newPkg, ResourceTypePackage rtkKpg) {
@@ -39,14 +33,7 @@ public class KieWeaversImpl implements KieWeavers {
     }
 
     private KieWeaverService getWeaver(ResourceTypePackage rtkKpg) {
-        if (weavers == null) {
-            weavers = new HashMap<>();
-            ServiceLoader<KieWeaverService> loader = ServiceLoader.load(KieWeaverService.class);
-            for (KieWeaverService weaver : loader) {
-                weavers.put(weaver.getResourceType(), weaver);
-            }
-        }
-        return weavers.get(rtkKpg.getResourceType());
+        return getService(rtkKpg.getResourceType());
     }
 
     @Override
@@ -55,5 +42,15 @@ public class KieWeaversImpl implements KieWeavers {
         if (svc != null) {
             svc.merge(pkg, rtkKpg);
         }
+    }
+
+    @Override
+    protected Class<KieWeaverService> serviceClass() {
+        return KieWeaverService.class;
+    }
+
+    @Override
+    protected ResourceType serviceKey(KieWeaverService service) {
+        return service.getResourceType();
     }
 }

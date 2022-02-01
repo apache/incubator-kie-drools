@@ -15,12 +15,8 @@
 
 package org.kie.api.internal.runtime;
 
-import java.util.Map;
-
 import org.kie.api.internal.utils.KieService;
 
 public interface KieRuntimes extends KieService {
-    Map<String, KieRuntimeService> getRuntimes();
-
-    Class getServiceInterface();
+    KieRuntimeService getRuntime(Class<?> clazz);
 }

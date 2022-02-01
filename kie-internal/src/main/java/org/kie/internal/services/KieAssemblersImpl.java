@@ -16,10 +16,7 @@
 
 package org.kie.internal.services;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
 
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
@@ -28,8 +25,7 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 
-public class KieAssemblersImpl implements KieAssemblers {
-    private Map<ResourceType, KieAssemblerService> assemblers;
+public class KieAssemblersImpl extends AbstractMultiService<ResourceType, KieAssemblerService> implements KieAssemblers {
 
     @Override
     public void addResourceBeforeRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
@@ -45,14 +41,7 @@ public class KieAssemblersImpl implements KieAssemblers {
     }
 
     private KieAssemblerService getAssembler(ResourceType type) {
-        if (assemblers == null) {
-            assemblers = new HashMap<>();
-            ServiceLoader<KieAssemblerService> loader = ServiceLoader.load(KieAssemblerService.class);
-            for (KieAssemblerService kieAssemblerService : loader) {
-                assemblers.put( kieAssemblerService.getResourceType(), kieAssemblerService );
-            }
-        }
-        return assemblers.get(type);
+        return getService(type);
     }
 
     @Override
@@ -77,5 +66,15 @@ public class KieAssemblersImpl implements KieAssemblers {
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
+    }
+
+    @Override
+    protected Class<KieAssemblerService> serviceClass() {
+        return KieAssemblerService.class;
+    }
+
+    @Override
+    protected ResourceType serviceKey(KieAssemblerService service) {
+        return service.getResourceType();
     }
 }

@@ -51,12 +51,7 @@ public class KieRuntimeFactory {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> cls) {
-        T runtimeInstance = (T) runtimeServices.computeIfAbsent(cls, this::createRuntimeInstance);
-        if (runtimeInstance == null) {
-            throw new NoSuchElementException(cls.getName());
-        } else {
-            return runtimeInstance;
-        }
+        return (T) runtimeServices.computeIfAbsent(cls, this::createRuntimeInstance);
     }
 
     /**
@@ -66,14 +61,10 @@ public class KieRuntimeFactory {
      * @return
      */
     private Object createRuntimeInstance(Class<?> c) {
-        KieRuntimeService kieRuntimeService =
-                KieService.load(KieRuntimes.class)
-                        .getRuntimes()
-                        .get(c.getName());
+        KieRuntimeService kieRuntimeService = KieService.load(KieRuntimes.class).getRuntime(c);
         if (kieRuntimeService == null) {
-            return null;
-        } else {
-            return kieRuntimeService.newKieRuntime(kieBase);
+            throw new NoSuchElementException(c.getName());
         }
+        return kieRuntimeService.newKieRuntime(kieBase);
     }
 }
