@@ -94,7 +94,7 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
 
-    <version.maven>3.6.3</version.maven>
+    <version.maven>3.8.1</version.maven>
     <version.maven.plugin>3.6.0</version.maven.plugin>
 
     <version.plexus>1.6</version.plexus>

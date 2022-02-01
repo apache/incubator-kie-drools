@@ -20,7 +20,7 @@
 **JIRA Issues:** https://issues.jboss.org/projects/KOGITO
 
 ## Requirements
-- [Maven](https://maven.apache.org/) 3.6.3 or later
+- [Maven](https://maven.apache.org/) 3.8.1 or later
 - [Java](https://openjdk.java.net/install/) 11 or later (devel package)
 - optional: Docker installation for running integration tests
 
