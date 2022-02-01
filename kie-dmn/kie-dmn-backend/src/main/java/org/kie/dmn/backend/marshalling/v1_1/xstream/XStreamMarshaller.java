@@ -215,6 +215,7 @@ public class XStreamMarshaller
     public static String formatXml(String xml){
         try{
            TransformerFactory transformerFactory = SAXTransformerFactory.newInstance();
+           transformerFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
            transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
            Transformer serializer = transformerFactory.newTransformer();
            serializer.setOutputProperty(OutputKeys.INDENT, "yes");         
