@@ -22,7 +22,7 @@ import java.util.ServiceLoader;
 
 public class KieBaseUpdatersImpl implements KieBaseUpdaters {
 
-    private Collection<KieBaseUpdaterFactory> children;
+    private volatile Collection<KieBaseUpdaterFactory> children;
 
     @Override
     public Collection<KieBaseUpdaterFactory> getChildren() {

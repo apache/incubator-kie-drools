@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 public abstract class AbstractMultiService<K, V> {
-    private Map<K, V> servicesMap;
+
+    private volatile Map<K, V> servicesMap;
 
     protected V getService(K key) {
         if (servicesMap == null) {
