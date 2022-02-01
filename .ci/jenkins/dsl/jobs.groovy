@@ -12,7 +12,7 @@ def getDefaultJobParams(String repoName = 'optaplanner') {
     return KogitoJobTemplate.getDefaultJobParams(this, repoName)
 }
 
-Map getMultijobPRConfig() {
+Map getMultijobPRConfig(boolean isNative = false) {
     return [
         parallel: true,
         buildchain: true,
@@ -30,7 +30,8 @@ Map getMultijobPRConfig() {
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream"
+                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream",
+                    ADDITIONAL_TIMEOUT: isNative ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',
@@ -111,7 +112,7 @@ void setupMultijobPrDefaultChecks() {
 }
 
 void setupMultijobPrNativeChecks() {
-    def multijobConfig = getMultijobPRConfig()
+    def multijobConfig = getMultijobPRConfig(true)
     multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream,native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
     multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream-native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
     KogitoJobTemplate.createMultijobNativePRJobs(this, multijobConfig) { return getDefaultJobParams() }
