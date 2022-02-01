@@ -183,11 +183,6 @@ public class DMNMessageImpl implements DMNMessage {
         sb.append("DMN: ");
         sb.append(this.message);
         sb.append(" (");
-        if (this.getPath() != null) {
-            sb.append("resource: ");
-            sb.append(this.getPath());
-            sb.append(", ");
-        }
         if (this.getSourceId() != null) { // if toString() via org.kie.api.builder.Message would be helpful to report this 
             sb.append("DMN id: ");
             sb.append(this.getSourceId());
@@ -223,5 +218,14 @@ public class DMNMessageImpl implements DMNMessage {
         r.kieBaseName = this.kieBaseName;
 
         return r;
+    }
+    
+    public void setPath(String path) {
+    	this.path = path;
+    }
+    
+    public DMNMessageImpl withPath(String path) {
+    	setPath(path);
+    	return this;
     }
 }

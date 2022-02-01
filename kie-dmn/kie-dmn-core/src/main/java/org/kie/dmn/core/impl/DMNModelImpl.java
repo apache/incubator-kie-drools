@@ -88,7 +88,7 @@ public class DMNModelImpl
     private Map<String, DecisionServiceNode> decisionServices    = new LinkedHashMap<>();
 
     // these are messages created at loading/compilation time
-    private DMNMessageManager messages = new DefaultDMNMessagesManager();
+    private DMNMessageManager messages;
 
     private DMNTypeRegistry types;
     /**
@@ -107,11 +107,13 @@ public class DMNModelImpl
         this.definitions = definitions;
         wireTypeRegistry(definitions);
         importChain = new ImportChain(this);
+        messages = new DefaultDMNMessagesManager(null);
     }
 
     public DMNModelImpl(Definitions dmndefs, Resource resource) {
         this(dmndefs);
         this.setResource(resource);
+        messages = new DefaultDMNMessagesManager(resource);
     }
 
     private void wireTypeRegistry(Definitions definitions) {
@@ -435,6 +437,7 @@ public class DMNModelImpl
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.serializedAs = (SerializationFormat) in.readObject();
         this.resource = (Resource) in.readObject();
+        this.messages = new DefaultDMNMessagesManager(this.resource);
         String xml = (String) in.readObject();
         
         if ( !(in instanceof DroolsObjectInputStream) ) {

@@ -16,6 +16,17 @@
 
 package org.kie.dmn.validation;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,16 +53,6 @@ import org.kie.dmn.core.v1_3.DMN13specificTest;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class ValidatorTest extends AbstractValidatorTest {
 
@@ -116,6 +117,7 @@ public class ValidatorTest extends AbstractValidatorTest {
         List<DMNMessage> validateXML = validator.validate( new File(this.getClass().getResource( "invalidXml.dmn" ).toURI()), DMNValidator.Validation.VALIDATE_SCHEMA);
         assertThat( ValidatorUtil.formatMessages( validateXML ), validateXML.size(), is( 1 ) );
         assertThat( validateXML.get( 0 ).toString(), validateXML.get( 0 ).getMessageType(), is( DMNMessageType.FAILED_XML_VALIDATION ) );
+        assertThat( validateXML.get(0).getPath(), containsString("invalidXml.dmn") );
     }
 
     @Test
