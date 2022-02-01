@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.kie.api.KieBase;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 public class GuidedScoreCardFactory {
-    private static GuidedScoreCardProvider provider = ServiceRegistry.getService(GuidedScoreCardProvider.class);
+    private static GuidedScoreCardProvider provider = KieService.load(GuidedScoreCardProvider.class);
 
     public static String loadFromInputStream(InputStream is) throws IOException {
         return getGuidedScoreCardProvider().loadFromInputStream(is);

@@ -494,7 +494,7 @@ public class KieBuilderTest {
         Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL))
                 .isInstanceOf(RuntimeException.class);
 
-        Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRF))
+        Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.bpmn"), ResourceType.BPMN2))
                 .isInstanceOf(RuntimeException.class);
     }
 

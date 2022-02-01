@@ -16,7 +16,7 @@
 
 package org.kie.internal.builder.impl;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKeyFactory;
 
@@ -24,7 +24,7 @@ public class KieInternalServicesImpl implements KieInternalServices {
 
     @Override
     public CorrelationKeyFactory newCorrelationKeyFactory() {
-        return ServiceRegistry.getService(CorrelationKeyFactory.class);
+        return KieService.load(CorrelationKeyFactory.class);
     }
 
 

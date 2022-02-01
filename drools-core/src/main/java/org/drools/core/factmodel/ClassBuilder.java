@@ -19,9 +19,9 @@ package org.drools.core.factmodel;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kie.api.Service;
+import org.kie.api.internal.utils.KieService;
 
-public interface ClassBuilder extends Service {
+public interface ClassBuilder extends KieService {
 
     byte[] buildClass( ClassDefinition def, ClassLoader classLoader ) throws IOException,
             SecurityException,

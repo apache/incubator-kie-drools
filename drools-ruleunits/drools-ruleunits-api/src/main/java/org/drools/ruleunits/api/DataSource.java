@@ -17,7 +17,7 @@ package org.drools.ruleunits.api;
 
 import java.util.Iterator;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 public interface DataSource<T> extends Iterable<T> {
 
@@ -27,7 +27,7 @@ public interface DataSource<T> extends Iterable<T> {
 
     void subscribe(DataProcessor<T> subscriber);
 
-    interface Factory {
+    interface Factory extends KieService {
         <T> DataStream<T> createStream();
 
         <T> DataStore<T> createStore();
@@ -50,7 +50,7 @@ public interface DataSource<T> extends Iterable<T> {
     class FactoryHolder {
 
         private static class LazyHolder {
-            private static Factory INSTANCE = ServiceRegistry.getInstance().get(Factory.class);
+            private static Factory INSTANCE = KieService.load(Factory.class);
         }
 
         public static Factory get() {

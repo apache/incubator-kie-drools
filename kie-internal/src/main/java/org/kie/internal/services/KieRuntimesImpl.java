@@ -16,32 +16,24 @@
 
 package org.kie.internal.services;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.api.internal.runtime.KieRuntimes;
 
-public class KieRuntimesImpl implements KieRuntimes, Consumer<KieRuntimeService> {
-    private Map<String, KieRuntimeService> runtimes;
+public class KieRuntimesImpl extends AbstractMultiService<Class<?>, KieRuntimeService> implements KieRuntimes {
 
-    public KieRuntimesImpl() {
-        runtimes = new HashMap<String, KieRuntimeService>();
+    @Override
+    public KieRuntimeService getRuntime(Class<?> clazz) {
+        return getService(clazz);
+    }
+
+
+    @Override
+    protected Class<KieRuntimeService> serviceClass() {
+        return KieRuntimeService.class;
     }
 
     @Override
-    public Map<String, KieRuntimeService> getRuntimes() {
-        return this.runtimes;
-    }
-
-    @Override
-    public Class getServiceInterface() {
-        return KieRuntimes.class;
-    }
-
-    @Override
-    public void accept( KieRuntimeService runtime ) {
-        runtimes.put(runtime.getServiceInterface().getName(), runtime);
+    protected Class<?> serviceKey(KieRuntimeService service) {
+        return service.getServiceInterface();
     }
 }

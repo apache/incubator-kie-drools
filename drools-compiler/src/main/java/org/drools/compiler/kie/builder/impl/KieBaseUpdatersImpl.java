@@ -17,21 +17,26 @@
 package org.drools.compiler.kie.builder.impl;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.Collection;
+import java.util.ServiceLoader;
 
-public class KieBaseUpdatersImpl implements Consumer<KieBaseUpdaterFactory>,
-                                            KieBaseUpdaters {
+public class KieBaseUpdatersImpl implements KieBaseUpdaters {
 
-    List<KieBaseUpdaterFactory> children = new ArrayList<>();
+    private volatile Collection<KieBaseUpdaterFactory> children;
 
     @Override
-    public List<KieBaseUpdaterFactory> getChildren() {
+    public Collection<KieBaseUpdaterFactory> getChildren() {
+        if (children == null) {
+            synchronized (this) {
+                if (children == null) {
+                    children = new ArrayList<>();
+                    ServiceLoader<KieBaseUpdaterFactory> loader = ServiceLoader.load(KieBaseUpdaterFactory.class);
+                    for (KieBaseUpdaterFactory kieBaseUpdaterFactory : loader) {
+                        children.add(kieBaseUpdaterFactory);
+                    }
+                }
+            }
+        }
         return children;
-    }
-
-    @Override
-    public void accept(KieBaseUpdaterFactory o) {
-        children.add(o);
     }
 }

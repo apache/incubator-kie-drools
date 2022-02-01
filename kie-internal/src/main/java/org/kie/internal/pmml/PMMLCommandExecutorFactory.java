@@ -15,12 +15,12 @@
  */
 package org.kie.internal.pmml;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface PMMLCommandExecutorFactory {
+public interface PMMLCommandExecutorFactory extends KieService {
 
     class FactoryHolder {
-        private static final PMMLCommandExecutorFactory factory = ServiceRegistry.getService(PMMLCommandExecutorFactory.class);
+        private static final PMMLCommandExecutorFactory factory = KieService.load(PMMLCommandExecutorFactory.class);
     }
 
     static PMMLCommandExecutorFactory get() {

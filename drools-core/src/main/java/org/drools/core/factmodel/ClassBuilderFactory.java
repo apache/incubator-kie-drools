@@ -17,11 +17,11 @@
 package org.drools.core.factmodel;
 
 import org.drools.core.rule.TypeDeclaration;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
-public interface ClassBuilderFactory {
+public interface ClassBuilderFactory extends KieService {
 
     boolean DUMP_GENERATED_CLASSES = false;
 
@@ -29,7 +29,7 @@ public interface ClassBuilderFactory {
         private static final ClassBuilderFactory factory = getFactory();
 
         private static ClassBuilderFactory getFactory() {
-            ClassBuilderFactory instance = ServiceRegistry.getService( ClassBuilderFactory.class );
+            ClassBuilderFactory instance = KieService.load( ClassBuilderFactory.class );
             return instance != null ? instance : throwExceptionForMissingMvel();
         }
     }

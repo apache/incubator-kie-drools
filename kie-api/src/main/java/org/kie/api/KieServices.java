@@ -26,7 +26,7 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.KieCommands;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
@@ -48,7 +48,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
  * KieServices kieServices = KieServices.Factory.get();
  * </pre>
  */
-public interface KieServices {
+public interface KieServices extends KieService {
 
     /**
      * Returns the KieResources, a factory that provides Resource implementations for the desired IO resource
@@ -355,7 +355,7 @@ public interface KieServices {
     class Factory {
 
         private static class LazyHolder {
-            private static KieServices INSTANCE = ServiceRegistry.getService(KieServices.class);
+            private static KieServices INSTANCE = KieService.load(KieServices.class);
         }
 
         /**

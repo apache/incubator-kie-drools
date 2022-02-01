@@ -37,34 +37,12 @@ public interface KieAssemblerService extends KieService {
         }
     }
 
-    default void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        addResource(kbuilder, resource, type, configuration);
-    }
+    default void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception { }
 
     default void addResourcesAfterRules(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         for (ResourceWithConfiguration rd : resources) {
             rd.getBeforeAdd().accept(kbuilder);
             addResourceAfterRules(kbuilder, rd.getResource(), type, rd.getResourceConfiguration());
-            rd.getAfterAdd().accept(kbuilder);
-        }
-    }
-
-    /**
-     * @deprecated As of version 7.51.0 replaced by {@link #addResourceAfterRules(Object, Resource, ResourceType, ResourceConfiguration)}
-     */
-    @Deprecated
-    default void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-
-    }
-
-    /**
-     * @deprecated As of version 7.51.0 replaced by {@link #addResourcesAfterRules(Object, Collection, ResourceType)}
-     */
-    @Deprecated
-    default void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
-        for (ResourceWithConfiguration rd : resources) {
-            rd.getBeforeAdd().accept(kbuilder);
-            addResource(kbuilder, rd.getResource(), type, rd.getResourceConfiguration());
             rd.getAfterAdd().accept(kbuilder);
         }
     }

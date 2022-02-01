@@ -38,12 +38,12 @@ import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.ClassUtils;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatefulSessionPool;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
@@ -62,7 +62,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.event.KieRuntimeEventManager;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
@@ -286,7 +286,7 @@ public class KieContainerImpl
                 KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(
                         AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption()));
 
-                KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+                KieBaseUpdaters updaters = KieService.load(KieBaseUpdaters.class);
                 updaters.getChildren()
                         .stream()
                         .map(kbu -> kbu.create(new KieBaseUpdatersContext(kieBaseUpdaterOptions,

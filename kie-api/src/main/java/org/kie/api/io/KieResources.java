@@ -21,13 +21,13 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.kie.api.Service;
 import org.kie.api.definition.KieDescr;
+import org.kie.api.internal.utils.KieService;
 
 /**
  * KieResources is a factory that provides Resource implementations for the desired IO resource
  */
-public interface KieResources extends Service {
+public interface KieResources extends KieService {
 
     Resource newUrlResource(URL url);
 

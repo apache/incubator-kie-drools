@@ -16,11 +16,11 @@
 
 package org.drools.core.rule;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface EvalConditionFactory {
+public interface EvalConditionFactory extends KieService {
 
-    public EvalCondition createEvalCondition(final Declaration[] requiredDeclarations);
+    EvalCondition createEvalCondition(final Declaration[] requiredDeclarations);
 
     class Factory {
 
@@ -29,7 +29,7 @@ public interface EvalConditionFactory {
             private static final EvalConditionFactory INSTANCE = createInstance();
 
             private static EvalConditionFactory createInstance() {
-                EvalConditionFactory factory = ServiceRegistry.getService(EvalConditionFactory.class);
+                EvalConditionFactory factory = KieService.load(EvalConditionFactory.class);
                 return factory != null ? factory : new EvalConditionFactoryImpl();
             }
         }

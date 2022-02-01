@@ -34,6 +34,7 @@ import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.util.Drools;
 import org.drools.mvel.accessors.BaseBooleanClassFieldReader;
 import org.drools.mvel.accessors.BaseBooleanClassFieldWriter;
 import org.drools.mvel.accessors.BaseByteClassFieldReader;
@@ -81,7 +82,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
     private static final ProtectionDomain              PROTECTION_DOMAIN;
 
     static {
-        PROTECTION_DOMAIN = AccessController.doPrivileged((PrivilegedAction<ProtectionDomain>) ClassFieldAccessorFactory.class::getProtectionDomain);
+        PROTECTION_DOMAIN = Drools.isNativeImage() ? null : AccessController.doPrivileged((PrivilegedAction<ProtectionDomain>) ClassFieldAccessorFactory.class::getProtectionDomain);
     }
 
     @Override

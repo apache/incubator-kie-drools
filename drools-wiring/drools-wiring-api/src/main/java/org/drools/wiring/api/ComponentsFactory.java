@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -66,6 +66,6 @@ public class ComponentsFactory {
     }
 
     private static class Holder {
-        private static ComponentsSupplier supplier = ServiceRegistry.getInstance().get(ComponentsSupplier.class);
+        private static ComponentsSupplier supplier = KieService.load(ComponentsSupplier.class);
     }
 }

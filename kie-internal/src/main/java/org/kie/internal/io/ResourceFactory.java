@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.KnowledgeDescr;
@@ -133,7 +133,7 @@ public class ResourceFactory {
     }
 
     private static class LazyHolder {
-        private static final KieResources service = ServiceRegistry.getService(KieResources.class);
+        private static final KieResources service = KieService.load(KieResources.class);
     }
 
 }

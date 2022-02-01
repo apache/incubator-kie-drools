@@ -27,11 +27,11 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
-import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.io.impl.ResourceFactoryServiceImpl;
+import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -42,7 +42,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.KieCommands;
 import org.kie.api.concurrent.KieExecutors;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
@@ -230,7 +230,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
-        KieScannerFactoryService scannerFactoryService = ServiceRegistry.getService(KieScannerFactoryService.class);
+        KieScannerFactoryService scannerFactoryService = KieService.load(KieScannerFactoryService.class);
         if (scannerFactoryService == null) {
             throw new RuntimeException( "Cannot instance a maven based KieScanner, is kie-ci on the classpath?" );
         }
@@ -255,7 +255,7 @@ public class KieServicesImpl implements InternalKieServices {
 
     public KieMarshallers getMarshallers() {
         // instantiating directly, but we might want to use the service registry instead
-        KieMarshallers kieMarshallers = ServiceRegistry.getService( KieMarshallers.class );
+        KieMarshallers kieMarshallers = KieService.load( KieMarshallers.class );
         if (kieMarshallers == null) {
             throw new RuntimeException("Marshaller not available, please add the module org.drools:drools-serialization-protobuf to your classpath.");
         }
@@ -273,7 +273,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieStoreServices getStoreServices() {
-        return ServiceRegistry.getService( KieStoreServices.class );
+        return KieService.load( KieStoreServices.class );
     }
 
     public ReleaseId newReleaseId(String groupId, String artifactId, String version) {

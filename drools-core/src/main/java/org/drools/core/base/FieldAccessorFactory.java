@@ -16,16 +16,16 @@ package org.drools.core.base;
 
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
-public interface FieldAccessorFactory {
+public interface FieldAccessorFactory extends KieService {
     class Holder {
         private static final FieldAccessorFactory fieldFactory = getFactory();
 
         private static FieldAccessorFactory getFactory() {
-            FieldAccessorFactory instance = ServiceRegistry.getService( FieldAccessorFactory.class );
+            FieldAccessorFactory instance = KieService.load( FieldAccessorFactory.class );
             return instance != null ? instance : throwExceptionForMissingMvel();
         }
     }

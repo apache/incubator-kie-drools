@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import com.sun.tools.xjc.Options;
 import org.kie.api.KieBase;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
 /**
  * This factory is used to build the knowledge base resources that are held collectively in
@@ -36,11 +36,11 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public class KnowledgeBuilderFactory {
 
     private static class FactoryServiceHolder {
-        private static final KnowledgeBuilderFactoryService factoryService = ServiceRegistry.getService(KnowledgeBuilderFactoryService.class);
+        private static final KnowledgeBuilderFactoryService factoryService = KieService.load(KnowledgeBuilderFactoryService.class);
     }
 
     private static class JaxbConfFactoryServiceHolder {
-        private static final JaxbConfigurationFactoryService factoryService = ServiceRegistry.getService(JaxbConfigurationFactoryService.class);
+        private static final JaxbConfigurationFactoryService factoryService = KieService.load(JaxbConfigurationFactoryService.class);
     }
 
     /**

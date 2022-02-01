@@ -15,14 +15,14 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.KnowledgeBuilder;
 
 
 public class CMMNCaseFactory {
 
     private static class LazyHolder {
-        private static CMMNCaseProvider provider = ServiceRegistry.getService( CMMNCaseProvider.class );
+        private static CMMNCaseProvider provider = KieService.load( CMMNCaseProvider.class );
     }
 
     public static void configurePackageBuilder(KnowledgeBuilder kBuilder) {

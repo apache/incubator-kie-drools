@@ -34,6 +34,11 @@ import org.kie.internal.builder.KnowledgeBuilder;
 public class DynamicComponentsSupplier implements ComponentsSupplier {
 
     @Override
+    public int servicePriority() {
+        return 1;
+    }
+
+    @Override
     public ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         return DynamicProjectClassLoader.create(parent, resourceProvider);
     }

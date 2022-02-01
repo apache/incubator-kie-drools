@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.internal.assembler.KieAssemblers;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -181,7 +181,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildAssemblerResourcesBeforeRules() {
-        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> resourceTypeListEntry : resourcesByType.entrySet()) {
                 ResourceType type = resourceTypeListEntry.getKey();
@@ -202,7 +202,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildAssemblerResourcesAfterRules() {
-        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
                 List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());

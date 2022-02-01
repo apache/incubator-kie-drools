@@ -15,7 +15,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.KnowledgeBuilder;
 
 
@@ -31,14 +31,7 @@ public class ProcessBuilderFactory {
         }
     }
 
-    /**
-     * This method is for test utility only.
-     */
-    public static void setProcessBuilderFactoryService(ProcessBuilderFactoryService provider) {
-        ProcessBuilderFactory.provider = provider;
-    }
-
     private static ProcessBuilderFactoryService initializeProvider() {
-        return ServiceRegistry.getService( ProcessBuilderFactoryService.class );
+        return KieService.load( ProcessBuilderFactoryService.class );
     }
 }

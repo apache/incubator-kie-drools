@@ -15,11 +15,11 @@
 
 package org.kie.internal.utils;
 
-import org.kie.api.Service;
 import org.kie.api.builder.KieModule;
+import org.kie.api.internal.utils.KieService;
 
-public interface ClassLoaderResolver extends Service {
+public interface ClassLoaderResolver extends KieService {
 
-    public ClassLoader getClassLoader( KieModule kmodule );
+    ClassLoader getClassLoader( KieModule kmodule );
 
 }

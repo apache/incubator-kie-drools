@@ -16,10 +16,7 @@
 
 package org.kie.internal.services;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
@@ -28,20 +25,11 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 
-public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerService> {
-    private Map<ResourceType, KieAssemblerService> assemblers;
-
-    public KieAssemblersImpl() {
-        assemblers = new HashMap<>();
-    }
-
-    public Map<ResourceType, KieAssemblerService> getAssemblers() {
-        return assemblers;
-    }
+public class KieAssemblersImpl extends AbstractMultiService<ResourceType, KieAssemblerService> implements KieAssemblers {
 
     @Override
     public void addResourceBeforeRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        KieAssemblerService assembler = assemblers.get(type);
+        KieAssemblerService assembler = getAssembler(type);
         if (assembler != null) {
             assembler.addResourceBeforeRules(knowledgeBuilder,
                                              resource,
@@ -52,9 +40,13 @@ public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerSe
         }
     }
 
+    private KieAssemblerService getAssembler(ResourceType type) {
+        return getService(type);
+    }
+
     @Override
     public void addResourceAfterRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        KieAssemblerService assembler = assemblers.get(type);
+        KieAssemblerService assembler = getAssembler(type);
         if (assembler != null) {
             assembler.addResourceAfterRules(knowledgeBuilder,
                                             resource,
@@ -68,7 +60,7 @@ public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerSe
 
     @Override
     public void addResourcesAfterRules(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
-        KieAssemblerService assembler = assemblers.get(type);
+        KieAssemblerService assembler = getAssembler(type);
         if (assembler != null) {
             assembler.addResourcesAfterRules(knowledgeBuilder, resources, type);
         } else {
@@ -77,7 +69,12 @@ public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerSe
     }
 
     @Override
-    public void accept( KieAssemblerService kieAssemblerService ) {
-        assemblers.put( kieAssemblerService.getResourceType(), kieAssemblerService );
+    protected Class<KieAssemblerService> serviceClass() {
+        return KieAssemblerService.class;
+    }
+
+    @Override
+    protected ResourceType serviceKey(KieAssemblerService service) {
+        return service.getResourceType();
     }
 }

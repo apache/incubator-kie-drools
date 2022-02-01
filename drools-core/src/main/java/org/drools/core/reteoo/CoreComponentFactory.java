@@ -19,16 +19,16 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-public interface CoreComponentFactory {
+public interface CoreComponentFactory extends KieService {
 
     NodeFactory getNodeFactoryService();
 
     InternalKnowledgePackage createKnowledgePackage(String name);
 
     class Holder {
-        private static final CoreComponentFactory INSTANCE = ServiceRegistry.getService( CoreComponentFactory.class );
+        private static final CoreComponentFactory INSTANCE = KieService.load( CoreComponentFactory.class );
     }
 
     static CoreComponentFactory get() {

@@ -18,10 +18,10 @@ package org.drools.compiler.compiler;
 import java.io.InputStream;
 
 import org.kie.api.KieBase;
-import org.kie.api.Service;
+import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.ScoreCardConfiguration;
 
-public interface ScoreCardProvider extends Service {
+public interface ScoreCardProvider extends KieService {
 
     @Deprecated
     String loadFromInputStream( InputStream is,

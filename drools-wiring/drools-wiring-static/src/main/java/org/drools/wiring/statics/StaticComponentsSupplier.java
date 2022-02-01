@@ -57,7 +57,11 @@ public class StaticComponentsSupplier implements ComponentsSupplier {
 
     @Override
     public Object createTimerService(String className) {
-        return org.drools.wiring.statics.StaticServiceRegistry.INSTANCE.newInstance("TimerService");
+        try {
+            return Class.forName("org.drools.core.time.impl.JDKTimerService").getConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static class StaticConsequenceExceptionHandler implements ConsequenceExceptionHandler, Externalizable {

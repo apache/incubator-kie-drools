@@ -40,16 +40,15 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimerExpression;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 
-
-public interface ConstraintBuilder {
+public interface ConstraintBuilder extends KieService {
 
     class Holder {
         private static final ConstraintBuilder cBuilder = getConstraintBuilder();
 
         private static ConstraintBuilder getConstraintBuilder() {
-            ConstraintBuilder builder = ServiceRegistry.getService(ConstraintBuilder.class);
+            ConstraintBuilder builder = KieService.load(ConstraintBuilder.class);
             return builder != null ? builder : DummyConstraintBuilder.INSTANCE;
         }
     }
@@ -130,8 +129,8 @@ public interface ConstraintBuilder {
 
     BeanCreator createMVELBeanCreator(Map<String, Object> parameters);
 
-    enum DummyConstraintBuilder implements ConstraintBuilder {
-        INSTANCE;
+    class DummyConstraintBuilder implements ConstraintBuilder {
+        public static final ConstraintBuilder INSTANCE = new DummyConstraintBuilder();
 
         @Override
         public DialectConfiguration createJavaDialectConfiguration() {

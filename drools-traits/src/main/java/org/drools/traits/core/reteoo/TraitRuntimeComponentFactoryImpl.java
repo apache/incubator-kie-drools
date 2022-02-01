@@ -65,4 +65,9 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
     public NamedEntryPointFactory getNamedEntryPointFactory() {
         return new TraitNamedEntryPointFactory();
     }
+
+    @Override
+    public int servicePriority() {
+        return 1;
+    }
 }

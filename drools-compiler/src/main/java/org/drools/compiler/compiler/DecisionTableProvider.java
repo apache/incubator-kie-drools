@@ -15,13 +15,13 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.api.Service;
+import java.util.List;
+
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 
-import java.util.List;
-
-public interface DecisionTableProvider extends Service {
+public interface DecisionTableProvider extends KieService {
 
     String loadFromResource(Resource resource,
                             DecisionTableConfiguration configuration);

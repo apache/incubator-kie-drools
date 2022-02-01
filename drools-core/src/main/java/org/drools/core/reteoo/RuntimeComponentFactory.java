@@ -31,7 +31,7 @@ import org.drools.core.management.GenericKieSessionMonitoringImpl;
 import org.drools.core.marshalling.SerializablePlaceholderResolverStrategy;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.Environment;
@@ -39,7 +39,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 
-public interface RuntimeComponentFactory {
+public interface RuntimeComponentFactory extends KieService {
 
     String NO_RUNTIME = "Missing runtime. Please add the module org.drools:drools-kiesession to your classpath.";
 
@@ -75,7 +75,7 @@ public interface RuntimeComponentFactory {
         private static final RuntimeComponentFactory INSTANCE = createInstance();
 
         static RuntimeComponentFactory createInstance() {
-            RuntimeComponentFactory factory = ServiceRegistry.getService( RuntimeComponentFactory.class );
+            RuntimeComponentFactory factory = KieService.load( RuntimeComponentFactory.class );
             if (factory == null) {
                 throwExceptionForMissingRuntime();
                 return null;

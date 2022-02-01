@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -453,11 +452,6 @@ public class KnowledgeBuilderTest {
     @Ignore
     @Test
     public void testResourceMapping() throws Exception {
-        ServiceRegistry.Impl serviceRegistry = (ServiceRegistry.Impl) ServiceRegistry.getInstance();
-        serviceRegistry.reset();
-
-        serviceRegistry.reload();
-
         String rule = "package org.drools.mvel.compiler.test\n" +
                 "rule R1 when\n" +
                 " \n" +

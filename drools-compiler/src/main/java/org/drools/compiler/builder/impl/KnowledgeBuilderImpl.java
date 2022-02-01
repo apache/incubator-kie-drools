@@ -143,7 +143,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -318,7 +318,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     private TypeDeclarationBuilder createTypeDeclarationBuilder() {
         TypeDeclarationBuilderFactory typeDeclarationBuilderFactory =
-                Optional.ofNullable(ServiceRegistry.getService(TypeDeclarationBuilderFactory.class))
+                Optional.ofNullable(KieService.load(TypeDeclarationBuilderFactory.class))
                         .orElse(new DefaultTypeDeclarationBuilderFactory());
 
         return typeDeclarationBuilderFactory.createTypeDeclarationBuilder(this);
@@ -756,7 +756,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
 
         assemblers.addResourceAfterRules(this,
                                resource,
@@ -766,7 +766,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     @Deprecated
     void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
 
         assemblers.addResourcesAfterRules(this, resources, type);
     }
@@ -790,7 +790,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         try (Reader resourceReader = resource.getReader()) {
             ChangeSet changeSet = reader.read(resourceReader);
             if (changeSet == null) {
-                throw new RuntimeException("ChangeSet cannot be read! " + resource.toString());
+                throw new RuntimeException("ChangeSet cannot be read! " + resource);
             } else {
                 for (Resource nestedResource : changeSet.getResourcesAdded()) {
                     InternalResource iNestedResourceResource = (InternalResource) nestedResource;

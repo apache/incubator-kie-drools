@@ -16,9 +16,11 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.util.List;
+import java.util.Collection;
 
-public interface KieBaseUpdaters {
+import org.kie.api.internal.utils.KieService;
 
-    List<KieBaseUpdaterFactory> getChildren();
+public interface KieBaseUpdaters extends KieService {
+
+    Collection<KieBaseUpdaterFactory> getChildren();
 }
