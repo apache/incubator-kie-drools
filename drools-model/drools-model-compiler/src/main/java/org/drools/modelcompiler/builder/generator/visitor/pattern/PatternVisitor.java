@@ -18,20 +18,16 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
-import org.drools.drl.ast.descr.FromDescr;
-import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.compiler.rule.builder.XpathAnalysis;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
+import org.drools.modelcompiler.util.PatternUtil;
 
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
@@ -55,7 +51,7 @@ public class PatternVisitor {
                 return constraintDescrs;
             }
         } else {
-            pattern = normalizeOOPathPattern( pattern );
+            pattern = PatternUtil.normalizeOOPathPattern(pattern, context);
             className = pattern.getObjectType();
         }
 
@@ -92,51 +88,6 @@ public class PatternVisitor {
             return new PatternAccumulateConstraint(context, packageModel, pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs );
         }
         return null;
-    }
-
-    private PatternDescr normalizeOOPathPattern(PatternDescr pattern) {
-        String oopathExpr = pattern.getDescrs().get(0).getText();
-        XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(oopathExpr);
-        XpathAnalysis.XpathPart firstPart = xpathAnalysis.getPart( 0 );
-
-        PatternDescr normalizedPattern = new PatternDescr();
-        normalizedPattern.setObjectType( findPatternType(firstPart) );
-        firstPart.getConstraints().stream().map( ExprConstraintDescr::new ).forEach( normalizedPattern::addConstraint );
-
-        if (xpathAnalysis.getParts().size() == 1) {
-            normalizedPattern.setIdentifier( pattern.getIdentifier() );
-        } else {
-            StringBuilder sb = new StringBuilder();
-            if (pattern.getIdentifier() != null) {
-                sb.append( pattern.getIdentifier() ).append( ": " );
-            }
-            for (int i = 1; i < xpathAnalysis.getParts().size(); i++) {
-                sb.append( "/" ).append( xpathAnalysis.getPart( i ) );
-            }
-            normalizedPattern.addConstraint( new ExprConstraintDescr( sb.toString() ) );
-        }
-
-        FromDescr source = new FromDescr();
-        source.setDataSource(new MVELExprDescr( firstPart.getField() ));
-        normalizedPattern.setSource( source );
-        return normalizedPattern;
-    }
-
-    private String findPatternType(XpathAnalysis.XpathPart firstPart) {
-        if (firstPart.getInlineCast() != null) {
-            return firstPart.getInlineCast();
-        }
-
-        Optional<QueryParameter> queryParameter = context.getQueryParameterByName(firstPart.getField());
-        if (queryParameter.isPresent()) {
-            return queryParameter.get().getType().getCanonicalName();
-        }
-
-        Class<?> ruleUnitVarType = context.getRuleUnitVarType(firstPart.getField());
-        if (ruleUnitVarType == null) {
-            throw new IllegalArgumentException("Unknown declaration: " + firstPart.getField());
-        }
-        return ruleUnitVarType.getCanonicalName();
     }
 
     private boolean areAllConstraintsPositional(List<? extends BaseDescr> constraintDescrs) {

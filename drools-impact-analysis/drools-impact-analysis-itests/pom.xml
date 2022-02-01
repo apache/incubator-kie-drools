@@ -32,6 +32,12 @@
       <artifactId>drools-decisiontables</artifactId>
     </dependency>
 
+    <!-- Add drools-ruleunits-impl if you analyze kogito(ruleunit) rules -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-impl</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
