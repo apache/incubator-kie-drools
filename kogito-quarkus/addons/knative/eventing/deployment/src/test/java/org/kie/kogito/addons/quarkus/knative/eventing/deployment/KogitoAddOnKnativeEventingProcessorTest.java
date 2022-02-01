@@ -47,7 +47,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, resourcesMetadataBuildItem, producer);
+        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -68,7 +68,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, resourcesMetadataBuildItem, producer);
+        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -90,7 +90,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         eventingProcessor.config.generateKogitoSource = true;
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, resourcesMetadataBuildItem, producer);
+        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -111,7 +111,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, resourcesMetadataBuildItem, producer);
+        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -131,7 +131,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, resourcesMetadataBuildItem, producer);
+        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNull(producer.getItem());
     }

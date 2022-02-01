@@ -63,10 +63,8 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
         Collection<ChannelInfo> channelsInfo = ChannelMappingStrategy.getChannelMapping();
         Map<DotName, EventGenerator> generators = new HashMap<>();
 
-        if (processBuildItem.isPresent()) {
-            processBuildItem.get().getProcessContainerGenerators()
-                    .forEach(containerGenerator -> containerGenerator.getProcesses().forEach(process -> collect(process, channelsInfo, generators, kogitoContext.getKogitoBuildContext())));
-        }
+        processBuildItem.ifPresent(kogitoProcessContainerGeneratorBuildItem -> kogitoProcessContainerGeneratorBuildItem.getProcessContainerGenerators()
+                .forEach(containerGenerator -> containerGenerator.getProcesses().forEach(process -> collect(process, channelsInfo, generators, kogitoContext.getKogitoBuildContext()))));
 
         Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         metadataProducer.produce(new KogitoMessagingMetadataBuildItem(generators));

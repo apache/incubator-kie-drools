@@ -77,14 +77,14 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
      */
     @BuildStep(onlyIfNot = IsTest.class)
     void generate(OutputTargetBuildItem outputTarget,
-            KogitoKnativeResourcesMetadataBuildItem resourcesMetadata,
+            Optional<KogitoKnativeResourcesMetadataBuildItem> resourcesMetadata,
             BuildProducer<GeneratedFileSystemResourceBuildItem> generatedResources) {
-        if (resourcesMetadata != null) {
-            final List<Trigger> triggers = this.generateTriggers(resourcesMetadata);
-            final Optional<KogitoSource> kogitoSource = this.generateKogitoSource(resourcesMetadata);
+        if (resourcesMetadata.isPresent()) {
+            final List<Trigger> triggers = this.generateTriggers(resourcesMetadata.get());
+            final Optional<KogitoSource> kogitoSource = this.generateKogitoSource(resourcesMetadata.get());
             Optional<SinkBinding> sinkBinding = Optional.empty();
             if (kogitoSource.isEmpty()) {
-                sinkBinding = this.generateSinkBinding(resourcesMetadata);
+                sinkBinding = this.generateSinkBinding(resourcesMetadata.get());
             }
 
             if (sinkBinding.isPresent() || kogitoSource.isPresent() || !triggers.isEmpty()) {
@@ -98,10 +98,10 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
                                 .addOptionalResource(broker)
                                 .getResourcesBytes();
                 if (resourcesBytes == null || resourcesBytes.length == 0) {
-                    LOGGER.warn("Couldn't generate Kogito Knative resources for service {}", resourcesMetadata.getDeployment().getName());
+                    LOGGER.warn("Couldn't generate Kogito Knative resources for service {}", resourcesMetadata.get().getDeployment().getName());
                 } else {
                     generatedResources.produce(new GeneratedFileSystemResourceBuildItem(Path.of(TARGET_KUBERNETES, FILE_NAME).toString(), resourcesBytes));
-                    LOGGER.info("Generated Knative resources for Kogito Service {} in {}", resourcesMetadata.getDeployment().getName(), outputDir.resolve(FILE_NAME));
+                    LOGGER.info("Generated Knative resources for Kogito Service {} in {}", resourcesMetadata.get().getDeployment().getName(), outputDir.resolve(FILE_NAME));
                 }
             } else {
                 LOGGER.info("No events found in the Kogito resources defined in the project. Skipping Kogito Knative resources generation.");
