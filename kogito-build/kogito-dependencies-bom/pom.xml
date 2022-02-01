@@ -16,12 +16,12 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.6.2.Final</version.io.quarkus>
-    <version.io.quarkus.quarkus-test-maven>2.6.2.Final</version.io.quarkus.quarkus-test-maven>
+    <version.io.quarkus>2.7.0.Final</version.io.quarkus>
+    <version.io.quarkus.quarkus-test-maven>2.7.0.Final</version.io.quarkus.quarkus-test-maven>
     <version.org.springframework.boot>2.3.10.RELEASE</version.org.springframework.boot>
 
     <!-- dependencies versions -->
-    <version.com.fasterxml.jackson>2.12.6</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.13.1</version.com.fasterxml.jackson>
     <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20210928</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>1.0.1</version.io.quarkiverse.jackson-jq>
@@ -31,7 +31,7 @@
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
-    <version.com.google.protobuf>3.19.2</version.com.google.protobuf>
+    <version.com.google.protobuf>3.19.3</version.com.google.protobuf>
     <!-- currently required for integration test only -->
     <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
 
@@ -51,12 +51,12 @@
 
     <version.io.cloudevents>2.2.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
-    <version.io.micrometer>1.8.1</version.io.micrometer>
+    <version.io.micrometer>1.8.2</version.io.micrometer>
     <version.io.serverlessworkflow>4.0.1.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api-core>2.1.17</version.io.smallrye-open-api-core>
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.16.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.18.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.2.2</version.io.vertx>
+    <version.io.vertx>4.2.4</version.io.vertx>
 
     <version.io.swagger.parser.v3>2.0.24</version.io.swagger.parser.v3>
 
@@ -69,7 +69,7 @@
     <version.org.infinispan.protostream>4.4.1.Final</version.org.infinispan.protostream>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
     <version.jakarta.ws.rs>2.1.6</version.jakarta.ws.rs>
-    <version.org.jboss.resteasy>4.7.4.Final</version.org.jboss.resteasy>
+    <version.org.jboss.resteasy>4.7.5.Final</version.org.jboss.resteasy>
     <version.org.keycloak>14.0.0</version.org.keycloak>
     <version.org.confluent.kafka>5.4.3</version.org.confluent.kafka>
     <version.org.mongo>4.3.4</version.org.mongo>
@@ -85,8 +85,8 @@
     <version.org.junit.jupiter>5.8.2</version.org.junit.jupiter>
     <version.org.junit.vintage>5.8.2</version.org.junit.vintage>
     <version.org.junit.platform>1.8.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
-    <version.org.junit.pioneer>1.4.2</version.org.junit.pioneer>
-    <version.org.mockito>4.1.0</version.org.mockito>
+    <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
+    <version.org.mockito>4.3.1</version.org.mockito>
     <version.org.testcontainers>1.16.2</version.org.testcontainers>
 
     <version.org.mvel>2.4.12.Final</version.org.mvel>
