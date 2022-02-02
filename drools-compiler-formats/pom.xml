@@ -25,6 +25,11 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.drools</groupId>
+            <artifactId>drools-compiler-builder-shared</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
             <artifactId>drools-wiring-api</artifactId>
         </dependency>
         <dependency>
