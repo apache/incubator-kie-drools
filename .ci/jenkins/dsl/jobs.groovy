@@ -23,7 +23,7 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
     return jobParams
 }
 
-Map getMultijobPRConfig() {
+Map getMultijobPRConfig(boolean isNative = false) {
     return [
         parallel: true,
         buildchain: true,
@@ -39,7 +39,10 @@ Map getMultijobPRConfig() {
             ], [
                 id: 'kogito-apps',
                 dependsOn: 'kogito-runtimes',
-                repository: 'kogito-apps'
+                repository: 'kogito-apps',
+                env : [
+                    ADDITIONAL_TIMEOUT: isNative ? '360' : '210',
+                ]
             ], [
                 id: 'kogito-examples',
                 dependsOn: 'kogito-runtimes',
@@ -101,7 +104,7 @@ void setupMultijobPrDefaultChecks() {
 }
 
 void setupMultijobPrNativeChecks() {
-    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
+    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig(true)) { return getDefaultJobParams() }
 }
 
 void setupMultijobPrLTSChecks() {
