@@ -25,7 +25,6 @@
   </properties>
 
   <dependencies>
-
     <!-- FEEL -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -168,6 +167,14 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http</artifactId>
     </dependency>
   </dependencies>
 
