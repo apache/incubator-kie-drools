@@ -15,13 +15,13 @@
  */
 package org.drools.compiler.compiler;
 
-import java.util.Arrays;
-
 import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.InternalMessage;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+
+import java.util.Arrays;
 
 /**
  * A base abstract class for all Knowledge Builder results
