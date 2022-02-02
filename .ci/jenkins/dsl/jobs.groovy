@@ -20,7 +20,7 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
     return jobParams
 }
 
-Map getMultijobPRConfig(String timeout = '180') {
+Map getMultijobPRConfig(boolean isNative = false) {
     return [
         parallel: true,
         buildchain: true,
@@ -32,7 +32,7 @@ Map getMultijobPRConfig(String timeout = '180') {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
-                    ADDITIONAL_TIMEOUT: timeout,
+                    ADDITIONAL_TIMEOUT: isNative ? '360' : '210',
                 ]
             ]
         ]
@@ -73,11 +73,11 @@ if (Utils.isLTSBranch(this)) {
 /////////////////////////////////////////////////////////////////
 
 void setupMultijobPrDefaultChecks() {
-    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig('210')) { return getDefaultJobParams() }
+    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
 void setupMultijobPrNativeChecks() {
-    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
+    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig(true)) { return getDefaultJobParams() }
 }
 
 void setupMultijobPrLTSChecks() {
