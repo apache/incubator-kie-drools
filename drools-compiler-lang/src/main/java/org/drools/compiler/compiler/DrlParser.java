@@ -71,15 +71,15 @@ public class DrlParser {
 
     public PackageDescr parse(final boolean isEditor,
                               final String text) throws DroolsParserException {
-        lexer = buildLexer(text, languageLevel);
-        DRLParser parser = buildParser(lexer, languageLevel);
+        lexer = DRLFactory.buildLexer(text, languageLevel);
+        DRLParser parser = DRLFactory.buildParser(lexer, languageLevel);
         return compile(isEditor, parser);
     }
 
     public PackageDescr parse(final boolean isEditor,
                               final Reader reader) throws DroolsParserException {
-        lexer = buildLexer(reader, languageLevel);
-        DRLParser parser = buildParser( lexer, languageLevel );
+        lexer = DRLFactory.buildLexer(reader, languageLevel);
+        DRLParser parser = DRLFactory.buildParser( lexer, languageLevel );
         return compile(isEditor, parser);
     }
 
@@ -162,8 +162,8 @@ public class DrlParser {
         this.resource = resource;
         String encoding = resource instanceof InternalResource ? ((InternalResource) resource).getEncoding() : null;
 
-        lexer = buildLexer(is, encoding, languageLevel);
-        DRLParser parser = buildParser(lexer, languageLevel);
+        lexer = DRLFactory.buildLexer(is, encoding, languageLevel);
+        DRLParser parser = DRLFactory.buildParser(lexer, languageLevel);
         return compile(isEditor, parser);
     }
 
