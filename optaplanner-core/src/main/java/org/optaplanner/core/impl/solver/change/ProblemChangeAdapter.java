@@ -37,10 +37,6 @@ public interface ProblemChangeAdapter<Solution_> {
     }
 
     static <Solution_> ProblemChangeAdapter<Solution_> create(ProblemChange<Solution_> problemChange) {
-        return solverScope -> {
-            problemChange.doChange(solverScope.getWorkingSolution(), solverScope.getProblemChangeDirector());
-            solverScope.getScoreDirector().triggerVariableListeners();
-            return solverScope.calculateScore();
-        };
+        return solverScope -> solverScope.getProblemChangeDirector().doProblemChange(problemChange);
     }
 }

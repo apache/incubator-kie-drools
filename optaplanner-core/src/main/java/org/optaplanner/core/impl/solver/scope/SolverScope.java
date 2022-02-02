@@ -28,12 +28,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
@@ -48,7 +48,7 @@ public class SolverScope<Solution_> {
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_, ?> scoreDirector;
-    private ProblemChangeDirector problemChangeDirector;
+    private DefaultProblemChangeDirector<Solution_> problemChangeDirector;
     /**
      * Used for capping CPU power usage in multithreaded scenarios.
      */
@@ -72,11 +72,11 @@ public class SolverScope<Solution_> {
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public ProblemChangeDirector getProblemChangeDirector() {
+    public DefaultProblemChangeDirector<Solution_> getProblemChangeDirector() {
         return problemChangeDirector;
     }
 
-    public void setProblemChangeDirector(ProblemChangeDirector problemChangeDirector) {
+    public void setProblemChangeDirector(DefaultProblemChangeDirector<Solution_> problemChangeDirector) {
         this.problemChangeDirector = problemChangeDirector;
     }
 

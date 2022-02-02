@@ -17,14 +17,15 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
 import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -73,7 +74,7 @@ public class BasicPlumbingTerminationTest {
     private SolverScope<TestdataSolution> mockSolverScope() {
         InnerScoreDirector<TestdataSolution, ?> scoreDirectorMock = mock(InnerScoreDirector.class);
         SolverScope<TestdataSolution> solverScopeMock = mock(SolverScope.class);
-        doReturn(scoreDirectorMock).when(solverScopeMock).getScoreDirector();
+        when(solverScopeMock.getProblemChangeDirector()).thenReturn(new DefaultProblemChangeDirector<>(scoreDirectorMock));
         return solverScopeMock;
     }
 }

@@ -20,14 +20,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public final class DefaultProblemChangeDirector<Solution_> implements ProblemChangeDirector {
 
-    private final ScoreDirector<Solution_> scoreDirector;
+    private final InnerScoreDirector<Solution_, ?> scoreDirector;
 
-    public DefaultProblemChangeDirector(ScoreDirector<Solution_> scoreDirector) {
+    public DefaultProblemChangeDirector(InnerScoreDirector<Solution_, ?> scoreDirector) {
         this.scoreDirector = scoreDirector;
     }
 
@@ -104,5 +106,11 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     public <EntityOrProblemFact> Optional<EntityOrProblemFact>
             lookUpWorkingObject(EntityOrProblemFact externalObject) {
         return Optional.ofNullable(scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject));
+    }
+
+    public Score<?> doProblemChange(ProblemChange<Solution_> problemChange) {
+        problemChange.doChange(scoreDirector.getWorkingSolution(), this);
+        scoreDirector.triggerVariableListeners();
+        return scoreDirector.calculateScore();
     }
 }

@@ -16,12 +16,15 @@
 
 package org.optaplanner.core.impl.solver.change;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
@@ -43,7 +46,7 @@ public class DefaultProblemChangeDirectorTest {
         final TestdataLavishEntity changedEntity = new TestdataLavishEntity("changed entity", entityGroupOne);
         final TestdataLavishValue changedEntityValue = new TestdataLavishValue("changed entity value", valueGroupOne);
 
-        ScoreDirector<TestdataSolution> scoreDirectorMock = mock(ScoreDirector.class);
+        InnerScoreDirector<TestdataSolution, ?> scoreDirectorMock = mock(InnerScoreDirector.class);
         when(scoreDirectorMock.lookUpWorkingObject(removedEntity)).thenReturn(removedEntity);
         when(scoreDirectorMock.lookUpWorkingObject(changedEntity)).thenReturn(changedEntity);
         when(scoreDirectorMock.lookUpWorkingObject(removedFact)).thenReturn(removedFact);

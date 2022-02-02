@@ -39,7 +39,6 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.change.ProblemChange;
-import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -97,7 +96,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     private volatile Solver<Solution_> solver;
     private String solutionFileName = null;
     private InnerScoreDirector<Solution_, Score_> guiScoreDirector;
-    private ProblemChangeDirector problemChangeDirector;
+    private DefaultProblemChangeDirector<Solution_> problemChangeDirector;
     private ScoreManager<Solution_, Score_> scoreManager;
 
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
@@ -359,8 +358,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         if (solver.isSolving()) {
             solver.addProblemChange(problemChange);
         } else {
-            problemChange.doChange(guiScoreDirector.getWorkingSolution(), problemChangeDirector);
-            guiScoreDirector.calculateScore();
+            problemChangeDirector.doProblemChange(problemChange);
         }
     }
 
