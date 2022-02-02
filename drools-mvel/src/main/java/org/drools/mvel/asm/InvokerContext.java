@@ -15,7 +15,6 @@
 package org.drools.mvel.asm;
 
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 
 import java.util.Map;
 

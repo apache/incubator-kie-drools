@@ -15,27 +15,10 @@
 package org.drools.mvel;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.mvel.evaluators.AfterEvaluatorDefinition;
-import org.drools.mvel.evaluators.BeforeEvaluatorDefinition;
-import org.drools.mvel.evaluators.CoincidesEvaluatorDefinition;
-import org.drools.mvel.evaluators.DuringEvaluatorDefinition;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
-import org.drools.mvel.evaluators.FinishedByEvaluatorDefinition;
-import org.drools.mvel.evaluators.FinishesEvaluatorDefinition;
-import org.drools.mvel.evaluators.IncludesEvaluatorDefinition;
-import org.drools.mvel.evaluators.MeetsEvaluatorDefinition;
-import org.drools.mvel.evaluators.MetByEvaluatorDefinition;
-import org.drools.mvel.evaluators.OverlappedByEvaluatorDefinition;
-import org.drools.mvel.evaluators.OverlapsEvaluatorDefinition;
-import org.drools.mvel.evaluators.StartedByEvaluatorDefinition;
-import org.drools.mvel.evaluators.StartsEvaluatorDefinition;
-import org.drools.mvel.evaluators.StrEvaluatorDefinition;
 import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.MVELExecutor;
@@ -85,28 +68,5 @@ public class MVELCoreComponentsBuilder implements CoreComponentsBuilder {
         ParserConfiguration conf = (( MVELDialectRuntimeData)data).getParserConfiguration();
         conf.setClassLoader( classLoader );
         return new ParserContext( conf );
-    }
-
-    private final static List<EvaluatorDefinition> EVALUATOR_DEFINITIONS = new ArrayList<>();
-
-    static {
-        EVALUATOR_DEFINITIONS.add( new BeforeEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new AfterEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new MeetsEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new MetByEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new OverlapsEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new OverlappedByEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new IncludesEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new DuringEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new FinishesEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new FinishedByEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new StartsEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new StartedByEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new CoincidesEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new StrEvaluatorDefinition() );
-    }
-
-    public List<EvaluatorDefinition> getEvaluatorDefinitions() {
-        return EVALUATOR_DEFINITIONS;
     }
 }

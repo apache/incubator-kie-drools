@@ -18,7 +18,7 @@ package org.kie.scanner;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.drools.core.kie.impl.MessageImpl;
+import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;

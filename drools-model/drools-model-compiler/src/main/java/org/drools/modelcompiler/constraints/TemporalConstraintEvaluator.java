@@ -29,7 +29,7 @@ import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.temporal.TemporalPredicate;
 
-import static org.drools.core.base.evaluators.TimeIntervalParser.getTimestampFromDate;
+import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
 
 public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 

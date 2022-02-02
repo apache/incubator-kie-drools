@@ -17,7 +17,7 @@
 //created on: 24.9.2007
 package org.drools.verifier.rangeChecks.cleanUp
 
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 
 import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Gap;

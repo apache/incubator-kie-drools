@@ -36,13 +36,11 @@ import org.drools.core.ObjectFilter;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.reteoo.LeftTuple;
@@ -51,7 +49,9 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.util.HierarchyEncoder;
+import org.drools.traits.core.factmodel.HierarchyEncoder;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.Person;
@@ -66,6 +66,7 @@ import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 import org.drools.traits.core.factmodel.TripleBasedBean;
 import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
+import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.drools.traits.core.util.CodedHierarchyImpl;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -2202,7 +2203,7 @@ public class TraitTest extends CommonTraitTest {
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        TraitRegistryImpl tr = (TraitRegistryImpl) RuntimeComponentFactory.get().getTraitRegistry(kbase);
+        TraitRegistryImpl tr = (TraitRegistryImpl) ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(kbase);
         System.out.println( tr.getHierarchy() );
 
 
@@ -5375,7 +5376,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeBase.addPackages( kb2.getKnowledgePackages() );
 
-        HierarchyEncoder<String> hier = RuntimeComponentFactory.get().getTraitRegistry(knowledgeBase).getHierarchy();
+        HierarchyEncoder<String> hier = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(knowledgeBase).getHierarchy();
         BitSet b = (BitSet) hier.getCode( "org.drools.test.B" ).clone();
         BitSet c = (BitSet) hier.getCode( "org.drools.test.C" ).clone();
 
@@ -5736,7 +5737,7 @@ public class TraitTest extends CommonTraitTest {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        HierarchyEncoder<String> hier = RuntimeComponentFactory.get().getTraitRegistry(((InternalKnowledgeBase) kbase)).getHierarchy();
+        HierarchyEncoder<String> hier = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(((InternalKnowledgeBase) kbase)).getHierarchy();
         BitSet a = (BitSet) hier.getCode( "org.drools.test.A" ).clone();
         BitSet b = (BitSet) hier.getCode( "org.drools.test.B" ).clone();
         BitSet c = (BitSet) hier.getCode( "org.drools.test.C" ).clone();

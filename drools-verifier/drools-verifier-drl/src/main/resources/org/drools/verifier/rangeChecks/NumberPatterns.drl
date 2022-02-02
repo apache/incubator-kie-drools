@@ -18,7 +18,7 @@
 package org.drools.verifier.rangeChecks.patterns;
 
 //list any import classes here.
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 
 import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.MissingNumberPattern;

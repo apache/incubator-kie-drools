@@ -25,8 +25,8 @@ import java.util.Iterator;
 
 import org.drools.mvel.evaluators.BaseEvaluator;
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.traits.CoreWrapper;
@@ -40,7 +40,8 @@ import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.CodedHierarchy;
+import org.drools.traits.core.factmodel.CodedHierarchy;
+import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.kie.api.runtime.ObjectFilter;
 
 import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
@@ -238,7 +239,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         private void cacheLiteral( Object value, ReteEvaluator reteEvaluator ) {
-            CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+            CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
             cachedLiteral = getCode( value, x );
         }
 
@@ -319,18 +320,18 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             BitSet sourceTraits = null;
             BitSet targetTraits = null;
             if ( source instanceof Class ) {
-                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+                CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 sourceTraits = x.getCode( ((Class) source).getName() );
             } else if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
                 if ( sourceTraits == null && source instanceof TraitType ) {
-                    CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+                    CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                     sourceTraits = x.getCode( ((TraitType)source)._getTraitName() );
                 }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
             } else if ( source instanceof String ) {
-                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+                CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 sourceTraits = x.getCode( source );
             } else {
                 TraitableBean tbean = lookForWrapper( source, reteEvaluator);
@@ -340,21 +341,21 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             }
 
             if ( target instanceof Class ) {
-                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+                CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 targetTraits = x.getCode( ((Class) target).getName() );
             } else if ( target instanceof String ) {
-                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+                CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 targetTraits = x.getCode( target );
             } else if ( target instanceof Thing ) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
                 if ( targetTraits == null && target instanceof TraitType ) {
-                    CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+                    CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                     targetTraits = x.getCode( ((TraitType)target)._getTraitName() );
                 }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
             } else if ( target instanceof Collection ) {
-                CodedHierarchy x = RuntimeComponentFactory.get().getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
+                CodedHierarchy x = ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(reteEvaluator.getKnowledgeBase()).getHierarchy();
                 targetTraits = getCode( target, x );
             } else {
                 TraitableBean tbean = lookForWrapper( target, reteEvaluator );

@@ -26,7 +26,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.drools.core.base.accumulators.AverageAccumulateFunction;
 import org.drools.core.base.accumulators.MaxAccumulateFunction;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.mvel.evaluators.AfterEvaluatorDefinition;
 import org.drools.mvel.evaluators.BeforeEvaluatorDefinition;
 import org.junit.Before;

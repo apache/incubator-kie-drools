@@ -24,7 +24,7 @@ import org.drools.compiler.lang.DRLParser;
 import org.drools.compiler.lang.DroolsEditorType;
 import org.drools.compiler.lang.DroolsToken;
 import org.drools.compiler.lang.Location;
-import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

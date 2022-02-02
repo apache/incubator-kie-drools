@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.util.TimeIntervalParser;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.facttemplates.FactTemplate;

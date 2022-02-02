@@ -23,7 +23,6 @@ import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.EqualityKeyComparator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;

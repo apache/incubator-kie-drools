@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;

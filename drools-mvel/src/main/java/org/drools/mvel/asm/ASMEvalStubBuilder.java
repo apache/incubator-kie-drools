@@ -19,8 +19,6 @@ import java.util.Map;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.builder.dialect.asm.EvalStub;
-import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;

@@ -28,8 +28,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
-import org.drools.core.rule.builder.dialect.asm.InvokerStub;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.mvel2.asm.Label;

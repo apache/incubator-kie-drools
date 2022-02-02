@@ -25,9 +25,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.util.MathUtils;
 import org.drools.core.spi.FieldValue;
+import org.drools.core.util.MathUtils;
 
 public class ObjectFieldImpl
     implements
@@ -38,10 +37,6 @@ public class ObjectFieldImpl
 
     private Object            value;
 
-    // the isEnum attribute is used to support jdk 1.4 type safe enums, and so
-    // has a different behavior of the other booleans in this class
-    private boolean           isEnum;
-    private String            enumName;
     private String            fieldName;
 
     private transient boolean isCollection;
@@ -56,46 +51,24 @@ public class ObjectFieldImpl
 
     public ObjectFieldImpl(final Object value) {
         this.value = value;
-        this.isEnum = value instanceof Enum;
         setBooleans();
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        isEnum = in.readBoolean();
-        enumName = (String) in.readObject();
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         fieldName = (String) in.readObject();
-        if ( !isEnum || enumName == null || fieldName == null ) {
+        if ( fieldName == null ) {
             value = (Serializable) in.readObject();
-        } else {
-            resolveEnumValue( (DroolsObjectInputStream) in );
         }
         setBooleans();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeBoolean( isEnum );
-        out.writeObject( enumName );
         out.writeObject( fieldName );
-        if ( !isEnum || enumName == null || fieldName == null ) {
+        if ( fieldName == null ) {
             out.writeObject( value );
         }
     }
 
-    private void resolveEnumValue( DroolsObjectInputStream in ) {
-        try {
-            final ClassLoader loader = in.getClassLoader();
-            final Class<?> staticClass = Class.forName( enumName, true, loader );
-            //final Class<?> staticClass = Class.forName( enumName );
-            value = (Serializable) staticClass.getField( fieldName ).get( null );
-        } catch ( final Exception e ) {
-            throw new RuntimeException("Error deserializing enum value "+enumName+"."+fieldName+" : "+e.getMessage());
-        }
-    }
-
-    /**
-     * @param value
-     */
     private void setBooleans() {
         this.isCollection = value instanceof Collection;
         this.isNumber = value instanceof Number;
@@ -238,22 +211,6 @@ public class ObjectFieldImpl
 
     public BigInteger getBigIntegerValue() {
         return MathUtils.getBigInteger( this.value );
-    }
-
-    public boolean isEnum() {
-        return isEnum;
-    }
-
-    public void setEnum(boolean isEnum) {
-        this.isEnum = isEnum;
-    }
-
-    public String getEnumName() {
-        return enumName;
-    }
-
-    public void setEnumName(String enumName) {
-        this.enumName = enumName;
     }
 
     public String getFieldName() {

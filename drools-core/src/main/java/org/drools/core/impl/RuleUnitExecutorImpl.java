@@ -94,7 +94,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
 
         this.activationsManager = new ActivationsManagerImpl(this);
-        this.entryPointsManager = new EntryPointsManager(this);
+        this.entryPointsManager = RuntimeComponentFactory.get().getNamedEntryPointFactory().createEntryPointsManager(this);
         this.timerService = TimerServiceFactory.getTimerService( sessionConfiguration );
 
         initInitialFact(ruleBase);

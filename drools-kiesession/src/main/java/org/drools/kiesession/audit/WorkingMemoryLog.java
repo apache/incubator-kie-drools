@@ -15,8 +15,6 @@
 
 package org.drools.kiesession.audit;
 
-import org.drools.core.audit.event.LogEvent;
-
 import java.util.List;
 
 public class WorkingMemoryLog {

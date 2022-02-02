@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.util.TimeIntervalParser;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;

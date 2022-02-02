@@ -29,7 +29,6 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.HierarchyEncoder;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELKnowledgePackageImpl;
 import org.kie.api.KieBase;

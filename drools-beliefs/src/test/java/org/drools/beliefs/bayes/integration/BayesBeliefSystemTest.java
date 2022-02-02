@@ -23,7 +23,7 @@ import org.drools.beliefs.bayes.PropertyReference;
 import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.EntryPointId;

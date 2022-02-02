@@ -21,13 +21,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 
-import static org.drools.core.base.evaluators.TimeIntervalParser.getTimestampFromDate;
+import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
 
 public abstract class PointInTimeEvaluator extends BaseEvaluator {
     protected long              initRange;

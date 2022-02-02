@@ -42,7 +42,6 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.util.HierarchyEncoder;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.asm.ClassFieldInspectorImpl;
 import org.mvel2.asm.MethodVisitor;

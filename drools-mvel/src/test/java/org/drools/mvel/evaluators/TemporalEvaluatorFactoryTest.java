@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
 
 import org.drools.mvel.field.FieldFactory;
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
-import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.compiler.builder.impl.EvaluatorRegistry;
+import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;

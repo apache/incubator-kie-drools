@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.util.TimeIntervalParser;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;

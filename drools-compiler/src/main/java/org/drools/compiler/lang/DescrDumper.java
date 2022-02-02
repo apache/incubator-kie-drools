@@ -28,9 +28,8 @@ import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.core.rule.XpathBackReference;
-import org.drools.core.util.ReflectiveVisitor;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
 import static org.drools.core.util.ClassUtils.findClass;

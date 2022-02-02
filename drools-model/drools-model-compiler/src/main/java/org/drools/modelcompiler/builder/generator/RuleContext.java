@@ -52,7 +52,7 @@ import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;

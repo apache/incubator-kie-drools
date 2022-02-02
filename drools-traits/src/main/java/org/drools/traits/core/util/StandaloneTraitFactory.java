@@ -28,7 +28,7 @@ import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.util.HierarchyEncoder;
+import org.drools.traits.core.factmodel.HierarchyEncoder;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.drools.traits.core.factmodel.AbstractTraitFactory;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;

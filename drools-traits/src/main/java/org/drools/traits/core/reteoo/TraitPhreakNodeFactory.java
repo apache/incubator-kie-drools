@@ -23,7 +23,6 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.TraitProxyObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;

@@ -20,7 +20,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.builder.dialect.asm.PredicateStub;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Tuple;

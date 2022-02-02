@@ -62,7 +62,7 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
-import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

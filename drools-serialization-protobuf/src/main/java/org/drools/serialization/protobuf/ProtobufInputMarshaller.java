@@ -43,7 +43,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;

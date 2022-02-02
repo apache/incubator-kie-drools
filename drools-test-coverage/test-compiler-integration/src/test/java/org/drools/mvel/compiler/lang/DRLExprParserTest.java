@@ -23,7 +23,7 @@ import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConnectiveType;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
-import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 

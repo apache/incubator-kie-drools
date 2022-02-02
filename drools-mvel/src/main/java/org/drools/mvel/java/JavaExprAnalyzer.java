@@ -29,7 +29,7 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLexer;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
-import org.drools.core.base.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 
 /**
  * Expression analyzer.

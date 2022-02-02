@@ -16,6 +16,7 @@
 package org.drools.compiler.rule.builder;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,14 +24,7 @@ import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.kie.util.BeanCreator;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.LiteralRestrictionDescr;
-import org.drools.drl.ast.descr.OperatorDescr;
-import org.drools.drl.ast.descr.PredicateDescr;
-import org.drools.drl.ast.descr.RelationalExprDescr;
-import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
@@ -40,6 +34,11 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimerExpression;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.LiteralRestrictionDescr;
+import org.drools.drl.ast.descr.OperatorDescr;
+import org.drools.drl.ast.descr.PredicateDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.kie.api.internal.utils.KieService;
 
 public interface ConstraintBuilder extends KieService {
@@ -56,6 +55,16 @@ public interface ConstraintBuilder extends KieService {
     static ConstraintBuilder get() {
         return Holder.cBuilder;
     }
+
+    static boolean present() {
+        return Holder.cBuilder != null;
+    }
+
+    static List<EvaluatorDefinition> loadEvaluatorDefinitions() {
+        return present() ? get().getEvaluatorDefinitions() : Collections.emptyList();
+    }
+
+    List<EvaluatorDefinition> getEvaluatorDefinitions();
 
     DialectConfiguration createJavaDialectConfiguration();
 
@@ -131,6 +140,11 @@ public interface ConstraintBuilder extends KieService {
 
     class DummyConstraintBuilder implements ConstraintBuilder {
         public static final ConstraintBuilder INSTANCE = new DummyConstraintBuilder();
+
+        @Override
+        public List<EvaluatorDefinition> getEvaluatorDefinitions() {
+            return Collections.emptyList();
+        }
 
         @Override
         public DialectConfiguration createJavaDialectConfiguration() {

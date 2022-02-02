@@ -25,15 +25,6 @@ import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEventManager;
-import org.drools.core.audit.event.ActivationLogEvent;
-import org.drools.core.audit.event.ILogEventFilter;
-import org.drools.core.audit.event.LogEvent;
-import org.drools.core.audit.event.ObjectLogEvent;
-import org.drools.core.audit.event.RuleBaseLogEvent;
-import org.drools.core.audit.event.RuleFlowGroupLogEvent;
-import org.drools.core.audit.event.RuleFlowLogEvent;
-import org.drools.core.audit.event.RuleFlowNodeLogEvent;
-import org.drools.core.audit.event.RuleFlowVariableLogEvent;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;

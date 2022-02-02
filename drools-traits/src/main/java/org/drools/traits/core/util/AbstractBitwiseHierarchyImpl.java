@@ -15,7 +15,7 @@
 
 package org.drools.traits.core.util;
 
-import org.drools.core.util.CodedHierarchy;
+import org.drools.traits.core.factmodel.CodedHierarchy;
 import org.drools.traits.core.factmodel.LatticeElement;
 
 import java.io.Externalizable;

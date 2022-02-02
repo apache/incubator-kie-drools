@@ -34,7 +34,6 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Alias;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.HierarchySorter;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.PatternDescr;

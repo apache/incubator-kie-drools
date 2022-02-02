@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 
 //declare any global variables here
 global VerifierReport result;

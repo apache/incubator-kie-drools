@@ -22,7 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.audit.event.LogEvent;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.slf4j.Logger;

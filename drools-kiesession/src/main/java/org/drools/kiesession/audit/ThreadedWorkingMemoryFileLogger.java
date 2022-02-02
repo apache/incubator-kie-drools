@@ -17,7 +17,6 @@
 package org.drools.kiesession.audit;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.audit.event.LogEvent;
 import org.kie.api.event.KieRuntimeEventManager;
 
 public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {

@@ -20,8 +20,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;

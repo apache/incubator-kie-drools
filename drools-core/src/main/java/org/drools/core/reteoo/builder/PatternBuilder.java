@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.InstanceNotEqualsConstraint;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -118,10 +117,10 @@ public class PatternBuilder
         buildBehaviors(context, utils, pattern, constraints);
 
         if ( context.getObjectSource() != null ) {
-            attachAlphaNodes( context, utils, pattern, constraints.alphaConstraints );
+            attachAlphaNodes( context, utils, constraints.alphaConstraints );
         }
 
-        buildXpathConstraints(context, utils, pattern, constraints);
+        buildXpathConstraints(context, utils, constraints);
     }
 
     private void buildBehaviors(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
@@ -146,7 +145,7 @@ public class PatternBuilder
         }
     }
 
-    private void buildXpathConstraints(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
+    private void buildXpathConstraints(BuildContext context, BuildUtils utils, Constraints constraints) {
         if (!constraints.xpathConstraints.isEmpty()) {
             buildTupleSource(context, utils, false);
 
@@ -302,13 +301,12 @@ public class PatternBuilder
 
     public void attachAlphaNodes(final BuildContext context,
                                  final BuildUtils utils,
-                                 final Pattern pattern,
                                  final List<AlphaNodeFieldConstraint> alphaConstraints) throws InvalidPatternException {
 
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
         //so need to preserve, so we can restore after this node is added. LeftMemory  and Terminal remain the same once set.
 
-        buildAlphaNodeChain( context, utils, pattern, alphaConstraints );
+        buildAlphaNodeChain( context, utils, alphaConstraints );
 
         NodeFactory nfactory = CoreComponentFactory.get().getNodeFactoryService();
         
@@ -318,7 +316,7 @@ public class PatternBuilder
         }
     }
 
-    protected void buildAlphaNodeChain( BuildContext context, BuildUtils utils, Pattern pattern, List<AlphaNodeFieldConstraint> alphaConstraints ) {
+    private void buildAlphaNodeChain( BuildContext context, BuildUtils utils, List<AlphaNodeFieldConstraint> alphaConstraints ) {
         for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
             context.pushRuleComponent( constraint );
             context.setObjectSource( utils.attachNode( context,
@@ -336,7 +334,7 @@ public class PatternBuilder
         
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             // Is this the query node, if so we don't want any memory
-            if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
+            if ( DroolsQuery.class == pattern.getObjectType().getClassType() ) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
             }
@@ -395,9 +393,9 @@ public class PatternBuilder
         if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
-            final Class< ? > thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
+            final Class< ? > thisClass = pattern.getObjectType().getClassType();
             for ( final Pattern previousPattern : context.getPatterns() ) {
-                final Class< ? > previousClass = ((ClassObjectType) previousPattern.getObjectType()).getClassType();
+                final Class< ? > previousClass = previousPattern.getObjectType().getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
                     betaConstraints.add( new InstanceNotEqualsConstraint( previousPattern ) );
                 }

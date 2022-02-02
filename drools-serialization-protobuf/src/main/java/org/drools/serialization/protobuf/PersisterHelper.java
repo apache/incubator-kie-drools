@@ -38,7 +38,6 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.impl.WorkingMemoryReteAssertAction;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.serialization.protobuf.marshalling.ActivationKey;
 import org.drools.core.marshalling.MarshallerReaderContext;

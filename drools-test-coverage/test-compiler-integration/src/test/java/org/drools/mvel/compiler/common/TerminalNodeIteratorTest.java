@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.common.TerminalNodeIterator;
+import org.drools.serialization.protobuf.iterators.TerminalNodeIterator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.util.Iterator;

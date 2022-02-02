@@ -33,7 +33,6 @@ import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.util.ExternalizableLinkedHashMap;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.traits.core.factmodel.TraitBuilderUtil.MixinInfo;
 import org.kie.api.definition.type.FactField;

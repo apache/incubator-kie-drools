@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
