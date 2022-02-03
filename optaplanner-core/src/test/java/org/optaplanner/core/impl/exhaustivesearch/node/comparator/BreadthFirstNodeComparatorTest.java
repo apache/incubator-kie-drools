@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
 import org.junit.jupiter.api.Test;
 
-public class BreadthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
+class BreadthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 
     @Test
     public void compare() {

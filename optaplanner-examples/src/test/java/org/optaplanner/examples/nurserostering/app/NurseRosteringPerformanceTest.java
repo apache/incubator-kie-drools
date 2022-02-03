@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster, HardSoftScore> {
+class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/nurserostering/unsolved/medium_late01_initialized.xml";
 

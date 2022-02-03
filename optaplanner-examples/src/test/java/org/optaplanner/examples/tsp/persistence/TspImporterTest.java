@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspImporterTest extends ImportDataFilesTest<TspSolution> {
+class TspImporterTest extends ImportDataFilesTest<TspSolution> {
 
     @Override
     protected AbstractSolutionImporter<TspSolution> createSolutionImporter() {

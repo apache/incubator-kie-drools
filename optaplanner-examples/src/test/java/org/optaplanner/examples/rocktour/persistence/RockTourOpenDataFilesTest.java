@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
-public class RockTourOpenDataFilesTest extends OpenDataFilesTest<RockTourSolution> {
+class RockTourOpenDataFilesTest extends OpenDataFilesTest<RockTourSolution> {
 
     @Override
     protected CommonApp<RockTourSolution> createCommonApp() {

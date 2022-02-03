@@ -67,7 +67,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
  * the second entity doesn't have a value and the third entity has 2, the score is -1) The score is reduced for
  * every duplicate present. (meaning a solution of 1111 has the score of -4)
  */
-public class BlackBoxExhaustiveSearchPhaseTest {
+class BlackBoxExhaustiveSearchPhaseTest {
 
     /**
      * Initialize combination of input parameters.

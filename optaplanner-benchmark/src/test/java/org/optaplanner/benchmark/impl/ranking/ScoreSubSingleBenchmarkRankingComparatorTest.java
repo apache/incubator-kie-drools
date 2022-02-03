@@ -28,7 +28,7 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 
-public class ScoreSubSingleBenchmarkRankingComparatorTest {
+class ScoreSubSingleBenchmarkRankingComparatorTest {
 
     @Test
     public void compareTo() {

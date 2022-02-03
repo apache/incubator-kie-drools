@@ -27,7 +27,7 @@ import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import io.quarkus.arc.Arc;
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerBenchmarkProcessorEmptyAppWithInjectionTest {
+class OptaPlannerBenchmarkProcessorEmptyAppWithInjectionTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

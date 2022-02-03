@@ -25,7 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 
-public class FlatteningHardSoftScoreComparatorTest {
+class FlatteningHardSoftScoreComparatorTest {
 
     public static Collection parameters() {
         String simpleScore = "10hard/123soft";

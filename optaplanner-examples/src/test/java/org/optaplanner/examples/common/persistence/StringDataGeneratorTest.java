@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
 
-public class StringDataGeneratorTest {
+class StringDataGeneratorTest {
 
     @Test
     public void with2Parts() {

@@ -20,7 +20,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
-public class FlightCrewSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<FlightCrewSolution> {
+class FlightCrewSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<FlightCrewSolution> {
 
     @Override
     protected CommonApp<FlightCrewSolution> createCommonApp() {

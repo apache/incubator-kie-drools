@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class ProbabilityEntitySelectorTest {
+class ProbabilityEntitySelectorTest {
 
     @Test
     public void randomSelection() {

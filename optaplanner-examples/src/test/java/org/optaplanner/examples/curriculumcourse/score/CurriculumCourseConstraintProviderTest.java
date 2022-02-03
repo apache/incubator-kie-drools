@@ -30,7 +30,7 @@ import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class CurriculumCourseConstraintProviderTest {
+class CurriculumCourseConstraintProviderTest {
 
     private static final Curriculum CURRICULUM_1 = new Curriculum(1, "Curriculum1");
     private static final Curriculum CURRICULUM_2 = new Curriculum(2, "Curriculum2");

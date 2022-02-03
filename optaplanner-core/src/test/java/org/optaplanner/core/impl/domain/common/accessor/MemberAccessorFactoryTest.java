@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataVisibilityModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 
-public class MemberAccessorFactoryTest {
+class MemberAccessorFactoryTest {
 
     @Test
     public void fieldAnnotatedEntity() throws NoSuchFieldException {

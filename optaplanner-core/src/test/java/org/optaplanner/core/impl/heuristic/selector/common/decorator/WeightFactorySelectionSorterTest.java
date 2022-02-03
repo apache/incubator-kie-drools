@@ -28,7 +28,7 @@ import org.optaplanner.core.config.heuristic.selector.common.decorator.Selection
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class WeightFactorySelectionSorterTest {
+class WeightFactorySelectionSorterTest {
 
     @Test
     public void sortAscending() {

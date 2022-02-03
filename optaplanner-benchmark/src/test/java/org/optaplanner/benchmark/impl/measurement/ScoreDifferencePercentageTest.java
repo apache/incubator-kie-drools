@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-public class ScoreDifferencePercentageTest {
+class ScoreDifferencePercentageTest {
 
     @Test
     public void calculateScoreDifferencePercentageException() {

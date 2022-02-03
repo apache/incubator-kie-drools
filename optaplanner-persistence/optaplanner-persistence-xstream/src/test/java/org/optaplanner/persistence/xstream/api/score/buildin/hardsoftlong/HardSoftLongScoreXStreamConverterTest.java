@@ -22,7 +22,7 @@ import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConvert
 
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
-public class HardSoftLongScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
+class HardSoftLongScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
     public void serializeAndDeserialize() {

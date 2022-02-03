@@ -60,7 +60,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class SolverManagerTest {
+class SolverManagerTest {
 
     private SolverManager<TestdataSolution, Long> solverManager;
 

@@ -54,7 +54,7 @@ import org.optaplanner.quarkus.testdata.gizmo.DummyVariableListener;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
+class OptaPlannerProcessorGeneratedGizmoSupplierTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

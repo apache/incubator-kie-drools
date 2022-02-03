@@ -20,7 +20,7 @@ import org.optaplanner.examples.cloudbalancing.optional.benchmark.CloudBalancing
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class CloudBalancingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class CloudBalancingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

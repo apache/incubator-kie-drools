@@ -28,7 +28,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 
-public class CompositeQuadJoinerTest {
+class CompositeQuadJoinerTest {
 
     @Test
     public void compositeMappings() {

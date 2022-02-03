@@ -29,7 +29,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 
-public class PolymorphicScoreJaxbAdapterTest {
+class PolymorphicScoreJaxbAdapterTest {
 
     private final PolymorphicScoreJaxbAdapter scoreJaxbAdapter = new PolymorphicScoreJaxbAdapter();
 

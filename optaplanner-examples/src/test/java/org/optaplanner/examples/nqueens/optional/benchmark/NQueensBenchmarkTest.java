@@ -33,7 +33,7 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
+class NQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     public NQueensBenchmarkTest() {
         super(NQueensApp.SOLVER_CONFIG);

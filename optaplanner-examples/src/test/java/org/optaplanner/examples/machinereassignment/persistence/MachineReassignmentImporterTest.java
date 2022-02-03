@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentImporterTest extends ImportDataFilesTest<MachineReassignment> {
+class MachineReassignmentImporterTest extends ImportDataFilesTest<MachineReassignment> {
 
     @Override
     protected AbstractSolutionImporter<MachineReassignment> createSolutionImporter() {

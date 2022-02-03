@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class MutationCounterTest {
+class MutationCounterTest {
 
     @Test
     public void countMutationsNone() {

@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public class AbstractPentaJoinerTest {
+class AbstractPentaJoinerTest {
 
     @Test
     public void merge0Joiners() {

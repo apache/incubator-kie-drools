@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapterTest;
 
-public class BendableBigDecimalScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
+class BendableBigDecimalScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {

@@ -44,7 +44,7 @@ import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class PatientAdmissionScheduleConstraintProviderTest {
+class PatientAdmissionScheduleConstraintProviderTest {
 
     private static final Night ZERO_NIGHT = new Night(0);
     private static final Night FIVE_NIGHT = new Night(5);

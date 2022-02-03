@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.util.Pair;
 
-public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
+class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public AdvancedGroupByConstraintStreamTest(boolean constraintMatchEnabled,
             ConstraintStreamImplType constraintStreamImplType) {

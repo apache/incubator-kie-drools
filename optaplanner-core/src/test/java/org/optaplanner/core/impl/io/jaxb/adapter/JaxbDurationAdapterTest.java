@@ -22,7 +22,7 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
-public class JaxbDurationAdapterTest {
+class JaxbDurationAdapterTest {
 
     private final JaxbDurationAdapter jaxbDurationAdapter = new JaxbDurationAdapter();
 

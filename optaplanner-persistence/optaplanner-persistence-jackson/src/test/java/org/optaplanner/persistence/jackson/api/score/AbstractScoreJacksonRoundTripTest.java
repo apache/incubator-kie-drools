@@ -26,8 +26,7 @@ import org.optaplanner.persistence.jackson.api.AbstractJacksonRoundTripTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class AbstractScoreJacksonRoundTripTest
-        extends AbstractJacksonRoundTripTest {
+public abstract class AbstractScoreJacksonRoundTripTest extends AbstractJacksonRoundTripTest {
 
     // ************************************************************************
     // Helper methods

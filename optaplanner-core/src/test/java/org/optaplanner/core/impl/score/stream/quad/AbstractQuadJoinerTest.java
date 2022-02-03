@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public class AbstractQuadJoinerTest {
+class AbstractQuadJoinerTest {
 
     @Test
     public void merge0Joiners() {

@@ -64,7 +64,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.TestExecutionListeners;
 
 @TestExecutionListeners(listeners = { SpringBootDependencyInjectionTestExecutionListener.class })
-public class OptaPlannerAutoConfigurationTest {
+class OptaPlannerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner;
     private final ApplicationContextRunner benchmarkContextRunner;

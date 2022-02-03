@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
-public class StatisticUtilsTest {
+class StatisticUtilsTest {
 
     private static final double DELTA = 0.001;
 

@@ -17,7 +17,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistance
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandomFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.ParabolicDistributionNearbyRandom;
 
-public class NearbySelectionConfigTest {
+class NearbySelectionConfigTest {
 
     private static final String LINEAR = "linear";
     private static final String BLOCK = "block";

@@ -44,7 +44,7 @@ import io.quarkus.bootstrap.model.AppArtifact;
 import io.quarkus.test.QuarkusProdModeTest;
 import io.restassured.RestAssured;
 
-public class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
+class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
 
     private static final String QUARKUS_VERSION = getRequiredProperty("version.io.quarkus");
     private static final String PROJECT_VERSION = getRequiredProperty("project.version");

@@ -24,7 +24,7 @@ import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class TennisConstraintProviderTest {
+class TennisConstraintProviderTest {
 
     private static final Day DAY0 = new Day(0, 0);
     private static final Day DAY1 = new Day(1, 1);

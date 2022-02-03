@@ -22,7 +22,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
 import org.optaplanner.examples.common.app.CommonApp;
 
-public class CloudBalancingConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CloudBalance> {
+class CloudBalancingConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CloudBalance> {
 
     @Override
     protected CommonApp<CloudBalance> createCommonApp() {

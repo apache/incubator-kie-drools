@@ -35,7 +35,7 @@ import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-public class MeetingSchedulingScoreConstraintTest {
+class MeetingSchedulingScoreConstraintTest {
 
     private HardMediumSoftScoreVerifier<MeetingSchedule> scoreVerifier = new HardMediumSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(MeetingSchedulingApp.SOLVER_CONFIG));

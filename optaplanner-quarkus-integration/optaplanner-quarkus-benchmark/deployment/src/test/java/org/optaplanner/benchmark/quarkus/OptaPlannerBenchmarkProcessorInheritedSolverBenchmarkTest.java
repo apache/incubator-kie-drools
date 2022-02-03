@@ -35,7 +35,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerBenchmarkProcessorInheritedSolverBenchmarkTest {
+class OptaPlannerBenchmarkProcessorInheritedSolverBenchmarkTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

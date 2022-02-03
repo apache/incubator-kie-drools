@@ -23,7 +23,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class ReflectionBeanPropertyMemberAccessorTest {
+class ReflectionBeanPropertyMemberAccessorTest {
 
     @Test
     public void methodAnnotatedEntity() throws NoSuchMethodException {

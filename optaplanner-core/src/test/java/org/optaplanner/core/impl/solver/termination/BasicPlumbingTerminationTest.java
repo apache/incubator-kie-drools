@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.solver.change.ProblemChangeAdapter;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class BasicPlumbingTerminationTest {
+class BasicPlumbingTerminationTest {
 
     @Test
     public void addProblemChangeWithoutDaemon() {

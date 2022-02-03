@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertyEntity;
 import org.optaplanner.core.impl.testdata.domain.testgen.TestdataGetterSetterTypeMismatch;
 
-public class TestGenValueFactTest {
+class TestGenValueFactTest {
 
     @Test
     public void initialization() {

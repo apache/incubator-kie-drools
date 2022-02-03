@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class SolverConfigMultiThreadedTest {
+class SolverConfigMultiThreadedTest {
 
     @Test
     @Timeout(5)

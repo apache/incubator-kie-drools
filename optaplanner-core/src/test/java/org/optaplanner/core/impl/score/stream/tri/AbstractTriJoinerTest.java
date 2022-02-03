@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public class AbstractTriJoinerTest {
+class AbstractTriJoinerTest {
 
     @Test
     public void merge0Joiners() {

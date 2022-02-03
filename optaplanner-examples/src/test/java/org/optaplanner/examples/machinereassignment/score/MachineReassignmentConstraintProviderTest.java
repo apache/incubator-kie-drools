@@ -40,7 +40,7 @@ import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDepen
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class MachineReassignmentConstraintProviderTest {
+class MachineReassignmentConstraintProviderTest {
 
     private final ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier =
             ConstraintVerifier

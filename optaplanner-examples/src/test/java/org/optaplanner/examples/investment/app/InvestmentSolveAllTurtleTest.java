@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.optional.score.InvestmentEasyScoreCalculator;
 
-public class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<InvestmentSolution> {
+class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<InvestmentSolution> {
 
     @Override
     protected CommonApp<InvestmentSolution> createCommonApp() {

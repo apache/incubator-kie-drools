@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PartitionQueueTest {
+class PartitionQueueTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PartitionQueueTest.class);
 

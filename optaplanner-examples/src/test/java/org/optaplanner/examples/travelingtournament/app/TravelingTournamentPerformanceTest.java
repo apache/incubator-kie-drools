@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentPerformanceTest extends SolverPerformanceTest<TravelingTournament, HardSoftScore> {
+class TravelingTournamentPerformanceTest extends SolverPerformanceTest<TravelingTournament, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/travelingtournament/unsolved/1-nl10.xml";
 

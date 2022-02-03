@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataOtherValue;
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingEntity;
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingSolution;
 
-public class ChangeMoveTest {
+class ChangeMoveTest {
 
     @Test
     public void isMoveDoable() {

@@ -34,7 +34,7 @@ import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusSol
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorChainedXMLNoneTest {
+class OptaPlannerProcessorChainedXMLNoneTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

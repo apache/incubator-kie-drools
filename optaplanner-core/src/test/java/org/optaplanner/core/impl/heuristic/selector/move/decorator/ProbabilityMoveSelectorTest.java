@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class ProbabilityMoveSelectorTest {
+class ProbabilityMoveSelectorTest {
 
     @Test
     public void randomSelection() {

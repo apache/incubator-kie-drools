@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
-public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution, HardMediumSoftLongScore> {
+class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution, HardMediumSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/rocktour/unsolved/47shows.xlsx";
 

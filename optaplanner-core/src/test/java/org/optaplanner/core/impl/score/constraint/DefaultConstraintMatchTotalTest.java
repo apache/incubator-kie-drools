@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class DefaultConstraintMatchTotalTest {
+class DefaultConstraintMatchTotalTest {
 
     @Test
     public void getScoreTotal() {

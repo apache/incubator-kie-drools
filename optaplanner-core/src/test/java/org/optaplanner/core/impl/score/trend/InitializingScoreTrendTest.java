@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
-public class InitializingScoreTrendTest {
+class InitializingScoreTrendTest {
 
     @Test
     public void parseTrend() {

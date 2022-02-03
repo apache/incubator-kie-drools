@@ -52,7 +52,7 @@ import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class NurseRosteringConstraintProviderTest {
+class NurseRosteringConstraintProviderTest {
     private final ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier =
             ConstraintVerifier.build(new NurseRosteringConstraintProvider(), NurseRoster.class,
                     ShiftAssignment.class);

@@ -25,7 +25,7 @@ import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
 
-public class LookUpManagerTest {
+class LookUpManagerTest {
 
     private LookUpManager lookUpManager;
 

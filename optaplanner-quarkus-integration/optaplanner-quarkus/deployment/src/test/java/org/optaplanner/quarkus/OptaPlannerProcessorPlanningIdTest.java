@@ -18,7 +18,7 @@ import org.optaplanner.quarkus.testdata.superclass.domain.TestdataSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorPlanningIdTest {
+class OptaPlannerProcessorPlanningIdTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

@@ -35,7 +35,7 @@ import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerConstraintVerifierBavetStreamImplTest {
+class OptaPlannerConstraintVerifierBavetStreamImplTest {
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)

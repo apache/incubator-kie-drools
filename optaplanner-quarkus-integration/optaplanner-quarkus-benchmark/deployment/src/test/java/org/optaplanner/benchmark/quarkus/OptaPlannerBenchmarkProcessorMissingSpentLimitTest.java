@@ -30,7 +30,7 @@ import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusS
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
+class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

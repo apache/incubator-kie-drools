@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class UnionMoveSelectorTest {
+class UnionMoveSelectorTest {
 
     @Test
     public void originSelection() {

@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedSolution;
 
-public class EasyScoreDirectorTest {
+class EasyScoreDirectorTest {
 
     @Test
     public void constraintMatchTotalsUnsupported() {

@@ -25,7 +25,7 @@ import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
 
-public class BenchmarkReportConfigTest {
+class BenchmarkReportConfigTest {
 
     @Test
     public void inheritBenchmarkReportConfig() {

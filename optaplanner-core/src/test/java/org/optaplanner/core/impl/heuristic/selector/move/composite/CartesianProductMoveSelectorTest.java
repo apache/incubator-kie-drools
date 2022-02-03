@@ -43,7 +43,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 
-public class CartesianProductMoveSelectorTest {
+class CartesianProductMoveSelectorTest {
 
     @Test
     public void originSelectionNotIgnoringEmpty() {

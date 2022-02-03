@@ -20,7 +20,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<MachineReassignment> {
+class MachineReassignmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<MachineReassignment> {
 
     @Override
     protected CommonApp<MachineReassignment> createCommonApp() {

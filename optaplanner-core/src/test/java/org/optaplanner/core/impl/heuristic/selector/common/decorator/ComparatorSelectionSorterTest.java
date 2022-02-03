@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class ComparatorSelectionSorterTest {
+class ComparatorSelectionSorterTest {
 
     @Test
     public void sort() {

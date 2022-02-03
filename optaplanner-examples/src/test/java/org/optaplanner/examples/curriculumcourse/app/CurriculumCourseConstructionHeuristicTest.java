@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCourseConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CourseSchedule> {
+class CurriculumCourseConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CourseSchedule> {
 
     @Override
     protected Predicate<ConstructionHeuristicType> includeConstructionHeuristicType() {

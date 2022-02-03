@@ -37,7 +37,7 @@ import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporte
  * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After
  * a constant number of steps, every iteration must finish with the same score.
  */
-public class VehicleRoutingMultiThreadedReproducibilityTest {
+class VehicleRoutingMultiThreadedReproducibilityTest {
 
     private static final int REPETITION_COUNT = 10;
 

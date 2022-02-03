@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class VehicleRoutingImportDataFilesTest extends ImportDataFilesTest<VehicleRoutingSolution> {
+class VehicleRoutingImportDataFilesTest extends ImportDataFilesTest<VehicleRoutingSolution> {
 
     @Override
     protected AbstractSolutionImporter<VehicleRoutingSolution> createSolutionImporter() {

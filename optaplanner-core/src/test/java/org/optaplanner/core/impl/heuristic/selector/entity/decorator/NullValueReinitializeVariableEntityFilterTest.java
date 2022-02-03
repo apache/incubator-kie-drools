@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
 
-public class NullValueReinitializeVariableEntityFilterTest {
+class NullValueReinitializeVariableEntityFilterTest {
 
     @Test
     public void accept() {

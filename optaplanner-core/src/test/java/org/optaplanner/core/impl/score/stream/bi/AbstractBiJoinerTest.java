@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public class AbstractBiJoinerTest {
+class AbstractBiJoinerTest {
 
     @Test
     public void merge0Joiners() {

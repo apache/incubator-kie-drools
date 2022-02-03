@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class CompositeCountableValueRangeTest {
+class CompositeCountableValueRangeTest {
 
     @SafeVarargs
     private static <T> CompositeCountableValueRange<T> createValueRange(List<T>... lists) {

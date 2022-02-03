@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.gizmo.GizmoTestdataEntity;
 
-public class GizmoMemberAccessorImplementorTest {
+class GizmoMemberAccessorImplementorTest {
 
     @Test
     public void testGeneratedMemberAccessorForMethod() throws NoSuchMethodException {

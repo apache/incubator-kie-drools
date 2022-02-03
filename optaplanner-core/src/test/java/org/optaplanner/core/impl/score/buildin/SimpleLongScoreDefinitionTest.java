@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class SimpleLongScoreDefinitionTest {
+class SimpleLongScoreDefinitionTest {
 
     @Test
     public void getZeroScore() {

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-public class FieldAccessingSolutionClonerTest extends AbstractSolutionClonerTest {
+class FieldAccessingSolutionClonerTest extends AbstractSolutionClonerTest {
 
     @Override
     protected <Solution_> SolutionCloner<Solution_> createSolutionCloner(

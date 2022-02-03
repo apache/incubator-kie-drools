@@ -68,7 +68,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.Test
 import org.optaplanner.core.impl.testdata.util.CodeAssertableArrayList;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class SolutionDescriptorTest {
+class SolutionDescriptorTest {
 
     // ************************************************************************
     // Problem fact and planning entity properties

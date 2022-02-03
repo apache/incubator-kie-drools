@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 
-public class SolverBenchmarkFactoryTest {
+class SolverBenchmarkFactoryTest {
 
     @Test
     public void validNameWithUnderscoreAndSpace() {

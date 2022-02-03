@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class ValueTabuAcceptorTest {
+class ValueTabuAcceptorTest {
 
     @Test
     public void tabuSize() {

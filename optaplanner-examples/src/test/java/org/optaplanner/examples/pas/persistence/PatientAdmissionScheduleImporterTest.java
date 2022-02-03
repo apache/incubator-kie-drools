@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionScheduleImporterTest extends ImportDataFilesTest<PatientAdmissionSchedule> {
+class PatientAdmissionScheduleImporterTest extends ImportDataFilesTest<PatientAdmissionSchedule> {
 
     @Override
     protected AbstractSolutionImporter<PatientAdmissionSchedule> createSolutionImporter() {

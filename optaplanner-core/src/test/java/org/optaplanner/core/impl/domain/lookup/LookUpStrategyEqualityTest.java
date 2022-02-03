@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqua
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsSubclass;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 
-public class LookUpStrategyEqualityTest {
+class LookUpStrategyEqualityTest {
 
     private LookUpManager lookUpManager;
 

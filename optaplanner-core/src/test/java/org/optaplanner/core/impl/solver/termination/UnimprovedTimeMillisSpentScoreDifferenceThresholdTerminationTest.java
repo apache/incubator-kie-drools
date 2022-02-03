@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
+class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
 
     private static final long START_TIME_MILLIS = 0L;
 

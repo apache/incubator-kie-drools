@@ -28,7 +28,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 
-public class CompositePentaJoinerTest {
+class CompositePentaJoinerTest {
 
     @Test
     public void compositeMappings() {

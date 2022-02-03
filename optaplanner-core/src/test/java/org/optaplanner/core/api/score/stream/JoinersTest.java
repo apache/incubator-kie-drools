@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
-public class JoinersTest {
+class JoinersTest {
 
     @Test
     public void equalBi() {

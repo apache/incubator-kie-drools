@@ -24,7 +24,7 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class LinearDistributionNearbyRandomTest {
+class LinearDistributionNearbyRandomTest {
 
     @Test
     public void sizeMaximumTooLow() {

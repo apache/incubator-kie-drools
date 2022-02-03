@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class ShufflingEntitySelectorTest {
+class ShufflingEntitySelectorTest {
 
     @Test
     public void isNeverEnding() {

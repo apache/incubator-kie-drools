@@ -21,7 +21,7 @@ import org.optaplanner.examples.coachshuttlegathering.optional.score.CoachShuttl
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 
-public class CoachShuttleGatheringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CoachShuttleGatheringSolution> {
+class CoachShuttleGatheringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CoachShuttleGatheringSolution> {
 
     @Override
     protected CommonApp<CoachShuttleGatheringSolution> createCommonApp() {

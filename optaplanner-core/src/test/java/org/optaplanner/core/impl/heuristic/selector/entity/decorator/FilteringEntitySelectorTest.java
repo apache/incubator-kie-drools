@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class FilteringEntitySelectorTest {
+class FilteringEntitySelectorTest {
 
     @Test
     public void filterCacheTypeSolver() {

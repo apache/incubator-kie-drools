@@ -24,7 +24,7 @@ import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
 
-public class SubPillarConfigPolicyTest {
+class SubPillarConfigPolicyTest {
 
     @Test
     public void withoutSubpillars() {

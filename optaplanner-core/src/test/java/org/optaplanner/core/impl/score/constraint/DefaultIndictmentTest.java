@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class DefaultIndictmentTest {
+class DefaultIndictmentTest {
 
     @Test
     public void getScoreTotal() {

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 
-public class ClassAndPlanningIdComparatorTest {
+class ClassAndPlanningIdComparatorTest {
 
     private final Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
 

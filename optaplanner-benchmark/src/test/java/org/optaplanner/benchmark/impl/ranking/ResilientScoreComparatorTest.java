@@ -26,7 +26,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 
-public class ResilientScoreComparatorTest {
+class ResilientScoreComparatorTest {
 
     @Test
     public void compareTo() {

@@ -25,8 +25,7 @@ import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonRoundTr
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class BendableBigDecimalScoreJacksonRoundTripTest
-        extends AbstractScoreJacksonRoundTripTest {
+class BendableBigDecimalScoreJacksonRoundTripTest extends AbstractScoreJacksonRoundTripTest {
 
     @Test
     public void serializeAndDeserialize() {

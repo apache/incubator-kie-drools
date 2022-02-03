@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
-public class NQueensOpenDataFilesTest extends OpenDataFilesTest<NQueens> {
+class NQueensOpenDataFilesTest extends OpenDataFilesTest<NQueens> {
 
     @Override
     protected CommonApp<NQueens> createCommonApp() {

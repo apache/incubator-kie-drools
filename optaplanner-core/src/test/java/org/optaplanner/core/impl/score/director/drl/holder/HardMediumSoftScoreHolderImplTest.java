@@ -23,7 +23,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 
-public class HardMediumSoftScoreHolderImplTest extends AbstractScoreHolderTest<HardMediumSoftScore> {
+class HardMediumSoftScoreHolderImplTest extends AbstractScoreHolderTest<HardMediumSoftScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OrderByMoveIndexBlockingQueueTest {
+class OrderByMoveIndexBlockingQueueTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderByMoveIndexBlockingQueueTest.class);
 

@@ -16,7 +16,7 @@ import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnno
 import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodDescriptor;
 
-public class GizmoMemberDescriptorTest {
+class GizmoMemberDescriptorTest {
 
     @Test
     public void testThatCreatingDescriptorForPrivateMembersFail() {

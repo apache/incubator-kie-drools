@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
+class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void lateAcceptanceSize() {

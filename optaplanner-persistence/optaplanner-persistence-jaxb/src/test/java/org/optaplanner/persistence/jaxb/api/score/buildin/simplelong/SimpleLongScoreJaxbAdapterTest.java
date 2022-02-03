@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapterTest;
 
-public class SimpleLongScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
+class SimpleLongScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {

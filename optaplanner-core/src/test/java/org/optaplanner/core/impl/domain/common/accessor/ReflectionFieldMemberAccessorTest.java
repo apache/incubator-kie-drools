@@ -23,7 +23,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 
-public class ReflectionFieldMemberAccessorTest {
+class ReflectionFieldMemberAccessorTest {
 
     @Test
     public void fieldAnnotatedEntity() throws NoSuchFieldException {

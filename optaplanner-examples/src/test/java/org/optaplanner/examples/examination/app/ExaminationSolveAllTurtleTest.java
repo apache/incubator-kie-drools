@@ -20,7 +20,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<Examination> {
+class ExaminationSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<Examination> {
 
     @Override
     protected CommonApp<Examination> createCommonApp() {

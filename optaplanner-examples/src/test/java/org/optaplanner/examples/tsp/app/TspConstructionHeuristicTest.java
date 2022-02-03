@@ -22,7 +22,7 @@ import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspConstructionHeuristicTest extends AbstractConstructionHeuristicTest<TspSolution> {
+class TspConstructionHeuristicTest extends AbstractConstructionHeuristicTest<TspSolution> {
 
     @Override
     protected CommonApp<TspSolution> createCommonApp() {

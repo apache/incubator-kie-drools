@@ -20,7 +20,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 
-public class MeetingSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<MeetingSchedule> {
+class MeetingSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<MeetingSchedule> {
 
     @Override
     protected CommonApp<MeetingSchedule> createCommonApp() {

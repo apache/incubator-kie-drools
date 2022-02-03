@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class UnimprovedStepCountTerminationTest {
+class UnimprovedStepCountTerminationTest {
 
     @Test
     public void phaseTermination() {

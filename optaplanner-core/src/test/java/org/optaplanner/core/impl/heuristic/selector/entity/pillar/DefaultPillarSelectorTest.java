@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class DefaultPillarSelectorTest {
+class DefaultPillarSelectorTest {
 
     //    @Test
     //    public void calculateBasePillarSelectionSize() {

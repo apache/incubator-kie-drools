@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
-public class HardSoftScoreConverterTest extends AbstractScoreJpaTest {
+class HardSoftScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {

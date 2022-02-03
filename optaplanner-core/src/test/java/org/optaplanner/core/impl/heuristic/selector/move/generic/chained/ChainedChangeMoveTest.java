@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class ChainedChangeMoveTest {
+class ChainedChangeMoveTest {
 
     @Test
     public void noTrailing() {

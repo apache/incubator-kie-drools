@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 
-public class CompositeBiJoinerTest {
+class CompositeBiJoinerTest {
 
     @Test
     public void compositeMappings() {

@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
+class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void waterLevelIncrementScore_SimpleScore() {

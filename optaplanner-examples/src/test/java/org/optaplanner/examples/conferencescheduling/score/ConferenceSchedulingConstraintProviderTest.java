@@ -33,7 +33,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class ConferenceSchedulingConstraintProviderTest {
+class ConferenceSchedulingConstraintProviderTest {
 
     private final ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier =
             ConstraintVerifier.build(new ConferenceSchedulingConstraintProvider(), ConferenceSolution.class,

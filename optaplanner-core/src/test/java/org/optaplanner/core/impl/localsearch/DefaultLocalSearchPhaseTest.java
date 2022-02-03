@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class DefaultLocalSearchPhaseTest {
+class DefaultLocalSearchPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {

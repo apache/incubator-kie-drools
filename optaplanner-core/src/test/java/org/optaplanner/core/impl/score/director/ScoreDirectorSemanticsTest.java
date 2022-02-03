@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.Testdat
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightConstraintProvider;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightEasyScoreCalculator;
 
-public class ScoreDirectorSemanticsTest {
+class ScoreDirectorSemanticsTest {
 
     private final SolutionDescriptor<TestdataConstraintConfigurationSolution> solutionDescriptor =
             TestdataConstraintConfigurationSolution.buildSolutionDescriptor();

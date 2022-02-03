@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class DefaultSubChainSelectorTest {
+class DefaultSubChainSelectorTest {
 
     @Test
     public void notChainedVariableDescriptor() {

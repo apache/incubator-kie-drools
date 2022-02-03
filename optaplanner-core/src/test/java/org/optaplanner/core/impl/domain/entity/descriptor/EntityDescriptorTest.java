@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.pinned.extended.TestdataExtendedPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.extended.TestdataExtendedPinnedSolution;
 
-public class EntityDescriptorTest {
+class EntityDescriptorTest {
 
     @Test
     public void movableEntitySelectionFilter() {

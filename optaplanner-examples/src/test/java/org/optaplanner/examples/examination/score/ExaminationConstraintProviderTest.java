@@ -32,7 +32,7 @@ import org.optaplanner.examples.examination.domain.Topic;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class ExaminationConstraintProviderTest {
+class ExaminationConstraintProviderTest {
     private final ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier = ConstraintVerifier
             .build(new ExaminationConstraintProvider(), Examination.class, Exam.class);
 

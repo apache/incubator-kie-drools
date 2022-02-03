@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-public class DefaultProblemChangeDirectorTest {
+class DefaultProblemChangeDirectorTest {
 
     @Test
     void complexProblemChange_correctlyNotifiesScoreDirector() {

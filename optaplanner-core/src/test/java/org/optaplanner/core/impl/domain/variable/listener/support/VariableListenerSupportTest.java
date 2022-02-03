@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 
-public class VariableListenerSupportTest {
+class VariableListenerSupportTest {
 
     @Test
     public void demandBasic() {

@@ -43,7 +43,7 @@ import org.optaplanner.quarkus.testdata.gizmo.TestDataKitchenSinkSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorGizmoKitchenSinkTest {
+class OptaPlannerProcessorGizmoKitchenSinkTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

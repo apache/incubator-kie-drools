@@ -87,7 +87,7 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 
 @ExtendWith(SoftAssertionsExtension.class)
-public class DefaultSolverTest {
+class DefaultSolverTest {
 
     @BeforeEach
     public void resetGlobalRegistry() {

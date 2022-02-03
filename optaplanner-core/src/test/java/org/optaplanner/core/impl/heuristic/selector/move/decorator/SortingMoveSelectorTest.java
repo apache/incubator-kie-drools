@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class SortingMoveSelectorTest {
+class SortingMoveSelectorTest {
 
     @Test
     public void cacheTypeSolver() {

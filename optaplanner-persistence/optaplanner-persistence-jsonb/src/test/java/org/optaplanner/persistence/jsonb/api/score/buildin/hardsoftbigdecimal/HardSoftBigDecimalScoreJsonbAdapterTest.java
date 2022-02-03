@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest;
 
-public class HardSoftBigDecimalScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
+class HardSoftBigDecimalScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {

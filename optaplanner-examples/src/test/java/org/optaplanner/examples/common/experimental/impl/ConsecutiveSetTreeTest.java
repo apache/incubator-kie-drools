@@ -34,7 +34,7 @@ import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-public class ConsecutiveSetTreeTest {
+class ConsecutiveSetTreeTest {
 
     private ConsecutiveSetTree<Integer, Integer, Integer> getIntegerConsecutiveSetTree() {
         return new ConsecutiveSetTree<>(i -> i, (a, b) -> b - a, Integer::sum, 1, 0);

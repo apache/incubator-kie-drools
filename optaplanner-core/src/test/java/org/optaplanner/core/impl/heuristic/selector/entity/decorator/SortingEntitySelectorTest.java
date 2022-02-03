@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class SortingEntitySelectorTest {
+class SortingEntitySelectorTest {
 
     @Test
     public void cacheTypeSolver() {

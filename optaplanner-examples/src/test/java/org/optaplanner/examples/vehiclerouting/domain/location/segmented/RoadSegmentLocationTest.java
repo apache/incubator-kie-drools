@@ -24,7 +24,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
-public class RoadSegmentLocationTest {
+class RoadSegmentLocationTest {
 
     @Test
     public void getDistance() {

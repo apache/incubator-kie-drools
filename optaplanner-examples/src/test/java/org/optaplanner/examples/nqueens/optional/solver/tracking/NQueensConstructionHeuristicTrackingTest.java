@@ -37,7 +37,7 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTest {
+class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTest {
 
     @ParameterizedTest(name = "ConstructionHeuristicType: {0}, EntitySorterManner: {1}, ValueSorterManner: {2}")
     @MethodSource("parameters")

@@ -48,7 +48,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class DefaultExhaustiveSearchPhaseTest {
+class DefaultExhaustiveSearchPhaseTest {
 
     @Test
     public void restoreWorkingSolution() {

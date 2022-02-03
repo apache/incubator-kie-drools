@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
-public class NearEntityNearbyValueSelectorTest {
+class NearEntityNearbyValueSelectorTest {
 
     @Test
     public void originalSelection() {

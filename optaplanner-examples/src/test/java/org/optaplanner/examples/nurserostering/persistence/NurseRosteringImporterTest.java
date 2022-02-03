@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringImporterTest extends ImportDataFilesTest<NurseRoster> {
+class NurseRosteringImporterTest extends ImportDataFilesTest<NurseRoster> {
 
     @Override
     protected AbstractSolutionImporter<NurseRoster> createSolutionImporter() {

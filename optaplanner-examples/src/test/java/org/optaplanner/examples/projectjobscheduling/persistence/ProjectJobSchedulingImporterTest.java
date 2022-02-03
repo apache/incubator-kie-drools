@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class ProjectJobSchedulingImporterTest extends ImportDataFilesTest<Schedule> {
+class ProjectJobSchedulingImporterTest extends ImportDataFilesTest<Schedule> {
 
     @Override
     protected AbstractSolutionImporter<Schedule> createSolutionImporter() {

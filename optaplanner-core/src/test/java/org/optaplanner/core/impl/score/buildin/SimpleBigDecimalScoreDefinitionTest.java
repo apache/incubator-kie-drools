@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 
-public class SimpleBigDecimalScoreDefinitionTest {
+class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
     public void getZeroScore() {

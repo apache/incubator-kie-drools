@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution, HardSoftLongScore> {
+class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/investment/unsolved/irrinki_1.xml";
 

@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
+class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void typeStep() {

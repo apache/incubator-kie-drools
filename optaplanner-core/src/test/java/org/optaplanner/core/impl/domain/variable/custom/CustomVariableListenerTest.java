@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyT
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class CustomVariableListenerTest {
+class CustomVariableListenerTest {
 
     @Test
     public void cyclic() {

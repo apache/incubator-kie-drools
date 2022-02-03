@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentImporterTest extends ImportDataFilesTest<TravelingTournament> {
+class TravelingTournamentImporterTest extends ImportDataFilesTest<TravelingTournament> {
 
     @Override
     protected AbstractSolutionImporter<TravelingTournament> createSolutionImporter() {

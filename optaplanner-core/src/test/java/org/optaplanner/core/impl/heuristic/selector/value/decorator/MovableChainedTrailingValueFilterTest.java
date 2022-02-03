@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedCh
 import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class MovableChainedTrailingValueFilterTest {
+class MovableChainedTrailingValueFilterTest {
 
     @Test
     public void pinnedChained() {

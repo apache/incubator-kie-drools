@@ -32,7 +32,7 @@ import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataE
 import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataSolution;
 import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataValue;
 
-public class XStreamSolutionFileIOTest {
+class XStreamSolutionFileIOTest {
 
     private static File solutionTestDir;
 

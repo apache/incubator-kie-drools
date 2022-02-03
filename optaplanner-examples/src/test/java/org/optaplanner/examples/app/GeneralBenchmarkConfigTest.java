@@ -19,7 +19,7 @@ package org.optaplanner.examples.app;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class GeneralBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class GeneralBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

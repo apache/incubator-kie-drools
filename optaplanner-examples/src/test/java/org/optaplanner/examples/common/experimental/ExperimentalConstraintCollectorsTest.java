@@ -29,7 +29,7 @@ import org.optaplanner.examples.common.experimental.impl.ConsecutiveIntervalInfo
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
 import org.optaplanner.examples.common.experimental.impl.IntervalTree;
 
-public class ExperimentalConstraintCollectorsTest {
+class ExperimentalConstraintCollectorsTest {
     @Test
     public void consecutive() {
         // Do a basic test w/o edge cases; edge cases are covered in

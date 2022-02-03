@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class ScoreCalculationCountTerminationTest {
+class ScoreCalculationCountTerminationTest {
 
     @Test
     public void solveTermination() {

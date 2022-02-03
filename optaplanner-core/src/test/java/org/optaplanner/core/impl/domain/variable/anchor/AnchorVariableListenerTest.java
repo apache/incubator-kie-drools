@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 
-public class AnchorVariableListenerTest {
+class AnchorVariableListenerTest {
 
     @Test
     public void chained() {

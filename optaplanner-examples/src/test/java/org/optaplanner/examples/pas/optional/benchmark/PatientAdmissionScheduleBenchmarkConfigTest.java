@@ -19,7 +19,7 @@ package org.optaplanner.examples.pas.optional.benchmark;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class PatientAdmissionScheduleBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class PatientAdmissionScheduleBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

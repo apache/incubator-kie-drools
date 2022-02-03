@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class InitializedValueSelectorTest {
+class InitializedValueSelectorTest {
 
     @Test
     public void originalSelectionNullable() {

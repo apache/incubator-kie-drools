@@ -23,7 +23,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElemen
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class IntValueRangeTest {
+class IntValueRangeTest {
 
     @Test
     public void getSize() {

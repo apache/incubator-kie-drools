@@ -31,7 +31,7 @@ import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteComputerPr
 import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteProcessProblemChange;
 import org.optaplanner.examples.common.app.RealTimePlanningTurtleTest;
 
-public class CloudBalancingRealTimePlanningTurtleTest extends RealTimePlanningTurtleTest<CloudBalance> {
+class CloudBalancingRealTimePlanningTurtleTest extends RealTimePlanningTurtleTest<CloudBalance> {
 
     private CloudBalancingGenerator generator = new CloudBalancingGenerator(true);
 

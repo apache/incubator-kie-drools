@@ -20,7 +20,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TravelingTournament> {
+class TravelingTournamentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TravelingTournament> {
 
     @Override
     protected CommonApp<TravelingTournament> createCommonApp() {

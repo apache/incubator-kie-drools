@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class PhaseLifecycleTest {
+class PhaseLifecycleTest {
 
     @Test
     public void verifyEventCounts() {

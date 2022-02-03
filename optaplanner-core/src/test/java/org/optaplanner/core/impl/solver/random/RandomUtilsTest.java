@@ -20,7 +20,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-public class RandomUtilsTest {
+class RandomUtilsTest {
 
     @Test
     public void testNextLong() {

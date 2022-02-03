@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
-public class ExternalizedSingletonInverseVariableSupplyTest {
+class ExternalizedSingletonInverseVariableSupplyTest {
 
     @Test
     public void chainedEntity() {

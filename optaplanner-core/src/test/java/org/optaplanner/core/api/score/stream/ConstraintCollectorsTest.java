@@ -60,7 +60,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
-public class ConstraintCollectorsTest {
+class ConstraintCollectorsTest {
 
     // ************************************************************************
     // count

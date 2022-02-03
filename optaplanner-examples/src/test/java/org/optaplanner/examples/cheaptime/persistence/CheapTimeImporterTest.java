@@ -21,7 +21,7 @@ import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 
-public class CheapTimeImporterTest extends ImportDataFilesTest<CheapTimeSolution> {
+class CheapTimeImporterTest extends ImportDataFilesTest<CheapTimeSolution> {
 
     @Override
     protected AbstractSolutionImporter<CheapTimeSolution> createSolutionImporter() {

@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
-public class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
+class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {

@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class EntityRatioTabuSizeStrategyTest {
+class EntityRatioTabuSizeStrategyTest {
 
     @Test
     public void tabuSize() {

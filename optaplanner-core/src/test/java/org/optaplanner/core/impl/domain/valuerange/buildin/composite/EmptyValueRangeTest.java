@@ -25,7 +25,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-public class EmptyValueRangeTest {
+class EmptyValueRangeTest {
 
     @Test
     public void getSize() {

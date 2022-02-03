@@ -22,7 +22,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class CloudBalancingConstraintProviderTest {
+class CloudBalancingConstraintProviderTest {
 
     private final ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> constraintVerifier =
             ConstraintVerifier.build(new CloudBalancingConstraintProvider(), CloudBalance.class, CloudProcess.class);

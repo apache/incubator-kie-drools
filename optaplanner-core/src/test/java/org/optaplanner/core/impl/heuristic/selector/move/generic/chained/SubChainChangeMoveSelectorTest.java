@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChai
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
-public class SubChainChangeMoveSelectorTest {
+class SubChainChangeMoveSelectorTest {
 
     @Test
     public void differentValueDescriptorException() {

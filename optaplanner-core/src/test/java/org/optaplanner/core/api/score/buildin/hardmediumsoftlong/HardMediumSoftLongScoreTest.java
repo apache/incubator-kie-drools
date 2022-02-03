@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
+class HardMediumSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void of() {

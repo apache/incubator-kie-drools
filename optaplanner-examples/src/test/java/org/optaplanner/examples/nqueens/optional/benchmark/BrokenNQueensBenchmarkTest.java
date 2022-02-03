@@ -31,7 +31,7 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
+class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     public BrokenNQueensBenchmarkTest() {
         super(NQueensApp.SOLVER_CONFIG);

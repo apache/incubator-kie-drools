@@ -30,7 +30,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocati
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class CoachShuttleGatheringConstraintProviderTest {
+class CoachShuttleGatheringConstraintProviderTest {
     private final ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier =
             ConstraintVerifier
                     .build(new CoachShuttleGatheringConstraintProvider(), CoachShuttleGatheringSolution.class,

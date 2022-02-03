@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
+class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
 
     @Test
     public void oneMoveSelector() {

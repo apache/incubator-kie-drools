@@ -51,7 +51,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class DefaultPartitionedSearchPhaseTest {
+class DefaultPartitionedSearchPhaseTest {
 
     @Test
     @Timeout(5)

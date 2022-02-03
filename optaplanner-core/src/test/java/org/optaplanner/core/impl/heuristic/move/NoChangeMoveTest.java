@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class NoChangeMoveTest {
+class NoChangeMoveTest {
 
     @Test
     public void isMoveDoable() {

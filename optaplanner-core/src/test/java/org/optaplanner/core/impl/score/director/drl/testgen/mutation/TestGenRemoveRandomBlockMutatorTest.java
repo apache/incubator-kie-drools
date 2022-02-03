@@ -23,7 +23,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestGenRemoveRandomBlockMutatorTest {
+class TestGenRemoveRandomBlockMutatorTest {
 
     private static final int LIST_SIZE = 500;
     private ArrayList<Integer> list = new ArrayList<>();

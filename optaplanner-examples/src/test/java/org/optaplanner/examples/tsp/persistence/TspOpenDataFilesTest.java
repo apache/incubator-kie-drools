@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspOpenDataFilesTest extends OpenDataFilesTest<TspSolution> {
+class TspOpenDataFilesTest extends OpenDataFilesTest<TspSolution> {
 
     @Override
     protected CommonApp<TspSolution> createCommonApp() {

@@ -19,7 +19,7 @@ package org.optaplanner.examples.tsp.optional.benchmark;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class TspBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class TspBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

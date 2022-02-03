@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class DefaultConstructionHeuristicPhaseTest {
+class DefaultConstructionHeuristicPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {

@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class BendableScoreTest extends AbstractScoreTest {
+class BendableScoreTest extends AbstractScoreTest {
 
     private BendableScoreDefinition scoreDefinitionHSS = new BendableScoreDefinition(1, 2);
     private BendableScoreDefinition scoreDefinitionHHH = new BendableScoreDefinition(3, 0);

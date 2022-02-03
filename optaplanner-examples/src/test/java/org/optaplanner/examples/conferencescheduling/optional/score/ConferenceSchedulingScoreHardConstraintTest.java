@@ -33,7 +33,7 @@ import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScor
 
 // TODO https://issues.redhat.com/browse/PLANNER-1335
 @Disabled("Temporarily disabled until ScoreVerifier.assertPenalty() exists to avoid unneeded refactor")
-public class ConferenceSchedulingScoreHardConstraintTest {
+class ConferenceSchedulingScoreHardConstraintTest {
 
     private HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));

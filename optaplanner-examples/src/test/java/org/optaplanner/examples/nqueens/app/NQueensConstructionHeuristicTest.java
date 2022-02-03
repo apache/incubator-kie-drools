@@ -22,7 +22,7 @@ import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
-public class NQueensConstructionHeuristicTest extends AbstractConstructionHeuristicTest<NQueens> {
+class NQueensConstructionHeuristicTest extends AbstractConstructionHeuristicTest<NQueens> {
 
     @Override
     protected CommonApp<NQueens> createCommonApp() {

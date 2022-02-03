@@ -32,7 +32,7 @@ import io.restassured.path.xml.XmlPath;
  */
 
 @QuarkusTest
-public class OptaPlannerBenchmarkTestResourceTest {
+class OptaPlannerBenchmarkTestResourceTest {
 
     @Test
     @Timeout(600)

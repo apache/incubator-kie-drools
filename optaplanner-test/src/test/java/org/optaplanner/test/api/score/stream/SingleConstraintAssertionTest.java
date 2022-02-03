@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.planningid.TestdataStringPlanni
 import org.optaplanner.core.impl.testdata.domain.planningid.TestdataStringPlanningIdSolution;
 import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintProvider;
 
-public class SingleConstraintAssertionTest {
+class SingleConstraintAssertionTest {
 
     private final ConstraintVerifier<TestdataConstraintProvider, TestdataStringPlanningIdSolution> constraintVerifier =
             ConstraintVerifier.build(new TestdataConstraintProvider(), TestdataStringPlanningIdSolution.class,

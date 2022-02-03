@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCourseOpenDataFilesTest extends OpenDataFilesTest<CourseSchedule> {
+class CurriculumCourseOpenDataFilesTest extends OpenDataFilesTest<CourseSchedule> {
 
     @Override
     protected CommonApp<CourseSchedule> createCommonApp() {

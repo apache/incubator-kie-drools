@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
-public class CompositeTriJoinerTest {
+class CompositeTriJoinerTest {
 
     @Test
     public void compositeMappings() {

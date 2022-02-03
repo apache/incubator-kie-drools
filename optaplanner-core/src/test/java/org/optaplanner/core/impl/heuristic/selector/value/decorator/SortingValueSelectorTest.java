@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class SortingValueSelectorTest {
+class SortingValueSelectorTest {
 
     @Test
     public void originalSelectionCacheTypeSolver() {

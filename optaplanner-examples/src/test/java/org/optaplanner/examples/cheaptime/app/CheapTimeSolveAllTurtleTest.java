@@ -21,7 +21,7 @@ import org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalcu
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 
-public class CheapTimeSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CheapTimeSolution> {
+class CheapTimeSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CheapTimeSolution> {
 
     @Override
     protected CommonApp<CheapTimeSolution> createCommonApp() {

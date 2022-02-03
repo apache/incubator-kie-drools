@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.optional.score.TspEasyScoreCalculator;
 
-public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TspSolution> {
+class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TspSolution> {
 
     @Override
     protected CommonApp<TspSolution> createCommonApp() {

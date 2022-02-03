@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-public class SmallScalingOrderedSetTest {
+class SmallScalingOrderedSetTest {
 
     @Test
     public void addRemoveAroundThreshold() {

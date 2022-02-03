@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.flightcrewscheduling.app.FlightCrewSchedulingApp;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
-public class FlightCrewSchedulingOpenDataFilesTest extends OpenDataFilesTest<FlightCrewSolution> {
+class FlightCrewSchedulingOpenDataFilesTest extends OpenDataFilesTest<FlightCrewSolution> {
 
     @Override
     protected CommonApp<FlightCrewSolution> createCommonApp() {

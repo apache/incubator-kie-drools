@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class FixedTabuSizeStrategyTest {
+class FixedTabuSizeStrategyTest {
 
     @Test
     public void tabuSize() {

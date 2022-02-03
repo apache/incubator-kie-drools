@@ -27,7 +27,7 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class ListValueRangeTest {
+class ListValueRangeTest {
 
     @Test
     public void getSize() {

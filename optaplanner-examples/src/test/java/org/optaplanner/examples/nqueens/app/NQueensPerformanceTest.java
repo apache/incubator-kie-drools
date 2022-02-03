@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
-public class NQueensPerformanceTest extends SolverPerformanceTest<NQueens, SimpleScore> {
+class NQueensPerformanceTest extends SolverPerformanceTest<NQueens, SimpleScore> {
 
     @Override
     protected NQueensApp createCommonApp() {

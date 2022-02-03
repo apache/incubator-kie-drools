@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionSchedulePerformanceTest
+class PatientAdmissionSchedulePerformanceTest
         extends SolverPerformanceTest<PatientAdmissionSchedule, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/pas/unsolved/testdata01.xml";

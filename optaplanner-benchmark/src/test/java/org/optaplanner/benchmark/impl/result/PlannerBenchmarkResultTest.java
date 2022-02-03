@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistance
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
-public class PlannerBenchmarkResultTest {
+class PlannerBenchmarkResultTest {
 
     private static final String TEST_PLANNER_BENCHMARK_RESULT = "testPlannerBenchmarkResult.xml";
 

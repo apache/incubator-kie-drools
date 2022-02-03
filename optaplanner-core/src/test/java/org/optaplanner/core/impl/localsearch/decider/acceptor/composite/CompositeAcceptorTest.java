@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class CompositeAcceptorTest {
+class CompositeAcceptorTest {
 
     @Test
     public void phaseLifecycle() {

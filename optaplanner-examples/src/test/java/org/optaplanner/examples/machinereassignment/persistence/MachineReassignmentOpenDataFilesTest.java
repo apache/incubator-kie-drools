@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentOpenDataFilesTest extends OpenDataFilesTest<MachineReassignment> {
+class MachineReassignmentOpenDataFilesTest extends OpenDataFilesTest<MachineReassignment> {
 
     @Override
     protected CommonApp<MachineReassignment> createCommonApp() {

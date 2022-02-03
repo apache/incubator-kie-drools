@@ -43,7 +43,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class TestGenTestWriterTest {
+class TestGenTestWriterTest {
 
     private static final String DRL_FILE_PLACEHOLDER = "SCORE_DRL_ABSOLUTE_PATH";
     private static final String DRL_FILE_PATH = "/x/y.drl";

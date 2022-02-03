@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
-public class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBalance, HardSoftScore> {
+class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBalance, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/cloudbalancing/unsolved/200computers-600processes.xml";
 

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerBenchmarkProcessorEmptyAppTest {
+class OptaPlannerBenchmarkProcessorEmptyAppTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

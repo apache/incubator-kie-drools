@@ -19,7 +19,7 @@ package org.optaplanner.examples.projectjobscheduling.optional.benchmark;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class ProjectJobSchedulingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class ProjectJobSchedulingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

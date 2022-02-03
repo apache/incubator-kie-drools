@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 
-public class HardMediumSoftBigDecimalScoreDefinitionTest {
+class HardMediumSoftBigDecimalScoreDefinitionTest {
 
     @Test
     public void getZeroScore() {

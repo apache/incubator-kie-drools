@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.common.experimental.api.IntervalBreak;
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
 
-public class IntervalTreeTest {
+class IntervalTreeTest {
     private static class Interval {
         final int start;
         final int end;

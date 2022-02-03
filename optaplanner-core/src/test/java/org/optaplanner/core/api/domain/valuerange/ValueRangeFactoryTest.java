@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataValueRangeEn
 import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataValueRangeSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class ValueRangeFactoryTest {
+class ValueRangeFactoryTest {
 
     @Test
     public void solve() {

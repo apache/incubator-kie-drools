@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class DefaultPlannerBenchmarkTest {
+class DefaultPlannerBenchmarkTest {
 
     @Test
     public void benchmarkingStartedTwice() {

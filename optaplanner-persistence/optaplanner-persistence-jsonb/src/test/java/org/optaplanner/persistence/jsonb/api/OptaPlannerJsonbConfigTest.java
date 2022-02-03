@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
-public class OptaPlannerJsonbConfigTest extends AbstractJsonbJsonAdapterTest {
+class OptaPlannerJsonbConfigTest extends AbstractJsonbJsonAdapterTest {
 
     @Test
     public void jsonbConfigSerializeAndDeserialize() {

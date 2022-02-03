@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class GizmoMemberAccessorFactoryTest {
+class GizmoMemberAccessorFactoryTest {
 
     static ClassLoader contextClassLoader;
 

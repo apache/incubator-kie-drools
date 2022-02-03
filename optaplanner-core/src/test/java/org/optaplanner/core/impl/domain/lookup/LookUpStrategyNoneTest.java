@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMult
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
 
-public class LookUpStrategyNoneTest {
+class LookUpStrategyNoneTest {
 
     private LookUpManager lookUpManager;
 

@@ -39,7 +39,7 @@ import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerat
 import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemChange;
 import org.optaplanner.examples.common.app.LoggingTest;
 
-public class CloudBalancingDaemonTest extends LoggingTest {
+class CloudBalancingDaemonTest extends LoggingTest {
 
     private Object stageLock = new Object();
     private AtomicInteger stageNumber = new AtomicInteger(0);

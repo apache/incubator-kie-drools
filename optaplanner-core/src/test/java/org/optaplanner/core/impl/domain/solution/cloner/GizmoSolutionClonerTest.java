@@ -50,7 +50,7 @@ import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodDescriptor;
 
-public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
+class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
     @Override
     protected <Solution_> SolutionCloner<Solution_> createSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {

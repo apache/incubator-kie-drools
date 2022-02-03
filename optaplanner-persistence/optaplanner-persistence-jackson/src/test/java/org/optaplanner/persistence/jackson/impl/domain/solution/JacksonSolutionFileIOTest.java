@@ -30,7 +30,7 @@ import org.optaplanner.persistence.jackson.impl.testdata.domain.JacksonTestdataE
 import org.optaplanner.persistence.jackson.impl.testdata.domain.JacksonTestdataSolution;
 import org.optaplanner.persistence.jackson.impl.testdata.domain.JacksonTestdataValue;
 
-public class JacksonSolutionFileIOTest {
+class JacksonSolutionFileIOTest {
 
     private static File solutionTestDir;
 

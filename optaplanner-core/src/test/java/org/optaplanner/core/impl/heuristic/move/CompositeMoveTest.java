@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class CompositeMoveTest {
+class CompositeMoveTest {
 
     @Test
     public void createUndoMove() {

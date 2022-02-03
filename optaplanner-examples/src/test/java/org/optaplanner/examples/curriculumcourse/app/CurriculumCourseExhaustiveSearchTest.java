@@ -22,7 +22,7 @@ import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCourseExhaustiveSearchTest extends AbstractExhaustiveSearchTest<CourseSchedule> {
+class CurriculumCourseExhaustiveSearchTest extends AbstractExhaustiveSearchTest<CourseSchedule> {
 
     @Override
     protected CommonApp<CourseSchedule> createCommonApp() {

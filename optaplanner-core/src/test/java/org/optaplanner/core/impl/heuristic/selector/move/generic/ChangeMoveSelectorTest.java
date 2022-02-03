@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class ChangeMoveSelectorTest {
+class ChangeMoveSelectorTest {
 
     @Test
     public void original() {

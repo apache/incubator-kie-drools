@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 
-public class DrlScoreDirectorTest {
+class DrlScoreDirectorTest {
 
     @Test
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {

@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class ExternalizedCollectionInverseVariableSupplyTest {
+class ExternalizedCollectionInverseVariableSupplyTest {
 
     @Test
     public void normal() {

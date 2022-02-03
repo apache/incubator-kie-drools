@@ -33,7 +33,7 @@ import org.optaplanner.quarkus.testdata.gizmo.PrivateNoArgsConstructorSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorPrivateConstructorTest {
+class OptaPlannerProcessorPrivateConstructorTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

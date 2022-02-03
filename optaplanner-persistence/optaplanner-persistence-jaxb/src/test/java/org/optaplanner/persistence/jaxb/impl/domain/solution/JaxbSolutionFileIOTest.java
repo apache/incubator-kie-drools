@@ -30,7 +30,7 @@ import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataEntity;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataSolution;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataValue;
 
-public class JaxbSolutionFileIOTest {
+class JaxbSolutionFileIOTest {
 
     private static File solutionTestDir;
 

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class StepCountTerminationTest {
+class StepCountTerminationTest {
 
     @Test
     public void phaseTermination() {

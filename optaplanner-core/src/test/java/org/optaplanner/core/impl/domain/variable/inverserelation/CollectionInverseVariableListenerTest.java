@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.Testdata
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationSolution;
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationValue;
 
-public class CollectionInverseVariableListenerTest {
+class CollectionInverseVariableListenerTest {
 
     @Test
     public void normal() {

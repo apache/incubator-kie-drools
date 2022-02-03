@@ -32,7 +32,7 @@ import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.domain.TaskType;
 import org.optaplanner.test.impl.score.buildin.bendable.BendableScoreVerifier;
 
-public class TaskAssigningScoreConstraintTest {
+class TaskAssigningScoreConstraintTest {
 
     private static final ScoreDirectorFactoryConfig SCORE_DIRECTOR_FACTORY_CONFIG = new ScoreDirectorFactoryConfig()
             .withScoreDrls("org/optaplanner/examples/taskassigning/optional/score/taskAssigningConstraints.drl");

@@ -21,7 +21,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheri
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 
-public class CoachShuttleGatheringImporterTest extends ImportDataFilesTest<CoachShuttleGatheringSolution> {
+class CoachShuttleGatheringImporterTest extends ImportDataFilesTest<CoachShuttleGatheringSolution> {
 
     @Override
     protected AbstractSolutionImporter<CoachShuttleGatheringSolution> createSolutionImporter() {

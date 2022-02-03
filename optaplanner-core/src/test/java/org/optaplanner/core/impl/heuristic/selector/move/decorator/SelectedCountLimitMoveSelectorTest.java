@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class SelectedCountLimitMoveSelectorTest {
+class SelectedCountLimitMoveSelectorTest {
 
     @Test
     public void selectSizeLimitLowerThanSelectorSize() {

@@ -27,7 +27,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder;
 
-public class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<BendableBigDecimalScore> {
+class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<BendableBigDecimalScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

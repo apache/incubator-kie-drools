@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCourseImporterTest extends ImportDataFilesTest<CourseSchedule> {
+class CurriculumCourseImporterTest extends ImportDataFilesTest<CourseSchedule> {
 
     @Override
     protected AbstractSolutionImporter<CourseSchedule> createSolutionImporter() {

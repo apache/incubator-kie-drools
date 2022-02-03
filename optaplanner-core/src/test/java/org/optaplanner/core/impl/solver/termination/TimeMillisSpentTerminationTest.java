@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class TimeMillisSpentTerminationTest {
+class TimeMillisSpentTerminationTest {
 
     @Test
     public void solveTermination() {

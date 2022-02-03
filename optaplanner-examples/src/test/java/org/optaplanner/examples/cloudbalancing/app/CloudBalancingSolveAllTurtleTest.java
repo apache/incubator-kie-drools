@@ -21,7 +21,7 @@ import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasy
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 
-public class CloudBalancingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CloudBalance> {
+class CloudBalancingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CloudBalance> {
 
     @Override
     protected CommonApp<CloudBalance> createCommonApp() {

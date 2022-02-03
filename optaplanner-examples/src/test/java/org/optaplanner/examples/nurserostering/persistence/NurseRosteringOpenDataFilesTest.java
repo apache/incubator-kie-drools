@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringOpenDataFilesTest extends OpenDataFilesTest<NurseRoster> {
+class NurseRosteringOpenDataFilesTest extends OpenDataFilesTest<NurseRoster> {
 
     @Override
     protected CommonApp<NurseRoster> createCommonApp() {

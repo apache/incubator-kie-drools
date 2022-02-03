@@ -39,7 +39,7 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
+class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
 
     private static final int N = 6;
 

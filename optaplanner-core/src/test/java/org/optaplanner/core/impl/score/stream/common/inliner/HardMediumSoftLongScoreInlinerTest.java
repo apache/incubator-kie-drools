@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardMediumSoftLongScoreSolution;
 
-public class HardMediumSoftLongScoreInlinerTest
+class HardMediumSoftLongScoreInlinerTest
         extends AbstractScoreInlinerTest<TestdataHardMediumSoftLongScoreSolution, HardMediumSoftLongScore> {
 
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;

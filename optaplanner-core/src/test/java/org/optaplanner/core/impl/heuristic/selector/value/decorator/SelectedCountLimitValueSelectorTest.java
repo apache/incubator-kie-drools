@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class SelectedCountLimitValueSelectorTest {
+class SelectedCountLimitValueSelectorTest {
 
     @Test
     public void selectSizeLimitLowerThanSelectorSize() {

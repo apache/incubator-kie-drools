@@ -19,7 +19,7 @@ package org.optaplanner.examples.travelingtournament.optional.benchmark;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class TravelingTournamentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class TravelingTournamentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

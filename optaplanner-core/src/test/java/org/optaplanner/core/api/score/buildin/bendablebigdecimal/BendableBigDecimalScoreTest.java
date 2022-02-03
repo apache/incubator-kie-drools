@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.BendableBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class BendableBigDecimalScoreTest extends AbstractScoreTest {
+class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     private static final BigDecimal PLUS_4000 = BigDecimal.valueOf(4000);
     private static final BigDecimal PLUS_300 = BigDecimal.valueOf(300);

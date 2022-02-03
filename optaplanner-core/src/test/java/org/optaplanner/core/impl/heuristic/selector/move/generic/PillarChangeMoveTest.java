@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSoluti
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingEntity;
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingSolution;
 
-public class PillarChangeMoveTest {
+class PillarChangeMoveTest {
 
     @Test
     public void isMoveDoableValueRangeProviderOnEntity() {

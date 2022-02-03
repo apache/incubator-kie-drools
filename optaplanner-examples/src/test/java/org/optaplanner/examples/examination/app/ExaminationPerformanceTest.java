@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationPerformanceTest extends SolverPerformanceTest<Examination, HardSoftScore> {
+class ExaminationPerformanceTest extends SolverPerformanceTest<Examination, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/examination/unsolved/exam_comp_set5.xml";
 

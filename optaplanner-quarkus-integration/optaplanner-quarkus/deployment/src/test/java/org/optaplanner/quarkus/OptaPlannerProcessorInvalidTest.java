@@ -36,7 +36,7 @@ import org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataI
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorInvalidTest {
+class OptaPlannerProcessorInvalidTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

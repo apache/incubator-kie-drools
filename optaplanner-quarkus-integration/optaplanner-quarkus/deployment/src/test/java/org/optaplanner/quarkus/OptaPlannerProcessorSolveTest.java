@@ -42,7 +42,7 @@ import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorSolveTest {
+class OptaPlannerProcessorSolveTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

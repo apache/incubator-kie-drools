@@ -31,7 +31,7 @@ import io.restassured.RestAssured;
  */
 
 @QuarkusTest
-public class OptaPlannerTestResourceTest {
+class OptaPlannerTestResourceTest {
 
     @Test
     @Timeout(600)

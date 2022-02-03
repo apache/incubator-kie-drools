@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationOpenDataFilesTest extends OpenDataFilesTest<Examination> {
+class ExaminationOpenDataFilesTest extends OpenDataFilesTest<Examination> {
 
     @Override
     protected CommonApp<Examination> createCommonApp() {

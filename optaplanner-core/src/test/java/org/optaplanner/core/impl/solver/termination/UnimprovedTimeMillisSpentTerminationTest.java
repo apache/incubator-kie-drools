@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class UnimprovedTimeMillisSpentTerminationTest {
+class UnimprovedTimeMillisSpentTerminationTest {
 
     @Test
     public void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 
-public class BendableBigDecimalScoreDefinitionTest {
+class BendableBigDecimalScoreDefinitionTest {
 
     @Test
     public void getZeroScore() {

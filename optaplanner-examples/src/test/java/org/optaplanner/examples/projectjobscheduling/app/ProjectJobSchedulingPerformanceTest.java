@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<Schedule, HardMediumSoftScore> {
+class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<Schedule, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/projectjobscheduling/unsolved/A-4.xml";
 

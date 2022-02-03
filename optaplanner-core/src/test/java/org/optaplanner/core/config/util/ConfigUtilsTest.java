@@ -32,7 +32,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 
-public class ConfigUtilsTest {
+class ConfigUtilsTest {
 
     @Test
     public void mergeProperty() {

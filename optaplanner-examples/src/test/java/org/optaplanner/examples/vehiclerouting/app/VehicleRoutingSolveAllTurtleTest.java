@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.app.ImportDirSolveAllTurtleTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator;
 
-public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTest<VehicleRoutingSolution> {
+class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTest<VehicleRoutingSolution> {
 
     @Override
     protected CommonApp<VehicleRoutingSolution> createCommonApp() {

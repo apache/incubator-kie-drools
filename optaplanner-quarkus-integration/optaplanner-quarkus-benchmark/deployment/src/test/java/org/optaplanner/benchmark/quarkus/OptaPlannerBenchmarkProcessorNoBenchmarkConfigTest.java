@@ -33,7 +33,7 @@ import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusS
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerBenchmarkProcessorNoBenchmarkConfigTest {
+class OptaPlannerBenchmarkProcessorNoBenchmarkConfigTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
 
-public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
+class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
 
     @Test
     public void oneMoveSelector() {

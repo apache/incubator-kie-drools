@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
-public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQueens> {
+class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQueens> {
 
     @Override
     protected CommonApp<NQueens> createCommonApp() {

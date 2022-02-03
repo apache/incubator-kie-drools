@@ -26,7 +26,7 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class BooleanValueRangeTest {
+class BooleanValueRangeTest {
 
     @Test
     public void getSize() {

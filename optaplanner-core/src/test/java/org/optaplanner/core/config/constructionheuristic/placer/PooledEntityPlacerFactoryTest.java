@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class PooledEntityPlacerFactoryTest {
+class PooledEntityPlacerFactoryTest {
 
     @Test
     public void unfoldNew() {

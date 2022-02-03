@@ -26,7 +26,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
-public class CloudBalancingScoreConstraintTest {
+class CloudBalancingScoreConstraintTest {
 
     private HardSoftScoreVerifier<CloudBalance> scoreVerifier = new HardSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(CloudBalancingApp.SOLVER_CONFIG));

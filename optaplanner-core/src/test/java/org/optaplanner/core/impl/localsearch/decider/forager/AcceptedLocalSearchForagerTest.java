@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class AcceptedLocalSearchForagerTest {
+class AcceptedLocalSearchForagerTest {
 
     @Test
     public void pickMoveMaxScoreAccepted() {

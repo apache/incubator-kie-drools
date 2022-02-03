@@ -31,7 +31,7 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 
-public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingComparatorTest {
+class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingComparatorTest {
 
     private BenchmarkReport benchmarkReport;
     private WorstScoreSolverRankingComparator comparator;

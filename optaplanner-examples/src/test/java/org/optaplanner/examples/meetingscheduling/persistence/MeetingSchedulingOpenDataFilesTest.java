@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 
-public class MeetingSchedulingOpenDataFilesTest extends OpenDataFilesTest<MeetingSchedule> {
+class MeetingSchedulingOpenDataFilesTest extends OpenDataFilesTest<MeetingSchedule> {
 
     @Override
     protected CommonApp<MeetingSchedule> createCommonApp() {

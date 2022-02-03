@@ -45,7 +45,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 
-public class LookUpStrategyImmutableTest {
+class LookUpStrategyImmutableTest {
 
     private LookUpManager lookUpManager;
 

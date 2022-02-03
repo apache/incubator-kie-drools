@@ -20,7 +20,7 @@ import org.optaplanner.examples.cheaptime.optional.benchmark.CheapTimeBenchmarkA
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class CheapTimeBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class CheapTimeBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

@@ -19,7 +19,7 @@ package org.optaplanner.examples.nurserostering.optional.benchmark;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class NurseRosteringBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
+class NurseRosteringBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Override
     protected CommonBenchmarkApp getBenchmarkApp() {

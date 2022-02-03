@@ -28,7 +28,7 @@ import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.persistence.TennisGenerator;
 
-public class TennisBenchmarkTest extends LoggingTest {
+class TennisBenchmarkTest extends LoggingTest {
 
     @Test
     public void benchmark() {

@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 
-public class DefaultConstructionHeuristicForagerTest<Solution_> {
+class DefaultConstructionHeuristicForagerTest<Solution_> {
 
     @Test
     public void checkPickEarlyNever() {

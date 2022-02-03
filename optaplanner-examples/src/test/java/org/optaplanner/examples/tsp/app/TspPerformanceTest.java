@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspPerformanceTest extends SolverPerformanceTest<TspSolution, SimpleLongScore> {
+class TspPerformanceTest extends SolverPerformanceTest<TspSolution, SimpleLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/tsp/unsolved/europe40.xml";
 

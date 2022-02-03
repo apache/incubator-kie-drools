@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class CachingValueSelectorTest {
+class CachingValueSelectorTest {
 
     @Test
     public void originalSelectionCacheTypeSolver() {

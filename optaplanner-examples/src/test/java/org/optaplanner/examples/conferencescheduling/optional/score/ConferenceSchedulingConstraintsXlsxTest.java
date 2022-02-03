@@ -58,7 +58,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-public class ConferenceSchedulingConstraintsXlsxTest {
+class ConferenceSchedulingConstraintsXlsxTest {
 
     public static Collection<Object[]> testSheetParameters() {
         File testFile = new File(ConferenceSchedulingConstraintsXlsxTest.class.getResource(testFileName).getFile());

@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class BestScoreTerminationTest {
+class BestScoreTerminationTest {
 
     @Test
     public void solveTermination() {

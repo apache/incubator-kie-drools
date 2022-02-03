@@ -25,7 +25,7 @@ import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class BigIntegerValueRangeTest {
+class BigIntegerValueRangeTest {
 
     @Test
     public void getSize() {

@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class BendableScoreDefinitionTest {
+class BendableScoreDefinitionTest {
 
     @Test
     public void getZeroScore() {

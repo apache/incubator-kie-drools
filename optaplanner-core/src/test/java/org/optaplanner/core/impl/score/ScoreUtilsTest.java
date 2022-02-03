@@ -33,7 +33,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
-public class ScoreUtilsTest {
+class ScoreUtilsTest {
 
     @Test
     public void parseScore() {

@@ -22,7 +22,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
 import org.optaplanner.examples.common.app.CommonApp;
 
-public class CloudBalancingExhaustiveSearchTest extends AbstractExhaustiveSearchTest<CloudBalance> {
+class CloudBalancingExhaustiveSearchTest extends AbstractExhaustiveSearchTest<CloudBalance> {
 
     @Override
     protected CommonApp<CloudBalance> createCommonApp() {

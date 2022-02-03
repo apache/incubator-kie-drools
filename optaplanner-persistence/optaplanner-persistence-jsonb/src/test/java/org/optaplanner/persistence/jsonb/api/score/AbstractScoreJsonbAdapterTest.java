@@ -25,7 +25,7 @@ import javax.json.bind.JsonbException;
 
 import org.optaplanner.core.api.score.Score;
 
-public class AbstractScoreJsonbAdapterTest {
+public abstract class AbstractScoreJsonbAdapterTest {
 
     // ************************************************************************
     // Helper methods

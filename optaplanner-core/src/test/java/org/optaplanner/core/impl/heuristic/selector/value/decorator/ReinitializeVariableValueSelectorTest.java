@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 
-public class ReinitializeVariableValueSelectorTest {
+class ReinitializeVariableValueSelectorTest {
 
     @Test
     public void oneVariable() {

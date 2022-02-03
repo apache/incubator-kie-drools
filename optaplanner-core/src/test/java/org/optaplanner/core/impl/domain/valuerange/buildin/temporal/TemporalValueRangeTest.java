@@ -37,7 +37,7 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class TemporalValueRangeTest {
+class TemporalValueRangeTest {
 
     @Test
     public void getSizeForLocalDate() {

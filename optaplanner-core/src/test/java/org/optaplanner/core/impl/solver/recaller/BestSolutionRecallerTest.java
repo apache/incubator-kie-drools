@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class BestSolutionRecallerTest {
+class BestSolutionRecallerTest {
 
     private static <Solution_> SolverScope<Solution_> createSolverScope() {
         SolverScope<Solution_> solverScope = new SolverScope<>();

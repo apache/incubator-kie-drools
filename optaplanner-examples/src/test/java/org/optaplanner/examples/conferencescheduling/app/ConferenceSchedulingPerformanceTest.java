@@ -23,8 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 
-public class ConferenceSchedulingPerformanceTest
-        extends SolverPerformanceTest<ConferenceSolution, HardMediumSoftScore> {
+class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<ConferenceSolution, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx";
 

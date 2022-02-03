@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
-public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
+class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void lateAcceptanceSize() {

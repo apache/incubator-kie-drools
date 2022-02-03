@@ -22,7 +22,7 @@ import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
 
-public class AlphaNumericStringComparatorTest {
+class AlphaNumericStringComparatorTest {
 
     @Test
     public void compare() {

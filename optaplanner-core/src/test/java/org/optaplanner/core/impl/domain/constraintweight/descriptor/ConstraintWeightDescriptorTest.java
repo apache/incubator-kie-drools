@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.Testdat
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.extended.TestdataExtendedConstraintConfiguration;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.extended.TestdataExtendedConstraintConfigurationSolution;
 
-public class ConstraintWeightDescriptorTest {
+class ConstraintWeightDescriptorTest {
 
     @Test
     public void extractionFunction() {

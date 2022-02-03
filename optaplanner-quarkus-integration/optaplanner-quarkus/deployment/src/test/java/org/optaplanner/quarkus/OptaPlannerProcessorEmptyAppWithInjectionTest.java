@@ -27,7 +27,7 @@ import org.optaplanner.core.api.solver.SolverManager;
 import io.quarkus.arc.Arc;
 import io.quarkus.test.QuarkusUnitTest;
 
-public class OptaPlannerProcessorEmptyAppWithInjectionTest {
+class OptaPlannerProcessorEmptyAppWithInjectionTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

@@ -28,7 +28,7 @@ import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class NQueensConstraintProviderTest {
+class NQueensConstraintProviderTest {
 
     private final ConstraintVerifier<NQueensConstraintProvider, NQueens> constraintVerifier = ConstraintVerifier
             .build(new NQueensConstraintProvider(), NQueens.class, Queen.class);

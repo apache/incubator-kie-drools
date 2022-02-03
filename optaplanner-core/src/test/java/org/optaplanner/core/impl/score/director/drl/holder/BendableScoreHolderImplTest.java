@@ -25,7 +25,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 
-public class BendableScoreHolderImplTest extends AbstractScoreHolderTest {
+class BendableScoreHolderImplTest extends AbstractScoreHolderTest {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

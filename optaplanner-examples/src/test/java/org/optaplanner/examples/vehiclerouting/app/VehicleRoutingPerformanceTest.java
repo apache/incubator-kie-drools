@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRoutingSolution, HardSoftLongScore> {
+class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRoutingSolution, HardSoftLongScore> {
 
     private static final String CVRP_32_CUSTOMERS_XML = "data/vehiclerouting/unsolved/cvrp-32customers.xml";
     private static final String CVRPTW_100_CUSTOMERS_A_XML = "data/vehiclerouting/unsolved/cvrptw-100customers-A.xml";

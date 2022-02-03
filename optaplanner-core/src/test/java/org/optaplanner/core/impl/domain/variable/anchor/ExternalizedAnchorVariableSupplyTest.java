@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
-public class ExternalizedAnchorVariableSupplyTest {
+class ExternalizedAnchorVariableSupplyTest {
 
     @Test
     public void chainedEntity() {

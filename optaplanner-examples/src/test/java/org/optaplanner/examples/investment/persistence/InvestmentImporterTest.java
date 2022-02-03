@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.investment.app.InvestmentApp;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-public class InvestmentImporterTest extends ImportDataFilesTest<InvestmentSolution> {
+class InvestmentImporterTest extends ImportDataFilesTest<InvestmentSolution> {
 
     @Override
     protected AbstractSolutionImporter<InvestmentSolution> createSolutionImporter() {

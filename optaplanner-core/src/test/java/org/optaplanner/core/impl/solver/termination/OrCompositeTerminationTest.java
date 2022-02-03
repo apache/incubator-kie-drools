@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class OrCompositeTerminationTest {
+class OrCompositeTerminationTest {
 
     @Test
     public void solveTermination() {

@@ -31,7 +31,7 @@ import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-public class MeetingSchedulingConstraintProviderTest {
+class MeetingSchedulingConstraintProviderTest {
 
     private final ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier =
             ConstraintVerifier.build(new MeetingSchedulingConstraintProvider(), MeetingSchedule.class,

@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNode
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
+class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
 
     @Test
     public void testNodePruning() {

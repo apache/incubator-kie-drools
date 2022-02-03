@@ -57,7 +57,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class EnvironmentModeTest {
+class EnvironmentModeTest {
 
     private static final int NUMBER_OF_RANDOM_NUMBERS_GENERATED = 1000;
     private static final int NUMBER_OF_TIMES_RUN = 10;

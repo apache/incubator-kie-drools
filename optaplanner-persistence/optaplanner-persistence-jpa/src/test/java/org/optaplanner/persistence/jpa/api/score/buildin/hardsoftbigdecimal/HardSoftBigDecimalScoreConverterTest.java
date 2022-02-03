@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
-public class HardSoftBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
+class HardSoftBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {

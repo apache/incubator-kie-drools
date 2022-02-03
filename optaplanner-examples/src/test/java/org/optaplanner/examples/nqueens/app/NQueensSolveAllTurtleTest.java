@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator;
 
-public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NQueens> {
+class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NQueens> {
 
     @Override
     protected CommonApp<NQueens> createCommonApp() {

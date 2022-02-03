@@ -23,7 +23,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
-public class SimpleLongScoreHolderImplTest extends AbstractScoreHolderTest<SimpleLongScore> {
+class SimpleLongScoreHolderImplTest extends AbstractScoreHolderTest<SimpleLongScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

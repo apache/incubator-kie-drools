@@ -21,7 +21,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-public class TaskAssigningOpenDataFilesTest extends OpenDataFilesTest<TaskAssigningSolution> {
+class TaskAssigningOpenDataFilesTest extends OpenDataFilesTest<TaskAssigningSolution> {
 
     @Override
     protected CommonApp<TaskAssigningSolution> createCommonApp() {

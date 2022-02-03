@@ -23,7 +23,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentPerformanceTest extends SolverPerformanceTest<MachineReassignment, HardSoftLongScore> {
+class MachineReassignmentPerformanceTest extends SolverPerformanceTest<MachineReassignment, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/machinereassignment/unsolved/model_a2_1.xml";
 
