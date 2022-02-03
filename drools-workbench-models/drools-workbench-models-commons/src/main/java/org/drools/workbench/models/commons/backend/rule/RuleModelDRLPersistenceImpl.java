@@ -4012,7 +4012,7 @@ public class RuleModelDRLPersistenceImpl
                                                    String factType,
                                                    final String fieldName,
                                                    final ExpressionFormLine expression) {
-            String[] splits = fieldName.split("\\.");
+            String[] splits = Splitter.split(fieldName);
 
             boolean isBoundParam = false;
             if (factType == null) {
