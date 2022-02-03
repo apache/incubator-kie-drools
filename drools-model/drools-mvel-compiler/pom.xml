@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>8.16.1.Beta</version>
+    <version>8.16.2-SNAPSHOT</version>
   </parent>
 
   <name>Drools :: MVEL Compiler</name>

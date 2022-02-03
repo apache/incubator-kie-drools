@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-trusty</artifactId>
-    <version>8.16.1.Beta</version>
+    <version>8.16.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-pmml-models-archetype</artifactId>
