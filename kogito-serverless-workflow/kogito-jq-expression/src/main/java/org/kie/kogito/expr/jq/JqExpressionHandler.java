@@ -17,8 +17,8 @@ package org.kie.kogito.expr.jq;
 
 import java.util.function.Supplier;
 
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
+import org.kie.kogito.process.expr.Expression;
+import org.kie.kogito.process.expr.ExpressionHandler;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.slf4j.LoggerFactory;
 

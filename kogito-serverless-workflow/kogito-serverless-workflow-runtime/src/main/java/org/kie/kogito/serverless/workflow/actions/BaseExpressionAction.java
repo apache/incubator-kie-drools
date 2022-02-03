@@ -18,8 +18,8 @@ package org.kie.kogito.serverless.workflow.actions;
 import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
+import org.kie.kogito.process.expr.Expression;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -45,7 +45,7 @@ public abstract class BaseExpressionAction implements Action {
                 JsonObjectUtils.addToNode(addVar, context.getVariable(addVar), (ObjectNode) node);
             }
         }
-        T result = expr.eval(node, resultClass);
+        T result = expr.eval(node, resultClass, context);
         if (node instanceof ObjectNode) {
             for (String addVar : addInputVars) {
                 context.setVariable(addVar, JsonObjectUtils.toJavaValue(((ObjectNode) node).remove(addVar)));
@@ -55,7 +55,7 @@ public abstract class BaseExpressionAction implements Action {
     }
 
     protected final <T> T assign(KogitoProcessContext context, T value) {
-        expr.assign(getJsonNode(context, modelVar), value);
+        expr.assign(getJsonNode(context, modelVar), value, context);
         return value;
     }
 }

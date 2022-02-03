@@ -17,14 +17,36 @@ package org.kie.kogito.serverless.workflow.utils;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
+import org.jbpm.ruleflow.core.Metadata;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.Process;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils.prepareExpr;
 import static org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils.trimExpr;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ExpressionHandlerUtilsTest {
+
+    private KogitoProcessContext context;
+
+    @BeforeEach
+    void setup() {
+        context = mock(KogitoProcessContext.class);
+        KogitoProcessInstance pi = mock(KogitoProcessInstance.class);
+        when(context.getProcessInstance()).thenReturn(pi);
+        Process process = mock(Process.class);
+        when(pi.getProcess()).thenReturn(process);
+        when(process.getMetaData()).thenReturn(
+                Collections.singletonMap(Metadata.CONSTANTS, ObjectMapperFactory.get().createObjectNode().set("name", ObjectMapperFactory.get().createObjectNode().put("surname", "carapito"))));
+    }
 
     @Test
     void testTrimExpression() {
@@ -36,6 +58,6 @@ public class ExpressionHandlerUtilsTest {
     void testPrepareString() {
         Map<String, String> map = Collections.singletonMap("name", "javierito");
         SecretResolverFactory.setSecretResolver(k -> map.get(k));
-        assertEquals("My secret name is javierito", prepareExpr(trimExpr("${ My secret name is $SECRET.name }")));
+        assertEquals("My name is javierito carapito", prepareExpr(trimExpr("${ My name is $SECRET.name $CONST.name.surname }"), Optional.of(context)));
     }
 }

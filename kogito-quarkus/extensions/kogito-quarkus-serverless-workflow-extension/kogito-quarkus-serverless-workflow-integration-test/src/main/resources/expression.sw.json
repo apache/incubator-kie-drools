@@ -3,6 +3,16 @@
   "version": "1.0",
   "name": "Workflow Expression example",
   "description": "An example of how to use a JQ expression assignment",
+  "constants" : {
+    "dog" : {
+      "castellano" : "perro",
+      "leones": "perru",
+      "gallego" : "can",
+      "aragones" : "cocho",
+      "catalan" : "gos",
+      "vasco": "txakurra"
+    }
+  },
   "start": "squareState",
   "functions": [
     {
@@ -14,6 +24,11 @@
       "name": "secretMessage",
       "type": "expression",
       "operation": ".message |= \\\"my name is $SECRET.name\\\""
+    },
+    {
+      "name": "constantMessage",
+      "type": "expression",
+      "operation": ".message |=.+\\\" and in my native language dog is translated to $CONST.dog.castellano\\\""
     },
     {
       "name": "printMessage",
@@ -42,7 +57,6 @@
              "refName" : "secretMessage"
           }
         }
-        
       ],
       "transition": "finish"
     },
@@ -53,7 +67,13 @@
         "input": "{result: .number, message: .message}"
       },
       "actions": [
-        {
+         {
+           "name": "costantMessageAction",
+           "functionRef" : {
+             "refName" : "constantMessage"
+            }
+         },
+         {
           "name": "printAction",
           "functionRef": {
             "refName": "printMessage",

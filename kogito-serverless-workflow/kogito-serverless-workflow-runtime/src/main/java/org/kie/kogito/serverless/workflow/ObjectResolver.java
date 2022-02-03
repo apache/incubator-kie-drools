@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -32,8 +33,8 @@ public class ObjectResolver extends ExpressionWorkItemResolver {
     }
 
     @Override
-    protected Object evalExpression(Object inputModel) {
-        return readValue(ExpressionHandlerFactory.get(language, expression).eval(inputModel, JsonNode.class));
+    protected Object evalExpression(Object inputModel, KogitoProcessContext context) {
+        return readValue(ExpressionHandlerFactory.get(language, expression).eval(inputModel, JsonNode.class, context));
     }
 
     private Object readValue(JsonNode node) {

@@ -34,9 +34,9 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
+import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 import org.kie.kogito.process.meta.ProcessMeta;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.VariableDeclarator;

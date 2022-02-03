@@ -15,8 +15,11 @@
  */
 package org.kie.kogito.serverless.workflow;
 
+import org.jbpm.process.instance.ProcessInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,6 +32,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 class JsonNodeJsonPathResolverTest {
 
@@ -38,6 +42,10 @@ class JsonNodeJsonPathResolverTest {
     @BeforeEach
     void setup() {
         workItem = mock(KogitoWorkItem.class);
+        KogitoNodeInstance ni = mock(KogitoNodeInstance.class);
+        when(workItem.getNodeInstance()).thenReturn(ni);
+        WorkflowProcessInstance pi = mock(WorkflowProcessInstance.class, withSettings().extraInterfaces(ProcessInstance.class));
+        when(ni.getProcessInstance()).thenReturn(pi);
 
     }
 

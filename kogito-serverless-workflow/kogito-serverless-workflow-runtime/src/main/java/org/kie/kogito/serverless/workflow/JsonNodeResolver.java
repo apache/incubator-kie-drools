@@ -18,10 +18,11 @@ package org.kie.kogito.serverless.workflow;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
+import org.kie.kogito.process.expr.Expression;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,22 +51,22 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
     }
 
     @Override
-    protected Object evalExpression(Object inputModel) {
-        return processInputModel(inputModel, parse(expression));
+    protected Object evalExpression(Object inputModel, KogitoProcessContext context) {
+        return processInputModel(inputModel, parse(expression), context);
     }
 
-    private JsonNode processInputModel(final Object inputModel, final JsonNode expression) {
+    private JsonNode processInputModel(final Object inputModel, final JsonNode expression, KogitoProcessContext context) {
         if (expression.isArray()) {
             final JsonNode processedDefinition = expression.deepCopy();
             for (int index = 0; index < processedDefinition.size(); index++) {
-                ((ArrayNode) processedDefinition).set(index, this.processInputModel(inputModel, processedDefinition.get(index)));
+                ((ArrayNode) processedDefinition).set(index, this.processInputModel(inputModel, processedDefinition.get(index), context));
             }
             return processedDefinition;
         } else if (expression.isValueNode()) {
             final String jsonPathExpr = expression.asText();
             Expression evalExpr = ExpressionHandlerFactory.get(language, jsonPathExpr);
             if (evalExpr.isValid()) {
-                return evalExpr.eval(inputModel, JsonNode.class);
+                return evalExpr.eval(inputModel, JsonNode.class, context);
             }
             return expression.deepCopy();
         }
@@ -74,7 +75,7 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
         final Iterator<Entry<String, JsonNode>> fields = processedDefinition.fields();
         while (fields.hasNext()) {
             final Entry<String, JsonNode> jsonField = fields.next();
-            ((ObjectNode) processedDefinition).replace(jsonField.getKey(), this.processInputModel(inputModel, jsonField.getValue()));
+            ((ObjectNode) processedDefinition).replace(jsonField.getKey(), this.processInputModel(inputModel, jsonField.getValue(), context));
         }
         return processedDefinition;
     }

@@ -186,7 +186,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             if (variableScopeInstance != null) {
                 collection = variableScopeInstance.getVariable(collectionExpression);
             } else if (getForEachNode().getEvaluateExpression() != null) {
-                collection = getForEachNode().getEvaluateExpression().eval(getVariable((String) getForEachNode().getMetaData(Metadata.VARIABLE)), Collection.class);
+                collection = getForEachNode().getEvaluateExpression().eval(getVariable((String) getForEachNode().getMetaData(Metadata.VARIABLE)), Collection.class, ContextFactory.fromNode(this));
             } else {
                 try {
                     collection = MVELProcessHelper.evaluator().eval(collectionExpression, new NodeInstanceResolverFactory(

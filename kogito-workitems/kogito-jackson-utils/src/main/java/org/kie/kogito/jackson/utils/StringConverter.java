@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.expr.jsonpath;
+package org.kie.kogito.jackson.utils;
 
-import org.kie.kogito.process.expr.Expression;
-import org.kie.kogito.process.expr.ExpressionHandler;
-import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import java.util.function.Function;
 
-public class JsonPathExpressionHandler implements ExpressionHandler {
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
-    @Override
-    public Expression get(String expr) {
-        return new JsonPathExpression(ExpressionHandlerUtils.trimExpr(expr));
-    }
+public class StringConverter implements Function<JsonNode, String> {
 
     @Override
-    public String lang() {
-        return "jsonpath";
+    public String apply(JsonNode t) {
+        try {
+            return JsonObjectUtils.toString(t);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid value for json node " + t);
+        }
     }
 }

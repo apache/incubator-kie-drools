@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.process.workitems.impl.expr;
+package org.kie.kogito.process.expr;
+
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public interface Expression {
 
-    <T> T eval(Object context, Class<T> returnClass);
+    <T> T eval(Object target, Class<T> returnClass, KogitoProcessContext context);
 
     boolean isValid();
 
-    void assign(Object context, Object value);
+    void assign(Object target, Object value, KogitoProcessContext context);
 }

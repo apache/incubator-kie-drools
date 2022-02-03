@@ -16,8 +16,8 @@
 package org.jbpm.process.instance.impl;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
+import org.kie.kogito.process.expr.Expression;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
 public class ExpressionReturnValueEvaluator implements ReturnValueEvaluator {
     private Expression expression;
@@ -30,7 +30,7 @@ public class ExpressionReturnValueEvaluator implements ReturnValueEvaluator {
 
     @Override
     public Object evaluate(KogitoProcessContext processContext) throws Exception {
-        return expression.eval(rootName != null ? processContext.getVariable(rootName) : processContext, Boolean.class);
+        return expression.eval(processContext.getVariable(rootName), Boolean.class, processContext);
     }
 
 }

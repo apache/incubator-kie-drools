@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.process.workitems.impl.expr;
+package org.kie.kogito.process.expr;
 
+import org.jbpm.util.ContextFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
 
@@ -32,9 +34,9 @@ public abstract class ExpressionWorkItemResolver implements WorkItemParamResolve
 
     @Override
     public Object apply(KogitoWorkItem workItem) {
-        return evalExpression(workItem.getParameter(paramName));
+        return evalExpression(workItem.getParameter(paramName), ContextFactory.fromItem(workItem));
 
     }
 
-    protected abstract Object evalExpression(Object inputModel);
+    protected abstract Object evalExpression(Object inputModel, KogitoProcessContext context);
 }

@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandler;
+import org.kie.kogito.process.expr.ExpressionHandler;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;

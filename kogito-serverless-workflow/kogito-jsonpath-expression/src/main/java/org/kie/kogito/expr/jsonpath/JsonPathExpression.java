@@ -15,9 +15,12 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
-import org.kie.kogito.process.workitems.impl.expr.Expression;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,12 +53,11 @@ public class JsonPathExpression implements Expression {
         this.expr = expr;
     }
 
-    @Override
-    public <T> T eval(Object context, Class<T> returnClass) {
+    private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
         DocumentContext parsedContext = jsonPath.parse(context);
         if (String.class.isAssignableFrom(returnClass)) {
             StringBuilder sb = new StringBuilder();
-            for (String part : ExpressionHandlerUtils.prepareExpr(expr).split("((?=\\$))")) {
+            for (String part : ExpressionHandlerUtils.prepareExpr(expr, Optional.ofNullable(processInfo)).split("((?=\\$))")) {
                 JsonNode partResult = parsedContext.read(part, JsonNode.class);
                 sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
             }
@@ -67,15 +69,14 @@ public class JsonPathExpression implements Expression {
         }
     }
 
-    @Override
-    public void assign(Object context, Object value) {
+    private void assign(JsonNode context, Object value, KogitoProcessContext processInfo) {
         JsonNode target;
         try {
-            target = eval(context, JsonNode.class);
+            target = eval(context, JsonNode.class, processInfo);
         } catch (PathNotFoundException ex) {
             target = NullNode.instance;
         }
-        ExpressionHandlerUtils.assign((JsonNode) context, target, (JsonNode) value, expr);
+        ExpressionHandlerUtils.assign(context, target, (JsonNode) value, expr);
     }
 
     @Override
@@ -86,4 +87,13 @@ public class JsonPathExpression implements Expression {
         return isValid;
     }
 
+    @Override
+    public <T> T eval(Object target, Class<T> returnClass, KogitoProcessContext context) {
+        return eval(JsonObjectUtils.fromValue(target), returnClass, context);
+    }
+
+    @Override
+    public void assign(Object target, Object value, KogitoProcessContext context) {
+        assign(JsonObjectUtils.fromValue(target), JsonObjectUtils.fromValue(value), context);
+    }
 }

@@ -18,10 +18,11 @@ package org.kie.kogito.serverless.workflow.actions;
 import java.util.function.Supplier;
 
 import org.jbpm.process.instance.impl.actions.ProduceEventAction;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-import org.kie.kogito.process.workitems.impl.expr.Expression;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionHandlerFactory;
+import org.kie.kogito.process.expr.Expression;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.services.event.impl.AbstractMessageProducer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,11 +49,11 @@ public class SWFProduceEventAction extends ProduceEventAction<JsonNode> {
     }
 
     @Override
-    public JsonNode getObject(Object object) {
+    public JsonNode getObject(Object object, KogitoProcessContext context) {
         if (value != null) {
             return value;
         } else if (expr != null) {
-            return expr.eval(object, JsonNode.class);
+            return expr.eval(object, JsonNode.class, context);
         } else {
             return JsonObjectUtils.fromValue(object);
         }

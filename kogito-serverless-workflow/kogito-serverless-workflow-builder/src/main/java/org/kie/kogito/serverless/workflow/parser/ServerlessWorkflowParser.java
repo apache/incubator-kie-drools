@@ -44,6 +44,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.EventDefinition;
+import io.serverlessworkflow.api.workflow.Constants;
 
 public class ServerlessWorkflowParser {
 
@@ -92,6 +93,10 @@ public class ServerlessWorkflowParser {
                 .visibility("Public")
                 .variable(DEFAULT_WORKFLOW_VAR, new ObjectDataType(JsonNode.class), ObjectMapperFactory.get().createObjectNode());
         ParserContext parserContext = new ParserContext(idGenerator, factory, context);
+        Constants constants = workflow.getConstants();
+        if (constants != null) {
+            factory.metaData(Metadata.CONSTANTS, constants.getConstantsDef());
+        }
         Collection<StateHandler<?>> handlers =
                 workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))
                         .filter(Optional::isPresent).map(Optional::get).filter(state -> !state.usedForCompensation()).collect(Collectors.toList());

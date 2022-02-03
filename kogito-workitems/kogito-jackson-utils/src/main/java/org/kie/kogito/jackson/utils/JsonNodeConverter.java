@@ -18,11 +18,12 @@ package org.kie.kogito.jackson.utils;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public class JsonNodeConverter implements Function<String, Object> {
+public class JsonNodeConverter implements Function<String, JsonNode> {
 
     @Override
-    public Object apply(String t) {
+    public JsonNode apply(String t) {
         try {
             return ObjectMapperFactory.get().readTree(t);
         } catch (JsonProcessingException e) {

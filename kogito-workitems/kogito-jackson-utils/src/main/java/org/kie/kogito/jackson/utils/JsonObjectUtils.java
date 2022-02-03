@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
@@ -104,6 +105,10 @@ public class JsonObjectUtils {
         } else {
             return ObjectMapperFactory.get().convertValue(jsonNode, Object.class);
         }
+    }
+
+    public static String toString(JsonNode node) throws JsonProcessingException {
+        return ObjectMapperFactory.get().writeValueAsString(node).replace("\"", "\\\"");
     }
 
     public static void addToNode(String name, Object value, ObjectNode dest) {

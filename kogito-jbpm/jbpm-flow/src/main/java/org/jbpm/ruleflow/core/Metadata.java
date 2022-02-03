@@ -67,6 +67,7 @@ public class Metadata {
     public static final String ERROR_EVENT = "ErrorEvent";
     public static final String ERROR_STRUCTURE_REF = "ErrorStructureRef";
     public static final String ASYNC_WAITING = "ASYNC_WAITING";
+    public static final String CONSTANTS = "customConstants";
 
     private Metadata() {
     }

@@ -46,10 +46,10 @@ public class ProduceEventAction<T> implements Action, Serializable {
         InternalKnowledgeRuntime runtime = (InternalKnowledgeRuntime) context.getKieRuntime();
         InternalProcessRuntime process = (InternalProcessRuntime) runtime.getProcessRuntime();
         process.getProcessEventSupport().fireOnMessage(pi, context.getNodeInstance(), runtime, triggerName, object);
-        supplier.get().produce(pi, getObject(object));
+        supplier.get().produce(pi, getObject(object, context));
     }
 
-    protected T getObject(Object object) {
+    protected T getObject(Object object, KogitoProcessContext context) {
         return (T) object;
     }
 }

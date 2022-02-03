@@ -20,7 +20,8 @@ import java.util.Collections;
 
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.process.workitems.impl.expr.ExpressionWorkItemResolver;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -40,7 +41,7 @@ class OpenApiTaskDescriptorTest {
         }
 
         @Override
-        protected Object evalExpression(Object inputModel) {
+        protected Object evalExpression(Object inputModel, KogitoProcessContext context) {
             return null;
         }
     }

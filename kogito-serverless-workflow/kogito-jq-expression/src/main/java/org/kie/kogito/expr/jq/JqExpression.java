@@ -17,11 +17,13 @@ package org.kie.kogito.expr.jq;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-import org.kie.kogito.process.workitems.impl.expr.Expression;
+import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -145,27 +147,32 @@ public class JqExpression implements Expression {
     }
 
     @Override
-    public <T> T eval(Object context, Class<T> returnClass) {
+    public <T> T eval(Object target, Class<T> returnClass, KogitoProcessContext context) {
+        return eval(JsonObjectUtils.fromValue(target), returnClass, context);
+    }
+
+    @Override
+    public void assign(Object target, Object value, KogitoProcessContext context) {
+        JsonNode targetNode = JsonObjectUtils.fromValue(target);
+        ExpressionHandlerUtils.assign(targetNode, eval(targetNode, JsonNode.class, context), JsonObjectUtils.fromValue(value), expr);
+    }
+
+    private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
         try {
             TypedOutput<T> output = output(returnClass);
-            compile();
-            query.apply(this.scope.get(), (JsonNode) context, output);
+            compile(Optional.ofNullable(processInfo));
+            query.apply(this.scope.get(), context, output);
             return output.getResult();
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);
         }
     }
 
-    @Override
-    public void assign(Object context, Object value) {
-        ExpressionHandlerUtils.assign((JsonNode) context, eval(context, JsonNode.class), (JsonNode) value, expr);
-    }
-
-    private void compile() throws JsonQueryException {
-        String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr);
+    private void compile(Optional<KogitoProcessContext> context) throws JsonQueryException {
+        String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr, context);
         if (this.query == null || !resolvedExpr.equals(compiledExpr)) {
             compiledExpr = resolvedExpr;
-            this.query = JsonQuery.compile(ExpressionHandlerUtils.prepareExpr(compiledExpr), Versions.JQ_1_6);
+            this.query = JsonQuery.compile(ExpressionHandlerUtils.prepareExpr(compiledExpr, context), Versions.JQ_1_6);
         }
     }
 
@@ -173,7 +180,7 @@ public class JqExpression implements Expression {
     public boolean isValid() {
         if (isValid == null) {
             try {
-                compile();
+                compile(Optional.empty());
                 isValid = true;
             } catch (JsonQueryException e) {
                 isValid = false;

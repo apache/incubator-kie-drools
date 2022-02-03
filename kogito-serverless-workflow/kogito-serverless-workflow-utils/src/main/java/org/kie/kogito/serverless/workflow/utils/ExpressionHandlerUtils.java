@@ -18,6 +18,8 @@ package org.kie.kogito.serverless.workflow.utils;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.jbpm.ruleflow.core.Metadata;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
 
@@ -34,17 +36,28 @@ public class ExpressionHandlerUtils {
     protected static final String SECRET_MAGIC = "$SECRET.";
     protected static final String CONST_MAGIC = "$CONST.";
 
-    public static String prepareExpr(String expr) {
-        return replaceMagic(expr, SECRET_MAGIC, SecretResolverFactory.getSecretResolver());
+    public static String prepareExpr(String expr, Optional<KogitoProcessContext> context) {
+        Optional<JsonNode> node = context.map(c -> (JsonNode) c.getProcessInstance().getProcess().getMetaData().get(Metadata.CONSTANTS));
+        expr = replaceMagic(expr, SECRET_MAGIC, SecretResolverFactory.getSecretResolver());
+        return node.isPresent() ? replaceMagic(expr, CONST_MAGIC, key -> getConstant(key, node.get())) : expr;
+    }
+
+    private static Object getConstant(String key, JsonNode node) {
+        JsonNode result = node;
+        for (String name : key.split("\\.")) {
+            result = result.get(name);
+        }
+        return JsonObjectUtils.toJavaValue(result);
     }
 
     private static <T extends Object> String replaceMagic(String expr, String magic, Function<String, T> replacer) {
         int indexOf;
         while ((indexOf = expr.indexOf(magic)) != -1) {
             String key = extractKey(expr, indexOf + magic.length());
-            String toReplace = magic + key;
             T value = replacer.apply(key);
-            expr = expr.replace(toReplace, value.toString());
+            if (value != null) {
+                expr = expr.replace(magic + key, value.toString());
+            }
         }
         return expr;
     }
@@ -53,10 +66,11 @@ public class ExpressionHandlerUtils {
         StringBuilder sb = new StringBuilder();
         for (int i = indexOf; i < expr.length(); i++) {
             char ch = expr.charAt(i);
-            if (!Character.isAlphabetic(ch)) {
+            if (Character.isAlphabetic(ch) || ch == '.') {
+                sb.append(ch);
+            } else {
                 break;
             }
-            sb.append(ch);
         }
         return sb.toString();
     }
