@@ -16,24 +16,6 @@
         <!-- excluded because of https://issues.redhat.com/browse/KOGITO-6392 -->
         <quarkus.test.list.include>false</quarkus.test.list.include>
     </properties>
-    
-    <dependencyManagement>
-        <!-- see https://github.com/quarkusio/quarkus/pull/20933 -->
-        <dependencies>
-          <dependency>
-              <groupId>org.apache.maven.resolver</groupId>
-              <artifactId>maven-resolver-api</artifactId>
-              <version>1.6.2</version>
-              <scope>test</scope>
-          </dependency>
-          <dependency>
-              <groupId>org.apache.maven.resolver</groupId>
-              <artifactId>maven-resolver-util</artifactId>
-              <version>1.6.2</version>
-              <scope>test</scope>
-          </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -61,17 +43,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-devtools-testing</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- see https://github.com/quarkusio/quarkus/pull/20933 -->
-        <dependency>
-            <groupId>org.apache.maven.resolver</groupId>
-            <artifactId>maven-resolver-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.resolver</groupId>
-            <artifactId>maven-resolver-util</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
