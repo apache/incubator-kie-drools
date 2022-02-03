@@ -26,12 +26,10 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler-extensions</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler-formats</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
