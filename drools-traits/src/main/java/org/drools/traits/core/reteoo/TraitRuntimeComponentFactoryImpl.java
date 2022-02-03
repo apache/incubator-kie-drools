@@ -63,7 +63,7 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
     }
 
     @Override
-    public EntryPointFactory getNamedEntryPointFactory() {
+    public EntryPointFactory getEntryPointFactory() {
         return new TraitEntryPointFactory();
     }
 

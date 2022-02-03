@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.impl;
+package org.drools.ruleunits.impl.sessions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.drools.core.EntryPointsManager;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -41,6 +42,8 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
+import org.drools.core.impl.ActivationsManagerImpl;
+import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -94,7 +97,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
 
         this.activationsManager = new ActivationsManagerImpl(this);
-        this.entryPointsManager = RuntimeComponentFactory.get().getNamedEntryPointFactory().createEntryPointsManager(this);
+        this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
         this.timerService = TimerServiceFactory.getTimerService( sessionConfiguration );
 
         initInitialFact(ruleBase);

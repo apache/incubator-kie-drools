@@ -62,7 +62,7 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return handleFactory;
     }
 
-    public EntryPointFactory getNamedEntryPointFactory() {
+    public EntryPointFactory getEntryPointFactory() {
         return new NamedEntryPointFactory();
     }
 

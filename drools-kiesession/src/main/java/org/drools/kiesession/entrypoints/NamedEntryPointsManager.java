@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.EntryPointsManager;
+import org.drools.core.EntryPointsManager;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -58,7 +58,7 @@ public class NamedEntryPointsManager implements EntryPointsManager {
     }
 
     public InternalWorkingMemoryEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id) {
-        return RuntimeComponentFactory.get().getNamedEntryPointFactory().createEntryPoint(addedNode, id, reteEvaluator);
+        return RuntimeComponentFactory.get().getEntryPointFactory().createEntryPoint(addedNode, id, reteEvaluator);
     }
 
     public void updateEntryPointsCache() {

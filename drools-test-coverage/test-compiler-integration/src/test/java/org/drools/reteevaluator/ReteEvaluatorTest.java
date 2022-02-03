@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.impl.RuleUnitExecutorImpl;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
@@ -40,14 +40,14 @@ public class ReteEvaluatorTest {
     public void testPropertyReactivity() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "  $s : String()\n" +
-                "  $p : Person(name == $s)\n" +
-                "then\n" +
-                "  modify($p) { setAge($p.getAge()+1) }\n" +
-                "end";
+                        "rule R when\n" +
+                        "  $s : String()\n" +
+                        "  $p : Person(name == $s)\n" +
+                        "then\n" +
+                        "  modify($p) { setAge($p.getAge()+1) }\n" +
+                        "end";
 
-        ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl( getKBase( str ) );
+        ReteEvaluator reteEvaluator = new StatefulKnowledgeSessionImpl( 1L, getKBase( str ) );
 
         Person me = new Person( "Mario", 40 );
         reteEvaluator.insert( "Mario" );

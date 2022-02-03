@@ -50,7 +50,7 @@ public interface RuntimeComponentFactory extends KieService {
 
     PropagationContextFactory getPropagationContextFactory();
 
-    EntryPointFactory getNamedEntryPointFactory();
+    EntryPointFactory getEntryPointFactory();
 
     FactHandleFactory getFactHandleFactoryService();
 
