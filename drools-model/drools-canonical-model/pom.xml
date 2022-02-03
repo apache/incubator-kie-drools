@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>8.16.1-SNAPSHOT</version>
+    <version>8.16.1.Beta</version>
   </parent>
 
   <name>Drools :: Canonical Model</name>
