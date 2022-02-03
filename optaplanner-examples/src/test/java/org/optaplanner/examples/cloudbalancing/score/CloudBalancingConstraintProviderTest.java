@@ -28,7 +28,7 @@ class CloudBalancingConstraintProviderTest {
             ConstraintVerifier.build(new CloudBalancingConstraintProvider(), CloudBalance.class, CloudProcess.class);
 
     @Test
-    public void requiredCpuPowerTotal() {
+    void requiredCpuPowerTotal() {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);
@@ -47,7 +47,7 @@ class CloudBalancingConstraintProviderTest {
     }
 
     @Test
-    public void requiredMemoryTotal() {
+    void requiredMemoryTotal() {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);
@@ -66,7 +66,7 @@ class CloudBalancingConstraintProviderTest {
     }
 
     @Test
-    public void requiredNetworkBandwidthTotal() {
+    void requiredNetworkBandwidthTotal() {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);
@@ -85,7 +85,7 @@ class CloudBalancingConstraintProviderTest {
     }
 
     @Test
-    public void computerCost() {
+    void computerCost() {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);

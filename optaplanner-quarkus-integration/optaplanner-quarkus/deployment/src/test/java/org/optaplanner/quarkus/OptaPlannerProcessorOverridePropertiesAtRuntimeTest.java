@@ -114,7 +114,7 @@ class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
     }
 
     @Test
-    public void solverConfigPropertiesShouldBeOverwritten() throws IOException {
+    void solverConfigPropertiesShouldBeOverwritten() throws IOException {
         Properties solverConfigProperties = new Properties();
         solverConfigProperties.load(RestAssured.given()
                 .contentType(MediaType.TEXT_PLAIN)
@@ -127,7 +127,7 @@ class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
     }
 
     @Test
-    public void solverManagerConfigPropertiesShouldBeOverwritten() throws IOException {
+    void solverManagerConfigPropertiesShouldBeOverwritten() throws IOException {
         Properties solverManagerProperties = new Properties();
         solverManagerProperties.load(RestAssured.given()
                 .contentType(MediaType.TEXT_PLAIN)

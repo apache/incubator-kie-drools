@@ -28,7 +28,7 @@ import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 class HardMediumSoftScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
-    public void persistAndMerge() {
+    void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(HardMediumSoftScore.ZERO),
                 HardMediumSoftScore.of(-100, -20, -3),
                 HardMediumSoftScore.ofUninitialized(-7, -100, -20, -3));

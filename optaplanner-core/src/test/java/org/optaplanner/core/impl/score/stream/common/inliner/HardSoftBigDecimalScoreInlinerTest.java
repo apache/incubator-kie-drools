@@ -33,7 +33,7 @@ class HardSoftBigDecimalScoreInlinerTest
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataHardSoftBigDecimalScoreSolution, HardSoftBigDecimalScore> constraint =
                 buildConstraint(HardSoftBigDecimalScore.ONE_HARD);
         HardSoftBigDecimalScoreInliner scoreInliner =
@@ -42,7 +42,7 @@ class HardSoftBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactHard() {
+    void impactHard() {
         TestConstraint<TestdataHardSoftBigDecimalScoreSolution, HardSoftBigDecimalScore> constraint =
                 buildConstraint(HardSoftBigDecimalScore.ofHard(BigDecimal.valueOf(90)));
         HardSoftBigDecimalScoreInliner scoreInliner =
@@ -67,7 +67,7 @@ class HardSoftBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactSoft() {
+    void impactSoft() {
         TestConstraint<TestdataHardSoftBigDecimalScoreSolution, HardSoftBigDecimalScore> constraint =
                 buildConstraint(HardSoftBigDecimalScore.ofSoft(BigDecimal.valueOf(90)));
         HardSoftBigDecimalScoreInliner scoreInliner =
@@ -92,7 +92,7 @@ class HardSoftBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactAll() {
+    void impactAll() {
         TestConstraint<TestdataHardSoftBigDecimalScoreSolution, HardSoftBigDecimalScore> constraint =
                 buildConstraint(HardSoftBigDecimalScore.of(BigDecimal.valueOf(10), BigDecimal.valueOf(100)));
         HardSoftBigDecimalScoreInliner scoreInliner =

@@ -32,7 +32,7 @@ class CloudBalancingScoreConstraintTest {
             SolverFactory.createFromXmlResource(CloudBalancingApp.SOLVER_CONFIG));
 
     @Test
-    public void requiredCpuPowerTotal() {
+    void requiredCpuPowerTotal() {
         CloudComputer c1 = new CloudComputer(1L, 1000, 1, 1, 1);
         CloudComputer c2 = new CloudComputer(2L, 200, 1, 1, 1);
         CloudComputer c3 = new CloudComputer(3L, 30, 1, 1, 1);
@@ -56,7 +56,7 @@ class CloudBalancingScoreConstraintTest {
     }
 
     @Test
-    public void requiredMemoryTotal() {
+    void requiredMemoryTotal() {
         CloudComputer c1 = new CloudComputer(1L, 1, 1000, 1, 1);
         CloudComputer c2 = new CloudComputer(2L, 1, 200, 1, 1);
         CloudComputer c3 = new CloudComputer(3L, 1, 30, 1, 1);
@@ -80,7 +80,7 @@ class CloudBalancingScoreConstraintTest {
     }
 
     @Test
-    public void requiredNetworkBandwidthTotal() {
+    void requiredNetworkBandwidthTotal() {
         CloudComputer c1 = new CloudComputer(1L, 1, 1, 1000, 1);
         CloudComputer c2 = new CloudComputer(2L, 1, 1, 200, 1);
         CloudComputer c3 = new CloudComputer(3L, 1, 1, 30, 1);
@@ -104,7 +104,7 @@ class CloudBalancingScoreConstraintTest {
     }
 
     @Test
-    public void computerCost() {
+    void computerCost() {
         CloudComputer c1 = new CloudComputer(1L, 1, 1, 1, 200);
         CloudComputer c2 = new CloudComputer(2L, 1, 1, 1, 30);
         CloudComputer c3 = new CloudComputer(3L, 1, 1, 1, 4);

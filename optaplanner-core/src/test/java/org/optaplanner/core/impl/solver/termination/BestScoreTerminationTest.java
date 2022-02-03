@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class BestScoreTerminationTest {
 
     @Test
-    public void solveTermination() {
+    void solveTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
         Termination<TestdataSolution> termination =
@@ -68,7 +68,7 @@ class BestScoreTerminationTest {
     }
 
     @Test
-    public void phaseTermination() {
+    void phaseTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
         Termination<TestdataSolution> termination =
@@ -98,7 +98,7 @@ class BestScoreTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientSimpleScore() {
+    void calculateTimeGradientSimpleScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
         BestScoreTermination<TestdataSolution> termination = new BestScoreTermination<>(scoreDefinition,
@@ -120,7 +120,7 @@ class BestScoreTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientSimpleBigDecimalScore() {
+    void calculateTimeGradientSimpleBigDecimalScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
         BestScoreTermination<TestdataSolution> termination = new BestScoreTermination<>(scoreDefinition,
@@ -147,7 +147,7 @@ class BestScoreTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientHardSoftScore() {
+    void calculateTimeGradientHardSoftScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(2);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
@@ -210,7 +210,7 @@ class BestScoreTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientHardSoftBigDecimalScore() {
+    void calculateTimeGradientHardSoftBigDecimalScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(2);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
@@ -245,7 +245,7 @@ class BestScoreTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientBendableScoreHS() {
+    void calculateTimeGradientBendableScoreHS() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(2);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
@@ -322,7 +322,7 @@ class BestScoreTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientBendableScoreHHSSS() {
+    void calculateTimeGradientBendableScoreHHSSS() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(5);
         BestScoreTermination termination = new BestScoreTermination(scoreDefinition,

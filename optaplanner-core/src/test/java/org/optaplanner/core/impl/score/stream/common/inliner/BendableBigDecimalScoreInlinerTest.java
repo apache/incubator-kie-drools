@@ -33,7 +33,7 @@ class BendableBigDecimalScoreInlinerTest
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataBendableBigDecimalScoreSolution, BendableBigDecimalScore> constraint =
                 buildConstraint(buildScore(1, 1, 1));
         BendableBigDecimalScoreInliner scoreInliner =
@@ -42,7 +42,7 @@ class BendableBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactHard() {
+    void impactHard() {
         TestConstraint<TestdataBendableBigDecimalScoreSolution, BendableBigDecimalScore> constraint =
                 buildConstraint(buildScore(90, 0, 0));
         BendableBigDecimalScoreInliner scoreInliner =
@@ -67,7 +67,7 @@ class BendableBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactSoft1() {
+    void impactSoft1() {
         TestConstraint<TestdataBendableBigDecimalScoreSolution, BendableBigDecimalScore> constraint =
                 buildConstraint(buildScore(0, 90, 0));
         BendableBigDecimalScoreInliner scoreInliner =
@@ -92,7 +92,7 @@ class BendableBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactSoft2() {
+    void impactSoft2() {
         TestConstraint<TestdataBendableBigDecimalScoreSolution, BendableBigDecimalScore> constraint =
                 buildConstraint(buildScore(0, 0, 90));
         BendableBigDecimalScoreInliner scoreInliner =
@@ -117,7 +117,7 @@ class BendableBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactAll() {
+    void impactAll() {
         TestConstraint<TestdataBendableBigDecimalScoreSolution, BendableBigDecimalScore> constraint =
                 buildConstraint(buildScore(10, 100, 1_000));
         BendableBigDecimalScoreInliner scoreInliner =

@@ -49,7 +49,7 @@ class OptaPlannerProcessorConstraintsDrlDefaultTest {
     SolverFactory<TestdataQuarkusSolution> solverFactory;
 
     @Test
-    public void constraintsDrl_default() {
+    void constraintsDrl_default() {
         assertEquals(Collections.singletonList("constraints.drl"),
                 solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList());
         assertNotNull(solverFactory.buildSolver());

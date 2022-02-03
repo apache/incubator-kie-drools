@@ -26,14 +26,14 @@ class NearbySelectionConfigTest {
     private static final String ENTITY_SELECTOR_ID = "entitySelector";
 
     @Test
-    public void withNoOriginEntitySelectorConfig() {
+    void withNoOriginEntitySelectorConfig() {
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
                 .withMessageContaining("originEntitySelectorConfig");
     }
 
     @Test
-    public void withNoMimicSelector() {
+    void withNoMimicSelector() {
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         nearbySelectionConfig.setOriginEntitySelectorConfig(new EntitySelectorConfig());
         assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
@@ -41,7 +41,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void withNoDistanceMeter() {
+    void withNoDistanceMeter() {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setId(ENTITY_SELECTOR_ID);
 
@@ -56,7 +56,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void withWrongSelectionOrder() {
+    void withWrongSelectionOrder() {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setId(ENTITY_SELECTOR_ID);
         entitySelectorConfig.setSelectionOrder(SORTED);
@@ -73,7 +73,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void withCachedResolvedCachedType() {
+    void withCachedResolvedCachedType() {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setId(ENTITY_SELECTOR_ID);
         entitySelectorConfig.setSelectionOrder(ORIGINAL);
@@ -91,14 +91,14 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithNoRandomSelection() {
+    void buildNearbyRandomWithNoRandomSelection() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
 
         assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(false)).isNull();
     }
 
     @Test
-    public void buildNearbyRandomWithNoRandomSelectionAndWithDistribution() {
+    void buildNearbyRandomWithNoRandomSelectionAndWithDistribution() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
 
@@ -108,7 +108,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithBlockAndLinear() {
+    void buildNearbyRandomWithBlockAndLinear() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
         nearbySelectionConfig.setLinearDistributionSizeMaximum(1);
@@ -119,7 +119,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithBlockAndParabolic() {
+    void buildNearbyRandomWithBlockAndParabolic() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(1);
@@ -130,7 +130,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithBlockAndBeta() {
+    void buildNearbyRandomWithBlockAndBeta() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
         nearbySelectionConfig.setBetaDistributionAlpha(0.0);
@@ -141,7 +141,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithLinearAndParabolic() {
+    void buildNearbyRandomWithLinearAndParabolic() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setLinearDistributionSizeMaximum(1);
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(1);
@@ -152,7 +152,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithLinearAndBeta() {
+    void buildNearbyRandomWithLinearAndBeta() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setLinearDistributionSizeMaximum(1);
         nearbySelectionConfig.setBetaDistributionAlpha(1.0);
@@ -163,7 +163,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithParabolicAndBeta() {
+    void buildNearbyRandomWithParabolicAndBeta() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(1);
         nearbySelectionConfig.setBetaDistributionAlpha(1.0);
@@ -174,7 +174,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithBlockDistribution() {
+    void buildNearbyRandomWithBlockDistribution() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         int minimum = 2;
         nearbySelectionConfig.setBlockDistributionSizeMinimum(minimum);
@@ -191,7 +191,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithLinearDistribution() {
+    void buildNearbyRandomWithLinearDistribution() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         int maximum = 2;
         nearbySelectionConfig.setLinearDistributionSizeMaximum(maximum);
@@ -202,7 +202,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithParabolicDistribution() {
+    void buildNearbyRandomWithParabolicDistribution() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         int maximum = 2;
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(maximum);
@@ -213,7 +213,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithBetaDistribution() {
+    void buildNearbyRandomWithBetaDistribution() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         double alpha = 0.1;
         nearbySelectionConfig.setBetaDistributionAlpha(alpha);
@@ -227,7 +227,7 @@ class NearbySelectionConfigTest {
     }
 
     @Test
-    public void buildNearbyRandomWithDefaultDistribution() {
+    void buildNearbyRandomWithDefaultDistribution() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
 
         assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))

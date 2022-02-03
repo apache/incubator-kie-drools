@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class TailChainSwapMoveTest {
 
     @Test
-    public void isMoveDoable() {
+    void isMoveDoable() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
@@ -83,7 +83,7 @@ class TailChainSwapMoveTest {
     }
 
     @Test
-    public void doMove() {
+    void doMove() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
@@ -136,7 +136,7 @@ class TailChainSwapMoveTest {
     }
 
     @Test
-    public void doMoveInSameChain() {
+    void doMoveInSameChain() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
@@ -218,7 +218,7 @@ class TailChainSwapMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
 
@@ -265,7 +265,7 @@ class TailChainSwapMoveTest {
     }
 
     @Test
-    public void toStringTest() {
+    void toStringTest() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
@@ -306,7 +306,7 @@ class TailChainSwapMoveTest {
     }
 
     @Test
-    public void getPlanningEntitiesWithRightEntityNull() {
+    void getPlanningEntitiesWithRightEntityNull() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()

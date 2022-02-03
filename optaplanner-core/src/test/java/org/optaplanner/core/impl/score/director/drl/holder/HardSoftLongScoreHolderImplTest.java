@@ -26,12 +26,12 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 class HardSoftLongScoreHolderImplTest extends AbstractScoreHolderTest<HardSoftLongScore> {
 
     @Test
-    public void addConstraintMatchWithConstraintMatch() {
+    void addConstraintMatchWithConstraintMatch() {
         addConstraintMatch(true);
     }
 
     @Test
-    public void addConstraintMatchWithoutConstraintMatch() {
+    void addConstraintMatchWithoutConstraintMatch() {
         addConstraintMatch(false);
     }
 
@@ -83,12 +83,12 @@ class HardSoftLongScoreHolderImplTest extends AbstractScoreHolderTest<HardSoftLo
     }
 
     @Test
-    public void rewardPenalizeWithConstraintMatch() {
+    void rewardPenalizeWithConstraintMatch() {
         rewardPenalize(true);
     }
 
     @Test
-    public void rewardPenalizeWithoutConstraintMatch() {
+    void rewardPenalizeWithoutConstraintMatch() {
         rewardPenalize(false);
     }
 

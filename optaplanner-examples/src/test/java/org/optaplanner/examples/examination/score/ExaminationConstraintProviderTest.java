@@ -42,7 +42,7 @@ class ExaminationConstraintProviderTest {
     private final Student student4 = new Student(4L);
 
     @Test
-    public void conflictingExamsInSamePeriodTest() {
+    void conflictingExamsInSamePeriodTest() {
         Topic topic1 = new Topic();
         Topic topic2 = new Topic();
         TopicConflict conflict = new TopicConflict(0, topic1, topic2, 2);
@@ -66,7 +66,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void periodDurationTooShortTest() {
+    void periodDurationTooShortTest() {
         LeadingExam exam = new LeadingExam()
                 .withTopic(new Topic().withDuration(2).withStudents(student1, student2))
                 .withPeriod(new Period().withDuration(1))
@@ -78,7 +78,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void roomCapacityTooSmallSingleLargeExamTest() {
+    void roomCapacityTooSmallSingleLargeExamTest() {
         Period period = new Period();
         Room room = new Room().withCapacity(2);
 
@@ -93,7 +93,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void roomCapacityTooSmallTwoExamsTest() {
+    void roomCapacityTooSmallTwoExamsTest() {
         Period period = new Period();
         Room room = new Room().withCapacity(2);
 
@@ -114,7 +114,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void periodPenaltyTypeTest() {
+    void periodPenaltyTypeTest() {
         Topic topic1 = new Topic().withStudents(student1, student2);
         Topic topic2 = new Topic().withStudents(student1, student2);
 
@@ -164,7 +164,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void roomPenaltyExclusiveTest() {
+    void roomPenaltyExclusiveTest() {
         Topic topic1 = new Topic().withStudents(student1, student2);
         Topic topic2 = new Topic().withStudents(student3, student4);
 
@@ -190,7 +190,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void twoExamsInARowAndInADayTest() {
+    void twoExamsInARowAndInADayTest() {
         Topic topic1 = new Topic();
         Topic topic2 = new Topic();
         TopicConflict conflict = new TopicConflict(0, topic1, topic2, 2);
@@ -246,7 +246,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void periodSpreadTest() {
+    void periodSpreadTest() {
         ExaminationConstraintConfiguration config = new ExaminationConstraintConfiguration()
                 // At least 1 period apart.
                 .withPeriodSpreadLength(1);
@@ -289,7 +289,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations11Test() {
+    void mixedDurations11Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -314,7 +314,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations12Test() {
+    void mixedDurations12Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -339,7 +339,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations123Test() {
+    void mixedDurations123Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -371,7 +371,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations113Test() {
+    void mixedDurations113Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -403,7 +403,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations133Test() {
+    void mixedDurations133Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -435,7 +435,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations131Test() {
+    void mixedDurations131Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -467,7 +467,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations431Test() {
+    void mixedDurations431Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -499,7 +499,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations411Test() {
+    void mixedDurations411Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -531,7 +531,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurations441Test() {
+    void mixedDurations441Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -563,7 +563,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void frontLoadTest() {
+    void frontLoadTest() {
         LeadingExam exam = new LeadingExam()
                 .withPeriod(new Period().withFrontLoadLast(true))
                 .withTopic(new Topic().withFrontLoadLarge(true))
@@ -575,7 +575,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void periodPenaltyTest() {
+    void periodPenaltyTest() {
         Period period = new Period().withPenalty(5);
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -599,7 +599,7 @@ class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void roomPenaltyTest() {
+    void roomPenaltyTest() {
         Room room = new Room().withPenalty(5);
         LeadingExam exam1 = new LeadingExam()
                 .withId(1L)

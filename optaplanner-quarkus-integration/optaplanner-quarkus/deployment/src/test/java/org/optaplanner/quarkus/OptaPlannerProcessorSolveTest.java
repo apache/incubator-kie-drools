@@ -59,7 +59,7 @@ class OptaPlannerProcessorSolveTest {
     ScoreManager<TestdataQuarkusSolution, SimpleScore> scoreManager;
 
     @Test
-    public void singletonSolverFactory() {
+    void singletonSolverFactory() {
         assertNotNull(solverFactory);
         // TODO with optaplanner 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
         // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataPlanningSolution>) scoreManager).getScoreDirectorFactory());
@@ -70,7 +70,7 @@ class OptaPlannerProcessorSolveTest {
     }
 
     @Test
-    public void solve() throws ExecutionException, InterruptedException {
+    void solve() throws ExecutionException, InterruptedException {
         TestdataQuarkusSolution problem = new TestdataQuarkusSolution();
         problem.setValueList(IntStream.range(1, 3)
                 .mapToObj(i -> "v" + i)

@@ -51,7 +51,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class DefaultExhaustiveSearchPhaseTest {
 
     @Test
-    public void restoreWorkingSolution() {
+    void restoreWorkingSolution() {
         ExhaustiveSearchPhaseScope<TestdataSolution> phaseScope = mock(ExhaustiveSearchPhaseScope.class);
         ExhaustiveSearchStepScope<TestdataSolution> lastCompletedStepScope = mock(ExhaustiveSearchStepScope.class);
         when(phaseScope.getLastCompletedStepScope()).thenReturn(lastCompletedStepScope);
@@ -118,7 +118,7 @@ class DefaultExhaustiveSearchPhaseTest {
     }
 
     @Test
-    public void solveWithInitializedEntities() {
+    void solveWithInitializedEntities() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
                 TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new ExhaustiveSearchPhaseConfig()));
@@ -148,7 +148,7 @@ class DefaultExhaustiveSearchPhaseTest {
     }
 
     @Test
-    public void solveWithPinnedEntities() {
+    void solveWithPinnedEntities() {
         SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new ExhaustiveSearchPhaseConfig()));
@@ -178,7 +178,7 @@ class DefaultExhaustiveSearchPhaseTest {
     }
 
     @Test
-    public void solveWithEmptyEntityList() {
+    void solveWithEmptyEntityList() {
         SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new ExhaustiveSearchPhaseConfig()));

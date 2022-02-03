@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
-    public void waterLevelIncrementScore_SimpleScore() {
+    void waterLevelIncrementScore_SimpleScore() {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setWaterLevelIncrementScore(SimpleScore.of(100));
 
@@ -103,7 +103,7 @@ class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void waterLevelIncrementScore_HardMediumSoftScore() {
+    void waterLevelIncrementScore_HardMediumSoftScore() {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, -100, -400));
         acceptor.setWaterLevelIncrementScore(HardMediumSoftScore.of(0, 100, 100));
@@ -147,7 +147,7 @@ class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void waterLevelIncrementRatio() {
+    void waterLevelIncrementRatio() {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setWaterLevelIncrementRatio(0.1);
 

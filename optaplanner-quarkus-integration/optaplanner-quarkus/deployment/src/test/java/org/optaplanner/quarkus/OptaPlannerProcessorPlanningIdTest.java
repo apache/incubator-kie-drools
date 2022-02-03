@@ -31,7 +31,7 @@ class OptaPlannerProcessorPlanningIdTest {
     SolverFactory<TestdataSolution> solverFactory;
 
     @Test
-    public void buildSolver() {
+    void buildSolver() {
         TestdataSolution problem = new TestdataSolution();
         problem.setValueList(IntStream.range(1, 3)
                 .mapToObj(i -> "v" + i)

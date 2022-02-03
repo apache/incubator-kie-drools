@@ -25,7 +25,7 @@ import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest
 class SimpleScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleScoreWrapper(null));
         SimpleScore score = SimpleScore.of(1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));

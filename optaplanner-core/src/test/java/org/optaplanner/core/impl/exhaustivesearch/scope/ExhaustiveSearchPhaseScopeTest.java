@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
 
     @Test
-    public void testNodePruning() {
+    void testNodePruning() {
         ExhaustiveSearchPhaseScope<TestdataSolution> phase = new ExhaustiveSearchPhaseScope<>(new SolverScope<>());
         phase.setExpandableNodeQueue(new TreeSet<>(new ScoreFirstNodeComparator(true)));
         phase.addExpandableNode(buildNode(0, "0", 0, 0));

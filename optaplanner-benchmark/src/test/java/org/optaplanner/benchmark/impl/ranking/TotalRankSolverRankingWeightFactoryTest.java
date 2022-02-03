@@ -56,7 +56,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void normal() {
+    void normal() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -40, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -300, -40, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -40, -40, -1000);
@@ -79,7 +79,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void equalCount() {
+    void equalCount() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -5000, -90, -5000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -900, -90, -5000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -90, -90, -5000);
@@ -114,7 +114,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void uninitializedSingleBenchmarks() {
+    void uninitializedSingleBenchmarks() {
         SingleBenchmarkResult a0 = addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
@@ -155,7 +155,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void differentNumberOfSingleBenchmarks() {
+    void differentNumberOfSingleBenchmarks() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
@@ -177,7 +177,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void differentScoreTypeOfSingleBenchmarks() {
+    void differentScoreTypeOfSingleBenchmarks() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
@@ -201,7 +201,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void disjunctPlannnerBenchmarks() {
+    void disjunctPlannnerBenchmarks() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
@@ -228,7 +228,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void disjunctEqualPlannerBenchmarks() {
+    void disjunctEqualPlannerBenchmarks() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
@@ -255,7 +255,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     }
 
     @Test
-    public void overlappingPlannerBenchmarks() {
+    void overlappingPlannerBenchmarks() {
         SingleBenchmarkResult a0 = addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         SingleBenchmarkResult a1 = addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         SingleBenchmarkResult a2 = addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);

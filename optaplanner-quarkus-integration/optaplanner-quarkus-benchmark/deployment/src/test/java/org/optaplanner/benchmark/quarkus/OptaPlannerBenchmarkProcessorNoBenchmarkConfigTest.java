@@ -46,7 +46,7 @@ class OptaPlannerBenchmarkProcessorNoBenchmarkConfigTest {
     PlannerBenchmarkFactory benchmarkFactory;
 
     @Test
-    public void benchmark() throws ExecutionException, InterruptedException {
+    void benchmark() throws ExecutionException, InterruptedException {
         TestdataQuarkusSolution problem = new TestdataQuarkusSolution();
         problem.setValueList(IntStream.range(1, 3)
                 .mapToObj(i -> "v" + i)

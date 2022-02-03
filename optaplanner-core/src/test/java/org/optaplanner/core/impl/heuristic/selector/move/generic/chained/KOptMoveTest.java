@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class KOptMoveTest {
 
     @Test
-    public void doMove3OptWith3Chains() {
+    void doMove3OptWith3Chains() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
@@ -109,7 +109,7 @@ class KOptMoveTest {
     }
 
     @Test
-    public void doMove3OptWithOnly2Chains() {
+    void doMove3OptWithOnly2Chains() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
@@ -305,7 +305,7 @@ class KOptMoveTest {
     }
 
     @Test
-    public void toStringTest() {
+    void toStringTest() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class WeightFactorySelectionSorterTest {
 
     @Test
-    public void sortAscending() {
+    void sortAscending() {
         SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory = (solution, selection) -> Integer
                 .valueOf(selection.getCode().charAt(0));
         WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(
@@ -47,7 +47,7 @@ class WeightFactorySelectionSorterTest {
     }
 
     @Test
-    public void sortDescending() {
+    void sortDescending() {
         SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory = (solution, selection) -> Integer
                 .valueOf(selection.getCode().charAt(0));
         WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(

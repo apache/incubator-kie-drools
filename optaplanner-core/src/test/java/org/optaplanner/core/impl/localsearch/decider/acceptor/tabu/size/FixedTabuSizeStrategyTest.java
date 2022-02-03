@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 class FixedTabuSizeStrategyTest {
 
     @Test
-    public void tabuSize() {
+    void tabuSize() {
         LocalSearchStepScope stepScope = mock(LocalSearchStepScope.class);
         assertThat(new FixedTabuSizeStrategy(5).determineTabuSize(stepScope)).isEqualTo(5);
         assertThat(new FixedTabuSizeStrategy(17).determineTabuSize(stepScope)).isEqualTo(17);

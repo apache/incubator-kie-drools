@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class ValueTabuAcceptorTest {
 
     @Test
-    public void tabuSize() {
+    void tabuSize() {
         ValueTabuAcceptor acceptor = new ValueTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
@@ -121,7 +121,7 @@ class ValueTabuAcceptorTest {
     }
 
     @Test
-    public void tabuSizeMultipleEntitiesPerStep() {
+    void tabuSizeMultipleEntitiesPerStep() {
         ValueTabuAcceptor acceptor = new ValueTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
@@ -221,7 +221,7 @@ class ValueTabuAcceptorTest {
     }
 
     @Test
-    public void aspiration() {
+    void aspiration() {
         ValueTabuAcceptor acceptor = new ValueTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);

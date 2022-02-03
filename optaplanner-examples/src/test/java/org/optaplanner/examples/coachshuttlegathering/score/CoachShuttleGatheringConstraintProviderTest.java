@@ -37,7 +37,7 @@ class CoachShuttleGatheringConstraintProviderTest {
                             BusOrStop.class, StopOrHub.class, BusStop.class, Shuttle.class, Coach.class);
 
     @Test
-    public void coachStopLimit() {
+    void coachStopLimit() {
         Coach coach = new Coach();
         coach.setStopLimit(2);
         BusStop stop1 = new BusStop(0L, coach, coach);
@@ -63,7 +63,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void shuttleCapacity() {
+    void shuttleCapacity() {
         Shuttle shuttle = new Shuttle();
         BusStop destination = new BusStop();
         shuttle.setDestination(destination);
@@ -92,7 +92,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void coachCapacity() {
+    void coachCapacity() {
         Coach coach = new Coach();
         Shuttle shuttle = new Shuttle();
         BusStop transferStop = new BusStop(0L, shuttle, coach);
@@ -134,7 +134,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void coachCapacityCorrection() {
+    void coachCapacityCorrection() {
         Coach coach = new Coach();
         Shuttle shuttle = new Shuttle();
         BusStop transferStop = new BusStop(0L, shuttle, coach);
@@ -176,7 +176,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void coachCapacityShuttleButNoShuttle() {
+    void coachCapacityShuttleButNoShuttle() {
         Coach coach = new Coach();
         BusHub destination = new BusHub();
         coach.setDestination(destination);
@@ -204,7 +204,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void transportTime() {
+    void transportTime() {
         Coach bus = new Coach();
         BusStop busStop = new BusStop();
         busStop.setPreviousBusOrStop(bus);
@@ -229,7 +229,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void shuttleDestinationIsCoachOrHub() {
+    void shuttleDestinationIsCoachOrHub() {
         Shuttle shuttle = new Shuttle();
         Coach coach = new Coach();
         BusStop destination = new BusStop();
@@ -248,7 +248,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void shuttleSetupCost() {
+    void shuttleSetupCost() {
         Shuttle shuttle = new Shuttle();
         Coach coach = new Coach();
         BusStop destination = new BusStop();
@@ -277,7 +277,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void distanceFromPrevious() {
+    void distanceFromPrevious() {
         Coach bus = new Coach();
         BusStop busStop = new BusStop();
 
@@ -303,7 +303,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void distanceBusStopToBusDestination() {
+    void distanceBusStopToBusDestination() {
         Coach bus = new Coach();
         BusStop busStop = new BusStop();
         BusHub busHub = new BusHub();
@@ -332,7 +332,7 @@ class CoachShuttleGatheringConstraintProviderTest {
     }
 
     @Test
-    public void distanceCoachDirectlyToDestination() {
+    void distanceCoachDirectlyToDestination() {
         Coach bus = new Coach();
         BusHub busHub = new BusHub();
 

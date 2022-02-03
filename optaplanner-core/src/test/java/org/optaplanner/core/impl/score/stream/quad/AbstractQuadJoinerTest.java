@@ -31,22 +31,22 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 class AbstractQuadJoinerTest {
 
     @Test
-    public void merge0Joiners() {
+    void merge0Joiners() {
         assertThat(merge()).isInstanceOf(NoneQuadJoiner.class);
     }
 
     @Test
-    public void merge1JoinersNone() {
+    void merge1JoinersNone() {
         assertThat(merge(new NoneQuadJoiner<>())).isInstanceOf(NoneQuadJoiner.class);
     }
 
     @Test
-    public void merge1JoinersSingle() {
+    void merge1JoinersSingle() {
         assertThat(merge(Joiners.equal((a, b, c) -> 0, d -> 0))).isInstanceOf(SingleQuadJoiner.class);
     }
 
     @Test
-    public void merge2Joiners() {
+    void merge2Joiners() {
         QuadJoiner<BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners
                 .equal((a, b, c) -> a.add(b).add(c).longValue(), BigInteger::longValue);
         QuadJoiner<BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners
@@ -59,7 +59,7 @@ class AbstractQuadJoinerTest {
     }
 
     @Test
-    public void merge2Joiners1Composite() {
+    void merge2Joiners1Composite() {
         QuadJoiner<BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners
                 .equal((a, b, c) -> a.add(b).add(c).longValue(), BigInteger::longValue);
         QuadJoiner<BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners

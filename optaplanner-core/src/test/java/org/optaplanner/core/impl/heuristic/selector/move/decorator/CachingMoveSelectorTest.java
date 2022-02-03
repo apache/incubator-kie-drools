@@ -38,17 +38,17 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class CachingMoveSelectorTest {
 
     @Test
-    public void originalSelectionCacheTypeSolver() {
+    void originalSelectionCacheTypeSolver() {
         runOriginalSelection(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void originalSelectionCacheTypePhase() {
+    void originalSelectionCacheTypePhase() {
         runOriginalSelection(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void originalSelectionCacheTypeStep() {
+    void originalSelectionCacheTypeStep() {
         runOriginalSelection(SelectionCacheType.STEP, 5);
     }
 
@@ -112,17 +112,17 @@ class CachingMoveSelectorTest {
     }
 
     @Test
-    public void randomSelectionCacheTypeSolver() {
+    void randomSelectionCacheTypeSolver() {
         runRandomSelection(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void randomSelectionCacheTypePhase() {
+    void randomSelectionCacheTypePhase() {
         runRandomSelection(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void randomSelectionCacheTypeStep() {
+    void randomSelectionCacheTypeStep() {
         runRandomSelection(SelectionCacheType.STEP, 3);
     }
 

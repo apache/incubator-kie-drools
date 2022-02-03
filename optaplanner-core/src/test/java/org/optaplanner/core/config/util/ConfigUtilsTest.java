@@ -35,7 +35,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 class ConfigUtilsTest {
 
     @Test
-    public void mergeProperty() {
+    void mergeProperty() {
         Integer a = null;
         Integer b = null;
         assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
@@ -50,7 +50,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void meldProperty() {
+    void meldProperty() {
         Integer a = null;
         Integer b = null;
         assertThat(ConfigUtils.meldProperty(a, b)).isEqualTo(null);
@@ -64,7 +64,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void ceilDivide() {
+    void ceilDivide() {
         assertThat(ConfigUtils.ceilDivide(19, 2)).isEqualTo(10);
         assertThat(ConfigUtils.ceilDivide(20, 2)).isEqualTo(10);
         assertThat(ConfigUtils.ceilDivide(21, 2)).isEqualTo(11);
@@ -83,12 +83,12 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void ceilDivideByZero() {
+    void ceilDivideByZero() {
         assertThatExceptionOfType(ArithmeticException.class).isThrownBy(() -> ConfigUtils.ceilDivide(20, -0));
     }
 
     @Test
-    public void applyCustomProperties() {
+    void applyCustomProperties() {
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("primitiveBoolean", "true");
         customProperties.put("objectBoolean", "true");
@@ -121,7 +121,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void applyCustomPropertiesSubset() {
+    void applyCustomPropertiesSubset() {
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("string", "This is a sentence.");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
@@ -130,7 +130,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void applyCustomPropertiesNonExistingCustomProperty() {
+    void applyCustomPropertiesNonExistingCustomProperty() {
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("doesNotExist", "This is a sentence.");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
@@ -215,7 +215,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void newInstanceStaticInnerClass() {
+    void newInstanceStaticInnerClass() {
         assertThat(ConfigUtils.newInstance(this, "testProperty", StaticInnerClass.class)).isNotNull();
     }
 
@@ -223,7 +223,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void newInstanceStaticInnerClassWithArgsConstructor() {
+    void newInstanceStaticInnerClassWithArgsConstructor() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ConfigUtils.newInstance(
                         this, "testProperty", StaticInnerClassWithArgsConstructor.class))
@@ -238,7 +238,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void newInstanceNonStaticInnerClass() {
+    void newInstanceNonStaticInnerClass() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", NonStaticInnerClass.class))
                 .withMessageContaining("inner class");
@@ -248,7 +248,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    public void newInstanceLocalClass() {
+    void newInstanceLocalClass() {
         class LocalClass {
         }
         assertThatIllegalArgumentException()

@@ -33,7 +33,7 @@ class HardMediumSoftBigDecimalScoreInlinerTest
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataHardMediumSoftBigDecimalScoreSolution, HardMediumSoftBigDecimalScore> constraint =
                 buildConstraint(HardMediumSoftBigDecimalScore.ONE_HARD);
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
@@ -42,7 +42,7 @@ class HardMediumSoftBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactHard() {
+    void impactHard() {
         TestConstraint<TestdataHardMediumSoftBigDecimalScoreSolution, HardMediumSoftBigDecimalScore> constraint =
                 buildConstraint(HardMediumSoftBigDecimalScore.ofHard(BigDecimal.valueOf(90)));
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
@@ -67,7 +67,7 @@ class HardMediumSoftBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactMedium() {
+    void impactMedium() {
         TestConstraint<TestdataHardMediumSoftBigDecimalScoreSolution, HardMediumSoftBigDecimalScore> constraint =
                 buildConstraint(HardMediumSoftBigDecimalScore.ofMedium(BigDecimal.valueOf(90)));
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
@@ -92,7 +92,7 @@ class HardMediumSoftBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactSoft() {
+    void impactSoft() {
         TestConstraint<TestdataHardMediumSoftBigDecimalScoreSolution, HardMediumSoftBigDecimalScore> constraint =
                 buildConstraint(HardMediumSoftBigDecimalScore.ofSoft(BigDecimal.valueOf(90)));
         HardMediumSoftBigDecimalScoreInliner scoreInliner =
@@ -117,7 +117,7 @@ class HardMediumSoftBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impactAll() {
+    void impactAll() {
         TestConstraint<TestdataHardMediumSoftBigDecimalScoreSolution, HardMediumSoftBigDecimalScore> constraint =
                 buildConstraint(HardMediumSoftBigDecimalScore.of(BigDecimal.valueOf(10), BigDecimal.valueOf(100),
                         BigDecimal.valueOf(1_000)));

@@ -39,7 +39,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
 
     @Test
-    public void talkHasUnavailableRoom() {
+    void talkHasUnavailableRoom() {
         TalkType talkType = new TalkType(0L, "type1");
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         Talk talk2 = createTalk(2L).withTalkType(talkType);
@@ -71,7 +71,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void roomConflict() {
+    void roomConflict() {
         TalkType talkType = new TalkType(0L, "type1");
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         Talk talk2 = createTalk(2L).withTalkType(talkType);
@@ -122,7 +122,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void talkWithUnavailableSpeaker() {
+    void talkWithUnavailableSpeaker() {
         TalkType talkType = new TalkType(0L, "type1");
         Speaker speaker1 = new Speaker(1L)
                 .withUnavailableTimeslotSet(Collections.emptySet())
@@ -173,7 +173,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void speakerWithConflictingTimeslots() {
+    void speakerWithConflictingTimeslots() {
         TalkType talkType = new TalkType(0L, "type1");
         Speaker speaker1 = new Speaker(1L)
                 .withUnavailableTimeslotSet(Collections.emptySet())
@@ -220,7 +220,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void speakerRequiredTimeSlotTag() {
+    void speakerRequiredTimeSlotTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
@@ -301,7 +301,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void speakerProhibitedTimeSlotTag() {
+    void speakerProhibitedTimeSlotTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
@@ -384,7 +384,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void talkRequiredTimeslotTag() {
+    void talkRequiredTimeslotTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
@@ -431,7 +431,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void talkProhibitedTimeslotTag() {
+    void talkProhibitedTimeslotTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
@@ -478,7 +478,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void speakerRequiredRoomTag() {
+    void speakerRequiredRoomTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
@@ -555,7 +555,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void speakerProhibitedRoomTag() {
+    void speakerProhibitedRoomTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
@@ -633,7 +633,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void talkRequiredRoomTag() {
+    void talkRequiredRoomTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
@@ -673,7 +673,7 @@ class ConferenceSchedulingScoreHardConstraintTest {
     }
 
     @Test
-    public void talkProhibitedRoomTag() {
+    void talkProhibitedRoomTag() {
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");

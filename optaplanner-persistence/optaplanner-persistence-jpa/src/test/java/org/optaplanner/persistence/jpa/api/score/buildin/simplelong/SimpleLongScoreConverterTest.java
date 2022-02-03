@@ -26,7 +26,7 @@ import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 class SimpleLongScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
-    public void persistAndMerge() {
+    void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(SimpleLongScore.ZERO), null,
                 SimpleLongScore.of(-10L),
                 SimpleLongScore.ofUninitialized(-7, -10L));

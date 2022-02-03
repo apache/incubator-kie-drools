@@ -31,7 +31,7 @@ import org.optaplanner.examples.tennis.persistence.TennisGenerator;
 class TennisBenchmarkTest extends LoggingTest {
 
     @Test
-    public void benchmark() {
+    void benchmark() {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(TennisApp.SOLVER_CONFIG);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(
                 solverConfig, new File("target/test/data/tennis"));

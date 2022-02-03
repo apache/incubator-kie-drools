@@ -52,7 +52,7 @@ class OptaPlannerProcessorChainedXMLNoneTest {
     SolverFactory<TestdataChainedQuarkusSolution> solverFactory;
 
     @Test
-    public void solverConfigXml_default() {
+    void solverConfigXml_default() {
         assertThat(solverConfig).isNotNull();
         assertThat(solverConfig.getSolutionClass()).isEqualTo(TestdataChainedQuarkusSolution.class);
         assertThat(solverConfig.getEntityClassList()).containsExactlyInAnyOrder(

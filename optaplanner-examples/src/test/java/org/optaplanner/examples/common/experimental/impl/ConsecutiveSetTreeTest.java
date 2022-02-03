@@ -62,7 +62,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testNonconsecutiveNumbers() {
+    void testNonconsecutiveNumbers() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(1);
         tree.add(3);
@@ -79,7 +79,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testConsecutiveNumbers() {
+    void testConsecutiveNumbers() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(1);
         tree.add(2);
@@ -101,7 +101,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testDuplicateNumbers() {
+    void testDuplicateNumbers() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(1);
         tree.add(2);
@@ -134,7 +134,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testConsecutiveReverseNumbers() {
+    void testConsecutiveReverseNumbers() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(3);
         tree.add(2);
@@ -156,7 +156,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testJoinOfTwoChains() {
+    void testJoinOfTwoChains() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(1);
         tree.add(2);
@@ -177,7 +177,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testBreakOfChain() {
+    void testBreakOfChain() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(1);
         tree.add(2);
@@ -202,7 +202,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testChainRemoval() {
+    void testChainRemoval() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(1);
         tree.add(2);
@@ -224,7 +224,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testShorteningOfChain() {
+    void testShorteningOfChain() {
         ConsecutiveSetTree<Integer, Integer, Integer> tree = getIntegerConsecutiveSetTree();
         tree.add(1);
         tree.add(2);
@@ -249,7 +249,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testRandomSequences() {
+    void testRandomSequences() {
         Random random = new Random(1);
         TreeMap<Integer, Integer> valueToCountMap = new TreeMap<>();
 
@@ -289,7 +289,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testRandomSequencesWithDuplicates() {
+    void testRandomSequencesWithDuplicates() {
         Random random = new Random(1);
         TreeMap<Integer, Integer> valueToCountMap =
                 new TreeMap<>(Comparator.<Integer, Integer> comparing(Math::abs).thenComparing(System::identityHashCode));
@@ -340,7 +340,7 @@ class ConsecutiveSetTreeTest {
     }
 
     @Test
-    public void testTimeslotConsecutive() {
+    void testTimeslotConsecutive() {
         ConsecutiveSetTree<Timeslot, OffsetDateTime, Duration> tree = new ConsecutiveSetTree<>(
                 ts -> ts.from, Duration::between, Duration::plus, Duration.ofDays(1), Duration.ZERO);
 

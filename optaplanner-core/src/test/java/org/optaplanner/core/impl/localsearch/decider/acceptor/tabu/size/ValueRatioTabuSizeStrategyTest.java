@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 class ValueRatioTabuSizeStrategyTest {
 
     @Test
-    public void tabuSize() {
+    void tabuSize() {
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(mock(SolverScope.class));
         when(phaseScope.getWorkingValueCount()).thenReturn(100);
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);

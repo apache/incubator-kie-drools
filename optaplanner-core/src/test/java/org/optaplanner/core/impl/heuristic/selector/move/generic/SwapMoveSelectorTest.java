@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 class SwapMoveSelectorTest {
 
     @Test
-    public void originalLeftEqualsRight() {
+    void originalLeftEqualsRight() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
 
@@ -91,7 +91,7 @@ class SwapMoveSelectorTest {
     }
 
     @Test
-    public void emptyOriginalLeftEqualsRight() {
+    void emptyOriginalLeftEqualsRight() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor());
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
@@ -148,7 +148,7 @@ class SwapMoveSelectorTest {
     }
 
     @Test
-    public void originalLeftUnequalsRight() {
+    void originalLeftUnequalsRight() {
         EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
 
         EntitySelector leftEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor,
@@ -222,7 +222,7 @@ class SwapMoveSelectorTest {
     }
 
     @Test
-    public void emptyRightOriginalLeftUnequalsRight() {
+    void emptyRightOriginalLeftUnequalsRight() {
         EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
 
         EntitySelector leftEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor,

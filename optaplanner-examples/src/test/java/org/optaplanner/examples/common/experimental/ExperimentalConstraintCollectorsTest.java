@@ -31,7 +31,7 @@ import org.optaplanner.examples.common.experimental.impl.IntervalTree;
 
 class ExperimentalConstraintCollectorsTest {
     @Test
-    public void consecutive() {
+    void consecutive() {
         // Do a basic test w/o edge cases; edge cases are covered in
         // ConsecutiveSetTreeTest
         UniConstraintCollector<Integer, ?, ConsecutiveInfo<Integer, Integer>> collector =
@@ -93,7 +93,7 @@ class ExperimentalConstraintCollectorsTest {
     }
 
     @Test
-    public void consecutiveInterval() {
+    void consecutiveInterval() {
         // Do a basic test w/o edge cases; edge cases are covered in
         // ConsecutiveSetTreeTest
         UniConstraintCollector<Interval, ?, ConsecutiveIntervalInfo<Interval, Integer, Integer>> collector =

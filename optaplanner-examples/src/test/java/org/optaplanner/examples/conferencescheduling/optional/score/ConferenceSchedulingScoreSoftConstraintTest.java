@@ -39,7 +39,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
 
     @Test
-    public void themeConflict() {
+    void themeConflict() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         TalkType talkType = new TalkType(0L, "type1");
         String theme1 = "theme1";
@@ -94,7 +94,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void sectorConflict() {
+    void sectorConflict() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         TalkType talkType = new TalkType(0L, "type1");
         String sector1 = "sector1";
@@ -151,7 +151,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void languageDiversity() {
+    void languageDiversity() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         TalkType talkType = new TalkType(0L, "type1");
         String language1 = "language1";
@@ -198,7 +198,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void speakerPreferredTimeslot() {
+    void speakerPreferredTimeslot() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
@@ -289,7 +289,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void talkPreferredTimeslotTag() {
+    void talkPreferredTimeslotTag() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
@@ -340,7 +340,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void speakerUndesiredTimeslot() {
+    void speakerUndesiredTimeslot() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
@@ -425,7 +425,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void talkUndesiredTimeslotTag() {
+    void talkUndesiredTimeslotTag() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
@@ -478,7 +478,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void speakerPreferredRoomTag() {
+    void speakerPreferredRoomTag() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
@@ -559,7 +559,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void talkPreferredRoomTag() {
+    void talkPreferredRoomTag() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
@@ -605,7 +605,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void speakerUndesiredRoomTag() {
+    void speakerUndesiredRoomTag() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
@@ -689,7 +689,7 @@ class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
-    public void talkUndesiredRoomTag() {
+    void talkUndesiredRoomTag() {
         ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";

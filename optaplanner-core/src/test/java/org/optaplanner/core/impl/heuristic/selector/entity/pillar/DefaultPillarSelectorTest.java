@@ -86,7 +86,7 @@ class DefaultPillarSelectorTest {
     //    }
 
     @Test
-    public void originalNoSubs() {
+    void originalNoSubs() {
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
@@ -148,7 +148,7 @@ class DefaultPillarSelectorTest {
     }
 
     @Test
-    public void emptyEntitySelectorOriginalNoSubs() {
+    void emptyEntitySelectorOriginalNoSubs() {
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor());
 
@@ -194,7 +194,7 @@ class DefaultPillarSelectorTest {
     }
 
     @Test
-    public void randomWithSubs() {
+    void randomWithSubs() {
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
@@ -276,7 +276,7 @@ class DefaultPillarSelectorTest {
     }
 
     @Test
-    public void randomWithSubs_Size2() {
+    void randomWithSubs_Size2() {
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
@@ -321,7 +321,7 @@ class DefaultPillarSelectorTest {
     }
 
     @Test
-    public void sequentialUnlimited() {
+    void sequentialUnlimited() {
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
@@ -371,7 +371,7 @@ class DefaultPillarSelectorTest {
     }
 
     @Test
-    public void emptyEntitySelectorRandomWithSubs() {
+    void emptyEntitySelectorRandomWithSubs() {
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor());
 

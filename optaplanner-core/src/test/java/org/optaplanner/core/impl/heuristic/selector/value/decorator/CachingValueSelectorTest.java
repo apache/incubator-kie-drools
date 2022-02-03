@@ -36,17 +36,17 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class CachingValueSelectorTest {
 
     @Test
-    public void originalSelectionCacheTypeSolver() {
+    void originalSelectionCacheTypeSolver() {
         runOriginalSelection(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void originalSelectionCacheTypePhase() {
+    void originalSelectionCacheTypePhase() {
         runOriginalSelection(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void originalSelectionCacheTypeStep() {
+    void originalSelectionCacheTypeStep() {
         runOriginalSelection(SelectionCacheType.STEP, 5);
     }
 

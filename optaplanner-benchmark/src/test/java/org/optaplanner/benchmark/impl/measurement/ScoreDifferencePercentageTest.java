@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 class ScoreDifferencePercentageTest {
 
     @Test
-    public void calculateScoreDifferencePercentageException() {
+    void calculateScoreDifferencePercentageException() {
         BendableScore score1 = BendableScore.of(new int[] { 1, 2, 3 }, new int[] { 4, 5 });
         BendableScore score2 = BendableScore.of(new int[] { 1, 2 }, new int[] { 4, 5 });
         assertThatIllegalStateException().isThrownBy(
@@ -36,7 +36,7 @@ class ScoreDifferencePercentageTest {
     }
 
     @Test
-    public void calculateScoreDifferencePercentage() {
+    void calculateScoreDifferencePercentage() {
         double tolerance = 0.00001;
         SimpleScore score1 = SimpleScore.of(-100);
         SimpleScore score2 = SimpleScore.of(-100);
@@ -99,7 +99,7 @@ class ScoreDifferencePercentageTest {
     }
 
     @Test
-    public void add() {
+    void add() {
         double tolerance = 0.00001;
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
@@ -117,7 +117,7 @@ class ScoreDifferencePercentageTest {
     }
 
     @Test
-    public void subtract() {
+    void subtract() {
         double tolerance = 0.00001;
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
@@ -135,7 +135,7 @@ class ScoreDifferencePercentageTest {
     }
 
     @Test
-    public void multiply() {
+    void multiply() {
         double tolerance = 0.00001;
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
@@ -152,7 +152,7 @@ class ScoreDifferencePercentageTest {
     }
 
     @Test
-    public void divide() {
+    void divide() {
         double tolerance = 0.00001;
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
@@ -169,7 +169,7 @@ class ScoreDifferencePercentageTest {
     }
 
     @Test
-    public void addWithWrongDimension() {
+    void addWithWrongDimension() {
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage = ScoreDifferencePercentage
@@ -185,7 +185,7 @@ class ScoreDifferencePercentageTest {
     }
 
     @Test
-    public void subtractWithWrongDimension() {
+    void subtractWithWrongDimension() {
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage = ScoreDifferencePercentage

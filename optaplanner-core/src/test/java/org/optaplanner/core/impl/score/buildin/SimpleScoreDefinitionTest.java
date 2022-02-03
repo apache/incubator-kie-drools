@@ -26,29 +26,29 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 class SimpleScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         SimpleScore score = new SimpleScoreDefinition().getZeroScore();
         assertThat(score).isEqualTo(SimpleScore.ZERO);
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         SimpleScore score = new SimpleScoreDefinition().getOneSoftestScore();
         assertThat(score).isEqualTo(SimpleScore.ONE);
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new SimpleScoreDefinition().getLevelsSize()).isEqualTo(1);
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new SimpleScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "score" });
     }
 
     @Test
-    public void buildOptimisticBoundOnlyUp() {
+    void buildOptimisticBoundOnlyUp() {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
@@ -58,7 +58,7 @@ class SimpleScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundOnlyDown() {
+    void buildOptimisticBoundOnlyDown() {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
@@ -68,7 +68,7 @@ class SimpleScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyUp() {
+    void buildPessimisticBoundOnlyUp() {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
@@ -78,7 +78,7 @@ class SimpleScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyDown() {
+    void buildPessimisticBoundOnlyDown() {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
@@ -88,7 +88,7 @@ class SimpleScoreDefinitionTest {
     }
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 10 });
         SimpleScore zeroDivisor = scoreDefinition.getZeroScore();

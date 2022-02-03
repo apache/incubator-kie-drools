@@ -26,35 +26,35 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 class HardMediumSoftLongScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         HardMediumSoftLongScore score = new HardMediumSoftLongScoreDefinition().getZeroScore();
         assertThat(score).isEqualTo(HardMediumSoftLongScore.ZERO);
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         HardMediumSoftLongScore score = new HardMediumSoftLongScoreDefinition().getOneSoftestScore();
         assertThat(score).isEqualTo(HardMediumSoftLongScore.ONE_SOFT);
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new HardMediumSoftLongScoreDefinition().getLevelsSize()).isEqualTo(3);
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new HardMediumSoftLongScoreDefinition().getLevelLabels())
                 .isEqualTo(new String[] { "hard score", "medium score", "soft score" });
     }
 
     @Test
-    public void getFeasibleLevelsSize() {
+    void getFeasibleLevelsSize() {
         assertThat(new HardMediumSoftLongScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     @Test
-    public void buildOptimisticBoundOnlyUp() {
+    void buildOptimisticBoundOnlyUp() {
         HardMediumSoftLongScoreDefinition scoreDefinition = new HardMediumSoftLongScoreDefinition();
         HardMediumSoftLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 3),
@@ -66,7 +66,7 @@ class HardMediumSoftLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundOnlyDown() {
+    void buildOptimisticBoundOnlyDown() {
         HardMediumSoftLongScoreDefinition scoreDefinition = new HardMediumSoftLongScoreDefinition();
         HardMediumSoftLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 3),
@@ -78,7 +78,7 @@ class HardMediumSoftLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyUp() {
+    void buildPessimisticBoundOnlyUp() {
         HardMediumSoftLongScoreDefinition scoreDefinition = new HardMediumSoftLongScoreDefinition();
         HardMediumSoftLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 3),
@@ -90,7 +90,7 @@ class HardMediumSoftLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyDown() {
+    void buildPessimisticBoundOnlyDown() {
         HardMediumSoftLongScoreDefinition scoreDefinition = new HardMediumSoftLongScoreDefinition();
         HardMediumSoftLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 3),
@@ -102,7 +102,7 @@ class HardMediumSoftLongScoreDefinitionTest {
     }
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         HardMediumSoftLongScoreDefinition scoreDefinition = new HardMediumSoftLongScoreDefinition();
         HardMediumSoftLongScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 0L, 1L, 10L });
         HardMediumSoftLongScore zeroDivisor = scoreDefinition.getZeroScore();

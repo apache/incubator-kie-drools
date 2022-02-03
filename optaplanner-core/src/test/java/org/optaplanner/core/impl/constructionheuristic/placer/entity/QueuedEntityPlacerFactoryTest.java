@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSoluti
 class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
 
     @Test
-    public void buildFromUnfoldNew() {
+    void buildFromUnfoldNew() {
         SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
 
         ChangeMoveSelectorConfig primaryMoveSelectorConfig = new ChangeMoveSelectorConfig();

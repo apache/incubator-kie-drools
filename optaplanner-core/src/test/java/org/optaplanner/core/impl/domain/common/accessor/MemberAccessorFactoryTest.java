@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnno
 class MemberAccessorFactoryTest {
 
     @Test
-    public void fieldAnnotatedEntity() throws NoSuchFieldException {
+    void fieldAnnotatedEntity() throws NoSuchFieldException {
         MemberAccessor memberAccessor =
                 MemberAccessorFactory.buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                         MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class,
@@ -53,7 +53,7 @@ class MemberAccessorFactoryTest {
     }
 
     @Test
-    public void privateField() throws NoSuchFieldException {
+    void privateField() throws NoSuchFieldException {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
@@ -72,7 +72,7 @@ class MemberAccessorFactoryTest {
     }
 
     @Test
-    public void publicField() throws NoSuchFieldException {
+    void publicField() throws NoSuchFieldException {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
@@ -91,7 +91,7 @@ class MemberAccessorFactoryTest {
     }
 
     @Test
-    public void publicProperty() throws NoSuchMethodException {
+    void publicProperty() throws NoSuchMethodException {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
@@ -110,7 +110,7 @@ class MemberAccessorFactoryTest {
     }
 
     @Test
-    public void shouldUseGeneratedMemberAccessorIfExists() throws NoSuchMethodException {
+    void shouldUseGeneratedMemberAccessorIfExists() throws NoSuchMethodException {
         MemberAccessor mockMemberAccessor = Mockito.mock(MemberAccessor.class);
         Member member = TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty");
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(

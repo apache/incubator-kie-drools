@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class LongValueRangeTest {
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(new LongValueRange(0L, 10L).getSize()).isEqualTo(10L);
         assertThat(new LongValueRange(100L, 120L).getSize()).isEqualTo(20L);
         assertThat(new LongValueRange(-15L, 25L).getSize()).isEqualTo(40L);
@@ -39,7 +39,7 @@ class LongValueRangeTest {
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThat((long) new LongValueRange(0L, 10L).get(3L).intValue()).isEqualTo(3L);
         assertThat((long) new LongValueRange(100L, 120L).get(3L).intValue()).isEqualTo(103L);
         assertThat((long) new LongValueRange(-5L, 25L).get(1L).intValue()).isEqualTo(-4L);
@@ -52,7 +52,7 @@ class LongValueRangeTest {
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new LongValueRange(0L, 10L).contains(3L)).isTrue();
         assertThat(new LongValueRange(0L, 10L).contains(10L)).isFalse();
         assertThat(new LongValueRange(0L, 10L).contains(null)).isFalse();
@@ -70,7 +70,7 @@ class LongValueRangeTest {
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(new LongValueRange(0L, 7L).createOriginalIterator(), 0L, 1L, 2L, 3L, 4L, 5L, 6L);
         assertAllElementsOfIterator(new LongValueRange(100L, 104L).createOriginalIterator(), 100L, 101L, 102L, 103L);
         assertAllElementsOfIterator(new LongValueRange(-4L, 3L).createOriginalIterator(), -4L, -3L, -2L, -1L, 0L, 1L, 2L);
@@ -82,7 +82,7 @@ class LongValueRangeTest {
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         assertElementsOfIterator(new LongValueRange(0L, 7L).createRandomIterator(new TestRandom(3, 0)), 3L, 0L);
         assertElementsOfIterator(new LongValueRange(100L, 104L).createRandomIterator(new TestRandom(3, 0)), 103L, 100L);
         assertElementsOfIterator(new LongValueRange(-4L, 3L).createRandomIterator(new TestRandom(3, 0)), -1L, -4L);

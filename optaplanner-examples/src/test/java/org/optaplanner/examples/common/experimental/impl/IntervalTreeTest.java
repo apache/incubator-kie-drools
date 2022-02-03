@@ -76,7 +76,7 @@ class IntervalTreeTest {
     }
 
     @Test
-    public void testNonConsecutiveIntervals() {
+    void testNonConsecutiveIntervals() {
         IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
         tree.add(new Interval(0, 2));
         tree.add(new Interval(3, 4));
@@ -99,7 +99,7 @@ class IntervalTreeTest {
     }
 
     @Test
-    public void testConsecutiveIntervals() {
+    void testConsecutiveIntervals() {
         IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
         tree.add(new Interval(0, 2));
         tree.add(new Interval(2, 4));
@@ -114,7 +114,7 @@ class IntervalTreeTest {
     }
 
     @Test
-    public void testDuplicateIntervals() {
+    void testDuplicateIntervals() {
         IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
         Interval a = new Interval(0, 2);
         Interval b = new Interval(4, 7);
@@ -132,7 +132,7 @@ class IntervalTreeTest {
     }
 
     @Test
-    public void testIntervalRemoval() {
+    void testIntervalRemoval() {
         IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
         Interval a = new Interval(0, 2);
         Interval b = new Interval(2, 4);
@@ -153,7 +153,7 @@ class IntervalTreeTest {
     }
 
     @Test
-    public void testIntervalAddUpdatingOldBreak() {
+    void testIntervalAddUpdatingOldBreak() {
         IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
         Interval beforeAll = new Interval(1, 2);
         Interval newStart = new Interval(3, 8);
@@ -178,7 +178,7 @@ class IntervalTreeTest {
     }
 
     @Test
-    public void testOverlappingInterval() {
+    void testOverlappingInterval() {
         IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
         Interval a = new Interval(0, 2);
         Interval b = new Interval(1, 3);
@@ -272,7 +272,7 @@ class IntervalTreeTest {
 
     // Compare the mutable version with the recompute version
     @Test
-    public void testRandomIntervals() {
+    void testRandomIntervals() {
         Random random = new Random(1);
 
         for (int i = 0; i < 100; i++) {

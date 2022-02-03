@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 class HardSoftBigDecimalScoreJacksonRoundTripTest extends AbstractScoreJacksonRoundTripTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftBigDecimalScoreWrapper(null));
         HardSoftBigDecimalScore score = HardSoftBigDecimalScore.of(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardSoftBigDecimalScoreWrapper(score));

@@ -27,12 +27,12 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class LinearDistributionNearbyRandomTest {
 
     @Test
-    public void sizeMaximumTooLow() {
+    void sizeMaximumTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new LinearDistributionNearbyRandom(-10));
     }
 
     @Test
-    public void nextInt() {
+    void nextInt() {
         NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(100);
 
         assertThat(nearbyRandom.nextInt(new TestRandom(0), 500)).isEqualTo(0);
@@ -46,7 +46,7 @@ class LinearDistributionNearbyRandomTest {
     }
 
     @Test
-    public void cornerCase() {
+    void cornerCase() {
         Random random = new TestRandom(
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));

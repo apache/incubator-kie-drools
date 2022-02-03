@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 class MimicReplayingEntitySelectorTest {
 
     @Test
-    public void originalSelection() {
+    void originalSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
 

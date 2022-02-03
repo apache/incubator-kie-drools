@@ -36,7 +36,7 @@ class OptaPlannerProcessorEmptyAppWithInjectionTest {
             .overrideConfigKey("quarkus.arc.unremovable-types", "org.optaplanner.core.api.solver.SolverManager");
 
     @Test
-    public void emptyAppInjectingSolverManagerCrashes() {
+    void emptyAppInjectingSolverManagerCrashes() {
         assertThatIllegalStateException().isThrownBy(() -> Arc.container().instance(SolverManager.class).get())
                 .withMessageContaining("The " + SolverManager.class.getName() + " is not available as there are no");
     }

@@ -29,42 +29,42 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class BooleanValueRangeTest {
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(new BooleanValueRange().getSize()).isEqualTo(2L);
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThat(new BooleanValueRange().get(0L)).isEqualTo(Boolean.FALSE);
         assertThat(new BooleanValueRange().get(1L)).isEqualTo(Boolean.TRUE);
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new BooleanValueRange().contains(Boolean.FALSE)).isTrue();
         assertThat(new BooleanValueRange().contains(Boolean.TRUE)).isTrue();
         assertThat(new BooleanValueRange().contains(null)).isFalse();
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(new BooleanValueRange().createOriginalIterator(), Boolean.FALSE, Boolean.TRUE);
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         Random workingRandom = new TestRandom(true, true, false, true);
         assertElementsOfIterator(new BooleanValueRange().createRandomIterator(workingRandom),
                 Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE);
     }
 
     @Test
-    public void getIndexNegative() {
+    void getIndexNegative() {
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> new BooleanValueRange().get(-1));
     }
 
     @Test
-    public void getIndexGreaterThanSize() {
+    void getIndexGreaterThanSize() {
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> new BooleanValueRange().get(2));
     }
 

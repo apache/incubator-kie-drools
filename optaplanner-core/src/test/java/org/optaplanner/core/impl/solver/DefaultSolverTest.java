@@ -95,7 +95,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solve() {
+    void solve() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
@@ -111,7 +111,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void checkDefaultMeters() {
+    void checkDefaultMeters() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
 
@@ -172,7 +172,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void checkDefaultMetersTags() {
+    void checkDefaultMetersTags() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
 
@@ -236,7 +236,7 @@ class DefaultSolverTest {
     // TODO: Enable with Micrometer 1.7.8 or later.
     @Disabled("https://github.com/micrometer-metrics/micrometer/issues/2947")
     @Test
-    public void solveMetrics() {
+    void solveMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
 
@@ -296,7 +296,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveBestScoreMetrics() {
+    void solveBestScoreMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
 
@@ -387,7 +387,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveStepScoreMetrics() {
+    void solveStepScoreMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
 
@@ -502,7 +502,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveMetricsError() {
+    void solveMetricsError() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
 
@@ -535,7 +535,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveEmptyEntityList() {
+    void solveEmptyEntityList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
                         scoreDirector -> fail("All phases should be skipped because there are no movable entities.")));
@@ -552,7 +552,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveChainedEmptyEntityList() {
+    void solveChainedEmptyEntityList() {
         SolverConfig solverConfig = PlannerTestUtils
                 .buildSolverConfig(TestdataChainedSolution.class, TestdataChainedEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
@@ -604,7 +604,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveEmptyEntityListAndEmptyValueList() {
+    void solveEmptyEntityListAndEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
                         scoreDirector -> fail("All phases should be skipped because there are no movable entities.")));
@@ -621,7 +621,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solvePinnedEntityList() {
+    void solvePinnedEntityList() {
         SolverConfig solverConfig = PlannerTestUtils
                 .buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
@@ -640,7 +640,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveStopsWhenUninitialized() {
+    void solveStopsWhenUninitialized() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         CustomPhaseConfig phaseConfig = new CustomPhaseConfig()
@@ -660,7 +660,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveStopsWhenPartiallyInitialized() {
+    void solveStopsWhenPartiallyInitialized() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
@@ -722,7 +722,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveRepeatedlyBasicVariable(SoftAssertions softly) {
+    void solveRepeatedlyBasicVariable(SoftAssertions softly) {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
         // Run only 2 steps at a time, although 5 are needed to initialize all entities.
@@ -756,7 +756,7 @@ class DefaultSolverTest {
     }
 
     @Test
-    public void solveRepeatedlyListVariable(SoftAssertions softly) {
+    void solveRepeatedlyListVariable(SoftAssertions softly) {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataListSolution.class, TestdataListEntity.class, TestdataListValue.class);
 

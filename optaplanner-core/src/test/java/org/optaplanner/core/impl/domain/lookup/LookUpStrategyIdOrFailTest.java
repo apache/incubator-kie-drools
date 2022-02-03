@@ -41,7 +41,7 @@ class LookUpStrategyIdOrFailTest {
     }
 
     @Test
-    public void addRemoveWithIntegerId() {
+    void addRemoveWithIntegerId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
@@ -50,7 +50,7 @@ class LookUpStrategyIdOrFailTest {
     }
 
     @Test
-    public void addRemoveWithPrimitiveIntId() {
+    void addRemoveWithPrimitiveIntId() {
         TestdataObjectPrimitiveIntId object = new TestdataObjectPrimitiveIntId(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
@@ -59,38 +59,38 @@ class LookUpStrategyIdOrFailTest {
     }
 
     @Test
-    public void addRemoveEnum() {
+    void addRemoveEnum() {
         TestdataObjectEnum object = TestdataObjectEnum.THIRD_VALUE;
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
     }
 
     @Test
-    public void addWithNullId() {
+    void addWithNullId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(null);
         assertThatIllegalArgumentException().isThrownBy(() -> lookUpManager.addWorkingObject(object));
     }
 
     @Test
-    public void removeWithNullId() {
+    void removeWithNullId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(null);
         assertThatIllegalArgumentException().isThrownBy(() -> lookUpManager.removeWorkingObject(object));
     }
 
     @Test
-    public void addWithoutId() {
+    void addWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         assertThatIllegalArgumentException().isThrownBy(() -> lookUpManager.addWorkingObject(object));
     }
 
     @Test
-    public void removeWithoutId() {
+    void removeWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         assertThatIllegalArgumentException().isThrownBy(() -> lookUpManager.removeWorkingObject(object));
     }
 
     @Test
-    public void addSameIdTwice() {
+    void addSameIdTwice() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(2);
         lookUpManager.addWorkingObject(object);
         assertThatIllegalStateException()
@@ -100,7 +100,7 @@ class LookUpStrategyIdOrFailTest {
     }
 
     @Test
-    public void removeWithoutAdding() {
+    void removeWithoutAdding() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         assertThatIllegalStateException()
                 .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
@@ -108,14 +108,14 @@ class LookUpStrategyIdOrFailTest {
     }
 
     @Test
-    public void lookUpWithId() {
+    void lookUpWithId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(1);
         lookUpManager.addWorkingObject(object);
         assertThat(lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1))).isSameAs(object);
     }
 
     @Test
-    public void lookUpWithoutId() {
+    void lookUpWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
@@ -123,13 +123,13 @@ class LookUpStrategyIdOrFailTest {
     }
 
     @Test
-    public void lookUpWithoutAdding() {
+    void lookUpWithoutAdding() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         assertThat(lookUpManager.lookUpWorkingObjectOrReturnNull(object)).isNull();
     }
 
     @Test
-    public void addWithTwoIds() {
+    void addWithTwoIds() {
         TestdataObjectMultipleIds object = new TestdataObjectMultipleIds();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.addWorkingObject(object))
@@ -138,7 +138,7 @@ class LookUpStrategyIdOrFailTest {
     }
 
     @Test
-    public void removeWithTwoIds() {
+    void removeWithTwoIds() {
         TestdataObjectMultipleIds object = new TestdataObjectMultipleIds();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.removeWorkingObject(object))

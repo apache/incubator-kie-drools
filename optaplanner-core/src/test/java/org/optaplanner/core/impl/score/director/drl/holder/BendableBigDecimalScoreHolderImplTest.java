@@ -30,12 +30,12 @@ import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDeci
 class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<BendableBigDecimalScore> {
 
     @Test
-    public void addConstraintMatchWithConstraintMatch() {
+    void addConstraintMatchWithConstraintMatch() {
         addConstraintMatch(true);
     }
 
     @Test
-    public void addConstraintMatchWithoutConstraintMatch() {
+    void addConstraintMatchWithoutConstraintMatch() {
         addConstraintMatch(false);
     }
 
@@ -113,12 +113,12 @@ class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<Bend
     }
 
     @Test
-    public void rewardPenalizeWithConstraintMatch() {
+    void rewardPenalizeWithConstraintMatch() {
         rewardPenalize(true);
     }
 
     @Test
-    public void rewardPenalizeWithoutConstraintMatch() {
+    void rewardPenalizeWithoutConstraintMatch() {
         rewardPenalize(false);
     }
 
@@ -162,7 +162,7 @@ class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<Bend
     }
 
     @Test
-    public void failFastHardLevel() {
+    void failFastHardLevel() {
         BendableBigDecimalScoreHolder scoreHolder = new BendableBigDecimalScoreHolderImpl(false, 2, 5);
         RuleContext rule = mockRuleContext("rule");
         assertThatIllegalArgumentException()
@@ -170,7 +170,7 @@ class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<Bend
     }
 
     @Test
-    public void failFastSoftLevel() {
+    void failFastSoftLevel() {
         BendableBigDecimalScoreHolder scoreHolder = new BendableBigDecimalScoreHolderImpl(false, 5, 2);
         RuleContext rule = mockRuleContext("rule");
         assertThatIllegalArgumentException()

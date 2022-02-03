@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 class DepthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 
     @Test
-    public void compare() {
+    void compare() {
         DepthFirstNodeComparator comparator = new DepthFirstNodeComparator(true);
         assertScoreCompareToOrder(comparator,
                 buildNode(1, "-110", 5, 41),

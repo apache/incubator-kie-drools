@@ -27,13 +27,13 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class HardSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
-    public void of() {
+    void of() {
         assertThat(HardSoftLongScore.ofHard(-147L)).isEqualTo(HardSoftLongScore.of(-147L, 0L));
         assertThat(HardSoftLongScore.ofSoft(-258L)).isEqualTo(HardSoftLongScore.of(0L, -258L));
     }
 
     @Test
-    public void parseScore() {
+    void parseScore() {
         assertThat(HardSoftLongScore.parseScore("-147hard/-258soft")).isEqualTo(HardSoftLongScore.of(-147L, -258L));
         assertThat(HardSoftLongScore.parseScore("-7init/-147hard/-258soft"))
                 .isEqualTo(HardSoftLongScore.ofUninitialized(-7, -147L, -258L));
@@ -41,7 +41,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void toShortString() {
+    void toShortString() {
         assertThat(HardSoftLongScore.of(0L, 0L).toShortString()).isEqualTo("0");
         assertThat(HardSoftLongScore.of(0L, -258L).toShortString()).isEqualTo("-258soft");
         assertThat(HardSoftLongScore.of(-147L, 0L).toShortString()).isEqualTo("-147hard");
@@ -52,25 +52,25 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(HardSoftLongScore.of(0L, -258L).toString()).isEqualTo("0hard/-258soft");
         assertThat(HardSoftLongScore.of(-147L, -258L).toString()).isEqualTo("-147hard/-258soft");
         assertThat(HardSoftLongScore.ofUninitialized(-7, -147L, -258L).toString()).isEqualTo("-7init/-147hard/-258soft");
     }
 
     @Test
-    public void parseScoreIllegalArgument() {
+    void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> HardSoftLongScore.parseScore("-147"));
     }
 
     @Test
-    public void withInitScore() {
+    void withInitScore() {
         assertThat(HardSoftLongScore.of(-147L, -258L).withInitScore(-7))
                 .isEqualTo(HardSoftLongScore.ofUninitialized(-7, -147L, -258L));
     }
 
     @Test
-    public void feasible() {
+    void feasible() {
         assertScoreNotFeasible(
                 HardSoftLongScore.of(-5L, -300L),
                 HardSoftLongScore.ofUninitialized(-7, -5L, -300L),
@@ -82,7 +82,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void add() {
+    void add() {
         assertThat(HardSoftLongScore.of(20L, -20L).add(
                 HardSoftLongScore.of(-1L, -300L))).isEqualTo(HardSoftLongScore.of(19L, -320L));
         assertThat(HardSoftLongScore.ofUninitialized(-70, 20L, -20L).add(
@@ -91,7 +91,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void subtract() {
+    void subtract() {
         assertThat(HardSoftLongScore.of(20L, -20L).subtract(
                 HardSoftLongScore.of(-1L, -300L))).isEqualTo(HardSoftLongScore.of(21L, 280L));
         assertThat(HardSoftLongScore.ofUninitialized(-70, 20L, -20L).subtract(
@@ -100,7 +100,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void multiply() {
+    void multiply() {
         assertThat(HardSoftLongScore.of(5L, -5L).multiply(1.2)).isEqualTo(HardSoftLongScore.of(6L, -6L));
         assertThat(HardSoftLongScore.of(1L, -1L).multiply(1.2)).isEqualTo(HardSoftLongScore.of(1L, -2L));
         assertThat(HardSoftLongScore.of(4L, -4L).multiply(1.2)).isEqualTo(HardSoftLongScore.of(4L, -5L));
@@ -109,7 +109,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void divide() {
+    void divide() {
         assertThat(HardSoftLongScore.of(25L, -25L).divide(5.0)).isEqualTo(HardSoftLongScore.of(5L, -5L));
         assertThat(HardSoftLongScore.of(21L, -21L).divide(5.0)).isEqualTo(HardSoftLongScore.of(4L, -5L));
         assertThat(HardSoftLongScore.of(24L, -24L).divide(5.0)).isEqualTo(HardSoftLongScore.of(4L, -5L));
@@ -118,7 +118,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void power() {
+    void power() {
         assertThat(HardSoftLongScore.of(-4L, 5L).power(2.0)).isEqualTo(HardSoftLongScore.of(16L, 25L));
         assertThat(HardSoftLongScore.of(16L, 25L).power(0.5)).isEqualTo(HardSoftLongScore.of(4L, 5L));
         assertThat(HardSoftLongScore.ofUninitialized(-7, -4L, 5L).power(3.0))
@@ -126,13 +126,13 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void negate() {
+    void negate() {
         assertThat(HardSoftLongScore.of(4L, -5L).negate()).isEqualTo(HardSoftLongScore.of(-4L, 5L));
         assertThat(HardSoftLongScore.of(-4L, 5L).negate()).isEqualTo(HardSoftLongScore.of(4L, -5L));
     }
 
     @Test
-    public void zero() {
+    void zero() {
         HardSoftLongScore manualZero = HardSoftLongScore.of(0, 0);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
@@ -144,7 +144,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void equalsAndHashCode() {
+    void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
                 HardSoftLongScore.of(-10L, -200L),
                 HardSoftLongScore.of(-10L, -200L),
@@ -160,7 +160,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         PlannerAssert.assertCompareToOrder(
                 HardSoftLongScore.ofUninitialized(-8, 0L, 0L),
                 HardSoftLongScore.ofUninitialized(-7, -20L, -20L),

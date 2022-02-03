@@ -48,7 +48,7 @@ class ChainedSwapMoveTest {
             .buildVariableDescriptorForUnchainedValue();
 
     @Test
-    public void noTrailing() {
+    void noTrailing() {
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
@@ -105,7 +105,7 @@ class ChainedSwapMoveTest {
     }
 
     @Test
-    public void oldAndNewTrailing() {
+    void oldAndNewTrailing() {
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
@@ -168,7 +168,7 @@ class ChainedSwapMoveTest {
     }
 
     @Test
-    public void sameChain() {
+    void sameChain() {
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
@@ -250,7 +250,7 @@ class ChainedSwapMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         EntityDescriptor<TestdataChainedSolution> entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         List<GenuineVariableDescriptor<TestdataChainedSolution>> variableDescriptorList = entityDescriptor
                 .getGenuineVariableDescriptorList();

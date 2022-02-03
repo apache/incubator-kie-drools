@@ -27,37 +27,37 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class BlockDistributionNearbyRandomTest {
 
     @Test
-    public void sizeMinimumTooLow() {
+    void sizeMinimumTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(-10, 300, 0.2, 0.0));
     }
 
     @Test
-    public void sizeMaximumTooLow() {
+    void sizeMaximumTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 8, 0.2, 0.0));
     }
 
     @Test
-    public void sizeRatioTooLow() {
+    void sizeRatioTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, -0.2, 0.0));
     }
 
     @Test
-    public void sizeRatioTooHigh() {
+    void sizeRatioTooHigh() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, 1.2, 0.0));
     }
 
     @Test
-    public void uniformDistributionProbabilityTooLow() {
+    void uniformDistributionProbabilityTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, 0.2, 1.3));
     }
 
     @Test
-    public void uniformDistributionProbabilityTooHigh() {
+    void uniformDistributionProbabilityTooHigh() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, 0.2, -0.3));
     }
 
     @Test
-    public void nextInt() {
+    void nextInt() {
         TestRandom random = new TestRandom(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
         NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 0.2, 0.0);
 
@@ -89,7 +89,7 @@ class BlockDistributionNearbyRandomTest {
     }
 
     @Test
-    public void cornerCase() {
+    void cornerCase() {
         double threshold = 0.5;
         NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 100, 0.5, threshold);
 

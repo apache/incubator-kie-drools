@@ -42,22 +42,22 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class SortingEntitySelectorTest {
 
     @Test
-    public void cacheTypeSolver() {
+    void cacheTypeSolver() {
         runCacheType(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void cacheTypePhase() {
+    void cacheTypePhase() {
         runCacheType(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void cacheTypeStep() {
+    void cacheTypeStep() {
         runCacheType(SelectionCacheType.STEP, 5);
     }
 
     @Test
-    public void cacheTypeJustInTime() {
+    void cacheTypeJustInTime() {
         assertThatIllegalArgumentException().isThrownBy(() -> runCacheType(SelectionCacheType.JUST_IN_TIME, 5));
     }
 
@@ -123,14 +123,14 @@ class SortingEntitySelectorTest {
     }
 
     @Test
-    public void isNeverEnding() {
+    void isNeverEnding() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
         assertThat(entitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
-    public void isCountable() {
+    void isCountable() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
         assertThat(entitySelector.isCountable()).isTrue();

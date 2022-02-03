@@ -37,17 +37,17 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class ShufflingMoveSelectorTest {
 
     @Test
-    public void cacheTypeSolver() {
+    void cacheTypeSolver() {
         run(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void cacheTypePhase() {
+    void cacheTypePhase() {
         run(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void cacheTypeStep() {
+    void cacheTypeStep() {
         run(SelectionCacheType.STEP, 3);
     }
 

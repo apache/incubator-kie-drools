@@ -26,7 +26,7 @@ import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapterTest;
 class BendableLongScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableLongScoreWrapper(null));
 
         BendableLongScore score = BendableLongScore.of(new long[] { 1000L, 200L }, new long[] { 34L });

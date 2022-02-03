@@ -28,12 +28,12 @@ import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHold
 class BendableLongScoreHolderImplTest extends AbstractScoreHolderTest<BendableLongScore> {
 
     @Test
-    public void addConstraintMatchWithConstraintMatch() {
+    void addConstraintMatchWithConstraintMatch() {
         addConstraintMatch(true);
     }
 
     @Test
-    public void addConstraintMatchWithoutConstraintMatch() {
+    void addConstraintMatchWithoutConstraintMatch() {
         addConstraintMatch(false);
     }
 
@@ -96,12 +96,12 @@ class BendableLongScoreHolderImplTest extends AbstractScoreHolderTest<BendableLo
     }
 
     @Test
-    public void rewardPenalizeWithConstraintMatch() {
+    void rewardPenalizeWithConstraintMatch() {
         rewardPenalize(true);
     }
 
     @Test
-    public void rewardPenalizeWithoutConstraintMatch() {
+    void rewardPenalizeWithoutConstraintMatch() {
         rewardPenalize(false);
     }
 
@@ -136,14 +136,14 @@ class BendableLongScoreHolderImplTest extends AbstractScoreHolderTest<BendableLo
     }
 
     @Test
-    public void failFastHardLevel() {
+    void failFastHardLevel() {
         BendableLongScoreHolder scoreHolder = new BendableLongScoreHolderImpl(false, 2, 5);
         RuleContext rule = mockRuleContext("rule");
         assertThatIllegalArgumentException().isThrownBy(() -> scoreHolder.addHardConstraintMatch(rule, 3, -1L));
     }
 
     @Test
-    public void failFastSoftLevel() {
+    void failFastSoftLevel() {
         BendableLongScoreHolder scoreHolder = new BendableLongScoreHolderImpl(false, 5, 2);
         RuleContext rule = mockRuleContext("rule");
         assertThatIllegalArgumentException().isThrownBy(() -> scoreHolder.addSoftConstraintMatch(rule, 3, -1L));

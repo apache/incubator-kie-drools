@@ -26,31 +26,31 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         SimpleBigDecimalScore score = new SimpleBigDecimalScoreDefinition().getZeroScore();
         assertThat(score).isEqualTo(SimpleBigDecimalScore.ZERO);
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         SimpleBigDecimalScore score = new SimpleBigDecimalScoreDefinition().getOneSoftestScore();
         assertThat(score).isEqualTo(SimpleBigDecimalScore.ONE);
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new SimpleBigDecimalScoreDefinition().getLevelsSize()).isEqualTo(1);
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new SimpleBigDecimalScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "score" });
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         SimpleBigDecimalScoreDefinition scoreDefinition = new SimpleBigDecimalScoreDefinition();
         SimpleBigDecimalScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { BigDecimal.TEN });
         SimpleBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();

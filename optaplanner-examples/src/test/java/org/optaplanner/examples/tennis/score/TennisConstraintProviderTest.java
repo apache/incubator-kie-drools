@@ -37,7 +37,7 @@ class TennisConstraintProviderTest {
             ConstraintVerifier.build(new TennisConstraintProvider(), TennisSolution.class, TeamAssignment.class);
 
     @Test
-    public void oneAssignmentPerDayPerTeam() {
+    void oneAssignmentPerDayPerTeam() {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY0, 1);
@@ -55,7 +55,7 @@ class TennisConstraintProviderTest {
     }
 
     @Test
-    public void unavailabilityPenalty() {
+    void unavailabilityPenalty() {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY1, 0);
@@ -74,7 +74,7 @@ class TennisConstraintProviderTest {
     }
 
     @Test
-    public void fairAssignmentCountPerTeam() {
+    void fairAssignmentCountPerTeam() {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY1, 0);
@@ -94,7 +94,7 @@ class TennisConstraintProviderTest {
     }
 
     @Test
-    public void evenlyConfrontationCount() {
+    void evenlyConfrontationCount() {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY0, 0);

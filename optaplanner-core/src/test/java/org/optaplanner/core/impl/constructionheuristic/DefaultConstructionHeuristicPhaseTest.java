@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class DefaultConstructionHeuristicPhaseTest {
 
     @Test
-    public void solveWithInitializedEntities() {
+    void solveWithInitializedEntities() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
 
@@ -64,7 +64,7 @@ class DefaultConstructionHeuristicPhaseTest {
     }
 
     @Test
-    public void solveWithPinnedEntities() {
+    void solveWithPinnedEntities() {
         SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
@@ -94,7 +94,7 @@ class DefaultConstructionHeuristicPhaseTest {
     }
 
     @Test
-    public void solveWithEmptyEntityList() {
+    void solveWithEmptyEntityList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new ConstructionHeuristicPhaseConfig()));
 

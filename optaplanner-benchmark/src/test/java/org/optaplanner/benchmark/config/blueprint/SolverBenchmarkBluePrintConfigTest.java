@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class SolverBenchmarkBluePrintConfigTest {
 
     @Test
-    public void withoutSolverBenchmarkBluePrintType() {
+    void withoutSolverBenchmarkBluePrintType() {
         SolverBenchmarkBluePrintConfig config = new SolverBenchmarkBluePrintConfig();
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(config::validate)

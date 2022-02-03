@@ -46,12 +46,12 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity
 class CartesianProductMoveSelectorTest {
 
     @Test
-    public void originSelectionNotIgnoringEmpty() {
+    void originSelectionNotIgnoringEmpty() {
         originSelection(false);
     }
 
     @Test
-    public void originSelectionIgnoringEmpty() {
+    void originSelectionIgnoringEmpty() {
         originSelection(true);
     }
 
@@ -87,32 +87,32 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void emptyFirstOriginSelectionNotIgnoringEmpty() {
+    void emptyFirstOriginSelectionNotIgnoringEmpty() {
         emptyOriginSelection(false, true, false);
     }
 
     @Test
-    public void emptyFirstOriginSelectionIgnoringEmpty() {
+    void emptyFirstOriginSelectionIgnoringEmpty() {
         emptyOriginSelection(true, true, false);
     }
 
     @Test
-    public void emptySecondOriginSelectionNotIgnoringEmpty() {
+    void emptySecondOriginSelectionNotIgnoringEmpty() {
         emptyOriginSelection(false, false, true);
     }
 
     @Test
-    public void emptySecondOriginSelectionIgnoringEmpty() {
+    void emptySecondOriginSelectionIgnoringEmpty() {
         emptyOriginSelection(true, false, true);
     }
 
     @Test
-    public void emptyAllOriginSelectionNotIgnoringEmpty() {
+    void emptyAllOriginSelectionNotIgnoringEmpty() {
         emptyOriginSelection(false, true, true);
     }
 
     @Test
-    public void emptyAllOriginSelectionIgnoringEmpty() {
+    void emptyAllOriginSelectionIgnoringEmpty() {
         emptyOriginSelection(true, true, true);
     }
 
@@ -154,12 +154,12 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void originSelection3ChildMoveSelectorsNotIgnoringEmpty() {
+    void originSelection3ChildMoveSelectorsNotIgnoringEmpty() {
         originSelection3ChildMoveSelectors(false);
     }
 
     @Test
-    public void originSelection3ChildMoveSelectorsIgnoringEmpty() {
+    void originSelection3ChildMoveSelectorsIgnoringEmpty() {
         originSelection3ChildMoveSelectors(true);
     }
 
@@ -196,12 +196,12 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void emptyOriginSelection3ChildMoveSelectorsNotIgnoringEmpty() {
+    void emptyOriginSelection3ChildMoveSelectorsNotIgnoringEmpty() {
         emptyOriginSelection3ChildMoveSelectors(false);
     }
 
     @Test
-    public void emptyOriginSelection3ChildMoveSelectorsIgnoringEmpty() {
+    void emptyOriginSelection3ChildMoveSelectorsIgnoringEmpty() {
         emptyOriginSelection3ChildMoveSelectors(true);
     }
 
@@ -240,12 +240,12 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void classicRandomSelectionNotIgnoringEmpty() {
+    void classicRandomSelectionNotIgnoringEmpty() {
         classicRandomSelection(false);
     }
 
     @Test
-    public void classicRandomSelectionIgnoringEmpty() {
+    void classicRandomSelectionIgnoringEmpty() {
         classicRandomSelection(true);
     }
 
@@ -278,12 +278,12 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void emptyRandomSelectionNotIgnoringEmpty() {
+    void emptyRandomSelectionNotIgnoringEmpty() {
         emptyRandomSelection(false);
     }
 
     @Test
-    public void emptyRandomSelectionIgnoringEmpty() {
+    void emptyRandomSelectionIgnoringEmpty() {
         emptyRandomSelection(true);
     }
 
@@ -319,12 +319,12 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void randomSelection3ChildMoveSelectorsNotIgnoringEmpty() {
+    void randomSelection3ChildMoveSelectorsNotIgnoringEmpty() {
         randomSelection3ChildMoveSelectors(false);
     }
 
     @Test
-    public void randomSelection3ChildMoveSelectorsIgnoringEmpty() {
+    void randomSelection3ChildMoveSelectorsIgnoringEmpty() {
         randomSelection3ChildMoveSelectors(true);
     }
 
@@ -359,12 +359,12 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void emptyRandomSelection3ChildMoveSelectorsNotIgnoringEmpty() {
+    void emptyRandomSelection3ChildMoveSelectorsNotIgnoringEmpty() {
         emptyRandomSelection3ChildMoveSelectors(false);
     }
 
     @Test
-    public void emptyRandomSelection3ChildMoveSelectorsIgnoringEmpty() {
+    void emptyRandomSelection3ChildMoveSelectorsIgnoringEmpty() {
         emptyRandomSelection3ChildMoveSelectors(true);
     }
 
@@ -406,12 +406,12 @@ class CartesianProductMoveSelectorTest {
     // ************************************************************************
 
     @Test
-    public void originalMimicNotIgnoringEmpty() {
+    void originalMimicNotIgnoringEmpty() {
         originalMimic(false);
     }
 
     @Test
-    public void originalMimicIgnoringEmpty() {
+    void originalMimicIgnoringEmpty() {
         originalMimic(true);
     }
 
@@ -472,12 +472,12 @@ class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void randomMimicNotIgnoringEmpty() {
+    void randomMimicNotIgnoringEmpty() {
         randomMimic(false);
     }
 
     @Test
-    public void randomMimicIgnoringEmpty() {
+    void randomMimicIgnoringEmpty() {
         randomMimic(true);
     }
 

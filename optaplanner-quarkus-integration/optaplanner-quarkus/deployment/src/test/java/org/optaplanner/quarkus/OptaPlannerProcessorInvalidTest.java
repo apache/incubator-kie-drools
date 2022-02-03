@@ -64,7 +64,7 @@ class OptaPlannerProcessorInvalidTest {
     ScoreManager<TestdataInvalidInverseRelationSolution, SimpleScore> scoreManager;
 
     @Test
-    public void solve() {
+    void solve() {
         fail("Build should fail");
     }
 

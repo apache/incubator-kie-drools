@@ -27,14 +27,14 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
-    public void parseScore() {
+    void parseScore() {
         assertThat(SimpleLongScore.parseScore("-147")).isEqualTo(SimpleLongScore.of(-147L));
         assertThat(SimpleLongScore.parseScore("-7init/-147")).isEqualTo(SimpleLongScore.ofUninitialized(-7, -147L));
         assertThat(SimpleLongScore.parseScore("*")).isEqualTo(SimpleLongScore.of(Long.MIN_VALUE));
     }
 
     @Test
-    public void toShortString() {
+    void toShortString() {
         assertThat(SimpleLongScore.of(0L).toShortString()).isEqualTo("0");
         assertThat(SimpleLongScore.of(-147L).toShortString()).isEqualTo("-147");
         assertThat(SimpleLongScore.ofUninitialized(-7, -147L).toShortString()).isEqualTo("-7init/-147");
@@ -42,24 +42,24 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(SimpleLongScore.of(0).toString()).isEqualTo("0");
         assertThat(SimpleLongScore.of(-147L).toString()).isEqualTo("-147");
         assertThat(SimpleLongScore.ofUninitialized(-7, -147L).toString()).isEqualTo("-7init/-147");
     }
 
     @Test
-    public void parseScoreIllegalArgument() {
+    void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> SimpleLongScore.parseScore("-147hard/-258soft"));
     }
 
     @Test
-    public void withInitScore() {
+    void withInitScore() {
         assertThat(SimpleLongScore.of(-147L).withInitScore(-7)).isEqualTo(SimpleLongScore.ofUninitialized(-7, -147L));
     }
 
     @Test
-    public void add() {
+    void add() {
         assertThat(SimpleLongScore.of(20L).add(
                 SimpleLongScore.of(-1L))).isEqualTo(SimpleLongScore.of(19L));
         assertThat(SimpleLongScore.ofUninitialized(-70, 20L).add(
@@ -67,7 +67,7 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void subtract() {
+    void subtract() {
         assertThat(SimpleLongScore.of(20L).subtract(
                 SimpleLongScore.of(-1L))).isEqualTo(SimpleLongScore.of(21L));
         assertThat(SimpleLongScore.ofUninitialized(-70, 20L).subtract(
@@ -75,7 +75,7 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void multiply() {
+    void multiply() {
         assertThat(SimpleLongScore.of(5L).multiply(1.2)).isEqualTo(SimpleLongScore.of(6L));
         assertThat(SimpleLongScore.of(1L).multiply(1.2)).isEqualTo(SimpleLongScore.of(1L));
         assertThat(SimpleLongScore.of(4L).multiply(1.2)).isEqualTo(SimpleLongScore.of(4L));
@@ -83,7 +83,7 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void divide() {
+    void divide() {
         assertThat(SimpleLongScore.of(25L).divide(5.0)).isEqualTo(SimpleLongScore.of(5L));
         assertThat(SimpleLongScore.of(21L).divide(5.0)).isEqualTo(SimpleLongScore.of(4L));
         assertThat(SimpleLongScore.of(24L).divide(5.0)).isEqualTo(SimpleLongScore.of(4L));
@@ -91,20 +91,20 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void power() {
+    void power() {
         assertThat(SimpleLongScore.of(5L).power(2.0)).isEqualTo(SimpleLongScore.of(25L));
         assertThat(SimpleLongScore.of(25L).power(0.5)).isEqualTo(SimpleLongScore.of(5L));
         assertThat(SimpleLongScore.ofUninitialized(-7, 5L).power(3.0)).isEqualTo(SimpleLongScore.ofUninitialized(-343, 125L));
     }
 
     @Test
-    public void negate() {
+    void negate() {
         assertThat(SimpleLongScore.of(5L).negate()).isEqualTo(SimpleLongScore.of(-5L));
         assertThat(SimpleLongScore.of(-5L).negate()).isEqualTo(SimpleLongScore.of(5L));
     }
 
     @Test
-    public void zero() {
+    void zero() {
         SimpleLongScore manualZero = SimpleLongScore.of(0);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
@@ -116,7 +116,7 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void equalsAndHashCode() {
+    void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
                 SimpleLongScore.of(-10L),
                 SimpleLongScore.of(-10L),
@@ -131,7 +131,7 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         PlannerAssert.assertCompareToOrder(
                 SimpleLongScore.ofUninitialized(-8, 0L),
                 SimpleLongScore.ofUninitialized(-7, -20L),

@@ -32,7 +32,7 @@ class BendableScoreTest extends AbstractScoreTest {
     private BendableScoreDefinition scoreDefinitionSSS = new BendableScoreDefinition(0, 3);
 
     @Test
-    public void of() {
+    void of() {
         assertThat(BendableScore.ofHard(1, 2, 0, -147)).isEqualTo(scoreDefinitionHSS.createScore(-147, 0, 0));
         assertThat(BendableScore.ofSoft(1, 2, 0, -258)).isEqualTo(scoreDefinitionHSS.createScore(0, -258, 0));
         assertThat(BendableScore.ofSoft(1, 2, 1, -369)).isEqualTo(scoreDefinitionHSS.createScore(0, 0, -369));
@@ -41,7 +41,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void parseScore() {
+    void parseScore() {
         assertThat(scoreDefinitionHSS.parseScore("[-147]hard/[-258/-369]soft"))
                 .isEqualTo(scoreDefinitionHSS.createScore(-147, -258, -369));
         assertThat(scoreDefinitionHHH.parseScore("[-147/-258/-369]hard/[]soft"))
@@ -57,7 +57,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void toShortString() {
+    void toShortString() {
         assertThat(scoreDefinitionHSS.createScore(0, 0, 0).toShortString()).isEqualTo("0");
         assertThat(scoreDefinitionHSS.createScore(0, 0, -369).toShortString()).isEqualTo("[0/-369]soft");
         assertThat(scoreDefinitionHSS.createScore(0, -258, -369).toShortString()).isEqualTo("[-258/-369]soft");
@@ -70,7 +70,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(scoreDefinitionHSS.createScore(0, -258, -369).toString()).isEqualTo("[0]hard/[-258/-369]soft");
         assertThat(scoreDefinitionHSS.createScore(-147, -258, -369).toString()).isEqualTo("[-147]hard/[-258/-369]soft");
         assertThat(scoreDefinitionHHH.createScore(-147, -258, -369).toString()).isEqualTo("[-147/-258/-369]hard/[]soft");
@@ -81,12 +81,12 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void parseScoreIllegalArgument() {
+    void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> scoreDefinitionHSS.parseScore("-147"));
     }
 
     @Test
-    public void getHardOrSoftScore() {
+    void getHardOrSoftScore() {
         BendableScore initializedScore = scoreDefinitionHSS.createScore(-5, -10, -200);
         assertThat(initializedScore.getHardOrSoftScore(0)).isEqualTo(-5);
         assertThat(initializedScore.getHardOrSoftScore(1)).isEqualTo(-10);
@@ -94,13 +94,13 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void withInitScore() {
+    void withInitScore() {
         assertThat(scoreDefinitionHSS.createScore(-147, -258, -369).withInitScore(-7))
                 .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-7, -147, -258, -369));
     }
 
     @Test
-    public void feasibleHSS() {
+    void feasibleHSS() {
         assertScoreNotFeasible(
                 scoreDefinitionHSS.createScore(-20, -300, -4000),
                 scoreDefinitionHSS.createScoreUninitialized(-1, 20, -300, -4000),
@@ -113,7 +113,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void addHSS() {
+    void addHSS() {
         assertThat(scoreDefinitionHSS.createScore(20, -20, -4000).add(
                 scoreDefinitionHSS.createScore(-1, -300, 4000))).isEqualTo(scoreDefinitionHSS.createScore(19, -320, 0));
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-70, 20, -20, -4000).add(
@@ -122,7 +122,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void subtractHSS() {
+    void subtractHSS() {
         assertThat(scoreDefinitionHSS.createScore(20, -20, -4000).subtract(
                 scoreDefinitionHSS.createScore(-1, -300, 4000))).isEqualTo(scoreDefinitionHSS.createScore(21, 280, -8000));
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-70, 20, -20, -4000).subtract(
@@ -131,7 +131,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void multiplyHSS() {
+    void multiplyHSS() {
         assertThat(scoreDefinitionHSS.createScore(5, -5, 5).multiply(1.2)).isEqualTo(scoreDefinitionHSS.createScore(6, -6, 6));
         assertThat(scoreDefinitionHSS.createScore(1, -1, 1).multiply(1.2)).isEqualTo(scoreDefinitionHSS.createScore(1, -2, 1));
         assertThat(scoreDefinitionHSS.createScore(4, -4, 4).multiply(1.2)).isEqualTo(scoreDefinitionHSS.createScore(4, -5, 4));
@@ -140,7 +140,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void divideHSS() {
+    void divideHSS() {
         assertThat(scoreDefinitionHSS.createScore(25, -25, 25).divide(5.0)).isEqualTo(scoreDefinitionHSS.createScore(5, -5, 5));
         assertThat(scoreDefinitionHSS.createScore(21, -21, 21).divide(5.0)).isEqualTo(scoreDefinitionHSS.createScore(4, -5, 4));
         assertThat(scoreDefinitionHSS.createScore(24, -24, 24).divide(5.0)).isEqualTo(scoreDefinitionHSS.createScore(4, -5, 4));
@@ -149,7 +149,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void powerHSS() {
+    void powerHSS() {
         assertThat(scoreDefinitionHSS.createScore(3, -4, 5).power(2.0)).isEqualTo(scoreDefinitionHSS.createScore(9, 16, 25));
         assertThat(scoreDefinitionHSS.createScore(9, 16, 25).power(0.5)).isEqualTo(scoreDefinitionHSS.createScore(3, 4, 5));
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-7, 3, -4, 5).power(3.0))
@@ -157,13 +157,13 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void negateHSS() {
+    void negateHSS() {
         assertThat(scoreDefinitionHSS.createScore(3, -4, 5).negate()).isEqualTo(scoreDefinitionHSS.createScore(-3, 4, -5));
         assertThat(scoreDefinitionHSS.createScore(-3, 4, -5).negate()).isEqualTo(scoreDefinitionHSS.createScore(3, -4, 5));
     }
 
     @Test
-    public void zero() {
+    void zero() {
         BendableScore manualZero = BendableScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
@@ -175,7 +175,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void equalsAndHashCodeHSS() {
+    void equalsAndHashCodeHSS() {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScore(-10, -200, -3000),
                 scoreDefinitionHSS.createScore(-10, -200, -3000),
@@ -192,7 +192,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void compareToHSS() {
+    void compareToHSS() {
         PlannerAssert.assertCompareToOrder(
                 scoreDefinitionHSS.createScoreUninitialized(-8, 0, 0, 0),
                 scoreDefinitionHSS.createScoreUninitialized(-7, -20, -20, -20),
@@ -220,7 +220,7 @@ class BendableScoreTest extends AbstractScoreTest {
     private BendableScoreDefinition scoreDefinitionHHSSS = new BendableScoreDefinition(2, 3);
 
     @Test
-    public void feasibleHHSSS() {
+    void feasibleHHSSS() {
         assertScoreNotFeasible(
                 scoreDefinitionHHSSS.createScore(-1, -20, -300, -4000, -5000),
                 scoreDefinitionHHSSS.createScore(-1, 0, -300, -4000, -5000),
@@ -235,21 +235,21 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void addHHSSS() {
+    void addHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(20, -20, -4000, 0, 0).add(
                 scoreDefinitionHHSSS.createScore(-1, -300, 4000, 0, 0)))
                         .isEqualTo(scoreDefinitionHHSSS.createScore(19, -320, 0, 0, 0));
     }
 
     @Test
-    public void subtractHHSSS() {
+    void subtractHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(20, -20, -4000, 0, 0).subtract(
                 scoreDefinitionHHSSS.createScore(-1, -300, 4000, 0, 0)))
                         .isEqualTo(scoreDefinitionHHSSS.createScore(21, 280, -8000, 0, 0));
     }
 
     @Test
-    public void multiplyHHSSS() {
+    void multiplyHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(5, -5, 5, 0, 0).multiply(1.2))
                 .isEqualTo(scoreDefinitionHHSSS.createScore(6, -6, 6, 0, 0));
         assertThat(scoreDefinitionHHSSS.createScore(1, -1, 1, 0, 0).multiply(1.2))
@@ -259,7 +259,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void divideHHSSS() {
+    void divideHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(25, -25, 25, 0, 0).divide(5.0))
                 .isEqualTo(scoreDefinitionHHSSS.createScore(5, -5, 5, 0, 0));
         assertThat(scoreDefinitionHHSSS.createScore(21, -21, 21, 0, 0).divide(5.0))
@@ -269,7 +269,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void powerHHSSS() {
+    void powerHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0).power(2.0))
                 .isEqualTo(scoreDefinitionHHSSS.createScore(9, 16, 25, 0, 0));
         assertThat(scoreDefinitionHHSSS.createScore(9, 16, 25, 0, 0).power(0.5))
@@ -277,7 +277,7 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void negateHHSSS() {
+    void negateHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0).negate())
                 .isEqualTo(scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0));
         assertThat(scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0).negate())
@@ -285,14 +285,14 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void equalsAndHashCodeHHSSS() {
+    void equalsAndHashCodeHHSSS() {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0),
                 scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0));
     }
 
     @Test
-    public void compareToHHSSS() {
+    void compareToHHSSS() {
         PlannerAssert.assertCompareToOrder(
                 scoreDefinitionHHSSS.createScore(-20, Integer.MIN_VALUE, Integer.MIN_VALUE, 0, 0),
                 scoreDefinitionHHSSS.createScore(-20, Integer.MIN_VALUE, -20, 0, 0),

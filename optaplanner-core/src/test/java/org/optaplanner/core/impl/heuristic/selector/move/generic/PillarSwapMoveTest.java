@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.Test
 class PillarSwapMoveTest {
 
     @Test
-    public void isMoveDoableValueRangeProviderOnEntity() {
+    void isMoveDoableValueRangeProviderOnEntity() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
@@ -128,7 +128,7 @@ class PillarSwapMoveTest {
     }
 
     @Test
-    public void doMove() {
+    void doMove() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
@@ -236,7 +236,7 @@ class PillarSwapMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         EntityDescriptor<TestdataSolution> entityDescriptor = TestdataEntity.buildEntityDescriptor();
         List<GenuineVariableDescriptor<TestdataSolution>> variableDescriptorList = entityDescriptor
                 .getGenuineVariableDescriptorList();
@@ -282,7 +282,7 @@ class PillarSwapMoveTest {
     }
 
     @Test
-    public void getters() {
+    void getters() {
         GenuineVariableDescriptor<TestdataMultiVarSolution> primaryDescriptor = TestdataMultiVarEntity
                 .buildVariableDescriptorForPrimaryValue();
         GenuineVariableDescriptor<TestdataMultiVarSolution> secondaryDescriptor = TestdataMultiVarEntity
@@ -303,7 +303,7 @@ class PillarSwapMoveTest {
     }
 
     @Test
-    public void toStringTest() {
+    void toStringTest() {
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
         TestdataEntity a = new TestdataEntity("a", null);

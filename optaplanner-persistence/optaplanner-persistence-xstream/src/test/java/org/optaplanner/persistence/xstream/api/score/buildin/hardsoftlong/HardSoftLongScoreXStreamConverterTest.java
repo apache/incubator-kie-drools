@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 class HardSoftLongScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftLongScoreWrapper(null));
         HardSoftLongScore score = HardSoftLongScore.of(1200L, 34L);
         assertSerializeAndDeserialize(score, new TestHardSoftLongScoreWrapper(score));

@@ -31,7 +31,7 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
                 buildConstraint(buildScore(1, 1, 1));
         BendableLongScoreInliner scoreInliner =
@@ -40,7 +40,7 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
     }
 
     @Test
-    public void impactHard() {
+    void impactHard() {
         TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
                 buildConstraint(buildScore(90, 0, 0));
         BendableLongScoreInliner scoreInliner =
@@ -65,7 +65,7 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
     }
 
     @Test
-    public void impactSoft1() {
+    void impactSoft1() {
         TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
                 buildConstraint(buildScore(0, 90, 0));
         BendableLongScoreInliner scoreInliner =
@@ -90,7 +90,7 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
     }
 
     @Test
-    public void impactSoft2() {
+    void impactSoft2() {
         TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
                 buildConstraint(buildScore(0, 0, 90));
         BendableLongScoreInliner scoreInliner =
@@ -115,7 +115,7 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
     }
 
     @Test
-    public void impactAll() {
+    void impactAll() {
         TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
                 buildConstraint(buildScore(10, 100, 1_000));
         BendableLongScoreInliner scoreInliner =

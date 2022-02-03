@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class ComparatorSelectionSorterTest {
 
     @Test
-    public void sort() {
+    void sort() {
         Integer[] baseArray = new Integer[] { 3, 4, 3, 5, 1 };
         List<Integer> arrayToSort = new ArrayList<>();
         Collections.addAll(arrayToSort, baseArray);

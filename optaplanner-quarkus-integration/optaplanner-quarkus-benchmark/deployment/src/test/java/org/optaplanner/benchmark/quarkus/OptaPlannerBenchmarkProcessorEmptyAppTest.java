@@ -32,7 +32,7 @@ class OptaPlannerBenchmarkProcessorEmptyAppTest {
                     .addClasses());
 
     @Test
-    public void emptyAppDoesNotCrash() {
+    void emptyAppDoesNotCrash() {
         // Success if it didn't crash during bootstrap
     }
 

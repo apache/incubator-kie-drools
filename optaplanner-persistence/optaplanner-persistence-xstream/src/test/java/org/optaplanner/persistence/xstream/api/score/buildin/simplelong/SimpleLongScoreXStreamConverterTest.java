@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 class SimpleLongScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
-    public void simpleLongScore() {
+    void simpleLongScore() {
         assertSerializeAndDeserialize(null, new TestSimpleLongScoreWrapper(null));
         SimpleLongScore score = SimpleLongScore.of(1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));

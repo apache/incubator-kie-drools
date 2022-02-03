@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class AcceptedLocalSearchForagerTest {
 
     @Test
-    public void pickMoveMaxScoreAccepted() {
+    void pickMoveMaxScoreAccepted() {
         // Setup
         LocalSearchForager<TestdataSolution> forager = new AcceptedLocalSearchForager<>(new HighestScoreFinalistPodium<>(),
                 LocalSearchPickEarlyType.NEVER, Integer.MAX_VALUE, true);
@@ -71,7 +71,7 @@ class AcceptedLocalSearchForagerTest {
     }
 
     @Test
-    public void pickMoveMaxScoreUnaccepted() {
+    void pickMoveMaxScoreUnaccepted() {
         // Setup
         LocalSearchForager<TestdataSolution> forager = new AcceptedLocalSearchForager<>(new HighestScoreFinalistPodium<>(),
                 LocalSearchPickEarlyType.NEVER, Integer.MAX_VALUE, true);
@@ -103,7 +103,7 @@ class AcceptedLocalSearchForagerTest {
     }
 
     @Test
-    public void pickMoveFirstBestScoreImproving() {
+    void pickMoveFirstBestScoreImproving() {
         // Setup
         LocalSearchForager<TestdataSolution> forager = new AcceptedLocalSearchForager<>(new HighestScoreFinalistPodium<>(),
                 LocalSearchPickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE, true);
@@ -132,7 +132,7 @@ class AcceptedLocalSearchForagerTest {
     }
 
     @Test
-    public void pickMoveFirstLastStepScoreImproving() {
+    void pickMoveFirstLastStepScoreImproving() {
         // Setup
         LocalSearchForager<TestdataSolution> forager = new AcceptedLocalSearchForager<>(new HighestScoreFinalistPodium<>(),
                 LocalSearchPickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE, true);
@@ -161,7 +161,7 @@ class AcceptedLocalSearchForagerTest {
     }
 
     @Test
-    public void pickMoveAcceptedBreakTieRandomly() {
+    void pickMoveAcceptedBreakTieRandomly() {
         // Setup
         LocalSearchForager<TestdataSolution> forager = new AcceptedLocalSearchForager<>(new HighestScoreFinalistPodium<>(),
                 LocalSearchPickEarlyType.NEVER, 4, true);
@@ -193,7 +193,7 @@ class AcceptedLocalSearchForagerTest {
     }
 
     @Test
-    public void pickMoveAcceptedBreakTieFirst() {
+    void pickMoveAcceptedBreakTieFirst() {
         // Setup
         LocalSearchForager<TestdataSolution> forager = new AcceptedLocalSearchForager<>(new HighestScoreFinalistPodium<>(),
                 LocalSearchPickEarlyType.NEVER, 4, false);

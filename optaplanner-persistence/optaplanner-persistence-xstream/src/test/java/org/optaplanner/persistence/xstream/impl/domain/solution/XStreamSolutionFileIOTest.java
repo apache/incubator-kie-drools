@@ -43,7 +43,7 @@ class XStreamSolutionFileIOTest {
     }
 
     @Test
-    public void readAndWrite() {
+    void readAndWrite() {
         XStreamSolutionFileIO<XStreamTestdataSolution> solutionFileIO = new XStreamSolutionFileIO<>(
                 XStreamTestdataSolution.class);
         File file = new File(solutionTestDir, "testdataSolution.xml");

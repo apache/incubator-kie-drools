@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity
 class ReinitializeVariableValueSelectorTest {
 
     @Test
-    public void oneVariable() {
+    void oneVariable() {
         EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("value");
         TestdataEntity e1 = new TestdataEntity("e1");
@@ -102,7 +102,7 @@ class ReinitializeVariableValueSelectorTest {
     }
 
     @Test
-    public void multiVariable() {
+    void multiVariable() {
         EntityDescriptor entityDescriptor = TestdataMultiVarEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("secondaryValue");
         TestdataMultiVarEntity e1 = new TestdataMultiVarEntity("e1");

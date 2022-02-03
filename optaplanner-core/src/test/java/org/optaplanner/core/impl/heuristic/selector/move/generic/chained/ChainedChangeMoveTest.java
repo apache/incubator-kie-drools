@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class ChainedChangeMoveTest {
 
     @Test
-    public void noTrailing() {
+    void noTrailing() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -71,7 +71,7 @@ class ChainedChangeMoveTest {
     }
 
     @Test
-    public void oldAndNewTrailing() {
+    void oldAndNewTrailing() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -107,7 +107,7 @@ class ChainedChangeMoveTest {
     }
 
     @Test
-    public void sameChainWithOneBetween() {
+    void sameChainWithOneBetween() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -139,7 +139,7 @@ class ChainedChangeMoveTest {
     }
 
     @Test
-    public void sameChainWithItself() {
+    void sameChainWithItself() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -160,7 +160,7 @@ class ChainedChangeMoveTest {
     }
 
     @Test
-    public void sameChainWithSamePlanningValue() {
+    void sameChainWithSamePlanningValue() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -181,7 +181,7 @@ class ChainedChangeMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
 

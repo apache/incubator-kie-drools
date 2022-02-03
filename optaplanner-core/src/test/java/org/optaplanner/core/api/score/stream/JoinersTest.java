@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 class JoinersTest {
 
     @Test
-    public void equalBi() {
+    void equalBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners.equal(leftMapping,
@@ -46,7 +46,7 @@ class JoinersTest {
     }
 
     @Test
-    public void equalTri() {
+    void equalTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
@@ -58,7 +58,7 @@ class JoinersTest {
     }
 
     @Test
-    public void equalQuad() {
+    void equalQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
@@ -70,7 +70,7 @@ class JoinersTest {
     }
 
     @Test
-    public void equalPenta() {
+    void equalPenta() {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
@@ -86,7 +86,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanBi() {
+    void lessThanBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
@@ -99,7 +99,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanTri() {
+    void lessThanTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
@@ -112,7 +112,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanQuad() {
+    void lessThanQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
@@ -126,7 +126,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanPenta() {
+    void lessThanPenta() {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
@@ -144,7 +144,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanOrEqualBi() {
+    void lessThanOrEqualBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
@@ -157,7 +157,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanOrEqualTri() {
+    void lessThanOrEqualTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
@@ -170,7 +170,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanOrEqualQuad() {
+    void lessThanOrEqualQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
@@ -184,7 +184,7 @@ class JoinersTest {
     }
 
     @Test
-    public void lessThanOrEqualPenta() {
+    void lessThanOrEqualPenta() {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
@@ -202,7 +202,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanBi() {
+    void greaterThanBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
@@ -215,7 +215,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanTri() {
+    void greaterThanTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
@@ -228,7 +228,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanQuad() {
+    void greaterThanQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
@@ -242,7 +242,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanPenta() {
+    void greaterThanPenta() {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
@@ -260,7 +260,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanOrEqualBi() {
+    void greaterThanOrEqualBi() {
         Function<BigInteger, Long> leftMapping = BigInteger::longValue;
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractBiJoiner<BigInteger, BigDecimal> joiner = (AbstractBiJoiner<BigInteger, BigDecimal>) Joiners
@@ -273,7 +273,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanOrEqualTri() {
+    void greaterThanOrEqualTri() {
         BiFunction<BigInteger, BigInteger, Long> leftMapping = (a, b) -> a.add(b).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> joiner =
@@ -286,7 +286,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanOrEqualQuad() {
+    void greaterThanOrEqualQuad() {
         TriFunction<BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c) -> a.add(b).add(c).longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
         AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner =
@@ -300,7 +300,7 @@ class JoinersTest {
     }
 
     @Test
-    public void greaterThanOrEqualPenta() {
+    void greaterThanOrEqualPenta() {
         QuadFunction<BigInteger, BigInteger, BigInteger, BigInteger, Long> leftMapping = (a, b, c, d) -> a.add(b).add(c).add(d)
                 .longValue();
         Function<BigDecimal, Long> rightMapping = BigDecimal::longValue;
@@ -351,7 +351,7 @@ class JoinersTest {
     }
 
     @Test
-    public void overlapsBiDifferentTypes() {
+    void overlapsBiDifferentTypes() {
         Function<Interval<Long, BigInteger>, Long> leftStartMapping = interval -> interval.getStart().longValue();
         Function<Interval<Long, BigInteger>, Long> leftEndMapping = interval -> interval.getEnd().longValue();
         Function<Interval<Long, BigDecimal>, Long> rightStartMapping = interval -> interval.getStart().longValue();
@@ -423,7 +423,7 @@ class JoinersTest {
     }
 
     @Test
-    public void overlapsBiSameTypes() {
+    void overlapsBiSameTypes() {
         Function<Interval<Long, BigInteger>, Long> leftStartMapping = interval -> interval.getStart().longValue();
         Function<Interval<Long, BigInteger>, Long> leftEndMapping = interval -> interval.getEnd().longValue();
 
@@ -493,7 +493,7 @@ class JoinersTest {
     }
 
     @Test
-    public void overlapsTri() {
+    void overlapsTri() {
         BiFunction<Interval<Long, BigInteger>, String, Long> leftStartMapping =
                 (interval, ignored) -> interval.getStart().longValue();
         BiFunction<Interval<Long, BigInteger>, String, Long> leftEndMapping =
@@ -581,7 +581,7 @@ class JoinersTest {
     }
 
     @Test
-    public void overlapsQuad() {
+    void overlapsQuad() {
         TriFunction<Interval<Long, BigInteger>, String, String, Long> leftStartMapping =
                 (interval, ignored1, ignored2) -> interval.getStart().longValue();
         TriFunction<Interval<Long, BigInteger>, String, String, Long> leftEndMapping =
@@ -683,7 +683,7 @@ class JoinersTest {
     }
 
     @Test
-    public void overlapsPenta() {
+    void overlapsPenta() {
         QuadFunction<Interval<Long, BigInteger>, String, String, String, Long> leftStartMapping =
                 (interval, ignored1, ignored2, ignored3) -> interval.getStart().longValue();
         QuadFunction<Interval<Long, BigInteger>, String, String, String, Long> leftEndMapping =

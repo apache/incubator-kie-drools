@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 class SimpleScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleScoreWrapper(null));
         SimpleScore score = SimpleScore.of(1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));

@@ -27,14 +27,14 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
-    public void parseScore() {
+    void parseScore() {
         assertThat(SimpleScore.parseScore("-147")).isEqualTo(SimpleScore.of(-147));
         assertThat(SimpleScore.parseScore("-7init/-147")).isEqualTo(SimpleScore.ofUninitialized(-7, -147));
         assertThat(SimpleScore.parseScore("*")).isEqualTo(SimpleScore.of(Integer.MIN_VALUE));
     }
 
     @Test
-    public void toShortString() {
+    void toShortString() {
         assertThat(SimpleScore.of(0).toShortString()).isEqualTo("0");
         assertThat(SimpleScore.of(-147).toShortString()).isEqualTo("-147");
         assertThat(SimpleScore.ofUninitialized(-7, -147).toShortString()).isEqualTo("-7init/-147");
@@ -42,24 +42,24 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(SimpleScore.of(0).toString()).isEqualTo("0");
         assertThat(SimpleScore.of(-147).toString()).isEqualTo("-147");
         assertThat(SimpleScore.ofUninitialized(-7, -147).toString()).isEqualTo("-7init/-147");
     }
 
     @Test
-    public void parseScoreIllegalArgument() {
+    void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> SimpleScore.parseScore("-147hard/-258soft"));
     }
 
     @Test
-    public void withInitScore() {
+    void withInitScore() {
         assertThat(SimpleScore.of(-147).withInitScore(-7)).isEqualTo(SimpleScore.ofUninitialized(-7, -147));
     }
 
     @Test
-    public void add() {
+    void add() {
         assertThat(SimpleScore.of(20).add(
                 SimpleScore.of(-1))).isEqualTo(SimpleScore.of(19));
         assertThat(SimpleScore.ofUninitialized(-70, 20).add(
@@ -67,7 +67,7 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void subtract() {
+    void subtract() {
         assertThat(SimpleScore.of(20).subtract(
                 SimpleScore.of(-1))).isEqualTo(SimpleScore.of(21));
         assertThat(SimpleScore.ofUninitialized(-70, 20).subtract(
@@ -75,7 +75,7 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void multiply() {
+    void multiply() {
         assertThat(SimpleScore.of(5).multiply(1.2)).isEqualTo(SimpleScore.of(6));
         assertThat(SimpleScore.of(1).multiply(1.2)).isEqualTo(SimpleScore.of(1));
         assertThat(SimpleScore.of(4).multiply(1.2)).isEqualTo(SimpleScore.of(4));
@@ -83,7 +83,7 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void divide() {
+    void divide() {
         assertThat(SimpleScore.of(25).divide(5.0)).isEqualTo(SimpleScore.of(5));
         assertThat(SimpleScore.of(21).divide(5.0)).isEqualTo(SimpleScore.of(4));
         assertThat(SimpleScore.of(24).divide(5.0)).isEqualTo(SimpleScore.of(4));
@@ -91,20 +91,20 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void power() {
+    void power() {
         assertThat(SimpleScore.of(5).power(2.0)).isEqualTo(SimpleScore.of(25));
         assertThat(SimpleScore.of(25).power(0.5)).isEqualTo(SimpleScore.of(5));
         assertThat(SimpleScore.ofUninitialized(-7, 5).power(3.0)).isEqualTo(SimpleScore.ofUninitialized(-343, 125));
     }
 
     @Test
-    public void negate() {
+    void negate() {
         assertThat(SimpleScore.of(5).negate()).isEqualTo(SimpleScore.of(-5));
         assertThat(SimpleScore.of(-5).negate()).isEqualTo(SimpleScore.of(5));
     }
 
     @Test
-    public void zero() {
+    void zero() {
         SimpleScore manualZero = SimpleScore.of(0);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
@@ -116,7 +116,7 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void equalsAndHashCode() {
+    void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
                 SimpleScore.of(-10),
                 SimpleScore.of(-10),
@@ -131,7 +131,7 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         PlannerAssert.assertCompareToOrder(
                 SimpleScore.ofUninitialized(-8, 0),
                 SimpleScore.ofUninitialized(-7, -20),

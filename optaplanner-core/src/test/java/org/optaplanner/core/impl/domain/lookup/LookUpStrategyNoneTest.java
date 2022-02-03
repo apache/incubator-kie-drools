@@ -36,47 +36,47 @@ class LookUpStrategyNoneTest {
     }
 
     @Test
-    public void addRemoveWithIntegerId() {
+    void addRemoveWithIntegerId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
     }
 
     @Test
-    public void addRemoveWithPrimitiveIntId() {
+    void addRemoveWithPrimitiveIntId() {
         TestdataObjectPrimitiveIntId object = new TestdataObjectPrimitiveIntId(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
     }
 
     @Test
-    public void addWithNullId() {
+    void addWithNullId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(null);
         // not checked
         lookUpManager.addWorkingObject(object);
     }
 
     @Test
-    public void removeWithNullId() {
+    void removeWithNullId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(null);
         // not checked
         lookUpManager.removeWorkingObject(object);
     }
 
     @Test
-    public void addWithoutId() {
+    void addWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         lookUpManager.addWorkingObject(object);
     }
 
     @Test
-    public void removeWithoutId() {
+    void removeWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         lookUpManager.removeWorkingObject(object);
     }
 
     @Test
-    public void addSameIdTwice() {
+    void addSameIdTwice() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(2);
         lookUpManager.addWorkingObject(object);
         // not checked
@@ -84,14 +84,14 @@ class LookUpStrategyNoneTest {
     }
 
     @Test
-    public void removeWithoutAdding() {
+    void removeWithoutAdding() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         // not checked
         lookUpManager.removeWorkingObject(object);
     }
 
     @Test
-    public void lookUpWithId() {
+    void lookUpWithId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         lookUpManager.addWorkingObject(object);
         // not allowed
@@ -101,7 +101,7 @@ class LookUpStrategyNoneTest {
     }
 
     @Test
-    public void lookUpWithoutId() {
+    void lookUpWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         lookUpManager.addWorkingObject(object);
         // not allowed
@@ -111,7 +111,7 @@ class LookUpStrategyNoneTest {
     }
 
     @Test
-    public void lookUpWithoutAdding() {
+    void lookUpWithoutAdding() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         // not allowed
         assertThatIllegalArgumentException()
@@ -120,14 +120,14 @@ class LookUpStrategyNoneTest {
     }
 
     @Test
-    public void addWithTwoIds() {
+    void addWithTwoIds() {
         TestdataObjectMultipleIds object = new TestdataObjectMultipleIds();
         // not checked
         lookUpManager.addWorkingObject(object);
     }
 
     @Test
-    public void removeWithTwoIds() {
+    void removeWithTwoIds() {
         TestdataObjectMultipleIds object = new TestdataObjectMultipleIds();
         // not checked
         lookUpManager.removeWorkingObject(object);

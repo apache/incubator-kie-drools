@@ -28,7 +28,7 @@ import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
 class BenchmarkReportConfigTest {
 
     @Test
-    public void inheritBenchmarkReportConfig() {
+    void inheritBenchmarkReportConfig() {
         BenchmarkReportConfig inheritedReportConfig = new BenchmarkReportConfig();
         inheritedReportConfig.setLocale(Locale.CANADA);
         inheritedReportConfig.setSolverRankingType(SolverRankingType.TOTAL_RANKING);

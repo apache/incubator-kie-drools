@@ -47,7 +47,7 @@ class OptaPlannerConstraintVerifierDroolsStreamImplTest {
     ConstraintVerifier<TestdataQuarkusConstraintProvider, TestdataQuarkusSolution> constraintVerifier;
 
     @Test
-    public void constraintVerifierDroolsStreamImpl() {
+    void constraintVerifierDroolsStreamImpl() {
         Assertions.assertEquals(ConstraintStreamImplType.DROOLS,
                 ((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
                         .getConstraintStreamImplType());

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class CustomSolutionClonerTest {
 
     @Test
-    public void clonedUsingCustomCloner() {
+    void clonedUsingCustomCloner() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataCorrectlyClonedSolution.class, TestdataEntity.class);
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
@@ -42,7 +42,7 @@ class CustomSolutionClonerTest {
     }
 
     @Test
-    public void scoreNotCloned() {
+    void scoreNotCloned() {
         // RHBRMS-1430 Possible NPE when custom cloner doesn't clone score
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataScoreNotClonedSolution.class, TestdataEntity.class);
@@ -56,7 +56,7 @@ class CustomSolutionClonerTest {
     }
 
     @Test
-    public void scoreNotEqual() {
+    void scoreNotEqual() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataScoreNotEqualSolution.class, TestdataEntity.class);
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
@@ -69,7 +69,7 @@ class CustomSolutionClonerTest {
     }
 
     @Test
-    public void entitiesNotCloned() {
+    void entitiesNotCloned() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataEntitiesNotClonedSolution.class, TestdataEntity.class);
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);

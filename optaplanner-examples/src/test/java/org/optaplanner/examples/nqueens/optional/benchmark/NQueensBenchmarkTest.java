@@ -74,7 +74,7 @@ class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     }
 
     @Test
-    public void benchmarkDirectoryNameDuplication() {
+    void benchmarkDirectoryNameDuplication() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/4queens.xml"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();

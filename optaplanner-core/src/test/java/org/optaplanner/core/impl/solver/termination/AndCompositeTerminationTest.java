@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 class AndCompositeTerminationTest {
 
     @Test
-    public void solveTermination() {
+    void solveTermination() {
         Termination termination1 = mock(Termination.class);
         Termination termination2 = mock(Termination.class);
 
@@ -56,7 +56,7 @@ class AndCompositeTerminationTest {
     }
 
     @Test
-    public void phaseTermination() {
+    void phaseTermination() {
         Termination termination1 = mock(Termination.class);
         Termination termination2 = mock(Termination.class);
 
@@ -82,7 +82,7 @@ class AndCompositeTerminationTest {
     }
 
     @Test
-    public void calculateSolverTimeGradientTest() {
+    void calculateSolverTimeGradientTest() {
         Termination termination1 = mock(Termination.class);
         Termination termination2 = mock(Termination.class);
 
@@ -122,7 +122,7 @@ class AndCompositeTerminationTest {
     }
 
     @Test
-    public void calculatePhaseTimeGradientTest() {
+    void calculatePhaseTimeGradientTest() {
         Termination termination1 = mock(Termination.class);
         Termination termination2 = mock(Termination.class);
 

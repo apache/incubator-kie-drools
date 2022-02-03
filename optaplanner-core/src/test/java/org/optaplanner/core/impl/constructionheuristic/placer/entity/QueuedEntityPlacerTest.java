@@ -50,7 +50,7 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSoluti
 class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
 
     @Test
-    public void oneMoveSelector() {
+    void oneMoveSelector() {
         EntitySelector<TestdataSolution> entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"));
         MimicRecordingEntitySelector<TestdataSolution> recordingEntitySelector =
@@ -116,7 +116,7 @@ class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
     }
 
     @Test
-    public void multiQueuedMoveSelector() {
+    void multiQueuedMoveSelector() {
         EntitySelector<TestdataMultiVarSolution> entitySelector =
                 SelectorTestUtils.mockEntitySelector(TestdataMultiVarEntity.class,
                         new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
@@ -187,7 +187,7 @@ class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
     }
 
     @Test
-    public void cartesianProductMoveSelector() {
+    void cartesianProductMoveSelector() {
         EntitySelector<TestdataMultiVarSolution> entitySelector =
                 SelectorTestUtils.mockEntitySelector(TestdataMultiVarEntity.class,
                         new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));

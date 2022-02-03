@@ -27,19 +27,19 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 class BendableLongScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         BendableLongScore score = new BendableLongScoreDefinition(1, 2).getZeroScore();
         assertThat(score).isEqualTo(BendableLongScore.zero(1, 2));
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         BendableLongScore score = new BendableLongScoreDefinition(1, 2).getOneSoftestScore();
         assertThat(score).isEqualTo(BendableLongScore.of(new long[1], new long[] { 0L, 1L }));
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new BendableLongScoreDefinition(1, 1).getLevelsSize()).isEqualTo(2);
         assertThat(new BendableLongScoreDefinition(3, 4).getLevelsSize()).isEqualTo(7);
         assertThat(new BendableLongScoreDefinition(4, 3).getLevelsSize()).isEqualTo(7);
@@ -48,7 +48,7 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new BendableLongScoreDefinition(1, 1).getLevelLabels())
                 .isEqualTo(new String[] { "hard 0 score", "soft 0 score" });
         assertThat(new BendableLongScoreDefinition(3, 4).getLevelLabels())
@@ -64,7 +64,7 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void getFeasibleLevelsSize() {
+    void getFeasibleLevelsSize() {
         assertThat(new BendableLongScoreDefinition(1, 1).getFeasibleLevelsSize()).isEqualTo(1);
         assertThat(new BendableLongScoreDefinition(3, 4).getFeasibleLevelsSize()).isEqualTo(3);
         assertThat(new BendableLongScoreDefinition(4, 3).getFeasibleLevelsSize()).isEqualTo(4);
@@ -73,13 +73,13 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void createScoreWithIllegalArgument() {
+    void createScoreWithIllegalArgument() {
         BendableLongScoreDefinition bendableLongScoreDefinition = new BendableLongScoreDefinition(2, 3);
         assertThatIllegalArgumentException().isThrownBy(() -> bendableLongScoreDefinition.createScore(1, 2, 3));
     }
 
     @Test
-    public void createScore() {
+    void createScore() {
         int hardLevelSize = 3;
         int softLevelSize = 2;
         int levelSize = hardLevelSize + softLevelSize;
@@ -101,7 +101,7 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundOnlyUp() {
+    void buildOptimisticBoundOnlyUp() {
         BendableLongScoreDefinition scoreDefinition = new BendableLongScoreDefinition(2, 3);
         BendableLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 5),
@@ -115,7 +115,7 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundOnlyDown() {
+    void buildOptimisticBoundOnlyDown() {
         BendableLongScoreDefinition scoreDefinition = new BendableLongScoreDefinition(2, 3);
         BendableLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 5),
@@ -129,7 +129,7 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyUp() {
+    void buildPessimisticBoundOnlyUp() {
         BendableLongScoreDefinition scoreDefinition = new BendableLongScoreDefinition(2, 3);
         BendableLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 5),
@@ -143,7 +143,7 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyDown() {
+    void buildPessimisticBoundOnlyDown() {
         BendableLongScoreDefinition scoreDefinition = new BendableLongScoreDefinition(2, 3);
         BendableLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 5),
@@ -157,7 +157,7 @@ class BendableLongScoreDefinitionTest {
     }
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         BendableLongScoreDefinition scoreDefinition = new BendableLongScoreDefinition(1, 1);
         BendableLongScore dividend = scoreDefinition.createScoreUninitialized(2, 0, 10);
         BendableLongScore zeroDivisor = scoreDefinition.getZeroScore();

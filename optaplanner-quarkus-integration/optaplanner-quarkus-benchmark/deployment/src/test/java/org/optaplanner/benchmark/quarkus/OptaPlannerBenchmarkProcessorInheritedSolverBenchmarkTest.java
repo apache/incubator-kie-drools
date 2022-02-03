@@ -53,7 +53,7 @@ class OptaPlannerBenchmarkProcessorInheritedSolverBenchmarkTest {
     PlannerBenchmarkConfig plannerBenchmarkConfig;
 
     @Test
-    public void inheritClassesFromSolverConfig() {
+    void inheritClassesFromSolverConfig() {
         Assertions.assertEquals(TestdataQuarkusSolution.class, solverConfig.getSolutionClass());
         Assertions.assertEquals(2, solverConfig.getEntityClassList().size());
         Assertions.assertTrue(solverConfig.getEntityClassList().contains(TestdataQuarkusEntity.class));

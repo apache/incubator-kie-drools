@@ -53,7 +53,7 @@ class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingCompara
     }
 
     @Test
-    public void normal() {
+    void normal() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -100, -30, -2001);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -2001, -30, -2001);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -2001);
@@ -68,7 +68,7 @@ class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingCompara
     }
 
     @Test
-    public void worstIsEqual() {
+    void worstIsEqual() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -101, -30, -2000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -2000, -30, -2000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -2000);
@@ -83,7 +83,7 @@ class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingCompara
     }
 
     @Test
-    public void differentScoreDefinitions() {
+    void differentScoreDefinitions() {
         addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
@@ -98,7 +98,7 @@ class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingCompara
     }
 
     @Test
-    public void uninitializedSingleBenchmarks() {
+    void uninitializedSingleBenchmarks() {
         SingleBenchmarkResult a0 = addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);

@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 class JoinerTypeTest {
 
     @Test
-    public void equal() {
+    void equal() {
         assertThat(EQUAL.matches(1, 1)).isTrue();
         assertThat(EQUAL.matches(1, 2)).isFalse();
         assertThat(EQUAL.matches(1, null)).isFalse();
@@ -43,42 +43,42 @@ class JoinerTypeTest {
     }
 
     @Test
-    public void lessThan() {
+    void lessThan() {
         assertThat(LESS_THAN.matches(1, 1)).isFalse();
         assertThat(LESS_THAN.matches(1, 2)).isTrue();
         assertThat(LESS_THAN.matches(2, 1)).isFalse();
     }
 
     @Test
-    public void lessThanOrEquals() {
+    void lessThanOrEquals() {
         assertThat(LESS_THAN_OR_EQUAL.matches(1, 1)).isTrue();
         assertThat(LESS_THAN_OR_EQUAL.matches(1, 2)).isTrue();
         assertThat(LESS_THAN_OR_EQUAL.matches(2, 1)).isFalse();
     }
 
     @Test
-    public void greaterThan() {
+    void greaterThan() {
         assertThat(GREATER_THAN.matches(1, 1)).isFalse();
         assertThat(GREATER_THAN.matches(2, 1)).isTrue();
         assertThat(GREATER_THAN.matches(1, 2)).isFalse();
     }
 
     @Test
-    public void greaterThanOrEquals() {
+    void greaterThanOrEquals() {
         assertThat(GREATER_THAN_OR_EQUAL.matches(1, 1)).isTrue();
         assertThat(GREATER_THAN_OR_EQUAL.matches(2, 1)).isTrue();
         assertThat(GREATER_THAN_OR_EQUAL.matches(1, 2)).isFalse();
     }
 
     @Test
-    public void containing() {
+    void containing() {
         Collection<Integer> collection = Arrays.asList(1);
         assertThat(CONTAINING.matches(collection, 1)).isTrue();
         assertThat(CONTAINING.matches(collection, 2)).isFalse();
     }
 
     @Test
-    public void intersecting() {
+    void intersecting() {
         Collection<Integer> left = Arrays.asList(1, 2, 3);
         Collection<Integer> right = Arrays.asList(3, 4, 5);
         assertThat(INTERSECTING.matches(left, right)).isTrue();
@@ -87,7 +87,7 @@ class JoinerTypeTest {
     }
 
     @Test
-    public void disjoint() {
+    void disjoint() {
         Collection<Integer> first = Arrays.asList(1, 2, 3);
         Collection<Integer> second = Arrays.asList(3, 4, 5);
         assertThat(DISJOINT.matches(first, second)).isFalse();

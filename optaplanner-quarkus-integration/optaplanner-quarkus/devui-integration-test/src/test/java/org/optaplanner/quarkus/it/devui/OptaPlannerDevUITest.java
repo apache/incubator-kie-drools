@@ -47,7 +47,7 @@ public class OptaPlannerDevUITest {
     }
 
     @Test
-    public void testSolverConfigPage() throws ParserConfigurationException, SAXException, IOException {
+    void testSolverConfigPage() throws ParserConfigurationException, SAXException, IOException {
         String body = RestAssured.get(getPage("solverConfig"))
                 .then()
                 .extract()
@@ -70,7 +70,7 @@ public class OptaPlannerDevUITest {
     }
 
     @Test
-    public void testModelPage() throws ParserConfigurationException, SAXException, IOException {
+    void testModelPage() throws ParserConfigurationException, SAXException, IOException {
         String body = RestAssured.get(getPage("model"))
                 .then()
                 .extract()
@@ -89,7 +89,7 @@ public class OptaPlannerDevUITest {
     }
 
     @Test
-    public void testConstraintsPage() throws ParserConfigurationException, SAXException, IOException {
+    void testConstraintsPage() throws ParserConfigurationException, SAXException, IOException {
         String body = RestAssured.get(getPage("constraints"))
                 .then()
                 .extract()

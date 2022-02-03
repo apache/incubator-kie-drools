@@ -41,23 +41,23 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class CustomVariableListenerTest {
 
     @Test
-    public void cyclic() {
+    void cyclic() {
         assertThatIllegalStateException().isThrownBy(TestdataCyclicShadowedSolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void cyclicReferenced() {
+    void cyclicReferenced() {
         assertThatIllegalStateException().isThrownBy(TestdataCyclicReferencedShadowedSolution::buildSolutionDescriptor);
     }
 
     @Test()
-    public void nonCyclicWithSevenDisorderedShadows() {
+    void nonCyclicWithSevenDisorderedShadows() {
         SolutionDescriptor<TestdataSevenNonCyclicShadowedSolution> solutionDescriptor =
                 TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor();
     }
 
     @Test
-    public void extendedZigZag() {
+    void extendedZigZag() {
         GenuineVariableDescriptor<TestdataExtendedShadowedSolution> variableDescriptor =
                 TestdataExtendedShadowedParentEntity.buildVariableDescriptorForValue();
         InnerScoreDirector<TestdataExtendedShadowedSolution, SimpleScore> scoreDirector =
@@ -107,7 +107,7 @@ class CustomVariableListenerTest {
     }
 
     @Test
-    public void manyToMany() {
+    void manyToMany() {
         EntityDescriptor<TestdataManyToManyShadowedSolution> entityDescriptor =
                 TestdataManyToManyShadowedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor<TestdataManyToManyShadowedSolution> primaryVariableDescriptor =

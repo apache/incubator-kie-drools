@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class UnionMoveSelectorTest {
 
     @Test
-    public void originSelection() {
+    void originSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
@@ -68,7 +68,7 @@ class UnionMoveSelectorTest {
     }
 
     @Test
-    public void emptyOriginSelection() {
+    void emptyOriginSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
@@ -94,7 +94,7 @@ class UnionMoveSelectorTest {
     }
 
     @Test
-    public void randomSelection() {
+    void randomSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
@@ -132,7 +132,7 @@ class UnionMoveSelectorTest {
     }
 
     @Test
-    public void emptyRandomSelection() {
+    void emptyRandomSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));

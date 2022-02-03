@@ -26,7 +26,7 @@ import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapterTest;
 class HardSoftLongScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftLongScoreWrapper(null));
 
         HardSoftLongScore score = HardSoftLongScore.of(1200L, 34L);

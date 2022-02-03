@@ -41,22 +41,22 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class FilteringEntitySelectorTest {
 
     @Test
-    public void filterCacheTypeSolver() {
+    void filterCacheTypeSolver() {
         filter(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void filterCacheTypePhase() {
+    void filterCacheTypePhase() {
         filter(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void filterCacheTypeStep() {
+    void filterCacheTypeStep() {
         filter(SelectionCacheType.STEP, 5);
     }
 
     @Test
-    public void filterCacheTypeJustInTime() {
+    void filterCacheTypeJustInTime() {
         filter(SelectionCacheType.JUST_IN_TIME, 5);
     }
 
@@ -124,14 +124,14 @@ class FilteringEntitySelectorTest {
     }
 
     @Test
-    public void listIteratorWithRandomSelection() {
+    void listIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(entitySelector::listIterator);
     }
 
     @Test
-    public void indexedListIteratorWithRandomSelection() {
+    void indexedListIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> entitySelector.listIterator(0));

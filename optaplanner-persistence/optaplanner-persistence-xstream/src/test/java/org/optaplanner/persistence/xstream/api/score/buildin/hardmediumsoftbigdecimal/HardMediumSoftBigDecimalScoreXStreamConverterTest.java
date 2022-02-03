@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 class HardMediumSoftBigDecimalScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftBigDecimalScoreWrapper(null));
         HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.of(new BigDecimal("1200.0021"),
                 new BigDecimal("-3.1415"), new BigDecimal("34.4300"));

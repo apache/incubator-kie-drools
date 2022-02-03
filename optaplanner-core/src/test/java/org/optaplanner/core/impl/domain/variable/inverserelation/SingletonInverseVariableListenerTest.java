@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 class SingletonInverseVariableListenerTest {
 
     @Test
-    public void chainedEntity() {
+    void chainedEntity() {
         SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor =
                 TestdataShadowingChainedSolution.buildSolutionDescriptor();
         EntityDescriptor<TestdataShadowingChainedSolution> entityDescriptor =

@@ -30,7 +30,7 @@ import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
-    public void persistAndMerge() {
+    void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(SimpleBigDecimalScore.ZERO),
                 SimpleBigDecimalScore.of(new BigDecimal("-10.01000")),
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000")));

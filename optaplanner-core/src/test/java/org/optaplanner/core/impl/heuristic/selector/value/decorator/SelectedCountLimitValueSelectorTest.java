@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class SelectedCountLimitValueSelectorTest {
 
     @Test
-    public void selectSizeLimitLowerThanSelectorSize() {
+    void selectSizeLimitLowerThanSelectorSize() {
         EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
                 TestdataValue.class, "value",
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"),
@@ -97,7 +97,7 @@ class SelectedCountLimitValueSelectorTest {
     }
 
     @Test
-    public void selectSizeLimitHigherThanSelectorSize() {
+    void selectSizeLimitHigherThanSelectorSize() {
         EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
                 TestdataValue.class, "value",
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"));
@@ -156,7 +156,7 @@ class SelectedCountLimitValueSelectorTest {
     }
 
     @Test
-    public void selectSizeLimitLowerThanSelectorSizeEntityDependent() {
+    void selectSizeLimitLowerThanSelectorSizeEntityDependent() {
         TestdataEntity entity = new TestdataEntity("e1");
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelectorForEntity(TestdataValue.class,
                 entity, "value",
@@ -217,7 +217,7 @@ class SelectedCountLimitValueSelectorTest {
     }
 
     @Test
-    public void selectSizeLimitHigherThanSelectorSizeEntityDependent() {
+    void selectSizeLimitHigherThanSelectorSizeEntityDependent() {
         TestdataEntity entity = new TestdataEntity("e1");
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelectorForEntity(TestdataValue.class,
                 entity, "value",

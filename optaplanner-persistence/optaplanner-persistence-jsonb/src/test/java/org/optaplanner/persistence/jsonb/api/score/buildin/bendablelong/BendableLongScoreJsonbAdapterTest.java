@@ -25,7 +25,7 @@ import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest
 class BendableLongScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableLongScoreWrapper(null));
         BendableLongScore score = BendableLongScore.of(new long[] { 1000L, 200L }, new long[] { 34L });
         assertSerializeAndDeserialize(score, new TestBendableLongScoreWrapper(score));

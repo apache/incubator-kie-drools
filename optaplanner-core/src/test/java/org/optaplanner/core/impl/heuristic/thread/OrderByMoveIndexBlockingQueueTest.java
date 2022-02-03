@@ -49,7 +49,7 @@ class OrderByMoveIndexBlockingQueueTest {
     }
 
     @Test
-    public void addMove() throws InterruptedException {
+    void addMove() throws InterruptedException {
         // Capacity: 4 moves in circulation + 2 exception handling results
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
@@ -93,7 +93,7 @@ class OrderByMoveIndexBlockingQueueTest {
     }
 
     @Test
-    public void addUndoableMove() throws InterruptedException {
+    void addUndoableMove() throws InterruptedException {
         // Capacity: 4 moves in circulation + 2 exception handling results
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
@@ -115,7 +115,7 @@ class OrderByMoveIndexBlockingQueueTest {
     }
 
     @Test
-    public void addExceptionThrown() throws InterruptedException, ExecutionException {
+    void addExceptionThrown() throws InterruptedException, ExecutionException {
         // Capacity: 4 moves in circulation + 2 exception handling results
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
@@ -142,7 +142,7 @@ class OrderByMoveIndexBlockingQueueTest {
     }
 
     @Test
-    public void addExceptionIsNotEatenIfNextStepStartsBeforeTaken() throws InterruptedException, ExecutionException {
+    void addExceptionIsNotEatenIfNextStepStartsBeforeTaken() throws InterruptedException, ExecutionException {
         // Capacity: 4 moves in circulation + 2 exception handling results
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 

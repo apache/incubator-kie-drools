@@ -32,7 +32,7 @@ class HardMediumSoftScoreInlinerTest
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataHardMediumSoftScoreSolution, HardMediumSoftScore> constraint =
                 buildConstraint(HardMediumSoftScore.ONE_HARD);
         HardMediumSoftScoreInliner scoreInliner =
@@ -41,7 +41,7 @@ class HardMediumSoftScoreInlinerTest
     }
 
     @Test
-    public void impactHard() {
+    void impactHard() {
         TestConstraint<TestdataHardMediumSoftScoreSolution, HardMediumSoftScore> constraint =
                 buildConstraint(HardMediumSoftScore.ofHard(90));
         HardMediumSoftScoreInliner scoreInliner =
@@ -66,7 +66,7 @@ class HardMediumSoftScoreInlinerTest
     }
 
     @Test
-    public void impactMedium() {
+    void impactMedium() {
         TestConstraint<TestdataHardMediumSoftScoreSolution, HardMediumSoftScore> constraint =
                 buildConstraint(HardMediumSoftScore.ofMedium(90));
         HardMediumSoftScoreInliner scoreInliner =
@@ -91,7 +91,7 @@ class HardMediumSoftScoreInlinerTest
     }
 
     @Test
-    public void impactSoft() {
+    void impactSoft() {
         TestConstraint<TestdataHardMediumSoftScoreSolution, HardMediumSoftScore> constraint =
                 buildConstraint(HardMediumSoftScore.ofSoft(90));
         HardMediumSoftScoreInliner scoreInliner =
@@ -116,7 +116,7 @@ class HardMediumSoftScoreInlinerTest
     }
 
     @Test
-    public void impactAll() {
+    void impactAll() {
         TestConstraint<TestdataHardMediumSoftScoreSolution, HardMediumSoftScore> constraint =
                 buildConstraint(HardMediumSoftScore.of(10, 100, 1_000));
         HardMediumSoftScoreInliner scoreInliner =

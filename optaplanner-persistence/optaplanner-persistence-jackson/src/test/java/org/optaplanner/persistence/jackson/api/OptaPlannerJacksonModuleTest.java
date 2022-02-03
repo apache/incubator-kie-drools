@@ -34,7 +34,7 @@ class OptaPlannerJacksonModuleTest extends AbstractJacksonRoundTripTest {
      * Enabling {@link MapperFeature#SORT_PROPERTIES_ALPHABETICALLY} makes this test work on all JDK implementations.
      */
     @Test
-    public void polymorphicScore() {
+    void polymorphicScore() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY);
         objectMapper.registerModule(OptaPlannerJacksonModule.createModule());

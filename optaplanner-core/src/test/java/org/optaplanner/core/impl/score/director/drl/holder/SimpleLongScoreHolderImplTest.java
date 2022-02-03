@@ -26,12 +26,12 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 class SimpleLongScoreHolderImplTest extends AbstractScoreHolderTest<SimpleLongScore> {
 
     @Test
-    public void addConstraintMatchWithConstraintMatch() {
+    void addConstraintMatchWithConstraintMatch() {
         addConstraintMatch(true);
     }
 
     @Test
-    public void addConstraintMatchWithoutConstraintMatch() {
+    void addConstraintMatchWithoutConstraintMatch() {
         addConstraintMatch(false);
     }
 
@@ -59,12 +59,12 @@ class SimpleLongScoreHolderImplTest extends AbstractScoreHolderTest<SimpleLongSc
     }
 
     @Test
-    public void rewardPenalizeWithConstraintMatch() {
+    void rewardPenalizeWithConstraintMatch() {
         rewardPenalize(true);
     }
 
     @Test
-    public void rewardPenalizeWithoutConstraintMatch() {
+    void rewardPenalizeWithoutConstraintMatch() {
         rewardPenalize(false);
     }
 

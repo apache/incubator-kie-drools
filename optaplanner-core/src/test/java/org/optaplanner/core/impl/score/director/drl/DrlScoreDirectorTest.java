@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 class DrlScoreDirectorTest {
 
     @Test
-    public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
+    void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
         DrlScoreDirector<Object, ?> director = new DrlScoreDirector<>(mockDroolsScoreDirectorFactory(), false, false);
         director.setWorkingSolution(new Object());
         assertThatIllegalStateException()
@@ -40,7 +40,7 @@ class DrlScoreDirectorTest {
     }
 
     @Test
-    public void constraintMatchTotalsNeverNull() {
+    void constraintMatchTotalsNeverNull() {
         DrlScoreDirector<Object, ?> director = new DrlScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
         assertThat(director.getConstraintMatchTotalMap()).isNotNull();
@@ -48,7 +48,7 @@ class DrlScoreDirectorTest {
     }
 
     @Test
-    public void indictmentMapNeverNull() {
+    void indictmentMapNeverNull() {
         DrlScoreDirector<Object, ?> director = new DrlScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
         assertThat(director.getIndictmentMap()).isNotNull();

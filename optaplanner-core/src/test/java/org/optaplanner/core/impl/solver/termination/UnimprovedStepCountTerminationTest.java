@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class UnimprovedStepCountTerminationTest {
 
     @Test
-    public void phaseTermination() {
+    void phaseTermination() {
         Termination<TestdataSolution> termination = new UnimprovedStepCountTermination<>(4);
         AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
         AbstractStepScope<TestdataSolution> lastCompletedStepScope = mock(AbstractStepScope.class);

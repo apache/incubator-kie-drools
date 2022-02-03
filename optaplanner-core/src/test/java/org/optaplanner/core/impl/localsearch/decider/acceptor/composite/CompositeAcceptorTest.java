@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class CompositeAcceptorTest {
 
     @Test
-    public void phaseLifecycle() {
+    void phaseLifecycle() {
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = mock(LocalSearchPhaseScope.class);
         LocalSearchStepScope<TestdataSolution> stepScope = mock(LocalSearchStepScope.class);
@@ -66,7 +66,7 @@ class CompositeAcceptorTest {
     }
 
     @Test
-    public void isAccepted() {
+    void isAccepted() {
         assertThat(isCompositeAccepted(true, true, true)).isTrue();
         assertThat(isCompositeAccepted(false, true, true)).isFalse();
         assertThat(isCompositeAccepted(true, false, true)).isFalse();

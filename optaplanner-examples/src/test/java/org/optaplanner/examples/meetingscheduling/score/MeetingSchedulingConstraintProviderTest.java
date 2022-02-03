@@ -38,7 +38,7 @@ class MeetingSchedulingConstraintProviderTest {
                     MeetingAssignment.class);
 
     @Test
-    public void roomConflictUnpenalized() {
+    void roomConflictUnpenalized() {
         Room room = new Room();
 
         TimeGrain timeGrain1 = new TimeGrain();
@@ -63,7 +63,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void roomConflictPenalized() {
+    void roomConflictPenalized() {
         Room room = new Room();
 
         TimeGrain timeGrain1 = new TimeGrain();
@@ -88,7 +88,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void avoidOvertimeUnpenalized() {
+    void avoidOvertimeUnpenalized() {
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(3);
 
@@ -108,7 +108,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void avoidOvertimePenalized() {
+    void avoidOvertimePenalized() {
         TimeGrain assignmentTimeGrain = new TimeGrain();
         assignmentTimeGrain.setGrainIndex(0);
 
@@ -125,7 +125,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void requiredAttendanceConflictUnpenalized() {
+    void requiredAttendanceConflictUnpenalized() {
         Person person = new Person();
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
@@ -161,7 +161,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void requiredAttendanceConflictPenalized() {
+    void requiredAttendanceConflictPenalized() {
         Person person = new Person();
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
@@ -197,7 +197,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void requiredRoomCapacityUnpenalized() {
+    void requiredRoomCapacityUnpenalized() {
         Room room = new Room();
         room.setCapacity(2);
 
@@ -223,7 +223,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void requiredRoomCapacityPenalized() {
+    void requiredRoomCapacityPenalized() {
         Room room = new Room();
         room.setCapacity(1);
 
@@ -249,7 +249,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void startAndEndOnSameDayUnpenalized() {
+    void startAndEndOnSameDayUnpenalized() {
         Day day = new Day();
         day.setDayOfYear(0);
 
@@ -274,7 +274,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void startAndEndOnSameDayPenalized() {
+    void startAndEndOnSameDayPenalized() {
         Day day = new Day();
         day.setDayOfYear(0);
 
@@ -298,7 +298,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void requiredAndPreferredAttendanceConflictUnpenalized() {
+    void requiredAndPreferredAttendanceConflictUnpenalized() {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -333,7 +333,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void requiredAndPreferredAttendanceConflictPenalized() {
+    void requiredAndPreferredAttendanceConflictPenalized() {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -368,7 +368,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void preferredAttendanceConflictUnpenalized() {
+    void preferredAttendanceConflictUnpenalized() {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -405,7 +405,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void preferredAttendanceConflictPenalized() {
+    void preferredAttendanceConflictPenalized() {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -442,7 +442,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void doMeetingsAsSoonAsPossibleUnpenalized() {
+    void doMeetingsAsSoonAsPossibleUnpenalized() {
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(0);
 
@@ -459,7 +459,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void doMeetingsAsSoonAsPossiblePenalized() {
+    void doMeetingsAsSoonAsPossiblePenalized() {
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(0);
 
@@ -476,7 +476,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void oneBreakBetweenConsecutiveMeetingsUnpenalized() {
+    void oneBreakBetweenConsecutiveMeetingsUnpenalized() {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
 
@@ -498,7 +498,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void oneBreakBetweenConsecutiveMeetingsPenalized() {
+    void oneBreakBetweenConsecutiveMeetingsPenalized() {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
 
@@ -520,7 +520,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void overlappingMeetingsUnpenalized() {
+    void overlappingMeetingsUnpenalized() {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
 
@@ -547,7 +547,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void overlappingMeetingsPenalized() {
+    void overlappingMeetingsPenalized() {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(1);
 
@@ -574,7 +574,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void assignLargerRoomsFirstUnpenalized() {
+    void assignLargerRoomsFirstUnpenalized() {
         Room meetingRoom = new Room();
         meetingRoom.setCapacity(1);
 
@@ -591,7 +591,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void assignLargerRoomsFirstPenalized() {
+    void assignLargerRoomsFirstPenalized() {
         Room meetingRoom = new Room();
         meetingRoom.setCapacity(1);
 
@@ -610,7 +610,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void roomStabilityUnpenalized() {
+    void roomStabilityUnpenalized() {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -647,7 +647,7 @@ class MeetingSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void roomStabilityPenalized() {
+    void roomStabilityPenalized() {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();

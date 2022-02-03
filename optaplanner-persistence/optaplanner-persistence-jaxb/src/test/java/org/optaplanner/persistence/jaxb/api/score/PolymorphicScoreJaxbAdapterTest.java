@@ -34,7 +34,7 @@ class PolymorphicScoreJaxbAdapterTest {
     private final PolymorphicScoreJaxbAdapter scoreJaxbAdapter = new PolymorphicScoreJaxbAdapter();
 
     @Test
-    public void marshall() {
+    void marshall() {
         Score<?> score = SimpleScore.of(1);
         PolymorphicScoreJaxbAdapter.JaxbAdaptedScore adaptedScore = scoreJaxbAdapter.marshal(score);
         assertThat(adaptedScore.getScoreClassName()).isEqualTo(SimpleScore.class.getName());
@@ -42,7 +42,7 @@ class PolymorphicScoreJaxbAdapterTest {
     }
 
     @Test
-    public void unmarshall() {
+    void unmarshall() {
         String xmlString = "<dummy>"
                 + "<score class=\"org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore\">-1hard/-10soft</score>"
                 + "</dummy>";

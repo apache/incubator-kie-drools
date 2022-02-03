@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class SubChainReversingChangeMoveTest {
 
     @Test
-    public void noTrailing() {
+    void noTrailing() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -78,7 +78,7 @@ class SubChainReversingChangeMoveTest {
     }
 
     @Test
-    public void oldAndNewTrailing() {
+    void oldAndNewTrailing() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -118,7 +118,7 @@ class SubChainReversingChangeMoveTest {
     }
 
     @Test
-    public void sameChainInPlaceNoTrailing() {
+    void sameChainInPlaceNoTrailing() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -151,7 +151,7 @@ class SubChainReversingChangeMoveTest {
     }
 
     @Test
-    public void sameChainInPlaceOldAndNewTrailing() {
+    void sameChainInPlaceOldAndNewTrailing() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -185,7 +185,7 @@ class SubChainReversingChangeMoveTest {
     }
 
     @Test
-    public void sameChainWithOneBetween() {
+    void sameChainWithOneBetween() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
@@ -220,7 +220,7 @@ class SubChainReversingChangeMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
 
@@ -263,7 +263,7 @@ class SubChainReversingChangeMoveTest {
     }
 
     @Test
-    public void toStringTest() {
+    void toStringTest() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);

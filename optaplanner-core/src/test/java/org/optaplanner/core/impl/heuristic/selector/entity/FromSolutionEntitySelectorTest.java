@@ -43,17 +43,17 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class FromSolutionEntitySelectorTest {
 
     @Test
-    public void originalWithoutEntityListDirtyAndMinimumCacheTypePhase() {
+    void originalWithoutEntityListDirtyAndMinimumCacheTypePhase() {
         runOriginalWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType.PHASE);
     }
 
     @Test
-    public void originalWithoutEntityListDirtyAndMinimumCacheTypeStep() {
+    void originalWithoutEntityListDirtyAndMinimumCacheTypeStep() {
         runOriginalWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType.STEP);
     }
 
     @Test
-    public void originalWithoutEntityListDirtyAndMinimumCacheTypeJustInTime() {
+    void originalWithoutEntityListDirtyAndMinimumCacheTypeJustInTime() {
         runOriginalWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType.JUST_IN_TIME);
     }
 
@@ -127,7 +127,7 @@ class FromSolutionEntitySelectorTest {
     }
 
     @Test
-    public void originalWithEntityListDirty() {
+    void originalWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution))
@@ -209,17 +209,17 @@ class FromSolutionEntitySelectorTest {
     }
 
     @Test
-    public void randomWithoutEntityListDirtyAndMinimumCacheTypePhase() {
+    void randomWithoutEntityListDirtyAndMinimumCacheTypePhase() {
         runRandomWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType.PHASE);
     }
 
     @Test
-    public void randomWithoutEntityListDirtyAndMinimumCacheTypeStep() {
+    void randomWithoutEntityListDirtyAndMinimumCacheTypeStep() {
         runRandomWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType.STEP);
     }
 
     @Test
-    public void randomWithoutEntityListDirtyAndMinimumCacheTypeJustInTime() {
+    void randomWithoutEntityListDirtyAndMinimumCacheTypeJustInTime() {
         runRandomWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType.JUST_IN_TIME);
     }
 
@@ -283,7 +283,7 @@ class FromSolutionEntitySelectorTest {
     }
 
     @Test
-    public void randomWithEntityListDirty() {
+    void randomWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution))
@@ -355,7 +355,7 @@ class FromSolutionEntitySelectorTest {
     }
 
     @Test
-    public void listIteratorWithRandomSelection() {
+    void listIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.getEntityClass()).thenReturn(TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
@@ -364,7 +364,7 @@ class FromSolutionEntitySelectorTest {
     }
 
     @Test
-    public void indexedListIteratorWithRandomSelection() {
+    void indexedListIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.getEntityClass()).thenReturn(TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,

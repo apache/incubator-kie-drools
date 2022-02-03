@@ -26,28 +26,28 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class NoChangeMoveTest {
 
     @Test
-    public void isMoveDoable() {
+    void isMoveDoable() {
         assertThat(new NoChangeMove<>().isMoveDoable(null)).isTrue();
     }
 
     @Test
-    public void createUndoMove() {
+    void createUndoMove() {
         assertThat(new NoChangeMove<>().createUndoMove(null))
                 .isInstanceOf(NoChangeMove.class);
     }
 
     @Test
-    public void getPlanningEntities() {
+    void getPlanningEntities() {
         assertThat(new NoChangeMove<>().getPlanningEntities().isEmpty()).isTrue();
     }
 
     @Test
-    public void getPlanningValues() {
+    void getPlanningValues() {
         assertThat(new NoChangeMove<>().getPlanningValues().isEmpty()).isTrue();
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
                 TestdataSolution.buildSolutionDescriptor(), new Object[][] {});
         NoChangeMove<TestdataSolution> move = new NoChangeMove<>();

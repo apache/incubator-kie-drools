@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 class BendableBigDecimalScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableBigDecimalScoreWrapper(null));
         BendableBigDecimalScore score = BendableBigDecimalScore.of(
                 new BigDecimal[] { new BigDecimal("1000.0001"), new BigDecimal("200.0020") },

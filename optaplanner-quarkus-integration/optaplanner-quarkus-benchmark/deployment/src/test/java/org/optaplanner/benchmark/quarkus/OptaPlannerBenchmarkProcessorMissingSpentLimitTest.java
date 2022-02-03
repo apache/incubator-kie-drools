@@ -40,7 +40,7 @@ class OptaPlannerBenchmarkProcessorMissingSpentLimitTest {
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
 
     @Test
-    public void benchmark() throws ExecutionException, InterruptedException {
+    void benchmark() throws ExecutionException, InterruptedException {
         IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
             new OptaPlannerBenchmarkRecorder().benchmarkConfigSupplier(new PlannerBenchmarkConfig()).get();
         });

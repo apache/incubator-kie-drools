@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnno
 class ReflectionFieldMemberAccessorTest {
 
     @Test
-    public void fieldAnnotatedEntity() throws NoSuchFieldException {
+    void fieldAnnotatedEntity() throws NoSuchFieldException {
         ReflectionFieldMemberAccessor memberAccessor = new ReflectionFieldMemberAccessor(
                 TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
         assertThat(memberAccessor.getName()).isEqualTo("value");

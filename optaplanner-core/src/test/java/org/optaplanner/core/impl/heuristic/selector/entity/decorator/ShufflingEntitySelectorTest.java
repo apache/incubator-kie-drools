@@ -26,13 +26,13 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 class ShufflingEntitySelectorTest {
 
     @Test
-    public void isNeverEnding() {
+    void isNeverEnding() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
         assertThat(selector.isNeverEnding()).isFalse();
     }
 
     @Test
-    public void isCountable() {
+    void isCountable() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
         assertThat(selector.isCountable()).isTrue();
     }

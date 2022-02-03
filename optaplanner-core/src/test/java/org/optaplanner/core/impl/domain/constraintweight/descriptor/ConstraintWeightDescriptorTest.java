@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.extende
 class ConstraintWeightDescriptorTest {
 
     @Test
-    public void extractionFunction() {
+    void extractionFunction() {
         SolutionDescriptor<TestdataConstraintConfigurationSolution> solutionDescriptor = TestdataConstraintConfigurationSolution
                 .buildSolutionDescriptor();
         ConstraintConfigurationDescriptor<TestdataConstraintConfigurationSolution> constraintConfigurationDescriptor =
@@ -60,7 +60,7 @@ class ConstraintWeightDescriptorTest {
     }
 
     @Test
-    public void extractionFunctionExtended() {
+    void extractionFunctionExtended() {
         SolutionDescriptor<TestdataExtendedConstraintConfigurationSolution> solutionDescriptor =
                 TestdataExtendedConstraintConfigurationSolution.buildExtendedSolutionDescriptor();
         ConstraintConfigurationDescriptor<TestdataExtendedConstraintConfigurationSolution> constraintConfigurationDescriptor =

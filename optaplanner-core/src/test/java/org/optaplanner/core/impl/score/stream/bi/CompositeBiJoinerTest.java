@@ -30,7 +30,7 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 class CompositeBiJoinerTest {
 
     @Test
-    public void compositeMappings() {
+    void compositeMappings() {
         BiJoiner<BigInteger, BigDecimal> joiner1 = Joiners.equal(BigInteger::longValue, BigDecimal::longValue);
         BiJoiner<BigInteger, BigDecimal> joiner2 = Joiners.lessThan(BigInteger::longValue, BigDecimal::longValue);
         AbstractBiJoiner<BigInteger, BigDecimal> composite = merge(joiner1, joiner2);

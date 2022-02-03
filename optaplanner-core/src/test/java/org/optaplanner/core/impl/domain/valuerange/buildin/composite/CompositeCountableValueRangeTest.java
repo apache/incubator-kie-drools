@@ -41,14 +41,14 @@ class CompositeCountableValueRangeTest {
     }
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).getSize()).isEqualTo(7L);
         assertThat(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).getSize()).isEqualTo(4L);
         assertThat(createValueRange(Collections.emptyList()).getSize()).isEqualTo(0L);
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(2L).intValue()).isEqualTo(5);
         assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(4L).intValue()).isEqualTo(-15);
         assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).get(6L).intValue()).isEqualTo(-1);
@@ -56,7 +56,7 @@ class CompositeCountableValueRangeTest {
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(5)).isTrue();
         assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(4)).isFalse();
         assertThat(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).contains(-15)).isTrue();
@@ -68,7 +68,7 @@ class CompositeCountableValueRangeTest {
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1))
                 .createOriginalIterator(), 0, 2, 5, 10, -15, 25, -1);
         assertAllElementsOfIterator(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d"))
@@ -78,7 +78,7 @@ class CompositeCountableValueRangeTest {
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         assertElementsOfIterator(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1))
                 .createRandomIterator(new TestRandom(3, 0)), 10, 0);
         assertElementsOfIterator(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d"))

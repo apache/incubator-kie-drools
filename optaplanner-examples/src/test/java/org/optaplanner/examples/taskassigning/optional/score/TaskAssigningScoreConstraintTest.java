@@ -42,7 +42,7 @@ class TaskAssigningScoreConstraintTest {
             new BendableScoreVerifier<>(SolverFactory.create(SOLVER_CONFIG));
 
     @Test
-    public void skillRequirements() {
+    void skillRequirements() {
         Skill s1 = new Skill(1L, "Law degree");
         TaskType tt1 = new TaskType(1L, "TT1", "Task type 1", 100);
         tt1.getRequiredSkillList().add(s1);

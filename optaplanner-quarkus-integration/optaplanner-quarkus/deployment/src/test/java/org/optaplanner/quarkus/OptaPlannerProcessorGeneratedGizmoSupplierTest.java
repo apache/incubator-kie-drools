@@ -91,7 +91,7 @@ class OptaPlannerProcessorGeneratedGizmoSupplierTest {
     }
 
     @Test
-    public void gizmoFactoryContainClassesReferencedInSolverConfig() {
+    void gizmoFactoryContainClassesReferencedInSolverConfig() {
         assertFactoryContains(DummyChangeMoveFilter.class);
         assertFactoryContains(DummyConstraintProvider.class);
         assertFactoryContains(DummyEasyScoreCalculator.class);

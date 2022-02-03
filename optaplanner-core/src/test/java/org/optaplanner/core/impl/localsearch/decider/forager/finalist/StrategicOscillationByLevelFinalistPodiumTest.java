@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class StrategicOscillationByLevelFinalistPodiumTest {
 
     @Test
-    public void referenceLastStepScore() {
+    void referenceLastStepScore() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
         SolverScope<TestdataSolution> solverScope = new SolverScope<>();
@@ -86,7 +86,7 @@ class StrategicOscillationByLevelFinalistPodiumTest {
     }
 
     @Test
-    public void referenceBestScore() {
+    void referenceBestScore() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(true);
 
         SolverScope<TestdataSolution> solverScope = new SolverScope<>();
@@ -151,7 +151,7 @@ class StrategicOscillationByLevelFinalistPodiumTest {
     }
 
     @Test
-    public void referenceLastStepScore3Levels() {
+    void referenceLastStepScore3Levels() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
         SolverScope<TestdataSolution> solverScope = new SolverScope<>();
@@ -204,7 +204,7 @@ class StrategicOscillationByLevelFinalistPodiumTest {
     }
 
     @Test
-    public void alwaysPickImprovingMove() {
+    void alwaysPickImprovingMove() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
         // Reference score is [0, -2, -3]

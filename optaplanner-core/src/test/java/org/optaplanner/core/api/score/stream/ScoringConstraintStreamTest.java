@@ -42,7 +42,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeUniUnweighed() {
+    void penalizeUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -55,7 +55,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeUni() {
+    void penalizeUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -68,7 +68,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeUniLong() {
+    void penalizeUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -84,7 +84,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeUniBigDecimal() {
+    void penalizeUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -99,7 +99,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardUniUnweighed() {
+    void rewardUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -112,7 +112,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardUni() {
+    void rewardUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -125,7 +125,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardUniLong() {
+    void rewardUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -141,7 +141,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardUniBigDecimal() {
+    void rewardUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -158,7 +158,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveUniUnweighed() {
+    void impactPositiveUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -171,7 +171,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveUni() {
+    void impactPositiveUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -184,7 +184,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveUniLong() {
+    void impactPositiveUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -200,7 +200,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveUniBigDecimal() {
+    void impactPositiveUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -217,7 +217,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeUni() {
+    void impactNegativeUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -230,7 +230,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeUniLong() {
+    void impactNegativeUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -246,7 +246,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeUniBigDecimal() {
+    void impactNegativeUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -263,7 +263,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeBiUnweighed() {
+    void penalizeBiUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -276,7 +276,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeBi() {
+    void penalizeBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -289,7 +289,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeBiLong() {
+    void penalizeBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -305,7 +305,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeBiBigDecimal() {
+    void penalizeBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -322,7 +322,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardBiUnweighed() {
+    void rewardBiUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -335,7 +335,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardBi() {
+    void rewardBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -348,7 +348,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardBiLong() {
+    void rewardBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -364,7 +364,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardBiBigDecimal() {
+    void rewardBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -381,7 +381,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveBiUnweighed() {
+    void impactPositiveBiUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -394,7 +394,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveBi() {
+    void impactPositiveBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -407,7 +407,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveBiLong() {
+    void impactPositiveBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -423,7 +423,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveBiBigDecimal() {
+    void impactPositiveBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -440,7 +440,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeBi() {
+    void impactNegativeBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -453,7 +453,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeBiLong() {
+    void impactNegativeBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -469,7 +469,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeBiBigDecimal() {
+    void impactNegativeBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -486,7 +486,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeTriUnweighed() {
+    void penalizeTriUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -500,7 +500,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeTri() {
+    void penalizeTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -514,7 +514,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeTriLong() {
+    void penalizeTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -531,7 +531,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeTriBigDecimal() {
+    void penalizeTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -549,7 +549,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardTriUnweighed() {
+    void rewardTriUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -563,7 +563,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardTri() {
+    void rewardTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -577,7 +577,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardTriLong() {
+    void rewardTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -594,7 +594,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardTriBigDecimal() {
+    void rewardTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -612,7 +612,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveTriUnweighed() {
+    void impactPositiveTriUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -626,7 +626,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveTri() {
+    void impactPositiveTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -640,7 +640,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveTriLong() {
+    void impactPositiveTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -657,7 +657,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveTriBigDecimal() {
+    void impactPositiveTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -675,7 +675,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeTri() {
+    void impactNegativeTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
@@ -689,7 +689,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeTriLong() {
+    void impactNegativeTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
@@ -706,7 +706,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeTriBigDecimal() {
+    void impactNegativeTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
@@ -724,7 +724,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeQuadUnweighed() {
+    void penalizeQuadUnweighed() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -740,7 +740,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeQuad() {
+    void penalizeQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -756,7 +756,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeQuadLong() {
+    void penalizeQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -775,7 +775,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void penalizeQuadBigDecimal() {
+    void penalizeQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -795,7 +795,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardQuadUnweighed() {
+    void rewardQuadUnweighed() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -811,7 +811,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardQuad() {
+    void rewardQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -827,7 +827,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardQuadLong() {
+    void rewardQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -846,7 +846,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void rewardQuadBigDecimal() {
+    void rewardQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -866,7 +866,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveQuadUnweighed() {
+    void impactPositiveQuadUnweighed() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -882,7 +882,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveQuad() {
+    void impactPositiveQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -898,7 +898,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveQuadLong() {
+    void impactPositiveQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -917,7 +917,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactPositiveQuadBigDecimal() {
+    void impactPositiveQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -937,7 +937,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeQuad() {
+    void impactNegativeQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -953,7 +953,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeQuadLong() {
+    void impactNegativeQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -972,7 +972,7 @@ class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void impactNegativeQuadBigDecimal() {
+    void impactNegativeQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 

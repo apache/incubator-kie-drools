@@ -28,7 +28,7 @@ import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 class BendableBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
-    public void persistAndMerge() {
+    void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(BendableBigDecimalScore.zero(3, 2)), null,
                 BendableBigDecimalScore.of(
                         new BigDecimal[] { new BigDecimal("10000.00001"), new BigDecimal("2000.00020"),

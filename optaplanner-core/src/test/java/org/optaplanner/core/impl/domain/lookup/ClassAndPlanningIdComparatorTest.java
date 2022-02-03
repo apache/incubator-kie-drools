@@ -30,17 +30,17 @@ class ClassAndPlanningIdComparatorTest {
     private final Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
 
     @Test
-    public void comparesDifferentClassesByClassName() {
+    void comparesDifferentClassesByClassName() {
         assertCompareToOrder(comparator, 1d, 1);
     }
 
     @Test
-    public void comparesSameComparableClassesByNaturalOrder() {
+    void comparesSameComparableClassesByNaturalOrder() {
         assertCompareToOrder(comparator, 1, 2, 3);
     }
 
     @Test
-    public void comparesSameUnComparableClassesByPlanningId() {
+    void comparesSameUnComparableClassesByPlanningId() {
         TestdataLavishEntityGroup group = new TestdataLavishEntityGroup();
         TestdataLavishEntity firstEntity = new TestdataLavishEntity("a", group);
         TestdataLavishEntity secondEntity = new TestdataLavishEntity("b", group);
@@ -49,7 +49,7 @@ class ClassAndPlanningIdComparatorTest {
     }
 
     @Test
-    public void treatesSameUnComparableClassesWithoutPlanningIdAsEqual() {
+    void treatesSameUnComparableClassesWithoutPlanningIdAsEqual() {
         Object firstObject = new ClassAndPlanningIdComparator(false);
         Object secondObject = new ClassAndPlanningIdComparator(false);
         int result = comparator.compare(firstObject, secondObject);

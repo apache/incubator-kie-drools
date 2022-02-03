@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 class SimpleScoreJacksonRoundTripTest extends AbstractScoreJacksonRoundTripTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleScoreWrapper(null));
         SimpleScore score = SimpleScore.of(1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));

@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class DefaultConstraintMatchTotalTest {
 
     @Test
-    public void getScoreTotal() {
+    void getScoreTotal() {
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
@@ -53,7 +53,7 @@ class DefaultConstraintMatchTotalTest {
     }
 
     @Test
-    public void equalsAndHashCode() {
+    void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
                 new DefaultConstraintMatchTotal<>("a.b", "c", SimpleScore.ZERO),
                 new DefaultConstraintMatchTotal<>("a.b", "c", SimpleScore.ZERO),
@@ -65,7 +65,7 @@ class DefaultConstraintMatchTotalTest {
     }
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         PlannerAssert.assertCompareToOrder(
                 new DefaultConstraintMatchTotal<>("a.b", "aa", SimpleScore.ZERO),
                 new DefaultConstraintMatchTotal<>("a.b", "ab", SimpleScore.ZERO),

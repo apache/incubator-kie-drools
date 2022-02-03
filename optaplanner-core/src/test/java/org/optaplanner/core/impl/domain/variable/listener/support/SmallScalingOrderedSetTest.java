@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 class SmallScalingOrderedSetTest {
 
     @Test
-    public void addRemoveAroundThreshold() {
+    void addRemoveAroundThreshold() {
         SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<>();
         assertThat(set.add("s1")).isTrue();
         assertThat(set.add("s1")).isFalse();
@@ -72,7 +72,7 @@ class SmallScalingOrderedSetTest {
     }
 
     @Test
-    public void addAllAroundThreshold() {
+    void addAllAroundThreshold() {
         SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<>();
         assertThat(set.addAll(Arrays.asList("s1", "s2", "s3"))).isTrue();
         assertThat(set.size()).isEqualTo(3);

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 class LoadBalanceByCountAccumulateFunctionTest {
 
     @Test
-    public void accumulate() {
+    void accumulate() {
         LoadBalanceByCountAccumulateFunction function = new LoadBalanceByCountAccumulateFunction();
         LoadBalanceByCountAccumulateFunction.LoadBalanceByCountData context = function.createContext();
         function.init(context);

@@ -72,7 +72,7 @@ class SolverManagerTest {
     }
 
     @Test
-    public void create() {
+    void create() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverManager.create(solverConfig).close();
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();

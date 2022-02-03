@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class MutationCounterTest {
 
     @Test
-    public void countMutationsNone() {
+    void countMutationsNone() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         MutationCounter<TestdataSolution> mutationCounter = new MutationCounter<>(solutionDescriptor);
 
@@ -63,7 +63,7 @@ class MutationCounterTest {
     }
 
     @Test
-    public void countMutationsSome() {
+    void countMutationsSome() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         MutationCounter<TestdataSolution> mutationCounter = new MutationCounter<>(solutionDescriptor);
 
@@ -96,7 +96,7 @@ class MutationCounterTest {
     }
 
     @Test
-    public void countMutationsAll() {
+    void countMutationsAll() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         MutationCounter<TestdataSolution> mutationCounter = new MutationCounter<>(solutionDescriptor);
 

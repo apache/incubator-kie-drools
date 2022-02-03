@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 class IncrementalScoreDirectorTest {
 
     @Test
-    public void variableListener() {
+    void variableListener() {
         TestdataShadowingChainedAnchor a0 = new TestdataShadowingChainedAnchor("a0");
         TestdataShadowingChainedEntity a1 = new TestdataShadowingChainedEntity("a1", a0);
         a0.setNextEntity(a1);
@@ -95,7 +95,7 @@ class IncrementalScoreDirectorTest {
     }
 
     @Test
-    public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
+    void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
         IncrementalScoreDirector<Object, SimpleScore> director =
                 new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false, false,
                         mockIncrementalScoreCalculator(false));
@@ -106,7 +106,7 @@ class IncrementalScoreDirectorTest {
     }
 
     @Test
-    public void constraintMatchTotalsNeverNull() {
+    void constraintMatchTotalsNeverNull() {
         IncrementalScoreDirector<Object, SimpleScore> director = new IncrementalScoreDirector<>(
                 mockIncrementalScoreDirectorFactory(), false, true, mockIncrementalScoreCalculator(true));
         director.setWorkingSolution(new Object());
@@ -114,7 +114,7 @@ class IncrementalScoreDirectorTest {
     }
 
     @Test
-    public void constraintMatchIsNotEnabledWhenScoreCalculatorNotConstraintMatchAware() {
+    void constraintMatchIsNotEnabledWhenScoreCalculatorNotConstraintMatchAware() {
         IncrementalScoreDirector<Object, ?> director =
                 new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false,
                         true,

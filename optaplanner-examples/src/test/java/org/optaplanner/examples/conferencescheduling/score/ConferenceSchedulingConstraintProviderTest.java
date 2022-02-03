@@ -63,7 +63,7 @@ class ConferenceSchedulingConstraintProviderTest {
     // ************************************************************************
 
     @Test
-    public void roomUnavailableTimeslot() {
+    void roomUnavailableTimeslot() {
         Room room1 = new Room(1)
                 .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
         Room room2 = new Room(2)
@@ -81,7 +81,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void roomConflict() {
+    void roomConflict() {
         Room room = new Room(1)
                 .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
         Talk talk1 = new Talk(1)
@@ -100,7 +100,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerUnavailableTimeslot() {
+    void speakerUnavailableTimeslot() {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
@@ -121,7 +121,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerConflict() {
+    void speakerConflict() {
         Room room = new Room(0);
         Speaker speaker = new Speaker(1);
         Talk talk1 = new Talk(1)
@@ -143,7 +143,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkPrerequisiteTalks() {
+    void talkPrerequisiteTalks() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -164,7 +164,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkMutuallyExclusiveTalksTags() {
+    void talkMutuallyExclusiveTalksTags() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -185,7 +185,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void consecutiveTalksPause() {
+    void consecutiveTalksPause() {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1);
         Speaker speaker2 = new Speaker(2);
@@ -214,7 +214,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void crowdControl() {
+    void crowdControl() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -246,7 +246,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerRequiredTimeslotTags() {
+    void speakerRequiredTimeslotTags() {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withRequiredTimeslotTagSet(singleton("a"));
@@ -269,7 +269,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerProhibitedTimeslotTags() {
+    void speakerProhibitedTimeslotTags() {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withProhibitedTimeslotTagSet(singleton("a"));
@@ -292,7 +292,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkRequiredTimeslotTags() {
+    void talkRequiredTimeslotTags() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -309,7 +309,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkProhibitedTimeslotTags() {
+    void talkProhibitedTimeslotTags() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -326,7 +326,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerRequiredRoomTags() {
+    void speakerRequiredRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -348,7 +348,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerProhibitedRoomTags() {
+    void speakerProhibitedRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -370,7 +370,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkRequiredRoomTags() {
+    void talkRequiredRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)
@@ -388,7 +388,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkProhibitedRoomTags() {
+    void talkProhibitedRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)
@@ -410,7 +410,7 @@ class ConferenceSchedulingConstraintProviderTest {
     // ************************************************************************
 
     @Test
-    public void publishedTimeslot() {
+    void publishedTimeslot() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -431,7 +431,7 @@ class ConferenceSchedulingConstraintProviderTest {
     // ************************************************************************
 
     @Test
-    public void publishedRoom() {
+    void publishedRoom() {
         Room room1 = new Room(0);
         Room room2 = new Room(1);
         Talk talk1 = new Talk(1)
@@ -449,7 +449,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void themeTrackConflict() {
+    void themeTrackConflict() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -474,7 +474,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void themeTrackRoomStability() {
+    void themeTrackRoomStability() {
         Room room1 = new Room(0);
         Room room2 = new Room(1);
         Talk talk1 = new Talk(1)
@@ -500,7 +500,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void sectorConflict() {
+    void sectorConflict() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -525,7 +525,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void audienceTypeDiversity() {
+    void audienceTypeDiversity() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -550,7 +550,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void audienceTypeThemeTrackConflict() {
+    void audienceTypeThemeTrackConflict() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -589,7 +589,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void audienceLevelDiversity() {
+    void audienceLevelDiversity() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -614,7 +614,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void contentAudienceLevelFlowViolation() {
+    void contentAudienceLevelFlowViolation() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -643,7 +643,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void contentConflict() {
+    void contentConflict() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -668,7 +668,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void languageDiversity() {
+    void languageDiversity() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -693,7 +693,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void sameDayTalks() {
+    void sameDayTalks() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -732,7 +732,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void popularTalks() {
+    void popularTalks() {
         Room smallerRoom = new Room(0)
                 .withCapacity(10);
         Room biggerRoom = new Room(1)
@@ -756,7 +756,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerPreferredTimeslotTags() {
+    void speakerPreferredTimeslotTags() {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withPreferredTimeslotTagSet(singleton("a"));
@@ -779,7 +779,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerUndesiredTimeslotTags() {
+    void speakerUndesiredTimeslotTags() {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withUndesiredTimeslotTagSet(singleton("a"));
@@ -802,7 +802,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkPreferredTimeslotTags() {
+    void talkPreferredTimeslotTags() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -819,7 +819,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkUndesiredTimeslotTags() {
+    void talkUndesiredTimeslotTags() {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -836,7 +836,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerPreferredRoomTags() {
+    void speakerPreferredRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -858,7 +858,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void speakerUndesiredRoomTags() {
+    void speakerUndesiredRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -880,7 +880,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkPreferredRoomTags() {
+    void talkPreferredRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)
@@ -898,7 +898,7 @@ class ConferenceSchedulingConstraintProviderTest {
     }
 
     @Test
-    public void talkUndesiredRoomTags() {
+    void talkUndesiredRoomTags() {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)

@@ -26,34 +26,34 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         HardSoftScore score = new HardSoftScoreDefinition().getZeroScore();
         assertThat(score).isEqualTo(HardSoftScore.ZERO);
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         HardSoftScore score = new HardSoftScoreDefinition().getOneSoftestScore();
         assertThat(score).isEqualTo(HardSoftScore.ONE_SOFT);
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new HardSoftScoreDefinition().getLevelsSize()).isEqualTo(2);
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new HardSoftScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "hard score", "soft score" });
     }
 
     @Test
-    public void getFeasibleLevelsSize() {
+    void getFeasibleLevelsSize() {
         assertThat(new HardSoftScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     @Test
-    public void buildOptimisticBoundOnlyUp() {
+    void buildOptimisticBoundOnlyUp() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
@@ -64,7 +64,7 @@ class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundOnlyDown() {
+    void buildOptimisticBoundOnlyDown() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
@@ -75,7 +75,7 @@ class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyUp() {
+    void buildPessimisticBoundOnlyUp() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
@@ -86,7 +86,7 @@ class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyDown() {
+    void buildPessimisticBoundOnlyDown() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
@@ -97,7 +97,7 @@ class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
     }
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 0, 10 });
         HardSoftScore zeroDivisor = scoreDefinition.getZeroScore();

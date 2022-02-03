@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 public abstract class AbstractSubSingleStatisticTest<Point_ extends StatisticPoint, SubSingleStatistic_ extends SubSingleStatistic<TestdataSolution, Point_>> {
 
     @Test
-    public void test(@TempDir Path tempDir) {
+    void test(@TempDir Path tempDir) {
         SubSingleBenchmarkResult subSingleBenchmarkResult = createSubStatistic(tempDir.toFile());
         Function<SubSingleBenchmarkResult, SubSingleStatistic_> constructor = getSubSingleStatisticConstructor();
         SubSingleStatistic_ subSingleStatistic = constructor.apply(subSingleBenchmarkResult);

@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.extended.TestdataExtende
 class EntityDescriptorTest {
 
     @Test
-    public void movableEntitySelectionFilter() {
+    void movableEntitySelectionFilter() {
         ScoreDirector<TestdataPinnedSolution> scoreDirector = mock(ScoreDirector.class);
         EntityDescriptor<TestdataPinnedSolution> entityDescriptor = TestdataPinnedEntity.buildEntityDescriptor();
         assertThat(entityDescriptor.hasEffectiveMovableEntitySelectionFilter()).isTrue();
@@ -79,7 +79,7 @@ class EntityDescriptorTest {
     }
 
     @Test
-    public void extendedMovableEntitySelectionFilterUsedByChildSelector() {
+    void extendedMovableEntitySelectionFilterUsedByChildSelector() {
         ScoreDirector<TestdataExtendedPinnedSolution> scoreDirector = mock(ScoreDirector.class);
         SolutionDescriptor<TestdataExtendedPinnedSolution> solutionDescriptor =
                 TestdataExtendedPinnedSolution.buildSolutionDescriptor();

@@ -31,22 +31,22 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 class AbstractBiJoinerTest {
 
     @Test
-    public void merge0Joiners() {
+    void merge0Joiners() {
         assertThat(merge()).isInstanceOf(NoneBiJoiner.class);
     }
 
     @Test
-    public void merge1JoinersNone() {
+    void merge1JoinersNone() {
         assertThat(merge(new NoneBiJoiner<>())).isInstanceOf(NoneBiJoiner.class);
     }
 
     @Test
-    public void merge1JoinersSingle() {
+    void merge1JoinersSingle() {
         assertThat(merge(Joiners.equal(a -> 0, b -> 0))).isInstanceOf(SingleBiJoiner.class);
     }
 
     @Test
-    public void merge2Joiners() {
+    void merge2Joiners() {
         BiJoiner<BigDecimal, BigInteger> joiner1 = Joiners.equal(BigDecimal::longValue, BigInteger::longValue);
         BiJoiner<BigDecimal, BigInteger> joiner2 = Joiners.lessThan(BigDecimal::longValue, BigInteger::longValue);
         AbstractBiJoiner<BigDecimal, BigInteger> mergedJoiner = merge(joiner1, joiner2);
@@ -57,7 +57,7 @@ class AbstractBiJoinerTest {
     }
 
     @Test
-    public void merge2Joiners1Composite() {
+    void merge2Joiners1Composite() {
         BiJoiner<BigDecimal, BigInteger> joiner1 = Joiners.equal(BigDecimal::longValue, BigInteger::longValue);
         BiJoiner<BigDecimal, BigInteger> joiner2 = Joiners.lessThan(BigDecimal::longValue, BigInteger::longValue);
         AbstractBiJoiner<BigDecimal, BigInteger> mergedJoiner = merge(joiner1, joiner2);

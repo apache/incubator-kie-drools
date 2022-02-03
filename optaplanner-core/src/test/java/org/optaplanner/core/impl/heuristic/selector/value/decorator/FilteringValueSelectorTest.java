@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class FilteringValueSelectorTest {
 
     @Test
-    public void filterEntityDependent() {
+    void filterEntityDependent() {
         TestdataEntity entity = new TestdataEntity("e1");
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(
                 TestdataEntity.class, "value",

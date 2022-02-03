@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class TemporalValueRangeTest {
 
     @Test
-    public void getSizeForLocalDate() {
+    void getSizeForLocalDate() {
         LocalDate from = LocalDate.of(2016, 7, 1);
         LocalDate to = LocalDate.of(2016, 7, 8);
         assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).getSize()).isEqualTo(7L);
@@ -91,7 +91,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void getSizeForLocalDateTime() {
+    void getSizeForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 7, 7, 7, 7);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 7);
         assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MONTHS).getSize()).isEqualTo(0L);
@@ -122,7 +122,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void getForLocalDate() {
+    void getForLocalDate() {
         LocalDate from = LocalDate.of(2016, 7, 1);
         LocalDate to = LocalDate.of(2016, 7, 8);
         assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).get(0)).isEqualTo(LocalDate.of(2016, 7, 1));
@@ -141,7 +141,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void getForLocalDateTime() {
+    void getForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 1, 1, 1, 1, 1);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 7);
         assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).get(0))
@@ -189,7 +189,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void containsForLocalDate() {
+    void containsForLocalDate() {
         LocalDate from = LocalDate.of(2016, 7, 1);
         LocalDate to = LocalDate.of(2016, 9, 8);
         assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 6, 30))).isFalse();
@@ -242,7 +242,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void containsForLocalDateTime() {
+    void containsForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 7, 7, 1, 1);
         assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS)
@@ -278,7 +278,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void createOriginalIteratorForLocalDate() {
+    void createOriginalIteratorForLocalDate() {
         LocalDate from = LocalDate.of(2016, 7, 1);
         LocalDate to = LocalDate.of(2016, 7, 10);
         assertAllElementsOfIterator(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).createOriginalIterator(),
@@ -316,7 +316,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void createOriginalIteratorForLocalDateTime() {
+    void createOriginalIteratorForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 1, 4, 5, 12);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 3, 4, 5, 12);
         assertAllElementsOfIterator(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.DAYS).createOriginalIterator(),
@@ -335,7 +335,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void createRandomIteratorForLocalDate() {
+    void createRandomIteratorForLocalDate() {
         LocalDate from = LocalDate.of(2016, 7, 1);
         LocalDate to = LocalDate.of(2016, 7, 11);
         assertElementsOfIterator(
@@ -349,7 +349,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void createRandomIteratorForLocalDateTime() {
+    void createRandomIteratorForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 1, 4, 5, 12);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 3, 12, 15, 12);
         assertElementsOfIterator(
@@ -358,14 +358,14 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void emptyRandomIterator() {
+    void emptyRandomIterator() {
         Iterator<Year> it = new TemporalValueRange<>(Year.of(0), Year.of(0), 1, ChronoUnit.YEARS)
                 .createRandomIterator(new Random(0));
         assertThat(it.hasNext()).isFalse();
     }
 
     @Test
-    public void getAndCreateOriginalIteratorInSyncForLocalDate() {
+    void getAndCreateOriginalIteratorInSyncForLocalDate() {
         LocalDate from = LocalDate.of(2016, 1, 31);
         LocalDate to = LocalDate.of(2016, 7, 31);
         TemporalValueRange<LocalDate> temporalValueRange = new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS);
@@ -387,7 +387,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void fullLocalDateRange() {
+    void fullLocalDateRange() {
         TemporalUnit unit = ChronoUnit.DAYS;
         LocalDate from = LocalDate.MIN;
         LocalDate to = LocalDate.MAX;
@@ -399,7 +399,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void fullLocalDateTimeRange() {
+    void fullLocalDateTimeRange() {
         TemporalUnit unit = ChronoUnit.DAYS;
         LocalDateTime from = LocalDateTime.MIN;
         LocalDateTime to = LocalDateTime.MAX.truncatedTo(unit);
@@ -411,7 +411,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void fullYearRange() {
+    void fullYearRange() {
         TemporalUnit unit = ChronoUnit.YEARS;
         Year from = Year.of(Year.MIN_VALUE);
         Year to = Year.of(Year.MAX_VALUE);
@@ -423,37 +423,37 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void nullFrom() {
+    void nullFrom() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new TemporalValueRange<>(null, LocalDate.MAX, 1, ChronoUnit.DAYS));
     }
 
     @Test
-    public void nullTo() {
+    void nullTo() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MIN, null, 1, ChronoUnit.DAYS));
     }
 
     @Test
-    public void nullIncrementUnitType() {
+    void nullIncrementUnitType() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 1, null));
     }
 
     @Test
-    public void invalidIncrementUnitAmount() {
+    void invalidIncrementUnitAmount() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 0, ChronoUnit.DAYS));
     }
 
     @Test
-    public void fromAfterTo() {
+    void fromAfterTo() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MAX, LocalDate.MIN, 1, ChronoUnit.DAYS));
     }
 
     @Test
-    public void incrementUnitTypeNotSupportedByFrom() {
+    void incrementUnitTypeNotSupportedByFrom() {
         TemporalMock from = mock(TemporalMock.class);
         when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.FALSE);
         TemporalMock to = mock(TemporalMock.class);
@@ -463,7 +463,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void incrementUnitTypeNotSupportedByTo() {
+    void incrementUnitTypeNotSupportedByTo() {
         TemporalMock from = mock(TemporalMock.class);
         when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.TRUE);
         TemporalMock to = mock(TemporalMock.class);
@@ -473,13 +473,13 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void remainderOnIncrementAmount() {
+    void remainderOnIncrementAmount() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new TemporalValueRange<>(Year.of(0), Year.of(3), 2, ChronoUnit.YEARS));
     }
 
     @Test
-    public void remainderOnIncrementType() {
+    void remainderOnIncrementType() {
         LocalTime from = LocalTime.of(11, 30);
         LocalTime to = LocalTime.of(13, 29);
         assertThatIllegalArgumentException()
@@ -487,7 +487,7 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void remainderOnIncrementTypeExceedsMaximumYear() {
+    void remainderOnIncrementTypeExceedsMaximumYear() {
         Year from = Year.of(Year.MIN_VALUE);
         Year to = Year.of(Year.MAX_VALUE - 0);
         // Maximum Year range is not divisible by 10
@@ -497,13 +497,13 @@ class TemporalValueRangeTest {
     }
 
     @Test
-    public void getIndexNegative() {
+    void getIndexNegative() {
         assertThatExceptionOfType(IndexOutOfBoundsException.class)
                 .isThrownBy(() -> new TemporalValueRange<>(Year.of(0), Year.of(1), 1, ChronoUnit.YEARS).get(-1));
     }
 
     @Test
-    public void getIndexGreaterThanSize() {
+    void getIndexGreaterThanSize() {
         TemporalValueRange<Year> range = new TemporalValueRange<>(Year.of(0), Year.of(1), 1, ChronoUnit.YEARS);
         assertThat(range.getSize()).isEqualTo(1L);
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> range.get(1));

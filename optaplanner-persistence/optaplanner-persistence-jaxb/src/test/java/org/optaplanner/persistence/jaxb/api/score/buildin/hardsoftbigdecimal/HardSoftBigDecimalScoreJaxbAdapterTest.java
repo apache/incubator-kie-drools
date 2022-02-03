@@ -28,7 +28,7 @@ import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapterTest;
 class HardSoftBigDecimalScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftBigDecimalScoreWrapper(null));
 
         HardSoftBigDecimalScore score = HardSoftBigDecimalScore.of(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));

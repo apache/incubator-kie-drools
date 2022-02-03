@@ -103,7 +103,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void sameBedInSameNightConstraintTest() {
+    void sameBedInSameNightConstraintTest() {
 
         Patient patient = new Patient();
         Bed bed = new Bed();
@@ -140,7 +140,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void requiredPatientEquipmentConstraintTest() {
+    void requiredPatientEquipmentConstraintTest() {
 
         Patient patient = new Patient();
         Room room = new Room();
@@ -173,7 +173,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void differentGenderInSameGenderRoomInSameNightConstraintTest() {
+    void differentGenderInSameGenderRoomInSameNightConstraintTest() {
 
         Room room = new Room();
         room.setGenderLimitation(GenderLimitation.SAME_GENDER);
@@ -205,7 +205,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void assignEveryPatientToABedConstraintTest() {
+    void assignEveryPatientToABedConstraintTest() {
 
         Patient patient = new Patient();
 
@@ -219,7 +219,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test()
-    public void preferredMaximumRoomCapacityConstraintTest() {
+    void preferredMaximumRoomCapacityConstraintTest() {
 
         Patient patientWithRoomPreferences = new Patient();
         patientWithRoomPreferences.setPreferredMaximumRoomCapacity(3);
@@ -240,7 +240,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void preferredPatientEquipmentConstraintTest() {
+    void preferredPatientEquipmentConstraintTest() {
 
         Patient patient = new Patient();
 
@@ -273,7 +273,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void departmentSpecialismConstraintTest() {
+    void departmentSpecialismConstraintTest() {
 
         Patient patient = new Patient();
 
@@ -308,7 +308,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void roomSpecialismConstraintTest() {
+    void roomSpecialismConstraintTest() {
 
         Patient patient = new Patient();
 
@@ -336,7 +336,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
     }
 
     @Test
-    public void roomSpecialismNotFirstPriorityConstraintConstraintTest() {
+    void roomSpecialismNotFirstPriorityConstraintConstraintTest() {
 
         Patient patient = new Patient();
 

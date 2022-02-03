@@ -29,14 +29,14 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
-    public void parseScore() {
+    void parseScore() {
         assertThat(SimpleBigDecimalScore.parseScore("-147.2")).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-147.2")));
         assertThat(SimpleBigDecimalScore.parseScore("-7init/-147.2"))
                 .isEqualTo(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")));
     }
 
     @Test
-    public void toShortString() {
+    void toShortString() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("0.0")).toShortString()).isEqualTo("0");
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2")).toShortString()).isEqualTo("-147.2");
         assertThat(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")).toShortString())
@@ -45,25 +45,25 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("0.0")).toString()).isEqualTo("0.0");
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2")).toString()).isEqualTo("-147.2");
         assertThat(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")).toString()).isEqualTo("-7init/-147.2");
     }
 
     @Test
-    public void parseScoreIllegalArgument() {
+    void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> SimpleBigDecimalScore.parseScore("-147.2hard/-258.3soft"));
     }
 
     @Test
-    public void withInitScore() {
+    void withInitScore() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2")).withInitScore(-7))
                 .isEqualTo(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")));
     }
 
     @Test
-    public void add() {
+    void add() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("20")).add(
                 SimpleBigDecimalScore.of(new BigDecimal("-1")))).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("19")));
         assertThat(SimpleBigDecimalScore.ofUninitialized(-70, new BigDecimal("20")).add(
@@ -72,7 +72,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void subtract() {
+    void subtract() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("20")).subtract(
                 SimpleBigDecimalScore.of(new BigDecimal("-1")))).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("21")));
         assertThat(SimpleBigDecimalScore.ofUninitialized(-70, new BigDecimal("20")).subtract(
@@ -81,7 +81,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void multiply() {
+    void multiply() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("5.0")).multiply(1.2))
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("6.0")));
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("1.0")).multiply(1.2))
@@ -93,7 +93,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void divide() {
+    void divide() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("25.0")).divide(5.0))
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("5.0")));
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("21.0")).divide(5.0))
@@ -105,7 +105,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void power() {
+    void power() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("5.0")).power(2.0))
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("25.0")));
         assertThat(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("5.0")).power(3.0))
@@ -113,7 +113,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void negate() {
+    void negate() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("5.0")).negate())
                 .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-5.0")));
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("-5.0")).negate())
@@ -121,7 +121,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void zero() {
+    void zero() {
         SimpleBigDecimalScore manualZero = SimpleBigDecimalScore.of(BigDecimal.ZERO);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
@@ -133,7 +133,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void equalsAndHashCode() {
+    void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
                 SimpleBigDecimalScore.of(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.of(new BigDecimal("-10.0")),
@@ -149,7 +149,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         PlannerAssert.assertCompareToOrder(
                 SimpleBigDecimalScore.ofUninitialized(-8, new BigDecimal("0.0")),
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-20.0")),

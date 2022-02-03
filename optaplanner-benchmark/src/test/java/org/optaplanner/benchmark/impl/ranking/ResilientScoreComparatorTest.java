@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 class ResilientScoreComparatorTest {
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         Comparator<Score> comparator = new ResilientScoreComparator(new SimpleScoreDefinition());
 
         assertCompareToOrder(comparator,

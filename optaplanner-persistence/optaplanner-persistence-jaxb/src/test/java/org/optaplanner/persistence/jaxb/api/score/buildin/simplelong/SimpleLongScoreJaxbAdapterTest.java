@@ -26,7 +26,7 @@ import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapterTest;
 class SimpleLongScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleLongScoreWrapper(null));
 
         SimpleLongScore score = SimpleLongScore.of(1234L);

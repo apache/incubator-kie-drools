@@ -45,7 +45,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class ProbabilityEntitySelectorTest {
 
     @Test
-    public void randomSelection() {
+    void randomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
 
@@ -107,21 +107,21 @@ class ProbabilityEntitySelectorTest {
     }
 
     @Test
-    public void isCountable() {
+    void isCountable() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, null);
         assertThat(entitySelector.isCountable()).isTrue();
     }
 
     @Test
-    public void isNeverEnding() {
+    void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, null);
         assertThat(entitySelector.isNeverEnding()).isTrue();
     }
 
     @Test
-    public void getSize() {
+    void getSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
         SelectionProbabilityWeightFactory<TestdataSolution, TestdataEntity> probabilityWeightFactory = (scoreDirector,
@@ -146,7 +146,7 @@ class ProbabilityEntitySelectorTest {
     }
 
     @Test
-    public void withNeverEndingSelection() {
+    void withNeverEndingSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         when(childEntitySelector.isNeverEnding()).thenReturn(true);
         SelectionProbabilityWeightFactory prob = mock(SelectionProbabilityWeightFactory.class);
@@ -155,7 +155,7 @@ class ProbabilityEntitySelectorTest {
     }
 
     @Test
-    public void withoutCachedSelectionType() {
+    void withoutCachedSelectionType() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         SelectionProbabilityWeightFactory prob = mock(SelectionProbabilityWeightFactory.class);
         assertThatIllegalArgumentException().isThrownBy(

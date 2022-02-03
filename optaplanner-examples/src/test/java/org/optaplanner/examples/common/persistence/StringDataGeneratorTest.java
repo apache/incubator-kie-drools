@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.persistence.generator.StringDataGenerator
 class StringDataGeneratorTest {
 
     @Test
-    public void with2Parts() {
+    void with2Parts() {
         StringDataGenerator generator = new StringDataGenerator();
         generator.addPart("a", "b", "c", "d");
         generator.addPart("h", "i", "j", "k");
@@ -43,7 +43,7 @@ class StringDataGeneratorTest {
     }
 
     @Test
-    public void with3Parts() {
+    void with3Parts() {
         StringDataGenerator generator = new StringDataGenerator();
         generator.addPart("a", "b", "c", "d");
         generator.addPart("h", "i", "j", "k");
@@ -59,7 +59,7 @@ class StringDataGeneratorTest {
     }
 
     @Test
-    public void with4Parts() {
+    void with4Parts() {
         StringDataGenerator generator = new StringDataGenerator();
         generator.addPart("a", "b", "c", "d");
         generator.addPart("h", "i", "j", "k");
@@ -80,7 +80,7 @@ class StringDataGeneratorTest {
     }
 
     @Test
-    public void with4PartsMaximumSizeFor2() {
+    void with4PartsMaximumSizeFor2() {
         StringDataGenerator generator = new StringDataGenerator();
         generator.addPart("a", "b", "c", "d");
         generator.addPart("h", "i", "j", "k");
@@ -98,7 +98,7 @@ class StringDataGeneratorTest {
     }
 
     @Test
-    public void with4PartsMaximumSizeFor3() {
+    void with4PartsMaximumSizeFor3() {
         StringDataGenerator generator = new StringDataGenerator();
         generator.addPart("a", "b", "c", "d");
         generator.addPart("h", "i", "j", "k");

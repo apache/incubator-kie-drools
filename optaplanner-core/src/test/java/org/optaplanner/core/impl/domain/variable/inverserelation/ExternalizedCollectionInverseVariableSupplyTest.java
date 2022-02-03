@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class ExternalizedCollectionInverseVariableSupplyTest {
 
     @Test
-    public void normal() {
+    void normal() {
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
         ExternalizedCollectionInverseVariableSupply<TestdataSolution> supply =

@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class BigDecimalValueRangeTest {
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).getSize()).isEqualTo(10L);
         assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).getSize()).isEqualTo(200L);
         assertThat(new BigDecimalValueRange(new BigDecimal("-15.00"), new BigDecimal("25.07")).getSize()).isEqualTo(4007L);
@@ -43,7 +43,7 @@ class BigDecimalValueRangeTest {
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).get(3L)).isEqualTo(new BigDecimal("3"));
         assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).get(3L))
                 .isEqualTo(new BigDecimal("100.3"));
@@ -61,7 +61,7 @@ class BigDecimalValueRangeTest {
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("3"))).isTrue();
         assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("10")))
                 .isFalse();
@@ -90,7 +90,7 @@ class BigDecimalValueRangeTest {
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("4"))
                 .createOriginalIterator(), new BigDecimal("0"), new BigDecimal("1"), new BigDecimal("2"), new BigDecimal("3"));
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("104.0"))
@@ -118,7 +118,7 @@ class BigDecimalValueRangeTest {
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("4"))
                 .createRandomIterator(new TestRandom(3, 0)), new BigDecimal("3"), new BigDecimal("0"));
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("104.0"))

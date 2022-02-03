@@ -31,22 +31,22 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 class AbstractPentaJoinerTest {
 
     @Test
-    public void merge0Joiners() {
+    void merge0Joiners() {
         assertThat(merge()).isInstanceOf(NonePentaJoiner.class);
     }
 
     @Test
-    public void merge1JoinersNone() {
+    void merge1JoinersNone() {
         assertThat(merge(new NonePentaJoiner<>())).isInstanceOf(NonePentaJoiner.class);
     }
 
     @Test
-    public void merge1JoinersSingle() {
+    void merge1JoinersSingle() {
         assertThat(merge(Joiners.equal((a, b, c, d) -> 0, e -> 0))).isInstanceOf(SinglePentaJoiner.class);
     }
 
     @Test
-    public void merge2Joiners() {
+    void merge2Joiners() {
         PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners
                 .equal((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
         PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners
@@ -59,7 +59,7 @@ class AbstractPentaJoinerTest {
     }
 
     @Test
-    public void merge2Joiners1Composite() {
+    void merge2Joiners1Composite() {
         PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners
                 .equal((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
         PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners

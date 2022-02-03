@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class ChangeMoveSelectorTest {
 
     @Test
-    public void original() {
+    void original() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
@@ -100,7 +100,7 @@ class ChangeMoveSelectorTest {
     }
 
     @Test
-    public void emptyEntitySelectorOriginal() {
+    void emptyEntitySelectorOriginal() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
                 new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
@@ -159,7 +159,7 @@ class ChangeMoveSelectorTest {
     }
 
     @Test
-    public void emptyValueSelectorOriginal() {
+    void emptyValueSelectorOriginal() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value");
@@ -218,7 +218,7 @@ class ChangeMoveSelectorTest {
     }
 
     @Test
-    public void randomSelection() {
+    void randomSelection() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",

@@ -52,7 +52,7 @@ class OptaPlannerProcessorXMLPropertyTest {
     SolverFactory<TestdataQuarkusSolution> solverFactory;
 
     @Test
-    public void solverConfigXml_property() {
+    void solverConfigXml_property() {
         assertNotNull(solverConfig);
         assertEquals(DomainAccessType.GIZMO, solverConfig.getDomainAccessType());
         assertEquals(TestdataQuarkusSolution.class, solverConfig.getSolutionClass());

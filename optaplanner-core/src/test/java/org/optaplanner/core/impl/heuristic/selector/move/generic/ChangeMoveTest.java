@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.Test
 class ChangeMoveTest {
 
     @Test
-    public void isMoveDoable() {
+    void isMoveDoable() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
@@ -66,7 +66,7 @@ class ChangeMoveTest {
     }
 
     @Test
-    public void doMove() {
+    void doMove() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
         TestdataValue v3 = new TestdataValue("3");
@@ -96,7 +96,7 @@ class ChangeMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
 
         TestdataValue v1 = new TestdataValue("v1");
@@ -136,7 +136,7 @@ class ChangeMoveTest {
     }
 
     @Test
-    public void getters() {
+    void getters() {
         ChangeMove<TestdataMultiVarSolution> move = new ChangeMove<>(new TestdataMultiVarEntity("a"),
                 TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
         assertCode("a", move.getEntity());
@@ -151,7 +151,7 @@ class ChangeMoveTest {
     }
 
     @Test
-    public void toStringTest() {
+    void toStringTest() {
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
         TestdataEntity a = new TestdataEntity("a", null);
@@ -167,7 +167,7 @@ class ChangeMoveTest {
     }
 
     @Test
-    public void toStringTestMultiVar() {
+    void toStringTestMultiVar() {
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
         TestdataValue v3 = new TestdataValue("v3");

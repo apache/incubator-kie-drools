@@ -25,7 +25,7 @@ import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest
 class HardMediumSoftLongScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftLongScoreWrapper(null));
         HardMediumSoftLongScore score = HardMediumSoftLongScore.of(1200L, 30L, 4L);
         assertSerializeAndDeserialize(score, new TestHardMediumSoftLongScoreWrapper(score));

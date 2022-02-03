@@ -47,7 +47,7 @@ class PartitionQueueTest {
     }
 
     @Test
-    public void addMove() throws ExecutionException, InterruptedException {
+    void addMove() throws ExecutionException, InterruptedException {
         PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
         Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
 
@@ -99,7 +99,7 @@ class PartitionQueueTest {
     }
 
     @Test
-    public void addFinishWithNonEmptyQueue() throws ExecutionException, InterruptedException {
+    void addFinishWithNonEmptyQueue() throws ExecutionException, InterruptedException {
         PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
         Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
 
@@ -120,7 +120,7 @@ class PartitionQueueTest {
     }
 
     @Test()
-    public void addExceptionWithNonEmptyQueue() throws ExecutionException, InterruptedException {
+    void addExceptionWithNonEmptyQueue() throws ExecutionException, InterruptedException {
         PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
         Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
 

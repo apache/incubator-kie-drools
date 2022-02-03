@@ -31,7 +31,7 @@ class SimpleLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSimple
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataSimpleLongScoreSolution, SimpleLongScore> constraint =
                 buildConstraint(SimpleLongScore.ONE);
         SimpleLongScoreInliner scoreInliner =
@@ -40,7 +40,7 @@ class SimpleLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSimple
     }
 
     @Test
-    public void impact() {
+    void impact() {
         TestConstraint<TestdataSimpleLongScoreSolution, SimpleLongScore> constraint =
                 buildConstraint(SimpleLongScore.of(10));
         SimpleLongScoreInliner scoreInliner =

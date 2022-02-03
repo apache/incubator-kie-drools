@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 class SelectedCountLimitEntitySelectorTest {
 
     @Test
-    public void selectSizeLimitLowerThanSelectorSize() {
+    void selectSizeLimitLowerThanSelectorSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"),
                 new TestdataEntity("e5"));
@@ -95,7 +95,7 @@ class SelectedCountLimitEntitySelectorTest {
     }
 
     @Test
-    public void selectSizeLimitHigherThanSelectorSize() {
+    void selectSizeLimitHigherThanSelectorSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
@@ -153,21 +153,21 @@ class SelectedCountLimitEntitySelectorTest {
     }
 
     @Test
-    public void isCountable() {
+    void isCountable() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
         assertThat(entitySelector.isCountable()).isTrue();
     }
 
     @Test
-    public void isNeverEnding() {
+    void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
         assertThat(entitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
-    public void getSize() {
+    void getSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         when(childEntitySelector.getSize()).thenReturn(1L);
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
@@ -179,7 +179,7 @@ class SelectedCountLimitEntitySelectorTest {
     }
 
     @Test
-    public void endingIteratorOriginalOrder() {
+    void endingIteratorOriginalOrder() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, false, 2L);
@@ -187,7 +187,7 @@ class SelectedCountLimitEntitySelectorTest {
     }
 
     @Test
-    public void endingIteratorRandomOrder() {
+    void endingIteratorRandomOrder() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 2L);

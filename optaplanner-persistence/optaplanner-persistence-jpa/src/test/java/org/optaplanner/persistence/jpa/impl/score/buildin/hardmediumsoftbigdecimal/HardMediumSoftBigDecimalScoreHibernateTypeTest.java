@@ -30,7 +30,7 @@ import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
-    public void persistAndMerge() {
+    void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(HardMediumSoftBigDecimalScore.ZERO),
                 HardMediumSoftBigDecimalScore.of(new BigDecimal("-10.01000"), new BigDecimal("-4.32100"),
                         new BigDecimal("-2.20000")),

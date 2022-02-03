@@ -53,7 +53,7 @@ class CurriculumCourseConstraintProviderTest {
             ConstraintVerifier.build(new CurriculumCourseConstraintProvider(), CourseSchedule.class, Lecture.class);
 
     @Test
-    public void conflictingLecturesDifferentCourseInSamePeriod() {
+    void conflictingLecturesDifferentCourseInSamePeriod() {
         int conflictCount = 2;
         CourseConflict courseConflict = new CourseConflict(COURSE_1, COURSE_2, conflictCount);
 
@@ -69,7 +69,7 @@ class CurriculumCourseConstraintProviderTest {
     }
 
     @Test
-    public void conflictingLecturesSameCourseInSamePeriod() {
+    void conflictingLecturesSameCourseInSamePeriod() {
         // Make sure that unassigned lectures are ignored.
         Lecture unassignedLecture1 = new Lecture(0, COURSE_1, null, null);
         Lecture unassignedLecture2 = new Lecture(1, COURSE_1, null, null);
@@ -84,7 +84,7 @@ class CurriculumCourseConstraintProviderTest {
     }
 
     @Test
-    public void roomOccupancy() {
+    void roomOccupancy() {
         // Make sure that unassigned lectures are ignored.
         Lecture unassignedLecture = new Lecture(0, COURSE_1, null, null);
         // Make sure only unique pairs are counted.
@@ -99,7 +99,7 @@ class CurriculumCourseConstraintProviderTest {
     }
 
     @Test
-    public void unavailablePeriodPenalty() {
+    void unavailablePeriodPenalty() {
         UnavailablePeriodPenalty unavailablePeriodPenalty = new UnavailablePeriodPenalty(0, COURSE_1, PERIOD_1_MONDAY);
         Lecture matchingLecture = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture wrongCourseLecture = new Lecture(1, COURSE_2, PERIOD_1_MONDAY, ROOM_2);
@@ -110,7 +110,7 @@ class CurriculumCourseConstraintProviderTest {
     }
 
     @Test
-    public void roomCapacity() {
+    void roomCapacity() {
         Lecture overbookedLecture = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture packedLecture = new Lecture(1, COURSE_2, PERIOD_2_MONDAY, ROOM_1);
         Lecture nearlyEmptyLecture = new Lecture(2, COURSE_3, PERIOD_1_TUESDAY, ROOM_2);
@@ -120,7 +120,7 @@ class CurriculumCourseConstraintProviderTest {
     }
 
     @Test
-    public void minimumWorkingDays() {
+    void minimumWorkingDays() {
         Lecture meetsMinimum = new Lecture(0, COURSE_3, PERIOD_1_MONDAY, ROOM_1);
         Lecture doesNotMeetMinimumBy1 = new Lecture(1, COURSE_2, PERIOD_1_MONDAY, ROOM_2);
         Lecture doesNotMeetMinimumBy2 = new Lecture(2, COURSE_1, PERIOD_2_MONDAY, ROOM_1);
@@ -130,7 +130,7 @@ class CurriculumCourseConstraintProviderTest {
     }
 
     @Test
-    public void curriculumCompactness() {
+    void curriculumCompactness() {
         Lecture lectureInCurriculumWithoutOthers1 = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture lectureInCurriculumWithoutOthers2 = new Lecture(1, COURSE_2, PERIOD_1_MONDAY, ROOM_1);
         constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::curriculumCompactness)
@@ -139,7 +139,7 @@ class CurriculumCourseConstraintProviderTest {
     }
 
     @Test
-    public void roomStability() {
+    void roomStability() {
         Lecture lectureOfSameCourse1 = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
         Lecture lectureOfSameCourse2 = new Lecture(1, COURSE_1, PERIOD_1_MONDAY, ROOM_2);
         Lecture lectureOfSameCourse3 = new Lecture(2, COURSE_1, PERIOD_2_MONDAY, ROOM_1);

@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class BigIntegerValueRangeTest {
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).getSize()).isEqualTo(10L);
         assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).getSize()).isEqualTo(20L);
         assertThat(new BigIntegerValueRange(new BigInteger("-15"), new BigInteger("25")).getSize()).isEqualTo(40L);
@@ -43,7 +43,7 @@ class BigIntegerValueRangeTest {
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).get(3L)).isEqualTo(new BigInteger("3"));
         assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).get(3L))
                 .isEqualTo(new BigInteger("103"));
@@ -60,7 +60,7 @@ class BigIntegerValueRangeTest {
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("3"))).isTrue();
         assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("10")))
                 .isFalse();
@@ -89,7 +89,7 @@ class BigIntegerValueRangeTest {
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("4"))
                 .createOriginalIterator(), new BigInteger("0"), new BigInteger("1"), new BigInteger("2"),
                 new BigInteger("3"));
@@ -114,7 +114,7 @@ class BigIntegerValueRangeTest {
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("7"))
                 .createRandomIterator(new TestRandom(3, 0)), new BigInteger("3"), new BigInteger("0"));
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("104"))

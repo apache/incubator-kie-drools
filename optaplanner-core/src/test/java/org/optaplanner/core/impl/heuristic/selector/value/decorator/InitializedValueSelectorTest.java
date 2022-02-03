@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class InitializedValueSelectorTest {
 
     @Test
-    public void originalSelectionNullable() {
+    void originalSelectionNullable() {
         EntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
         TestdataNullableEntity e1 = new TestdataNullableEntity("e1");
         // This variable is unable to have entities as values, but it's an interesting nullable test anyway
@@ -78,7 +78,7 @@ class InitializedValueSelectorTest {
     }
 
     @Test
-    public void originalSelectionChained() {
+    void originalSelectionChained() {
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");

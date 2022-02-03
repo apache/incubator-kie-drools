@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.testgen.TestdataGetterSetterTyp
 class TestGenValueFactTest {
 
     @Test
-    public void initialization() {
+    void initialization() {
         TestdataValue instance = new TestdataValue();
         TestGenValueFact fact = new TestGenValueFact(321, instance);
 
@@ -47,7 +47,7 @@ class TestGenValueFactTest {
     }
 
     @Test
-    public void importsAndDependenciesSimple() {
+    void importsAndDependenciesSimple() {
         HashMap<Object, TestGenFact> instances = new HashMap<>();
         TestdataEntity entity = new TestdataEntity();
         TestGenValueFact f1 = new TestGenValueFact(0, entity);
@@ -77,7 +77,7 @@ class TestGenValueFactTest {
     }
 
     @Test
-    public void importsAndDependenciesComplex() {
+    void importsAndDependenciesComplex() {
         TestdataEntityCollectionPropertyEntity a = new TestdataEntityCollectionPropertyEntity("a", null);
         TestdataEntityCollectionPropertyEntity b = new TestdataEntityCollectionPropertyEntity("b", null);
         TestdataEntityCollectionPropertyEntity c = new TestdataEntityCollectionPropertyEntity("c", null);
@@ -143,7 +143,7 @@ class TestGenValueFactTest {
      * Gathering example.
      */
     @Test
-    public void getterSetterTypeMismatch() {
+    void getterSetterTypeMismatch() {
         TestdataGetterSetterTypeMismatch instance = new TestdataGetterSetterTypeMismatch();
         instance.setDescription("desc");
         TestGenValueFact fact = new TestGenValueFact(0, instance);
@@ -156,7 +156,7 @@ class TestGenValueFactTest {
     }
 
     @Test
-    public void inlineValueList() {
+    void inlineValueList() {
         // prepare instances and facts
         TestdataEntity a = new TestdataEntity();
         TestdataEntity b = new TestdataEntity();
@@ -178,12 +178,12 @@ class TestGenValueFactTest {
     }
 
     @Test
-    public void parseMethodTakingStringAsParameter() {
+    void parseMethodTakingStringAsParameter() {
         parseMethodOnField("fieldWithParseMethodTakingString");
     }
 
     @Test
-    public void parseMethodTakingCharSequenceAsParameter() {
+    void parseMethodTakingCharSequenceAsParameter() {
         parseMethodOnField("fieldWithParseMethodTakingCharSequence");
     }
 

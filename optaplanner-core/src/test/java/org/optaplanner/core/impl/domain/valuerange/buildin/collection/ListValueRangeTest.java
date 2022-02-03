@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class ListValueRangeTest {
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).getSize()).isEqualTo(4L);
         assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).getSize()).isEqualTo(5L);
         assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).getSize()).isEqualTo(3L);
@@ -39,14 +39,14 @@ class ListValueRangeTest {
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).get(2L).intValue()).isEqualTo(5);
         assertThat(new ListValueRange<>(Arrays.asList(100, -120)).get(1L).intValue()).isEqualTo(-120);
         assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d")).get(3L)).isEqualTo("c");
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(5)).isTrue();
         assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(4)).isFalse();
         assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(null)).isFalse();
@@ -59,7 +59,7 @@ class ListValueRangeTest {
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).createOriginalIterator(), 0, 2, 5, 10);
         assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).createOriginalIterator(), 100, 120,
                 5, 7, 8);
@@ -69,7 +69,7 @@ class ListValueRangeTest {
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         assertElementsOfIterator(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).createRandomIterator(new TestRandom(2, 0)), 5,
                 0);
         assertElementsOfIterator(

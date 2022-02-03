@@ -44,7 +44,7 @@ class OptaPlannerBenchmarkProcessorMissingSpentLimitPerBenchmarkTest {
                     .addAsResource("solverBenchmarkConfigSpentLimitPerBenchmarkNoTermination.xml"));
 
     @Test
-    public void benchmark() throws ExecutionException, InterruptedException {
+    void benchmark() throws ExecutionException, InterruptedException {
         PlannerBenchmarkConfig benchmarkConfig =
                 PlannerBenchmarkConfig.createFromXmlResource("solverBenchmarkConfigSpentLimitPerBenchmarkNoTermination.xml");
         IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {

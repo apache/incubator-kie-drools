@@ -31,7 +31,7 @@ class HardSoftLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHard
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataHardSoftLongScoreSolution, HardSoftLongScore> constraint =
                 buildConstraint(HardSoftLongScore.ONE_HARD);
         HardSoftLongScoreInliner scoreInliner =
@@ -40,7 +40,7 @@ class HardSoftLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHard
     }
 
     @Test
-    public void impactHard() {
+    void impactHard() {
         TestConstraint<TestdataHardSoftLongScoreSolution, HardSoftLongScore> constraint =
                 buildConstraint(HardSoftLongScore.ofHard(90));
         HardSoftLongScoreInliner scoreInliner =
@@ -65,7 +65,7 @@ class HardSoftLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHard
     }
 
     @Test
-    public void impactSoft() {
+    void impactSoft() {
         TestConstraint<TestdataHardSoftLongScoreSolution, HardSoftLongScore> constraint =
                 buildConstraint(HardSoftLongScore.ofSoft(90));
         HardSoftLongScoreInliner scoreInliner =
@@ -90,7 +90,7 @@ class HardSoftLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHard
     }
 
     @Test
-    public void impactAll() {
+    void impactAll() {
         TestConstraint<TestdataHardSoftLongScoreSolution, HardSoftLongScore> constraint =
                 buildConstraint(HardSoftLongScore.of(10, 100));
         HardSoftLongScoreInliner scoreInliner =

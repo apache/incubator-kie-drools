@@ -26,12 +26,12 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 class HardMediumSoftScoreHolderImplTest extends AbstractScoreHolderTest<HardMediumSoftScore> {
 
     @Test
-    public void addConstraintMatchWithConstraintMatch() {
+    void addConstraintMatchWithConstraintMatch() {
         addConstraintMatch(true);
     }
 
     @Test
-    public void addConstraintMatchWithoutConstraintMatch() {
+    void addConstraintMatchWithoutConstraintMatch() {
         addConstraintMatch(false);
     }
 
@@ -92,12 +92,12 @@ class HardMediumSoftScoreHolderImplTest extends AbstractScoreHolderTest<HardMedi
     }
 
     @Test
-    public void rewardPenalizeWithConstraintMatch() {
+    void rewardPenalizeWithConstraintMatch() {
         rewardPenalize(true);
     }
 
     @Test
-    public void rewardPenalizeWithoutConstraintMatch() {
+    void rewardPenalizeWithoutConstraintMatch() {
         rewardPenalize(false);
     }
 

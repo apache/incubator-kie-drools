@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 class BendableBigDecimalScoreJacksonRoundTripTest extends AbstractScoreJacksonRoundTripTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableBigDecimalScoreWrapper(null));
         BendableBigDecimalScore score = BendableBigDecimalScore.of(
                 new BigDecimal[] { new BigDecimal("1000.0001"), new BigDecimal("200.0020") },

@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class MovableChainedTrailingValueFilterTest {
 
     @Test
-    public void pinnedChained() {
+    void pinnedChained() {
         GenuineVariableDescriptor<TestdataPinnedChainedSolution> variableDescriptor =
                 TestdataPinnedChainedEntity.buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataPinnedChainedSolution> solutionDescriptor =
@@ -82,7 +82,7 @@ class MovableChainedTrailingValueFilterTest {
     }
 
     @Test
-    public void getMovableChainedTrailingValueFilter() {
+    void getMovableChainedTrailingValueFilter() {
         VariableDescriptor<TestdataPinnedChainedSolution> variableDescriptor =
                 TestdataPinnedChainedEntity.buildEntityDescriptor()
                         .getVariableDescriptor("chainedObject");

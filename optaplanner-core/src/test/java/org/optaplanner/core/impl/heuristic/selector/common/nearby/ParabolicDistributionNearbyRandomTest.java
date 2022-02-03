@@ -27,12 +27,12 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class ParabolicDistributionNearbyRandomTest {
 
     @Test
-    public void sizeMaximumTooLow() {
+    void sizeMaximumTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new ParabolicDistributionNearbyRandom(-10));
     }
 
     @Test
-    public void nextInt() {
+    void nextInt() {
         Random random = new TestRandom(
                 0.0,
                 1.0 - Math.pow(1 - 1.0 / 100.0, 3.0),
@@ -45,7 +45,7 @@ class ParabolicDistributionNearbyRandomTest {
     }
 
     @Test
-    public void cornerCase() {
+    void cornerCase() {
         Random random = new TestRandom(
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
                 Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),

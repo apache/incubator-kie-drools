@@ -24,7 +24,7 @@ import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 class SolverBenchmarkFactoryTest {
 
     @Test
-    public void validNameWithUnderscoreAndSpace() {
+    void validNameWithUnderscoreAndSpace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Valid_name with space_and_underscore");
         config.setSubSingleCount(1);
@@ -32,7 +32,7 @@ class SolverBenchmarkFactoryTest {
     }
 
     @Test
-    public void validNameWithJapanese() {
+    void validNameWithJapanese() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Valid name (有効名 in Japanese)");
         config.setSubSingleCount(1);
@@ -40,7 +40,7 @@ class SolverBenchmarkFactoryTest {
     }
 
     @Test
-    public void invalidNameWithSlash() {
+    void invalidNameWithSlash() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("slash/name");
         config.setSubSingleCount(1);
@@ -48,7 +48,7 @@ class SolverBenchmarkFactoryTest {
     }
 
     @Test
-    public void invalidNameWithSuffixWhitespace() {
+    void invalidNameWithSuffixWhitespace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Suffixed with space ");
         config.setSubSingleCount(1);
@@ -56,7 +56,7 @@ class SolverBenchmarkFactoryTest {
     }
 
     @Test
-    public void invalidNameWithPrefixWhitespace() {
+    void invalidNameWithPrefixWhitespace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName(" prefixed with space");
         config.setSubSingleCount(1);
@@ -64,7 +64,7 @@ class SolverBenchmarkFactoryTest {
     }
 
     @Test
-    public void validNonZeroSubSingleCount() {
+    void validNonZeroSubSingleCount() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("name");
         config.setSubSingleCount(2);
@@ -72,7 +72,7 @@ class SolverBenchmarkFactoryTest {
     }
 
     @Test
-    public void validNullSubSingleCount() {
+    void validNullSubSingleCount() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("name");
         config.setSubSingleCount(null);
@@ -80,7 +80,7 @@ class SolverBenchmarkFactoryTest {
     }
 
     @Test
-    public void invalidZeroSubSingleCount() {
+    void invalidZeroSubSingleCount() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("name");
         config.setSubSingleCount(0);

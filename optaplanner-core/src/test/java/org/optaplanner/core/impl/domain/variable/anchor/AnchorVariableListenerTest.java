@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 class AnchorVariableListenerTest {
 
     @Test
-    public void chained() {
+    void chained() {
         SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor =
                 TestdataShadowingChainedSolution.buildSolutionDescriptor();
         EntityDescriptor<TestdataShadowingChainedSolution> entityDescriptor =

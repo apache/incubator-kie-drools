@@ -62,7 +62,7 @@ class OptaPlannerProcessorGizmoKitchenSinkTest {
     ScoreManager<TestDataKitchenSinkSolution, SimpleScore> scoreManager;
 
     @Test
-    public void singletonSolverFactory() {
+    void singletonSolverFactory() {
         assertNotNull(solverFactory);
         // TODO with optaplanner 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
         // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataPlanningSolution>) scoreManager).getScoreDirectorFactory());
@@ -73,7 +73,7 @@ class OptaPlannerProcessorGizmoKitchenSinkTest {
     }
 
     @Test
-    public void solve() throws ExecutionException, InterruptedException {
+    void solve() throws ExecutionException, InterruptedException {
         TestDataKitchenSinkSolution problem = new TestDataKitchenSinkSolution(
                 new TestDataKitchenSinkEntity(),
                 Collections.emptyList(),

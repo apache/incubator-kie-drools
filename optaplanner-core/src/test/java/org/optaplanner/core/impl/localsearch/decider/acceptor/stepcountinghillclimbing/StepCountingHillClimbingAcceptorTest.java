@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
 
     @Test
-    public void typeStep() {
+    void typeStep() {
         StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(2,
                 StepCountingHillClimbingType.STEP);
 
@@ -144,7 +144,7 @@ class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void typeEqualOrImprovingStep() {
+    void typeEqualOrImprovingStep() {
         StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(2,
                 StepCountingHillClimbingType.EQUAL_OR_IMPROVING_STEP);
 
@@ -256,7 +256,7 @@ class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void typeImprovingStep() {
+    void typeImprovingStep() {
         StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(2,
                 StepCountingHillClimbingType.IMPROVING_STEP);
 
@@ -369,13 +369,13 @@ class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void zeroStepCountingHillClimbingSize() {
+    void zeroStepCountingHillClimbingSize() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new StepCountingHillClimbingAcceptor(0, StepCountingHillClimbingType.STEP));
     }
 
     @Test
-    public void negativeStepCountingHillClimbingSize() {
+    void negativeStepCountingHillClimbingSize() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new StepCountingHillClimbingAcceptor(-1, StepCountingHillClimbingType.STEP));
     }

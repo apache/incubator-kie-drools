@@ -37,7 +37,7 @@ class OptaPlannerBenchmarkProcessorEmptyAppWithInjectionTest {
                     .addClasses());
 
     @Test
-    public void emptyAppDoesNotCrash() {
+    void emptyAppDoesNotCrash() {
         assertThatIllegalStateException().isThrownBy(() -> Arc.container().instance(PlannerBenchmarkFactory.class).get())
                 .withMessageContaining("The " + PlannerBenchmarkFactory.class.getName() + " is not available as there are no");
     }

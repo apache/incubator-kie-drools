@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 class RandomUtilsTest {
 
     @Test
-    public void testNextLong() {
+    void testNextLong() {
         Random random = new Random(37);
         RandomUtils.nextLong(random, 10L + Integer.MAX_VALUE);
     }

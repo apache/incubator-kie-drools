@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class PooledEntityPlacerFactoryTest {
 
     @Test
-    public void unfoldNew() {
+    void unfoldNew() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
 
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();

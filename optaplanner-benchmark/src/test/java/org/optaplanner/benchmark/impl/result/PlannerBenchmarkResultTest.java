@@ -52,7 +52,7 @@ class PlannerBenchmarkResultTest {
     private static final String TEST_PLANNER_BENCHMARK_RESULT = "testPlannerBenchmarkResult.xml";
 
     @Test
-    public void createMergedResult() {
+    void createMergedResult() {
         PlannerBenchmarkResult p1 = new PlannerBenchmarkResult();
         p1.initSystemProperties();
         PlannerBenchmarkResult p2 = new PlannerBenchmarkResult();
@@ -134,7 +134,7 @@ class PlannerBenchmarkResultTest {
     }
 
     @Test
-    public void xmlReportRemainsSameAfterReadWrite() throws IOException {
+    void xmlReportRemainsSameAfterReadWrite() throws IOException {
         BenchmarkResultIO benchmarkResultIO = new BenchmarkResultIO();
         PlannerBenchmarkResult plannerBenchmarkResult;
         try (Reader reader = new InputStreamReader(
@@ -153,7 +153,7 @@ class PlannerBenchmarkResultTest {
     }
 
     @Test
-    public void xmlReadBenchmarkResultAggregated() throws URISyntaxException, IOException {
+    void xmlReadBenchmarkResultAggregated() throws URISyntaxException, IOException {
         BenchmarkAggregator benchmarkAggregator = new BenchmarkAggregator();
         benchmarkAggregator.setBenchmarkDirectory(Files.createTempDirectory(getClass().getSimpleName()).toFile());
         benchmarkAggregator.setBenchmarkReportConfig(new BenchmarkReportConfig());

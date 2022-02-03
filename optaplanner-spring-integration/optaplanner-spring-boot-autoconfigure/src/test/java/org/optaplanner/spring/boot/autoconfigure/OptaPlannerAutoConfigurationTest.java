@@ -112,7 +112,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solverConfigXml_none() {
+    void solverConfigXml_none() {
         contextRunner
                 .withClassLoader(allDefaultsFilteredClassLoader)
                 .run(context -> {
@@ -132,7 +132,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solverConfigXml_default() {
+    void solverConfigXml_default() {
         contextRunner
                 .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .run(context -> {
@@ -152,7 +152,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solverConfigXml_property() {
+    void solverConfigXml_property() {
         contextRunner
                 .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues(
@@ -174,7 +174,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solverProperties() {
+    void solverProperties() {
         contextRunner
                 .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.environment-mode=FULL_ASSERT")
@@ -209,7 +209,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void terminationProperties() {
+    void terminationProperties() {
         contextRunner
                 .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.spent-limit=4h")
@@ -237,7 +237,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void singletonSolverFactory() {
+    void singletonSolverFactory() {
         contextRunner
                 .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .run(context -> {
@@ -256,7 +256,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void solve() {
+    void solve() {
         contextRunner
                 .withClassLoader(allDefaultsFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
@@ -277,7 +277,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void benchmark() {
+    void benchmark() {
         benchmarkContextRunner
                 .withClassLoader(allDefaultsFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
@@ -295,7 +295,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void constraintVerifier() {
+    void constraintVerifier() {
         contextRunner
                 .withClassLoader(testFilteredClassLoader)
                 .run(context -> {
@@ -324,7 +324,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void constraintVerifierBavet() {
+    void constraintVerifierBavet() {
         contextRunner
                 .withClassLoader(testFilteredClassLoader)
                 .withPropertyValues(
@@ -353,7 +353,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void constraintVerifierOnDrl() {
+    void constraintVerifierOnDrl() {
         String constraintsUrl = "org/optaplanner/spring/boot/autoconfigure/customConstraints.drl";
         noConstraintsContextRunner
                 .withPropertyValues(OptaPlannerProperties.SCORE_DRL_PROPERTY + "=" + constraintsUrl)
@@ -367,7 +367,7 @@ class OptaPlannerAutoConfigurationTest {
     }
 
     @Test
-    public void chained_solverConfigXml_none() {
+    void chained_solverConfigXml_none() {
         chainedContextRunner
                 .withClassLoader(allDefaultsFilteredClassLoader)
                 .run(context -> {

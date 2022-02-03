@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
 
     @Test
-    public void oneMoveSelector() {
+    void oneMoveSelector() {
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector<TestdataSolution> entitySelector =
                 SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),

@@ -41,7 +41,7 @@ class JaxbSolutionFileIOTest {
     }
 
     @Test
-    public void readAndWrite() {
+    void readAndWrite() {
         JaxbSolutionFileIO<JaxbTestdataSolution> solutionFileIO = new JaxbSolutionFileIO<>(JaxbTestdataSolution.class);
         File file = new File(solutionTestDir, "testdataSolution.xml");
 

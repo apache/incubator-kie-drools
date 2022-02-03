@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 class ScoreSubSingleBenchmarkRankingComparatorTest {
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         ScoreSubSingleBenchmarkRankingComparator comparator = new ScoreSubSingleBenchmarkRankingComparator();
         SolverBenchmarkResult solverBenchmarkResult = mock(SolverBenchmarkResult.class);
         when(solverBenchmarkResult.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());

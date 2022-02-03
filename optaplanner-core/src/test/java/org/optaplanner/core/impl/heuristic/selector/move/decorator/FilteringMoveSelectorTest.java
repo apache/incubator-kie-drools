@@ -37,22 +37,22 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class FilteringMoveSelectorTest {
 
     @Test
-    public void filterCacheTypeSolver() {
+    void filterCacheTypeSolver() {
         filter(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void filterCacheTypePhase() {
+    void filterCacheTypePhase() {
         filter(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void filterCacheTypeStep() {
+    void filterCacheTypeStep() {
         filter(SelectionCacheType.STEP, 5);
     }
 
     @Test
-    public void filterCacheTypeJustInTime() {
+    void filterCacheTypeJustInTime() {
         filter(SelectionCacheType.JUST_IN_TIME, 5);
     }
 

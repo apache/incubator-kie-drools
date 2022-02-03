@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 class SelectedCountLimitMoveSelectorTest {
 
     @Test
-    public void selectSizeLimitLowerThanSelectorSize() {
+    void selectSizeLimitLowerThanSelectorSize() {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"), new DummyMove("a4"), new DummyMove("a5"));
         MoveSelector moveSelector = new SelectedCountLimitMoveSelector(childMoveSelector, 3L);
@@ -92,7 +92,7 @@ class SelectedCountLimitMoveSelectorTest {
     }
 
     @Test
-    public void selectSizeLimitHigherThanSelectorSize() {
+    void selectSizeLimitHigherThanSelectorSize() {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
         MoveSelector moveSelector = new SelectedCountLimitMoveSelector(childMoveSelector, 5L);

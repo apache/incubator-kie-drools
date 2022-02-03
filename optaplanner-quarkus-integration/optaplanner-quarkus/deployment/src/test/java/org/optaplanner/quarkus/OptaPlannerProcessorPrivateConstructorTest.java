@@ -47,7 +47,7 @@ class OptaPlannerProcessorPrivateConstructorTest {
     SolverManager<PrivateNoArgsConstructorSolution, Long> solverManager;
 
     @Test
-    public void canConstructBeansWithPrivateConstructors() throws ExecutionException, InterruptedException {
+    void canConstructBeansWithPrivateConstructors() throws ExecutionException, InterruptedException {
         PrivateNoArgsConstructorSolution problem = new PrivateNoArgsConstructorSolution(
                 Arrays.asList(
                         new PrivateNoArgsConstructorEntity("1"),

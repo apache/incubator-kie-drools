@@ -27,7 +27,7 @@ import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 class RoadSegmentLocationTest {
 
     @Test
-    public void getDistance() {
+    void getDistance() {
         long id = 0;
         RoadSegmentLocation a = new RoadSegmentLocation(id++, 0.0, 0.0);
         RoadSegmentLocation b = new RoadSegmentLocation(id++, 0.0, 4.0);

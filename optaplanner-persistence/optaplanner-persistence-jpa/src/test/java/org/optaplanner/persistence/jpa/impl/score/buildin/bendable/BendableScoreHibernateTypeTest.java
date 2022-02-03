@@ -29,7 +29,7 @@ import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 class BendableScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
-    public void persistAndMerge() {
+    void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(BendableScore.zero(3, 2)),
                 BendableScore.of(new int[] { 10000, 2000, 300 }, new int[] { 40, 5 }),
                 BendableScore.ofUninitialized(-7, new int[] { 10000, 2000, 300 }, new int[] { 40, 5 }));

@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 class CompositePentaJoinerTest {
 
     @Test
-    public void compositeMappings() {
+    void compositeMappings() {
         PentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner1 = Joiners
                 .equal((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigDecimal::longValue);
         PentaJoiner<BigInteger, BigInteger, BigInteger, BigInteger, BigDecimal> joiner2 = Joiners

@@ -47,7 +47,7 @@ class OptaPlannerConstraintVerifierBavetStreamImplTest {
     ConstraintVerifier<TestdataQuarkusConstraintProvider, TestdataQuarkusSolution> constraintVerifier;
 
     @Test
-    public void constraintVerifierBavetStreamImpl() {
+    void constraintVerifierBavetStreamImpl() {
         Assertions.assertEquals(ConstraintStreamImplType.BAVET,
                 ((DefaultConstraintVerifier<?, ?, ?>) constraintVerifier)
                         .getConstraintStreamImplType());

@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorrup
 class EasyScoreDirectorTest {
 
     @Test
-    public void constraintMatchTotalsUnsupported() {
+    void constraintMatchTotalsUnsupported() {
         EasyScoreDirector<Object, ?> director = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
         assertThat(director.isConstraintMatchEnabled()).isFalse();
         assertThatIllegalStateException()
@@ -51,7 +51,7 @@ class EasyScoreDirectorTest {
     }
 
     @Test
-    public void shadowVariableCorruption() {
+    void shadowVariableCorruption() {
         EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution, SimpleScore> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>(TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
                         (solution_) -> SimpleScore.of(0));

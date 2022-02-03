@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class ConstraintMatchTest {
 
     @Test
-    public void equalsAndHashCode() { // No CM should equal any other.
+    void equalsAndHashCode() { // No CM should equal any other.
         ConstraintMatch<SimpleScore> constraintMatch =
                 new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO);
         PlannerAssert.assertObjectsAreEqual(constraintMatch, constraintMatch);
@@ -36,7 +36,7 @@ class ConstraintMatchTest {
     }
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         PlannerAssert.assertCompareToOrder(
                 new ConstraintMatch<>("a.b", "a", Arrays.asList("a"), SimpleScore.ZERO),
                 new ConstraintMatch<>("a.b", "a", Arrays.asList("a", "aa"), SimpleScore.ZERO),

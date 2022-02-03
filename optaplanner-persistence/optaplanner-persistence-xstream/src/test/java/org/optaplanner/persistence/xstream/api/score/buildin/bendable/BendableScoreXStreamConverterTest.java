@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 class BendableScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableScoreWrapper(null));
         BendableScore score = BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));

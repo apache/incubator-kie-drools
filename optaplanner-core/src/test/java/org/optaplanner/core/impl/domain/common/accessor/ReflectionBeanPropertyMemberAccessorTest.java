@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 class ReflectionBeanPropertyMemberAccessorTest {
 
     @Test
-    public void methodAnnotatedEntity() throws NoSuchMethodException {
+    void methodAnnotatedEntity() throws NoSuchMethodException {
         ReflectionBeanPropertyMemberAccessor memberAccessor = new ReflectionBeanPropertyMemberAccessor(
                 TestdataEntity.class.getMethod("getValue"));
         assertThat(memberAccessor.getName()).isEqualTo("value");

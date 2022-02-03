@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 class CompositeTriJoinerTest {
 
     @Test
-    public void compositeMappings() {
+    void compositeMappings() {
         TriJoiner<BigInteger, BigInteger, BigDecimal> joiner1 = Joiners.equal((a, b) -> a.add(b).longValue(),
                 BigDecimal::longValue);
         TriJoiner<BigInteger, BigInteger, BigDecimal> joiner2 = Joiners.lessThan((a, b) -> a.add(b).longValue(),

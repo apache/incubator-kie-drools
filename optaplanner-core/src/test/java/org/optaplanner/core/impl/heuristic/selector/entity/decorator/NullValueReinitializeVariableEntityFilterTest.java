@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity
 class NullValueReinitializeVariableEntityFilterTest {
 
     @Test
-    public void accept() {
+    void accept() {
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         NullValueReinitializeVariableEntityFilter filter = new NullValueReinitializeVariableEntityFilter(variableDescriptor);
         assertThat(filter.accept(null, new TestdataEntity("a", new TestdataValue()))).isFalse();
@@ -36,7 +36,7 @@ class NullValueReinitializeVariableEntityFilterTest {
     }
 
     @Test
-    public void acceptWithNullableEntity() {
+    void acceptWithNullableEntity() {
         EntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("value");
         NullValueReinitializeVariableEntityFilter filter = new NullValueReinitializeVariableEntityFilter(variableDescriptor);

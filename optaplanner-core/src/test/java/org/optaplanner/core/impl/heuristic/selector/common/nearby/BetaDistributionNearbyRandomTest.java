@@ -25,17 +25,17 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class BetaDistributionNearbyRandomTest {
 
     @Test
-    public void betaDistributionAlphaTooLow() {
+    void betaDistributionAlphaTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BetaDistributionNearbyRandom(-0.2, 0.3));
     }
 
     @Test
-    public void betaDistributionBetaTooLow() {
+    void betaDistributionBetaTooLow() {
         assertThatIllegalArgumentException().isThrownBy(() -> new BetaDistributionNearbyRandom(0.2, -0.3));
     }
 
     @Test
-    public void nextIntUniform() {
+    void nextIntUniform() {
         NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 1.0);
 
         assertThat(nearbyRandom.nextInt(new TestRandom(0), 500)).isEqualTo(0);

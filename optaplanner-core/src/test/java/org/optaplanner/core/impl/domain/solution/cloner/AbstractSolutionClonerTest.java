@@ -79,7 +79,7 @@ public abstract class AbstractSolutionClonerTest {
             SolutionDescriptor<Solution_> solutionDescriptor);
 
     @Test
-    public void cloneSolution() {
+    void cloneSolution() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataSolution> cloner = createSolutionCloner(solutionDescriptor);
 
@@ -124,7 +124,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneListVariableSolution() {
+    void cloneListVariableSolution() {
         SolutionDescriptor<TestdataListSolutionExternalized> solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(
                 TestdataListSolutionExternalized.class,
                 TestdataListEntityExternalized.class);
@@ -168,7 +168,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneFieldAnnotatedSolution() {
+    void cloneFieldAnnotatedSolution() {
         // can't check cloner class; it doesn't implement any additional interfaces
         Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
                 "Gizmo cannot use reflection");
@@ -213,7 +213,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneAccessModifierSolution() {
+    void cloneAccessModifierSolution() {
         // can't check cloner class; it doesn't implement any additional interfaces
         Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
                 "Gizmo cannot use reflection");
@@ -272,7 +272,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneExtendedSolution() {
+    void cloneExtendedSolution() {
         // can't check cloner class; it doesn't implement any additional interfaces
         Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
                 "Gizmo cannot handle subclasses of the class annotated with @PlanningSolution");
@@ -328,7 +328,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneExtendedThirdPartySolution() {
+    void cloneExtendedThirdPartySolution() {
         SolutionDescriptor<TestdataExtendedThirdPartySolution> solutionDescriptor =
                 TestdataExtendedThirdPartySolution.buildSolutionDescriptor();
         SolutionCloner<TestdataExtendedThirdPartySolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -416,7 +416,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneChainedSolution() {
+    void cloneChainedSolution() {
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor =
                 TestdataChainedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataChainedSolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -468,7 +468,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneShadowChainedSolution() {
+    void cloneShadowChainedSolution() {
         SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor =
                 TestdataShadowingChainedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataShadowingChainedSolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -546,7 +546,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneSetBasedSolution() {
+    void cloneSetBasedSolution() {
         SolutionDescriptor<TestdataSetBasedSolution> solutionDescriptor =
                 TestdataSetBasedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataSetBasedSolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -610,7 +610,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneEntityCollectionPropertySolution() {
+    void cloneEntityCollectionPropertySolution() {
         SolutionDescriptor<TestdataEntityCollectionPropertySolution> solutionDescriptor =
                 TestdataEntityCollectionPropertySolution.buildSolutionDescriptor();
         SolutionCloner<TestdataEntityCollectionPropertySolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -717,7 +717,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void cloneEntityArrayPropertySolution() {
+    void cloneEntityArrayPropertySolution() {
         SolutionDescriptor<TestdataArrayBasedSolution> solutionDescriptor =
                 TestdataArrayBasedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataArrayBasedSolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -778,7 +778,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void deepPlanningClone() {
+    void deepPlanningClone() {
         SolutionDescriptor<TestdataDeepCloningSolution> solutionDescriptor =
                 TestdataDeepCloningSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataDeepCloningSolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -876,7 +876,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void fieldAnnotatedDeepPlanningClone() {
+    void fieldAnnotatedDeepPlanningClone() {
         SolutionDescriptor<TestdataFieldAnnotatedDeepCloningSolution> solutionDescriptor =
                 TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataFieldAnnotatedDeepCloningSolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -942,7 +942,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void supportsEntityToSolutionBacklinking() {
+    void supportsEntityToSolutionBacklinking() {
         int entityCount = 2;
         SolutionCloner<TestdataBacklinkedSolution> cloner =
                 createSolutionCloner(TestdataBacklinkedSolution.buildSolutionDescriptor());

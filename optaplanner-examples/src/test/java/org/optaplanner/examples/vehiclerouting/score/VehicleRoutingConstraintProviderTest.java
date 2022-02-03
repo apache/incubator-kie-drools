@@ -39,7 +39,7 @@ class VehicleRoutingConstraintProviderTest {
     private final Location location3 = new AirLocation(3L, 3.0, 0.0);
 
     @Test
-    public void vehicleCapacityUnpenalized() {
+    void vehicleCapacityUnpenalized() {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -52,7 +52,7 @@ class VehicleRoutingConstraintProviderTest {
     }
 
     @Test
-    public void vehicleCapacityPenalized() {
+    void vehicleCapacityPenalized() {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -69,7 +69,7 @@ class VehicleRoutingConstraintProviderTest {
     }
 
     @Test
-    public void distanceToPreviousStandstill() {
+    void distanceToPreviousStandstill() {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -86,7 +86,7 @@ class VehicleRoutingConstraintProviderTest {
     }
 
     @Test
-    public void distanceFromLastCustomerToDepot() {
+    void distanceFromLastCustomerToDepot() {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -103,7 +103,7 @@ class VehicleRoutingConstraintProviderTest {
     }
 
     @Test
-    public void arrivalAfterDueTime() {
+    void arrivalAfterDueTime() {
         Vehicle vehicleA = new Vehicle(1L, 100, new TimeWindowedDepot(1L, location1, 8_00_00L, 18_00_00L));
         TimeWindowedCustomer customer1 = new TimeWindowedCustomer(2L, location2, 1, 8_00_00L, 18_00_00L, 1_00_00L);
         customer1.setPreviousStandstill(vehicleA);

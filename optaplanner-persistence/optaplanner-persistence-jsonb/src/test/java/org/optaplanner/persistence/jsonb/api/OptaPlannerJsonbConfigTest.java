@@ -29,7 +29,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 class OptaPlannerJsonbConfigTest extends AbstractJsonbJsonAdapterTest {
 
     @Test
-    public void jsonbConfigSerializeAndDeserialize() {
+    void jsonbConfigSerializeAndDeserialize() {
         JsonbConfig config = OptaPlannerJsonbConfig.createConfig();
         Jsonb jsonb = JsonbBuilder.create(config);
 

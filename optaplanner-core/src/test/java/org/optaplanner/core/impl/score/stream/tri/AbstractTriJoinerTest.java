@@ -31,22 +31,22 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 class AbstractTriJoinerTest {
 
     @Test
-    public void merge0Joiners() {
+    void merge0Joiners() {
         assertThat(merge()).isInstanceOf(NoneTriJoiner.class);
     }
 
     @Test
-    public void merge1JoinersNone() {
+    void merge1JoinersNone() {
         assertThat(merge(new NoneTriJoiner<>())).isInstanceOf(NoneTriJoiner.class);
     }
 
     @Test
-    public void merge1JoinersSingle() {
+    void merge1JoinersSingle() {
         assertThat(merge(Joiners.equal((a, b) -> 0, c -> 0))).isInstanceOf(SingleTriJoiner.class);
     }
 
     @Test
-    public void merge2Joiners() {
+    void merge2Joiners() {
         TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners.equal((a, b) -> a.add(b).longValue(),
                 BigInteger::longValue);
         TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners.lessThan((a, b) -> a.add(b).longValue(),
@@ -59,7 +59,7 @@ class AbstractTriJoinerTest {
     }
 
     @Test
-    public void merge2Joiners1Composite() {
+    void merge2Joiners1Composite() {
         TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners.equal((a, b) -> a.add(b).longValue(),
                 BigInteger::longValue);
         TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners.lessThan((a, b) -> a.add(b).longValue(),

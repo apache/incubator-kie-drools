@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class BestScoreFeasibleTerminationTest {
 
     @Test
-    public void solveTermination() {
+    void solveTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
         Termination<TestdataSolution> termination = new BestScoreFeasibleTermination<>(scoreDefinition, new double[] {});
@@ -61,7 +61,7 @@ class BestScoreFeasibleTerminationTest {
     }
 
     @Test
-    public void phaseTermination() {
+    void phaseTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
         Termination<TestdataSolution> termination = new BestScoreFeasibleTermination<>(scoreDefinition, new double[] {});
@@ -90,7 +90,7 @@ class BestScoreFeasibleTerminationTest {
     }
 
     @Test
-    public void calculateTimeGradientBendableScoreHHSSS() {
+    void calculateTimeGradientBendableScoreHHSSS() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(2);
         BestScoreFeasibleTermination<TestdataSolution> termination = new BestScoreFeasibleTermination<>(scoreDefinition,

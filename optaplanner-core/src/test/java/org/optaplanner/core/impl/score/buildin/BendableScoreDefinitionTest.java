@@ -27,19 +27,19 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 class BendableScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         BendableScore score = new BendableScoreDefinition(1, 2).getZeroScore();
         assertThat(score).isEqualTo(BendableScore.zero(1, 2));
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         BendableScore score = new BendableScoreDefinition(1, 2).getOneSoftestScore();
         assertThat(score).isEqualTo(BendableScore.of(new int[1], new int[] { 0, 1 }));
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new BendableScoreDefinition(1, 1).getLevelsSize()).isEqualTo(2);
         assertThat(new BendableScoreDefinition(3, 4).getLevelsSize()).isEqualTo(7);
         assertThat(new BendableScoreDefinition(4, 3).getLevelsSize()).isEqualTo(7);
@@ -48,7 +48,7 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new BendableScoreDefinition(1, 1).getLevelLabels())
                 .isEqualTo(new String[] { "hard 0 score", "soft 0 score" });
         assertThat(new BendableScoreDefinition(3, 4).getLevelLabels())
@@ -64,7 +64,7 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void getFeasibleLevelsSize() {
+    void getFeasibleLevelsSize() {
         assertThat(new BendableScoreDefinition(1, 1).getFeasibleLevelsSize()).isEqualTo(1);
         assertThat(new BendableScoreDefinition(3, 4).getFeasibleLevelsSize()).isEqualTo(3);
         assertThat(new BendableScoreDefinition(4, 3).getFeasibleLevelsSize()).isEqualTo(4);
@@ -73,13 +73,13 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void createScoreWithIllegalArgument() {
+    void createScoreWithIllegalArgument() {
         BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(2, 3);
         assertThatIllegalArgumentException().isThrownBy(() -> bendableScoreDefinition.createScore(1, 2, 3));
     }
 
     @Test
-    public void createScore() {
+    void createScore() {
         int hardLevelSize = 3;
         int softLevelSize = 2;
         int levelSize = hardLevelSize + softLevelSize;
@@ -101,7 +101,7 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundOnlyUp() {
+    void buildOptimisticBoundOnlyUp() {
         BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
         BendableScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 5),
@@ -115,7 +115,7 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundOnlyDown() {
+    void buildOptimisticBoundOnlyDown() {
         BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
         BendableScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 5),
@@ -129,7 +129,7 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyUp() {
+    void buildPessimisticBoundOnlyUp() {
         BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
         BendableScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 5),
@@ -143,7 +143,7 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void buildPessimisticBoundOnlyDown() {
+    void buildPessimisticBoundOnlyDown() {
         BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
         BendableScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 5),
@@ -157,7 +157,7 @@ class BendableScoreDefinitionTest {
     }
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(1, 1);
         BendableScore dividend = scoreDefinition.createScoreUninitialized(2, 0, 10);
         BendableScore zeroDivisor = scoreDefinition.getZeroScore();

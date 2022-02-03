@@ -28,12 +28,12 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
 class HardSoftBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<HardSoftBigDecimalScore> {
 
     @Test
-    public void addConstraintMatchWithConstraintMatch() {
+    void addConstraintMatchWithConstraintMatch() {
         addConstraintMatch(true);
     }
 
     @Test
-    public void addConstraintMatchWithoutConstraintMatch() {
+    void addConstraintMatchWithoutConstraintMatch() {
         addConstraintMatch(false);
     }
 
@@ -92,12 +92,12 @@ class HardSoftBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<Hard
     }
 
     @Test
-    public void rewardPenalizeWithConstraintMatch() {
+    void rewardPenalizeWithConstraintMatch() {
         rewardPenalize(true);
     }
 
     @Test
-    public void rewardPenalizeWithoutConstraintMatch() {
+    void rewardPenalizeWithoutConstraintMatch() {
         rewardPenalize(false);
     }
 

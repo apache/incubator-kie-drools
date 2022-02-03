@@ -32,7 +32,7 @@ class GizmoMemberAccessorFactoryTest {
     // but this is making sure the member accessor returned
     // is the one from GizmoMemberAccessorImplementor
     @Test
-    public void testReturnedMemberAccessor() throws NoSuchMethodException {
+    void testReturnedMemberAccessor() throws NoSuchMethodException {
         Method member = TestdataEntity.class.getMethod("getValue");
         MemberAccessor memberAccessor = GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, PlanningVariable.class);
 
@@ -54,7 +54,7 @@ class GizmoMemberAccessorFactoryTest {
     }
 
     @Test
-    public void testGizmoNotOnClasspathThrowsException() throws NoSuchMethodException {
+    void testGizmoNotOnClasspathThrowsException() throws NoSuchMethodException {
         Member member = TestdataEntity.class.getMethod("getValue");
         Thread.currentThread().setContextClassLoader(new ClassLoader() {
             @Override

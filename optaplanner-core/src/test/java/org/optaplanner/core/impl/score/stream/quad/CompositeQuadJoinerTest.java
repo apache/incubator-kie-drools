@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 class CompositeQuadJoinerTest {
 
     @Test
-    public void compositeMappings() {
+    void compositeMappings() {
         QuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner1 = Joiners
                 .equal((a, b, c) -> a.add(b).add(c).longValue(), BigDecimal::longValue);
         QuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner2 = Joiners

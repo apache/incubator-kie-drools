@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 class AlphaNumericStringComparatorTest {
 
     @Test
-    public void compare() {
+    void compare() {
         AlphaNumericStringComparator comparator = new AlphaNumericStringComparator();
         assertCompareEquals(comparator, "aaa", "aaa");
         assertCompareLower(comparator, "aaa", "aaaa");

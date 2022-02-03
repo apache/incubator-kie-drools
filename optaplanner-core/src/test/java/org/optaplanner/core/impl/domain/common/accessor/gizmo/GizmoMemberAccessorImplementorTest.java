@@ -17,7 +17,7 @@ import org.optaplanner.core.impl.testdata.domain.gizmo.GizmoTestdataEntity;
 class GizmoMemberAccessorImplementorTest {
 
     @Test
-    public void testGeneratedMemberAccessorForMethod() throws NoSuchMethodException {
+    void testGeneratedMemberAccessorForMethod() throws NoSuchMethodException {
         Member member = TestdataEntity.class.getMethod("getValue");
         MemberAccessor memberAccessor = GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);
         assertThat(memberAccessor.getName()).isEqualTo("value");
@@ -38,7 +38,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testGeneratedMemberAccessorForMethodWithoutSetter() throws NoSuchMethodException {
+    void testGeneratedMemberAccessorForMethodWithoutSetter() throws NoSuchMethodException {
         Member member = GizmoTestdataEntity.class.getMethod("getId");
         MemberAccessor memberAccessor = GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningId.class);
         assertThat(memberAccessor.getName()).isEqualTo("id");
@@ -53,7 +53,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testGeneratedMemberAccessorForField() throws NoSuchFieldException {
+    void testGeneratedMemberAccessorForField() throws NoSuchFieldException {
         Member member = GizmoTestdataEntity.class.getField("value");
         MemberAccessor memberAccessor = GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);
         assertThat(memberAccessor.getName()).isEqualTo("value");
@@ -74,7 +74,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testGeneratedMemberAccessorForPrimitiveField() throws NoSuchFieldException {
+    void testGeneratedMemberAccessorForPrimitiveField() throws NoSuchFieldException {
         Member member = GizmoTestdataEntity.class.getField("isPinned");
         MemberAccessor memberAccessor = GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningPin.class);
         assertThat(memberAccessor.getName()).isEqualTo("isPinned");
@@ -91,7 +91,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testGeneratedMemberAccessorSameClass() throws NoSuchMethodException {
+    void testGeneratedMemberAccessorSameClass() throws NoSuchMethodException {
         Member member = TestdataEntity.class.getMethod("getValue");
         MemberAccessor memberAccessor1 = GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);
         MemberAccessor memberAccessor2 = GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);
@@ -100,7 +100,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testThrowsWhenGetterMethodHasParameters() throws NoSuchMethodException {
+    void testThrowsWhenGetterMethodHasParameters() throws NoSuchMethodException {
         Member member = GizmoTestdataEntity.class.getMethod("methodWithParameters", String.class);
         assertThatCode(() -> {
             GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);
@@ -109,7 +109,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testThrowsWhenGetterMethodReturnVoid() throws NoSuchMethodException {
+    void testThrowsWhenGetterMethodReturnVoid() throws NoSuchMethodException {
         Member member = GizmoTestdataEntity.class.getMethod("getVoid");
         assertThatCode(() -> {
             GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);
@@ -117,7 +117,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testThrowsWhenReadMethodReturnVoid() throws NoSuchMethodException {
+    void testThrowsWhenReadMethodReturnVoid() throws NoSuchMethodException {
         Member member = GizmoTestdataEntity.class.getMethod("voidMethod");
         assertThatCode(() -> {
             GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);
@@ -125,7 +125,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testGeneratedMemberAccessorForBooleanMethod() throws NoSuchMethodException {
+    void testGeneratedMemberAccessorForBooleanMethod() throws NoSuchMethodException {
         Member member = GizmoTestdataEntity.class.getMethod("isPinned");
         MemberAccessor memberAccessor = GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningPin.class);
         assertThat(memberAccessor.getName()).isEqualTo("pinned");
@@ -143,7 +143,7 @@ class GizmoMemberAccessorImplementorTest {
     }
 
     @Test
-    public void testThrowsWhenGetBooleanReturnsNonBoolean() throws NoSuchMethodException {
+    void testThrowsWhenGetBooleanReturnsNonBoolean() throws NoSuchMethodException {
         Member member = GizmoTestdataEntity.class.getMethod("isAMethodThatHasABadName");
         assertThatCode(() -> {
             GizmoMemberAccessorImplementor.createAccessorFor(member, PlanningVariable.class);

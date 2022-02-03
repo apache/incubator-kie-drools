@@ -36,7 +36,7 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 class ScoreUtilsTest {
 
     @Test
-    public void parseScore() {
+    void parseScore() {
         assertThat(ScoreUtils.parseScore(SimpleScore.class, "-1000"))
                 .isEqualTo(SimpleScore.of(-1000));
         assertThat(ScoreUtils.parseScore(SimpleLongScore.class, "-1000"))

@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class DefaultLocalSearchPhaseTest {
 
     @Test
-    public void solveWithInitializedEntities() {
+    void solveWithInitializedEntities() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
@@ -72,7 +72,7 @@ class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveWithPinnedEntities() {
+    void solveWithPinnedEntities() {
         SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
@@ -103,7 +103,7 @@ class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveWithEmptyEntityList() {
+    void solveWithEmptyEntityList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
@@ -122,7 +122,7 @@ class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveTabuSearchWithInitializedEntities() {
+    void solveTabuSearchWithInitializedEntities() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setLocalSearchType(LocalSearchType.TABU_SEARCH);
@@ -153,7 +153,7 @@ class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveTabuSearchWithPinnedEntities() {
+    void solveTabuSearchWithPinnedEntities() {
         SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
@@ -185,7 +185,7 @@ class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveTabuSearchWithEmptyEntityList() {
+    void solveTabuSearchWithEmptyEntityList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setLocalSearchType(LocalSearchType.TABU_SEARCH);
@@ -205,7 +205,7 @@ class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveListVariable() {
+    void solveListVariable() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataListSolution.class, TestdataListEntity.class, TestdataListValue.class);
 
@@ -216,7 +216,7 @@ class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveListVariableWithExternalizedInverseAndIndexSupplies() {
+    void solveListVariableWithExternalizedInverseAndIndexSupplies() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataListSolutionExternalized.class, TestdataListEntityExternalized.class);
 

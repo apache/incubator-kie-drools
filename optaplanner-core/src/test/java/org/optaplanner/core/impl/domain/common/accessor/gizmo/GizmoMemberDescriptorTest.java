@@ -19,7 +19,7 @@ import io.quarkus.gizmo.MethodDescriptor;
 class GizmoMemberDescriptorTest {
 
     @Test
-    public void testThatCreatingDescriptorForPrivateMembersFail() {
+    void testThatCreatingDescriptorForPrivateMembersFail() {
         assertThatCode(() -> new GizmoMemberDescriptor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value")))
                 .hasMessage("Member (" + "value" + ") of class (" +
                         TestdataFieldAnnotatedEntity.class.getName() + ") is not public and domainAccessType is GIZMO.\n" +
@@ -35,7 +35,7 @@ class GizmoMemberDescriptorTest {
     }
 
     @Test
-    public void testThatWhenIsMethodExecuteConsumerIffMemberIsMethod() throws Exception {
+    void testThatWhenIsMethodExecuteConsumerIffMemberIsMethod() throws Exception {
         GizmoMemberDescriptor methodMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getMethod("getId"));
         Consumer<MethodDescriptor> methodDescriptorConsumer = Mockito.mock(Consumer.class);
         methodMemberDescriptor.whenIsMethod(methodDescriptorConsumer);
@@ -49,7 +49,7 @@ class GizmoMemberDescriptorTest {
     }
 
     @Test
-    public void testThatWhenIsFieldExecuteConsumerIffMemberIsField() throws Exception {
+    void testThatWhenIsFieldExecuteConsumerIffMemberIsField() throws Exception {
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
         Consumer<FieldDescriptor> methodDescriptorConsumer = Mockito.mock(Consumer.class);
         fieldMemberDescriptor.whenIsField(methodDescriptorConsumer);
@@ -63,7 +63,7 @@ class GizmoMemberDescriptorTest {
     }
 
     @Test
-    public void testThatGetDeclaringClassNameIsCorrect() throws Exception {
+    void testThatGetDeclaringClassNameIsCorrect() throws Exception {
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
         assertThat(fieldMemberDescriptor.getDeclaringClassName())
                 .isEqualTo(GizmoTestdataEntity.class.getName().replace('.', '/'));
@@ -74,7 +74,7 @@ class GizmoMemberDescriptorTest {
     }
 
     @Test
-    public void testMemberDescriptorNameIsCorrect() throws Exception {
+    void testMemberDescriptorNameIsCorrect() throws Exception {
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
         assertThat(fieldMemberDescriptor.getName()).isEqualTo("value");
 
@@ -88,7 +88,7 @@ class GizmoMemberDescriptorTest {
     }
 
     @Test
-    public void testMemberDescriptorSetterIsCorrect() throws Exception {
+    void testMemberDescriptorSetterIsCorrect() throws Exception {
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
         assertThat(fieldMemberDescriptor.getSetter()).isEmpty();
 
@@ -107,7 +107,7 @@ class GizmoMemberDescriptorTest {
     }
 
     @Test
-    public void testMemberDescriptorTypeNameIsCorrect() throws Exception {
+    void testMemberDescriptorTypeNameIsCorrect() throws Exception {
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
         assertThat(fieldMemberDescriptor.getTypeName()).isEqualTo(TestdataValue.class.getName());
 

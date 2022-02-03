@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class ValueRangeFactoryTest {
 
     @Test
-    public void solve() {
+    void solve() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataValueRangeSolution.class, TestdataValueRangeEntity.class);
 

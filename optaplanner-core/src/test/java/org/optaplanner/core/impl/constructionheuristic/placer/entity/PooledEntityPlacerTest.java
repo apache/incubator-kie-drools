@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
 
     @Test
-    public void oneMoveSelector() {
+    void oneMoveSelector() {
         MoveSelector<TestdataSolution> moveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("b1"));
 

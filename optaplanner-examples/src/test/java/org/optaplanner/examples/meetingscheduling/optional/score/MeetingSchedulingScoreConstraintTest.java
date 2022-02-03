@@ -98,7 +98,7 @@ class MeetingSchedulingScoreConstraintTest {
     }
 
     @Test
-    public void roomStability() {
+    void roomStability() {
         MeetingSchedule solution = getMeetingSchedule(6);
         MeetingConstraintConfiguration constraintConfiguration = solution.getConstraintConfiguration();
         List<Attendance> aList = new ArrayList<>();

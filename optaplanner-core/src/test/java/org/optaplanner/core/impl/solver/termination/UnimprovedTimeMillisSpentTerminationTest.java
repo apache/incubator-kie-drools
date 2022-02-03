@@ -31,14 +31,14 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class UnimprovedTimeMillisSpentTerminationTest {
 
     @Test
-    public void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {
+    void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new UnimprovedTimeMillisSpentTermination<>(-1L))
                 .withMessageContaining("cannot be negative");
     }
 
     @Test
-    public void solverTermination() {
+    void solverTermination() {
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         Clock clock = mock(Clock.class);
 
@@ -56,7 +56,7 @@ class UnimprovedTimeMillisSpentTerminationTest {
     }
 
     @Test
-    public void phaseTermination() {
+    void phaseTermination() {
         AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
         Clock clock = mock(Clock.class);
 

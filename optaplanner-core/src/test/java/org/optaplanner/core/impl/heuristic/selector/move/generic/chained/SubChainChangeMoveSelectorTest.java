@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 class SubChainChangeMoveSelectorTest {
 
     @Test
-    public void differentValueDescriptorException() {
+    void differentValueDescriptorException() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
@@ -43,7 +43,7 @@ class SubChainChangeMoveSelectorTest {
     }
 
     @Test
-    public void determinedSelectionWithNeverEndingChainSelector() {
+    void determinedSelectionWithNeverEndingChainSelector() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         when(subChainSelector.isNeverEnding()).thenReturn(true);
         GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
@@ -55,7 +55,7 @@ class SubChainChangeMoveSelectorTest {
     }
 
     @Test
-    public void determinedSelectionWithNeverEndingValueSelector() {
+    void determinedSelectionWithNeverEndingValueSelector() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
@@ -67,7 +67,7 @@ class SubChainChangeMoveSelectorTest {
     }
 
     @Test
-    public void isCountable() {
+    void isCountable() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
@@ -93,7 +93,7 @@ class SubChainChangeMoveSelectorTest {
     }
 
     @Test
-    public void getSize() {
+    void getSize() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);

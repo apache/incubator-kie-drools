@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
 
     @Test
-    public void lateAcceptanceSize() {
+    void lateAcceptanceSize() {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
         acceptor.setStartingTemperature(SimpleScore.of(200));
 
@@ -98,7 +98,7 @@ class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void negativeSimulatedAnnealingSize() {
+    void negativeSimulatedAnnealingSize() {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
         acceptor.setStartingTemperature(HardMediumSoftScore.of(1, -1, 2));
         assertThatIllegalArgumentException().isThrownBy(() -> acceptor.phaseStarted(null));

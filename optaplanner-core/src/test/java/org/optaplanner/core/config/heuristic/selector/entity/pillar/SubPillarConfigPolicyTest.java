@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 class SubPillarConfigPolicyTest {
 
     @Test
-    public void withoutSubpillars() {
+    void withoutSubpillars() {
         SubPillarConfigPolicy policy = SubPillarConfigPolicy.withoutSubpillars();
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isFalse();
@@ -38,7 +38,7 @@ class SubPillarConfigPolicyTest {
     }
 
     @Test
-    public void withLimitedSubpillars() {
+    void withLimitedSubpillars() {
         SubPillarConfigPolicy policy = SubPillarConfigPolicy.withSubpillars(2, 10);
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
@@ -49,7 +49,7 @@ class SubPillarConfigPolicyTest {
     }
 
     @Test
-    public void unlimitedSequential() {
+    void unlimitedSequential() {
         SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequentialUnlimited(mock(Comparator.class));
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
@@ -60,7 +60,7 @@ class SubPillarConfigPolicyTest {
     }
 
     @Test
-    public void sequential() {
+    void sequential() {
         SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequential(3, 5, mock(Comparator.class));
         assertSoftly(softly -> {
             softly.assertThat(policy.isSubPillarEnabled()).isTrue();
@@ -71,7 +71,7 @@ class SubPillarConfigPolicyTest {
     }
 
     @Test
-    public void validation() {
+    void validation() {
         assertThatThrownBy(() -> SubPillarConfigPolicy.withSubpillars(0, 1)).isInstanceOf(IllegalStateException.class);
         assertThatThrownBy(() -> SubPillarConfigPolicy.withSubpillars(1, 0)).isInstanceOf(IllegalStateException.class);
         assertThatThrownBy(() -> SubPillarConfigPolicy.withSubpillars(2, 1)).isInstanceOf(IllegalStateException.class);

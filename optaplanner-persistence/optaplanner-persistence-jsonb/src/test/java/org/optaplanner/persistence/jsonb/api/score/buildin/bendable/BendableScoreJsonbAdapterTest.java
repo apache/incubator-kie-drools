@@ -25,7 +25,7 @@ import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest
 class BendableScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableScoreWrapper(null));
         BendableScore score = BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));

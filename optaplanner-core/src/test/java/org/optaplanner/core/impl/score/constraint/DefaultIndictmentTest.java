@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 class DefaultIndictmentTest {
 
     @Test
-    public void getScoreTotal() {
+    void getScoreTotal() {
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
@@ -58,7 +58,7 @@ class DefaultIndictmentTest {
     }
 
     @Test
-    public void equalsAndHashCode() {
+    void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
                 new DefaultIndictment<>("e1", SimpleScore.ZERO),
                 new DefaultIndictment<>("e1", SimpleScore.ZERO),

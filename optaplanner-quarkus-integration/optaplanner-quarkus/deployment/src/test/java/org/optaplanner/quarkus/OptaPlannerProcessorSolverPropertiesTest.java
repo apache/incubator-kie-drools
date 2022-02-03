@@ -60,7 +60,7 @@ class OptaPlannerProcessorSolverPropertiesTest {
     SolverFactory<TestdataQuarkusSolution> solverFactory;
 
     @Test
-    public void solverProperties() {
+    void solverProperties() {
         assertEquals(EnvironmentMode.FULL_ASSERT, solverConfig.getEnvironmentMode());
         assertTrue(solverConfig.getDaemon());
         assertEquals("2", solverConfig.getMoveThreadCount());
@@ -70,7 +70,7 @@ class OptaPlannerProcessorSolverPropertiesTest {
     }
 
     @Test
-    public void terminationProperties() {
+    void terminationProperties() {
         assertEquals(Duration.ofHours(4), solverConfig.getTerminationConfig().getSpentLimit());
         assertEquals(Duration.ofHours(5), solverConfig.getTerminationConfig().getUnimprovedSpentLimit());
         assertEquals(SimpleScore.of(0).toString(), solverConfig.getTerminationConfig().getBestScoreLimit());

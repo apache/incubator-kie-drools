@@ -34,7 +34,7 @@ class TestGenHeadCuttingMutatorTest {
     }
 
     @Test
-    public void mutateUntilListIsEmpty() {
+    void mutateUntilListIsEmpty() {
         TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<>(list);
         assertThat(m.canMutate()).isTrue();
 
@@ -81,7 +81,7 @@ class TestGenHeadCuttingMutatorTest {
     }
 
     @Test
-    public void testImpossibleMutation() {
+    void testImpossibleMutation() {
         TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<>(list);
         assertThat(m.canMutate()).isTrue();
 

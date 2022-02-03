@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class HillClimbingAcceptorTest extends AbstractAcceptorTest {
 
     @Test
-    public void hillClimbingEnabled() {
+    void hillClimbingEnabled() {
         HillClimbingAcceptor acceptor = new HillClimbingAcceptor();
 
         SolverScope<TestdataSolution> solverScope = new SolverScope<>();

@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class TimeMillisSpentTerminationTest {
 
     @Test
-    public void solveTermination() {
+    void solveTermination() {
         Termination<TestdataSolution> termination = new TimeMillisSpentTermination<>(1000L);
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
 
@@ -53,7 +53,7 @@ class TimeMillisSpentTerminationTest {
     }
 
     @Test
-    public void phaseTermination() {
+    void phaseTermination() {
         Termination<TestdataSolution> termination = new TimeMillisSpentTermination<>(1000L);
         AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
 

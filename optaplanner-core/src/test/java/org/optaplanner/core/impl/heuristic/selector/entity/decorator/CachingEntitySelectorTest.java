@@ -38,17 +38,17 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 class CachingEntitySelectorTest {
 
     @Test
-    public void originalSelectionCacheTypeSolver() {
+    void originalSelectionCacheTypeSolver() {
         runOriginalSelection(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void originalSelectionCacheTypePhase() {
+    void originalSelectionCacheTypePhase() {
         runOriginalSelection(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void originalSelectionCacheTypeStep() {
+    void originalSelectionCacheTypeStep() {
         runOriginalSelection(SelectionCacheType.STEP, 5);
     }
 
@@ -112,7 +112,7 @@ class CachingEntitySelectorTest {
     }
 
     @Test
-    public void listIteratorWithRandomSelection() {
+    void listIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
                 true);
@@ -120,7 +120,7 @@ class CachingEntitySelectorTest {
     }
 
     @Test
-    public void indexedListIteratorWithRandomSelection() {
+    void indexedListIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
                 true);
@@ -128,7 +128,7 @@ class CachingEntitySelectorTest {
     }
 
     @Test
-    public void isNeverEnding() {
+    void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
                 true);
@@ -138,7 +138,7 @@ class CachingEntitySelectorTest {
     }
 
     @Test
-    public void iterator() {
+    void iterator() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         when(childEntitySelector.getSize()).thenReturn(1L);
 

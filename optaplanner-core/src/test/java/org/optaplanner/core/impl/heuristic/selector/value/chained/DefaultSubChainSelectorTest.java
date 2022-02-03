@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class DefaultSubChainSelectorTest {
 
     @Test
-    public void notChainedVariableDescriptor() {
+    void notChainedVariableDescriptor() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
@@ -59,7 +59,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void neverEndingValueSelector() {
+    void neverEndingValueSelector() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
@@ -72,7 +72,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void minimumSubChainSizeIsZero() {
+    void minimumSubChainSizeIsZero() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
@@ -84,7 +84,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void minimumSubChainSizeIsGreaterThanMaximumSubChainSize() {
+    void minimumSubChainSizeIsGreaterThanMaximumSubChainSize() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
@@ -96,7 +96,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void calculateSubChainSelectionSize() {
+    void calculateSubChainSelectionSize() {
         assertCalculateSubChainSelectionSize(4L, 1, 1);
         assertCalculateSubChainSelectionSize(3L, 2, 2);
         assertCalculateSubChainSelectionSize(2L, 3, 3);
@@ -139,7 +139,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void original() {
+    void original() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
@@ -229,7 +229,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void emptyEntitySelectorOriginal() {
+    void emptyEntitySelectorOriginal() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
@@ -289,7 +289,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void originalMinimum2Maximum3() {
+    void originalMinimum2Maximum3() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
@@ -344,7 +344,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void originalMinimum3Maximum3() {
+    void originalMinimum3Maximum3() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
@@ -395,7 +395,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void random() {
+    void random() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
@@ -453,7 +453,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void randomMinimum2Maximum3() {
+    void randomMinimum2Maximum3() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
@@ -506,7 +506,7 @@ class DefaultSubChainSelectorTest {
     }
 
     @Test
-    public void randomMinimum3Maximum3() {
+    void randomMinimum3Maximum3() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());

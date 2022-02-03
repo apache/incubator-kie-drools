@@ -80,7 +80,7 @@ class TestGenTestWriterTest {
     }
 
     @Test
-    public void emptyJournalOutput() {
+    void emptyJournalOutput() {
         TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
         TestGenTestWriter writer = new TestGenTestWriter();
 
@@ -95,7 +95,7 @@ class TestGenTestWriterTest {
     }
 
     @Test
-    public void dateFactField() {
+    void dateFactField() {
         TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
         TestClassWithDateField entity = new TestClassWithDateField();
         Date now = new Date();

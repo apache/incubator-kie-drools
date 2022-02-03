@@ -47,7 +47,7 @@ class MachineReassignmentConstraintProviderTest {
                     .build(new MachineReassignmentConstraintProvider(), MachineReassignment.class, MrProcessAssignment.class);
 
     @Test
-    public void maximumCapacity() {
+    void maximumCapacity() {
         MrResource resource1 = new MrResource(0, false, 1);
         MrMachine machine = new MrMachine();
         MrProcess process = new MrProcess();
@@ -63,7 +63,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void transientUsage() {
+    void transientUsage() {
         MrResource normalResource = new MrResource(0, false, 5);
         MrResource transientlyConsumerResource = new MrResource(1, true, 10);
 
@@ -89,7 +89,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void serviceConflict() {
+    void serviceConflict() {
         // 3 of 4 processes of the same service run on the same machine
         MrService service = new MrService();
 
@@ -116,7 +116,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void serviceLocationSpread() {
+    void serviceLocationSpread() {
         MrLocation location1 = new MrLocation(1L);
         MrLocation location2 = new MrLocation(2L);
 
@@ -144,7 +144,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void serviceDependency() {
+    void serviceDependency() {
         MrNeighborhood neighborhood1 = new MrNeighborhood(1L);
         MrNeighborhood neighborhood2 = new MrNeighborhood(2L);
 
@@ -178,7 +178,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void loadCost() {
+    void loadCost() {
         MrResource resource1 = new MrResource(0, false, 5);
         MrResource resource2 = new MrResource(1, false, 10);
         MrMachine machine = new MrMachine();
@@ -201,7 +201,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void processMoveCost() {
+    void processMoveCost() {
         MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
         globalPenaltyInfo.setProcessMoveCostWeight(10);
 
@@ -225,7 +225,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void serviceMoveCost() {
+    void serviceMoveCost() {
         MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
         globalPenaltyInfo.setServiceMoveCostWeight(10);
 
@@ -250,7 +250,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void machineMoveCost() {
+    void machineMoveCost() {
         MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
         globalPenaltyInfo.setMachineMoveCostWeight(10);
 
@@ -283,7 +283,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void balanceCost() {
+    void balanceCost() {
         MrResource cpu = new MrResource(0, false, 0);
         MrResource mem = new MrResource(1, false, 0);
         MrResource disk = new MrResource(2, false, 0);
@@ -327,7 +327,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void balanceCostSingleMachine() {
+    void balanceCostSingleMachine() {
         MrResource cpu = new MrResource(0L, 0, false, 1);
         MrResource mem = new MrResource(1L, 1, false, 1);
         MrResource disk = new MrResource(2L, 2, false, 1);
@@ -356,7 +356,7 @@ class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    public void solutionWithMultipleConstraints() throws IOException {
+    void solutionWithMultipleConstraints() throws IOException {
         constraintVerifier.verifyThat()
                 .givenSolution(readSolution("model-a1-1-0hard-44306501soft.xml"))
                 .scores(HardSoftLongScore.of(-0, -44306501));

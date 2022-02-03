@@ -40,7 +40,7 @@ public class OptaPlannerProcessorHotReloadTest {
                     .addAsResource("solverConfig.xml"));
 
     @Test
-    public void solverConfigHotReload() {
+    void solverConfigHotReload() {
         String resp = RestAssured.get("/solver-config/seconds-spent-limit").asString();
         Assertions.assertEquals("secondsSpentLimit=2", resp);
         test.modifyResourceFile("solverConfig.xml", s -> s.replace("<secondsSpentLimit>2</secondsSpentLimit>",

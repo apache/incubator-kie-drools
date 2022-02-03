@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 class ScoreCalculationCountTerminationTest {
 
     @Test
-    public void solveTermination() {
+    void solveTermination() {
         Termination termination = new ScoreCalculationCountTermination(1000L);
         SolverScope solverScope = mock(SolverScope.class);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
@@ -56,7 +56,7 @@ class ScoreCalculationCountTerminationTest {
     }
 
     @Test
-    public void phaseTermination() {
+    void phaseTermination() {
         Termination termination = new ScoreCalculationCountTermination(1000L);
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);

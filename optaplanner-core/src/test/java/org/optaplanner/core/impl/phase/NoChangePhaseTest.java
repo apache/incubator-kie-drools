@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class NoChangePhaseTest {
 
     @Test
-    public void solve() {
+    void solve() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setPhaseConfigList(Collections.singletonList(new NoChangePhaseConfig()));
 

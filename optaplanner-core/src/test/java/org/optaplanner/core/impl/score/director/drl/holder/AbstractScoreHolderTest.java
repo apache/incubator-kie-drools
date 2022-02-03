@@ -102,7 +102,7 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
 
     // TODO These 2 tests and buildScoreHolder for SimpleScore should not be inherited by HardSoftScore etc
     @Test
-    public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
+    void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
         AbstractScoreHolder<SimpleScore> scoreHolder = buildScoreHolder(false);
         assertThatIllegalStateException()
                 .isThrownBy(scoreHolder::getConstraintMatchTotalMap)
@@ -110,7 +110,7 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
     }
 
     @Test
-    public void constraintMatchTotalsNeverNull() {
+    void constraintMatchTotalsNeverNull() {
         assertThat(buildScoreHolder(true).getConstraintMatchTotalMap()).isNotNull();
     }
 

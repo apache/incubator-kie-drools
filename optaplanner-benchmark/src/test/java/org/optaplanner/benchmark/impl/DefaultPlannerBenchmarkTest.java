@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class DefaultPlannerBenchmarkTest {
 
     @Test
-    public void benchmarkingStartedTwice() {
+    void benchmarkingStartedTwice() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(
@@ -54,7 +54,7 @@ class DefaultPlannerBenchmarkTest {
     }
 
     @Test
-    public void solverBenchmarkResultListIsEmpty() {
+    void solverBenchmarkResultListIsEmpty() {
         File benchmarkDirectory = mock(File.class);
         ExecutorService executorService = mock(ExecutorService.class);
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
@@ -71,7 +71,7 @@ class DefaultPlannerBenchmarkTest {
     }
 
     @Test
-    public void benchmarkDirectoryIsNull() {
+    void benchmarkDirectoryIsNull() {
         ExecutorService executorService = mock(ExecutorService.class);
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
         SolverBenchmarkResult benchmarkResult = mock(SolverBenchmarkResult.class);
@@ -86,7 +86,7 @@ class DefaultPlannerBenchmarkTest {
     }
 
     @Test
-    public void exceptionMessagePropagatesWhenThrownDuringWarmUp() {
+    void exceptionMessagePropagatesWhenThrownDuringWarmUp() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(

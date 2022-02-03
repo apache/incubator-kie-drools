@@ -45,7 +45,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class CompositeMoveTest {
 
     @Test
-    public void createUndoMove() {
+    void createUndoMove() {
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
         DummyMove a = new DummyMove("a");
@@ -58,7 +58,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void createUndoMoveWithNonDoableMove() {
+    void createUndoMoveWithNonDoableMove() {
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
 
@@ -80,7 +80,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void doMove() {
+    void doMove() {
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
         DummyMove a = mock(DummyMove.class);
@@ -97,7 +97,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void rebase() {
+    void rebase() {
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
 
         TestdataValue v1 = new TestdataValue("v1");
@@ -135,7 +135,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void buildEmptyMove() {
+    void buildEmptyMove() {
         assertThat(CompositeMove.buildMove(new ArrayList<>()))
                 .isInstanceOf(NoChangeMove.class);
         assertThat(CompositeMove.buildMove())
@@ -143,7 +143,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void buildOneElemMove() {
+    void buildOneElemMove() {
         DummyMove tmpMove = new DummyMove();
         Move<TestdataSolution> move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
         assertThat(move)
@@ -155,7 +155,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void buildTwoElemMove() {
+    void buildTwoElemMove() {
         DummyMove first = new DummyMove();
         NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
@@ -176,7 +176,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void isMoveDoable() {
+    void isMoveDoable() {
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
 
@@ -202,7 +202,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void equals() {
+    void equals() {
         DummyMove first = new DummyMove();
         NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
@@ -217,7 +217,7 @@ class CompositeMoveTest {
     }
 
     @Test
-    public void interconnectedChildMoves() {
+    void interconnectedChildMoves() {
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");

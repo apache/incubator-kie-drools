@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 class VariableListenerSupportTest {
 
     @Test
-    public void demandBasic() {
+    void demandBasic() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
@@ -65,7 +65,7 @@ class VariableListenerSupportTest {
     }
 
     @Test
-    public void demandChained() {
+    void demandChained() {
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
         InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
@@ -90,7 +90,7 @@ class VariableListenerSupportTest {
     }
 
     @Test
-    public void demandRichChained() {
+    void demandRichChained() {
         SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor =
                 TestdataShadowingChainedSolution.buildSolutionDescriptor();
         InnerScoreDirector<TestdataShadowingChainedSolution, SimpleScore> scoreDirector =

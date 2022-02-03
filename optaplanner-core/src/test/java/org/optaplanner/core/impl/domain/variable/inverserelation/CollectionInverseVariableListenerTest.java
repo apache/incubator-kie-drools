@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.Testdata
 class CollectionInverseVariableListenerTest {
 
     @Test
-    public void normal() {
+    void normal() {
         InnerScoreDirector<TestdataInverseRelationSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         SolutionDescriptor<TestdataInverseRelationSolution> solutionDescriptor =
                 TestdataInverseRelationSolution.buildSolutionDescriptor();

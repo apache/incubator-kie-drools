@@ -38,7 +38,7 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void addRemoveWithEquals() {
+    void addRemoveWithEquals() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
@@ -47,14 +47,14 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void addWithEqualsInSuperclass() {
+    void addWithEqualsInSuperclass() {
         TestdataObjectEqualsSubclass object = new TestdataObjectEqualsSubclass(0);
         lookUpManager.addWorkingObject(object);
         assertThat(lookUpManager.lookUpWorkingObject(object)).isSameAs(object);
     }
 
     @Test
-    public void addWithoutEquals() {
+    void addWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.addWorkingObject(object))
@@ -63,7 +63,7 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void addWithoutHashCode() {
+    void addWithoutHashCode() {
         TestdataObjectEqualsNoHashCode object = new TestdataObjectEqualsNoHashCode(0);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.addWorkingObject(object))
@@ -72,7 +72,7 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void removeWithoutEquals() {
+    void removeWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
@@ -81,7 +81,7 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void addEqualObjects() {
+    void addEqualObjects() {
         TestdataObjectEquals object = new TestdataObjectEquals(2);
         lookUpManager.addWorkingObject(object);
         assertThatIllegalStateException()
@@ -90,7 +90,7 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void removeWithoutAdding() {
+    void removeWithoutAdding() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         assertThatIllegalStateException()
                 .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
@@ -98,14 +98,14 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void lookUpWithEquals() {
+    void lookUpWithEquals() {
         TestdataObjectEquals object = new TestdataObjectEquals(1);
         lookUpManager.addWorkingObject(object);
         assertThat(lookUpManager.lookUpWorkingObject(new TestdataObjectEquals(1))).isSameAs(object);
     }
 
     @Test
-    public void lookUpWithoutEquals() {
+    void lookUpWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
@@ -113,7 +113,7 @@ class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void lookUpWithoutAdding() {
+    void lookUpWithoutAdding() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         assertThat(lookUpManager.lookUpWorkingObjectOrReturnNull(object)).isNull();
     }

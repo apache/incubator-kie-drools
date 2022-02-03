@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 class DefaultConstructionHeuristicForagerTest<Solution_> {
 
     @Test
-    public void checkPickEarlyNever() {
+    void checkPickEarlyNever() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.NEVER);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.ofUninitialized(-8, -100));
@@ -45,7 +45,7 @@ class DefaultConstructionHeuristicForagerTest<Solution_> {
     }
 
     @Test
-    public void checkPickEarlyFirstNonDeterioratingScore() {
+    void checkPickEarlyFirstNonDeterioratingScore() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.ofUninitialized(-8, -100));
@@ -56,7 +56,7 @@ class DefaultConstructionHeuristicForagerTest<Solution_> {
     }
 
     @Test
-    public void checkPickEarlyFirstFeasibleScore() {
+    void checkPickEarlyFirstFeasibleScore() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.ofUninitialized(-8, 0, -100));
@@ -69,7 +69,7 @@ class DefaultConstructionHeuristicForagerTest<Solution_> {
     }
 
     @Test
-    public void checkPickEarlyFirstFeasibleScoreOrNonDeterioratingHard() {
+    void checkPickEarlyFirstFeasibleScoreOrNonDeterioratingHard() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.ofUninitialized(-8, -10, -100));

@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class ProbabilityMoveSelectorTest {
 
     @Test
-    public void randomSelection() {
+    void randomSelection() {
         MoveSelector<TestdataSolution> childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
 

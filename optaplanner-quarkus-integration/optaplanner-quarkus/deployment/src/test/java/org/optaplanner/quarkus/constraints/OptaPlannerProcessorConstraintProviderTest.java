@@ -47,7 +47,7 @@ class OptaPlannerProcessorConstraintProviderTest {
     SolverFactory<TestdataQuarkusSolution> solverFactory;
 
     @Test
-    public void solverConfigXml_default() {
+    void solverConfigXml_default() {
         assertEquals(TestdataQuarkusConstraintProvider.class,
                 solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
         assertNotNull(solverFactory.buildSolver());

@@ -75,7 +75,7 @@ class SolutionDescriptorTest {
     // ************************************************************************
 
     @Test
-    public void problemFactProperty() {
+    void problemFactProperty() {
         SolutionDescriptor<TestdataProblemFactPropertySolution> solutionDescriptor = TestdataProblemFactPropertySolution
                 .buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("extraObject");
@@ -84,7 +84,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void readMethodProblemFactCollectionProperty() {
+    void readMethodProblemFactCollectionProperty() {
         SolutionDescriptor<TestdataReadMethodProblemFactCollectionPropertySolution> solutionDescriptor =
                 TestdataReadMethodProblemFactCollectionPropertySolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
@@ -93,43 +93,43 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void problemFactCollectionPropertyWithArgument() {
+    void problemFactCollectionPropertyWithArgument() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataProblemFactCollectionPropertyWithArgumentSolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void duplicateProblemFactCollectionProperty() {
+    void duplicateProblemFactCollectionProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataDuplicateProblemFactCollectionPropertySolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void duplicatePlanningEntityCollectionProperty() {
+    void duplicatePlanningEntityCollectionProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataDuplicatePlanningEntityCollectionPropertySolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void duplicatePlanningScorePropertyProperty() {
+    void duplicatePlanningScorePropertyProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataDuplicatePlanningScorePropertySolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void missingPlanningScorePropertyProperty() {
+    void missingPlanningScorePropertyProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataMissingScorePropertySolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void problemFactIsPlanningEntityCollectionProperty() {
+    void problemFactIsPlanningEntityCollectionProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataProblemFactIsPlanningEntityCollectionPropertySolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void wildcardProblemFactAndEntityProperties() {
+    void wildcardProblemFactAndEntityProperties() {
         SolutionDescriptor<TestdataWildcardSolution> solutionDescriptor = TestdataWildcardSolution
                 .buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
@@ -140,7 +140,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void wildcardSupersEntityListProperty() {
+    void wildcardSupersEntityListProperty() {
         SolverFactory<TestdataUnsupportedWildcardSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataUnsupportedWildcardSolution.class, TestdataEntity.class);
         Solver<TestdataUnsupportedWildcardSolution> solver = solverFactory.buildSolver();
@@ -152,20 +152,20 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void noProblemFactPropertyWithEasyScoreCalculation() {
+    void noProblemFactPropertyWithEasyScoreCalculation() {
         SolverFactory<TestdataNoProblemFactPropertySolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataNoProblemFactPropertySolution.class, TestdataEntity.class);
         solverFactory.buildSolver();
     }
 
     @Test
-    public void noProblemFactPropertyWithDroolsScoreCalculation() {
+    void noProblemFactPropertyWithDroolsScoreCalculation() {
         assertThatIllegalStateException().isThrownBy(() -> PlannerTestUtils.buildSolverFactoryWithDroolsScoreDirector(
                 TestdataNoProblemFactPropertySolution.class, TestdataEntity.class));
     }
 
     @Test
-    public void extended() {
+    void extended() {
         SolutionDescriptor<TestdataAnnotatedExtendedSolution> solutionDescriptor = TestdataAnnotatedExtendedSolution
                 .buildExtendedSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
@@ -176,7 +176,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void setProperties() {
+    void setProperties() {
         SolutionDescriptor<TestdataSetBasedSolution> solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("valueSet");
@@ -185,7 +185,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void arrayProperties() {
+    void arrayProperties() {
         SolutionDescriptor<TestdataArrayBasedSolution> solutionDescriptor = TestdataArrayBasedSolution
                 .buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
@@ -195,7 +195,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void generic() {
+    void generic() {
         SolutionDescriptor<TestdataGenericSolution> solutionDescriptor = TestdataGenericSolution.buildSolutionDescriptor();
 
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("valueList",
@@ -211,12 +211,12 @@ class SolutionDescriptorTest {
     // ************************************************************************
 
     @Test
-    public void autoDiscoverProblemFactCollectionPropertyElementTypeUnknown() {
+    void autoDiscoverProblemFactCollectionPropertyElementTypeUnknown() {
         assertThatIllegalArgumentException().isThrownBy(TestdataUnknownFactTypeSolution::buildSolutionDescriptor);
     }
 
     @Test
-    public void autoDiscoverFields() {
+    void autoDiscoverFields() {
         SolutionDescriptor<TestdataAutoDiscoverFieldSolution> solutionDescriptor = TestdataAutoDiscoverFieldSolution
                 .buildSolutionDescriptor();
         assertThat(solutionDescriptor.getScoreDefinition()).isInstanceOf(SimpleScoreDefinition.class);
@@ -240,7 +240,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverGetters() {
+    void autoDiscoverGetters() {
         SolutionDescriptor<TestdataAutoDiscoverGetterSolution> solutionDescriptor = TestdataAutoDiscoverGetterSolution
                 .buildSolutionDescriptor();
         assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().getName())
@@ -262,7 +262,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverFieldsFactCollectionOverriddenToSingleProperty() {
+    void autoDiscoverFieldsFactCollectionOverriddenToSingleProperty() {
         SolutionDescriptor<TestdataAutoDiscoverFieldOverrideSolution> solutionDescriptor =
                 TestdataAutoDiscoverFieldOverrideSolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("singleProblemFact",
@@ -284,7 +284,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverGettersFactCollectionOverriddenToSingleProperty() {
+    void autoDiscoverGettersFactCollectionOverriddenToSingleProperty() {
         SolutionDescriptor<TestdataAutoDiscoverGetterOverrideSolution> solutionDescriptor =
                 TestdataAutoDiscoverGetterOverrideSolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("singleProblemFact",
@@ -306,7 +306,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverUnannotatedEntitySubclass() {
+    void autoDiscoverUnannotatedEntitySubclass() {
         SolutionDescriptor<TestdataAutoDiscoverUnannotatedEntitySolution> solutionDescriptor =
                 TestdataAutoDiscoverUnannotatedEntitySolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("singleProblemFact");
@@ -327,7 +327,7 @@ class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverGettersOverriddenInSubclass() {
+    void autoDiscoverGettersOverriddenInSubclass() {
         SolutionDescriptor<TestdataExtendedAutoDiscoverGetterSolution> solutionDescriptor =
                 TestdataExtendedAutoDiscoverGetterSolution.buildSubclassSolutionDescriptor();
         assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().getName())

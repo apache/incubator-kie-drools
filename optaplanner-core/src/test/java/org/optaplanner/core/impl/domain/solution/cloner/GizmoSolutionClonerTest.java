@@ -169,7 +169,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
     // This test verify the instanceof comparator works correctly
     @Test
-    public void instanceOfComparatorTest() {
+    void instanceOfComparatorTest() {
         Set<Class<?>> classSet = new HashSet<>(Arrays.asList(
                 Animal.class,
                 Robot.class,
@@ -204,7 +204,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     // This test verify a proper error message is thrown if an extended solution is passed.
     @Override
     @Test
-    public void cloneExtendedSolution() {
+    void cloneExtendedSolution() {
         SolutionDescriptor solutionDescriptor = TestdataUnannotatedExtendedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataUnannotatedExtendedSolution> cloner = createSolutionCloner(solutionDescriptor);
 

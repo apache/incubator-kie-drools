@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 class NearEntityNearbyValueSelectorTest {
 
     @Test
-    public void originalSelection() {
+    void originalSelection() {
         final TestdataEntity africa = new TestdataEntity("Africa");
         final TestdataEntity europe = new TestdataEntity("Europe");
         final TestdataEntity oceania = new TestdataEntity("Oceania");
@@ -162,7 +162,7 @@ class NearEntityNearbyValueSelectorTest {
     }
 
     @Test
-    public void originalSelectionChained() {
+    void originalSelectionChained() {
         final TestdataChainedEntity morocco = new TestdataChainedEntity("Morocco");
         final TestdataChainedEntity spain = new TestdataChainedEntity("Spain");
         final TestdataChainedEntity australia = new TestdataChainedEntity("Australia");

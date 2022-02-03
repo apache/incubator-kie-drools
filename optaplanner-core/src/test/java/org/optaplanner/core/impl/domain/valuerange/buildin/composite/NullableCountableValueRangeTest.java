@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class NullableCountableValueRangeTest {
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).getSize()).isEqualTo(5L);
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).getSize())
                 .isEqualTo(6L);
@@ -41,7 +41,7 @@ class NullableCountableValueRangeTest {
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(2L).intValue())
                 .isEqualTo(5);
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(4L)).isEqualTo(null);
@@ -52,7 +52,7 @@ class NullableCountableValueRangeTest {
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(5)).isTrue();
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(4)).isFalse();
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(null)).isTrue();
@@ -65,7 +65,7 @@ class NullableCountableValueRangeTest {
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(
                 new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).createOriginalIterator(),
                 null, 0, 2, 5, 10);
@@ -82,7 +82,7 @@ class NullableCountableValueRangeTest {
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5)))
                 .createRandomIterator(new TestRandom(3, 0)), null, 0);
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5)))

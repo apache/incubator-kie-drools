@@ -27,20 +27,20 @@ import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDeci
 class BendableBigDecimalScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getZeroScore();
         assertThat(score).isEqualTo(BendableBigDecimalScore.zero(1, 2));
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getOneSoftestScore();
         assertThat(score).isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { BigDecimal.ZERO },
                 new BigDecimal[] { BigDecimal.ZERO, BigDecimal.ONE }));
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new BendableBigDecimalScoreDefinition(1, 1).getLevelsSize()).isEqualTo(2);
         assertThat(new BendableBigDecimalScoreDefinition(3, 4).getLevelsSize()).isEqualTo(7);
         assertThat(new BendableBigDecimalScoreDefinition(4, 3).getLevelsSize()).isEqualTo(7);
@@ -49,7 +49,7 @@ class BendableBigDecimalScoreDefinitionTest {
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new BendableBigDecimalScoreDefinition(1, 1).getLevelLabels())
                 .isEqualTo(new String[] { "hard 0 score", "soft 0 score" });
         assertThat(new BendableBigDecimalScoreDefinition(3, 4).getLevelLabels())
@@ -65,7 +65,7 @@ class BendableBigDecimalScoreDefinitionTest {
     }
 
     @Test
-    public void getFeasibleLevelsSize() {
+    void getFeasibleLevelsSize() {
         assertThat(new BendableBigDecimalScoreDefinition(1, 1).getFeasibleLevelsSize()).isEqualTo(1);
         assertThat(new BendableBigDecimalScoreDefinition(3, 4).getFeasibleLevelsSize()).isEqualTo(3);
         assertThat(new BendableBigDecimalScoreDefinition(4, 3).getFeasibleLevelsSize()).isEqualTo(4);
@@ -74,14 +74,14 @@ class BendableBigDecimalScoreDefinitionTest {
     }
 
     @Test
-    public void createScoreWithIllegalArgument() {
+    void createScoreWithIllegalArgument() {
         BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(2, 3);
         assertThatIllegalArgumentException().isThrownBy(() -> bendableScoreDefinition.createScore(
                 new BigDecimal(1), new BigDecimal(2), new BigDecimal(3)));
     }
 
     @Test
-    public void createScore() {
+    void createScore() {
         for (int hardLevelSize = 1; hardLevelSize < 5; hardLevelSize++) {
             for (int softLevelSize = 1; softLevelSize < 5; softLevelSize++) {
                 int levelSize = hardLevelSize + softLevelSize;
@@ -108,7 +108,7 @@ class BendableBigDecimalScoreDefinitionTest {
     // Optimistic and pessimistic bounds are currently not supported for this score definition
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         BendableBigDecimalScoreDefinition scoreDefinition = new BendableBigDecimalScoreDefinition(1, 1);
         BendableBigDecimalScore dividend = scoreDefinition.createScoreUninitialized(2, BigDecimal.ZERO, BigDecimal.TEN);
         BendableBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();

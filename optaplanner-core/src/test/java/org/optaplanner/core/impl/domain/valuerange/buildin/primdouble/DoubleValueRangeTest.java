@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testutil.TestRandom;
 class DoubleValueRangeTest {
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new DoubleValueRange(0.0, 10.0).contains(3.0)).isTrue();
         assertThat(new DoubleValueRange(0.0, 10.0).contains(10.0)).isFalse();
         assertThat(new DoubleValueRange(0.0, 10.0).contains(null)).isFalse();
@@ -37,7 +37,7 @@ class DoubleValueRangeTest {
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         assertElementsOfIterator(new DoubleValueRange(0.0, 1.0).createRandomIterator(new TestRandom(0.3, 0)), 0.3, 0.0);
         assertElementsOfIterator(new DoubleValueRange(100.0, 104.0).createRandomIterator(new TestRandom(0.3, 0)), 101.2, 100.0);
         assertElementsOfIterator(new DoubleValueRange(-5.0, 5.0).createRandomIterator(new TestRandom(0.3, 0)), -2.0, -5.0);

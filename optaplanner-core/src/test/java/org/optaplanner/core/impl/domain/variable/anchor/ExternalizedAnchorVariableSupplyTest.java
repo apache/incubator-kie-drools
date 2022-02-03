@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 class ExternalizedAnchorVariableSupplyTest {
 
     @Test
-    public void chainedEntity() {
+    void chainedEntity() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor =
                 TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         ScoreDirector<TestdataChainedSolution> scoreDirector = mock(ScoreDirector.class);

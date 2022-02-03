@@ -28,29 +28,29 @@ import org.junit.jupiter.api.Test;
 class EmptyValueRangeTest {
 
     @Test
-    public void getSize() {
+    void getSize() {
         assertThat(new EmptyValueRange<Integer>().getSize()).isEqualTo(0L);
     }
 
     @Test
-    public void get() {
+    void get() {
         assertThatExceptionOfType(IndexOutOfBoundsException.class)
                 .isThrownBy(() -> new EmptyValueRange<Integer>().get(0L));
     }
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(new EmptyValueRange<Integer>().contains(5)).isFalse();
         assertThat(new EmptyValueRange<Integer>().contains(null)).isFalse();
     }
 
     @Test
-    public void createOriginalIterator() {
+    void createOriginalIterator() {
         assertAllElementsOfIterator(new EmptyValueRange<Integer>().createOriginalIterator());
     }
 
     @Test
-    public void createRandomIterator() {
+    void createRandomIterator() {
         Random workingRandom = new Random(0);
         assertElementsOfIterator(new EmptyValueRange<Integer>().createRandomIterator(workingRandom));
     }

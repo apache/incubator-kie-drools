@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 class PhaseLifecycleTest {
 
     @Test
-    public void verifyEventCounts() {
+    void verifyEventCounts() {
         PhaseLifecycleListener listener = mock(PhaseLifecycleListener.class);
         // prepare solver
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(

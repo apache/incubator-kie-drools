@@ -36,12 +36,12 @@ class LookUpManagerTest {
     }
 
     @Test
-    public void lookUpNull() {
+    void lookUpNull() {
         assertThat(lookUpManager.<Object> lookUpWorkingObject(null)).isNull();
     }
 
     @Test
-    public void resetWorkingObjects() {
+    void resetWorkingObjects() {
         TestdataObjectIntegerId o = new TestdataObjectIntegerId(0);
         TestdataObjectIntegerId p = new TestdataObjectIntegerId(1);
         // The objects should be added during the reset

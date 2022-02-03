@@ -45,7 +45,7 @@ class OptaPlannerBenchmarkProcessorPhasesTest {
     PlannerBenchmarkConfig plannerBenchmarkConfig;
 
     @Test
-    public void doesNotInheritPhasesFromSolverConfig() {
+    void doesNotInheritPhasesFromSolverConfig() {
         Assertions.assertEquals(2, plannerBenchmarkConfig.getSolverBenchmarkConfigList().get(0).getSolverConfig()
                 .getPhaseConfigList().size());
         Assertions.assertEquals(3, plannerBenchmarkConfig.getSolverBenchmarkConfigList().get(1).getSolverConfig()

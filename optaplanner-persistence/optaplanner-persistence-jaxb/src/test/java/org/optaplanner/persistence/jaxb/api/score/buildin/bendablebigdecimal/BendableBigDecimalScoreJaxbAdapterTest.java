@@ -28,7 +28,7 @@ import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapterTest;
 class BendableBigDecimalScoreJaxbAdapterTest extends AbstractScoreJaxbAdapterTest {
 
     @Test
-    public void serializeAndDeserialize() {
+    void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableBigDecimalScoreWrapper(null));
 
         BendableBigDecimalScore score = BendableBigDecimalScore.of(

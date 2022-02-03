@@ -40,22 +40,22 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class SortingMoveSelectorTest {
 
     @Test
-    public void cacheTypeSolver() {
+    void cacheTypeSolver() {
         runCacheType(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void cacheTypePhase() {
+    void cacheTypePhase() {
         runCacheType(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void cacheTypeStep() {
+    void cacheTypeStep() {
         runCacheType(SelectionCacheType.STEP, 5);
     }
 
     @Test
-    public void cacheTypeJustInTime() {
+    void cacheTypeJustInTime() {
         assertThatIllegalArgumentException().isThrownBy(() -> runCacheType(SelectionCacheType.JUST_IN_TIME, 5));
     }
 

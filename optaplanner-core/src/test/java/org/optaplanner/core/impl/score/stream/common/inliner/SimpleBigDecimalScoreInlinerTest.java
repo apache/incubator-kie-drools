@@ -33,7 +33,7 @@ class SimpleBigDecimalScoreInlinerTest
     private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void defaultScore() {
+    void defaultScore() {
         TestConstraint<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> constraint =
                 buildConstraint(SimpleBigDecimalScore.ONE);
         SimpleBigDecimalScoreInliner scoreInliner =
@@ -42,7 +42,7 @@ class SimpleBigDecimalScoreInlinerTest
     }
 
     @Test
-    public void impact() {
+    void impact() {
         TestConstraint<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> constraint =
                 buildConstraint(SimpleBigDecimalScore.of(BigDecimal.valueOf(10)));
         SimpleBigDecimalScoreInliner scoreInliner =

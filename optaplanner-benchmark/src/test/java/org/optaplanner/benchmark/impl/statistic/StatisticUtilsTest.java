@@ -36,7 +36,7 @@ class StatisticUtilsTest {
     private static final double DELTA = 0.001;
 
     @Test
-    public void singleDetermineStandardDeviationDoubles() {
+    void singleDetermineStandardDeviationDoubles() {
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = Arrays
                 .asList(createSubSingleBenchmarkResult(SimpleScore.of(0), 0));
         assertThat(StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList,
@@ -45,7 +45,7 @@ class StatisticUtilsTest {
     }
 
     @Test
-    public void multipleDetermineStandardDeviationDoubles() {
+    void multipleDetermineStandardDeviationDoubles() {
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(2);
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.of(-2), 0));
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.of(-4), 1));
@@ -55,7 +55,7 @@ class StatisticUtilsTest {
     }
 
     @Test
-    public void largeDetermineStandardDeviationDoubles() {
+    void largeDetermineStandardDeviationDoubles() {
         long[] subSingleBenchmarkScores = new long[] { -19289560268L, -19345935795L, -19715516752L, -19589259253L,
                 -19390707618L, -19641410518L };
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(6);
@@ -72,7 +72,7 @@ class StatisticUtilsTest {
     }
 
     @Test
-    public void getStandardDeviationString() {
+    void getStandardDeviationString() {
         assertThat(StatisticUtils.getStandardDeviationString(null)).isEqualTo(null);
         assertThat(StatisticUtils.getStandardDeviationString(new double[] { 2.0 })).isEqualTo("2.0");
         assertThat(StatisticUtils.getStandardDeviationString(new double[] { Math.sqrt(2.0) })).isEqualTo("1.41");

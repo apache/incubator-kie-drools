@@ -37,7 +37,7 @@ class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
     private static final long START_TIME_MILLIS = 0L;
 
     @Test
-    public void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {
+    void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination<>(
                         -1L,
@@ -46,7 +46,7 @@ class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
     }
 
     @Test
-    public void scoreImproves_terminationIsPostponed() {
+    void scoreImproves_terminationIsPostponed() {
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         AbstractPhaseScope<TestdataSolution> phaseScope = mock(LocalSearchPhaseScope.class);
         AbstractStepScope<TestdataSolution> stepScope = mock(LocalSearchStepScope.class);
@@ -99,7 +99,7 @@ class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
     }
 
     @Test
-    public void scoreImprovesTooLate_terminates() {
+    void scoreImprovesTooLate_terminates() {
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         AbstractPhaseScope<TestdataSolution> phaseScope = mock(LocalSearchPhaseScope.class);
         AbstractStepScope<TestdataSolution> stepScope = mock(LocalSearchStepScope.class);

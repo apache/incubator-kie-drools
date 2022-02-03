@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
 
     @Test
-    public void lateAcceptanceSize() {
+    void lateAcceptanceSize() {
         LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
         acceptor.setLateAcceptanceSize(3);
         acceptor.setHillClimbingEnabled(false);
@@ -144,7 +144,7 @@ class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void hillClimbingEnabled() {
+    void hillClimbingEnabled() {
         LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
         acceptor.setLateAcceptanceSize(2);
         acceptor.setHillClimbingEnabled(true);
@@ -257,14 +257,14 @@ class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void zeroLateAcceptanceSize() {
+    void zeroLateAcceptanceSize() {
         LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
         acceptor.setLateAcceptanceSize(0);
         assertThatIllegalArgumentException().isThrownBy(() -> acceptor.phaseStarted(null));
     }
 
     @Test
-    public void negativeLateAcceptanceSize() {
+    void negativeLateAcceptanceSize() {
         LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
         acceptor.setLateAcceptanceSize(-1);
         assertThatIllegalArgumentException().isThrownBy(() -> acceptor.phaseStarted(null));

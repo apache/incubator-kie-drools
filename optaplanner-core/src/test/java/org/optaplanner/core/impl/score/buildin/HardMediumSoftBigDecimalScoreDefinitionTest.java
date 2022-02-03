@@ -26,37 +26,37 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediu
 class HardMediumSoftBigDecimalScoreDefinitionTest {
 
     @Test
-    public void getZeroScore() {
+    void getZeroScore() {
         HardMediumSoftBigDecimalScore score = new HardMediumSoftBigDecimalScoreDefinition().getZeroScore();
         assertThat(score).isEqualTo(HardMediumSoftBigDecimalScore.ZERO);
     }
 
     @Test
-    public void getSoftestOneScore() {
+    void getSoftestOneScore() {
         HardMediumSoftBigDecimalScore score = new HardMediumSoftBigDecimalScoreDefinition().getOneSoftestScore();
         assertThat(score).isEqualTo(HardMediumSoftBigDecimalScore.ONE_SOFT);
     }
 
     @Test
-    public void getLevelsSize() {
+    void getLevelsSize() {
         assertThat(new HardMediumSoftBigDecimalScoreDefinition().getLevelsSize()).isEqualTo(3);
     }
 
     @Test
-    public void getLevelLabels() {
+    void getLevelLabels() {
         assertThat(new HardMediumSoftBigDecimalScoreDefinition().getLevelLabels())
                 .isEqualTo(new String[] { "hard score", "medium score", "soft score" });
     }
 
     @Test
-    public void getFeasibleLevelsSize() {
+    void getFeasibleLevelsSize() {
         assertThat(new HardMediumSoftBigDecimalScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition
 
     @Test
-    public void divideBySanitizedDivisor() {
+    void divideBySanitizedDivisor() {
         HardMediumSoftBigDecimalScoreDefinition scoreDefinition = new HardMediumSoftBigDecimalScoreDefinition();
         HardMediumSoftBigDecimalScore dividend = scoreDefinition.fromLevelNumbers(2,
                 new Number[] { BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN });
