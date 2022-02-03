@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.util.Pair;
@@ -96,6 +97,7 @@ public final class DeepCloningUtils {
         }
         return isFieldAnEntityPropertyOnSolution(field, owningClass)
                 || isFieldAnEntityOrSolution(field)
+                || isFieldAPlanningListVariable(field, owningClass)
                 || isFieldADeepCloneProperty(field, owningClass);
     }
 
@@ -182,6 +184,17 @@ public final class DeepCloningUtils {
         }
         Method getterMethod = ReflectionHelper.getGetterMethod(owningClass, field.getName());
         if (getterMethod != null && getterMethod.isAnnotationPresent(DeepPlanningClone.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isFieldAPlanningListVariable(Field field, Class<?> owningClass) {
+        if (field.isAnnotationPresent(PlanningListVariable.class)) {
+            return true;
+        }
+        Method getterMethod = ReflectionHelper.getGetterMethod(owningClass, field.getName());
+        if (getterMethod != null && getterMethod.isAnnotationPresent(PlanningListVariable.class)) {
             return true;
         }
         return false;

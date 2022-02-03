@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,6 +36,7 @@ import java.util.TreeSet;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -64,6 +66,9 @@ import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExt
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataExtendedThirdPartyEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataExtendedThirdPartySolution;
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataThirdPartyEntityPojo;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListEntityExternalized;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListSolutionExternalized;
+import org.optaplanner.core.impl.testdata.domain.list.externalized.TestdataListValueExternalized;
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedSolution;
@@ -116,6 +121,50 @@ public abstract class AbstractSolutionClonerTest {
         assertCode("2", b.getValue());
         // Clone remains unchanged
         assertCode("1", cloneB.getValue());
+    }
+
+    @Test
+    public void cloneListVariableSolution() {
+        SolutionDescriptor<TestdataListSolutionExternalized> solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(
+                TestdataListSolutionExternalized.class,
+                TestdataListEntityExternalized.class);
+
+        SolutionCloner<TestdataListSolutionExternalized> cloner = createSolutionCloner(solutionDescriptor);
+
+        TestdataListValueExternalized val1 = new TestdataListValueExternalized("1");
+        TestdataListValueExternalized val2 = new TestdataListValueExternalized("2");
+        TestdataListValueExternalized val3 = new TestdataListValueExternalized("3");
+        TestdataListEntityExternalized a = new TestdataListEntityExternalized("a", new ArrayList<>(List.of(val1, val3)));
+        TestdataListEntityExternalized b = new TestdataListEntityExternalized("b", new ArrayList<>(List.of(val2)));
+
+        TestdataListSolutionExternalized original = new TestdataListSolutionExternalized();
+        List<TestdataListValueExternalized> valueList = Arrays.asList(val1, val2, val3);
+        original.setValueList(valueList);
+        List<TestdataListEntityExternalized> originalEntityList = List.of(a, b);
+        original.setEntityList(originalEntityList);
+        original.setScore(SimpleScore.of(1));
+
+        TestdataListSolutionExternalized clone = cloner.cloneSolution(original);
+
+        assertThat(clone).isNotSameAs(original);
+        assertThat(clone.getValueList()).isSameAs(valueList);
+        assertThat(clone.getScore()).isEqualTo(original.getScore());
+
+        List<TestdataListEntityExternalized> cloneEntityList = clone.getEntityList();
+        assertThat(cloneEntityList).isNotSameAs(originalEntityList);
+        assertThat(cloneEntityList.size()).isEqualTo(2);
+        TestdataListEntityExternalized cloneA = cloneEntityList.get(0);
+        TestdataListEntityExternalized cloneB = cloneEntityList.get(1);
+        assertEntityListClone(a, cloneA, "a", List.of("1", "3"));
+        assertEntityListClone(b, cloneB, "b", List.of("2"));
+
+        assertThat(cloneA).isNotSameAs(a);
+        a.getValueList().remove(val1);
+        assertThat(a.getValueList()).hasSize(1);
+        assertCode("3", a.getValueList().get(0));
+        // Clone remains unchanged
+        assertThat(cloneA.getValueList()).hasSize(2);
+        assertCode("1", cloneA.getValueList().get(0));
     }
 
     @Test
@@ -353,6 +402,17 @@ public abstract class AbstractSolutionClonerTest {
         assertCode(entityCode, originalEntity);
         assertCode(entityCode, cloneEntity);
         assertCode(valueCode, cloneEntity.getValue());
+    }
+
+    private void assertEntityListClone(TestdataListEntityExternalized originalEntity,
+            TestdataListEntityExternalized cloneEntity, String entityCode, List<String> valueCodeList) {
+        assertThat(cloneEntity).isNotSameAs(originalEntity);
+        assertThat(cloneEntity.getValueList()).isNotSameAs(originalEntity.getValueList());
+        assertCode(entityCode, cloneEntity);
+        assertThat(cloneEntity.getValueList()).hasSameSizeAs(valueCodeList);
+        assertThat(cloneEntity.getValueList()).containsExactlyElementsOf(originalEntity.getValueList());
+        assertThat(cloneEntity.getValueList()).zipSatisfy(valueCodeList,
+                (value, code) -> assertThat(value.getCode()).isEqualTo(code));
     }
 
     @Test

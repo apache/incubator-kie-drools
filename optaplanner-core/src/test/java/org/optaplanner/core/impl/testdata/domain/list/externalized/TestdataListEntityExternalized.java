@@ -45,4 +45,8 @@ public class TestdataListEntityExternalized extends TestdataObject {
     public List<TestdataListValueExternalized> getValueList() {
         return valueList;
     }
+
+    public void setValueList(List<TestdataListValueExternalized> valueList) {
+        this.valueList = valueList;
+    }
 }
