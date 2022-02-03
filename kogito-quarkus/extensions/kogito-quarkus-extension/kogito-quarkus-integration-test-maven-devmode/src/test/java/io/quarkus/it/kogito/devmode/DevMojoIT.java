@@ -35,7 +35,9 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 /*
@@ -342,5 +344,22 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .body(containsString("Bonjour, v1"));
 
         System.out.println("done.");
+    }
+
+    @Test
+    public void testStaticResource() throws Exception {
+        testDir = initProject("projects/simple-dmn", "projects/simple-dmn-static-resource");
+        run(true);
+
+        // await Quarkus
+        await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
+
+        // static resource
+        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .get("/dmnDefinitions.json")
+                .then()
+                .statusCode(200)
+                .body("definitions", aMapWithSize(greaterThan(0)));
     }
 }
