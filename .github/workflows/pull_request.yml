@@ -12,9 +12,9 @@ on:
       - '**.md'
       - '**.adoc'
       - '*.txt'
-      - '.ci/**'      
+      - '.ci/**'
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [ opened, synchronize, reopened, ready_for_review ]
     branches:
       - main
       - 8.*
@@ -39,7 +39,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
         java-version: [ 11, 17 ]
-        maven-version: ['3.8.1']
+        maven-version: [ '3.8.1' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven

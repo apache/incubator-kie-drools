@@ -12,9 +12,9 @@ on:
       - '**.md'
       - '**.adoc'
       - '*.txt'
-      - '.ci/**'      
+      - '.ci/**'
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [ opened, synchronize, reopened, ready_for_review ]
     branches:
       - main
     paths-ignore:
@@ -33,9 +33,9 @@ jobs:
   jpa-postgresql-container:
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        java-version: [11]
-        maven-version: ['3.8.1']
+        os: [ ubuntu-latest ]
+        java-version: [ 11 ]
+        maven-version: [ '3.8.1' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     services:

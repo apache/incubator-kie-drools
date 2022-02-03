@@ -5,27 +5,27 @@ name: Jenkins Tests
 
 on:
   pull_request:
-    paths: 
-    - '.ci/jenkins/**'
+    paths:
+      - '.ci/jenkins/**'
 
 jobs:
   dsl-tests:
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        java-version: [11]
-        maven-version: ['3.8.1']
+        os: [ ubuntu-latest ]
+        java-version: [ 11 ]
+        maven-version: [ '3.8.1' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
-    - name: Checkout 
-      uses: actions/checkout@v2
-    - name: Java and Maven Setup
-      uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
-      with:
-        java-version: ${{ matrix.java-version }}
-        maven-version: ${{ matrix.maven-version }}
-        cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-    - name: Test DSL
-      run: cd .ci/jenkins/dsl && ./test.sh
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Test DSL
+        run: cd .ci/jenkins/dsl && ./test.sh

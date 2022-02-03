@@ -1,7 +1,7 @@
 name: "Quarkus ecosystem"
 on:
   watch:
-    types: [started]
+    types: [ started ]
 
   # For this CI to work, ECOSYSTEM_CI_TOKEN needs to contain a GitHub with rights to close the Quarkus issue that the user/bot has opened,
   # while 'ECOSYSTEM_CI_REPO_PATH' needs to be set to the corresponding path in the 'quarkusio/quarkus-ecosystem-ci' repository
@@ -34,9 +34,9 @@ jobs:
       - name: Java and Maven Setup
         uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:
-         java-version: ${{ matrix.java-version }}
-         maven-version: ${{ matrix.maven-version }}
-         cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
 
       - name: Checkout repo
         uses: actions/checkout@v2
