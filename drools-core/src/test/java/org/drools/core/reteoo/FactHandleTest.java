@@ -16,11 +16,12 @@
 
 package org.drools.core.reteoo;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 
 public class FactHandleTest {
     /*
@@ -33,21 +34,6 @@ public class FactHandleTest {
         assertEquals( 134,
                       f0.getId() );
         assertEquals( 134,
-                      f0.getRecency() );
-    }
-
-    /*
-     * Class under test for void FactHandleImpl(long, long)
-     */
-    @Test
-    public void testFactHandleImpllonglong() {
-        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
-                                                            "cheese",
-                                                            678,
-                                                            new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ));
-        assertEquals( 134,
-                      f0.getId() );
-        assertEquals( 678,
                       f0.getRecency() );
     }
 

@@ -24,7 +24,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.process.instance.WorkItem;

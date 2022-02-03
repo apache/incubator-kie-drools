@@ -20,7 +20,7 @@ import java.io.IOException;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;

@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.util.CodedHierarchy;
+import org.drools.traits.core.factmodel.CodedHierarchy;
 
 public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHierarchyImpl<T,HierNode<T>> implements CodedHierarchy<T>, Externalizable {
 

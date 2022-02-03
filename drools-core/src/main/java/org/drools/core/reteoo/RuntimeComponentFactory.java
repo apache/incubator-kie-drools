@@ -18,13 +18,12 @@ package org.drools.core.reteoo;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
+import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NamedEntryPointFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.GenericKieSessionMonitoringImpl;
@@ -51,11 +50,9 @@ public interface RuntimeComponentFactory extends KieService {
 
     PropagationContextFactory getPropagationContextFactory();
 
-    NamedEntryPointFactory getNamedEntryPointFactory();
+    EntryPointFactory getEntryPointFactory();
 
     FactHandleFactory getFactHandleFactoryService();
-
-    TraitRegistry getTraitRegistry(RuleBase knowledgeBase);
 
     TraitFactory getTraitFactory(RuleBase knowledgeBase);
 

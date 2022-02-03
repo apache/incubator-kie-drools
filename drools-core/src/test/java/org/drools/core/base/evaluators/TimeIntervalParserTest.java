@@ -16,8 +16,10 @@
 
 package org.drools.core.base.evaluators;
 
+import org.drools.core.util.TimeIntervalParser;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class TimeIntervalParserTest {
 

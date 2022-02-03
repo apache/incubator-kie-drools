@@ -16,7 +16,7 @@
 
 package org.drools.verifier.components;
 
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.verifier.report.components.Cause;
 
 public abstract class Restriction extends PatternComponent

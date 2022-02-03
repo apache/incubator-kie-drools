@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.time.Interval;
 

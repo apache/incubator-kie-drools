@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;

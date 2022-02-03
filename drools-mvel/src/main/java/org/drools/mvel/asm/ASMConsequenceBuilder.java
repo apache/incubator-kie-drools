@@ -23,7 +23,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;

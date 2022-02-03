@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.addon.TypeResolver;
-import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.util.TimeIntervalParser;
 import org.drools.core.factmodel.AccessibleFact;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;

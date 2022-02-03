@@ -16,6 +16,10 @@
 
 package org.drools.modelcompiler.drlx;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.stream.Collectors;
+
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.expr.Expression;
@@ -23,10 +27,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.RuleBase;
-import org.drools.core.impl.RuleUnitExecutorImpl;
 import org.drools.core.io.impl.InputStreamResource;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.ExecutableModelProject;
@@ -45,10 +46,6 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.stream.Collectors;
 
 import static org.drools.mvel.parser.Providers.provider;
 import static org.junit.Assert.assertEquals;
@@ -130,8 +127,8 @@ public class DrlxCompilerTest {
         kfs.writePomXML(KJARUtils.getPom(releaseId));
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         KieContainer kieContainer = ks.newKieContainer(releaseId);
-        RuleUnitExecutorImpl executor = new RuleUnitExecutorImpl((RuleBase) kieContainer.getKieBase(),
-                (SessionConfiguration) kieContainer.getKieSessionConfiguration());
+//        RuleUnitExecutorImpl executor = new RuleUnitExecutorImpl((RuleBase) kieContainer.getKieBase(),
+//                (SessionConfiguration) kieContainer.getKieSessionConfiguration());
 //        executor.newDataSource("dates",
 //                               LocalDate.of(2021, 1, 1));
 //        assertEquals(3, executor.run(Example.class));

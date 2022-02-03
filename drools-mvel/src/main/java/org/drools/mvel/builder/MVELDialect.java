@@ -77,7 +77,7 @@ import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.WindowReferenceBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.core.addon.TypeResolver;
-import org.drools.core.base.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;

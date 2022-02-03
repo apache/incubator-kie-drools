@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.core.base.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;

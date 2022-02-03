@@ -21,16 +21,14 @@ import java.io.Serializable;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.common.DefaultNamedEntryPointFactory;
+import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NamedEntryPointFactory;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
@@ -38,6 +36,7 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.kiesession.agenda.DefaultAgendaFactory;
+import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 import org.drools.kiesession.management.KieSessionMonitoringImpl;
 import org.drools.kiesession.management.StatelessKieSessionMonitoringImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -63,8 +62,8 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
         return handleFactory;
     }
 
-    public NamedEntryPointFactory getNamedEntryPointFactory() {
-        return new DefaultNamedEntryPointFactory();
+    public EntryPointFactory getEntryPointFactory() {
+        return new NamedEntryPointFactory();
     }
 
     public PropagationContextFactory getPropagationContextFactory() {
@@ -80,10 +79,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
     }
 
     public TraitFactory getTraitFactory(RuleBase knowledgeBase) {
-        return null;
-    }
-
-    public TraitRegistry getTraitRegistry(RuleBase knowledgeBase) {
         return null;
     }
 

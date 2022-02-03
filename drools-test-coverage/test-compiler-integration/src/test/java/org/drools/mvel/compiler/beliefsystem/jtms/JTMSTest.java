@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.RuleBaseFactory;

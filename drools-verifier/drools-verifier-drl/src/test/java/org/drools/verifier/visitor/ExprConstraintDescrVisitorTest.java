@@ -17,7 +17,7 @@ package org.drools.verifier.visitor;
 
 import java.util.Collection;
 
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.Eval;

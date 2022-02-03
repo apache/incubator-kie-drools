@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.drools.core.addon.TypeResolver;
 import org.mvel2.asm.MethodVisitor;
 

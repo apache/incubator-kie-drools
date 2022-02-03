@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
+import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

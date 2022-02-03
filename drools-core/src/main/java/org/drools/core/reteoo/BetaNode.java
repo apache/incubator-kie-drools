@@ -559,11 +559,6 @@ public abstract class BetaNode extends LeftTupleSource
         return "[ " + this.getClass().getSimpleName() + "(" + this.id + ") ]";
     }
 
-    public void dumpMemory(final ReteEvaluator reteEvaluator) {
-        final MemoryVisitor visitor = new MemoryVisitor( reteEvaluator );
-        visitor.visit( this );
-    }
-
     protected int calculateHashCode() {
         int hash = ( 23 * leftInput.hashCode() ) + ( 29 * rightInput.hashCode() ) + ( 31 * constraints.hashCode() );
         if (leftListenedProperties != null) {
@@ -581,7 +576,7 @@ public abstract class BetaNode extends LeftTupleSource
             return true;
         }
 
-        if ( object == null || !(object instanceof BetaNode) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof BetaNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
 

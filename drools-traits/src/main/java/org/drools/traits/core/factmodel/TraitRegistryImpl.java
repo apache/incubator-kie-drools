@@ -35,12 +35,10 @@ import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
 import org.drools.traits.core.util.HierNode;
-import org.drools.core.util.HierarchyEncoder;
 import org.drools.traits.core.util.HierarchyEncoderImpl;
 import org.kie.api.definition.type.FactField;
 

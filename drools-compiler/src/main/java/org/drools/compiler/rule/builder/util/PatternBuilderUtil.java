@@ -21,7 +21,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.spi.FieldValue;
 import org.drools.drl.ast.descr.LiteralRestrictionDescr;
 
-import static org.drools.core.base.evaluators.TimeIntervalParser.getTimestampFromDate;
+import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
 
 public class PatternBuilderUtil {
 

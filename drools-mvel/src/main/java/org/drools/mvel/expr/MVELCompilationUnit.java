@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.base.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;

@@ -20,18 +20,18 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.drools.core.common.NamedEntryPointFactory;
+import org.drools.core.common.EntryPointFactory;
 import org.drools.core.factmodel.ClassBuilderFactory;
-import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.traits.core.factmodel.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.traits.core.common.TraitNamedEntryPointFactory;
+import org.drools.traits.core.common.TraitEntryPointFactory;
 import org.drools.traits.core.factmodel.TraitClassBuilderFactory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 
-public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImpl {
+public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImpl implements TraitRuntimeComponentFactory {
 
     private final TraitFactHandleFactory traitFactHandleFactory = new TraitFactHandleFactory();
 
@@ -44,7 +44,8 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
         if (knowledgeBase instanceof SessionsAwareKnowledgeBase) {
             knowledgeBase = ((SessionsAwareKnowledgeBase) knowledgeBase).getDelegate();
         }
-        return traitFactoryCache.computeIfAbsent(knowledgeBase, TraitFactoryImpl::new);    }
+        return traitFactoryCache.computeIfAbsent(knowledgeBase, TraitFactoryImpl::new);
+    }
 
     @Override
     public TraitRegistry getTraitRegistry(RuleBase knowledgeBase) {
@@ -62,8 +63,8 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
     }
 
     @Override
-    public NamedEntryPointFactory getNamedEntryPointFactory() {
-        return new TraitNamedEntryPointFactory();
+    public EntryPointFactory getEntryPointFactory() {
+        return new TraitEntryPointFactory();
     }
 
     @Override

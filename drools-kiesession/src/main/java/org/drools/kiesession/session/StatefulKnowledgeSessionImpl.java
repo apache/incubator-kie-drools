@@ -71,7 +71,7 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.AbstractRuntime;
-import org.drools.core.impl.EntryPointsManager;
+import org.drools.kiesession.entrypoints.NamedEntryPointsManager;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.MarshallerReaderContext;
@@ -233,7 +233,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     // the engine is idle.
     private final AtomicInteger opCounter = new AtomicInteger(0);
 
-    private EntryPointsManager entryPointsManager;
+    private NamedEntryPointsManager entryPointsManager;
 
     // ------------------------------------------------------------
     // Constructors
@@ -313,7 +313,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter = new AtomicLong(propagationContext);
         init( config, environment, propagationContext );
 
-        this.entryPointsManager = new EntryPointsManager(this);
+        this.entryPointsManager = new NamedEntryPointsManager(this);
 
         this.nodeMemories = new ConcurrentNodeMemories(kBase);
         registerReceiveNodes(kBase.getReceiveNodes());

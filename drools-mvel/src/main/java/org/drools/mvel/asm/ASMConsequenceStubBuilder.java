@@ -19,8 +19,6 @@ import java.util.Map;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.builder.dialect.asm.ConsequenceStub;
-import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;

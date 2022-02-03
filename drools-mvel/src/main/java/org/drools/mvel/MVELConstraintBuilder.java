@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -39,11 +40,25 @@ import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
+import org.drools.mvel.evaluators.AfterEvaluatorDefinition;
+import org.drools.mvel.evaluators.BeforeEvaluatorDefinition;
+import org.drools.mvel.evaluators.CoincidesEvaluatorDefinition;
+import org.drools.mvel.evaluators.DuringEvaluatorDefinition;
+import org.drools.mvel.evaluators.FinishedByEvaluatorDefinition;
+import org.drools.mvel.evaluators.FinishesEvaluatorDefinition;
+import org.drools.mvel.evaluators.IncludesEvaluatorDefinition;
+import org.drools.mvel.evaluators.MeetsEvaluatorDefinition;
+import org.drools.mvel.evaluators.MetByEvaluatorDefinition;
+import org.drools.mvel.evaluators.OverlappedByEvaluatorDefinition;
+import org.drools.mvel.evaluators.OverlapsEvaluatorDefinition;
+import org.drools.mvel.evaluators.StartedByEvaluatorDefinition;
+import org.drools.mvel.evaluators.StartsEvaluatorDefinition;
+import org.drools.mvel.evaluators.StrEvaluatorDefinition;
 import org.drools.mvel.field.FieldFactory;
 import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
@@ -879,5 +894,28 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
             init();
         }
+    }
+
+    private final static List<EvaluatorDefinition> EVALUATOR_DEFINITIONS = new ArrayList<>();
+
+    static {
+        EVALUATOR_DEFINITIONS.add( new BeforeEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new AfterEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new MeetsEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new MetByEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new OverlapsEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new OverlappedByEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new IncludesEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new DuringEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new FinishesEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new FinishedByEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new StartsEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new StartedByEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new CoincidesEvaluatorDefinition() );
+        EVALUATOR_DEFINITIONS.add( new StrEvaluatorDefinition() );
+    }
+
+    public List<EvaluatorDefinition> getEvaluatorDefinitions() {
+        return EVALUATOR_DEFINITIONS;
     }
 }

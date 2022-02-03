@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.util.HierarchyEncoder;
+import org.drools.traits.core.factmodel.HierarchyEncoder;
 
 /**
  * Encodes a hierachy using bit masks, according to the algorithm described in

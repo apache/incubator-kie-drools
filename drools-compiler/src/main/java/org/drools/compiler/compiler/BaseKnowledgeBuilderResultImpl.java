@@ -17,7 +17,7 @@ package org.drools.compiler.compiler;
 
 import java.util.Arrays;
 
-import org.drools.core.kie.impl.MessageImpl;
+import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.InternalMessage;
 import org.kie.internal.builder.KnowledgeBuilderResult;

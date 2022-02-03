@@ -15,10 +15,7 @@
 package org.drools.core.base;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
-import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.common.MissingDependencyException;
 import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.spi.InternalReadAccessor;
@@ -60,10 +57,4 @@ public interface CoreComponentsBuilder extends KieService {
     ClassFieldInspector createClassFieldInspector( Class<?> classUnderInspection, boolean includeFinalMethods ) throws IOException;
 
     MVELExecutor getMVELExecutor();
-
-    static List<EvaluatorDefinition> loadEvaluatorDefinitions() {
-        return present() ? get().getEvaluatorDefinitions() : Collections.emptyList();
-    }
-
-    List<EvaluatorDefinition> getEvaluatorDefinitions();
 }

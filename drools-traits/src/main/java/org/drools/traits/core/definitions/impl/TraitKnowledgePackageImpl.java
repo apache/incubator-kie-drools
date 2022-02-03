@@ -37,6 +37,7 @@ import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.mvel.MVELKnowledgePackageImpl;
 import org.drools.traits.core.factmodel.TraitRegistryImpl;
+import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 public class TraitKnowledgePackageImpl extends MVELKnowledgePackageImpl {
@@ -69,7 +70,7 @@ public class TraitKnowledgePackageImpl extends MVELKnowledgePackageImpl {
     @Override
     public void mergeTraitRegistry(RuleBase knowledgeBase) {
         if (traitRegistry != null) {
-            RuntimeComponentFactory.get().getTraitRegistry(knowledgeBase).merge(traitRegistry);
+            ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(knowledgeBase).merge(traitRegistry);
         }
     }
 

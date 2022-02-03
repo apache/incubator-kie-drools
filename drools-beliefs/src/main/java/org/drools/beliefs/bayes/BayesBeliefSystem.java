@@ -17,7 +17,7 @@ package org.drools.beliefs.bayes;
 
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;

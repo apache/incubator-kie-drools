@@ -27,7 +27,7 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.base.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;

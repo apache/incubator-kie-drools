@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.base.ClassFieldInspector;
-import org.drools.core.kie.impl.MessageImpl;
+import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils;
 import org.kie.api.io.Resource;

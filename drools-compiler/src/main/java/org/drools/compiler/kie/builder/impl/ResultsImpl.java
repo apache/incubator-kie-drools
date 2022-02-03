@@ -18,7 +18,6 @@ package org.drools.compiler.kie.builder.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.kie.impl.MessageImpl;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.Results;

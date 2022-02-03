@@ -16,7 +16,7 @@
 
 package org.drools.verifier.report.components;
 
-import org.drools.core.base.evaluators.Operator;
+import org.drools.compiler.builder.impl.Operator;
 import org.drools.verifier.components.Field;
 
 public abstract class MissingRange
