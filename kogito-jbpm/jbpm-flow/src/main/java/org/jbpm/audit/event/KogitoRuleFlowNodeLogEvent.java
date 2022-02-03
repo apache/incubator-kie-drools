@@ -15,7 +15,7 @@
  */
 package org.jbpm.audit.event;
 
-import org.drools.core.audit.event.RuleFlowNodeLogEvent;
+import org.drools.kiesession.audit.RuleFlowNodeLogEvent;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 

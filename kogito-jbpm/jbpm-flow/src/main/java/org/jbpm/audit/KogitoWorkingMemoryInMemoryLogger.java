@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.audit.event.LogEvent;
+import org.drools.kiesession.audit.LogEvent;
 import org.kie.api.event.KieRuntimeEventManager;
 
 /**

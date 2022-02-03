@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.audit.event.LogEvent;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.kiesession.audit.LogEvent;
 import org.drools.mvel.MVELSafeHelper;
 import org.jbpm.audit.KogitoWorkingMemoryInMemoryLogger;
 import org.jbpm.audit.event.KogitoRuleFlowLogEvent;
