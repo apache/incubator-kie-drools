@@ -37,7 +37,8 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpression;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpressionBlockStmt;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTextIndexNormalizationFactory.getTextIndexNormalizationVariableDeclaration;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
@@ -77,15 +78,17 @@ public class KiePMMLTextIndexFactory {
         variableDeclarator.setName(variableName);
         final BlockStmt toReturn = new BlockStmt();
         String expressionVariableName = String.format("%s_Expression", variableName);
-        final BlockStmt expressionBlockStatement = getKiePMMLExpression(expressionVariableName, textIndex.getExpression());
+        final BlockStmt expressionBlockStatement = getKiePMMLExpressionBlockStmt(expressionVariableName,
+                                                                                 textIndex.getExpression());
         expressionBlockStatement.getStatements().forEach(toReturn::addStatement);
         int counter = 0;
         final NodeList<Expression> arguments = new NodeList<>();
         if (textIndex.hasTextIndexNormalizations()) {
             for (TextIndexNormalization textIndexNormalization : textIndex.getTextIndexNormalizations()) {
-                String nestedVariableName = String.format("%s_%s", variableName, counter);
+                String nestedVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, counter);
                 arguments.add(new NameExpr(nestedVariableName));
-                BlockStmt toAdd = getTextIndexNormalizationVariableDeclaration(nestedVariableName, textIndexNormalization);
+                BlockStmt toAdd = getTextIndexNormalizationVariableDeclaration(nestedVariableName,
+                                                                               textIndexNormalization);
                 toAdd.getStatements().forEach(toReturn::addStatement);
                 counter++;
             }

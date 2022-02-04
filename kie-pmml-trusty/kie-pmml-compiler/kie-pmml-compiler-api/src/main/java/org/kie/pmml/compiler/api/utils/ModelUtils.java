@@ -17,6 +17,7 @@ package org.kie.pmml.compiler.api.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.xml.namespace.QName;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
@@ -39,11 +42,14 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ParameterField;
+import org.dmg.pmml.Row;
 import org.dmg.pmml.Target;
 import org.dmg.pmml.TargetValue;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.Value;
+import org.jpmml.model.inlinetable.InputCell;
+import org.jpmml.model.inlinetable.OutputCell;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
@@ -53,9 +59,9 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLTarget;
-import org.kie.pmml.commons.model.KiePMMLTargetValue;
+import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
+import org.w3c.dom.Element;
 
 import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
 
@@ -355,6 +361,7 @@ public class ModelUtils {
                                                        intervals);
     }
 
+
     /**
      * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>org.dmg.pmml
      * .Output</code> one
@@ -366,8 +373,21 @@ public class ModelUtils {
         if (toConvert == null) {
             return Collections.emptyList();
         }
-        return toConvert.getOutputFields()
-                .stream()
+        return convertToKieOutputFieldList(toConvert.getOutputFields(), fields);
+    }
+
+    /**
+     * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <codeList&lt;org.dmg.pmml
+     * .OutputField&gt;</code> one
+     * @param toConvert
+     * @return
+     */
+    public static List<org.kie.pmml.api.models.OutputField> convertToKieOutputFieldList(final List<OutputField> toConvert,
+                                                                                        final List<Field<?>> fields) {
+        if (toConvert == null) {
+            return Collections.emptyList();
+        }
+        return toConvert.stream()
                 .map(outputField -> {
                     Field<?> field = fields.stream()
                             .filter(fld -> fld.getName().equals(outputField.getTargetField()))
@@ -406,98 +426,74 @@ public class ModelUtils {
     }
 
     /**
-     * Return a <code>List&lt;org.kie.pmml.commons.model.KiePMMLTarget&gt;</code> out of a <code>org.dmg.pmml
+     * Return a <code>List&lt;org.kie.pmml.api.models.TargetField&gt;</code> out of a <code>org.dmg.pmml
      * .Targets</code>
      * @param toConvert
      * @return
      */
-    public static List<KiePMMLTarget> convertToKiePMMLTargetList(Targets toConvert) {
+    public static List<TargetField> convertToKieTargetFieldList(Targets toConvert) {
         if (toConvert == null) {
             return Collections.emptyList();
         }
         return toConvert.getTargets()
                 .stream()
-                .map(ModelUtils::convertToKiePMMLTarget)
+                .map(ModelUtils::convertToKieTargetField)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Return a <code>org.kie.pmml.commons.model.KiePMMLTarget</code> out of a <code>org.dmg.pmml.Target</code>
+     * Return a <code>org.kie.pmml.api.models.TargetField</code> out of a <code>org.dmg.pmml.Target</code>
      * @param toConvert
      * @return
      */
-    public static KiePMMLTarget convertToKiePMMLTarget(final Target toConvert) {
-        final KiePMMLTarget.Builder builder = KiePMMLTarget.builder("" + toConvert.hashCode(), Collections.emptyList());
-        final List<KiePMMLTargetValue> targetValues = convertToKiePMMLTargetValueList(toConvert.getTargetValues());
-        if (!targetValues.isEmpty()) {
-            builder.withTargetValues(targetValues);
-        }
+    public static TargetField convertToKieTargetField(final Target toConvert) {
+        final List<org.kie.pmml.api.models.TargetValue> targetValues = convertToKieTargetValueList(toConvert.getTargetValues());
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
-        if (opType != null) {
-            builder.withOpType(opType);
-        }
-        final String field = toConvert.getField() != null ? toConvert.getField().getValue() : null;
-        if (field != null) {
-            builder.withField(field);
-        }
         final CAST_INTEGER castInteger = toConvert.getCastInteger() != null ?
                 CAST_INTEGER.byName(toConvert.getCastInteger().value()) : null;
-        if (castInteger != null) {
-            builder.withCastInteger(castInteger);
-        }
         final Double min = toConvert.getMin() != null ? toConvert.getMin().doubleValue() : null;
-        if (min != null) {
-            builder.withMin(min);
-        }
         final Double max = toConvert.getMax() != null ? toConvert.getMax().doubleValue() : null;
-        if (max != null) {
-            builder.withMax(max);
-        }
         final Double rescaleConstant = toConvert.getRescaleConstant() != null ?
                 toConvert.getRescaleConstant().doubleValue() : null;
-        if (rescaleConstant != null) {
-            builder.withRescaleConstant(rescaleConstant);
-        }
-        final Double rescaleFactor = toConvert.getRescaleFactor() != null ? toConvert.getRescaleFactor().doubleValue() :
-                null;
-        if (rescaleFactor != null) {
-            builder.withRescaleFactor(rescaleFactor);
-        }
-        return builder.build();
+        final Double rescaleFactor = toConvert.getRescaleFactor() != null ? toConvert.getRescaleFactor().doubleValue() : null;
+        return new TargetField(targetValues,
+                               opType,
+                               toConvert.getField().getValue(),
+                               castInteger,
+                               min,
+                               max,
+                               rescaleConstant,
+                               rescaleFactor);
     }
 
     /**
-     * Return a <code>List&lt;org.kie.pmml.commons.model.KiePMMLTargetValue&gt;</code> out of a
+     * Return a <code>List&lt;org.kie.pmml.api.models.TargetValue&gt;</code> out of a
      * <code>List&lt;org.dmg.pmml.TargetValue&gt;</code>
      * @param toConvert
      * @return
      */
-    public static List<KiePMMLTargetValue> convertToKiePMMLTargetValueList(List<TargetValue> toConvert) {
+    public static List<org.kie.pmml.api.models.TargetValue> convertToKieTargetValueList(List<TargetValue> toConvert) {
         if (toConvert == null) {
             return Collections.emptyList();
         }
         return toConvert
                 .stream()
-                .map(ModelUtils::convertToKiePMMLTargetValue)
+                .map(ModelUtils::convertToKieTargetValue)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Return a <code>org.kie.pmml.commons.model.KiePMMLTargetValue</code> out of a <code>org.dmg.pmml
+     * Return a <code>org.kie.pmml.api.models.TargetValue</code> out of a <code>org.dmg.pmml
      * .TargetValue</code>
      * @param toConvert
      * @return
      */
-    public static KiePMMLTargetValue convertToKiePMMLTargetValue(final TargetValue toConvert) {
+    public static org.kie.pmml.api.models.TargetValue convertToKieTargetValue(final TargetValue toConvert) {
         final String value = toConvert.getValue() != null ? toConvert.getValue().toString() : null;
         final String displayValue = toConvert.getDisplayValue() != null ? toConvert.getDisplayValue() : null;
-        final KiePMMLTargetValue.Builder builder = KiePMMLTargetValue.builder("" + toConvert.hashCode(),
-                                                                              Collections.emptyList())
-                .withValue(value)
-                .withDisplayValue(displayValue)
-                .withPriorProbability(toConvert.getPriorProbability())
-                .withDefaultValue(toConvert.getDefaultValue());
-        return builder.build();
+        return new org.kie.pmml.api.models.TargetValue(value, displayValue,
+                                                       toConvert.getPriorProbability().doubleValue(),
+                                                       toConvert.getDefaultValue().doubleValue());
     }
 
     /**
@@ -555,16 +551,57 @@ public class ModelUtils {
         return toReturn;
     }
 
-    static List<String> convertDataFieldValues(List<Value> toConvert) {
+    public static List<String> convertDataFieldValues(List<Value> toConvert) {
         return toConvert != null ? toConvert.stream()
                 .map(value -> value.getValue().toString())
                 .collect(Collectors.toList()) : null;
     }
 
-    static List<org.kie.pmml.api.models.Interval> convertDataFieldIntervals(List<Interval> toConvert) {
+    public static List<org.kie.pmml.api.models.Interval> convertDataFieldIntervals(List<Interval> toConvert) {
         return toConvert != null ? toConvert.stream()
                 .map(interval -> new org.kie.pmml.api.models.Interval(interval.getLeftMargin(),
                                                                       interval.getRightMargin()))
                 .collect(Collectors.toList()) : null;
+    }
+
+    public static Map<String, Object> getRowDataMap(Row source) {
+        Map<String, Object> toReturn = new HashMap<>();
+        List<Element> elements = source.getContent().stream()
+                .filter(Element.class::isInstance)
+                .map(Element.class::cast)
+                .collect(Collectors.toList());
+        if (!elements.isEmpty()) {
+            elements.forEach(el -> populateWithElement(toReturn, el));
+        } else {
+            InputCell inputCell = source.getContent().stream()
+                    .filter(InputCell.class::isInstance)
+                    .map(InputCell.class::cast)
+                    .findFirst()
+                    .orElse(null);
+            OutputCell outputCell = source.getContent().stream()
+                    .filter(OutputCell.class::isInstance)
+                    .map(OutputCell.class::cast)
+                    .findFirst()
+                    .orElse(null);
+            populateWithCells(toReturn, inputCell, outputCell);
+        }
+        return toReturn;
+    }
+
+    public static String getPrefixedName(QName qName) {
+        return String.format("%s:%s", qName.getPrefix(), qName.getLocalPart());
+    }
+
+    static void populateWithElement(Map<String, Object> toPopulate, Element source) {
+        toPopulate.put(source.getTagName(), source.getFirstChild().getTextContent());
+    }
+
+    static void populateWithCells(Map<String, Object> toPopulate, InputCell inputCell, OutputCell outputCell) {
+        if (inputCell != null) {
+            toPopulate.put(getPrefixedName(inputCell.getName()), inputCell.getValue());
+        }
+        if (outputCell != null) {
+            toPopulate.put(getPrefixedName(outputCell.getName()), outputCell.getValue());
+        }
     }
 }

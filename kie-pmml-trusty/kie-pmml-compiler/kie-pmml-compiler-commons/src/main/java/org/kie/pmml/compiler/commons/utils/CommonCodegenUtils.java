@@ -21,6 +21,8 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -208,6 +210,58 @@ public class CommonCodegenUtils {
     }
 
     /**
+     * Declare and initialize a new <code>Map</code> in the given <code>BlockStmt</code>
+     * @param body
+     * @param mapName
+     * @param mapTypes
+     */
+    public static void createHashMap(final BlockStmt body,
+                                     final String mapName,
+                                     final List<String> mapTypes) {
+        createMap(body, mapName, mapTypes, HashMap.class);
+    }
+
+    /**
+     * Declare and initialize a new <code>LinkedHashMap</code> in the given <code>BlockStmt</code>
+     * @param body
+     * @param mapName
+     * @param mapTypes
+     */
+    public static void createLinkedHashMap(final BlockStmt body,
+                                 final String mapName,
+                                 final List<String> mapTypes) {
+        createMap(body, mapName, mapTypes, LinkedHashMap.class);
+    }
+
+    /**
+     * Declare, initialize and populate a new <code>HashMap</code> in the given <code>BlockStmt</code>
+     * @param body
+     * @param mapName
+     * @param mapTypes
+     */
+    public static void createPopulatedHashMap(final BlockStmt body,
+                                              final String mapName,
+                                              final List<String> mapTypes,
+                                              final Map<String, Expression> toAdd) {
+        createHashMap(body, mapName, mapTypes);
+        addMapPopulationExpressions(toAdd, body, mapName);
+    }
+
+    /**
+     * Declare, initialize and populate a new <code>LinkedHashMap</code> in the given <code>BlockStmt</code>
+     * @param body
+     * @param mapName
+     * @param mapTypes
+     */
+    public static void createPopulatedLinkedHashMap(final BlockStmt body,
+                                              final String mapName,
+                                              final List<String> mapTypes,
+                                              final Map<String, Expression> toAdd) {
+        createLinkedHashMap(body, mapName, mapTypes);
+        addMapPopulationExpressions(toAdd, body, mapName);
+    }
+
+    /**
      * For every entry in the given map, add a "put" statement to the provided {@link BlockStmt} body.
      * @param toAdd the map containing the input values to process
      * @param body the destination body
@@ -250,6 +304,34 @@ public class CommonCodegenUtils {
             expressionStmt.setExpression(methodCallExpr);
             body.addStatement(expressionStmt);
         });
+    }
+
+    /**
+     * Method to be used to populate a <code>List</code> inside a getter method meant to return only that <code>List</code>
+     * @param toAdd
+     * @param methodDeclaration
+     * @param listName
+     */
+    public static void populateListInListGetter(final List<? extends Expression> toAdd,
+                                                final MethodDeclaration methodDeclaration,
+                                                final String listName) {
+        final BlockStmt body = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD, methodDeclaration)));
+        Optional<ReturnStmt> oldReturn =  body.getStatements().parallelStream().filter(statement -> statement instanceof ReturnStmt)
+                .map(ReturnStmt.class::cast)
+                .findFirst();
+        oldReturn.ifPresent(Node::remove);
+
+        toAdd.forEach(expression -> {
+            NodeList<Expression> arguments = NodeList.nodeList(expression);
+            MethodCallExpr methodCallExpr = new MethodCallExpr();
+            methodCallExpr.setScope(new NameExpr(listName));
+            methodCallExpr.setName("add");
+            methodCallExpr.setArguments(arguments);
+            ExpressionStmt expressionStmt = new ExpressionStmt();
+            expressionStmt.setExpression(methodCallExpr);
+            body.addStatement(expressionStmt);
+        });
+        body.addStatement(getReturnStmt(listName));
     }
 
     /**
@@ -1008,6 +1090,21 @@ public class CommonCodegenUtils {
             this.toReplace = toReplace;
             this.replacement = replacement;
         }
+    }
+
+    private static void createMap(final BlockStmt body,
+                                  final String mapName,
+                                  final List<String> mapTypes,
+                                  final Class<? extends Map> mapClass) {
+        final VariableDeclarator mapDeclarator =
+                new VariableDeclarator(getTypedClassOrInterfaceTypeByTypeNames(Map.class.getName(),mapTypes),
+                                       mapName);
+        final ObjectCreationExpr mapInitializer = new ObjectCreationExpr();
+        mapInitializer.setType(getTypedClassOrInterfaceTypeByTypeNames(mapClass.getName(), mapTypes));
+        mapDeclarator.setInitializer(mapInitializer);
+        final VariableDeclarationExpr mapDeclarationExpr =
+                new VariableDeclarationExpr(mapDeclarator);
+        body.addStatement(mapDeclarationExpr);
     }
 
 }

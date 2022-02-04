@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.model.expressions;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
@@ -63,6 +64,18 @@ public class KiePMMLNormContinuous extends AbstractKiePMMLComponent implements K
             throw new KiePMMLException("Failed to retrieve input number for " + name);
         }
         return evaluate(input);
+    }
+
+    public List<KiePMMLLinearNorm> getLinearNorms() {
+        return Collections.unmodifiableList(linearNorms);
+    }
+
+    public OUTLIER_TREATMENT_METHOD getOutlierTreatmentMethod() {
+        return outlierTreatmentMethod;
+    }
+
+    public Number getMapMissingTo() {
+        return mapMissingTo;
     }
 
     Number evaluate(final Number input) {

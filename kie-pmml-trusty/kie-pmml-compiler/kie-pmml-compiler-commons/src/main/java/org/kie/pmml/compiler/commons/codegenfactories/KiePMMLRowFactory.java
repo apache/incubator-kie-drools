@@ -15,12 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.codegenfactories;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -36,15 +31,14 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.Row;
-import org.jpmml.model.inlinetable.InputCell;
-import org.jpmml.model.inlinetable.OutputCell;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
-import org.w3c.dom.Element;
 
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getRowDataMap;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -78,8 +72,9 @@ public class KiePMMLRowFactory {
         final MethodDeclaration methodDeclaration = ROW_TEMPLATE.getMethodsByName(GETKIEPMMLROW).get(0).clone();
         final BlockStmt toReturn = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
 
-        final String columnValuesVariableName = String.format("%s_%s", variableName, COLUMN_VALUES);
-        final VariableDeclarator columnValuesVariableDeclarator = getVariableDeclarator(toReturn, COLUMN_VALUES) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, ROW, toReturn)));
+        final String columnValuesVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, COLUMN_VALUES);
+        final VariableDeclarator columnValuesVariableDeclarator =
+                getVariableDeclarator(toReturn, COLUMN_VALUES).orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, ROW, toReturn)));
         columnValuesVariableDeclarator.setName(columnValuesVariableName);
         final MethodCallExpr columnValuesVariableInit =columnValuesVariableDeclarator.getInitializer()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, COLUMN_VALUES, toReturn)))
@@ -110,47 +105,5 @@ public class KiePMMLRowFactory {
         final NameExpr nameExpr = new NameExpr(columnValuesVariableName);
         objectCreationExpr.getArguments().set(0, nameExpr);
         return toReturn;
-    }
-
-    static Map<String, Object> getRowDataMap(Row source) {
-        Map<String, Object> toReturn = new HashMap<>();
-        List<Element> elements = source.getContent().stream()
-                .filter(Element.class::isInstance)
-                .map(Element.class::cast)
-                .collect(Collectors.toList());
-        if (!elements.isEmpty()) {
-            elements.forEach(el -> populateWithElement(toReturn, el));
-        } else {
-            InputCell inputCell = source.getContent().stream()
-                    .filter(InputCell.class::isInstance)
-                    .map(InputCell.class::cast)
-                    .findFirst()
-                    .orElse(null);
-            OutputCell outputCell = source.getContent().stream()
-                    .filter(OutputCell.class::isInstance)
-                    .map(OutputCell.class::cast)
-                    .findFirst()
-                    .orElse(null);
-            populateWithCells(toReturn, inputCell, outputCell);
-        }
-        return toReturn;
-
-    }
-
-    static void populateWithElement(Map<String, Object> toPopulate, Element source) {
-        toPopulate.put(source.getTagName(), source.getFirstChild().getTextContent());
-    }
-
-    static void populateWithCells(Map<String, Object> toPopulate, InputCell inputCell, OutputCell outputCell) {
-        if (inputCell != null) {
-            toPopulate.put(getPrefixedName(inputCell.getName()), inputCell.getValue());
-        }
-        if (outputCell != null) {
-            toPopulate.put(getPrefixedName(outputCell.getName()), outputCell.getValue());
-        }
-    }
-
-    private static String getPrefixedName(QName qName) {
-       return String.format("%s:%s", qName.getPrefix(), qName.getLocalPart());
     }
 }

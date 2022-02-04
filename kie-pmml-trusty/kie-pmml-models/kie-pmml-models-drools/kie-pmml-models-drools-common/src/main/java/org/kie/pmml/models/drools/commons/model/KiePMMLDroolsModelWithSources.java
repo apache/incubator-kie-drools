@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.HasRule;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
@@ -39,7 +40,7 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources imple
                                          final String kmodulePackageName,
                                          final List<MiningField> miningFields,
                                          final List<OutputField> outputFields,
-                                         final List<KiePMMLTarget> targetFields,
+                                         final List<TargetField> targetFields,
                                          final Map<String, String> sourcesMap,
                                          final String pkgUUID,
                                          final Map<String, String> rulesSourceMap) {

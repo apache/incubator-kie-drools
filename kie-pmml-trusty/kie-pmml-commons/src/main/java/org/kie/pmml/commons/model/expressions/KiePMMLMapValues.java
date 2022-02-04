@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,30 @@ public class KiePMMLMapValues extends AbstractKiePMMLComponent implements KiePMM
 
     public static Builder builder(String name, List<KiePMMLExtension> extensions, String outputColumn) {
         return new Builder(name, extensions, outputColumn);
+    }
+
+    public String getOutputColumn() {
+        return outputColumn;
+    }
+
+    public KiePMMLInlineTable getInlineTable() {
+        return inlineTable;
+    }
+
+    public List<KiePMMLFieldColumnPair> getFieldColumnPairs() {
+        return Collections.unmodifiableList(fieldColumnPairs);
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public String getMapMissingTo() {
+        return mapMissingTo;
+    }
+
+    public DATA_TYPE getDataType() {
+        return dataType;
     }
 
     @Override

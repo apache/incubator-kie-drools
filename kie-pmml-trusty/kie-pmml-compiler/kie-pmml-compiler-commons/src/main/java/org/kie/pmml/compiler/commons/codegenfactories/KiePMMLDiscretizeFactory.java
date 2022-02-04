@@ -27,13 +27,13 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.DiscretizeBin;
-import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDiscretizeBinFactory.getDiscretizeBinVariableDeclaration;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForDataType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
@@ -56,7 +56,6 @@ public class KiePMMLDiscretizeFactory {
     static final String DISCRETIZE = "discretize";
     static final ClassOrInterfaceDeclaration DISCRETIZE_TEMPLATE;
 
-
     static {
         CompilationUnit cloneCU = JavaParserUtils.getFromFileName(KIE_PMML_DISCRETIZE_TEMPLATE_JAVA);
         DISCRETIZE_TEMPLATE = cloneCU.getClassByName(KIE_PMML_DISCRETIZE_TEMPLATE)
@@ -65,19 +64,22 @@ public class KiePMMLDiscretizeFactory {
     }
 
     static BlockStmt getDiscretizeVariableDeclaration(final String variableName, final Discretize discretize) {
-        final MethodDeclaration methodDeclaration = DISCRETIZE_TEMPLATE.getMethodsByName(GETKIEPMMLDISCRETIZE).get(0).clone();
-        final BlockStmt discretizeBody = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
-        final VariableDeclarator variableDeclarator = getVariableDeclarator(discretizeBody, DISCRETIZE) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, DISCRETIZE, discretizeBody)));
+        final MethodDeclaration methodDeclaration =
+                DISCRETIZE_TEMPLATE.getMethodsByName(GETKIEPMMLDISCRETIZE).get(0).clone();
+        final BlockStmt discretizeBody =
+                methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        final VariableDeclarator variableDeclarator =
+                getVariableDeclarator(discretizeBody, DISCRETIZE).orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, DISCRETIZE, discretizeBody)));
         variableDeclarator.setName(variableName);
         final BlockStmt toReturn = new BlockStmt();
         int counter = 0;
         final NodeList<Expression> arguments = new NodeList<>();
         for (DiscretizeBin discretizeBin : discretize.getDiscretizeBins()) {
-            String nestedVariableName = String.format("%s_%s", variableName, counter);
+            String nestedVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, counter);
             arguments.add(new NameExpr(nestedVariableName));
             BlockStmt toAdd = getDiscretizeBinVariableDeclaration(nestedVariableName, discretizeBin);
             toAdd.getStatements().forEach(toReturn::addStatement);
-            counter ++;
+            counter++;
         }
         final ObjectCreationExpr objectCreationExpr = variableDeclarator.getInitializer()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,

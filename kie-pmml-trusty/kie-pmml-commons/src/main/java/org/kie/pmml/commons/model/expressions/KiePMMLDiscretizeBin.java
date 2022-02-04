@@ -40,6 +40,10 @@ public class KiePMMLDiscretizeBin extends AbstractKiePMMLComponent {
         return binValue;
     }
 
+    public KiePMMLInterval getInterval() {
+        return interval;
+    }
+
     public Optional<String> evaluate(Number toEvaluate) {
         return interval.isIn(toEvaluate) ? Optional.of(binValue) : Optional.empty();
     }

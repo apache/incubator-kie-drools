@@ -105,9 +105,9 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
         this.pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         simpleClassName = getSanitizedClassName(model.getModelName());
         packageCanonicalClassName = String.format(PACKAGE_CLASS_TEMPLATE, this.packageName, simpleClassName);
-        targetDataFieldName = ModelUtils.getTargetFieldName(fields, model).orElse(null);
+        targetDataFieldName = ModelUtils.getTargetFieldName(this.fields, model).orElse(null);
         if (targetDataFieldName != null) {
-            targetDataField = fields.stream()
+            targetDataField = this.fields.stream()
                     .filter(DataField.class::isInstance)
                     .map(DataField.class::cast)
                     .filter(field -> Objects.equals(getTargetFieldName(), field.getName().getValue()))
@@ -116,6 +116,8 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
             targetDataField = null;
         }
         opType = targetDataField != null ? targetDataField.getOpType() : null;
+//        miningFields = ModelUtils.convertToKieMiningFieldList(getMiningSchema(),  this.fields);
+//        outputFields = ModelUtils.convertToKieOutputFieldList(getOutput(),  this.fields);
     }
 
     /**
