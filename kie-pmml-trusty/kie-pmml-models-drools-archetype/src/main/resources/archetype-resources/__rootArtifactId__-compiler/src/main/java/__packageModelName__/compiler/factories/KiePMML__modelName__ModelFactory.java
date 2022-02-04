@@ -21,12 +21,11 @@ package  ${package}.${packageModelName}.compiler.factories;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.${packageModelName}.${modelName}Model;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
+import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -43,26 +42,20 @@ public class KiePMML${modelName}ModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMML${modelName}Model getKiePMML${modelName}Model(final DataDictionary dataDictionary,
-                                                                       final TransformationDictionary transformationDictionary,
-                                                                       final ${modelName}Model model,
-                                                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                                       final String packageName,
-                                                                       final HasClassLoader hasClassLoader) {
+    public static KiePMML${modelName}Model getKiePMML${modelName}Model(final DroolsCompilationDTO<${modelName}Model> compilationDTO) throws IllegalAccessException, InstantiationException {
+        logger.trace("getKiePMML${modelName}Model {} {}", compilationDTO.getPackageName(), compilationDTO.getModel());
         // TODO
         throw new UnsupportedOperationException();
     }
 
-    public static Map<String, String> getKiePMML${modelName}ModelSourcesMap(final DataDictionary dataDictionary,
-                                                                         final TransformationDictionary transformationDictionary,
-                                                                         final ${modelName}Model model,
-                                                                         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                                         final String packageName) {
+    public static Map<String, String> getKiePMML${modelName}ModelSourcesMap(final DroolsCompilationDTO<${modelName}Model> compilationDTO) {
+        logger.trace("getKiePMML${modelName}ModelSourcesMap {} {} {}", compilationDTO.getFields(),
+                     compilationDTO.getModel(), compilationDTO.getPackageName());
         // TODO
         throw new UnsupportedOperationException();
     }
 
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                        final ${modelName}Model model,
                                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                        final List<KiePMMLDroolsType> types) {

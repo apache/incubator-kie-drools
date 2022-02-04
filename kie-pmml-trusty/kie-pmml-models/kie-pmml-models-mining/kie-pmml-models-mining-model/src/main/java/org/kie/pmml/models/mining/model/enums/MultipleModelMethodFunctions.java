@@ -16,18 +16,17 @@
 
 package org.kie.pmml.models.mining.model.enums;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -39,7 +38,8 @@ public class MultipleModelMethodFunctions {
     }
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> MOST_FREQUENT_RESULT = inputData -> {
-        Map<Object, Long> groupedValues = objectStream(inputData.values().stream())
+        Map<Object, Long> groupedValues = objectList(inputData.values())
+                .stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet().stream()
                 .sorted(Map.Entry.<Object, Long>comparingByValue().reversed())
@@ -66,14 +66,14 @@ public class MultipleModelMethodFunctions {
     };
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> AVERAGE_RESULT =
-            inputData -> doubleStream(inputData.values().stream(), "AVERAGE")
-            .average().orElseThrow(() -> new KieEnumException("Failed to get AVERAGE"));
+            inputData -> doubleStream(inputData.values(), "AVERAGE")
+                    .average().orElseThrow(() -> new KieEnumException("Failed to get AVERAGE"));
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> WEIGHTED_AVERAGE_RESULT =
             inputData -> {
         AtomicReference<Double> weightedSum = new AtomicReference<>(0.0);
         AtomicReference<Double> weights = new AtomicReference<>(0.0);
-        valueWeightStream(inputData.values().stream(), "WEIGHTED_AVERAGE")
+                valueWeightList(inputData.values(), "WEIGHTED_AVERAGE")
                 .forEach(elem -> {
                     weightedSum.accumulateAndGet(elem.weightedValue(), Double::sum);
                     weights.accumulateAndGet(elem.getWeight(), Double::sum);
@@ -82,7 +82,7 @@ public class MultipleModelMethodFunctions {
     };
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> MEDIAN_RESULT = inputData -> {
-        DoubleStream sortedValues = doubleStream(inputData.values().stream(), "MEDIAN").sorted();
+        DoubleStream sortedValues = doubleStream(inputData.values(), "MEDIAN").sorted();
         OptionalDouble toReturn = inputData.size() % 2 == 0 ?
                 sortedValues.skip(inputData.size() / 2 - (long) 1).limit(2).average() :
                 sortedValues.skip(inputData.size() / 2).findFirst();
@@ -91,42 +91,47 @@ public class MultipleModelMethodFunctions {
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> WEIGHTED_MEDIAN_RESULT =
             inputData -> {
-        final List<KiePMMLValueWeight> kiePMMLValueWeights = valueWeightStream(inputData.values()
-                                                                                       .stream(),
-                                                                               "WEIGHTED_MEDIAN")
-                .sorted((o1, o2) -> {
-                    int toReturn = 0;
-                    if (o1.getValue() > o2.getValue()) {
-                        toReturn = 1;
-                    } else if (o1.getValue() < o2.getValue()) {
-                        toReturn = -1;
+                final List<KiePMMLValueWeight> kiePMMLValueWeights = valueWeightList(inputData.values(),
+                                                                                     "WEIGHTED_MEDIAN");
+                kiePMMLValueWeights
+                        .sort((o1, o2) -> {
+                            int toReturn = 0;
+                            if (o1.getValue() > o2.getValue()) {
+                                toReturn = 1;
+                            } else if (o1.getValue() < o2.getValue()) {
+                                toReturn = -1;
+                            }
+                            return toReturn;
+                        });
+
+                AtomicReference<Double> weightsSumRef = new AtomicReference<>((double) 0);
+                kiePMMLValueWeights.forEach(value -> weightsSumRef.updateAndGet(v -> (v + value.getWeight())));
+                double weightsSum = weightsSumRef.get();
+                double weightsMedian = weightsSum / 2;
+                double weightedMedianSum = 0;
+                for (KiePMMLValueWeight kiePMMLValueWeight : kiePMMLValueWeights) {
+                    weightedMedianSum += kiePMMLValueWeight.getWeight();
+                    if (weightedMedianSum > weightsMedian) {
+                        return kiePMMLValueWeight.getValue();
                     }
-                    return toReturn;
-                }).collect(Collectors.toList());
-        double weightsSum = kiePMMLValueWeights.stream().map(KiePMMLValueWeight::getWeight)
-                .reduce(Double::sum)
-                .orElseThrow(() -> new KieEnumException("Failed to get WEIGHTED_MEDIAN"));
-        double weightsMedian = weightsSum / 2;
-        double weightedMedianSum = 0;
-        for (KiePMMLValueWeight kiePMMLValueWeight : kiePMMLValueWeights) {
-            weightedMedianSum += kiePMMLValueWeight.getWeight();
-            if (weightedMedianSum > weightsMedian) {
-                return kiePMMLValueWeight.getValue();
-            }
-        }
-        throw new KieEnumException("Failed to get WEIGHTED_MEDIAN");
-    };
+                }
+                throw new KieEnumException("Failed to get WEIGHTED_MEDIAN");
+            };
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> MAX_RESULT =
-            inputData -> doubleStream(inputData.values().stream(), "MAX").max()
-            .orElseThrow(() -> new KieEnumException("Failed to get MAX"));
+            inputData -> doubleStream(inputData.values(), "MAX").max()
+                    .orElseThrow(() -> new KieEnumException("Failed to get MAX"));
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> SUM_RESULT =
-            inputData -> doubleStream(inputData.values().stream(), "SUM").sum();
+            inputData -> doubleStream(inputData.values(), "SUM").sum();
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> WEIGHTED_SUM_RESULT =
-            inputData -> valueWeightStream(inputData.values().stream(), "WEIGHTED_SUM")
-            .mapToDouble(KiePMMLValueWeight::weightedValue).sum();
+            inputData -> {
+                AtomicReference<Double> toReturn = new AtomicReference<>((double) 0);
+                valueWeightList(inputData.values(), "WEIGHTED_SUM")
+                        .forEach(value -> toReturn.updateAndGet(v -> (v + value.weightedValue())));
+                return toReturn.get();
+            };
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> SELECT_FIRST_RESULT = inputData -> {
         if (inputData.entrySet().iterator().hasNext()) {
@@ -141,16 +146,20 @@ public class MultipleModelMethodFunctions {
     };
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> SELECT_ALL_RESULT =
-            inputData -> objectStream(inputData.values().stream())
-            .filter(Objects::nonNull)
-            .map(value -> {
-                if (value instanceof KiePMMLValueWeight) {
-                    return ((KiePMMLValueWeight) value).getValue();
-                } else {
-                    return value;
-                }
-            })
-            .collect(Collectors.toList());
+            inputData -> {
+                List<Object> toReturn = new ArrayList<>();
+                objectList(inputData.values())
+                        .forEach(value -> {
+                            if (value != null) {
+                                if (value instanceof KiePMMLValueWeight) {
+                                    toReturn.add(((KiePMMLValueWeight) value).getValue());
+                                } else {
+                                    toReturn.add(value);
+                                }
+                            }
+                        });
+                return toReturn;
+            };
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> SELECT_LAST_RESULT = inputData -> {
         Iterator<Map.Entry<String, KiePMMLNameValue>> iterator = inputData.entrySet().iterator();
@@ -175,7 +184,7 @@ public class MultipleModelMethodFunctions {
                 .collect(Collectors.groupingBy(KiePMMLNameValue::getName));
         LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
         mappedValues.forEach((key, probabilityValues) -> {
-            Double value = doubleStream(probabilityValues.stream(), "AVERAGE")
+            Double value = doubleStream(probabilityValues, "AVERAGE")
                     .average().orElseThrow(() -> new KieEnumException("Failed to get AVERAGE"));
             toReturn.put(key, value);
         });
@@ -183,38 +192,42 @@ public class MultipleModelMethodFunctions {
     };
 
     /**
-     * Returns a <code>Stream&lt;Object&gt;</code> representing the values inside the original <code>Stream&lt;
+     * Returns a <code>List&lt;Object&gt;</code> representing the values inside the original <code>Collection&lt;
      * KiePMMLNameValue&gt;</code>
      * <p>
      * {@link KiePMMLNameValue#getValue()}
      * @param toUnwrap
      * @return
      */
-    private static Stream<Object> objectStream(Stream<KiePMMLNameValue> toUnwrap) {
-        return toUnwrap.map(KiePMMLNameValue::getValue);
+    private static List<Object> objectList(Collection<KiePMMLNameValue> toUnwrap) {
+        final List<Object> toReturn = new ArrayList<>();
+        toUnwrap.forEach(nameValue -> toReturn.add(nameValue.getValue()));
+        return toReturn;
     }
 
     /**
-     * Returns a <code>Stream&lt;KiePMMLValueWeight&gt;</code> representing the values inside the original
-     * <code>Stream&lt;KiePMMLNameValue&gt;</code>
+     * Returns a <code>List&lt;KiePMMLValueWeight&gt;</code> representing the values inside the original
+     * <code>List&lt;KiePMMLNameValue&gt;</code>
      * {@link KiePMMLNameValue#getValue()}
      * @param toUnwrap
      * @param enumName
      * @return
      */
-    private static Stream<KiePMMLValueWeight> valueWeightStream(Stream<KiePMMLNameValue> toUnwrap, String enumName) {
-        return toUnwrap.map(KiePMMLNameValue::getValue)
-                .map(elem -> {
-                    if (!(elem instanceof KiePMMLValueWeight)) {
-                        throw new KieEnumException("Failed to get " + enumName + ". Expecting KiePMMLValueWeight, " +
-                                                           "found " + elem.getClass().getSimpleName());
-                    }
-                    return ((KiePMMLValueWeight) elem);
-                });
+    private static List<KiePMMLValueWeight> valueWeightList(Collection<KiePMMLNameValue> toUnwrap, String enumName) {
+        final List<KiePMMLValueWeight> toReturn = new ArrayList<>();
+        toUnwrap.forEach(nameValue -> {
+            Object elem = nameValue.getValue();
+            if (!(elem instanceof KiePMMLValueWeight)) {
+                throw new KieEnumException("Failed to get " + enumName + ". Expecting KiePMMLValueWeight, " +
+                                                   "found " + elem.getClass().getSimpleName());
+            }
+            toReturn.add((KiePMMLValueWeight) elem);
+        });
+        return toReturn;
     }
 
     /**
-     * Returns a <code>DoubleStream</code> representing the values inside the original <code>Stream&lt;
+     * Returns a <code>DoubleStream</code> representing the values inside the original <code>List&lt;
      * KiePMMLNameValue&gt;</code>
      * <p>
      * {@link KiePMMLValueWeight#getValue()}
@@ -223,8 +236,8 @@ public class MultipleModelMethodFunctions {
      * @return
      * @throws KieEnumException
      */
-    private static DoubleStream doubleStream(Stream<KiePMMLNameValue> toUnwrap, String enumName) {
-        return valueWeightStream(toUnwrap, enumName)
+    private static DoubleStream doubleStream(Collection<KiePMMLNameValue> toUnwrap, String enumName) {
+        return valueWeightList(toUnwrap, enumName).stream()
                 .mapToDouble(KiePMMLValueWeight::getValue);
     }
 }

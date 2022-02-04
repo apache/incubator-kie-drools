@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright ${year} Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,37 +15,24 @@
  */
 package  org.kie.pmml.models.naive_bayes.model;
 
+import java.util.Collections;
+import java.util.Map;
+
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 
 public class KiePMMLNaiveBayesModel extends KiePMMLModel {
 
-    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.NAIVEBAYES_MODEL;
 
-
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
+    public KiePMMLNaiveBayesModel(String modelName) {
+        super(modelName, Collections.emptyList());
     }
 
-    public static PMML_MODEL getPmmlModelType() {
-        return PMML_MODEL_TYPE;
-    }
-
-    private KiePMMLNaiveBayesModel() {
-    }
-
-
-    public static class Builder extends KiePMMLModel.Builder<KiePMMLNaiveBayesModel>{
-
-        private Builder(String name,MINING_FUNCTION miningFunction){
-            super(name, "NaiveBayes-", PMML_MODEL_TYPE, miningFunction, KiePMMLNaiveBayesModel::new);
-        }
-
-        @Override
-        public Builder withTargetField(String targetField){
-            return (Builder)super.withTargetField(targetField);
-        }
+    @Override
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+                            final PMMLContext context) {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 
 }

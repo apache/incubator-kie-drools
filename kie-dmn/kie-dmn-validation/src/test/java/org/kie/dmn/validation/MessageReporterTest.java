@@ -16,6 +16,8 @@
 
 package org.kie.dmn.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.UUID;
 
 import org.junit.Test;
@@ -25,8 +27,6 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.v1_3.TDecision;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MessageReporterTest {
 
@@ -38,7 +38,7 @@ public class MessageReporterTest {
 
     @Test
     public void smokeTest() {
-        MessageReporter ut = new MessageReporter();
+        MessageReporter ut = new MessageReporter(null);
         ut.report(Severity.INFO, aDecision(), m0);
         ut.report(Severity.INFO, aDecision(), m1, 1);
         ut.report(Severity.INFO, aDecision(), m2, 1, 2);

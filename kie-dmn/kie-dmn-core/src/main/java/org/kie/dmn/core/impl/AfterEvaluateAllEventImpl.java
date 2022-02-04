@@ -46,4 +46,9 @@ public class AfterEvaluateAllEventImpl implements AfterEvaluateAllEvent {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "AfterEvaluateAllEventImpl{ modelNamespace=" + modelNamespace + ", modelName=" + modelName + "}";
+    }
+
 }

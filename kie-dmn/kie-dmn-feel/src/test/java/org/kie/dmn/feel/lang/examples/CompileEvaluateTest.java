@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.dmn.feel.lang.examples;
 
 import java.util.ArrayList;
@@ -21,6 +37,7 @@ import org.kie.dmn.feel.lang.types.GenListType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -166,5 +183,29 @@ public class CompileEvaluateTest {
         Object result = feel.evaluate(compiledExpression, inputs);
         assertThat(result, is("k987"));
         assertTrue(errors.isEmpty());
+    }
+    
+    @Test
+    public void testExternalFnMissingClass() {
+        CompiledExpression compiledExpression = feel.compile( "{ maximum : function( v1, v2 ) external { java : { class : \"java.lang.Meth\", method signature: \"max(long,long)\" } }, the max : maximum( 10, 20 ) }.the max", feel.newCompilerContext() );
+        Object result = feel.evaluate(compiledExpression, new HashMap<>());
+        
+        assertThat(errors).anyMatch(fe -> fe.getMessage().contains("java.lang.Meth"));
+    }
+    
+    @Test
+    public void testExternalFnMissingMethod() {
+        CompiledExpression compiledExpression = feel.compile( "{ maximum : function( v1, v2 ) external { java : { class : \""+Math.class.getCanonicalName()+"\", method signature: \"max(int,long)\" } }, the max : maximum( 10, 20 ) }.the max", feel.newCompilerContext() );
+        Object result = feel.evaluate(compiledExpression, new HashMap<>());
+        
+        assertThat(errors).anyMatch(fe -> fe.getMessage().contains("max(int,int)") && fe.getMessage().contains("max(long,long)"));
+    }    
+    
+    @Test
+    public void testExternalFnMissingMethodString() {
+        CompiledExpression compiledExpression = feel.compile( "{ fn : function( p1 ) external { java : { class : \""+SomeTestUtilClass.class.getCanonicalName()+"\", method signature: \"greet(String)\" } }, r : fn( \"John Doe\" ) }.r", feel.newCompilerContext() );
+        Object result = feel.evaluate(compiledExpression, new HashMap<>());
+        
+        assertThat(errors).anyMatch(fe -> fe.getMessage().contains("greet(java.lang.String)"));
     }
 }

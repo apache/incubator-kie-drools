@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-trusty</artifactId>
-    <version>7.65.0-SNAPSHOT</version>
+    <version>7.66.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-pmml-models-drools-archetype</artifactId>
@@ -66,6 +66,7 @@
             </goals>
             <configuration>
               <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+              <escapeString>\</escapeString>
               <resources>
                 <resource>
                   <directory>src/test/resources-filtered</directory>

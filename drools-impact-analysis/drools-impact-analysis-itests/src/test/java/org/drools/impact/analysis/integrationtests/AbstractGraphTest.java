@@ -92,7 +92,12 @@ public class AbstractGraphTest {
      */
     protected void runRule(String drl, Object... facts) {
         final KieSession ksession = RuleExecutionHelper.getKieSession(drl);
+        runRule(ksession, facts);
+    }
+
+    protected void runRule(final KieSession ksession, Object... facts) {
         ksession.addEventListener(new DefaultAgendaEventListener() {
+
             @Override
             public void afterMatchFired(AfterMatchFiredEvent event) {
                 logger.info(event.getMatch().getRule().getName() + " : fired");
@@ -106,14 +111,15 @@ public class AbstractGraphTest {
         ksession.dispose();
     }
 
+    protected void runRuleWithGlobal(String drl, String globalName, Object global, Object... facts) {
+        final KieSession ksession = RuleExecutionHelper.getKieSession(drl);
+        ksession.setGlobal(globalName, global);
+        runRule(ksession, facts);
+    }
+
     protected void runRule(KieFileSystem kfs, Object... facts) {
         final KieSession ksession = RuleExecutionHelper.getKieSession(kfs);
-        for (Object fact : facts) {
-            ksession.insert(fact);
-        }
-        int fired = ksession.fireAllRules(100);
-        logger.info("fired = " + fired);
-        ksession.dispose();
+        runRule(ksession, facts);
     }
 
     protected KieFileSystem createKieFileSystemWithClassPathResourceNames(ReleaseId releaseId, Class<?> classForClassLoader, String... resourceNames) throws IOException {

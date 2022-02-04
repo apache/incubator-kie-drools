@@ -30,13 +30,8 @@
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-core</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-naivebayes-model</artifactId>
-        <version>${version.org.kie}</version>
+        <version>\${version.org.kie}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -17,8 +17,6 @@
 package org.kie.dmn.core.util;
 
 import org.kie.dmn.api.core.DMNMessageType;
-import org.kie.dmn.core.util.Msg.Message1;
-import org.kie.dmn.core.util.Msg.Message2;
 
 public final class Msg {
     // consolidated
@@ -63,6 +61,8 @@ public final class Msg {
     public static final Message2 VARIABLE_NAME_MISMATCH_FOR_BKM                      = new Message2( DMNMessageType.VARIABLE_NAME_MISMATCH, "Variable name '%s' does not match the Business Knowledge Model node name '%s'" );
     public static final Message2 VARIABLE_NAME_MISMATCH_FOR_DECISION                 = new Message2( DMNMessageType.VARIABLE_NAME_MISMATCH, "Variable name '%s' does not match the Decision node name '%s'" );
     public static final Message2 VARIABLE_NAME_MISMATCH_FOR_INPUT                    = new Message2( DMNMessageType.VARIABLE_NAME_MISMATCH, "Variable name '%s' does not match the Input Data node name '%s'" );
+    public static final Message2 VARIABLE_TYPE_MISMATCH_FOR_BKM_EL                   = new Message2( DMNMessageType.TYPEREF_MISMATCH, "Encapsulated logic type '%s' does not match the Business Knowledge Model variable type '%s'. Compilation will consider only the variable type." );
+    public static final Message2 VARIABLE_TYPE_MISMATCH_FOR_BKM_EL_BODY              = new Message2( DMNMessageType.TYPEREF_MISMATCH, "Encapsulated logic's expression type '%s' does not match the Business Knowledge Model variable's return type (was expecting '%s'). Compilation will refer only the BKM variable type." );
     public static final Message1 DUPLICATE_CONTEXT_ENTRY                             = new Message1( DMNMessageType.DUPLICATE_NAME, "Duplicate context entry with variables named '%s'" );
     public static final Message2 MISSING_TYPEREF_FOR_VARIABLE                        = new Message2( DMNMessageType.MISSING_TYPE_REF, "Variable named '%s' is missing its type reference on node '%s'" );
     public static final Message2 VARIABLE_LEADING_TRAILING_SPACES                    = new Message2( DMNMessageType.INVALID_NAME, "Variable name contains leading or traling spaces '%s' on node '%s'" );
@@ -70,6 +70,7 @@ public final class Msg {
     public static final Message2 MISSING_TYPEREF_FOR_COLUMN                          = new Message2( DMNMessageType.MISSING_TYPE_REF, "Column named '%s' is missing its type reference on node '%s'" );
     public static final Message3 WRONG_TYPEREF_FOR_COLUMN                            = new Message3( DMNMessageType.MISSING_TYPE_REF, "Column #%s named '%s' defines a type reference '%s' which does not exists");
     public static final Message1 DUPLICATE_DRG_ELEMENT                               = new Message1( DMNMessageType.DUPLICATE_NAME, "Duplicate node name '%s' in the model" );
+    public static final Message1 IMPORT_NAME_NOT_UNIQUE                              = new Message1( DMNMessageType.DUPLICATE_NAME, "Import name '%s' is not unique in the model, the DMN Spec mandates the Import's name must be distinct from the names of other imports, decisions, input data, business knowledge models, decision services, and item definitions within the importing model only." );
     public static final Message1 MISSING_NAME_FOR_DT_OUTPUT                          = new Message1( DMNMessageType.MISSING_NAME, "Decision table with multiple outputs on node '%s' requires a name for each output" );
     public static final Message1 MISSING_TYPEREF_FOR_DT_OUTPUT                       = new Message1( DMNMessageType.MISSING_TYPE_REF, "Decision table with multiple outputs on node '%s' requires a type reference for each output" );
     public static final Message1 MISSING_OUTPUT_VALUES                               = new Message1( DMNMessageType.MISSING_OUTPUT_VALUES, "Decision table '%s' with hit policy Priority requires output elements to specify the output values list" );

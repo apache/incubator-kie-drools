@@ -272,7 +272,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testSetterBigDecimal() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.salary = $p.salary + 50000; }",
-             "{ $p.setSalary($p.getSalary().add(new java.math.BigDecimal(50000))); }");
+             "{ $p.setSalary($p.getSalary().add(new java.math.BigDecimal(50000), java.math.MathContext.DECIMAL128)); }");
     }
 
     @Test
@@ -360,7 +360,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testBigDecimalModulo() {
         test(ctx -> ctx.addDeclaration("$b1", BigDecimal.class),
              "{ java.math.BigDecimal result = $b1 % 2; }",
-             "{ java.math.BigDecimal result = $b1.remainder(new java.math.BigDecimal(2)); }");
+             "{ java.math.BigDecimal result = $b1.remainder(new java.math.BigDecimal(2), java.math.MathContext.DECIMAL128); }");
     }
 
     @Test
@@ -376,7 +376,7 @@ public class MvelCompilerTest implements CompilerTest {
                  ctx.addDeclaration("$b2", BigDecimal.class);
              },
              "{ java.math.BigDecimal result = $b1 % $b2; }",
-             "{ java.math.BigDecimal result = $b1.remainder($b2); }");
+             "{ java.math.BigDecimal result = $b1.remainder($b2, java.math.MathContext.DECIMAL128); }");
     }
 
     @Test
@@ -387,7 +387,7 @@ public class MvelCompilerTest implements CompilerTest {
                  ctx.addDeclaration("$p", Person.class);
              },
              "{ $p.salary = $p.salary + (bd1.multiply(bd2)); }",
-             "{ $p.setSalary($p.getSalary().add(bd1.multiply(bd2)));\n }");
+             "{ $p.setSalary($p.getSalary().add(bd1.multiply(bd2), java.math.MathContext.DECIMAL128));\n }");
     }
 
     @Test
@@ -616,8 +616,8 @@ public class MvelCompilerTest implements CompilerTest {
              "{ " +
                      "    java.math.BigDecimal sum = new java.math.BigDecimal(0);\n" +
                      "    java.math.BigDecimal money = new java.math.BigDecimal(10);\n" +
-                     "    sum = sum.add(money);\n" +
-                     "    sum = sum.subtract(money);\n" +
+                     "    sum = sum.add(money, java.math.MathContext.DECIMAL128);\n" +
+                     "    sum = sum.subtract(money, java.math.MathContext.DECIMAL128);\n" +
                      "}");
     }
 
@@ -628,7 +628,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "    $p.salary += 50000B;\n" +
                      "}",
              "{ " +
-                     "    $p.setSalary($p.getSalary().add(new java.math.BigDecimal(\"50000\")));\n" +
+                     "    $p.setSalary($p.getSalary().add(new java.math.BigDecimal(\"50000\"), java.math.MathContext.DECIMAL128));\n" +
                      "}");
     }
 
@@ -639,7 +639,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "    $p.salary += $p.salary;\n" +
                      "}",
              "{ " +
-                     "    $p.setSalary($p.getSalary().add($p.getSalary()));\n" +
+                     "    $p.setSalary($p.getSalary().add($p.getSalary(), java.math.MathContext.DECIMAL128));\n" +
                      "}");
     }
 
@@ -650,7 +650,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "    java.math.BigDecimal operation = $p.salary + $p.salary;\n" +
                      "}",
              "{ " +
-                     "    java.math.BigDecimal operation = $p.getSalary().add($p.getSalary());\n" +
+                     "    java.math.BigDecimal operation = $p.getSalary().add($p.getSalary(), java.math.MathContext.DECIMAL128);\n" +
                      "}");
     }
 
@@ -661,7 +661,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "    java.math.BigDecimal operation = $p.salary + 10B;\n" +
                      "}",
              "{ " +
-                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(\"10\"));\n" +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(\"10\"), java.math.MathContext.DECIMAL128);\n" +
                      "}");
     }
 
@@ -672,7 +672,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "    java.math.BigDecimal operation = $p.salary + 10;\n" +
                      "}",
              "{ " +
-                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(10));\n" +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128);\n" +
                      "}");
     }
 
@@ -690,11 +690,11 @@ public class MvelCompilerTest implements CompilerTest {
                      "}",
              "{ " +
                      "        java.math.BigDecimal result = new java.math.BigDecimal(\"0\");\n" +
-                     "        result = result.add(new java.math.BigDecimal(50000));\n" +
-                     "        result = result.subtract(new java.math.BigDecimal(10000));\n" +
-                     "        result = result.divide(new java.math.BigDecimal(10));\n" +
-                     "        result = result.multiply(new java.math.BigDecimal(10));\n" +
-                     "        result = result.multiply($p.getSalary());\n" +
+                     "        result = result.add(new java.math.BigDecimal(50000), java.math.MathContext.DECIMAL128);\n" +
+                     "        result = result.subtract(new java.math.BigDecimal(10000), java.math.MathContext.DECIMAL128);\n" +
+                     "        result = result.divide(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128);\n" +
+                     "        result = result.multiply(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128);\n" +
+                     "        result = result.multiply($p.getSalary(), java.math.MathContext.DECIMAL128);\n" +
                      "        $p.setSalary(result);\n" +
                      "}");
     }
@@ -709,7 +709,7 @@ public class MvelCompilerTest implements CompilerTest {
              "{ " +
                      "        java.math.BigDecimal result = new java.math.BigDecimal(\"0\");\n" +
                      "        int anotherVariable = 20;\n" +
-                     "        result = result.add(new java.math.BigDecimal(anotherVariable));\n" +
+                     "        result = result.add(new java.math.BigDecimal(anotherVariable), java.math.MathContext.DECIMAL128);\n" +
                      "}");
     }
 
@@ -721,7 +721,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "}",
              "{ " +
                      "        int anotherVariable = 20;\n" +
-                     "        $p.setSalary($p.getSalary().add(new java.math.BigDecimal(anotherVariable)));\n" +
+                     "        $p.setSalary($p.getSalary().add(new java.math.BigDecimal(anotherVariable), java.math.MathContext.DECIMAL128));\n" +
                      "}");
     }
 
