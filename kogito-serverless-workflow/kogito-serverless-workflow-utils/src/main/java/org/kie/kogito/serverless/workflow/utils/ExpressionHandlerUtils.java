@@ -66,7 +66,7 @@ public class ExpressionHandlerUtils {
         StringBuilder sb = new StringBuilder();
         for (int i = indexOf; i < expr.length(); i++) {
             char ch = expr.charAt(i);
-            if (Character.isAlphabetic(ch) || ch == '.') {
+            if (Character.isJavaIdentifierPart(ch) || ch == '.') {
                 sb.append(ch);
             } else {
                 break;
