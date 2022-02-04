@@ -208,27 +208,6 @@ public class XStreamMarshaller
         }
     }
     
-    /** 
-     * Unnecessary as the stax driver custom anon as static definition is embedding the indentation.
-     */
-    @Deprecated
-    public static String formatXml(String xml){
-        try{
-           TransformerFactory transformerFactory = SAXTransformerFactory.newInstance();
-           transformerFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-           transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-           Transformer serializer = transformerFactory.newTransformer();
-           serializer.setOutputProperty(OutputKeys.INDENT, "yes");         
-           serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-           Source xmlSource=new SAXSource(new InputSource(new ByteArrayInputStream(xml.getBytes())));
-           StreamResult res =  new StreamResult(new ByteArrayOutputStream());            
-           serializer.transform(xmlSource, res);
-           return new String(((ByteArrayOutputStream)res.getOutputStream()).toByteArray());
-        }catch(Exception e){   
-           return xml;
-        }
-     }
-    
     private XStream newXStream() {
         XStream xStream = XStreamUtils.createNonTrustingXStream(staxDriver, Definitions.class.getClassLoader(), DMNXStream::from);
         xStream.addPermission(new TypeHierarchyPermission(QName.class));
