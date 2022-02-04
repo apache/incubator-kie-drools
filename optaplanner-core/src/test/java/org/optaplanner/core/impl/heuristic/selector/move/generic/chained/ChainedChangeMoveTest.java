@@ -54,8 +54,8 @@ class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, b1 });
 
-        ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a3, variableDescriptor, inverseVariableSupply,
-                b1);
+        ChainedChangeMove<TestdataChainedSolution> move =
+                new ChainedChangeMove<>(variableDescriptor, a3, b1, inverseVariableSupply);
         assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         ChainedChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
@@ -88,8 +88,8 @@ class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, b1 });
 
-        ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
-                b0);
+        ChainedChangeMove<TestdataChainedSolution> move =
+                new ChainedChangeMove<>(variableDescriptor, a2, b0, inverseVariableSupply);
         assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         ChainedChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
@@ -122,8 +122,8 @@ class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, a4 });
 
-        ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
-                a3);
+        ChainedChangeMove<TestdataChainedSolution> move =
+                new ChainedChangeMove<>(variableDescriptor, a2, a3, inverseVariableSupply);
         assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         ChainedChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
@@ -154,8 +154,8 @@ class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, a4 });
 
-        ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
-                a2);
+        ChainedChangeMove<TestdataChainedSolution> move =
+                new ChainedChangeMove<>(variableDescriptor, a2, a2, inverseVariableSupply);
         assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
@@ -175,8 +175,8 @@ class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, a4 });
 
-        ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
-                a1);
+        ChainedChangeMove<TestdataChainedSolution> move =
+                new ChainedChangeMove<>(variableDescriptor, a2, a1, inverseVariableSupply);
         assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
@@ -208,14 +208,14 @@ class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = mock(SingletonInverseVariableSupply.class);
 
         assertSameProperties(destinationA1, null,
-                new ChainedChangeMove<>(a1, variableDescriptor, inverseVariableSupply, null).rebase(destinationScoreDirector));
+                new ChainedChangeMove<>(variableDescriptor, a1, null, inverseVariableSupply).rebase(destinationScoreDirector));
         assertSameProperties(destinationA2, destinationB0,
-                new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply, b0).rebase(destinationScoreDirector));
+                new ChainedChangeMove<>(variableDescriptor, a2, b0, inverseVariableSupply).rebase(destinationScoreDirector));
         assertSameProperties(destinationC1, destinationA2,
-                new ChainedChangeMove<>(c1, variableDescriptor, inverseVariableSupply, a2).rebase(destinationScoreDirector));
+                new ChainedChangeMove<>(variableDescriptor, c1, a2, inverseVariableSupply).rebase(destinationScoreDirector));
     }
 
-    public void assertSameProperties(Object entity, Object toPlanningVariable, ChainedChangeMove move) {
+    public void assertSameProperties(Object entity, Object toPlanningVariable, ChainedChangeMove<?> move) {
         assertSoftly(softly -> {
             softly.assertThat(move.getEntity()).isSameAs(entity);
             softly.assertThat(move.getToPlanningValue()).isSameAs(toPlanningVariable);

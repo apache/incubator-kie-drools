@@ -33,17 +33,17 @@ public class ChainedChangeMove<Solution_> extends ChangeMove<Solution_> {
     protected final Object oldTrailingEntity;
     protected final Object newTrailingEntity;
 
-    public ChainedChangeMove(Object entity, GenuineVariableDescriptor<Solution_> variableDescriptor,
-            SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
-        super(entity, variableDescriptor, toPlanningValue);
+    public ChainedChangeMove(GenuineVariableDescriptor<Solution_> variableDescriptor, Object entity, Object toPlanningValue,
+            SingletonInverseVariableSupply inverseVariableSupply) {
+        super(variableDescriptor, entity, toPlanningValue);
         oldTrailingEntity = inverseVariableSupply.getInverseSingleton(entity);
         newTrailingEntity = toPlanningValue == null ? null
                 : inverseVariableSupply.getInverseSingleton(toPlanningValue);
     }
 
-    public ChainedChangeMove(Object entity, GenuineVariableDescriptor<Solution_> variableDescriptor, Object toPlanningValue,
+    public ChainedChangeMove(GenuineVariableDescriptor<Solution_> variableDescriptor, Object entity, Object toPlanningValue,
             Object oldTrailingEntity, Object newTrailingEntity) {
-        super(entity, variableDescriptor, toPlanningValue);
+        super(variableDescriptor, entity, toPlanningValue);
         this.oldTrailingEntity = oldTrailingEntity;
         this.newTrailingEntity = newTrailingEntity;
     }
@@ -61,7 +61,7 @@ public class ChainedChangeMove<Solution_> extends ChangeMove<Solution_> {
     @Override
     public ChainedChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
-        return new ChainedChangeMove<>(entity, variableDescriptor, oldValue, newTrailingEntity, oldTrailingEntity);
+        return new ChainedChangeMove<>(variableDescriptor, entity, oldValue, newTrailingEntity, oldTrailingEntity);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class ChainedChangeMove<Solution_> extends ChangeMove<Solution_> {
 
     @Override
     public ChainedChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        return new ChainedChangeMove<>(destinationScoreDirector.lookUpWorkingObject(entity),
-                variableDescriptor,
+        return new ChainedChangeMove<>(variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(entity),
                 destinationScoreDirector.lookUpWorkingObject(toPlanningValue),
                 destinationScoreDirector.lookUpWorkingObject(oldTrailingEntity),
                 destinationScoreDirector.lookUpWorkingObject(newTrailingEntity));

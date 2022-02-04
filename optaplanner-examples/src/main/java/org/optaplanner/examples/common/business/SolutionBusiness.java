@@ -389,9 +389,9 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
             SupplyManager<Solution_> supplyManager = guiScoreDirector.getSupplyManager();
             SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
                     new SingletonInverseVariableDemand<>(variableDescriptor));
-            return new ChainedChangeMove<>(entity, variableDescriptor, inverseVariableSupply, toPlanningValue);
+            return new ChainedChangeMove<>(variableDescriptor, entity, toPlanningValue, inverseVariableSupply);
         } else {
-            return new ChangeMove<>(entity, variableDescriptor, toPlanningValue);
+            return new ChangeMove<>(variableDescriptor, entity, toPlanningValue);
         }
     }
 

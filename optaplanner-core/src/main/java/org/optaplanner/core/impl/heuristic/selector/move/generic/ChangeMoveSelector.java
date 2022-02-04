@@ -110,14 +110,14 @@ public class ChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_
                 return new AbstractOriginalChangeIterator<>(entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
-                        return new ChainedChangeMove<>(entity, variableDescriptor, inverseVariableSupply, toValue);
+                        return new ChainedChangeMove<>(variableDescriptor, entity, toValue, inverseVariableSupply);
                     }
                 };
             } else {
                 return new AbstractOriginalChangeIterator<>(entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
-                        return new ChangeMove<>(entity, variableDescriptor, toValue);
+                        return new ChangeMove<>(variableDescriptor, entity, toValue);
                     }
                 };
             }
@@ -126,14 +126,14 @@ public class ChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_
                 return new AbstractRandomChangeIterator<>(entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
-                        return new ChainedChangeMove<>(entity, variableDescriptor, inverseVariableSupply, toValue);
+                        return new ChainedChangeMove<>(variableDescriptor, entity, toValue, inverseVariableSupply);
                     }
                 };
             } else {
                 return new AbstractRandomChangeIterator<>(entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
-                        return new ChangeMove<>(entity, variableDescriptor, toValue);
+                        return new ChangeMove<>(variableDescriptor, entity, toValue);
                     }
                 };
             }

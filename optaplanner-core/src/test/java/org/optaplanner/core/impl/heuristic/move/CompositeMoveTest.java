@@ -121,8 +121,8 @@ class CompositeMoveTest {
                         { e3, destinationE3 },
                 });
 
-        ChangeMove<TestdataSolution> a = new ChangeMove<>(e1, variableDescriptor, v2);
-        ChangeMove<TestdataSolution> b = new ChangeMove<>(e2, variableDescriptor, v1);
+        ChangeMove<TestdataSolution> a = new ChangeMove<>(variableDescriptor, e1, v2);
+        ChangeMove<TestdataSolution> b = new ChangeMove<>(variableDescriptor, e2, v1);
         CompositeMove<TestdataSolution> rebaseMove = new CompositeMove<>(a, b).rebase(destinationScoreDirector);
         Move<TestdataSolution>[] rebasedChildMoves = rebaseMove.getMoves();
         assertThat(rebasedChildMoves.length).isEqualTo(2);
@@ -229,7 +229,7 @@ class CompositeMoveTest {
 
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         SwapMove<TestdataSolution> first = new SwapMove<>(Collections.singletonList(variableDescriptor), e1, e2);
-        ChangeMove<TestdataSolution> second = new ChangeMove<>(e1, variableDescriptor, v3);
+        ChangeMove<TestdataSolution> second = new ChangeMove<>(variableDescriptor, e1, v3);
         Move<TestdataSolution> move = CompositeMove.buildMove(first, second);
 
         assertThat(e1.getValue()).isSameAs(v1);

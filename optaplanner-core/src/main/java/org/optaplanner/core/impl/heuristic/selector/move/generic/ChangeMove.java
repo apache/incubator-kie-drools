@@ -31,23 +31,23 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  */
 public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
 
-    protected final Object entity;
     protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
+
+    protected final Object entity;
     protected final Object toPlanningValue;
 
-    public ChangeMove(Object entity, GenuineVariableDescriptor<Solution_> variableDescriptor,
-            Object toPlanningValue) {
-        this.entity = entity;
+    public ChangeMove(GenuineVariableDescriptor<Solution_> variableDescriptor, Object entity, Object toPlanningValue) {
         this.variableDescriptor = variableDescriptor;
+        this.entity = entity;
         this.toPlanningValue = toPlanningValue;
-    }
-
-    public Object getEntity() {
-        return entity;
     }
 
     public String getVariableName() {
         return variableDescriptor.getVariableName();
+    }
+
+    public Object getEntity() {
+        return entity;
     }
 
     public Object getToPlanningValue() {
@@ -67,7 +67,7 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public ChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
-        return new ChangeMove<>(entity, variableDescriptor, oldValue);
+        return new ChangeMove<>(variableDescriptor, entity, oldValue);
     }
 
     @Override
@@ -78,8 +78,7 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public ChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        return new ChangeMove<>(destinationScoreDirector.lookUpWorkingObject(entity),
-                variableDescriptor,
+        return new ChangeMove<>(variableDescriptor, destinationScoreDirector.lookUpWorkingObject(entity),
                 destinationScoreDirector.lookUpWorkingObject(toPlanningValue));
     }
 
@@ -111,14 +110,14 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
             return false;
         }
         final ChangeMove<?> other = (ChangeMove<?>) o;
-        return Objects.equals(entity, other.entity) &&
-                Objects.equals(variableDescriptor, other.variableDescriptor) &&
+        return Objects.equals(variableDescriptor, other.variableDescriptor) &&
+                Objects.equals(entity, other.entity) &&
                 Objects.equals(toPlanningValue, other.toPlanningValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(entity, variableDescriptor, toPlanningValue);
+        return Objects.hash(variableDescriptor, entity, toPlanningValue);
     }
 
     @Override
