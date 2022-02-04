@@ -22,6 +22,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -39,6 +45,8 @@ public class OpenApiSpecMockServer implements BeforeEachCallback,
     public void afterEach(ExtensionContext context) {
         if (specServer != null) {
             specServer.stop();
+            specServer.verify(getRequestedFor(anyUrl())
+                    .withHeader("Accept", containing("application/json")));
         }
     }
 
@@ -48,6 +56,16 @@ public class OpenApiSpecMockServer implements BeforeEachCallback,
                 WireMockConfiguration.options()
                         .usingFilesUnderDirectory(requireNonNull(getClass().getResource(SPEC_FILES_PATH)).getPath())
                         .port(PORT));
+        // handle an error, see https://issues.redhat.com/browse/KOGITO-6725
+        specServer.stubFor(get(urlEqualTo("/error.json"))
+                .willReturn(aResponse()
+                        .withStatus(400)
+                        .withBody("{\n"
+                                + "   \"status\":400,\n"
+                                + "   \"message\":[\n"
+                                + "      \"The value of the Accept header 'text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2' is not supported for the operation (supported values: application/json, application/yaml)\"\n"
+                                + "   ]\n"
+                                + "}")));
         specServer.start();
     }
 }

@@ -27,6 +27,7 @@ import org.kie.kogito.codegen.openapi.client.OpenApiSpecMockServer;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PathResolverTest {
 
@@ -68,6 +69,22 @@ class PathResolverTest {
         assertThat(resolver).isInstanceOf(HTTPResolver.class);
         final String path = resolver.resolve(openApiSpecDescriptor);
         this.assertResolverPath(path);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    @ExtendWith(OpenApiSpecMockServer.class)
+    void verifyHTTPResolverWithError(final KogitoBuildContext.Builder contextBuilder) {
+        final String resource = "http://localhost:8989/error.json";
+        final KogitoBuildContext context = contextBuilder.build();
+        final OpenApiSpecDescriptor openApiSpecDescriptor = new OpenApiSpecDescriptor(resource);
+        final PathResolver resolver = PathResolverFactory.newResolver(openApiSpecDescriptor, context);
+        assertThat(resolver).isInstanceOf(HTTPResolver.class);
+        final IllegalArgumentException resolverEx = assertThrows(IllegalArgumentException.class, () -> {
+            resolver.resolve(openApiSpecDescriptor);
+        });
+        // contains the original response from the server which we tried to pull the spec file
+        assertThat(resolverEx.getMessage()).contains("is not supported for the operation");
     }
 
     void assertResolverPath(final String actual) {

@@ -15,9 +15,12 @@
  */
 package org.kie.kogito.codegen.openapi.client.io;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -30,6 +33,8 @@ import org.kie.kogito.codegen.openapi.client.OpenApiUtils;
  */
 public class HTTPResolver extends AbstractPathResolver {
 
+    private static final String ACCEPT_HEADERS = "application/json,application/yaml,application/yml,application/text,text/*,*/*";
+
     protected HTTPResolver(final KogitoBuildContext context) {
         super(context);
     }
@@ -39,11 +44,27 @@ public class HTTPResolver extends AbstractPathResolver {
         OpenApiUtils.requireValidSpecURI(resource);
         try {
             final URL openAPISpecFileURL = resource.getURI().toURL();
-            try (InputStream is = openAPISpecFileURL.openStream()) {
-                return this.saveFileToTempLocation(resource, is);
+            final HttpURLConnection conn = (HttpURLConnection) openAPISpecFileURL.openConnection();
+            conn.setRequestProperty("Accept", ACCEPT_HEADERS);
+            final int respCode = conn.getResponseCode();
+            if (respCode == HttpURLConnection.HTTP_OK) {
+                try (InputStream is = conn.getInputStream()) {
+                    return this.saveFileToTempLocation(resource, is);
+                }
+            } else {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                    final StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    throw new IllegalArgumentException(String.format(
+                            "Failed to fetch remote OpenAPI spec file: %s. Status code is %d and response: \n %s",
+                            resource.getURI().toString(), respCode, response));
+                }
             }
         } catch (IOException e) {
-            throw new UncheckedIOException("Fail to resolve remote file: " + resource.getURI().toString(), e);
+            throw new UncheckedIOException("Failed to resolve remote file: " + resource.getURI().toString(), e);
         }
     }
 }
