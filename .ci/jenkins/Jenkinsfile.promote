@@ -168,8 +168,9 @@ pipeline {
                     dir("${optaplannerRepository}-bot") {
                         prepareForPR(optaplannerRepository)
                         String nextSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-                        maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
+
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.drools', getNextMicroSnapshotVersion(getDroolsVersion()))
+                        maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
 
                         String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(optaplannerRepository, prLink)

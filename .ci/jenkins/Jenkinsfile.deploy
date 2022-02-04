@@ -106,8 +106,8 @@ pipeline {
             }
             steps {
                 script {
-                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
                     maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
+                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
 
                     mavenCleanInstallOptaPlannerParents()
 
