@@ -359,6 +359,8 @@ public class GroupByTest {
         Variable<Integer> var_$age = D.declarationOf(Integer.class);
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
 
+        // groupby ( $p : Person ( $age : age ); $p.name.substring(0, 1); $sum : sum( $age ) )
+
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
                         // Patterns
