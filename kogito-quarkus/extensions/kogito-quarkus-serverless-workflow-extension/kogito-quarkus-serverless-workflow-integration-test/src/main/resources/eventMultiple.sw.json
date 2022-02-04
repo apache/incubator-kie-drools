@@ -51,6 +51,9 @@
             "moveEvent",
             "quietEvent"
           ],
+          "eventDataFilter" : {
+             "useData": false
+          },
           "actions": [ 
           {
             "name": "printAfterEvent",

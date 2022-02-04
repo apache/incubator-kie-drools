@@ -111,19 +111,21 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         String fromExpr = null;
         String resultExpr = null;
         String toExpr = null;
+        boolean useData = true;
         if (actionFilter != null) {
             fromExpr = actionFilter.getFromStateData();
             resultExpr = actionFilter.getResults();
             toExpr = actionFilter.getToStateData();
+            useData = actionFilter.isUseResults();
         }
         if (action.getFunctionRef() != null) {
-            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
+            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr, useData,
                     (factory, inputVar, outputVar) -> getActionNode(factory, action.getFunctionRef(), inputVar, outputVar, collectVar, extraVariables));
         } else if (action.getEventRef() != null) {
-            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
+            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr, useData,
                     (factory, inputVar, outputVar) -> getActionNode(factory, action.getEventRef(), inputVar));
         } else if (action.getSubFlowRef() != null) {
-            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr,
+            return filterAndMergeNode(embeddedSubProcess, fromExpr, resultExpr, toExpr, useData,
                     (factory, inputVar, outputVar) -> getActionNode(factory, action.getSubFlowRef(), inputVar, outputVar));
         } else {
             throw new IllegalArgumentException("Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
