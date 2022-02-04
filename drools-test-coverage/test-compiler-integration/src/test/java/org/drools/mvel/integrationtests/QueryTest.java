@@ -1431,17 +1431,4 @@ public class QueryTest {
 
         ksession.dispose();
     }
-
-    @Test
-    public void test() {
-        String str =
-                "package org.test\n" +
-                "query QuestionsKnowledge\n" +
-                "    $question: Question()\n" +
-                "    $visible: QuestionVisible(question == $question) or not QuestionVisible(question == $question)\n" +
-                "end\n";
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
-        KieSession ksession = kbase.newKieSession();
-    }
 }
