@@ -68,7 +68,7 @@
       <plugin> <!-- Maven properties were not respected to compile the RuleUnit, hence projected explicitly the maven compiler plugin settings. -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>@version.compiler.plugin@</version>
         <configuration>
           <release>11</release>
         </configuration>
