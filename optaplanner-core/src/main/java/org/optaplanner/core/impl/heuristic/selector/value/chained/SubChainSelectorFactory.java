@@ -78,7 +78,8 @@ public class SubChainSelectorFactory<Solution_> {
                         .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this
-                    + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                    + ") needs to be based on an "
+                    + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new DefaultSubChainSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector,

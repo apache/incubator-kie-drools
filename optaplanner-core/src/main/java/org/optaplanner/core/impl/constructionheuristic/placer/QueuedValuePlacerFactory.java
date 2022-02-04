@@ -64,7 +64,8 @@ public class QueuedValuePlacerFactory<Solution_>
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The queuedValuePlacer (" + this
-                    + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                    + ") needs to be based on an "
+                    + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
 
         }

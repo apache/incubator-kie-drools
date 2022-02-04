@@ -70,8 +70,9 @@ public class ChangeMoveSelectorFactory<Solution_>
         if (valueSelector.getVariableDescriptor().isListVariable()) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The changeMoveSelector (" + this
-                        + ") for a list variable needs to be based on an EntityIndependentValueSelector (" + valueSelector
-                        + "). Check your valueSelectorConfig.");
+                        + ") for a list variable needs to be based on an "
+                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
+                        + " Check your valueSelectorConfig.");
 
             }
             return new ListChangeMoveSelector<>(

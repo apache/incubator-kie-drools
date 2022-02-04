@@ -61,7 +61,8 @@ public class SubChainChangeMoveSelectorFactory<Solution_>
                         SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + config
-                    + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                    + ") needs to be based on an "
+                    + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new SubChainChangeMoveSelector<>(subChainSelector,

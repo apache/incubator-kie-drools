@@ -384,7 +384,8 @@ public class ValueSelectorFactory<Solution_>
                     throw new IllegalArgumentException("The valueSelectorConfig (" + config
                             + ") with resolvedCacheType (" + resolvedCacheType
                             + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                            + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                            + ") needs to be based on an "
+                            + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                             + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
                 }
                 valueSelector = new SortingValueSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector,
@@ -420,7 +421,8 @@ public class ValueSelectorFactory<Solution_>
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with resolvedCacheType (" + resolvedCacheType
                         + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an "
+                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new ProbabilityValueSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector,
@@ -436,7 +438,8 @@ public class ValueSelectorFactory<Solution_>
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with resolvedCacheType (" + resolvedCacheType
                         + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an "
+                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new ShufflingValueSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector,
@@ -452,7 +455,8 @@ public class ValueSelectorFactory<Solution_>
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with resolvedCacheType (" + resolvedCacheType
                         + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an "
+                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new CachingValueSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector,
@@ -505,7 +509,8 @@ public class ValueSelectorFactory<Solution_>
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with id (" + config.getId()
-                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an "
+                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             MimicRecordingValueSelector<Solution_> mimicRecordingValueSelector = new MimicRecordingValueSelector<>(
@@ -522,7 +527,8 @@ public class ValueSelectorFactory<Solution_>
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with id (" + config.getId()
-                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an "
+                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new UnassignedValueSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
