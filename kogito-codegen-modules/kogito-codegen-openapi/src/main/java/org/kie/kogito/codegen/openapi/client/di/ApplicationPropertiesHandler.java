@@ -41,6 +41,7 @@ public class ApplicationPropertiesHandler extends AbstractDependencyInjectionHan
         this.attributesAndKeys.put("apiKey", "api_key");
         this.attributesAndKeys.put("apiKeyPrefix", "api_key_prefix");
         this.attributesAndKeys.put("basePath", "base_path");
+        this.attributesAndKeys.put("accessToken", "access_token");
     }
 
     @Override

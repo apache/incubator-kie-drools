@@ -10,6 +10,7 @@ public class KogitoApiClient extends ApiClient {
     Optional<String> apiKey;
     Optional<String> apiKeyPrefix;
     Optional<String> basePath;
+    Optional<String> accessToken;
 
     @javax.annotation.PostConstruct
     public void init() {
@@ -27,6 +28,9 @@ public class KogitoApiClient extends ApiClient {
         }
         if (basePath.isPresent()) {
             super.setBasePath(basePath.get());
+        }
+        if (accessToken.isPresent()) {
+            super.setAccessToken(accessToken.get());
         }
     }
 }

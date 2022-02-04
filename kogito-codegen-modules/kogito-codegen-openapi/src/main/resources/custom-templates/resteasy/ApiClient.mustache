@@ -214,22 +214,22 @@ public class ApiClient{{#jsr310}} extends JavaTimeFormatter{{/jsr310}} {
     throw new RuntimeException("No API key authentication configured!");
   }
 
-  {{#hasOAuthMethods}}
   /**
    * Helper method to set access token for the first OAuth2 authentication.
    * @param accessToken the access token
    */
   public void setAccessToken(String accessToken) {
+    {{#hasOAuthMethods}}
     for (Authentication auth : authentications.values()) {
       if (auth instanceof OAuth) {
         ((OAuth) auth).setAccessToken(accessToken);
         return;
       }
     }
+    {{/hasOAuthMethods}}
     throw new RuntimeException("No OAuth2 authentication configured!");
   }
 
-  {{/hasOAuthMethods}}
   /**
    * Set the User-Agent header's value (by adding to the default header map).
    * @param userAgent the User-Agent header value
@@ -276,7 +276,7 @@ public class ApiClient{{#jsr310}} extends JavaTimeFormatter{{/jsr310}} {
   /**
    * The path of temporary folder used to store downloaded files from endpoints
    * with file response. The default value is <code>null</code>, i.e. using
-   * the system's default tempopary folder.
+   * the system's default temporary folder.
    *
    * @return the temporary folder path
    * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html#createTempFile(java.lang.String,%20java.lang.String,%20java.nio.file.attribute.FileAttribute...)">createTempFile</a>

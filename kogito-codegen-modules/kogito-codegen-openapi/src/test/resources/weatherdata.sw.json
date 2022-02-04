@@ -1,0 +1,39 @@
+{
+  "id": "openweatherdata",
+  "version": "1.0",
+  "name": "Send CloudEvent after getting weather data",
+  "start": "GetCurrentWeatherData",
+  "events": [
+    {
+      "name": "FetchComplete",
+      "type": "fetchComplete",
+      "kind": "produced"
+    }
+  ],
+  "functions": [
+    {
+      "name": "getInventory",
+      "operation": "specs/__files/openweathermap.yaml#currentWeatherData"
+    }
+  ],
+  "states": [
+    {
+      "name": "GetCurrentWeatherData",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "CurrentWeatherData"
+          }
+        }
+      ],
+      "end": {
+        "produceEvents": [
+          {
+            "eventRef": "FetchComplete"
+          }
+        ]
+      }
+    }
+  ]
+}

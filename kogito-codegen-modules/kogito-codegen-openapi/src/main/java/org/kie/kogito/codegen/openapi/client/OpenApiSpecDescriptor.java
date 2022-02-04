@@ -33,6 +33,7 @@ import java.util.Set;
 public class OpenApiSpecDescriptor {
 
     private static final String REGEX_NO_EXT = "[.][^.]+$";
+    private static final String ONLY_CHARS = "[^a-z]";
 
     private final String resourceName;
     private final String id;
@@ -42,7 +43,7 @@ public class OpenApiSpecDescriptor {
     public OpenApiSpecDescriptor(final String resource) {
         try {
             this.uri = new URI(resource);
-            this.resourceName = getFileName(uri.toString());
+            this.resourceName = sanitizeFileName(getFileName(uri.toString()));
             this.id = generateId(this.uri.toString(), resourceName);
             this.requiredOperations = new HashSet<>();
         } catch (URISyntaxException e) {
@@ -56,14 +57,6 @@ public class OpenApiSpecDescriptor {
     }
 
     /**
-     * Generates the same id for the same resource
-     */
-    private static String generateId(final String resourceUri, final String resourceName) {
-        return Base64.getEncoder().encodeToString(resourceUri.getBytes(StandardCharsets.UTF_8)) + "_" +
-                resourceName.replaceFirst(REGEX_NO_EXT, "");
-    }
-
-    /**
      * Gets the resolved resource name as defined in the source. It defaults to the file name (includes extension).
      *
      * @return the given resource name as defined in the source.
@@ -74,7 +67,7 @@ public class OpenApiSpecDescriptor {
 
     /**
      * The parsed URI file as given by the definition source.
-     * For example, in Serveless Workflow this is the URI defined in Functions#operation field.
+     * For example, in Serverless Workflow this is the URI defined in Functions#operation field.
      *
      * @return the given resolved URI as defined in the source.
      */
@@ -125,7 +118,27 @@ public class OpenApiSpecDescriptor {
                 '}';
     }
 
-    private static String getFileName(String resource) {
+    private static String getFileName(final String resource) {
         return resource.substring(resource.lastIndexOf('/') + 1);
+    }
+
+    /**
+     * Generates the same id for the same resource
+     */
+    private static String generateId(final String resourceUri, final String resourceName) {
+        return Base64.getEncoder().encodeToString(resourceUri.getBytes(StandardCharsets.UTF_8)) + "_" +
+                sanitizeFileName(resourceName).replaceFirst(REGEX_NO_EXT, "");
+    }
+
+    /**
+     * Clean up the resource file name keeping only alphabetic, lower case characters.
+     * Retains the extension.
+     */
+    private static String sanitizeFileName(final String resourceName) {
+        if (resourceName == null) {
+            return "";
+        }
+        final String extension = resourceName.substring(resourceName.lastIndexOf("."));
+        return resourceName.toLowerCase().replaceFirst(REGEX_NO_EXT, "").replaceAll(ONLY_CHARS, "").concat(extension);
     }
 }

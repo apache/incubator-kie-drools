@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.quarkus.it.openapi.client;
 
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
-import org.kie.kogito.quarkus.it.openapi.client.mocks.OperationsMockService;
+import org.kie.kogito.quarkus.it.openapi.client.mocks.AuthSecurityMockService;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
@@ -33,16 +33,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusIntegrationTest
-@QuarkusTestResource(OperationsMockService.class)
-class ConversationFlowIT {
+@QuarkusTestResource(AuthSecurityMockService.class)
+class ApiWithSecurityContextIT {
 
-    // injected by OperationsMockService class
-    WireMockServer subtractionService;
-    WireMockServer multiplicationService;
+    // injected by quarkus
+    WireMockServer authWithApiKeyServer;
 
     @BeforeAll
     static void init() {
@@ -50,7 +47,7 @@ class ConversationFlowIT {
     }
 
     @Test
-    void sanityVerification() {
+    void verifyAuthHeaders() {
         given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -58,15 +55,16 @@ class ConversationFlowIT {
                         Collections
                                 .singletonMap(
                                         "workflowdata",
-                                        Collections.singletonMap("fahrenheit", "100")))
-                .post("/fahrenheit_to_celsius")
+                                        Collections.singletonMap("foo", "bar")))
+                .post("/thirdparty")
                 .then()
-                .statusCode(201)
-                .body("id", notNullValue())
-                .body("workflowdata.fahrenheit", is("100"))
-                .body("workflowdata.multiplication.product", is("37.808")); //values from mock server
+                .statusCode(201);
 
-        subtractionService.verify(postRequestedFor(urlEqualTo("/")).withHeader(CloudEventExtensionConstants.PROCESS_ID, matching(".*")));
-        multiplicationService.verify(postRequestedFor(urlEqualTo("/")).withHeader(CloudEventExtensionConstants.PROCESS_ID, matching(".*")));
+        // verify if the headers were correctly sent
+        authWithApiKeyServer
+                .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.CONFIG.getPath()))
+                        .withHeader("X-Client-Id", matching("12345"))
+                        .withHeader("Authorization", matching("Bearer mytoken")));
     }
+
 }

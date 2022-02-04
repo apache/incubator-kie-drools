@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -95,7 +96,7 @@ class OpenApiClientCodegenTest {
         final OpenApiClientCodegen codegen =
                 OpenApiClientCodegen.ofCollectedResources(context,
                         toCollectedResources(workflowDefinitionFile));
-        assertCodeGen(codegen.generate());
+        assertCodeGen(codegen.generate(), Collections.singletonList("Pet"));
         assertThat(codegen.getOpenAPISpecResources()).hasSize(1);
         assertThat(codegen.getOpenAPISpecResources().get(0).getRequiredOperations()).hasSize(2);
         assertThat(codegen.getOpenAPISpecResources().get(0).getRequiredOperations()
@@ -110,14 +111,44 @@ class OpenApiClientCodegenTest {
                         o.getGeneratedClass().endsWith("PetApi"))).isTrue();
     }
 
-    private void assertCodeGen(final Collection<GeneratedFile> generatedFiles) {
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void verifyCodegenWithSecurityApiKey(final KogitoBuildContext.Builder contextBuilder) {
+        final String workflowDefinitionFile = "/weatherdata.sw.json";
+        final KogitoBuildContext context = contextBuilder.build();
+        final OpenApiClientCodegen codegen =
+                OpenApiClientCodegen.ofCollectedResources(context,
+                        toCollectedResources(workflowDefinitionFile));
+        assertThat(codegen.getOpenAPISpecResources()).hasSize(1);
+        final Collection<GeneratedFile> files = codegen.generate();
+        assertCodeGen(files, Collections.singletonList("CurrentWeatherData"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void verifyCodegenV2WithSecurityApiKey(final KogitoBuildContext.Builder contextBuilder) {
+        final String workflowDefinitionFile = "/openapi2-sec.sw.json";
+        final KogitoBuildContext context = contextBuilder.build();
+        final OpenApiClientCodegen codegen =
+                OpenApiClientCodegen.ofCollectedResources(context,
+                        toCollectedResources(workflowDefinitionFile));
+        assertThat(codegen.getOpenAPISpecResources()).hasSize(1);
+        final Collection<GeneratedFile> files = codegen.generate();
+        assertCodeGen(files, Collections.singletonList("Myapp"));
+    }
+
+    private void assertCodeGen(final Collection<GeneratedFile> generatedFiles, final List<String> requiredModel) {
         assertThat(generatedFiles).isNotEmpty();
         final Map<String, Boolean> requiredFiles = new HashMap<>();
         requiredFiles.put("ApiClient.java", false);
         requiredFiles.put("KogitoApiClient.java", false);
-        requiredFiles.put("PetApi.java", false);
+        requiredFiles.put("ApiKeyAuth.java", false);
         final Map<String, Boolean> absentFiles = new HashMap<>();
-        absentFiles.put("Pet.api", false);
+        requiredModel.forEach(f -> {
+            requiredFiles.put(f + "Api.java", false);
+            absentFiles.put(f + ".api", false);
+        });
+
         for (GeneratedFile file : generatedFiles) {
             assertThat(file.relativePath()).endsWith(".java");
             final String fileName = Paths.get(file.relativePath()).getFileName().toString();

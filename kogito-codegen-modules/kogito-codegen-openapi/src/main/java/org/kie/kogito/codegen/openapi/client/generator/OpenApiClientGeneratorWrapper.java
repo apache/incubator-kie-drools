@@ -30,7 +30,7 @@ import org.openapitools.codegen.config.GlobalSettings;
  * Wrapper for the OpenAPIGen tool.
  * This is the same as calling the Maven plugin or the CLI.
  * We are wrapping into a class to generate code that meet our requirements.
- * In the future we can consider exposing some of this properties for fine tune configuration.
+ * In the future we can consider exposing some of these properties for fine tune configuration.
  *
  * @see <a href="https://openapi-generator.tech/docs/generators/java">OpenAPI Generator Client for Java</a>
  */

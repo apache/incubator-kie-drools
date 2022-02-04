@@ -1,0 +1,66 @@
+swagger: '2.0'
+info:
+  title: myapp-iq9MzY
+  version: 2.0.0
+basePath: /iq9MzY
+paths:
+  /watsonorchestrate:
+    post:
+      tags:
+        - myapp
+      summary: Create a new instance of the model and persist it into the data source.
+      operationId: myapp.create
+      parameters:
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/myapp'
+      responses:
+        '201':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/myapp'
+      deprecated: false
+definitions:
+  myapp:
+    description: ''
+    properties:
+      userid:
+        type: string
+    required:
+      - userid
+    additionalProperties: false
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+x-ibm-configuration:
+  assembly:
+    execute:
+      - set-variable:
+          actions:
+            - set: message.headers.Authorization
+              value: >-
+                Basic
+                dGhpc2lzYXRlc3QK
+      - invoke:
+          target-url: >-
+            https://myapp.sso.com$(request.path)$(request.search)
+          verb: keep
+  cors:
+    enabled: true
+securityDefinitions:
+  client_id:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+    x-key-type: clientId
+security:
+  - client_id: []
+tags:
+  - name: myapp
