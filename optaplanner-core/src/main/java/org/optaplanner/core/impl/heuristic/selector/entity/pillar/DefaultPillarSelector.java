@@ -79,13 +79,6 @@ public class DefaultPillarSelector<Solution_> extends AbstractSelector<Solution_
                         + ") which is chained (" + variableDescriptor.isChained() + ").");
             }
         }
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
-            if (variableDescriptor.isChained()) {
-                throw new IllegalStateException("The selector (" + this
-                        + ") cannot have a variableDescriptor (" + variableDescriptor
-                        + ") which is chained (" + variableDescriptor.isChained() + ").");
-            }
-        }
         if (entitySelector.isNeverEnding()) {
             throw new IllegalStateException("The selector (" + this
                     + ") has an entitySelector (" + entitySelector
