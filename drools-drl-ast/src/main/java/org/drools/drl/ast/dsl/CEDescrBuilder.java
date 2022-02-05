@@ -73,6 +73,8 @@ public interface CEDescrBuilder<P extends DescrBuilder<?, ?>, T extends Annotate
      */
     AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate();
 
+    GroupByDescrBuilder<CEDescrBuilder<P, T>> groupBy();
+
     /**
      * Defines an EVAL Conditional Elements
      * 

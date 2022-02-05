@@ -62,6 +62,7 @@ public class DslMethodNames {
     public static final String EXISTS_CALL = "exists";
     public static final String FORALL_CALL = "forall";
     public static final String ACCUMULATE_CALL = "accumulate";
+    public static final String GROUP_BY_CALL = "groupBy";
     public static final String ACC_FUNCTION_CALL = "accFunction";
     public static final String ACC_WITH_EXTERNAL_DECLRS_CALL = "with";
     public static final String EVAL_CALL = "eval";

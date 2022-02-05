@@ -27,6 +27,7 @@ import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
@@ -35,6 +36,7 @@ import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor;
+import org.drools.modelcompiler.builder.generator.visitor.accumulate.GroupByVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor;
 
@@ -44,24 +46,12 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL
 
 public class ModelGeneratorVisitor implements DescrVisitor {
 
-    private final AccumulateVisitor accumulateVisitor;
-    private final AndVisitor andVisitor;
-    private final ConditionalElementVisitor conditionalElementVisitor;
-    private final OrVisitor orVisitor;
-    private final EvalVisitor evalVisitor;
-    private final NamedConsequenceVisitor namedConsequenceVisitor;
-    private final PatternVisitor patternVisitor;
-    private final FromCollectVisitor fromCollectVisitor;
+    private final RuleContext context;
+    private final PackageModel packageModel;
 
     public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel) {
-        accumulateVisitor = new AccumulateVisitor(this, context, packageModel);
-        andVisitor = new AndVisitor(this, context);
-        conditionalElementVisitor = new ConditionalElementVisitor(this, context);
-        orVisitor = new OrVisitor(this, context);
-        evalVisitor = new EvalVisitor(context, packageModel);
-        namedConsequenceVisitor = new NamedConsequenceVisitor(context, packageModel);
-        patternVisitor = new PatternVisitor(context, packageModel);
-        fromCollectVisitor = new FromCollectVisitor(this);
+        this.context = context;
+        this.packageModel = packageModel;
     }
 
     @Override
@@ -76,32 +66,32 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(AndDescr descr) {
-        andVisitor.visit(descr);
+        new AndVisitor(this, context).visit(descr);
     }
 
     @Override
     public void visit(NotDescr descr) {
-        conditionalElementVisitor.visit(descr, NOT_CALL);
+        new ConditionalElementVisitor(this, context).visit(descr, NOT_CALL);
     }
 
     @Override
     public void visit(ExistsDescr descr) {
-        conditionalElementVisitor.visit(descr, EXISTS_CALL);
+        new ConditionalElementVisitor(this, context).visit(descr, EXISTS_CALL);
     }
 
     @Override
     public void visit(ForallDescr descr) {
-        conditionalElementVisitor.visit(descr, FORALL_CALL);
+        new ConditionalElementVisitor(this, context).visit(descr, FORALL_CALL);
     }
 
     @Override
     public void visit(OrDescr descr) {
-        orVisitor.visit(descr);
+        new OrVisitor(this, context).visit(descr);
     }
 
     @Override
     public void visit(EvalDescr descr) {
-        evalVisitor.visit(descr);
+        new EvalVisitor(context, packageModel).visit(descr);
     }
 
     @Override
@@ -111,37 +101,40 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(NamedConsequenceDescr descr) {
-        namedConsequenceVisitor.visit(descr);
+        new NamedConsequenceVisitor(context, packageModel).visit(descr);
     }
 
     @Override
     public void visit(ConditionalBranchDescr descr) {
-        namedConsequenceVisitor.visit(descr);
+        new NamedConsequenceVisitor(context, packageModel).visit(descr);
     }
 
     @Override
     public void visit(PatternDescr descr) {
         final PatternSourceDescr patternSource = descr.getSource();
         if (patternSource instanceof CollectDescr) {
-            fromCollectVisitor.trasformFromCollectToCollectList(descr, (CollectDescr) patternSource);
+            new FromCollectVisitor(this).trasformFromCollectToCollectList(descr, (CollectDescr) patternSource);
+        } else if (patternSource instanceof GroupByDescr) {
+            new GroupByVisitor(this, context, packageModel).visit((GroupByDescr) patternSource, descr);
+            new PatternVisitor(context, packageModel).visit(descr).buildPattern();
         } else {
             if (patternSource instanceof AccumulateDescr) {
                 AccumulateDescr accSource = (AccumulateDescr) patternSource;
                 if (accSource.getFunctions().isEmpty() || accSource.getFunctions().get(0).getBind() == null) {
-                    patternVisitor.visit(descr).buildPattern();
-                    accumulateVisitor.visit(accSource, descr );
+                    new PatternVisitor(context, packageModel).visit(descr).buildPattern();
+                    new AccumulateVisitor(this, context, packageModel).visit(accSource, descr );
                 } else {
-                    accumulateVisitor.visit(accSource, descr );
-                    patternVisitor.visit(descr).buildPattern();
+                    new AccumulateVisitor(this, context, packageModel).visit(accSource, descr );
+                    new PatternVisitor(context, packageModel).visit(descr).buildPattern();
                 }
             } else {
-                patternVisitor.visit(descr).buildPattern();
+                new PatternVisitor(context, packageModel).visit(descr).buildPattern();
             }
         }
     }
 
     public boolean initPattern(PatternDescr descr) {
-        DSLNode dslNode = patternVisitor.visit(descr);
+        DSLNode dslNode = new PatternVisitor(context, packageModel).visit(descr);
         if (dslNode instanceof PatternDSL) {
             (( PatternDSL ) dslNode).initPattern();
             return true;

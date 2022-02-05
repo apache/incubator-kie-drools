@@ -33,7 +33,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      *  
      * @return the CEDescrBuilder for the source CE
      */
-    public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source();
+    CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source();
 
     /**
      * For accumulate CEs that use accumulate functions, this call
@@ -58,7 +58,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      *@param parameters the array of parameters to the function.
      *  @return itself, so that it can be used as a fluent API
      */
-    public AccumulateDescrBuilder<P> function( String name, String bind, boolean isUnification, String... parameters );
+    AccumulateDescrBuilder<P> function( String name, String bind, boolean isUnification, String... parameters );
 
     /**
      * For accumulate CEs that use custom code blocks, this call
@@ -74,7 +74,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      * 
      * @return itself, so that it can be used as a fluent API
      */
-    public AccumulateDescrBuilder<P> init( String block );
+    AccumulateDescrBuilder<P> init( String block );
 
     /**
      * For accumulate CEs that use custom code blocks, this call
@@ -90,7 +90,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      * 
      * @return itself, so that it can be used as a fluent API
      */
-    public AccumulateDescrBuilder<P> action( String block );
+    AccumulateDescrBuilder<P> action( String block );
 
     /**
      * For accumulate CEs that use custom code blocks, this call
@@ -106,7 +106,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      * 
      * @return itself, so that it can be used as a fluent API
      */
-    public AccumulateDescrBuilder<P> reverse( String block );
+    AccumulateDescrBuilder<P> reverse( String block );
     
     /**
      * For accumulate CEs that use custom code blocks, this call
@@ -122,9 +122,9 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      * 
      * @return itself, so that it can be used as a fluent API
      */
-    public AccumulateDescrBuilder<P> result( String expr );
+    AccumulateDescrBuilder<P> result( String expr );
 
-    public P end();
+    P end();
 
-    public AccumulateDescrBuilder<P> constraint( String constr );
+    AccumulateDescrBuilder<P> constraint( String constr );
 }

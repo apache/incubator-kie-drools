@@ -451,7 +451,7 @@ public class DescrBuilderTest {
                 .end()
                 .getDescr();
 
-        KiePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg, "org.drools.mvel.compiler" );
         assertEquals( "org.drools.mvel.compiler",
                       kpkg.getName() );
         

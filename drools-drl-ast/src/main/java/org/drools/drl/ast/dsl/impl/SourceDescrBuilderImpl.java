@@ -16,15 +16,16 @@
 
 package org.drools.drl.ast.dsl.impl;
 
-import org.drools.drl.ast.dsl.AccumulateDescrBuilder;
-import org.drools.drl.ast.descr.MVELExprDescr;
-import org.drools.drl.ast.dsl.CollectDescrBuilder;
-import org.drools.drl.ast.dsl.PatternDescrBuilder;
-import org.drools.drl.ast.dsl.SourceDescrBuilder;
 import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
+import org.drools.drl.ast.dsl.AccumulateDescrBuilder;
+import org.drools.drl.ast.dsl.CollectDescrBuilder;
+import org.drools.drl.ast.dsl.GroupByDescrBuilder;
+import org.drools.drl.ast.dsl.PatternDescrBuilder;
+import org.drools.drl.ast.dsl.SourceDescrBuilder;
 
 /**
  * A descr builder implementation for pattern sources
@@ -59,7 +60,13 @@ public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends Ba
     }
 
     public AccumulateDescrBuilder<P> accumulate() {
-        AccumulateDescrBuilder<P> accumulate = new AccumulateDescrBuilderImpl<P>( parent );
+        AccumulateDescrBuilder<P> accumulate = new AccumulateDescrBuilderImpl<>( parent );
+        descr.setSource( accumulate.getDescr() );
+        return accumulate;
+    }
+
+    public GroupByDescrBuilder<P> groupBy() {
+        GroupByDescrBuilder<P> accumulate = new GroupByDescrBuilderImpl<>( parent );
         descr.setSource( accumulate.getDescr() );
         return accumulate;
     }
