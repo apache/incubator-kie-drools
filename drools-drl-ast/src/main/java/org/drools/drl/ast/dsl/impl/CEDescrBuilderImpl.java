@@ -98,7 +98,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         // whose result pattern is Object[]
 
         // create a linked Object[] pattern and set it to query false
-        PatternDescrBuilder<CEDescrBuilder<P,T>> pdb = pattern("Object[]").isQuery( false );
+        PatternDescrBuilder<CEDescrBuilder<P,T>> pdb = pattern("Object").isQuery( false );
 
         // create the accumulate builder with this CE as its parent
         AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate = new AccumulateDescrBuilderImpl<>(this);
@@ -111,7 +111,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
     }
 
     public GroupByDescrBuilder<CEDescrBuilder<P, T>> groupBy() {
-        PatternDescrBuilder<CEDescrBuilder<P, T>> pdb = pattern("Object[]").isQuery( false );
+        PatternDescrBuilder<CEDescrBuilder<P, T>> pdb = pattern("Object").isQuery( false );
         GroupByDescrBuilder<CEDescrBuilder<P, T>> groupBy = new GroupByDescrBuilderImpl<>(this);
         pdb.getDescr().setSource( groupBy.getDescr() );
         return groupBy;

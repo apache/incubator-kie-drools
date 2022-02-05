@@ -109,14 +109,4 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
         }
         return this;
     }
-
-    @Override
-    public P end() {
-        if (descr.getFunctions().size() == 1) {
-            // if the accumulate has only one function sets the result to a single Object instead of Object[]
-            PatternDescr patternDescr = (PatternDescr) ((AndDescr) parent.getDescr()).getDescrs().get(0);
-            patternDescr.setObjectType("Object");
-        }
-        return super.end();
-    }
 }

@@ -36,15 +36,15 @@ public interface PatternDescrBuilder<P extends DescrBuilder<?, ?>>
     AnnotatedDescrBuilder<PatternDescrBuilder<P>>,
     DescrBuilder<P, PatternDescr> {
 
-    public PatternDescrBuilder<P> id( String id, boolean isUnification );
-    public PatternDescrBuilder<P> type( String type );
-    public PatternDescrBuilder<P> isQuery( boolean query );
-    public PatternDescrBuilder<P> constraint( String constraint );
-    public PatternDescrBuilder<P> constraint( String constraint, boolean positional );
-    public PatternDescrBuilder<P> bind( String var, String target, boolean isUnification );
+    PatternDescrBuilder<P> id( String id, boolean isUnification );
+    PatternDescrBuilder<P> type( String type );
+    PatternDescrBuilder<P> isQuery( boolean query );
+    PatternDescrBuilder<P> constraint( String constraint );
+    PatternDescrBuilder<P> constraint( String constraint, boolean positional );
+    PatternDescrBuilder<P> bind( String var, String target, boolean isUnification );
     
-    public SourceDescrBuilder<PatternDescrBuilder<P>> from();
+    SourceDescrBuilder<PatternDescrBuilder<P>> from();
     
-    public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior();
+    BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior();
 
 }
