@@ -17,20 +17,21 @@
 package org.drools.compiler.lang.api.impl;
 
 import org.drools.compiler.lang.api.AccumulateDescrBuilder;
+import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.ConditionalBranchDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
-import org.drools.compiler.lang.api.NamedConsequenceDescrBuilder;
-import org.drools.compiler.lang.api.PatternDescrBuilder;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.EvalDescrBuilder;
 import org.drools.compiler.lang.api.ForallDescrBuilder;
+import org.drools.compiler.lang.api.GroupByDescrBuilder;
+import org.drools.compiler.lang.api.NamedConsequenceDescrBuilder;
+import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
 
 /**
  * An implementation for the CEDescrBuilder
@@ -97,16 +98,23 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         // whose result pattern is Object[]
 
         // create a linked Object[] pattern and set it to query false
-        PatternDescrBuilder<CEDescrBuilder<P,T>> pdb = pattern("Object[]").isQuery( false );
+        PatternDescrBuilder<CEDescrBuilder<P,T>> pdb = pattern("Object").isQuery( false );
 
         // create the accumulate builder with this CE as its parent
-        AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate = new AccumulateDescrBuilderImpl<CEDescrBuilder<P, T>>(this);
+        AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate = new AccumulateDescrBuilderImpl<>(this);
 
         // set the accumulate descriptor as the source of that pattern descr
         pdb.getDescr().setSource( accumulate.getDescr() );
 
         // return the accumulate builder, that has the properly set parent
         return accumulate;
+    }
+
+    public GroupByDescrBuilder<CEDescrBuilder<P, T>> groupBy() {
+        PatternDescrBuilder<CEDescrBuilder<P, T>> pdb = pattern("Object").isQuery( false );
+        GroupByDescrBuilder<CEDescrBuilder<P, T>> groupBy = new GroupByDescrBuilderImpl<>(this);
+        pdb.getDescr().setSource( groupBy.getDescr() );
+        return groupBy;
     }
 
     /**

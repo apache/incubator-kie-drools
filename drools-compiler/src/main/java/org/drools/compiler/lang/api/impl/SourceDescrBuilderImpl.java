@@ -17,12 +17,13 @@
 package org.drools.compiler.lang.api.impl;
 
 import org.drools.compiler.lang.api.AccumulateDescrBuilder;
-import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.lang.api.CollectDescrBuilder;
+import org.drools.compiler.lang.api.GroupByDescrBuilder;
 import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.SourceDescrBuilder;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
 
@@ -59,7 +60,13 @@ public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends Ba
     }
 
     public AccumulateDescrBuilder<P> accumulate() {
-        AccumulateDescrBuilder<P> accumulate = new AccumulateDescrBuilderImpl<P>( parent );
+        AccumulateDescrBuilder<P> accumulate = new AccumulateDescrBuilderImpl<>( parent );
+        descr.setSource( accumulate.getDescr() );
+        return accumulate;
+    }
+
+    public GroupByDescrBuilder<P> groupBy() {
+        GroupByDescrBuilder<P> accumulate = new GroupByDescrBuilderImpl<>( parent );
         descr.setSource( accumulate.getDescr() );
         return accumulate;
     }

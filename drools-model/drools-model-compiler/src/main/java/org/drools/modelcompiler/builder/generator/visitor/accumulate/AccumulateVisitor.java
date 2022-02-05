@@ -86,7 +86,7 @@ import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public class AccumulateVisitor {
 
-    private final RuleContext context;
+    protected final RuleContext context;
     private final PackageModel packageModel;
 
     private final ModelGeneratorVisitor modelGeneratorVisitor;
@@ -123,7 +123,7 @@ public class AccumulateVisitor {
                 if ( validateBindings(descr) ) {
                     return;
                 }
-                classicAccumulate( descr, basePattern, input, accumulateDSL );
+                processAccumulateFunctions( descr, basePattern, input, accumulateDSL );
             } else if ( descr.getFunctions().isEmpty() && descr.getInitCode() != null ) {
                 new AccumulateInlineVisitor( context, packageModel ).inlineAccumulate( descr, basePattern, accumulateDSL, externalDeclrs, input );
             } else {
@@ -135,7 +135,7 @@ public class AccumulateVisitor {
         }
     }
 
-    private void classicAccumulate(AccumulateDescr descr, PatternDescr basePattern, BaseDescr input, MethodCallExpr accumulateDSL) {
+    protected void processAccumulateFunctions(AccumulateDescr descr, PatternDescr basePattern, BaseDescr input, MethodCallExpr accumulateDSL) {
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
             try {
                 Optional<NewBinding> optNewBinding = visit(function, basePattern, input, accumulateDSL);
@@ -503,7 +503,7 @@ public class AccumulateVisitor {
         return rootNodeName;
     }
 
-    Expression buildConstraintExpression(Expression expr, Collection<String> usedDeclarations) {
+    protected Expression buildConstraintExpression(Expression expr, Collection<String> usedDeclarations) {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters(true);
         usedDeclarations.stream().map(s -> new Parameter(context.getDelarationType(s), s)).forEach(lambdaExpr::addParameter);
