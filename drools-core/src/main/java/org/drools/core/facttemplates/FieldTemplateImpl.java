@@ -37,12 +37,14 @@ public class FieldTemplateImpl
 
     }
 
-    public FieldTemplateImpl(final String name,
-                             final int index,
-                             final Class clazz) {
+    public FieldTemplateImpl(String name, int index) {
+        this(name, index, null);
+    }
+
+    public FieldTemplateImpl(String name, int index, Class clazz) {
         this.name = name;
         this.index = index;
-        this.valueType = ValueType.determineValueType( clazz );
+        this.valueType = clazz != null ? ValueType.OBJECT_TYPE : ValueType.determineValueType( clazz );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -58,23 +60,15 @@ public class FieldTemplateImpl
         out.writeInt(index);
         out.writeObject(valueType);
     }
-    /* (non-Javadoc)
-     * @see org.kie.facttemplates.FieldTemplate#getQueueIndex()
-     */
+
     public int getIndex() {
         return this.index;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.facttemplates.FieldTemplate#getName()
-     */
     public String getName() {
         return this.name;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.facttemplates.FieldTemplate#getValueType()
-     */
     public ValueType getValueType() {
         return this.valueType;
     }

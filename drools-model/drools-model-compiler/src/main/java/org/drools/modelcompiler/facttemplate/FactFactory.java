@@ -36,9 +36,11 @@ public class FactFactory {
     }
 
     public static FactTemplate prototypeToFactTemplate( Prototype prototype, InternalKnowledgePackage pkg ) {
-        FieldTemplate[] fieldTemplates = new FieldTemplate[prototype.getFields().length];
-        for (int i = 0; i < prototype.getFields().length; i++) {
-            fieldTemplates[i] = new FieldTemplateImpl( prototype.getFields()[i].getName(), i, prototype.getFields()[i].getType() );
+        FieldTemplate[] fieldTemplates = new FieldTemplate[prototype.getFieldNames().size()];
+        int i = 0;
+        for (String fieldName : prototype.getFieldNames()) {
+            fieldTemplates[i] = new FieldTemplateImpl( fieldName, i );
+            i++;
         }
         return new FactTemplateImpl( pkg, prototype.getName(), fieldTemplates );
     }

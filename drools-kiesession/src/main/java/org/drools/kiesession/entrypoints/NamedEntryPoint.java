@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -41,6 +42,7 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.facttemplates.Fact;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -280,14 +282,28 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
     public void update(FactHandle handle,
                        Object object,
                        String... modifiedProperties) {
-        Class modifiedClass = object.getClass();
 
-        TypeDeclaration typeDeclaration = ruleBase.getOrCreateExactTypeDeclaration( modifiedClass );
-        BitMask mask = typeDeclaration.isPropertyReactive() ?
-                calculatePositiveMask( modifiedClass, asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
+        String modifiedTypeName;
+        List<String> accessibleProperties;
+        boolean isPropertyReactive = true;
+
+        if (object instanceof Fact) {
+            accessibleProperties = ((Fact) object).getFactTemplate().getFieldNames();
+            modifiedTypeName = ((Fact) object).getFactTemplate().getName();
+            isPropertyReactive = !accessibleProperties.isEmpty();
+        } else {
+            Class<?> modifiedClass = object.getClass();
+            modifiedTypeName = modifiedClass.getName();
+            TypeDeclaration typeDeclaration = ruleBase.getOrCreateExactTypeDeclaration( modifiedClass );
+            isPropertyReactive = typeDeclaration.isPropertyReactive();
+            accessibleProperties = isPropertyReactive ? typeDeclaration.getAccessibleProperties() : null;
+        }
+
+        BitMask mask = isPropertyReactive ?
+                calculatePositiveMask( modifiedTypeName, asList(modifiedProperties), accessibleProperties ) :
                 AllSetBitMask.get();
 
-        update( (InternalFactHandle) handle, object, mask, modifiedClass, null);
+        update( (InternalFactHandle) handle, object, mask, object.getClass(), null);
     }
 
     public void update(final FactHandle factHandle,

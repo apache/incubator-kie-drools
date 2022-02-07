@@ -647,12 +647,11 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                     Pattern pattern,
                                     ExprConstraintDescr descr) {
         if (descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType) {
-            Class<?> klazz = pattern.getObjectType().getClassType();
-            TypeDeclaration tDecl = context.getKnowledgeBuilder().getTypeDeclaration(klazz);
+            TypeDeclaration tDecl = context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType());
 
             if (tDecl == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional definitions for :" + klazz + "\n");
+                                        "Unable to find @positional definitions for :" + pattern.getObjectType() + "\n");
                 return;
             }
 
@@ -1044,7 +1043,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             return declaration.getValueType();
         }
 
-        if (pattern.getObjectType() instanceof FactTemplateObjectType) {
+        if (pattern.getObjectType().isTemplate()) {
             return ((FactTemplateObjectType) pattern.getObjectType()).getFactTemplate().getFieldTemplate(leftValue).getValueType();
         }
 
@@ -1223,7 +1222,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         AnalysisResult analysis = context.getDialect().analyzeExpression(context,
                                                                          returnValueRestrictionDescr,
                                                                          returnValueRestrictionDescr.getContent(),
-                                                                         new BoundIdentifiers(pattern, context, null, pattern.getObjectType().getClassType()));
+                                                                         new BoundIdentifiers(pattern, context, null, pattern.getObjectType()));
         if (analysis == null) {
             // something bad happened
             return null;
@@ -1455,7 +1454,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
     }
 
     private TypeDeclaration getTypeDeclaration(Pattern pattern, RuleBuildContext context) {
-        return context.getKnowledgeBuilder().getTypeDeclaration( pattern.getObjectType().getClassType() );
+        return context.getKnowledgeBuilder().getTypeDeclaration( pattern.getObjectType() );
     }
 
     protected Constraint buildEval(final RuleBuildContext context,
@@ -1517,7 +1516,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         boolean isDynamic =
                 !pattern.getObjectType().getClassType().isArray() &&
-                        !context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType().getClassType()).isTypesafe();
+                        !context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType()).isTypesafe();
 
         return getConstraintBuilder().buildMvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, getOperators(usedIdentifiers.getOperators()),
                 context, previousDeclarations, localDeclarations, predicateDescr, analysis, isDynamic);
@@ -1569,7 +1568,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                       new BoundIdentifiers(pattern,
                                                                            context,
                                                                            operators,
-                                                                           pattern.getObjectType().getClassType()));
+                                                                           pattern.getObjectType()));
     }
 
     public static Map<String, EvaluatorWrapper> buildOperators(RuleBuildContext context,

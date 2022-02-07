@@ -78,7 +78,7 @@ public class PatternTest {
         assertEquals( Fact.class,
                       ext.getExtractToClass() );
 
-        final Fact stilton = cheese.createFact( 10 );
+        final Fact stilton = cheese.createFact();
         stilton.setFieldValue( "name",
                                "stilton" );
         stilton.setFieldValue( "price",

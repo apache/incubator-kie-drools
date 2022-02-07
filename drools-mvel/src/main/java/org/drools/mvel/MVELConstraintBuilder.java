@@ -696,8 +696,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             final AnalysisResult analysis = context.getDialect().analyzeExpression(context,
                     descr,
                     fieldName,
-                    new BoundIdentifiers(pattern, context, Collections.EMPTY_MAP,
-                            objectType.getClassType()));
+                    new BoundIdentifiers(pattern, context, Collections.EMPTY_MAP, objectType));
 
             if (analysis == null) {
                 // something bad happened

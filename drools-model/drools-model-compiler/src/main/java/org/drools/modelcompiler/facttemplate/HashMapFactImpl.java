@@ -30,18 +30,11 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
     private static AtomicLong staticFactId = new AtomicLong();
 
     private FactTemplate factTemplate;
-    private long factId;
 
     private Map<String, Object> valuesMap = new HashMap<>();
 
     public HashMapFactImpl( FactTemplate factTemplate ) {
-        factId = staticFactId.addAndGet(1);
         this.factTemplate = factTemplate;
-    }
-
-    @Override
-    public long getFactId() {
-        return factId;
     }
 
     @Override

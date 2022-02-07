@@ -136,28 +136,22 @@ public class FactTemplateTest {
                                                            "Cheese",
                                                            fields1 );
 
-        final Fact stilton1 = cheese1.createFact( 10 );
-        stilton1.setFieldValue( "name",
-                                "stilton" );
-        stilton1.setFieldValue( "price",
-                                new Integer( 200 ) );
+        final Fact stilton1 = cheese1.createFact();
+        stilton1.setFieldValue( "name", "stilton" );
+        stilton1.setFieldValue( "price", 200 );
 
-        final Fact stilton2 = cheese1.createFact( 11 );
-        stilton2.setFieldValue( 0,
-                                "stilton" );
-        stilton2.setFieldValue( 1,
-                                new Integer( 200 ) );
+        final Fact stilton2 = cheese1.createFact();
+        stilton2.setFieldValue( 0, "stilton" );
+        stilton2.setFieldValue( 1,  200 );
 
         assertEquals( stilton1,
                       stilton2 );
         assertEquals( stilton1.hashCode(),
                       stilton2.hashCode() );
 
-        final Fact brie = cheese1.createFact( 12 );
-        brie.setFieldValue( "name",
-                            "brie" );
-        brie.setFieldValue( "price",
-                            new Integer( 55 ) );
+        final Fact brie = cheese1.createFact();
+        brie.setFieldValue( "name", "brie" );
+        brie.setFieldValue( "price", 55 );
 
         assertFalse( stilton1.equals( brie ) );
         assertFalse( stilton1.hashCode() == brie.hashCode() );

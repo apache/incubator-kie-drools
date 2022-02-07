@@ -132,9 +132,8 @@ public class FactTemplateImpl
     /**
      * Method takes a list of Slots and creates a deffact from it.
      */
-    public Fact createFact(final long id) {
-        return new FactImpl( this,
-                             id );
+    public Fact createFact() {
+        return new FactImpl( this );
     }
 
     /**

@@ -393,10 +393,10 @@ public class PatternBuilder
         if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
-            final Class< ? > thisClass = pattern.getObjectType().getClassType();
+            final ObjectType thisObjectType = pattern.getObjectType();
             for ( final Pattern previousPattern : context.getPatterns() ) {
-                final Class< ? > previousClass = previousPattern.getObjectType().getClassType();
-                if ( thisClass.isAssignableFrom( previousClass ) ) {
+                final ObjectType previousObjectType = previousPattern.getObjectType();
+                if ( thisObjectType.isAssignableFrom( previousObjectType ) ) {
                     betaConstraints.add( new InstanceNotEqualsConstraint( previousPattern ) );
                 }
             }

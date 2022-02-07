@@ -18,7 +18,6 @@ package org.drools.core.reteoo;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
@@ -26,11 +25,12 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode {
 
@@ -103,22 +103,13 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
 
-        if ( !(objectType instanceof ClassObjectType) ) {
-            // InitialFact has no type declaration and cannot be property specific
-            // Only ClassObjectType can use property specific
-            setDeclaredMask( AllSetBitMask.get() );
-            return;
-        }
-
-        Class objectClass = ((ClassObjectType)objectType).getClassType();
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if (  typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
-            // if property specific is not on, then accept all modification propagations
-            setDeclaredMask( AllSetBitMask.get() );
-        } else  {
+        if ( isPropertyReactive(context, objectType) ) {
             List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
             setDeclaredMask( pattern.getPositiveWatchMask(accessibleProperties) );
             setNegativeMask( pattern.getNegativeWatchMask(accessibleProperties) );
+        } else  {
+            // if property specific is not on, then accept all modification propagations
+            setDeclaredMask( AllSetBitMask.get() );
         }
     }
 

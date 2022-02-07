@@ -18,6 +18,7 @@ package org.drools.traits.core.reteoo;
 
 import java.util.List;
 
+import org.drools.core.spi.ObjectType;
 import org.drools.traits.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectSource;
@@ -38,8 +39,8 @@ public class TraitAlphaNode extends AlphaNode {
     }
 
     @Override
-    public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {
-        BitMask mask = constraint.getListenedPropertyMask(modifiedClass, settableProperties);
+    public BitMask calculateDeclaredMask(ObjectType objectType, List<String> settableProperties) {
+        BitMask mask = constraint.getListenedPropertyMask(objectType, settableProperties);
         if (isTraitEvaluator()) {
             return mask.set(PropertySpecificUtil.TRAITABLE_BIT);
         }

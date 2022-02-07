@@ -108,6 +108,7 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -2215,6 +2216,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {
         return cls != null ? typeBuilder.getTypeDeclaration(cls) : null;
+    }
+
+    public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
+        return objectType.isTemplate() ? typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) : typeBuilder.getTypeDeclaration(objectType.getClassType());
     }
 
     public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {

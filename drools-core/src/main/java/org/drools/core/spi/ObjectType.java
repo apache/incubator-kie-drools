@@ -29,6 +29,8 @@ public interface ObjectType
 
     boolean isAssignableFrom(Class<?> clazz);
 
+    boolean isAssignableTo(Class<?> clazz);
+
     boolean isAssignableFrom(ObjectType objectType);
 
     /**
@@ -42,5 +44,13 @@ public interface ObjectType
 
     Class<?> getClassType();
 
+    Object getTypeKey();
+
     String getClassName();
+
+    boolean hasField(String name);
+
+    default boolean isTemplate() {
+        return false;
+    }
 }

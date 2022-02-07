@@ -20,10 +20,10 @@ import org.drools.core.base.ValueType;
 
 public interface FieldTemplate {
 
-    public abstract int getIndex();
+    int getIndex();
 
-    public abstract String getName();
+    String getName();
 
-    public abstract ValueType getValueType();
+    ValueType getValueType();
 
 }

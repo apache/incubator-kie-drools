@@ -16,9 +16,12 @@
 
 package org.drools.core.facttemplates;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-
 import java.io.Externalizable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.drools.core.definitions.InternalKnowledgePackage;
 
 
 public interface FactTemplate
@@ -47,6 +50,10 @@ public interface FactTemplate
      */
     FieldTemplate[] getAllFieldTemplates();
 
+    default List<String> getFieldNames() {
+        return Arrays.stream(getAllFieldTemplates()).map(FieldTemplate::getName).sorted().collect(Collectors.toList());
+    }
+
     /**
      * Return the slot with the String name
      * @return
@@ -67,5 +74,5 @@ public interface FactTemplate
      */
     int getFieldTemplateIndex(String name);
 
-    Fact createFact(long id);
+    Fact createFact();
 }

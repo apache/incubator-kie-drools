@@ -213,7 +213,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     }
 
     @Override
-    public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
         return EmptyBitMask.get();
     }
 
@@ -384,17 +384,12 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         super.doAttach(context);
         this.source.addObjectSink(this);
 
-        Class<?> nodeTypeClass = objectType.getClassType();
-        if (nodeTypeClass == null) {
-            return;
-        }
-
         EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) source).getEntryPoint() );
         if (epn == null) {
             return;
         }
 
-        ObjectTypeConf objectTypeConf = epn.getTypeConfReg().getObjectTypeConfByClass( nodeTypeClass );
+        ObjectTypeConf objectTypeConf = epn.getTypeConfReg().getConfForObjectType( objectType );
         if ( objectTypeConf != null ) {
             objectTypeConf.resetCache();
         }

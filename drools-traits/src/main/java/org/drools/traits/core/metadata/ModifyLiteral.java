@@ -21,11 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.traits.core.factmodel.TraitProxyImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
@@ -132,10 +132,10 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
                 extraMasks[ j ] = PropertySpecificUtil.getEmptyPropertyReactiveMask( inverseSettableProperties[ j ].size() );
             }
             for ( int j = 0; j < with.length; j++ ) {
-                task.computeModificationMasks( target.getClass(), modificationMask, settableProperties, with, extraMasks, inverseSettableProperties );
+                task.computeModificationMasks( target.getClass().getName(), modificationMask, settableProperties, with, extraMasks, inverseSettableProperties );
             }
         } else {
-            task.computeModificationMasks( target.getClass(), modificationMask, settableProperties, null, null, null );
+            task.computeModificationMasks( target.getClass().getName(), modificationMask, settableProperties, null, null, null );
         }
     }
 
@@ -259,17 +259,17 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
             }
         }
 
-        public void computeModificationMasks( Class modifiedClass, BitMask mask, List<String> settableProperties, Object[] with, BitMask[] extraMasks, List<String>[] inverseSettableProperties ) {
+        public void computeModificationMasks(String modifiedTypeName, BitMask mask, List<String> settableProperties, Object[] with, BitMask[] extraMasks, List<String>[] inverseSettableProperties ) {
             if ( nextTask != null ) {
-                nextTask.computeModificationMasks( modifiedClass, mask, settableProperties, with, extraMasks, inverseSettableProperties );
+                nextTask.computeModificationMasks( modifiedTypeName, mask, settableProperties, with, extraMasks, inverseSettableProperties );
             }
 
-            setPropertyOnMask( modifiedClass, mask, settableProperties, propertyLiteral.getName() );
+            setPropertyOnMask( modifiedTypeName, mask, settableProperties, propertyLiteral.getName() );
 
             if ( with != null ) {
                 for ( int j = 0; j < with.length; j++ ) {
                     if ( value == with[ j ] && propertyLiteral instanceof InvertibleMetaProperty ) {
-                        setPropertyOnMask( modifiedClass, extraMasks[ j ], inverseSettableProperties[ j ], ( (InvertibleMetaProperty) propertyLiteral ).getInverse().getName() );
+                        setPropertyOnMask( modifiedTypeName, extraMasks[ j ], inverseSettableProperties[ j ], ( (InvertibleMetaProperty) propertyLiteral ).getInverse().getName() );
                     }
                 }
             }

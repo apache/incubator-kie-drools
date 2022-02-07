@@ -228,7 +228,6 @@ public class PhreakPropagationContext
         boolean typeBit = modificationMask.isSet(PropertySpecificUtil.TRAITABLE_BIT);
         modificationMask = modificationMask.reset(PropertySpecificUtil.TRAITABLE_BIT);
 
-
         Class<?> classType = classObjectType.getClassType();
         String pkgName = classType.getPackage().getName();
 

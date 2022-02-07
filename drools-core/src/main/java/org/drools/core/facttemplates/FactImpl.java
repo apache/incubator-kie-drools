@@ -45,54 +45,32 @@ public class FactImpl
     private Object[]     values       = null;
     private int          hashCode;
 
-    /**
-     * the Fact id must be unique, since we use it for the indexes
-     */
-    private long         id;
-
     public FactImpl() {
     }
 
-    /**
-     * this is the default constructor
-     * @param instance
-     * @param values
-     */
     public FactImpl(final FactTemplate template,
-                    final Object[] values,
-                    final long id) {
+                    final Object[] values) {
         this.factTemplate = template;
         this.values = values;
-        this.id = id;
     }
 
-    public FactImpl(final FactTemplate template,
-                    final long id) {
+    public FactImpl(final FactTemplate template) {
         this.factTemplate = template;
         this.values = new Object[template.getNumberOfFields()];
-        this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         factTemplate    = (FactTemplate)in.readObject();
         values          = (Object[])in.readObject();
         hashCode        = in.readInt();
-        id              = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(factTemplate);
         out.writeObject(values);
         out.writeInt(hashCode);
-        out.writeLong(id);
     }
 
-    /**
-     * Method returns the value of the given slot at the
-     * id.
-     * @param id
-     * @return
-     */
     public Object getFieldValue(final int index) {
         return this.values[index];
     }
@@ -110,22 +88,6 @@ public class FactImpl
     public void setFieldValue(final int index,
                               final Object value) {
         this.values[index] = value;
-    }
-
-    /**
-     * Return the long factId
-     */
-    public long getFactId() {
-        return this.id;
-    }
-
-    /**
-     * this is used to reset the id, in the event an user tries to
-     * assert the same fact again, we reset the id to the existing one.
-     * @param fact
-     */
-    protected void resetId(final Fact fact) {
-        this.id = fact.getFactId();
     }
 
     /**
