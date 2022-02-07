@@ -37,12 +37,14 @@ import io.fabric8.knative.internal.pkg.tracker.ReferenceBuilder;
 import io.fabric8.knative.sources.v1.SinkBinding;
 import io.fabric8.knative.sources.v1.SinkBindingBuilder;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
+import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.IsTest;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedFileSystemResourceBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
+import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
 
 public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnProcessor {
 
@@ -63,6 +65,11 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
+    }
+
+    @BuildStep(onlyIfNot = { IsTest.class, IsDevelopment.class })
+    HealthBuildItem registerHealthCheck() {
+        return new HealthBuildItem("org.kie.kogito.addons.quarkus.knative.eventing.KSinkInjectionHealthCheck", config.healthEnabled);
     }
 
     /**

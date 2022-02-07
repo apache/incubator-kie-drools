@@ -35,17 +35,23 @@ public class KnativeEventingConfigSource implements ConfigSource {
     private static final Map<String, String> configuration = new HashMap<>();
 
     private static final String URL_CONFIG = "mp.messaging.outgoing." + KogitoEventStreams.OUTGOING + ".url";
-    private static final String K_SINK = "K_SINK";
+    /**
+     * Environment variable injected by Knative
+     */
+    public static final String K_SINK = "K_SINK";
     private static final Logger LOGGER = LoggerFactory.getLogger(KnativeEventingConfigSource.class);
 
     static {
         configuration.put("mp.messaging.outgoing." + KogitoEventStreams.OUTGOING + ".connector", "quarkus-http");
-        configuration.put(URL_CONFIG, "${K_SINK}");
+        // add the default configuration to fallback to a placeholder since the underlying connector will fail on
+        // bootstrap if either the env var is not defined or the URL is not valid.
+        // we handle the missing env var injected by knative via probe
+        configuration.put(URL_CONFIG, "${K_SINK:http://localhost}");
     }
 
     /**
      * We only consider our config if the user has not added these properties to their project
-     * 
+     *
      * @see <a href="https://quarkus.io/guides/config-extending-support#example">Quarkus Config Extending Support</a>
      */
     @Override
