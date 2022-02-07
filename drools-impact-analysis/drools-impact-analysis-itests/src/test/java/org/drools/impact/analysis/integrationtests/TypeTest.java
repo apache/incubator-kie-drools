@@ -190,9 +190,9 @@ public class TypeTest extends AbstractGraphTest {
                      "then\n" +
                      "end\n";
 
-        PropHolder holder = new PropHolder();
-        holder.setId(0);
-        runRule(str, holder);
+        // PropHolder holder = new PropHolder();
+        // holder.setId(0);
+        // runRule(str, holder);
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
 
@@ -237,9 +237,9 @@ public class TypeTest extends AbstractGraphTest {
                      "then\n" +
                      "end\n";
 
-        PropHolder holder = new PropHolder();
-        holder.setId(0);
-        runRule(str, holder);
+        // PropHolder holder = new PropHolder();
+        // holder.setId(0);
+        // runRule(str, holder);
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
 

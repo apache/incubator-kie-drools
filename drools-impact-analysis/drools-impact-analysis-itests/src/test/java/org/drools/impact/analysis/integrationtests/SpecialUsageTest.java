@@ -66,7 +66,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
                      "then\n" +
                      "end\n";
 
-        runRule(str, new ControlFact());
+        // runRule(str, new ControlFact());
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
 
@@ -77,8 +77,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
         assertLink(graph, "mypkg.R1", "mypkg.R4", ReactivityType.UNKNOWN);
         assertLink(graph, "mypkg.R1", "mypkg.R5", ReactivityType.NEGATIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -110,7 +108,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
                      "then\n" +
                      "end\n";
 
-        runRule(str, new ControlFact());
+        // runRule(str, new ControlFact());
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
 
@@ -121,8 +119,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
         assertLink(graph, "mypkg.R1", "mypkg.R4", ReactivityType.UNKNOWN);
         assertLink(graph, "mypkg.R1", "mypkg.R5", ReactivityType.NEGATIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -144,7 +140,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
                      "then\n" +
                      "end\n";
 
-        runRule(str, new ControlFact("123", "ABC"));
+        // runRule(str, new ControlFact("123", "ABC"));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
 
@@ -152,8 +148,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -176,7 +170,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
                      "then\n" +
                      "end\n";
 
-        runRule(str, new ControlFact("123", "ABC"));
+        // runRule(str, new ControlFact("123", "ABC"));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
 
@@ -184,8 +178,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE, ReactivityType.UNKNOWN); // we may not need to have UNKNOWN
-
-        generatePng(graph);
     }
 
     @Test
@@ -208,7 +200,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
                      "then\n" +
                      "end\n";
 
-        runRule(str, new ControlFact(), new ProductItem("Product1", new BigDecimal("100.0")));
+        // runRule(str, new ControlFact(), new ProductItem("Product1", new BigDecimal("100.0")));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
 
@@ -216,8 +208,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
-
-        generatePng(graph);
     }
 
     @Test
@@ -241,8 +231,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -269,8 +257,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -297,7 +283,5 @@ public class SpecialUsageTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-
-        generatePng(graph);
     }
 }
