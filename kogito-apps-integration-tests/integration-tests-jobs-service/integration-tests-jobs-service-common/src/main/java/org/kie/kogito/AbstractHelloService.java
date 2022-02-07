@@ -15,13 +15,20 @@
  */
 package org.kie.kogito;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class AbstractHelloService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHelloService.class);
+
     public String hello(String input) {
+        LOGGER.info("Executing {}.hello(\"{}\")", getClass().getName(), input);
         return "Hello " + input;
     }
 
     public String bye(String input) {
+        LOGGER.info("Executing {}.bye(\"{}\")", getClass().getName(), input);
         return "Bye " + input;
     }
 }

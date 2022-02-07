@@ -18,6 +18,8 @@ package org.kie.kogito.it.jobs;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -30,8 +32,9 @@ import static org.hamcrest.CoreMatchers.nullValue;
 
 public abstract class BaseProcessAsyncIT {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseProcessAsyncIT.class);
     public static final String ASYNC = "async";
-    public static final Duration TIMEOUT = Duration.ofSeconds(10);
+    public static final Duration TIMEOUT = Duration.ofSeconds(40);
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -58,7 +61,10 @@ public abstract class BaseProcessAsyncIT {
         complete.body("bye", nullValue());
 
         await().atMost(TIMEOUT)
-                .untilAsserted(() -> getById(ASYNC, id).body("bye", equalTo("Bye Tiago")));
+                .untilAsserted(() -> {
+                    LOGGER.info("Checking bye equalTo(\"Bye Tiago\") assertion");
+                    getById(ASYNC, id).body("bye", equalTo("Bye Tiago"));
+                });
 
         signal(ASYNC, id, "complete");
         //check completed and removed
