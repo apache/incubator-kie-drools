@@ -57,6 +57,8 @@ public class GraphvizOutputTest {
         Graph graph = new Graph(nodeMap);
 
         GraphImageGenerator generator = new GraphImageGenerator("simple");
+        generator.generateDot(graph);
+        generator.generateSvg(graph);
         generator.generatePng(graph);
     }
 }
