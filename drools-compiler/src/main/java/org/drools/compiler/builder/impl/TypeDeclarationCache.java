@@ -94,8 +94,9 @@ public class TypeDeclarationCache {
     }
 
     TypeDeclaration getTypeDeclaration( Class<?> cls ) {
-        if (cls.isPrimitive() || cls.isArray())
+        if (cls.isPrimitive() || cls.isArray()) {
             return null;
+        }
 
         // If this class has already been accessed, it'll be in the cache
         TypeDeclaration tdecl = getCachedTypeDeclaration(cls);

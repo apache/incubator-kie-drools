@@ -57,6 +57,8 @@ public interface SourceDescrBuilder<P extends PatternDescrBuilder<?>>
      */
     AccumulateDescrBuilder<P> accumulate();
 
+    GroupByDescrBuilder<P> groupBy();
+
     /**
      * Defines the pattern source as being a declared window
      * 

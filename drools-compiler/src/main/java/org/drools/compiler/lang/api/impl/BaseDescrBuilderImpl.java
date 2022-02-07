@@ -26,7 +26,7 @@ public class BaseDescrBuilderImpl<P extends DescrBuilder<?,? extends BaseDescr>,
     implements
     DescrBuilder<P, T> {
 
-    protected T descr;
+    protected final T descr;
     protected P parent;
 
     protected BaseDescrBuilderImpl(final P parent,
