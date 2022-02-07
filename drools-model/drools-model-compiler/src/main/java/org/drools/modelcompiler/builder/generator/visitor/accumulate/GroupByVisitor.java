@@ -21,10 +21,10 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.drl.ast.descr.AccumulateDescr;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.GroupByDescr;
-import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.GroupByDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
