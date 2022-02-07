@@ -1,0 +1,19 @@
+<infinispan>
+    <cache-container name="default"/>
+    <server>
+      <interfaces>
+        <interface name='public'>
+          <inet-address value='${infinispan.bind.address:0.0.0.0}'/>
+        </interface>
+      </interfaces>
+      <socket-bindings default-interface='public' port-offset='0'>
+        <socket-binding name='default' port='11222'/>
+      </socket-bindings>
+      <endpoints>
+        <endpoint socket-binding='default'>
+          <hotrod-connector name="hotrod"/>
+          <rest-connector name="rest"/>
+        </endpoint>
+      </endpoints>
+    </server>
+  </infinispan>

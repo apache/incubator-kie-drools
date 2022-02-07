@@ -12,6 +12,7 @@
 
   <modules>
     <module>integration-tests-jobs-service</module>
+    <module>integration-tests-trusty-audit</module>
     <module>integration-tests-trusty-service</module>
     <module>integration-tests-data-index-service</module>
     <module>integration-tests-task-assigning-service</module>

@@ -87,13 +87,17 @@ describe('Traffic Violation', () => {
         .within($nav => {
           cy.wrap($nav)
             .find('li>a')
-            .should('have.length', 4)
+            .should('have.length', 5)
             .within($items => {
               expect($items.eq(0)).have.text('Outcomes');
               expect($items.eq(0)).have.class('pf-m-current');
               expect($items.eq(1)).have.text('Outcomes details');
               expect($items.eq(2)).have.text('Input data');
               expect($items.eq(3)).have.text('Model lookup');
+              /*
+               * TODO: FAI-665
+               */
+              expect($items.eq(4)).to.contain('Counterfactual analysis');
             });
         });
       cy.get('section.outcomes').should('be.visible');
