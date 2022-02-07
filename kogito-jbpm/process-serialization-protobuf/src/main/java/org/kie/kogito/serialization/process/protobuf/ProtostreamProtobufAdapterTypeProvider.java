@@ -18,8 +18,6 @@ package org.kie.kogito.serialization.process.protobuf;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,15 +58,15 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
         }
     }
 
-    private Collection<Path> protostreamDescriptors() {
-        return Arrays.asList(Paths.get("META-INF","kogito-types.proto"), Paths.get("META-INF","application-types.proto"));
+    private Collection<String> protostreamDescriptors() {
+        return Arrays.asList("META-INF/kogito-types.proto", "META-INF/application-types.proto");
     }
 
-    private boolean isKogitoPackage(FileDescriptor fd){
+    private boolean isKogitoPackage(FileDescriptor fd) {
         return fd != null && "kogito".equals(fd.getPackage());
     }
 
-    protected List<FileDescriptor> sortFds(Collection<FileDescriptor> descriptors){
+    protected List<FileDescriptor> sortFds(Collection<FileDescriptor> descriptors) {
         Comparator<FileDescriptor> fdComparator = (fd1, fd2) -> isKogitoPackage(fd1) ? (isKogitoPackage(fd2) ? 0 : -1) : (isKogitoPackage(fd2) ? 1 : 0);
         return descriptors.stream().sorted(fdComparator).collect(Collectors.toList());
     }
@@ -92,22 +90,30 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
 
     private SerializationContextImpl buildSerializationContext() throws IOException {
         SerializationContextImpl context = new SerializationContextImpl(Configuration.builder().build());
-        for (Path protoFile : protostreamDescriptors()) {
-            try (InputStream is = getInputStream(protoFile)) {
+        for (String protoResource : protostreamDescriptors()) {
+            try (InputStream is = getInputStream(protoResource)) {
                 if (is == null) {
                     continue;
                 }
-                FileDescriptorSource source = new FileDescriptorSource().addProtoFile(protoFile.getFileName().toString(), is);
+                FileDescriptorSource source = new FileDescriptorSource().addProtoFile(getFileName(protoResource), is);
                 context.registerProtoFiles(source);
             }
         }
         return context;
     }
 
-    private InputStream getInputStream(Path protoFile) {
-        InputStream is = ProtostreamProtobufAdapterTypeProvider.class.getClassLoader().getResourceAsStream(protoFile.toString());
-        if(is == null && Thread.currentThread().getContextClassLoader() != null) {
-            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(protoFile.toString());
+    private static String getFileName(String protoResource) {
+        int index = protoResource.lastIndexOf('/');
+        if (index >= 0) {
+            return protoResource.substring(index + 1);
+        }
+        return protoResource;
+    }
+
+    private InputStream getInputStream(String protoResource) {
+        InputStream is = ProtostreamProtobufAdapterTypeProvider.class.getClassLoader().getResourceAsStream(protoResource);
+        if (is == null && Thread.currentThread().getContextClassLoader() != null) {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(protoResource);
         }
         return is;
     }
@@ -125,7 +131,7 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
     private EnumDescriptorProto buildEnum(EnumDescriptor enumDescriptor) {
         EnumDescriptorProto.Builder enumBuilder = EnumDescriptorProto.newBuilder();
         enumBuilder.setName(enumDescriptor.getName());
-        for(EnumValueDescriptor enumValueDescriptor : enumDescriptor.getValues()) {
+        for (EnumValueDescriptor enumValueDescriptor : enumDescriptor.getValues()) {
             enumBuilder.addValue(buildEnumValue(enumValueDescriptor));
         }
         return enumBuilder.build();
@@ -163,11 +169,11 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
         fieldBuilder.setNumber(descriptor.getNumber());
         fieldBuilder.setType(buildFieldTypeDescriptor(descriptor.getType()));
         EnumSet<FieldDescriptorProto.Type> set = EnumSet.of(FieldDescriptorProto.Type.TYPE_ENUM, FieldDescriptorProto.Type.TYPE_MESSAGE);
-        if(set.contains(fieldBuilder.getType())) {
+        if (set.contains(fieldBuilder.getType())) {
             String fullName = FieldDescriptorProto.Type.TYPE_MESSAGE.equals(fieldBuilder.getType())
                     ? descriptor.getMessageType().getFullName()
                     : descriptor.getEnumType().getFullName();
-            if(descriptor.getFileDescriptor().getTypes().containsKey(fullName)) {
+            if (descriptor.getFileDescriptor().getTypes().containsKey(fullName)) {
                 fieldBuilder.setTypeName(descriptor.getTypeName());
             } else {
                 fieldBuilder.setTypeName("." + descriptor.getTypeName());

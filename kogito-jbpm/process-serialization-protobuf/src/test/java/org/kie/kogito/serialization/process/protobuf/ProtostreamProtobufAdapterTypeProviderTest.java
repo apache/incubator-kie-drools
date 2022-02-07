@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.protobuf.Descriptors;
 
-public class ProtostreamProtobufAdapterTypeProviderTest {
+class ProtostreamProtobufAdapterTypeProviderTest {
 
     // list of the message descriptors present in .proto files "kogito-types.proto" and "application-types.proto";
     // "application-type.proto" is using all of the "kogito-types.proto" messages
@@ -35,14 +35,14 @@ public class ProtostreamProtobufAdapterTypeProviderTest {
             "org.kie.kogito.app.Address", "org.kie.kogito.app.Traveller");
 
     @Test
-    public void testSuccessConversionProtostreamToProtobuf() {
+    void testSuccessConversionProtostreamToProtobuf() {
         ProtostreamProtobufAdapterTypeProvider prov = new ProtostreamProtobufAdapterTypeProvider();
         Collection<Descriptors.Descriptor> descriptors = prov.descriptors();
         Assertions.assertThat(descriptors.stream().map(Descriptors.Descriptor::getFullName)).hasSameElementsAs(msgDescriptors);
     }
 
     @Test
-    public void testFileDescriptorSortWithKogitoFirstInOrigList(){
+    void testFileDescriptorSortWithKogitoFirstInOrigList() {
         ProtostreamProtobufAdapterTypeProvider prov = new ProtostreamProtobufAdapterTypeProvider();
         FileDescriptor fd1 = new FileDescriptor.Builder().withPackageName("kogito").build();
         FileDescriptor fd2 = new FileDescriptor.Builder().withPackageName("org.kie.kogito.app").build();
@@ -54,7 +54,7 @@ public class ProtostreamProtobufAdapterTypeProviderTest {
     }
 
     @Test
-    public void testFileDescriptorSortWithKogitoLastInOrigList(){
+    void testFileDescriptorSortWithKogitoLastInOrigList() {
         ProtostreamProtobufAdapterTypeProvider prov = new ProtostreamProtobufAdapterTypeProvider();
         FileDescriptor fd1 = new FileDescriptor.Builder().withPackageName("kogito").build();
         FileDescriptor fd2 = new FileDescriptor.Builder().withPackageName("org.kie.kogito.app").build();
