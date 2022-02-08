@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.constraint.drl.testgen.fact.TestGenFact;
+import org.optaplanner.constraint.drl.testgen.fact.TestGenNullFact;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;

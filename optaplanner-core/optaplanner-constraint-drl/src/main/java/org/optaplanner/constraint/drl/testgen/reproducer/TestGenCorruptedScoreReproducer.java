@@ -32,8 +32,7 @@ import org.slf4j.LoggerFactory;
  * Detects corrupted score for the given journal. It should behave equally to
  * {@link AbstractScoreDirector#assertWorkingScoreFromScratch(Score, Object)}.
  */
-public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemReproducer,
-        TestGenKieSessionListener {
+public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemReproducer, TestGenKieSessionListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
     private final String analysis;
