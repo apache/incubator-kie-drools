@@ -47,7 +47,30 @@ public class TestUtils {
 
     private static ObjectMapper MAPPER = new ObjectMapper();
 
-    public static ProcessInstance createProcessInstance(String processInstanceId, String processId, String rootProcessInstanceId, String rootProcessId, Integer status, long timeInterval) {
+    public static ProcessInstance createProcessInstance(String processInstanceId,
+            String processId,
+            String rootProcessInstanceId,
+            String rootProcessId,
+            Integer status,
+            long timeInterval) {
+        return createProcessInstance(processInstanceId,
+                processId,
+                rootProcessInstanceId,
+                rootProcessId,
+                status,
+                timeInterval,
+                "Bar",
+                "Swi");
+    }
+
+    public static ProcessInstance createProcessInstance(String processInstanceId,
+            String processId,
+            String rootProcessInstanceId,
+            String rootProcessId,
+            Integer status,
+            long timeInterval,
+            String firstName,
+            String lastName) {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
@@ -56,7 +79,7 @@ public class TestUtils {
         pi.setParentProcessInstanceId(rootProcessInstanceId);
         pi.setRootProcessId(rootProcessId);
         pi.setRoles(singleton("admin"));
-        pi.setVariables(createProcessInstanceVariables());
+        pi.setVariables(createProcessInstanceVariables(firstName, lastName));
         pi.setNodes(createNodeInstances(timeInterval));
         pi.setState(status);
         pi.setStart(Instant.ofEpochMilli(ZonedDateTime.now().toInstant().toEpochMilli() + timeInterval).atZone(ZoneOffset.UTC));
@@ -116,8 +139,8 @@ public class TestUtils {
         return MAPPER.valueToTree(json);
     }
 
-    private static ObjectNode createProcessInstanceVariables() {
-        return createDomainData(null, "Bar", "Swi");
+    private static ObjectNode createProcessInstanceVariables(String firstName, String lastName) {
+        return createDomainData(null, firstName, lastName);
     }
 
     public static Job createJob(String jobId, String processInstanceId, String processId, String rootProcessInstanceId, String rootProcessId, String status, long timeInterval) {

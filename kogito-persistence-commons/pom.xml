@@ -22,6 +22,8 @@
     <module>persistence-commons-redis</module>
     <module>persistence-commons-postgresql</module>
     <module>persistence-commons-oracle</module>
+    <module>persistence-commons-reporting</module>
+    <module>persistence-commons-reporting-postgresql</module>
     <module>kogito-ddl</module>
     <module>quarkus-postgresql-inmemory-parent</module>
   </modules>

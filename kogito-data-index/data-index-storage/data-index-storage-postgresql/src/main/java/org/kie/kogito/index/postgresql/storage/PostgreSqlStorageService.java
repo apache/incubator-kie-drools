@@ -36,14 +36,22 @@ import static org.kie.kogito.persistence.postgresql.Constants.POSTGRESQL_STORAGE
 @IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = POSTGRESQL_STORAGE)
 public class PostgreSqlStorageService implements StorageService {
 
-    @Inject
-    ProcessInstanceEntityStorage processStorage;
+    private ProcessInstanceEntityStorage processStorage;
+    private JobEntityStorage jobStorage;
+    private UserTaskInstanceEntityStorage taskStorage;
+
+    protected PostgreSqlStorageService() {
+        //CDI proxy
+    }
 
     @Inject
-    JobEntityStorage jobStorage;
-
-    @Inject
-    UserTaskInstanceEntityStorage taskStorage;
+    public PostgreSqlStorageService(final ProcessInstanceEntityStorage processStorage,
+            final JobEntityStorage jobStorage,
+            final UserTaskInstanceEntityStorage taskStorage) {
+        this.processStorage = processStorage;
+        this.jobStorage = jobStorage;
+        this.taskStorage = taskStorage;
+    }
 
     @Override
     public Storage<String, String> getCache(String name) {

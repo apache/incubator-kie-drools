@@ -35,10 +35,10 @@ import static org.kie.kogito.persistence.postgresql.Constants.POSTGRESQL_STORAGE
 public class PostgresStorageService implements StorageService {
 
     @Inject
-    CacheEntityRepository repository;
+    protected CacheEntityRepository repository;
 
     @Inject
-    ObjectMapper mapper;
+    protected ObjectMapper mapper;
 
     @Override
     public Storage<String, String> getCache(String name) {
