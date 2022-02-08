@@ -540,7 +540,7 @@ For example in n queens:
 [source,java,options="nowrap"]
 ----
 public class NQueensAdvancedIncrementalScoreCalculator
-    extends IncrementalScoreCalculator<NQueens, SimpleScore> {
+    implements IncrementalScoreCalculator<NQueens, SimpleScore> {
 
     private Map<Integer, List<Queen>> rowIndexMap;
     private Map<Integer, List<Queen>> ascendingDiagonalIndexMap;
