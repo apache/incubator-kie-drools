@@ -37,7 +37,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-class GatewayFEELIT extends BaseRestTest {
+class GatewayFEELTest extends BaseRestTest {
 
     @Test
     void testGatewayFEEL() {

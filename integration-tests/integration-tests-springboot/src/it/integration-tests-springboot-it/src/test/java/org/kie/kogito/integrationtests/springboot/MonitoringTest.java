@@ -35,7 +35,7 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-public class MonitoringIT extends BaseRestTest {
+public class MonitoringTest extends BaseRestTest {
 
     @Autowired
     ConfigBean configBean;
