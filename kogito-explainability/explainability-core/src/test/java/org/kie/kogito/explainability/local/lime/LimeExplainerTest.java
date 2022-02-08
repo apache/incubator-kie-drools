@@ -174,7 +174,7 @@ class LimeExplainerTest {
         Saliency saliency = saliencyMap.get(decisionName);
         List<FeatureImportance> perFeatureImportance = saliency.getPerFeatureImportance();
         for (FeatureImportance featureImportance : perFeatureImportance) {
-            assertThat(featureImportance.getScore()).isBetween(-1d, 1d);
+            assertThat(featureImportance.getScore()).isBetween(0d, 1d);
         }
     }
 
