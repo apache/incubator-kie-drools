@@ -20,9 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CategoricalFeatureDomain extends AbstractCategoricalFeatureDomain<String> {
+public class ObjectFeatureDomain extends AbstractCategoricalFeatureDomain<Object> {
 
-    private CategoricalFeatureDomain(Set<String> categories) {
+    private ObjectFeatureDomain(Set<Object> categories) {
         super(categories);
     }
 
@@ -32,15 +32,15 @@ public class CategoricalFeatureDomain extends AbstractCategoricalFeatureDomain<S
      * @param categories A set with all the allowed category values
      * @return A {@link FeatureDomain}
      */
-    public static FeatureDomain<String> create(Set<String> categories) {
-        return new CategoricalFeatureDomain(categories);
+    public static FeatureDomain<Object> create(Set<Object> categories) {
+        return new ObjectFeatureDomain(categories);
     }
 
-    public static FeatureDomain<String> create(List<String> categories) {
-        return new CategoricalFeatureDomain(new HashSet<>(categories));
+    public static FeatureDomain<Object> create(List<Object> categories) {
+        return new ObjectFeatureDomain(new HashSet<>(categories));
     }
 
-    public static FeatureDomain<String> create(String... categories) {
-        return new CategoricalFeatureDomain(new HashSet<>(Arrays.asList(categories)));
+    public static FeatureDomain<Object> create(Object... categories) {
+        return new ObjectFeatureDomain(new HashSet<>(Arrays.asList(categories)));
     }
 }

@@ -17,15 +17,17 @@ package org.kie.kogito.explainability.model.domain;
 
 import java.util.Set;
 
-public class EmptyFeatureDomain implements FeatureDomain<Object> {
+public class AbstractCategoricalFeatureDomain<T> implements FeatureDomain<T> {
 
-    public static FeatureDomain<Object> create() {
-        return new EmptyFeatureDomain();
+    protected final Set<T> categories;
+
+    protected AbstractCategoricalFeatureDomain(Set<T> categories) {
+        this.categories = categories;
     }
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     @Override
@@ -39,7 +41,8 @@ public class EmptyFeatureDomain implements FeatureDomain<Object> {
     }
 
     @Override
-    public Set<Object> getCategories() {
-        return null;
+    public Set<T> getCategories() {
+        return this.categories;
     }
+
 }

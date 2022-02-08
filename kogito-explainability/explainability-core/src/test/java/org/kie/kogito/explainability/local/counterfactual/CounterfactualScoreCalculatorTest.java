@@ -16,9 +16,13 @@
 package org.kie.kogito.explainability.local.counterfactual;
 
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -550,6 +554,461 @@ class CounterfactualScoreCalculatorTest {
 
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void currencyDistanceDifferentValue(int seed) {
+        final Random random = new Random(seed);
+        Feature x = FeatureFactory.newCurrencyFeature("x", Currency.getInstance("GBP"));
+        Feature y = FeatureFactory.newCurrencyFeature("y", Currency.getInstance("EUR"));
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.CURRENCY, ox.getType());
+        assertEquals(Type.CURRENCY, oy.getType());
+        assertEquals(1.0, distance);
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(1.0, distance);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void currencyDistanceNull(int seed) {
+        final Random random = new Random(seed);
+        final Currency value = Currency.getInstance(Locale.UK);
+
+        // Null as a goal
+        Feature predictionFeature = FeatureFactory.newCurrencyFeature("x", value);
+        Feature goalFeature = FeatureFactory.newCurrencyFeature("y", null);
+
+        Output predictionOutput = outputFromFeature(predictionFeature);
+        Output goalOutput = outputFromFeature(goalFeature);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.CURRENCY, goalOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as a prediction
+
+        predictionFeature = FeatureFactory.newCurrencyFeature("x", null);
+        goalFeature = FeatureFactory.newCurrencyFeature("y", value);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.CURRENCY, predictionOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as both prediction and goal
+
+        predictionFeature = FeatureFactory.newCurrencyFeature("x", null);
+        goalFeature = FeatureFactory.newCurrencyFeature("y", null);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.CURRENCY, predictionOutput.getType());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void currencyDistanceSameValue(int seed) {
+        final Random random = new Random(seed);
+        final Currency value = Currency.getInstance(Locale.US);
+        Feature x = FeatureFactory.newCurrencyFeature("x", value);
+        Feature y = FeatureFactory.newCurrencyFeature("y", value);
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.CURRENCY, ox.getType());
+        assertEquals(0.0, distance);
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(0.0, distance);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void binaryDistanceDifferentValue(int seed) {
+        final Random random = new Random(seed);
+        Feature x = FeatureFactory.newBinaryFeature("x", ByteBuffer.wrap("foo".getBytes()));
+        Feature y = FeatureFactory.newBinaryFeature("y", ByteBuffer.wrap("bar".getBytes()));
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.BINARY, ox.getType());
+        assertEquals(Type.BINARY, oy.getType());
+        assertEquals(1.0, distance);
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(1.0, distance);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void binaryDistanceNull(int seed) {
+        final Random random = new Random(seed);
+        final ByteBuffer value = ByteBuffer.wrap("foo".getBytes());
+
+        // Null as a goal
+        Feature predictionFeature = FeatureFactory.newBinaryFeature("x", value);
+        Feature goalFeature = FeatureFactory.newBinaryFeature("y", null);
+
+        Output predictionOutput = outputFromFeature(predictionFeature);
+        Output goalOutput = outputFromFeature(goalFeature);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.BINARY, goalOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as a prediction
+
+        predictionFeature = FeatureFactory.newBinaryFeature("x", null);
+        goalFeature = FeatureFactory.newBinaryFeature("y", value);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.BINARY, predictionOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as both prediction and goal
+
+        predictionFeature = FeatureFactory.newBinaryFeature("x", null);
+        goalFeature = FeatureFactory.newBinaryFeature("y", null);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.BINARY, predictionOutput.getType());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void objectDistanceDifferentValue(int seed) {
+        Random random = new Random(seed);
+        Feature x = FeatureFactory.newObjectFeature("x", "test");
+        Feature y = FeatureFactory.newObjectFeature("y", 20);
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.UNDEFINED, ox.getType());
+        assertEquals(Type.UNDEFINED, oy.getType());
+        assertEquals(1.0, distance);
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(1.0, distance);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void objectDistanceSameValue(int seed) {
+        final Random random = new Random(seed);
+        final ByteBuffer value = ByteBuffer.wrap("foo".getBytes());
+        Feature x = FeatureFactory.newObjectFeature("x", value);
+        Feature y = FeatureFactory.newObjectFeature("y", value);
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.UNDEFINED, ox.getType());
+        assertEquals(0.0, distance);
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(0.0, distance);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void objectDistanceNull(int seed) {
+        final Random random = new Random(seed);
+        final ByteBuffer value = ByteBuffer.wrap("foo".getBytes());
+
+        // Null as a goal
+        Feature predictionFeature = FeatureFactory.newObjectFeature("x", value);
+        Feature goalFeature = FeatureFactory.newObjectFeature("y", null);
+
+        Output predictionOutput = outputFromFeature(predictionFeature);
+        Output goalOutput = outputFromFeature(goalFeature);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.UNDEFINED, goalOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as a prediction
+
+        predictionFeature = FeatureFactory.newObjectFeature("x", null);
+        goalFeature = FeatureFactory.newObjectFeature("y", value);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.UNDEFINED, predictionOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as both prediction and goal
+
+        predictionFeature = FeatureFactory.newObjectFeature("x", null);
+        goalFeature = FeatureFactory.newObjectFeature("y", null);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.UNDEFINED, predictionOutput.getType());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void binaryDistanceSameValue(int seed) {
+        final Random random = new Random(seed);
+        final ByteBuffer value = ByteBuffer.wrap("foo".getBytes());
+        Feature x = FeatureFactory.newBinaryFeature("x", value);
+        Feature y = FeatureFactory.newBinaryFeature("y", value);
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.BINARY, ox.getType());
+        assertEquals(0.0, distance);
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(0.0, distance);
+    }
+
+    @Test
+    void durationDistanceDifferentValue() {
+        final double SECONDS = 120L;
+        Feature x = FeatureFactory.newDurationFeature("x", Duration.ZERO);
+        Feature y = FeatureFactory.newDurationFeature("y", Duration.ofSeconds((long) SECONDS));
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.DURATION, ox.getType());
+        assertEquals(Type.DURATION, oy.getType());
+
+        assertEquals(SECONDS, distance);
+
+        x = FeatureFactory.newDurationFeature("x", Duration.ofSeconds((long) SECONDS));
+        y = FeatureFactory.newDurationFeature("y", Duration.ofDays(1L));
+        ox = outputFromFeature(x);
+        oy = outputFromFeature(y);
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+        assertEquals(0.9986, distance, 0.01);
+
+        x = FeatureFactory.newDurationFeature("x", Duration.ofDays(2L));
+        y = FeatureFactory.newDurationFeature("y", Duration.ofDays(1L));
+        ox = outputFromFeature(x);
+        oy = outputFromFeature(y);
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+        System.out.println(distance);
+        assertEquals(0.5, distance, 1e-4);
+    }
+
+    @Test
+    void durationDistanceNull() {
+        final Duration value = Duration.ofHours(72L);
+
+        // Null as a goal
+        Feature predictionFeature = FeatureFactory.newDurationFeature("x", value);
+        Feature goalFeature = FeatureFactory.newDurationFeature("y", null);
+
+        Output predictionOutput = outputFromFeature(predictionFeature);
+        Output goalOutput = outputFromFeature(goalFeature);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.DURATION, goalOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as a prediction
+        predictionFeature = FeatureFactory.newDurationFeature("x", null);
+        goalFeature = FeatureFactory.newDurationFeature("y", value);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.DURATION, predictionOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as both prediction and goal
+        predictionFeature = FeatureFactory.newDurationFeature("x", null);
+        goalFeature = FeatureFactory.newDurationFeature("y", null);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.DURATION, predictionOutput.getType());
+        System.out.println(distance);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void durationDistanceSameValue(int seed) {
+        final Random random = new Random(seed);
+        final Duration value = Duration.ofSeconds(random.nextLong());
+        Feature x = FeatureFactory.newDurationFeature("x", value);
+        Feature y = FeatureFactory.newDurationFeature("y", value);
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.DURATION, ox.getType());
+        assertEquals(0.0, Math.abs(distance));
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(0.0, Math.abs(distance));
+    }
+
+    @Test
+    void timeDistanceDifferentValue() {
+        final LocalTime value = LocalTime.now();
+        Feature x = FeatureFactory.newTimeFeature("x", LocalTime.of(15, 59));
+        Feature y = FeatureFactory.newTimeFeature("y", LocalTime.of(10, 1));
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.TIME, ox.getType());
+        assertEquals(Type.TIME, oy.getType());
+
+        assertEquals(0.248, distance, 0.01);
+
+        x = FeatureFactory.newTimeFeature("x", LocalTime.of(12, 0));
+        y = FeatureFactory.newTimeFeature("y", LocalTime.of(12, 57));
+        ox = outputFromFeature(x);
+        oy = outputFromFeature(y);
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+        assertEquals(0.039, distance, 0.01);
+
+        x = FeatureFactory.newTimeFeature("x", LocalTime.of(0, 0));
+        y = FeatureFactory.newTimeFeature("y", LocalTime.of(15, 17));
+        ox = outputFromFeature(x);
+        oy = outputFromFeature(y);
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+        assertEquals(0.636, distance, 0.01);
+    }
+
+    @Test
+    void timeDistanceNull() {
+        final LocalTime value = LocalTime.of(17, 17);
+
+        // Null as a goal
+        Feature predictionFeature = FeatureFactory.newTimeFeature("x", value);
+        Feature goalFeature = FeatureFactory.newTimeFeature("y", null);
+
+        Output predictionOutput = outputFromFeature(predictionFeature);
+        Output goalOutput = outputFromFeature(goalFeature);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.TIME, goalOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as a prediction
+        predictionFeature = FeatureFactory.newTimeFeature("x", null);
+        goalFeature = FeatureFactory.newTimeFeature("y", value);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.TIME, predictionOutput.getType());
+        assertEquals(1.0, distance);
+
+        // Null as both prediction and goal
+        predictionFeature = FeatureFactory.newTimeFeature("x", null);
+        goalFeature = FeatureFactory.newTimeFeature("y", null);
+
+        predictionOutput = outputFromFeature(predictionFeature);
+        goalOutput = outputFromFeature(goalFeature);
+
+        distance = CounterFactualScoreCalculator.outputDistance(predictionOutput, goalOutput);
+
+        assertEquals(Type.TIME, predictionOutput.getType());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void timeDistanceSameValue(int seed) {
+        final Random random = new Random(seed);
+        final LocalTime value = LocalTime.of(random.nextInt(24), random.nextInt(60));
+        Feature x = FeatureFactory.newTimeFeature("x", value);
+        Feature y = FeatureFactory.newTimeFeature("y", value);
+
+        Output ox = outputFromFeature(x);
+        Output oy = outputFromFeature(y);
+
+        double distance = CounterFactualScoreCalculator.outputDistance(ox, oy);
+
+        assertEquals(Type.TIME, ox.getType());
+        assertEquals(0.0, Math.abs(distance));
+
+        // Use a random threshold, mustn't make a difference
+        distance = CounterFactualScoreCalculator.outputDistance(ox, oy, random.nextDouble());
+
+        assertEquals(0.0, Math.abs(distance));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void TextDistanceDifferentValue(int seed) {
         final Random random = new Random(seed);
         Feature x = FeatureFactory.newTextFeature("x", UUID.randomUUID().toString());
@@ -583,8 +1042,9 @@ class CounterfactualScoreCalculatorTest {
 
     @Test
     void unsupportedFeatureType() {
-        Feature x = FeatureFactory.newTimeFeature("x", LocalTime.now());
-        Feature y = FeatureFactory.newTimeFeature("y", LocalTime.now());
+
+        Feature x = FeatureFactory.newVectorFeature("x", 1, 2, 3, 4);
+        Feature y = FeatureFactory.newVectorFeature("y", 5, 6, 7, 8);
 
         Output ox = outputFromFeature(x);
         Output oy = outputFromFeature(y);
@@ -593,7 +1053,7 @@ class CounterfactualScoreCalculatorTest {
             CounterFactualScoreCalculator.outputDistance(ox, oy);
         });
 
-        assertEquals("Feature 'x' has unsupported type 'time'", exception.getMessage());
+        assertEquals("Feature 'x' has unsupported type 'vector'", exception.getMessage());
     }
 
     /**

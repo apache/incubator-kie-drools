@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.net.URI;
 import java.util.Set;
 
 import org.kie.kogito.explainability.model.Feature;
@@ -27,18 +28,18 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
  * Mapping between a categorical feature an OptaPlanner {@link PlanningEntity}
  */
 @PlanningEntity
-public class CategoricalEntity extends AbstractCategoricalEntity<String> {
+public class URIEntity extends AbstractCategoricalEntity<URI> {
 
-    public CategoricalEntity() {
+    public URIEntity() {
         super();
     }
 
-    private CategoricalEntity(String originalValue, String featureName, Set<String> allowedCategories, boolean constrained) {
+    private URIEntity(URI originalValue, String featureName, Set<URI> allowedCategories, boolean constrained) {
         super(originalValue, featureName, allowedCategories, constrained);
     }
 
     /**
-     * Creates a {@link CategoricalEntity}, taking the original input value from the
+     * Creates a {@link URIEntity}, taking the original input value from the
      * provided {@link Feature} and specifying whether the entity is constrained or not.
      * A set of allowed category values must be passed.
      *
@@ -46,43 +47,44 @@ public class CategoricalEntity extends AbstractCategoricalEntity<String> {
      * @param categories Set of allowed category values
      * @param constrained Whether this entity's value should be fixed or not
      */
-    public static CategoricalEntity from(Feature originalFeature, Set<String> categories, boolean constrained) {
-        return new CategoricalEntity(originalFeature.getValue().asString(), originalFeature.getName(), categories, constrained);
+    public static URIEntity from(Feature originalFeature, Set<URI> categories, boolean constrained) {
+        return new URIEntity((URI) originalFeature.getValue().getUnderlyingObject(), originalFeature.getName(), categories,
+                constrained);
     }
 
     /**
-     * Creates an unconstrained {@link CategoricalEntity}, taking the original input value from the
+     * Creates an unconstrained {@link URIEntity}, taking the original input value from the
      * provided {@link Feature}.
      * A set of allowed category values must be passed.
      *
      * @param originalFeature feature Original input {@link Feature}
      * @param categories Set of allowed category values
      */
-    public static CategoricalEntity from(Feature originalFeature, Set<String> categories) {
-        return CategoricalEntity.from(originalFeature, categories, false);
+    public static URIEntity from(Feature originalFeature, Set<URI> categories) {
+        return URIEntity.from(originalFeature, categories, false);
     }
 
     @ValueRangeProvider(id = "categoricalRange")
-    public Set<String> getValueRange() {
+    public Set<URI> getValueRange() {
         return allowedCategories;
     }
 
     /**
-     * Returns the {@link CategoricalEntity} as a {@link Feature}
+     * Returns the {@link URIEntity} as a {@link Feature}
      *
      * @return {@link Feature}
      */
     @Override
     public Feature asFeature() {
-        return FeatureFactory.newCategoricalFeature(featureName, this.proposedValue);
+        return FeatureFactory.newURIFeature(featureName, this.proposedValue);
     }
 
     @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
-    public String getProposedValue() {
+    public URI getProposedValue() {
         return proposedValue;
     }
 
-    public void setProposedValue(String proposedValue) {
+    public void setProposedValue(URI proposedValue) {
         this.proposedValue = proposedValue;
     }
 

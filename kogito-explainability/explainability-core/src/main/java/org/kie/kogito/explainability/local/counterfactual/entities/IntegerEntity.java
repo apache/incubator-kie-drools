@@ -34,7 +34,8 @@ public class IntegerEntity extends AbstractNumericEntity<Integer> {
         super();
     }
 
-    private IntegerEntity(Integer originalValue, String featureName, int minimum, int maximum, FeatureDistribution featureDistribution, boolean constrained) {
+    private IntegerEntity(Integer originalValue, String featureName, int minimum, int maximum,
+            FeatureDistribution featureDistribution, boolean constrained) {
         super(originalValue, featureName, minimum, maximum, featureDistribution, constrained);
     }
 
@@ -51,8 +52,10 @@ public class IntegerEntity extends AbstractNumericEntity<Integer> {
         return from(originalFeature, minimum, maximum, null, constrained);
     }
 
-    public static IntegerEntity from(Feature originalFeature, int minimum, int maximum, FeatureDistribution featureDistribution, boolean constrained) {
-        return new IntegerEntity((int) originalFeature.getValue().asNumber(), originalFeature.getName(), minimum, maximum, featureDistribution, constrained);
+    public static IntegerEntity from(Feature originalFeature, int minimum, int maximum, FeatureDistribution featureDistribution,
+            boolean constrained) {
+        return new IntegerEntity((int) originalFeature.getValue().asNumber(), originalFeature.getName(), minimum, maximum,
+                featureDistribution, constrained);
     }
 
     /**

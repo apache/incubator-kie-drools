@@ -24,12 +24,9 @@ import org.kie.kogito.explainability.utils.DataUtils;
 /**
  * Common class for numerical counterfactual entities
  */
-public abstract class AbstractNumericEntity<T extends Number> extends AbstractEntity<T> {
+public abstract class AbstractNumericEntity<T extends Number> extends AbstractAlgebraicEntity<T> {
 
-    protected T rangeMinimum;
-    protected T rangeMaximum;
     protected Double stdDev;
-    protected Double range;
 
     protected AbstractNumericEntity() {
         super();
@@ -37,9 +34,7 @@ public abstract class AbstractNumericEntity<T extends Number> extends AbstractEn
 
     protected AbstractNumericEntity(T originalValue, String featureName, T minimum, T maximum,
             FeatureDistribution featureDistribution, boolean constrained) {
-        super(originalValue, featureName, constrained);
-        this.rangeMinimum = minimum;
-        this.rangeMaximum = maximum;
+        super(originalValue, featureName, minimum, maximum, constrained);
         this.range = maximum.doubleValue() - minimum.doubleValue();
 
         if (featureDistribution != null) {
@@ -47,21 +42,6 @@ public abstract class AbstractNumericEntity<T extends Number> extends AbstractEn
             final double mean = DataUtils.getMean(samples);
             this.stdDev = DataUtils.getStdDev(samples, mean);
         }
-    }
-
-    @Override
-    public String toString() {
-        return originalValue.getClass().getName() + "Entity{"
-                + "value="
-                + proposedValue
-                + ", rangeMinimum="
-                + rangeMinimum
-                + ", rangeMaximum="
-                + rangeMaximum
-                + ", id='"
-                + featureName
-                + '\''
-                + '}';
     }
 
     /**

@@ -49,8 +49,10 @@ class IntegerEntityTest {
 
         final Feature integerFeature = FeatureFactory.newNumericalFeature("feature-integer", 20);
         final FeatureDomain featureDomain = NumericalFeatureDomain.create(0, 100);
-        final FeatureDistribution featureDistribution = new NumericFeatureDistribution(integerFeature, random.ints(5000, 10, 40).mapToDouble(x -> x).toArray());
-        IntegerEntity entity = (IntegerEntity) CounterfactualEntityFactory.from(integerFeature, false, featureDomain, featureDistribution);
+        final FeatureDistribution featureDistribution =
+                new NumericFeatureDistribution(integerFeature, random.ints(5000, 10, 40).mapToDouble(x -> x).toArray());
+        IntegerEntity entity =
+                (IntegerEntity) CounterfactualEntityFactory.from(integerFeature, false, featureDomain, featureDistribution);
         entity.proposedValue = 40;
         final double distance = entity.distance();
         assertTrue(distance > 0.2 && distance < 0.3);

@@ -49,8 +49,10 @@ class DoubleEntityTest {
 
         final Feature doubleFeature = FeatureFactory.newNumericalFeature("feature-double", 20.0);
         final FeatureDomain featureDomain = NumericalFeatureDomain.create(0.0, 40.0);
-        final FeatureDistribution featureDistribution = new NumericFeatureDistribution(doubleFeature, random.doubles(5000, 10.0, 40.0).toArray());
-        DoubleEntity entity = (DoubleEntity) CounterfactualEntityFactory.from(doubleFeature, false, featureDomain, featureDistribution);
+        final FeatureDistribution featureDistribution =
+                new NumericFeatureDistribution(doubleFeature, random.doubles(5000, 10.0, 40.0).toArray());
+        DoubleEntity entity =
+                (DoubleEntity) CounterfactualEntityFactory.from(doubleFeature, false, featureDomain, featureDistribution);
         entity.proposedValue = 30.0;
         final double distance = entity.distance();
         assertTrue(distance > 0.1 && distance < 0.2);

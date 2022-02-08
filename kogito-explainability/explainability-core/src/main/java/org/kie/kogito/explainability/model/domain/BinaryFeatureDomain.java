@@ -15,14 +15,15 @@
  */
 package org.kie.kogito.explainability.model.domain;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CategoricalFeatureDomain extends AbstractCategoricalFeatureDomain<String> {
+public class BinaryFeatureDomain extends AbstractCategoricalFeatureDomain<ByteBuffer> {
 
-    private CategoricalFeatureDomain(Set<String> categories) {
+    private BinaryFeatureDomain(Set<ByteBuffer> categories) {
         super(categories);
     }
 
@@ -32,15 +33,15 @@ public class CategoricalFeatureDomain extends AbstractCategoricalFeatureDomain<S
      * @param categories A set with all the allowed category values
      * @return A {@link FeatureDomain}
      */
-    public static FeatureDomain<String> create(Set<String> categories) {
-        return new CategoricalFeatureDomain(categories);
+    public static FeatureDomain<ByteBuffer> create(Set<ByteBuffer> categories) {
+        return new BinaryFeatureDomain(categories);
     }
 
-    public static FeatureDomain<String> create(List<String> categories) {
-        return new CategoricalFeatureDomain(new HashSet<>(categories));
+    public static FeatureDomain<ByteBuffer> create(List<ByteBuffer> categories) {
+        return new BinaryFeatureDomain(new HashSet<>(categories));
     }
 
-    public static FeatureDomain<String> create(String... categories) {
-        return new CategoricalFeatureDomain(new HashSet<>(Arrays.asList(categories)));
+    public static FeatureDomain<ByteBuffer> create(ByteBuffer... categories) {
+        return new BinaryFeatureDomain(new HashSet<>(Arrays.asList(categories)));
     }
 }

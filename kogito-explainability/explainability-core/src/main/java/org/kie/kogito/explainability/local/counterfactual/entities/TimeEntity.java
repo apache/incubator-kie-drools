@@ -15,8 +15,12 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
+import org.kie.kogito.explainability.model.FeatureFactory;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
@@ -24,22 +28,23 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 /**
- * Mapping between a Double feature an OptaPlanner {@link PlanningEntity}
+ * Mapping between a Duration feature an OptaPlanner {@link PlanningEntity}
  */
 @PlanningEntity
-public class DoubleEntity extends AbstractNumericEntity<Double> {
+public class TimeEntity extends AbstractAlgebraicEntity<LocalTime> {
 
-    public DoubleEntity() {
+    public TimeEntity() {
         super();
     }
 
-    private DoubleEntity(Double originalValue, String featureName, double minimum, double maximum,
+    private TimeEntity(LocalTime originalValue, String featureName, LocalTime minimum, LocalTime maximum,
             FeatureDistribution featureDistribution, boolean constrained) {
-        super(originalValue, featureName, minimum, maximum, featureDistribution, constrained);
+        super(originalValue, featureName, minimum, maximum, constrained);
+        this.range = (double) (minimum.until(maximum, ChronoUnit.SECONDS));
     }
 
     /**
-     * Creates a {@link DoubleEntity}, taking the original input value from the
+     * Creates a {@link TimeEntity}, taking the original input value from the
      * provided {@link Feature} and specifying whether the entity is constrained or not.
      *
      * @param originalFeature Original input {@link Feature}
@@ -47,12 +52,12 @@ public class DoubleEntity extends AbstractNumericEntity<Double> {
      * @param maximum The end of the domain search space
      * @param constrained Whether this entity's value should be fixed or not
      */
-    public static DoubleEntity from(Feature originalFeature, double minimum, double maximum, boolean constrained) {
+    public static TimeEntity from(Feature originalFeature, LocalTime minimum, LocalTime maximum, boolean constrained) {
         return from(originalFeature, minimum, maximum, null, constrained);
     }
 
     /**
-     * Creates a {@link DoubleEntity}, taking the original input value from the
+     * Creates a {@link TimeEntity}, taking the original input value from the
      * provided {@link Feature} and specifying whether the entity is constrained or not.
      * If the feature distribution is available, it will be used to scale the feature distances.
      *
@@ -62,26 +67,26 @@ public class DoubleEntity extends AbstractNumericEntity<Double> {
      * @param featureDistribution The feature's distribution (as {@link FeatureDistribution}), if available
      * @param constrained Whether this entity's value should be fixed or not
      */
-    public static DoubleEntity from(Feature originalFeature, double minimum, double maximum,
+    public static TimeEntity from(Feature originalFeature, LocalTime minimum, LocalTime maximum,
             FeatureDistribution featureDistribution, boolean constrained) {
-        return new DoubleEntity(originalFeature.getValue().asNumber(), originalFeature.getName(), minimum, maximum,
-                featureDistribution, constrained);
+        return new TimeEntity((LocalTime) originalFeature.getValue().getUnderlyingObject(), originalFeature.getName(), minimum,
+                maximum, featureDistribution, constrained);
     }
 
     /**
-     * Creates an unconstrained {@link DoubleEntity}, taking the original input value from the
+     * Creates an unconstrained {@link TimeEntity}, taking the original input value from the
      * provided {@link Feature}.
      *
      * @param originalFeature feature Original input {@link Feature}
      * @param minimum The start of the domain search space
      * @param maximum The end of the domain search space
      */
-    public static DoubleEntity from(Feature originalFeature, double minimum, double maximum) {
-        return DoubleEntity.from(originalFeature, minimum, maximum, null, false);
+    public static TimeEntity from(Feature originalFeature, LocalTime minimum, LocalTime maximum) {
+        return TimeEntity.from(originalFeature, minimum, maximum, null, false);
     }
 
     /**
-     * Creates an unconstrained {@link DoubleEntity}, taking the original input value from the
+     * Creates an unconstrained {@link TimeEntity}, taking the original input value from the
      * provided {@link Feature}.
      * If the feature distribution is available, it will be used to scale the feature distances.
      *
@@ -90,22 +95,40 @@ public class DoubleEntity extends AbstractNumericEntity<Double> {
      * @param maximum The end of the domain search space
      * @param featureDistribution The feature's distribution (as {@link FeatureDistribution}), if available
      */
-    public static DoubleEntity from(Feature originalFeature, double minimum, double maximum,
+    public static TimeEntity from(Feature originalFeature, LocalTime minimum, LocalTime maximum,
             FeatureDistribution featureDistribution) {
-        return DoubleEntity.from(originalFeature, minimum, maximum, featureDistribution, false);
+        return TimeEntity.from(originalFeature, minimum, maximum, featureDistribution, false);
     }
 
     @ValueRangeProvider(id = "doubleRange")
     public ValueRange<Double> getValueRange() {
-        return ValueRangeFactory.createDoubleValueRange(rangeMinimum, rangeMaximum);
+        final double minimum = LocalTime.MIN.until(rangeMinimum, ChronoUnit.SECONDS);
+        final double maximum = LocalTime.MIN.until(rangeMaximum, ChronoUnit.SECONDS);
+        return ValueRangeFactory.createDoubleValueRange(minimum, maximum);
     }
 
     @PlanningVariable(valueRangeProviderRefs = { "doubleRange" })
-    public Double getProposedValue() {
+    public LocalTime getProposedValue() {
         return proposedValue;
     }
 
-    public void setProposedValue(Double proposedValue) {
+    public void setProposedValue(LocalTime proposedValue) {
         this.proposedValue = proposedValue;
+    }
+
+    @Override
+    public double distance() {
+        return Math.abs(this.proposedValue.until(this.originalValue, ChronoUnit.SECONDS));
+
+    }
+
+    @Override
+    public Feature asFeature() {
+        return FeatureFactory.newTimeFeature(featureName, this.proposedValue);
+    }
+
+    @Override
+    public double similarity() {
+        return 1.0 - Math.abs(this.proposedValue.until(this.originalValue, ChronoUnit.SECONDS)) / this.range;
     }
 }

@@ -21,7 +21,7 @@ import java.util.Set;
  * Information about the search space domain for the model's features.
  */
 
-public interface FeatureDomain {
+public interface FeatureDomain<T> {
 
     /**
      * Return whether this is an empty domain
@@ -49,6 +49,6 @@ public interface FeatureDomain {
      *
      * @return the end value
      */
-    Set<String> getCategories();
+    Set<T> getCategories();
 
 }

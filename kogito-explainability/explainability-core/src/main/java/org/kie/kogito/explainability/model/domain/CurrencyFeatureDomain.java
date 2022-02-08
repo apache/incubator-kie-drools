@@ -16,13 +16,14 @@
 package org.kie.kogito.explainability.model.domain;
 
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CategoricalFeatureDomain extends AbstractCategoricalFeatureDomain<String> {
+public class CurrencyFeatureDomain extends AbstractCategoricalFeatureDomain<Currency> {
 
-    private CategoricalFeatureDomain(Set<String> categories) {
+    private CurrencyFeatureDomain(Set<Currency> categories) {
         super(categories);
     }
 
@@ -32,15 +33,15 @@ public class CategoricalFeatureDomain extends AbstractCategoricalFeatureDomain<S
      * @param categories A set with all the allowed category values
      * @return A {@link FeatureDomain}
      */
-    public static FeatureDomain<String> create(Set<String> categories) {
-        return new CategoricalFeatureDomain(categories);
+    public static FeatureDomain<Currency> create(Set<Currency> categories) {
+        return new CurrencyFeatureDomain(categories);
     }
 
-    public static FeatureDomain<String> create(List<String> categories) {
-        return new CategoricalFeatureDomain(new HashSet<>(categories));
+    public static FeatureDomain<Currency> create(List<Currency> categories) {
+        return new CurrencyFeatureDomain(new HashSet<>(categories));
     }
 
-    public static FeatureDomain<String> create(String... categories) {
-        return new CategoricalFeatureDomain(new HashSet<>(Arrays.asList(categories)));
+    public static FeatureDomain<Currency> create(Currency... categories) {
+        return new CurrencyFeatureDomain(new HashSet<>(Arrays.asList(categories)));
     }
 }

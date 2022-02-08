@@ -15,16 +15,14 @@
  */
 package org.kie.kogito.explainability.model.domain;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
-public class NumericalFeatureDomain implements FeatureDomain {
+public class TimeFeatureDomain extends NumericalFeatureDomain {
 
-    protected final double lowerBound;
-    protected final double upperBound;
-
-    protected NumericalFeatureDomain(double lowerBound, double upperBound) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
+    private TimeFeatureDomain(double lowerBound, double upperBound) {
+        super(lowerBound, upperBound);
     }
 
     /**
@@ -34,8 +32,10 @@ public class NumericalFeatureDomain implements FeatureDomain {
      * @param upperBound The end point of the search space
      * @return A {@link FeatureDomain}
      */
-    public static FeatureDomain create(double lowerBound, double upperBound) {
-        return new NumericalFeatureDomain(lowerBound, upperBound);
+    public static FeatureDomain<LocalTime> create(LocalTime lowerBound, LocalTime upperBound) {
+        final double minimum = LocalTime.MIN.until(lowerBound, ChronoUnit.SECONDS);
+        final double maximum = LocalTime.MIN.until(upperBound, ChronoUnit.SECONDS);
+        return new TimeFeatureDomain(minimum, maximum);
     }
 
     @Override
@@ -54,7 +54,8 @@ public class NumericalFeatureDomain implements FeatureDomain {
     }
 
     @Override
-    public Set<?> getCategories() {
+    public Set<LocalTime> getCategories() {
         return null;
     }
+
 }

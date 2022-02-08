@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +30,7 @@ import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedCu
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedDoubleEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedDurationEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedIntegerEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedObjectEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTextEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTimeEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedURIEntity;
@@ -38,7 +41,13 @@ import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.PredictionFeatureDomain;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.Type;
+import org.kie.kogito.explainability.model.domain.BinaryFeatureDomain;
+import org.kie.kogito.explainability.model.domain.CategoricalFeatureDomain;
+import org.kie.kogito.explainability.model.domain.CurrencyFeatureDomain;
+import org.kie.kogito.explainability.model.domain.DurationFeatureDomain;
 import org.kie.kogito.explainability.model.domain.FeatureDomain;
+import org.kie.kogito.explainability.model.domain.ObjectFeatureDomain;
+import org.kie.kogito.explainability.model.domain.URIFeatureDomain;
 
 public class CounterfactualEntityFactory {
 
@@ -87,28 +96,33 @@ public class CounterfactualEntityFactory {
             if (isConstrained) {
                 entity = FixedBinaryEntity.from(feature);
             } else {
-                throw new IllegalArgumentException("Unsupported feature type: " + feature.getType());
+                entity = BinaryEntity.from(feature, ((BinaryFeatureDomain) featureDomain).getCategories(), isConstrained);
             }
 
         } else if (feature.getType() == Type.URI) {
             if (isConstrained) {
                 entity = FixedURIEntity.from(feature);
             } else {
-                throw new IllegalArgumentException("Unsupported feature type: " + feature.getType());
+                entity = URIEntity.from(feature, ((URIFeatureDomain) featureDomain).getCategories(), isConstrained);
             }
 
         } else if (feature.getType() == Type.TIME) {
             if (isConstrained) {
                 entity = FixedTimeEntity.from(feature);
             } else {
-                throw new IllegalArgumentException("Unsupported feature type: " + feature.getType());
+                final LocalTime lowerBound = LocalTime.MIN.plusSeconds(featureDomain.getLowerBound().longValue());
+                final LocalTime upperBound = LocalTime.MIN.plusSeconds(featureDomain.getUpperBound().longValue());
+                entity = TimeEntity.from(feature, lowerBound, upperBound, isConstrained);
             }
 
         } else if (feature.getType() == Type.DURATION) {
             if (isConstrained) {
                 entity = FixedDurationEntity.from(feature);
             } else {
-                throw new IllegalArgumentException("Unsupported feature type: " + feature.getType());
+                DurationFeatureDomain domain = (DurationFeatureDomain) featureDomain;
+                entity = DurationEntity.from(feature, Duration.of(domain.getLowerBound().longValue(), domain.getUnit()),
+                        Duration.of(domain.getUpperBound().longValue(), domain.getUnit()),
+                        featureDistribution, isConstrained);
             }
 
         } else if (feature.getType() == Type.VECTOR) {
@@ -129,14 +143,21 @@ public class CounterfactualEntityFactory {
             if (isConstrained) {
                 entity = FixedCurrencyEntity.from(feature);
             } else {
-                throw new IllegalArgumentException("Unsupported feature type: " + feature.getType());
+                entity = CurrencyEntity.from(feature, ((CurrencyFeatureDomain) featureDomain).getCategories(), isConstrained);
             }
 
         } else if (feature.getType() == Type.CATEGORICAL) {
             if (isConstrained) {
                 entity = FixedCategoricalEntity.from(feature);
             } else {
-                entity = CategoricalEntity.from(feature, featureDomain.getCategories(), isConstrained);
+                entity = CategoricalEntity.from(feature, ((CategoricalFeatureDomain) featureDomain).getCategories(),
+                        isConstrained);
+            }
+        } else if (feature.getType() == Type.UNDEFINED) {
+            if (isConstrained) {
+                entity = FixedObjectEntity.from(feature);
+            } else {
+                entity = ObjectEntity.from(feature, ((ObjectFeatureDomain) featureDomain).getCategories(), isConstrained);
             }
         } else {
             throw new IllegalArgumentException("Unsupported feature type: " + feature.getType());
@@ -146,7 +167,7 @@ public class CounterfactualEntityFactory {
 
     /**
      * Validation of features for counterfactual entity construction
-     * 
+     *
      * @param feature {@link Feature} to be validated
      */
     public static void validateFeature(Feature feature) {
