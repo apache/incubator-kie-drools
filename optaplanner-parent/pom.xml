@@ -117,7 +117,7 @@
     <module>optaplanner-bom</module>
     <module>build/optaplanner-ide-config</module>
     <module>build/optaplanner-build-parent</module>
-    <module>optaplanner-core</module>
+    <module>core</module>
     <module>optaplanner-persistence</module>
     <module>optaplanner-benchmark</module>
     <module>optaplanner-test</module>

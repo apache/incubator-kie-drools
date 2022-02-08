@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-core-impl</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -191,6 +191,18 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredUsedUndeclaredDependencies>
+            <dependency>org.optaplanner:optaplanner-core-impl:jar</dependency>
+          </ignoredUsedUndeclaredDependencies>
+          <ignoredUnusedDeclaredDependencies>
+            <dependency>org.optaplanner:optaplanner-core:jar</dependency>
+          </ignoredUnusedDeclaredDependencies>
+        </configuration>
       </plugin>
     </plugins>
   </build>

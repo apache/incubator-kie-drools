@@ -40,18 +40,6 @@ that solverConfig XML file would be located at ``$PROJECT_DIR/src/main/resources
 Alternatively, a `SolverFactory` can be created from a ``File`` with ``SolverFactory.createFromXmlFile()``.
 However, for portability reasons, a classpath resource is recommended.
 
-[NOTE]
-====
-On some environments (xref:integration/integration.adoc#integrationWithOSGi[OSGi], xref:integration/integration.adoc#integrationWithJBossModules[JBoss modules], ...), classpath resources (the solver config, domain classes, etc.) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
-In those cases, provide the `ClassLoader` of your classes as a parameter:
-
-[source,java,options="nowrap"]
-----
-       SolverFactory<NQueens> solverFactory = SolverFactory.createFromXmlResource(
-               ".../nqueensSolverConfig.xml", getClass().getClassLoader());
-----
-====
-
 Both a `Solver` and a `SolverFactory` have a generic type called ``Solution_``, which is the class representing a <<planningProblemAndPlanningSolution,planning problem and solution>>.
 
 A solver configuration XML file looks like this:

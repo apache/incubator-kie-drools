@@ -54,6 +54,14 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-constraint-drl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-benchmark</artifactId>
     </dependency>
     <dependency>

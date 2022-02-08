@@ -528,97 +528,6 @@ That component works in Karaf too.
 == Other environments
 
 
-[[integrationWithJBossModules]]
-=== JBoss Modules, WildFly, and JBoss EAP
-
-Because of JBoss Modules' `ClassLoader` magic, provide the `ClassLoader` of your classes xref:planner-configuration/planner-configuration.adoc#solverConfigurationByXML[during the SolverFactory creation],
-so it can find the classpath resources (the solver config, domain classes, etc.) in your jars.
-
-It's also recommended xref:optimization-algorithms/optimization-algorithms.adoc#customThreadFactory[to plug in WildFly's thread factory],
-especially with xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedSolving[multithreaded solving].
-
-
-[[loggingOnWildFlyAndJBossEAP]]
-==== Logging on WildFly and JBoss EAP
-
-To get decent xref:planner-configuration/planner-configuration.adoc#logging[logging of the solver(s)], create a file `src/main/resources/jboss-log4j.xml`
-(so it ends up in the `war` as `WEB-INF/classes/jboss-log4j.xml`) with this content:
-
-[source,xml,options="nowrap"]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
-
-  <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{HH:mm:ss.SSS} %-5p [%t] %m%n"/>
-    </layout>
-  </appender>
-
-  <logger name="org.optaplanner">
-    <level value="debug"/>
-  </logger>
-
-  <root>
-    <level value="warn" />
-    <appender-ref ref="consoleAppender"/>
-  </root>
-
-</log4j:configuration>
-
-----
-
-
-[[skinnyWarOnWildFlyAndJBossEAP]]
-==== Skinny WAR on WildFly and JBoss EAP
-
-To deploy an OptaPlanner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory
-(just like any other dependency).
-However, in this approach the war file can easily grow to several MB in size, which is fine for a one-time deployment,
-but too heavyweight for frequent redeployments (especially over a slow network connection).
-
-The remedy is to use deliver the optaplanner jars in a JBoss module to WildFly and create a skinny war.
-Let's create a module called __org.optaplanner__:
-
-. Navigate to the directory ``${WILDFLY_HOME}/modules/system/layers/base/``. This directory contains the JBoss modules of WildFly. Create directory structure `org/optaplanner/main` for our new module.
-.. Copy `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars into that new directory. Use "mvn dependency:tree" on each optaplanner artifact to discover all dependencies.
-.. Create the file `module.xml` in that new directory. Give it this content:
-+
-[source,xml,options="nowrap"]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<module xmlns="urn:jboss:module:1.3" name="org.optaplanner">
-  <resources>
-    ...
-    <resource-root path="kie-api-${version}.jar"/>
-    ...
-    <resource-root path="optaplanner-core-${version}.jar"/>
-    ...
-    <resource-root path="."/>
-  </resources>
-  <dependencies>
-    <module name="javaee.api"/>
-  </dependencies>
-</module>
-----
-
-. Navigate to the deployed `war` file.
-.. Remove `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars from the `WEB-INF/lib` directory in the `war` file.
-.. Create the file `jboss-deployment-structure.xml` in the `WEB-INF/lib` directory. Give it this content:
-+
-[source,xml,options="nowrap"]
-----
-<?xml version="1.0" encoding="UTF-8" ?>
-<jboss-deployment-structure>
-   <deployment>
-      <dependencies>
-         <module name="org.optaplanner" export="true"/>
-      </dependencies>
-   </deployment>
-</jboss-deployment-structure>
-----
-
-
 [[integrationWithJPMS]]
 === Java platform module system (Jigsaw)
 
@@ -641,47 +550,16 @@ module org.optaplanner.cloudbalancing {
 
 Otherwise OptaPlanner can't reach those classes or files, even if they are exported.
 
-The package `org.xmlpull.v1` is split between dependencies of XStream.
-A workaround is to patch the `xmlpull` module with the `xpp3_min-1.1.4c.jar` artifact.
-
-Since OptaPlanner has no `module-info.java`, it is required to add its `java.scripting` dependency manually to the modulepath with this JVM argument:
-
-[source,bash,options="nowrap"]
-----
---add-modules java.scripting
-----
-
-Drools and XStream require illegal reflective access to some internal Java packages. This can be achieved with the following JVM arguments:
-
-[source,bash,options="nowrap"]
-----
---add-opens java.base/java.lang=org.drools.core \
---add-opens java.base/java.util=xstream \
---add-opens java.base/java.lang.reflect=xstream \
---add-opens java.base/java.text=xstream \
---add-opens java.desktop/java.awt.font=xstream
-----
-
 [[integrationWithOSGi]]
 === OSGi
 
-The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to function properly in an OSGi environment too.
-Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
-
-Because of the OSGi's `ClassLoader` magic, provide the `ClassLoader` of your classes xref:planner-configuration/planner-configuration.adoc#solverConfigurationByXML[during the SolverFactory creation],
-so it can find the classpath resources (the solver config, domain classes, etc.) in your jars.
-
-[NOTE]
-====
-OptaPlanner does _not_ require OSGi.
-It works perfectly fine in a normal Java environment too.
-====
-
+Integration with OSGi is not supported.
 
 [[integrationWithAndroid]]
 === Android
 
-Android is not a complete JVM (because some JDK libraries are missing), but OptaPlanner works on Android with xref:score-calculation/score-calculation.adoc#easyJavaScoreCalculation[easy Java] or xref:score-calculation/score-calculation.adoc#incrementalJavaScoreCalculation[incremental Java] score calculation.
+Android is not a complete JVM (because some JDK libraries are missing),
+but OptaPlanner works on Android with xref:score-calculation/score-calculation.adoc#easyJavaScoreCalculation[easy Java] or xref:score-calculation/score-calculation.adoc#incrementalJavaScoreCalculation[incremental Java] score calculation.
 The Drools rule engine does not work on Android yet,
 so xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] doesn't work on Android and its dependencies need to be excluded.
 
@@ -694,7 +572,6 @@ so xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint 
 dependencies {
     ...
     compile('org.optaplanner:optaplanner-core:...') {
-        exclude group: 'xmlpull'
         exclude group: 'org.drools'
     }
     ...

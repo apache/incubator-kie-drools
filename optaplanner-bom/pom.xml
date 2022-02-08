@@ -36,19 +36,47 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-core</artifactId>
+        <artifactId>optaplanner-core-impl</artifactId>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-core-impl</artifactId>
         <version>${version.org.optaplanner}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-core</artifactId>
+        <artifactId>optaplanner-core-impl</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-core</artifactId>
+        <artifactId>optaplanner-core-impl</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-constraint-drl</artifactId>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-constraint-drl</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-constraint-drl</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-constraint-drl</artifactId>
         <version>${version.org.optaplanner}</version>
         <classifier>javadoc</classifier>
       </dependency>

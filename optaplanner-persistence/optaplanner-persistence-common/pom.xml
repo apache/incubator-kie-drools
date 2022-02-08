@@ -29,11 +29,11 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-core-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-core-impl</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -47,7 +47,7 @@
         <configuration>
           <ignoredUnusedDeclaredDependencies>
             <!-- Uses PlanningEntity in Javadoc. -->
-            <dependency>org.optaplanner:optaplanner-core:jar</dependency>
+            <dependency>org.optaplanner:optaplanner-core-impl:jar</dependency>
           </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>

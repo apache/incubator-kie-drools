@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.optaplanner</groupId>
+    <artifactId>optaplanner-core-parent</artifactId>
+    <version>8.17.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>optaplanner-core</artifactId>
+
+  <name>OptaPlanner core</name>
+  <description>
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    Aggregate dependency to bring in optaplanner-core and all the score directors.
+  </description>
+  <url>https://www.optaplanner.org</url>
+
+  <properties>
+    <java.module.name>org.optaplanner.core</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-constraint-drl</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <skip>true</skip> <!-- This is an empty JAR to drag in dependencies; enforcer makes no sense here. -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

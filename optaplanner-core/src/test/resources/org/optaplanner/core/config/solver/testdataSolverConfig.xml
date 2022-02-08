@@ -1,7 +1,0 @@
-<solver>
-  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
-  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
-  <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/core/api/solver/testdataConstraints.drl</scoreDrl>
-  </scoreDirectorFactory>
-</solver>

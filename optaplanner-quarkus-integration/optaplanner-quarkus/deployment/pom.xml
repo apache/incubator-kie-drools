@@ -53,7 +53,7 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-core-impl</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

@@ -137,9 +137,11 @@
           <ignoredUsedUndeclaredDependencies>
             <dependency>org.springframework.boot:spring-boot</dependency>
             <dependency>org.springframework:*</dependency>
+            <dependency>org.optaplanner:optaplanner-core-impl</dependency>
           </ignoredUsedUndeclaredDependencies>
           <ignoredUnusedDeclaredDependencies>
             <dependency>org.springframework.boot:*</dependency>
+            <dependency>org.optaplanner:optaplanner-core</dependency>
           </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>

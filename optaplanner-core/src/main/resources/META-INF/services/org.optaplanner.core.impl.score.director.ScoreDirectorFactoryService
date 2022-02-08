@@ -1,4 +1,0 @@
-org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactoryService
-org.optaplanner.core.impl.score.director.stream.ConstraintStreamsScoreDirectorFactoryService
-org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactoryService
-org.optaplanner.core.impl.score.director.drl.DrlScoreDirectorFactoryService
