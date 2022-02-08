@@ -713,8 +713,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         if (dataInput != null) {
             forEachNode.setInputRef(dataInput.getLabel());
             forEachNode.addContextVariable(dataInput.getId(), dataInput.getLabel(), fromType(dataInput.getType(), currentThread().getContextClassLoader()));
-
-            forEachNode.getIoSpecification().getDataInputAssociation().stream().filter(e -> e.getSources().get(0).getId().equals(dataInput.getId())).forEach(da -> {
+            forEachNode.getIoSpecification().getDataInputAssociation().stream().filter(e -> !e.getSources().isEmpty() && e.getSources().get(0).getId().equals(dataInput.getId())).forEach(da -> {
                 da.getSources().clear();
                 da.getSources().add(dataInput);
             });
