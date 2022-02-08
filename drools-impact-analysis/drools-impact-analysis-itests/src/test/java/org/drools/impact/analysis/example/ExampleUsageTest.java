@@ -78,25 +78,25 @@ public class ExampleUsageTest {
         Graph graph = converter.toGraph(analysisModel);
 
         // whole graph
-        generateSvg(graph, "example-whole-graph");
+        generateImage(graph, "example-whole-graph");
 
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         // Assume you want to modify RHS of PriceCheck_11
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, "org.drools.impact.analysis.example.PriceCheck_11");
 
         // changed node and impacted nodes
-        generateSvg(impactedSubGraph, "example-impacted-sub-graph");
+        generateImage(impactedSubGraph, "example-impacted-sub-graph");
 
         // whole graph with impact coloring
-        generateSvg(graph, "example-impacted-whole-graph");
+        generateImage(graph, "example-impacted-whole-graph");
 
         // Collapse graph based on rule name prefix (= RuleSet in spreadsheet)
         Graph collapsedGraph = new GraphCollapsionHelper().collapseWithRuleNamePrefix(graph);
-        generateSvg(collapsedGraph, "example-collapsed-graph");
+        generateImage(collapsedGraph, "example-collapsed-graph");
 
         // You can also do impact analysis for the collapsedGraph
         Graph impactedCollapsedSubGraph = impactFilter.filterImpactedNodes(collapsedGraph, "org.drools.impact.analysis.example.PriceCheck");
-        generateSvg(impactedCollapsedSubGraph, "example-impacted-collapsed-sub-graph");
+        generateImage(impactedCollapsedSubGraph, "example-impacted-collapsed-sub-graph");
 
         // Simple text output
         System.out.println("--- toHierarchyText ---");
@@ -113,7 +113,7 @@ public class ExampleUsageTest {
         Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "org.drools.impact.analysis.example.StatusCheck_11");
 
         // target node and impacting nodes
-        generateSvg(impactingSubGraph, "example-impacting-sub-graph");
+        generateImage(impactingSubGraph, "example-impacting-sub-graph");
     }
 
     /*
@@ -137,11 +137,11 @@ public class ExampleUsageTest {
         return kfs;
     }
 
-    protected void generateSvg(Graph graph, String fileName) {
+    protected void generateImage(Graph graph, String fileName) {
         GraphImageGenerator generator = new GraphImageGenerator(fileName);
 
-        //        generator.generateDot(graph);  // DOT : Quick. Can be visualized by other Graphviz tools
+        // generator.generateDot(graph);  // DOT : Quick. Can be visualized by other Graphviz tools
         generator.generateSvg(graph); // SVG : Quicker than PNG
-        //                generator.generatePng(graph); // Slow. Probably not useful for a large number of rules (e.g. more than 200)
+        // generator.generatePng(graph); // Slow. Probably not useful for a large number of rules (e.g. more than 200)
     }
 }

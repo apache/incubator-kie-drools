@@ -54,8 +54,6 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
         assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.POSITIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -98,8 +96,6 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertLink(graph, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
         assertLink(graph, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
 
-        generatePng(graph);
-
         ModelToGraphConverter converterPositiveOnly = new ModelToGraphConverter(true);
         Graph graph2 = converterPositiveOnly.toGraph(analysisModel);
 
@@ -107,8 +103,6 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertLink(graph2, "mypkg.R1", "mypkg.R3");
         assertLink(graph2, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
         assertLink(graph2, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
-
-        generatePng(graph2, "_positiveOnly");
     }
 
     @Test
@@ -133,8 +127,6 @@ public class BasicGraphTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
-
-        generatePng(graph);
     }
 
     @Test
@@ -160,8 +152,6 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
         assertLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -185,8 +175,6 @@ public class BasicGraphTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2");
-
-        generatePng(graph);
     }
 
     @Test
@@ -210,8 +198,6 @@ public class BasicGraphTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
-
-        generatePng(graph);
     }
 
     @Test
@@ -240,8 +226,6 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
         assertLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
         assertLink(graph, "mypkg.R2", "mypkg.R2", ReactivityType.NEGATIVE);
-
-        generatePng(graph);
     }
 
     @Test
@@ -272,8 +256,6 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
         assertLink(graph, "mypkg.R1", "mypkg.R3");
-
-        generatePng(graph);
     }
 
     @Test
@@ -304,7 +286,5 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
         assertLink(graph, "mypkg.R1", "mypkg.R3");
-
-        generatePng(graph);
     }
 }

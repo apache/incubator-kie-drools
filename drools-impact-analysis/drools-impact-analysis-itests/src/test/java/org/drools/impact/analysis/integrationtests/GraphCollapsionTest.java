@@ -106,8 +106,6 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
         Graph collapsedGraph = new GraphCollapsionHelper().collapseWithRuleNamePrefix(graph);
 
-        generatePng(collapsedGraph);
-
         assertEquals(3, collapsedGraph.getNodeMap().size());
 
         assertLink(collapsedGraph, "mypkg.CustomerCheck", "mypkg.PriceCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
@@ -120,10 +118,6 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(collapsedGraph, changedNode);
-
-        generatePng(impactedSubGraph, "_impactedSubGraph");
-
-        generatePng(collapsedGraph, "_impacted");
 
         assertNull(impactedSubGraph.getNodeMap().get("mypkg.CustomerCheck"));
         assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg.PriceCheck").getStatus());
@@ -146,8 +140,6 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
         Graph collapsedGraph = new GraphCollapsionHelper().collapseWithRuleNamePrefix(graph);
 
-        generatePng(collapsedGraph, "_collapsed");
-
         assertEquals(3, collapsedGraph.getNodeMap().size());
 
         assertLink(collapsedGraph, "mypkg2.CustomerCheck", "mypkg2.PriceCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
@@ -160,10 +152,6 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(collapsedGraph, changedNode);
-
-        generatePng(impactedSubGraph, "_impactedSubGraph");
-
-        generatePng(collapsedGraph, "_impacted");
 
         assertNull(impactedSubGraph.getNodeMap().get("mypkg2.CustomerCheck"));
         assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg2.PriceCheck").getStatus());

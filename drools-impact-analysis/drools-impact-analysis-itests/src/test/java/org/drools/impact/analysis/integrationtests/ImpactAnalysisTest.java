@@ -23,7 +23,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ImpactAnalysisHelper;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
-import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.Node.Status;
 import org.drools.impact.analysis.graph.TextReporter;
 import org.drools.impact.analysis.integrationtests.domain.Order;
@@ -99,15 +98,9 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        generatePng(graph, "_all");
-
         // View rules which are impacted by R2
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R2");
-
-        generatePng(impactedSubGraph, "_impactedSubGraph");
-
-        generatePng(graph, "_impacted");
 
         assertNull(impactedSubGraph.getNodeMap().get("mypkg.R1"));
         assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg.R2").getStatus());
@@ -117,9 +110,7 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R6").getStatus());
 
         // TextReporter test
-        System.out.println("--- toHierarchyText ---");
         String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
-        System.out.println(hierarchyText);
         List<String> lines = Arrays.asList(hierarchyText.split(System.lineSeparator()));
         Assertions.assertThat(lines).containsExactlyInAnyOrder("R2[*]",
                                                                INDENT + "R3[+]",
@@ -127,9 +118,7 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
                                                                INDENT + INDENT + "R5[+]",
                                                                INDENT + INDENT + INDENT + "(R3)");
 
-        System.out.println("--- toFlatText ---");
         String flatText = TextReporter.toFlatText(impactedSubGraph);
-        System.out.println(flatText);
         List<String> lines2 = Arrays.asList(flatText.split(System.lineSeparator()));
         Assertions.assertThat(lines2).containsExactlyInAnyOrder("R2[*]",
                                                                 "R3[+]",
@@ -148,10 +137,6 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "mypkg.R5");
 
-        generatePng(impactingSubGraph, "_impactingSubGraph");
-
-        generatePng(graph, "_impacting");
-
         assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R1").getStatus());
         assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R2").getStatus());
         assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R3").getStatus());
@@ -160,9 +145,7 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         assertNull(impactingSubGraph.getNodeMap().get("mypkg.R6"));
 
         // TextReporter test
-        System.out.println("--- toHierarchyText ---");
         String hierarchyText = TextReporter.toHierarchyText(impactingSubGraph);
-        System.out.println(hierarchyText);
         List<String> lines = Arrays.asList(hierarchyText.split(System.lineSeparator()));
         Assertions.assertThat(lines).containsExactlyInAnyOrder("R1[!]",
                                                                INDENT + "R3[!]",
@@ -173,9 +156,7 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
                                                                "R4[!]",
                                                                INDENT + "(R5)");
 
-        System.out.println("--- toFlatText ---");
         String flatText = TextReporter.toFlatText(impactingSubGraph);
-        System.out.println(flatText);
         List<String> lines2 = Arrays.asList(flatText.split(System.lineSeparator()));
         Assertions.assertThat(lines2).containsExactlyInAnyOrder("R1[!]",
                                                                 "R2[!]",

@@ -53,19 +53,23 @@ public class AbstractGraphTest {
         return testName.getMethodName();
     }
 
+    // Keep this method for test convenience
     protected void generatePng(Graph graph) {
         generatePng(graph, "");
     }
 
+    // Keep this method for test convenience
     protected void generateSvg(Graph graph) {
         generateSvg(graph, "");
     }
 
+    // Keep this method for test convenience
     protected void generatePng(Graph graph, String suffix) {
         GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName() + suffix);
         generator.generatePng(graph);
     }
 
+    // Keep this method for test convenience
     protected void generateSvg(Graph graph, String suffix) {
         GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName() + suffix);
         generator.generateSvg(graph);
