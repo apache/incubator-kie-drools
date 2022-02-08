@@ -15,10 +15,13 @@
  */
 package org.kie.kogito.serverless.workflow.parser;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 
@@ -30,6 +33,7 @@ public class ParserContext {
     private final RuleFlowProcessFactory factory;
     private final NodeIdGenerator idGenerator;
     private final KogitoBuildContext context;
+    private final Collection<GeneratedFile> generatedFiles;
 
     private boolean isCompensation;
 
@@ -37,6 +41,7 @@ public class ParserContext {
         this.idGenerator = idGenerator;
         this.factory = factory;
         this.context = context;
+        this.generatedFiles = new ArrayList<>();
     }
 
     public void add(StateHandler<?> stateHandler) {
@@ -45,6 +50,14 @@ public class ParserContext {
 
     public StateHandler<?> getStateHandler(StateHandler<?> stateHandler) {
         return getStateHandler(stateHandler.getState().getTransition());
+    }
+
+    public void addGeneratedFile(GeneratedFile file) {
+        generatedFiles.add(file);
+    }
+
+    public Collection<GeneratedFile> generatedFiles() {
+        return generatedFiles;
     }
 
     public StateHandler<?> getStateHandler(Transition transition) {

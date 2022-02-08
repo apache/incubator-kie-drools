@@ -13,6 +13,7 @@
       "vasco": "txakurra"
     }
   },
+  "dataInputSchema" : "schema/expression.json",
   "start": "squareState",
   "functions": [
     {

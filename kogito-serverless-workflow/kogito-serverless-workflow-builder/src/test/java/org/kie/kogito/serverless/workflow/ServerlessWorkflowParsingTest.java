@@ -715,8 +715,8 @@ public class ServerlessWorkflowParsingTest {
         workflow.setStates(Collections.singletonList(startState));
         workflow.setStart(start);
         ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
-        Process process = parser.getProcess();
-        assertSame(process, parser.getProcess());
+        Process process = parser.getProcessInfo().info();
+        assertSame(process, parser.getProcessInfo().info());
         assertEquals(ServerlessWorkflowParser.DEFAULT_NAME, process.getName());
         assertEquals(ServerlessWorkflowParser.DEFAULT_VERSION, process.getVersion());
         assertEquals(ServerlessWorkflowParser.DEFAULT_PACKAGE, process.getPackageName());
@@ -728,6 +728,6 @@ public class ServerlessWorkflowParsingTest {
                 new InputStreamReader(this.getClass().getResourceAsStream(workflowLocation)),
                 format,
                 JavaKogitoBuildContext.builder().build());
-        return parser.getProcess();
+        return parser.getProcessInfo().info();
     }
 }

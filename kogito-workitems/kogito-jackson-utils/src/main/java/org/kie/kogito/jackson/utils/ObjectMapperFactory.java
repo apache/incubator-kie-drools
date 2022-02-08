@@ -26,8 +26,7 @@ public class ObjectMapperFactory {
     private static ObjectMapper objectMapper = initObjectMapper();
 
     private static ObjectMapper initObjectMapper() {
-        TypeFactory typeFactory = TypeFactory.defaultInstance().withClassLoader(Thread.currentThread().getContextClassLoader());
-        return new ObjectMapper().setTypeFactory(typeFactory);
+        return new ObjectMapper().setTypeFactory(TypeFactory.defaultInstance().withClassLoader(Thread.currentThread().getContextClassLoader())).findAndRegisterModules();
     }
 
     public static ObjectMapper get() {

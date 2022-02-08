@@ -32,8 +32,9 @@ import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DataDefinition;
-import org.kie.api.definition.process.Process;
+import org.kie.kogito.codegen.api.GeneratedInfo;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
@@ -59,7 +60,7 @@ public class ServerlessWorkflowParser {
 
     private NodeIdGenerator idGenerator = DefaultNodeIdGenerator.get();
     private Workflow workflow;
-    private Process process;
+    private GeneratedInfo<KogitoWorkflowProcess> processInfo;
     private KogitoBuildContext context;
 
     public static ServerlessWorkflowParser of(Reader workflowFile, String workflowFormat, KogitoBuildContext context) throws IOException {
@@ -80,7 +81,7 @@ public class ServerlessWorkflowParser {
         this.context = context;
     }
 
-    private Process parseProcess() {
+    private GeneratedInfo<KogitoWorkflowProcess> parseProcess() {
         String workflowStartStateName = workflow.getStart().getStateName();
         if (workflowStartStateName == null || workflowStartStateName.trim().isEmpty()) {
             throw new IllegalArgumentException("workflow does not define a starting state");
@@ -110,14 +111,14 @@ public class ServerlessWorkflowParser {
             factory.metaData(Metadata.COMPENSATION, true);
             factory.addCompensationContext(workflow.getId());
         }
-        return factory.validate().getProcess();
+        return new GeneratedInfo<>(factory.validate().getProcess(), parserContext.generatedFiles());
     }
 
-    public Process getProcess() {
-        if (process == null) {
-            process = parseProcess();
+    public GeneratedInfo<KogitoWorkflowProcess> getProcessInfo() {
+        if (processInfo == null) {
+            processInfo = parseProcess();
         }
-        return process;
+        return processInfo;
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> SubProcessNodeFactory<T> subprocessNode(SubProcessNodeFactory<T> nodeFactory, String inputVar, String outputVar) {

@@ -52,9 +52,9 @@ import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.kie.kogito.codegen.api.GeneratedInfo;
 import org.kie.kogito.codegen.api.context.ContextAttributesConstants;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
@@ -117,7 +117,7 @@ public class ProcessCodegen extends AbstractGenerator {
     public static ProcessCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         Map<String, String> processSVGMap = new HashMap<>();
         boolean useSvgAddon = context.getAddonsConfig().useProcessSVG();
-        final List<Process> processes = resources.stream()
+        final List<GeneratedInfo<KogitoWorkflowProcess>> processes = resources.stream()
                 .map(CollectedResource::resource)
                 .flatMap(resource -> {
                     if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(resource.getSourcePath()::endsWith)) {
@@ -126,7 +126,7 @@ public class ProcessCodegen extends AbstractGenerator {
                             if (useSvgAddon && resource instanceof FileSystemResource) {
                                 processSVG((FileSystemResource) resource, resources, p, processSVGMap);
                             }
-                            return p.stream();
+                            return p.stream().map(KogitoWorkflowProcess.class::cast).map(GeneratedInfo::new);
                         } catch (ValidationException e) {
                             //TODO: add all errors during parsing phase in the ValidationContext itself
                             ValidationContext.get()
@@ -171,8 +171,10 @@ public class ProcessCodegen extends AbstractGenerator {
         }
     }
 
-    private static Process validate(Process process) {
+    private static GeneratedInfo<KogitoWorkflowProcess> validate(GeneratedInfo<KogitoWorkflowProcess> processInfo) {
+        Process process = processInfo.info();
         try {
+
             ProcessValidatorRegistry.getInstance().getValidator(process, process.getResource()).validate(process);
         } catch (ValidationException e) {
             //TODO: add all errors during parsing phase in the ValidationContext itself
@@ -180,7 +182,7 @@ public class ProcessCodegen extends AbstractGenerator {
                     .add(process.getId(), e.getErrors())
                     .putException(e);
         }
-        return process;
+        return processInfo;
     }
 
     private static void processSVG(FileSystemResource resource, Collection<CollectedResource> resources,
@@ -215,46 +217,19 @@ public class ProcessCodegen extends AbstractGenerator {
         }
     }
 
-    private static ProcessCodegen ofProcesses(KogitoBuildContext context, List<Process> processes) {
+    private static ProcessCodegen ofProcesses(KogitoBuildContext context, List<GeneratedInfo<KogitoWorkflowProcess>> processes) {
         return new ProcessCodegen(context, processes);
     }
 
-    // used on tests only, do not expose
-    static List<Process> parseProcesses(Collection<File> processFiles) {
-        List<Process> processes = new ArrayList<>();
-        for (File processSourceFile : processFiles) {
-            try {
-                FileSystemResource r = new FileSystemResource(processSourceFile);
-                if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(processSourceFile.getPath()::endsWith)) {
-                    processes.addAll(parseProcessFile(r));
-                } else {
-                    SUPPORTED_SW_EXTENSIONS.entrySet()
-                            .stream()
-                            .filter(e -> processSourceFile.getPath().endsWith(e.getKey()))
-                            .forEach(e -> processes.add(parseWorkflowFile(r, e.getValue(), JavaKogitoBuildContext.builder().build())));
-                }
-                if (processes.isEmpty()) {
-                    throw new IllegalArgumentException("Unable to process file with unsupported extension: " + processSourceFile);
-                }
-            } catch (RuntimeException e) {
-                throw new ProcessCodegenException(processSourceFile.getAbsolutePath(), e);
-            }
-        }
-        return processes;
-    }
-
-    private static Process parseWorkflowFile(Resource r, String parser, KogitoBuildContext context) {
+    protected static GeneratedInfo<KogitoWorkflowProcess> parseWorkflowFile(Resource r, String parser, KogitoBuildContext context) {
         try (Reader reader = r.getReader()) {
-            ServerlessWorkflowParser workflowParser = ServerlessWorkflowParser.of(reader, parser, context);
-            return workflowParser.getProcess();
-        } catch (IOException e) {
+            return ServerlessWorkflowParser.of(reader, parser, context).getProcessInfo();
+        } catch (IOException | RuntimeException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
-        } catch (RuntimeException e) {
-            throw new ProcessCodegenException(r.getSourcePath(), e);
         }
     }
 
-    private static Collection<Process> parseProcessFile(Resource r) {
+    protected static Collection<Process> parseProcessFile(Resource r) {
         try (Reader reader = r.getReader()) {
             XmlProcessReader xmlReader = new XmlProcessReader(
                     BPMN_SEMANTIC_MODULES,
@@ -268,14 +243,15 @@ public class ProcessCodegen extends AbstractGenerator {
     private final Map<String, KogitoWorkflowProcess> processes;
     private final Set<GeneratedFile> generatedFiles = new HashSet<>();
 
-    public ProcessCodegen(KogitoBuildContext context, Collection<? extends Process> processes) {
+    protected ProcessCodegen(KogitoBuildContext context, Collection<GeneratedInfo<KogitoWorkflowProcess>> processes) {
         super(context, GENERATOR_NAME, new ProcessConfigGenerator(context));
         this.processes = new HashMap<>();
-        for (Process process : processes) {
-            if (this.processes.containsKey(process.getId())) {
-                throw new ProcessCodegenException(format("Duplicated process with id %s found in the project, please review .bpmn files", process.getId()));
+        for (GeneratedInfo<KogitoWorkflowProcess> process : processes) {
+            if (this.processes.containsKey(process.info().getId())) {
+                throw new ProcessCodegenException(format("Duplicated process with id %s found in the project, please review .bpmn files", process.info().getId()));
             }
-            this.processes.put(process.getId(), (KogitoWorkflowProcess) process);
+            generatedFiles.addAll(process.files());
+            this.processes.put(process.info().getId(), process.info());
         }
     }
 
@@ -554,6 +530,10 @@ public class ProcessCodegen extends AbstractGenerator {
     @Override
     public boolean isEmpty() {
         return processes.isEmpty();
+    }
+
+    public Collection<Process> processes() {
+        return Collections.unmodifiableCollection(processes.values());
     }
 
     @Override

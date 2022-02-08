@@ -23,12 +23,13 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 @QuarkusIntegrationTest
 class ExpressionRestIT {
 
     @Test
-    void testErrorRest() {
+    void testExpressionRest() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -40,5 +41,16 @@ class ExpressionRestIT {
                 .body("workflowdata.number", nullValue())
                 .body("workflowdata.message", is("my name is javierito and in my native language dog is translated to perro"))
                 .body("workflowdata.discardedResult", nullValue());
+    }
+
+    @Test
+    void testExpressionValidation() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"workflowdata\":{\"numbers\":[{\"x\":\"abcdedf\", \"y\": 1},{\"x\":4, \"y\": 3}]}}").when()
+                .post("/expression")
+                .then()
+                .statusCode(greaterThanOrEqualTo(400));
     }
 }

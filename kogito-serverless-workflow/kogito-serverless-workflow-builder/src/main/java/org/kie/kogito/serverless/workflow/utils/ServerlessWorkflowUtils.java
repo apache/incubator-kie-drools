@@ -15,9 +15,16 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.serverless.workflow.io.URIContentLoader;
+import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,14 +36,14 @@ import io.serverlessworkflow.api.mapper.YamlObjectMapper;
 
 public class ServerlessWorkflowUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
+
     public static final String DEFAULT_WORKFLOW_FORMAT = "json";
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
     public static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = "functions.";
     public static final String APP_PROPERTIES_STATES_BASE = "states.";
     public static final String OPENAPI_OPERATION_SEPARATOR = "#";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
 
     private ServerlessWorkflowUtils() {
     }
@@ -64,7 +71,7 @@ public class ServerlessWorkflowUtils {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException ex) {
-            LOGGER.warn("Error converting {} to number", value, ex);
+            logger.warn("Error converting {} to number", value, ex);
             return null;
         }
     }
@@ -79,7 +86,7 @@ public class ServerlessWorkflowUtils {
                 return propValue.get();
             }
         }
-        LOGGER.warn("Could not resolve function metadata: {}", metadataKey);
+        logger.warn("Could not resolve function metadata: {}", metadataKey);
         return defaultValue;
     }
 
@@ -112,5 +119,16 @@ public class ServerlessWorkflowUtils {
      */
     public static boolean isOpenApiOperation(FunctionDefinition function) {
         return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OPENAPI_OPERATION_SEPARATOR);
+    }
+
+    public static void processResourceFile(URI uri, ParserContext context) {
+        URIContentLoader contentLoader = URIContentLoaderFactory.buildLoader(uri, context.getContext().getClassLoader());
+        try {
+            context.addGeneratedFile(
+                    new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(), contentLoader.toBytes()));
+        } catch (IOException io) {
+            // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime) 
+            logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);
+        }
     }
 }
