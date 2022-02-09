@@ -156,10 +156,10 @@
     <module>drools-kiesession</module>
     <module>drools-ecj</module>
     <module>drools-drl-ast</module>
-    <module>drools-compiler-formats</module>
-    <module>drools-compiler-extensions</module>
+    <module>drools-drl-parser</module>
+    <module>drools-drl-extensions</module>
+    <module>drools-builder-extensions</module>
     <module>drools-compiler-builder-shared</module>
-    <module>drools-compiler-lang</module>
     <module>drools-compiler</module>
     <module>drools-mvel</module>
     <module>drools-xml-support</module>
