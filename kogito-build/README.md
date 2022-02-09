@@ -41,11 +41,30 @@ Kogito.
 
 > **Note**: End users should not use it directly in their projects.
 
-## [Kogito Build Parent BOM](kogito-build-parent)
+## [Kogito Build No BOM Parent](kogito-build-no-bom-parent)
 
 Main entry point for build specific configuration. Every plugin, profile, and any other build configuration should be
-added here. Imports `org.kie.kogito:kogito-bom` and inherit the dependency configuration
-from `org.kie.kogito:kogito-dependencies-bom`. This means that every internal module inherits from it.
+added here. Inherits the dependency configuration
+from `org.kie.kogito:kogito-dependencies-bom`.
+
+Does not import any Kogito specific BOM, this allows for better control over the Dependency Management for example
+in case of Quarkus Platform.
+
+For internal modules it is more convenient to inherit from **Kogito Build Parent** (below) which brings in the Dependency
+Management of Kogito artifacts.
+
+Direct usage of this module is for example in `org.kie.kogito.examples:kogito-examples`, where BOM imports are
+handled explicitly.
+
+> **Note**: End users should not use it directly in their projects.
+
+## [Kogito Build Parent](kogito-build-parent)
+
+Inherits the dependency configuration
+from `org.kie.kogito:kogito-build-no-bom-parent` and on top of that imports `org.kie.kogito:kogito-bom`.
+
+That means that every internal module inherits from it, because this parent project takes care of Dependency Management
+as opposed to **Kogito Build No BOM Parent** (above).
 
 > **Note**: End users should not use it directly in their projects.
 
