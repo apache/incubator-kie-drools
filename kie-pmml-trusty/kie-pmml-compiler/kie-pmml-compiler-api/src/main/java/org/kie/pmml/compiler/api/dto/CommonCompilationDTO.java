@@ -116,8 +116,6 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
             targetDataField = null;
         }
         opType = targetDataField != null ? targetDataField.getOpType() : null;
-//        miningFields = ModelUtils.convertToKieMiningFieldList(getMiningSchema(),  this.fields);
-//        outputFields = ModelUtils.convertToKieOutputFieldList(getOutput(),  this.fields);
     }
 
     /**

@@ -116,7 +116,6 @@ public class JavaParserUtils {
         return StaticJavaParser.parseBlock(block);
     }
 
-
     public static BlockStmt parseConstructorBlock(final String block) {
         // trick due to https://github.com/javaparser/javaparser/issues/2376
         ConstructorDeclaration cd = (ConstructorDeclaration)

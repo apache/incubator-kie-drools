@@ -49,15 +49,6 @@ public class OutputField implements Serializable {
         this.allowedValues = allowedValues;
     }
 
-    public void puppa() {
-        new org.kie.pmml.api.models.OutputField("xQgtuy",
-                                                org.kie.pmml.api.enums.OP_TYPE.ORDINAL,
-                                                org.kie.pmml.api.enums.DATA_TYPE.TIME,
-                                                "oFZDkZ",
-                                                org.kie.pmml.api.enums.RESULT_FEATURE.RESIDUAL,
-                                                java.util.Arrays.asList("Thu Feb 03 16:29:35 CET 2022", "Thu Feb 03 16:29:35 CET 2022", "Thu Feb 03 16:29:35 CET 2022"));
-    }
-
     public String getName() {
         return name;
     }
