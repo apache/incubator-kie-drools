@@ -17,6 +17,7 @@ package org.drools.model.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -24,6 +25,8 @@ import java.util.stream.Stream;
 
 import org.drools.model.Prototype;
 import org.drools.model.PrototypeFact;
+
+import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class PrototypeImpl implements Prototype {
 
@@ -34,13 +37,14 @@ public class PrototypeImpl implements Prototype {
     public PrototypeImpl( String name ) {
         this(name, new Field[0]);
     }
+
     public PrototypeImpl( String name, String... fields ) {
         this(name, Stream.of(fields).map(FieldImpl::new).toArray(Field[]::new));
     }
 
     public PrototypeImpl( String name, Field... fields ) {
         int lastDot = name.lastIndexOf('.');
-        this.pkg = lastDot > 0 ? name.substring(0, lastDot) : "defaultpkg";
+        this.pkg = lastDot > 0 ? name.substring(0, lastDot) : DEFAULT_PACKAGE;
         this.name = lastDot > 0 ? name.substring(lastDot+1) : name;
         if (fields != null && fields.length > 0) {
             this.fields = new TreeMap<>();
@@ -70,6 +74,19 @@ public class PrototypeImpl implements Prototype {
     @Override
     public Field getField(String name) {
         return fields.get(name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PrototypeImpl prototype = (PrototypeImpl) o;
+        return pkg.equals(prototype.pkg) && name.equals(prototype.name) && fields.equals(prototype.fields);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pkg, name, fields);
     }
 
     public static class FieldImpl implements Prototype.Field {

@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -1889,7 +1890,7 @@ public class PropertySpecificTest {
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {
         List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
-            if ( n.getObjectType().getClassType().getSimpleName().equals( nodeName ) ) {
+            if (((ClassObjectType) n.getObjectType()).getClassType().getSimpleName().equals( nodeName ) ) {
                 return n;
             }
         }

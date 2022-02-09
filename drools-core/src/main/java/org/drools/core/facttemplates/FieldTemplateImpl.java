@@ -23,33 +23,24 @@ import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
 
-public class FieldTemplateImpl
-    implements
-    FieldTemplate, Externalizable {
+public class FieldTemplateImpl implements FieldTemplate, Externalizable {
 
     private static final long serialVersionUID = 510l;
 
     private String      name;
-    private int         index;
     private ValueType   valueType;
 
     public FieldTemplateImpl() {
 
     }
 
-    public FieldTemplateImpl(String name, int index) {
-        this(name, index, null);
-    }
-
-    public FieldTemplateImpl(String name, int index, Class clazz) {
+    public FieldTemplateImpl(String name, Class clazz) {
         this.name = name;
-        this.index = index;
         this.valueType = clazz != null ? ValueType.OBJECT_TYPE : ValueType.determineValueType( clazz );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name    = (String)in.readObject();
-        index   = in.readInt();
         valueType   = (ValueType)in.readObject();
         if (valueType != null)
             valueType   = ValueType.determineValueType(valueType.getClassType());
@@ -57,12 +48,7 @@ public class FieldTemplateImpl
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(name);
-        out.writeInt(index);
         out.writeObject(valueType);
-    }
-
-    public int getIndex() {
-        return this.index;
     }
 
     public String getName() {
@@ -76,7 +62,6 @@ public class FieldTemplateImpl
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.index;
         result = PRIME * result + this.name.hashCode();
         result = PRIME * result + this.valueType.hashCode();
         return result;
@@ -93,7 +78,7 @@ public class FieldTemplateImpl
 
         final FieldTemplateImpl other = (FieldTemplateImpl) object;
 
-        return this.index == other.index && this.name.equals( other.name ) && this.valueType.equals( other.valueType );
+        return this.name.equals( other.name ) && this.valueType.equals( other.valueType );
     }
 
 }

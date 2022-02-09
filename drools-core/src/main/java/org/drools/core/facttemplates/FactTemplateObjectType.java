@@ -19,7 +19,7 @@ package org.drools.core.facttemplates;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.spi.ObjectType;
@@ -128,11 +128,6 @@ public class FactTemplateObjectType
     }
 
     @Override
-    public Class<?> getClassType() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Object getTypeKey() {
         return factTemplate.getName();
     }
@@ -152,7 +147,7 @@ public class FactTemplateObjectType
         return factTemplate.getFieldTemplate(name) != null;
     }
 
-    public List<String> getFieldNames() {
+    public Collection<String> getFieldNames() {
         return factTemplate.getFieldNames();
     }
 

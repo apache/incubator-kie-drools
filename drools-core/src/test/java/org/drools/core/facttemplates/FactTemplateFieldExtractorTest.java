@@ -32,32 +32,21 @@ public class FactTemplateFieldExtractorTest {
     public void testExtractor() {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
 
-        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                                0,
-                                                                String.class );
-        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                                 1,
-                                                                 Integer.class );
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name", String.class );
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price", Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        final FactTemplate cheese = new FactTemplateImpl( pkg,
-                                                          "Cheese",
-                                                          fields );
+        final FactTemplate cheese = new FactTemplateImpl( pkg, "Cheese", fields );
 
-        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese,
-                                                                      0 );
-        final InternalReadAccessor extractPrice = new FactTemplateFieldExtractor( cheese,
-                                                                       1 );
+        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese, "name" );
+        final InternalReadAccessor extractPrice = new FactTemplateFieldExtractor( cheese, "price" );
 
         final Fact stilton = cheese.createFact();
-        stilton.setFieldValue( "name",
-                               "stilton" );
+        stilton.setFieldValue( "name", "stilton" );
         stilton.setFieldValue( "price", 200 );
 
-        assertEquals( "stilton",
-                      extractName.getValue( null, stilton ) );
+        assertEquals( "stilton", extractName.getValue( null, stilton ) );
 
-        assertEquals( new Integer( 200 ),
-                      extractPrice.getValue( null, stilton ) );
+        assertEquals( 200, extractPrice.getValue( null, stilton ) );
 
         assertFalse( extractName.isNullValue( null, stilton ) );
         
@@ -67,12 +56,10 @@ public class FactTemplateFieldExtractorTest {
         assertFalse( extractPrice.isNullValue( null, stilton ) );
         
         final Fact brie = cheese.createFact();
-        brie.setFieldValue( "name",
-                            "brie" );
+        brie.setFieldValue( "name", "brie" );
         brie.setFieldValue( "price", 55 );
 
-        assertEquals( "brie",
-                      extractName.getValue( null, brie ) );
+        assertEquals( "brie", extractName.getValue( null, brie ) );
 
         assertEquals( 55, extractPrice.getValue( null, brie ) );
         
@@ -88,19 +75,14 @@ public class FactTemplateFieldExtractorTest {
     public void testDeclaration() {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
 
-        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                                0,
-                                                                String.class );
-        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                                 1,
-                                                                 Integer.class );
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name", String.class );
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price", Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese = new FactTemplateImpl( pkg,
                                                           "Cheese",
                                                           fields );
 
-        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese,
-                                                                      0 );
+        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese, "name" );
 
         final Pattern pattern = new Pattern( 0,
                                           new FactTemplateObjectType( cheese ) );

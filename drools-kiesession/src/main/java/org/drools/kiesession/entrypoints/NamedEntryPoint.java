@@ -20,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -288,7 +289,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         boolean isPropertyReactive = true;
 
         if (object instanceof Fact) {
-            accessibleProperties = ((Fact) object).getFactTemplate().getFieldNames();
+            accessibleProperties = new ArrayList<>(((Fact) object).getFactTemplate().getFieldNames());
             modifiedTypeName = ((Fact) object).getFactTemplate().getName();
             isPropertyReactive = !accessibleProperties.isEmpty();
         } else {

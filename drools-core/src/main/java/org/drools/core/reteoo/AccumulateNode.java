@@ -97,7 +97,7 @@ public class AccumulateNode extends BetaNode {
         BitMask leftMask = getLeftInferredMask();
         ObjectType leftObjectType = leftInput.getObjectType();
         if (leftObjectType instanceof ClassObjectType ) {
-            TypeDeclaration typeDeclaration = ruleBase.getExactTypeDeclaration( leftObjectType.getClassType() );
+            TypeDeclaration typeDeclaration = ruleBase.getExactTypeDeclaration(((ClassObjectType) leftObjectType).getClassType() );
             if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
                 List<String> accessibleProperties = typeDeclaration.getAccessibleProperties();
                 for ( Declaration decl : accumulate.getRequiredDeclarations() ) {

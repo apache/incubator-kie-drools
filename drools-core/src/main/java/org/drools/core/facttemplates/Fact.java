@@ -18,13 +18,9 @@ package org.drools.core.facttemplates;
 
 public interface Fact {
 
-    Object getFieldValue(int index);
-
     Object getFieldValue(String name);
 
     void setFieldValue(String name, Object value);
-
-    void setFieldValue(int index, Object value);
 
     FactTemplate getFactTemplate();
 }

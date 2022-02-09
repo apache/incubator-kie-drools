@@ -185,6 +185,11 @@ public class ClassObjectType
     }
 
     @Override
+    public boolean isTemplate() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "[ClassObjectType " + (this.isEvent ? "event=" : "class=") + getClassType().getName() + "]";
     }

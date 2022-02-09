@@ -29,7 +29,6 @@ import java.util.function.Function;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
@@ -40,6 +39,7 @@ import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;
+import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.abductive.Abductive;
 
 public class AbductiveQuery extends QueryImpl implements Externalizable, AcceptsClassObjectType {
@@ -110,7 +110,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
                 availableArgs.add( decl.getDeclarationClass() );
             }
         }
-        Class klass = returnType.getClassType();
+        Class klass = ((ClassObjectType) returnType).getClassType();
         while ( cachedConstructor == null ) {
             try {
                 cachedConstructor = klass.getConstructor( availableArgs.toArray( new Class[ availableArgs.size() ] ) );
@@ -151,7 +151,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
     }
 
     private Constructor getConstructor() {
-        if (cachedConstructor == null || cachedConstructor.getDeclaringClass() != returnType.getClassType()) {
+        if (cachedConstructor == null || cachedConstructor.getDeclaringClass() != ((ClassObjectType) returnType).getClassType()) {
             try {
                 findConstructor( null );
             } catch ( NoSuchMethodException e ) {

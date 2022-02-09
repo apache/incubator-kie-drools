@@ -90,6 +90,7 @@ import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -2219,7 +2220,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
-        return objectType.isTemplate() ? typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) : typeBuilder.getTypeDeclaration(objectType.getClassType());
+        return objectType.isTemplate() ?
+                typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) :
+                typeBuilder.getTypeDeclaration(((ClassObjectType) objectType).getClassType());
     }
 
     public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {

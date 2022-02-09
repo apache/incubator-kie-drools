@@ -6572,7 +6572,7 @@ public class Misc2Test {
                      " end ";
 
         InternalKnowledgePackage kPackage = CoreComponentFactory.get().createKnowledgePackage( "com.testfacttemplate" );
-        FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", 0, Integer.class );
+        FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", Integer.class );
         FactTemplate factTemplate = new FactTemplateImpl( kPackage, "TestFactTemplate", new FieldTemplate[]{fieldTemplate} );
 
         KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl( kPackage );

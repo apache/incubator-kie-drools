@@ -20,8 +20,6 @@ import org.drools.core.base.ValueType;
 
 public interface FieldTemplate {
 
-    int getIndex();
-
     String getName();
 
     ValueType getValueType();

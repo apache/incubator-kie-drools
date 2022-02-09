@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
@@ -1020,7 +1021,7 @@ public class PatternDSLTest {
 
         // The expression must be merged up into the acc pattern
         Pattern p = (Pattern) rule.getLhs().getChildren().get(0);
-        assertSame( Object[].class, p.getObjectType().getClassType());
+        assertSame( Object[].class, ((ClassObjectType) p.getObjectType()).getClassType());
         LambdaConstraint l0 = (LambdaConstraint) p.getConstraints().get(0);
         assertSame(p1, ((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda());
 
@@ -1075,7 +1076,7 @@ public class PatternDSLTest {
 
         // Check correct result type and the filter was moved up
         Pattern    p1  = (Pattern) rule.getLhs().getChildren().get(0);
-        assertSame( Long.class, p1.getObjectType().getClassType());
+        assertSame( Long.class, ((ClassObjectType) p1.getObjectType()).getClassType());
         LambdaConstraint l0 = (LambdaConstraint) p1.getConstraints().get(0);
         assertSame(cp, ((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda());
 
@@ -1083,7 +1084,7 @@ public class PatternDSLTest {
         Accumulate acc = (Accumulate) p1.getSource();
         assertEquals(1, acc.getNestedElements().size());
         Pattern p2 = (Pattern) acc.getNestedElements().get(0);
-        assertSame( Integer.class, p2.getObjectType().getClassType());
+        assertSame( Integer.class, ((ClassObjectType) p2.getObjectType()).getClassType());
 
         KieSession ksession = kbase.newKieSession();
 

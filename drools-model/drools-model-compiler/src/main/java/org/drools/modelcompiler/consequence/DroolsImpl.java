@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.consequence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.common.AgendaItem;
@@ -112,7 +113,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
             boolean isPropertyReactive = true;
 
             if (object instanceof Fact) {
-                accessibleProperties = ((Fact) object).getFactTemplate().getFieldNames();
+                accessibleProperties = new ArrayList<>(((Fact) object).getFactTemplate().getFieldNames());
                 modifiedTypeName = ((Fact) object).getFactTemplate().getName();
             } else {
                 Class<?> modifiedClass = object.getClass();

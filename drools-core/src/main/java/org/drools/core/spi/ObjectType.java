@@ -42,15 +42,11 @@ public interface ObjectType
 
     ValueType getValueType();
 
-    Class<?> getClassType();
-
     Object getTypeKey();
 
     String getClassName();
 
     boolean hasField(String name);
 
-    default boolean isTemplate() {
-        return false;
-    }
+    boolean isTemplate();
 }

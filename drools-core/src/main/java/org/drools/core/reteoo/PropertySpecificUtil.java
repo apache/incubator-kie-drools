@@ -15,9 +15,11 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.impl.RuleBase;
@@ -39,7 +41,7 @@ public class PropertySpecificUtil {
         if (objectType.isTemplate()) {
             return !((FactTemplateObjectType) objectType).getFieldNames().isEmpty();
         }
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration( objectType.getClassType() );
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(((ClassObjectType) objectType).getClassType() );
         return typeDeclaration != null && typeDeclaration.isPropertyReactive();
     }
 
@@ -125,8 +127,8 @@ public class PropertySpecificUtil {
 
     public static List<String> getAccessibleProperties(RuleBase ruleBase, ObjectType objectType ) {
         return objectType.isTemplate() ?
-                ((FactTemplateObjectType) objectType).getFieldNames() :
-                getAccessibleProperties(ruleBase, objectType.getClassType());
+                new ArrayList<>(((FactTemplateObjectType) objectType).getFieldNames()) :
+                getAccessibleProperties(ruleBase, ((ClassObjectType) objectType).getClassType());
     }
 
     public static List<String> getAccessibleProperties(RuleBase ruleBase, Class<?> nodeClass ) {
