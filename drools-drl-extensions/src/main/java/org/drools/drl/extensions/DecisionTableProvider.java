@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.compiler;
+package org.drools.drl.extensions;
 
 import java.util.List;
 

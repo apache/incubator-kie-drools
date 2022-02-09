@@ -14,15 +14,17 @@
  *
  */
 
-package org.drools.compiler.compiler;
-
-import java.io.IOException;
-import java.io.InputStream;
+package org.drools.drl.extensions;
 
 import org.kie.api.internal.utils.KieService;
 
-public interface GuidedRuleTemplateProvider extends KieService {
+public class GuidedRuleTemplateFactory {
 
-    ResourceConversionResult loadFromInputStream(InputStream is) throws IOException;
+    private static class LazyHolder {
+        private static final GuidedRuleTemplateProvider provider = KieService.load( GuidedRuleTemplateProvider.class );
+    }
 
+    public static GuidedRuleTemplateProvider getGuidedRuleTemplateProvider() {
+        return LazyHolder.provider;
+    }
 }
