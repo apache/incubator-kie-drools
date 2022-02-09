@@ -19,8 +19,8 @@ package org.drools.mvel.compiler.lang;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.lang.Expander;
-import org.drools.compiler.lang.ExpanderResolver;
+import org.drools.drl.parser.lang.Expander;
+import org.drools.drl.parser.lang.ExpanderResolver;
 
 public class MockExpanderResolver
     implements

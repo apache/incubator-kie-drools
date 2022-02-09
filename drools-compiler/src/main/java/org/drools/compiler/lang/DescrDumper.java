@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.drools.compiler.compiler.DrlExprParser;
+import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BindingDescr;

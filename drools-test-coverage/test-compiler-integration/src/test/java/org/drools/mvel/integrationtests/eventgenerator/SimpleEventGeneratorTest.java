@@ -18,7 +18,7 @@ package org.drools.mvel.integrationtests.eventgenerator;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.drl.parser.DroolsParserException;
 import org.drools.mvel.integrationtests.eventgenerator.Event.EventType;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;

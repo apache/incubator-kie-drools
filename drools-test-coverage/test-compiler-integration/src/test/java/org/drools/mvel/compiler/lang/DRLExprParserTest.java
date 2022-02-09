@@ -17,7 +17,7 @@
 package org.drools.mvel.compiler.lang;
 
 import junit.framework.TestCase;
-import org.drools.compiler.compiler.DrlExprParser;
+import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConnectiveType;

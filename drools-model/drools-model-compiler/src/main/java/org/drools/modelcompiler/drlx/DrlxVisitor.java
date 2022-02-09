@@ -5,7 +5,7 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
-import org.drools.compiler.lang.ParseException;
+import org.drools.drl.parser.lang.ParseException;
 import org.drools.drl.ast.descr.*;
 import org.drools.drl.ast.dsl.*;
 import org.drools.mvel.parser.ast.expr.*;

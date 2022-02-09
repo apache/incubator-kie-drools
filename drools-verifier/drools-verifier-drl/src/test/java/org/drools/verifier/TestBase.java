@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.jar.JarInputStream;
 
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Variable;

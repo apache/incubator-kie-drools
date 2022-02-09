@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.compiler.DrlParser;
+import org.drools.drl.parser.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.io.impl.InputStreamResource;
