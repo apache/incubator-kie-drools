@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.builder.impl;
+package org.drools.drl.parser.impl;
 
 import java.io.Externalizable;
 import java.io.IOException;

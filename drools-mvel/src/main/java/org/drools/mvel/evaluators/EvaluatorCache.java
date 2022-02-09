@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.base.ValueType;
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.core.spi.Evaluator;
 
 /**

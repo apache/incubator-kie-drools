@@ -21,7 +21,7 @@ import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;

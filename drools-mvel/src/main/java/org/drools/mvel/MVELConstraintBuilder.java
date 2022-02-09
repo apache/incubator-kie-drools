@@ -58,7 +58,7 @@ import org.drools.mvel.evaluators.StrEvaluatorDefinition;
 import org.drools.mvel.field.FieldFactory;
 import org.drools.core.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;

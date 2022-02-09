@@ -15,7 +15,7 @@
  */
 package org.drools.compiler.lang;
 
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 
 /**
  * Simple holder class identifying all the DRL soft keywords. This is used by
