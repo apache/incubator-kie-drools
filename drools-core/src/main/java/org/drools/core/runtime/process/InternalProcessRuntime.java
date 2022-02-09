@@ -30,4 +30,10 @@ public interface InternalProcessRuntime extends ProcessRuntime, ProcessEventMana
 
     void clearProcessInstancesState();
 
+    void signalEventKieSessionScope(String type, Object event);
+
+    void signalEventProcessInstanceScope(long processInstanceId, String type, Object event);
+
+    void signalEventRuntimeManagerScope(String type, Object event);
+
 }

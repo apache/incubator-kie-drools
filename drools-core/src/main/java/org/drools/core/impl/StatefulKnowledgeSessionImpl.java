@@ -567,13 +567,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void signalEvent(String type,
                             Object event) {
-        this.getProcessRuntime().signalEvent( type, event );
+        this.getProcessRuntime().signalEventKieSessionScope( type, event );
     }
 
     public void signalEvent(String type,
                             Object event,
                             long processInstanceId) {
-        this.getProcessRuntime().signalEvent( type, event, processInstanceId );
+        this.getProcessRuntime().signalEventProcessInstanceScope(processInstanceId, type, event);
     }
 
     public Globals getGlobals() {
@@ -2204,6 +2204,21 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         @Override
         public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void signalEventKieSessionScope(String type, Object event) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void signalEventProcessInstanceScope(long processInstanceId, String type, Object event) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void signalEventRuntimeManagerScope(String type, Object event) {
+            throw new UnsupportedOperationException( );
         }
     }
 
