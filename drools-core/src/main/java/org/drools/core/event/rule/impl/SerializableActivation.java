@@ -57,6 +57,9 @@ public class SerializableActivation
             declarations = ((org.drools.core.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getTupleSink()).getAllDeclarations();
         } else if ( activation instanceof SerializableActivation ) {
             this.declarations = ((SerializableActivation)activation).declarations;
+        } else if ( activation instanceof org.drools.core.reteoo.RuleTerminalNodeLeftTuple) {
+            org.drools.core.reteoo.RuleTerminalNodeLeftTuple tuple = (org.drools.core.reteoo.RuleTerminalNodeLeftTuple) activation;
+            this.declarations = ((org.drools.core.reteoo.RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations();
         } else {
             throw new RuntimeException("Unable to get declarations " + activation);
         }
@@ -65,9 +68,19 @@ public class SerializableActivation
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        this.rule = (Rule) in.readObject();
+        this.factHandles = (List<? extends FactHandle>) in.readObject();
+        this.propgationContext = (PropagationContext) in.readObject();
+        this.declarations = (Declaration[]) in.readObject();
+        this.active = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(this.rule);
+        out.writeObject(this.factHandles);
+        out.writeObject(this.propgationContext);
+        out.writeObject(this.declarations);
+        out.writeBoolean(active);
     }
 
     public Rule getRule() {
