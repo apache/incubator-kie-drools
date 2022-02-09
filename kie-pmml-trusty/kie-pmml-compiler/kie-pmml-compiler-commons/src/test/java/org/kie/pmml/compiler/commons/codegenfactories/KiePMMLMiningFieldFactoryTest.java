@@ -119,7 +119,6 @@ public class KiePMMLMiningFieldFactoryTest {
                                                                       dataField.getIntervals().get(2).getLeftMargin(),
                                                                       dataField.getIntervals().get(2).getRightMargin(),
                                                                       dataField.getIntervals().get(2).getClosure().name()));
-        assertEquals(expected.toString(), retrieved.toString());
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
                                                KiePMMLMiningField.class, DATA_TYPE.class);
