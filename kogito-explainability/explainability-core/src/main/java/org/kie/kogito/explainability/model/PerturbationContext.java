@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -66,5 +67,22 @@ public class PerturbationContext {
                 ", noOfPerturbations=" + noOfPerturbations +
                 ", seed=" + seed +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PerturbationContext that = (PerturbationContext) o;
+        return noOfPerturbations == that.noOfPerturbations && Objects.equals(seed, that.seed) && Objects.equals(random, that.random);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seed, random, noOfPerturbations);
     }
 }

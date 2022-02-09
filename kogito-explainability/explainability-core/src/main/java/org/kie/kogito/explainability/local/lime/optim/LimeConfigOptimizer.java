@@ -167,7 +167,8 @@ public class LimeConfigOptimizer {
         localSearchPhaseConfig.setLocalSearchType(LocalSearchType.LATE_ACCEPTANCE);
 
         if (stepCountLimit > 0) {
-            localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(stepCountLimit));
+            localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(stepCountLimit)
+                    .withBestScoreLimit("1.0"));
         }
 
         @SuppressWarnings("rawtypes")
@@ -206,6 +207,11 @@ public class LimeConfigOptimizer {
 
     public LimeConfigOptimizer forStabilityScore() {
         this.scoreCalculator = new LimeStabilityScoreCalculator();
+        return this;
+    }
+
+    public LimeConfigOptimizer forImpactAndStabilityScore() {
+        this.scoreCalculator = new LimeCombinedScoreCalculator();
         return this;
     }
 

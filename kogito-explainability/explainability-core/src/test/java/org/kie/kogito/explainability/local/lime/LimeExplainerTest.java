@@ -48,8 +48,10 @@ import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 class LimeExplainerTest {
 
@@ -266,5 +268,13 @@ class LimeExplainerTest {
                 .collect(Collectors.toList()))
                         .isEqualTo(saliencies.get(1).getPerFeatureImportance().stream().map(FeatureImportance::getScore)
                                 .collect(Collectors.toList()));
+    }
+
+    @Test
+    void testEmptyInput() {
+        LimeExplainer recordingLimeExplainer = new LimeExplainer();
+        PredictionProvider model = mock(PredictionProvider.class);
+        Prediction prediction = mock(Prediction.class);
+        assertThatCode(() -> recordingLimeExplainer.explainAsync(prediction, model)).hasMessage("cannot explain a prediction whose input is empty");
     }
 }

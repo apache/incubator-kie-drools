@@ -25,7 +25,10 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Prediction;
+import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.slf4j.Logger;
@@ -42,16 +45,24 @@ import org.slf4j.LoggerFactory;
 public class RecordingLimeExplainer extends LimeExplainer {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RecordingLimeExplainer.class);
-
+    private final LimeConfigOptimizationStrategy strategy;
     private final Queue<Prediction> recordedPredictions;
+    private LimeConfig executionConfig;
 
     public RecordingLimeExplainer(int capacity) {
         this(new LimeConfig(), capacity);
     }
 
-    public RecordingLimeExplainer(LimeConfig limeConfig, int capacity) {
+    public RecordingLimeExplainer(LimeConfig limeConfig, int capacity, LimeConfigOptimizationStrategy strategy) {
         super(limeConfig);
-        recordedPredictions = new FixedSizeConcurrentLinkedDeque<>(capacity);
+        this.recordedPredictions = new FixedSizeConcurrentLinkedDeque<>(capacity);
+        this.strategy = strategy;
+        this.executionConfig = limeConfig;
+    }
+
+    public RecordingLimeExplainer(LimeConfig limeConfig, int capacity) {
+        this(limeConfig, capacity, new CountingOptimizationStrategy(10 * capacity, new DefaultLimeOptimizationService(
+                new LimeConfigOptimizer().forImpactAndStabilityScore(), 1)));
     }
 
     @Override
@@ -59,7 +70,19 @@ public class RecordingLimeExplainer extends LimeExplainer {
         if (!recordedPredictions.offer(prediction)) {
             LOGGER.debug("Prediction {} not recorded", prediction);
         }
+        strategy.maybeOptimize(getRecordedPredictions(), model, this, executionConfig);
+
         return super.explainAsync(prediction, model);
+    }
+
+    @Override
+    protected CompletableFuture<Map<String, Saliency>> explainWithExecutionConfig(PredictionProvider model, PredictionInput originalInput, List<Feature> linearizedTargetInputFeatures,
+            List<Output> actualOutputs, LimeConfig config) {
+        LimeConfig optimizedConfig = strategy.bestConfigFor(this);
+        if (optimizedConfig != null) {
+            executionConfig = optimizedConfig;
+        }
+        return super.explainWithExecutionConfig(model, originalInput, linearizedTargetInputFeatures, actualOutputs, executionConfig);
     }
 
     public List<Prediction> getRecordedPredictions() {
@@ -80,4 +103,9 @@ public class RecordingLimeExplainer extends LimeExplainer {
             return !contains(o) && (super.offer(o) && (size() <= capacity || super.pop() != null));
         }
     }
+
+    public LimeConfig getExecutionConfig() {
+        return executionConfig;
+    }
+
 }

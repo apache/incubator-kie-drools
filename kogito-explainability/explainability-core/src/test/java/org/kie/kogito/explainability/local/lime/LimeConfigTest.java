@@ -16,9 +16,11 @@
 package org.kie.kogito.explainability.local.lime;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.EncodingParams;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.mock;
 
 class LimeConfigTest {
 
@@ -44,4 +46,70 @@ class LimeConfigTest {
         assertThat(config.isNormalizeWeights()).isTrue();
     }
 
+    @Test
+    void testBoostrapInputs() {
+        LimeConfig config = new LimeConfig().witBootstrapInputs(10);
+        assertThat(config.getBoostrapInputs()).isEqualTo(10);
+    }
+
+    @Test
+    void testAdaptiveVariance() {
+        LimeConfig config = new LimeConfig().withAdaptiveVariance(false);
+        assertThat(config.isAdaptDatasetVariance()).isFalse();
+
+        config = new LimeConfig().withAdaptiveVariance(true);
+        assertThat(config.isAdaptDatasetVariance()).isTrue();
+    }
+
+    @Test
+    void testDataDistribution() {
+        DataDistribution dd = mock(DataDistribution.class);
+        LimeConfig config = new LimeConfig().withDataDistribution(dd);
+        assertThat(config.getDataDistribution()).isEqualTo(dd);
+    }
+
+    @Test
+    void testHighScoreFeatureZones() {
+        LimeConfig config = new LimeConfig().withHighScoreFeatureZones(false);
+        assertThat(config.isHighScoreFeatureZones()).isFalse();
+
+        config = new LimeConfig().withHighScoreFeatureZones(true);
+        assertThat(config.isHighScoreFeatureZones()).isTrue();
+    }
+
+    @Test
+    void testPenalizeBalanceSparse() {
+        LimeConfig config = new LimeConfig().withPenalizeBalanceSparse(false);
+        assertThat(config.isPenalizeBalanceSparse()).isFalse();
+
+        config = new LimeConfig().withPenalizeBalanceSparse(true);
+        assertThat(config.isPenalizeBalanceSparse()).isTrue();
+    }
+
+    @Test
+    void testRetries() {
+        LimeConfig config = new LimeConfig().withRetries(5);
+        assertThat(config.getNoOfRetries()).isEqualTo(5);
+    }
+
+    @Test
+    void testProximityFilter() {
+        LimeConfig config = new LimeConfig().withProximityFilter(false);
+        assertThat(config.isProximityFilter()).isFalse();
+
+        config = new LimeConfig().withProximityFilter(true);
+        assertThat(config.isProximityFilter()).isTrue();
+    }
+
+    @Test
+    void testEquals() {
+        LimeConfig c1 = new LimeConfig();
+        LimeConfig c1Copy = c1.copy();
+        LimeConfig c2 = new LimeConfig();
+        LimeConfig c3 = new LimeConfig().withHighScoreFeatureZones(false);
+        assertThat(c1).isEqualTo(c1Copy);
+        assertThat(c1).isNotEqualTo(c2);
+        assertThat(c1).isNotEqualTo(null);
+        assertThat(c1).isNotEqualTo(c3);
+    }
 }

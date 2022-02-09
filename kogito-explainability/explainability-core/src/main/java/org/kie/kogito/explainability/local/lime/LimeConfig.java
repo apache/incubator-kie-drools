@@ -17,7 +17,7 @@ package org.kie.kogito.explainability.local.lime;
 
 import java.security.SecureRandom;
 import java.util.Collections;
-import java.util.Optional;
+import java.util.Objects;
 
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.EncodingParams;
@@ -253,19 +253,11 @@ public class LimeConfig {
     }
 
     public LimeConfig copy() {
-        PerturbationContext newPC;
-        Optional<Long> seed = this.perturbationContext.getSeed();
-        newPC = seed.map(aLong -> new PerturbationContext(aLong,
-                this.perturbationContext.getRandom(),
-                this.perturbationContext.getNoOfPerturbations()))
-                .orElseGet(() -> new PerturbationContext(this.perturbationContext.getRandom(),
-                        this.perturbationContext.getNoOfPerturbations()));
-
         return new LimeConfig()
                 .withSeparableDatasetRatio(separableDatasetRatio)
                 .withSamples(noOfSamples)
                 .withRetries(noOfRetries)
-                .withPerturbationContext(newPC)
+                .withPerturbationContext(perturbationContext)
                 .withAdaptiveVariance(adaptDatasetVariance)
                 .withDataDistribution(dataDistribution)
                 .withPenalizeBalanceSparse(penalizeBalanceSparse)
@@ -273,8 +265,7 @@ public class LimeConfig {
                 .withProximityThreshold(proximityThreshold)
                 .withProximityFilteredDatasetMinimum(proximityFilteredDatasetMinimum)
                 .withProximityKernelWidth(proximityKernelWidth)
-                .withEncodingParams(new EncodingParams(encodingParams.getNumericTypeClusterGaussianFilterWidth(),
-                        encodingParams.getNumericTypeClusterThreshold()))
+                .withEncodingParams(encodingParams)
                 .withNormalizeWeights(normalizeWeights);
     }
 
@@ -298,4 +289,26 @@ public class LimeConfig {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LimeConfig that = (LimeConfig) o;
+        return Double.compare(that.separableDatasetRatio, separableDatasetRatio) == 0 && noOfSamples == that.noOfSamples && noOfRetries == that.noOfRetries
+                && adaptDatasetVariance == that.adaptDatasetVariance && highScoreFeatureZones == that.highScoreFeatureZones && penalizeBalanceSparse == that.penalizeBalanceSparse
+                && proximityFilter == that.proximityFilter && Double.compare(that.proximityThreshold, proximityThreshold) == 0 && Double.compare(that.proximityKernelWidth, proximityKernelWidth) == 0
+                && normalizeWeights == that.normalizeWeights && boostrapInputs == that.boostrapInputs && Objects.equals(perturbationContext, that.perturbationContext)
+                && Objects.equals(dataDistribution, that.dataDistribution) && Objects.equals(proximityFilteredDatasetMinimum, that.proximityFilteredDatasetMinimum)
+                && Objects.equals(encodingParams, that.encodingParams);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(separableDatasetRatio, noOfSamples, noOfRetries, perturbationContext, adaptDatasetVariance, dataDistribution, highScoreFeatureZones, penalizeBalanceSparse, proximityFilter,
+                proximityThreshold, proximityFilteredDatasetMinimum, proximityKernelWidth, encodingParams, normalizeWeights, boostrapInputs);
+    }
 }
