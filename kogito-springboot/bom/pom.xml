@@ -23,6 +23,7 @@
     <version.org.spockframework>1.3-groovy-2.4</version.org.spockframework>
     <!-- Spring Boot Cloud aligned with Spring Boot Framework version. See: https://spring.io/projects/spring-cloud -->
     <version.org.springframework.cloud.kubernetes>1.1.10.RELEASE</version.org.springframework.cloud.kubernetes>
+    <version.org.springframework.cloud.kubernetes.fabric8>2.0.3</version.org.springframework.cloud.kubernetes.fabric8>
     <!-- Fabric8 aligned with Spring Cloud. See: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-kubernetes-core/1.1.10.RELEASE -->
     <version.io.fabric8>4.13.2</version.io.fabric8>
   </properties>
@@ -59,8 +60,8 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-kubernetes</artifactId>
-        <version>${version.org.springframework.cloud.kubernetes}</version>
+        <artifactId>spring-cloud-starter-kubernetes-fabric8</artifactId>
+        <version>${version.org.springframework.cloud.kubernetes.fabric8}</version>
       </dependency>
       <dependency>
         <groupId>io.fabric8</groupId>
