@@ -35,7 +35,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class KogitoDevServiceTest {
 
-    private static Duration TIMEOUT = Duration.ofSeconds(30);
+    private static Duration TIMEOUT = Duration.ofMinutes(1);
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
