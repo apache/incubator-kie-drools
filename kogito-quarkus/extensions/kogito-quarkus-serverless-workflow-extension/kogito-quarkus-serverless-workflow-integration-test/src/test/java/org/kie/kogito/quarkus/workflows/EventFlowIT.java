@@ -62,10 +62,10 @@ class EventFlowIT {
 
     @Test
     void testNotStartingMultipleEvent() {
-        doIt("nonStartMultipleEvent", "quiet");
+        doIt("nonStartMultipleEvent", "quiet", "never");
     }
 
-    private void doIt(String flowName, String eventType) {
+    private void doIt(String flowName, String... eventTypes) {
         String id = given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -82,13 +82,15 @@ class EventFlowIT {
                 .then()
                 .statusCode(200);
 
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(generateCloudEvent(id, eventType))
-                .post("/" + eventType)
-                .then()
-                .statusCode(202);
+        for (String eventType : eventTypes) {
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .body(generateCloudEvent(id, eventType))
+                    .post("/" + eventType)
+                    .then()
+                    .statusCode(202);
+        }
 
         await()
                 .atLeast(1, SECONDS)

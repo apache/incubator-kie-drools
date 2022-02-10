@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
@@ -44,12 +44,20 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
 
     @Override
     public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        OnEvents onEvent = state.getOnEvents().get(0);
-        List<MakeNodeResult> nodes = new ArrayList<>();
-        for (String onEventRef : onEvent.getEventRefs()) {
-            nodes.add(filterAndMergeNode(factory, onEvent.getEventDataFilter(), isStartState ? ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR : getVarName(),
-                    (f, inputVar, outputVar) -> buildEventNode(f, onEventRef, inputVar, outputVar)));
-        }
+        return joinNodes(factory, state.getOnEvents().stream().map(onEvent -> processOnEvent(factory, onEvent)).collect(Collectors.toList()), state.isExclusive() ? Join.TYPE_XOR : Join.TYPE_AND);
+    }
+
+    private MakeNodeResult processOnEvent(RuleFlowNodeContainerFactory<?, ?> factory, OnEvents onEvent) {
+        MakeNodeResult result = joinNodes(factory,
+                onEvent.getEventRefs().stream().map(onEventRef -> filterAndMergeNode(factory, onEvent.getEventDataFilter(), isStartState ? ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR : getVarName(),
+                        (f, inputVar, outputVar) -> buildEventNode(f, onEventRef, inputVar, outputVar))).collect(Collectors.toList()),
+                Split.TYPE_XOR);
+        CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), onEvent.getActions());
+        connect(result.getOutgoingNode(), embeddedSubProcess);
+        return new MakeNodeResult(result.getIncomingNode(), embeddedSubProcess);
+    }
+
+    private MakeNodeResult joinNodes(RuleFlowNodeContainerFactory<?, ?> factory, List<MakeNodeResult> nodes, int joinType) {
         NodeFactory<?, ?> incomingNode = null;
         NodeFactory<?, ?> outgoingNode;
         if (nodes.size() == 1) {
@@ -59,14 +67,12 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
             if (!isStartState) {
                 incomingNode = factory.splitNode(parserContext.newId()).name(state.getName() + "Split").type(Split.TYPE_AND);
             }
-            outgoingNode = factory.joinNode(parserContext.newId()).name(state.getName() + "Join").type(Join.TYPE_XOR);
+            outgoingNode = factory.joinNode(parserContext.newId()).name(state.getName() + "Join").type(joinType);
             for (MakeNodeResult node : nodes) {
                 connectNode(node, incomingNode, outgoingNode);
             }
         }
-        CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), onEvent.getActions());
-        connect(outgoingNode, embeddedSubProcess);
-        return isStartState ? new MakeNodeResult(embeddedSubProcess) : new MakeNodeResult(incomingNode, embeddedSubProcess);
+        return isStartState ? new MakeNodeResult(outgoingNode) : new MakeNodeResult(incomingNode, outgoingNode);
     }
 
     private void connectNode(MakeNodeResult node, NodeFactory<?, ?> incomingNode, NodeFactory<?, ?> outgoingNode) {
