@@ -115,6 +115,7 @@ public class DRLParserHelper {
     }
 
     public static int getNodeIndex(ParseTree node) {
+        // TODO Fix NPE
         if (node instanceof TerminalNode) {
             return ((TerminalNode) node).getSymbol().getTokenIndex();
         }
