@@ -84,10 +84,11 @@ public class PrototypeDSL {
             Prototype.Field field = prototype.getField(fieldName);
             Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
             Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value.getClass());
+            int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
 
             expr("expr:" + fieldName + ":" + constraintType + ":" + value,
                     asPredicate(extractor, constraintType, value),
-                    alphaIndexedBy( fieldClass, constraintType, Math.abs(fieldName.hashCode()), extractor, value ),
+                    alphaIndexedBy( fieldClass, constraintType, fieldIndex, extractor, value ),
                     reactOn( fieldName ));
 
             return this;
@@ -100,13 +101,14 @@ public class PrototypeDSL {
             Prototype prototype = protoVar.getPrototype();
             Prototype.Field field = prototype.getField(fieldName);
             Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
+            int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
 
             Prototype otherPrototype = other.getPrototype();
             Function1<PrototypeFact, Object> otherExtractor = getFieldValueExtractor(otherPrototype, otherFieldName);
 
             expr("expr:" + fieldName + ":" + constraintType + ":" + otherFieldName,
                     other, asPredicate(extractor, constraintType, otherExtractor),
-                    betaIndexedBy( (Class<Object>) field.getType(), constraintType, Math.abs(fieldName.hashCode()), extractor, otherExtractor ),
+                    betaIndexedBy( (Class<Object>) field.getType(), constraintType, fieldIndex, extractor, otherExtractor ),
                     reactOn( fieldName ));
 
             return this;

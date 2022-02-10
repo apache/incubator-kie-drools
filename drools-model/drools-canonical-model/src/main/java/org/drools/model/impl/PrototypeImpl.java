@@ -77,6 +77,18 @@ public class PrototypeImpl implements Prototype {
     }
 
     @Override
+    public int getFieldIndex(final String name) {
+        int i = 0;
+        for ( String field : fields.keySet() ) {
+            if ( field.equals( name ) ) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

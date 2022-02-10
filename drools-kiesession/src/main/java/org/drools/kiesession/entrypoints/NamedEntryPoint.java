@@ -271,8 +271,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         return handle;
     }
 
-    public void update(final FactHandle factHandle,
-                       final Object object) {
+    public void update(final FactHandle factHandle, final Object object) {
         update( (InternalFactHandle) factHandle,
                 object,
                 allSetBitMask(),
@@ -280,13 +279,15 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                 null );
     }
 
-    public void update(FactHandle handle,
-                       Object object,
-                       String... modifiedProperties) {
+    public void update(FactHandle handle, Object object, String... modifiedProperties) {
+        BitMask mask = calculateUpdateBitMask(ruleBase, object, modifiedProperties);
+        update( (InternalFactHandle) handle, object, mask, object.getClass(), null);
+    }
 
+    public static BitMask calculateUpdateBitMask(RuleBase ruleBase, Object object, String[] modifiedProperties) {
         String modifiedTypeName;
         List<String> accessibleProperties;
-        boolean isPropertyReactive = true;
+        boolean isPropertyReactive;
 
         if (object instanceof Fact) {
             accessibleProperties = new ArrayList<>(((Fact) object).getFactTemplate().getFieldNames());
@@ -300,11 +301,9 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
             accessibleProperties = isPropertyReactive ? typeDeclaration.getAccessibleProperties() : null;
         }
 
-        BitMask mask = isPropertyReactive ?
+        return isPropertyReactive ?
                 calculatePositiveMask( modifiedTypeName, asList(modifiedProperties), accessibleProperties ) :
                 AllSetBitMask.get();
-
-        update( (InternalFactHandle) handle, object, mask, object.getClass(), null);
     }
 
     public void update(final FactHandle factHandle,

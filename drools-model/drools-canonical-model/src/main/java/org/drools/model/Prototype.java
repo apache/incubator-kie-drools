@@ -26,6 +26,8 @@ public interface Prototype extends NamedModelItem {
 
     Field getField(String name);
 
+    int getFieldIndex(final String name);
+
     default Function<PrototypeFact, Object> getFieldValueExtractor(String name) {
         Field field = getField(name);
         return field != null ? field.getExtractor() : p -> p.get(name);

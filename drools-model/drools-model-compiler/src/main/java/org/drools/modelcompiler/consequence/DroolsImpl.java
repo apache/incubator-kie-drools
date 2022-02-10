@@ -16,17 +16,12 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.facttemplates.Fact;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.model.BitMask;
 import org.drools.model.Channel;
@@ -36,8 +31,7 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
-import static java.util.Arrays.asList;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.kiesession.entrypoints.NamedEntryPoint.calculateUpdateBitMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext {
@@ -105,28 +99,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public void update(Object object, String... modifiedProperties) {
-        org.drools.core.util.bitmask.BitMask mask = org.drools.core.util.bitmask.AllSetBitMask.get();
-
-        if (modifiedProperties.length > 0) {
-            String modifiedTypeName;
-            List<String> accessibleProperties;
-            boolean isPropertyReactive = true;
-
-            if (object instanceof Fact) {
-                accessibleProperties = new ArrayList<>(((Fact) object).getFactTemplate().getFieldNames());
-                modifiedTypeName = ((Fact) object).getFactTemplate().getName();
-            } else {
-                Class<?> modifiedClass = object.getClass();
-                modifiedTypeName = modifiedClass.getName();
-                TypeDeclaration typeDeclaration = reteEvaluator.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
-                isPropertyReactive = typeDeclaration.isPropertyReactive();
-                accessibleProperties = isPropertyReactive ? typeDeclaration.getAccessibleProperties() : null;
-            }
-            if (isPropertyReactive) {
-                mask = calculatePositiveMask( modifiedTypeName, asList( modifiedProperties ), accessibleProperties );
-            }
-        }
-
+        org.drools.core.util.bitmask.BitMask mask = calculateUpdateBitMask(reteEvaluator.getKnowledgeBase(), object, modifiedProperties);
         knowledgeHelper.update( getFactHandleForObject( object ), mask, object.getClass() );
     }
 
