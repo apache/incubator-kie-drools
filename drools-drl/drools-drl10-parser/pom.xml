@@ -10,9 +10,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools</groupId>
   <artifactId>drools-parser</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
 
   <name>Drools :: Parser</name>
 
@@ -20,7 +18,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-drl-ast</artifactId>
-      <version>8.16.0.Beta</version>
+      <version>${version.drools-drl-ast}</version>
     </dependency>
 
     <!-- External dependencies -->
