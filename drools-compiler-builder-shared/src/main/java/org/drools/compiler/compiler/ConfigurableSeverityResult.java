@@ -40,6 +40,6 @@ public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderRes
         return severity;
     }
     
-    abstract String getOptionKey();
+    protected abstract String getOptionKey();
   
 }
