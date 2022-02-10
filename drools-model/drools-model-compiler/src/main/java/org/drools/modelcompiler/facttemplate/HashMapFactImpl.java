@@ -39,22 +39,12 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
     }
 
     @Override
-    public Object getFieldValue(String key) {
-        return valuesMap.get(key);
-    }
-
-    @Override
-    public void setFieldValue(String key, Object value) {
-        valuesMap.put(key, value);
-    }
-
-    @Override
     public Object get( String name ) {
-        return getFieldValue( name );
+        return valuesMap.get(name);
     }
 
     @Override
     public void set( String name, Object value ) {
-        setFieldValue( name, value );
+        valuesMap.put(name, value);
     }
 }

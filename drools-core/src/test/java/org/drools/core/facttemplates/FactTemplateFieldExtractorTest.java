@@ -41,8 +41,8 @@ public class FactTemplateFieldExtractorTest {
         final InternalReadAccessor extractPrice = new FactTemplateFieldExtractor( cheese, "price" );
 
         final Fact stilton = cheese.createFact();
-        stilton.setFieldValue( "name", "stilton" );
-        stilton.setFieldValue( "price", 200 );
+        stilton.set( "name", "stilton" );
+        stilton.set( "price", 200 );
 
         assertEquals( "stilton", extractName.getValue( null, stilton ) );
 
@@ -50,14 +50,14 @@ public class FactTemplateFieldExtractorTest {
 
         assertFalse( extractName.isNullValue( null, stilton ) );
         
-        stilton.setFieldValue( "name", null );
+        stilton.set( "name", null );
         
         assertTrue( extractName.isNullValue( null, stilton ) );
         assertFalse( extractPrice.isNullValue( null, stilton ) );
         
         final Fact brie = cheese.createFact();
-        brie.setFieldValue( "name", "brie" );
-        brie.setFieldValue( "price", 55 );
+        brie.set( "name", "brie" );
+        brie.set( "price", 55 );
 
         assertEquals( "brie", extractName.getValue( null, brie ) );
 
@@ -65,7 +65,7 @@ public class FactTemplateFieldExtractorTest {
         
         assertFalse( extractName.isNullValue( null, brie ) );
         
-        brie.setFieldValue( "name", null );
+        brie.set( "name", null );
         
         assertTrue( extractName.isNullValue( null, brie ) );
         assertFalse( extractPrice.isNullValue( null, stilton ) );
@@ -92,8 +92,8 @@ public class FactTemplateFieldExtractorTest {
                                                          pattern );
 
         final Fact brie = cheese.createFact();
-        brie.setFieldValue( "name", "brie" );
-        brie.setFieldValue( "price", 55 );
+        brie.set( "name", "brie" );
+        brie.set( "price", 55 );
 
         // Check we can extract Declarations correctly 
         assertEquals( "brie",

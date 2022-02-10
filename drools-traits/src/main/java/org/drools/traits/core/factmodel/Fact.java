@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel;
+package org.drools.traits.core.factmodel;
 
 
 import java.util.ArrayList;

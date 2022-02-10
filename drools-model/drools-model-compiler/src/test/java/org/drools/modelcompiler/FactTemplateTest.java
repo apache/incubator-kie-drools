@@ -38,6 +38,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.declarationOf;
@@ -89,8 +91,8 @@ public class FactTemplateTest {
         assertTrue( hasFactTemplateObjectType( ksession, "Person" ) );
 
         Fact mark = createMapBasedFact(personFact);
-        mark.setFieldValue( "name", "Mark" );
-        mark.setFieldValue( "age", 40 );
+        mark.set( "name", "Mark" );
+        mark.set( "age", 40 );
 
         FactHandle fh = ksession.insert( mark );
         assertEquals( 1, ksession.fireAllRules() );
@@ -98,7 +100,7 @@ public class FactTemplateTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result("Found a 40 years old Mark")));
 
-        mark.setFieldValue( "age", 41 );
+        mark.set( "age", 41 );
         ksession.update(fh, mark, "age");
         // property reactivity should prevent this firing
         assertEquals( hasFields ? 0 : 1, ksession.fireAllRules() );
@@ -135,16 +137,16 @@ public class FactTemplateTest {
         assertTrue( hasFactTemplateObjectType( ksession, "Person" ) );
 
         Fact mark = createMapBasedFact( personFact );
-        mark.setFieldValue( "name", "Mark" );
-        mark.setFieldValue( "age", 37 );
+        mark.set( "name", "Mark" );
+        mark.set( "age", 37 );
 
         Fact edson = createMapBasedFact( personFact );
-        edson.setFieldValue( "name", "Edson" );
-        edson.setFieldValue( "age", 35 );
+        edson.set( "name", "Edson" );
+        edson.set( "age", 35 );
 
         Fact mario = createMapBasedFact( personFact );
-        mario.setFieldValue( "name", "Mario" );
-        mario.setFieldValue( "age", 40 );
+        mario.set( "name", "Mario" );
+        mario.set( "age", 40 );
 
         FactHandle markFH = ksession.insert(mark);
         FactHandle edsonFH = ksession.insert(edson);
@@ -158,7 +160,7 @@ public class FactTemplateTest {
         ksession.fireAllRules();
         assertNull(result.getValue());
 
-        mark.setFieldValue( "age", 34 );
+        mark.set( "age", 34 );
         ksession.update( markFH, mark );
 
         ksession.fireAllRules();
@@ -196,8 +198,8 @@ public class FactTemplateTest {
         assertTrue( hasFactTemplateObjectType( ksession, "FactPerson" ) );
         
         Fact mark = createMapBasedFact( personFact );
-        mark.setFieldValue( "name", "Mark" );
-        mark.setFieldValue( "age", 37 );
+        mark.set( "name", "Mark" );
+        mark.set( "age", 37 );
 
         ksession.insert( mark );
 
@@ -266,8 +268,8 @@ public class FactTemplateTest {
         assertEquals(3, ((CompositeObjectSinkAdapter) otn.getObjectSinkPropagator()).getHashedSinkMap().size());
 
         Fact mark = createMapBasedFact( personFact );
-        mark.setFieldValue( "name", "Mark" );
-        mark.setFieldValue( "age", 40 );
+        mark.set( "name", "Mark" );
+        mark.set( "age", 40 );
 
         ksession.insert( mark );
         ksession.fireAllRules();
@@ -277,4 +279,47 @@ public class FactTemplateTest {
         assertThat(results, hasItem(new Result("Found a 40 years old Mark")));
     }
 
+    @Test
+    public void testAccumulate() {
+        Prototype personFact = prototype( "org.drools.Person", "name", "age" );
+
+        PrototypeVariable person = variable( personFact );
+
+        Result result = new Result();
+        Variable<Integer> resultSum = declarationOf(  Integer.class );
+        Variable<Double> resultAvg = declarationOf(  Double.class );
+        Variable<Integer> age = declarationOf(  Integer.class );
+
+        Rule rule = rule("accumulate")
+                .build(
+                        accumulate( pattern( person ).expr(p -> ((String)p.get("name")).startsWith("M")).bind(age, p -> (int)p.get("age")),
+                                accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, age).as(resultSum),
+                                accFunction(org.drools.core.base.accumulators.AverageAccumulateFunction::new, age).as(resultAvg)),
+                        on(resultSum, resultAvg)
+                                .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact mark = createMapBasedFact( personFact );
+        mark.set( "name", "Mark" );
+        mark.set( "age", 37 );
+        ksession.insert( mark );
+
+        Fact edson = createMapBasedFact( personFact );
+        edson.set( "name", "Edson" );
+        edson.set( "age", 35 );
+        ksession.insert( edson );
+
+        Fact mario = createMapBasedFact( personFact );
+        mario.set( "name", "Mario" );
+        mario.set( "age", 40 );
+        ksession.insert( mario );
+
+        ksession.fireAllRules();
+        assertEquals("total = 77; average = 38.5", result.getValue());
+    }
 }

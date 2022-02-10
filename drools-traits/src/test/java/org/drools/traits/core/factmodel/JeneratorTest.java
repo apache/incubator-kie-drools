@@ -20,9 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.drools.core.factmodel.Fact;
-import org.drools.core.factmodel.Field;
-import org.drools.traits.core.factmodel.Jenerator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

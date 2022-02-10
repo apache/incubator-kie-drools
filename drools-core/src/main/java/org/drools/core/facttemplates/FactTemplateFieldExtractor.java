@@ -66,7 +66,7 @@ public class FactTemplateFieldExtractor
 
     public Object getValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return ((Fact) object).getFieldValue( this.fieldName );
+        return ((Fact) object).get( this.fieldName );
     }
 
     public int getIndex() {
@@ -83,42 +83,42 @@ public class FactTemplateFieldExtractor
 
     public boolean getBooleanValue(ReteEvaluator reteEvaluator,
                                    final Object object) {
-        return ((Boolean) ((Fact) object).getFieldValue( fieldName )).booleanValue();
+        return ((Boolean) ((Fact) object).get( fieldName )).booleanValue();
     }
 
     public byte getByteValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return ((Number) ((Fact) object).getFieldValue( fieldName )).byteValue();
+        return ((Number) ((Fact) object).get( fieldName )).byteValue();
     }
 
     public char getCharValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return ((Character) ((Fact) object).getFieldValue( fieldName )).charValue();
+        return ((Character) ((Fact) object).get( fieldName )).charValue();
     }
 
     public double getDoubleValue(ReteEvaluator reteEvaluator,
                                  final Object object) {
-        return ((Number) ((Fact) object).getFieldValue( fieldName )).doubleValue();
+        return ((Number) ((Fact) object).get( fieldName )).doubleValue();
     }
 
     public float getFloatValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        return ((Number) ((Fact) object).getFieldValue( fieldName )).floatValue();
+        return ((Number) ((Fact) object).get( fieldName )).floatValue();
     }
 
     public int getIntValue(ReteEvaluator reteEvaluator,
                            final Object object) {
-        return ((Number) ((Fact) object).getFieldValue( fieldName )).intValue();
+        return ((Number) ((Fact) object).get( fieldName )).intValue();
     }
 
     public long getLongValue(ReteEvaluator reteEvaluator,
                              final Object object) {
-        return ((Number) ((Fact) object).getFieldValue( fieldName )).longValue();
+        return ((Number) ((Fact) object).get( fieldName )).longValue();
     }
 
     public short getShortValue(ReteEvaluator reteEvaluator,
                                final Object object) {
-        return ((Number) ((Fact) object).getFieldValue( fieldName )).shortValue();
+        return ((Number) ((Fact) object).get( fieldName )).shortValue();
     }
 
     public Method getNativeReadMethod() {
@@ -148,7 +148,7 @@ public class FactTemplateFieldExtractor
     }
 
     public boolean isNullValue(ReteEvaluator reteEvaluator, Object object) {
-        return ((Fact) object).getFieldValue( this.fieldName ) == null;
+        return ((Fact) object).get( this.fieldName ) == null;
     }
 
     public int getHashCode(Object object) {

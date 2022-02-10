@@ -48,11 +48,11 @@ public class FactImpl implements Fact, Externalizable {
         out.writeObject(values);
     }
 
-    public Object getFieldValue(final String name) {
+    public Object get(final String name) {
         return this.values.get( name );
     }
 
-    public void setFieldValue(final String name, final Object value) {
+    public void set(final String name, final Object value) {
         this.values.put( name, value );
     }
 

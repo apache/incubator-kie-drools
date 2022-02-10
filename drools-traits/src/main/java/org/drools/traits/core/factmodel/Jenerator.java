@@ -28,8 +28,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.Fact;
-import org.drools.core.factmodel.Field;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.util.IoUtils;
 

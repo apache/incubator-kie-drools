@@ -449,7 +449,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     @Override
     public ObjectTypeNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         if (objectType.isTemplate()) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("this method is used only for the initial fact and during incremental compilation which is not supported yet for fact templates");
         }
         Class<?> classType = ((ClassObjectType) objectType).getClassType();
         if (InitialFact.class.isAssignableFrom(classType)) {

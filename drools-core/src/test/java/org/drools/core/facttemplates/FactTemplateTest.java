@@ -109,12 +109,12 @@ public class FactTemplateTest {
                                                            fields1 );
 
         final Fact stilton1 = cheese1.createFact();
-        stilton1.setFieldValue( "name", "stilton" );
-        stilton1.setFieldValue( "price", 200 );
+        stilton1.set( "name", "stilton" );
+        stilton1.set( "price", 200 );
 
         final Fact stilton2 = cheese1.createFact();
-        stilton2.setFieldValue( "name", "stilton" );
-        stilton2.setFieldValue( "price",  200 );
+        stilton2.set( "name", "stilton" );
+        stilton2.set( "price",  200 );
 
         assertEquals( stilton1,
                       stilton2 );
@@ -122,8 +122,8 @@ public class FactTemplateTest {
                       stilton2.hashCode() );
 
         final Fact brie = cheese1.createFact();
-        brie.setFieldValue( "name", "brie" );
-        brie.setFieldValue( "price", 55 );
+        brie.set( "name", "brie" );
+        brie.set( "price", 55 );
 
         assertFalse( stilton1.equals( brie ) );
         assertFalse( stilton1.hashCode() == brie.hashCode() );
