@@ -35,21 +35,11 @@
         <module>mail</module>
         <module>task-notification</module>
         <module>tracing-decision</module>
-        <module>kubernetes</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>integration-test-modules</id>
-      <activation>
-        <property>
-          <name>!excludeITModules</name>
-        </property>
-      </activation>
-      <modules>
         <module>rest-exception-handler</module>
         <module>process-svg</module>
         <module>process-management</module>
         <module>task-management</module>
+        <module>kubernetes</module>
       </modules>
     </profile>
   </profiles>

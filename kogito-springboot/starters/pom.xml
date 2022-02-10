@@ -15,13 +15,9 @@
   <packaging>pom</packaging>
 
   <modules>
-    <!-- deprecated -->
-    <module>kogito-springboot-starter</module>
     <!-- supported -->
-    <module>kogito-spring-boot-starter</module>
     <module>kogito-decisions-spring-boot-starter</module>
     <module>kogito-predictions-spring-boot-starter</module>
-    <module>kogito-processes-spring-boot-starter</module>
     <module>kogito-rules-spring-boot-starter</module>
   </modules>
 
@@ -34,6 +30,9 @@
         </property>
       </activation>
       <modules>
+        <module>kogito-springboot-starter</module><!-- deprecated -->
+        <module>kogito-spring-boot-starter</module>
+        <module>kogito-processes-spring-boot-starter</module>
         <module>kogito-serverless-workflow-spring-boot-starter</module>
       </modules>
     </profile>

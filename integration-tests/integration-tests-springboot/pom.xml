@@ -54,14 +54,12 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-spring-boot-starter</artifactId>
+      <artifactId>kogito-decisions-spring-boot-starter</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-svg</artifactId>
+      <artifactId>kogito-predictions-spring-boot-starter</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-springboot-messaging</artifactId>
@@ -69,14 +67,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-spring-boot-test-utils</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-management</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-task-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -115,6 +105,22 @@
         </property>
       </activation>
       <dependencies>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-springboot-process-management</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-springboot-task-management</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-springboot-process-svg</artifactId>
+        </dependency>
         <!-- Persistence -->
         <dependency>
           <groupId>org.kie.kogito</groupId>
@@ -138,7 +144,7 @@
           <plugin>
             <artifactId>maven-invoker-plugin</artifactId>
             <configuration>
-              <pomExcludes></pomExcludes>
+              <pomIncludes>*</pomIncludes>
             </configuration>
           </plugin>
         </plugins>
@@ -154,7 +160,7 @@
           <configuration>
             <streamLogs>true</streamLogs>
             <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
-            <pomExcludes>integration-tests-springboot-persistence-it/**/pom.xml</pomExcludes>
+            <pomIncludes>integration-tests-springboot-decisions-it/pom.xml</pomIncludes>
           </configuration>
         </plugin>
       </plugins>

@@ -39,16 +39,6 @@
         <module>persistence</module>
         <module>task-notification</module>
         <module>tracing-decision</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>integration-test-modules</id>
-      <activation>
-        <property>
-          <name>!excludeITModules</name>
-        </property>
-      </activation>
-      <modules>
         <module>process-svg</module>
         <module>rest-exception-handler</module>
         <module>process-management</module>

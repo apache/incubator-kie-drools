@@ -22,8 +22,6 @@
     <module>kogito-api-incubation-common</module>
     <module>kogito-api-incubation-common-objectmapper</module>
     <module>kogito-api-incubation-application</module>
-    <module>kogito-api-incubation-processes</module>
-    <module>kogito-api-incubation-processes-services</module>
     <module>kogito-api-incubation-predictions</module>
     <module>kogito-api-incubation-predictions-services</module>
     <module>kogito-api-incubation-decisions</module>
@@ -34,5 +32,20 @@
     <module>kogito-timer</module>
     <module>kogito-legacy-api</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-api-incubation-processes</module>
+        <module>kogito-api-incubation-processes-services</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
