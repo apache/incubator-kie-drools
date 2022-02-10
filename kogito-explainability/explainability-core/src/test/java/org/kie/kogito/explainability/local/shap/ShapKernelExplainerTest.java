@@ -623,7 +623,7 @@ class ShapKernelExplainerTest {
                 testConfig.copy().withBackground(bg).withRegularizer(ShapConfig.RegularizerType.BIC),
                 testConfig.copy().withBackground(bg).withRegularizer(10),
                 testConfig.copy().withBackground(bg).withRegularizer(ShapConfig.RegularizerType.NONE));
-        List<Integer> nsamples = List.of(2000, 5000, 10000);
+        List<Integer> nsamples = List.of(1000, 2000, 5000);
 
         for (Integer nsamp : nsamples) {
             for (ShapConfig.Builder sk : testConfigs) {
@@ -657,7 +657,7 @@ class ShapKernelExplainerTest {
         ShapConfig sk = testConfig.copy()
                 .withBackground(bg)
                 .withRegularizer(ShapConfig.RegularizerType.AIC)
-                .withNSamples(10000)
+                .withNSamples(5000)
                 .build();
 
         ShapKernelExplainer ske = new ShapKernelExplainer(sk);
