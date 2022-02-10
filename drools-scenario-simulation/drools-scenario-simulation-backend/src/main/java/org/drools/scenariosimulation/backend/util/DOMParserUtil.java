@@ -352,7 +352,8 @@ public class DOMParserUtil {
     public static String getString(Document toRead) throws TransformerException {
         DOMSource domSource = new DOMSource(toRead);
         TransformerFactory factory = TransformerFactory.newInstance();
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         Transformer transformer = factory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
