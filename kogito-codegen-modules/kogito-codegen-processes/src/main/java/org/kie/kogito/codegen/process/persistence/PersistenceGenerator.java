@@ -20,7 +20,6 @@ import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +56,6 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -311,19 +309,13 @@ public class PersistenceGenerator extends AbstractGenerator {
 
             List<CompilationUnit> files = new ArrayList<>(marshallers);
 
-            // we build the marshaller for protostream
-            TemplatedGenerator generatorPrimitivesProtobuf = TemplatedGenerator.builder().withTemplateBasePath(CLASS_TEMPLATES_PERSISTENCE)
-                    .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
-                    .withPackageName(KOGITO_PROCESS_INSTANCE_PACKAGE)
-                    .build(context(), "ProtostreamBaseMarshaller");
-
-            files.add(generateProtostreamBaseMarshaller(generatorPrimitivesProtobuf, "String", String.class, "String"));
-            files.add(generateProtostreamBaseMarshaller(generatorPrimitivesProtobuf, "Boolean", Boolean.class, "Boolean"));
-            files.add(generateProtostreamBaseMarshaller(generatorPrimitivesProtobuf, "Date", Date.class, "Date"));
-            files.add(generateProtostreamBaseMarshaller(generatorPrimitivesProtobuf, "Double", Double.class, "Double"));
-            files.add(generateProtostreamBaseMarshaller(generatorPrimitivesProtobuf, "Float", Float.class, "Float"));
-            files.add(generateProtostreamBaseMarshaller(generatorPrimitivesProtobuf, "Integer", Integer.class, "Int"));
-            files.add(generateProtostreamBaseMarshaller(generatorPrimitivesProtobuf, "Long", Long.class, "Long"));
+            variableMarshallers.add("org.kie.kogito.persistence.StringProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.BooleanProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.DateProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.DoubleProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.FloatProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.IntegerProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.LongProtostreamBaseMarshaller");
 
             for (CompilationUnit unit : files) {
                 String packageName = unit.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
@@ -414,39 +406,6 @@ public class PersistenceGenerator extends AbstractGenerator {
     public static boolean hasDataIndexProto(KogitoBuildContext context) {
         return "true".equalsIgnoreCase(context.getApplicationProperty(KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION)
                 .orElse(KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION_DEFAULT));
-    }
-
-    private CompilationUnit generateProtostreamBaseMarshaller(TemplatedGenerator generatorProtostreamSerialization, String protobufType, Class<?> javaClazz, String method) {
-
-        CompilationUnit parsedClazzFile = generatorProtostreamSerialization.compilationUnitOrThrow();
-
-        ClassOrInterfaceDeclaration clazz = parsedClazzFile.findFirst(ClassOrInterfaceDeclaration.class)
-                .orElseThrow(() -> new InvalidTemplateException(generatorProtostreamSerialization, "Failed to find template for ProtostreamBaseMarshaller"));
-
-        ClassOrInterfaceType type = new ClassOrInterfaceType(null, javaClazz.getCanonicalName());
-        clazz.setName(javaClazz.getSimpleName() + "ProtostreamBaseMarshaller");
-        clazz.getImplementedTypes().get(0).setTypeArguments(type);
-
-        FieldAccessExpr expr = new FieldAccessExpr(new NameExpr(javaClazz.getCanonicalName()), "class");
-        ReturnStmt returnStmt = new ReturnStmt(expr);
-        BlockStmt getJavaClassBody = new BlockStmt().addStatement(returnStmt);
-        MethodDeclaration methodDeclaration = clazz.getMethodsByName("getJavaClass").get(0);
-        methodDeclaration.setBody(getJavaClassBody);
-        ((ClassOrInterfaceType) methodDeclaration.getType()).setTypeArguments(type);
-
-        ReturnStmt returnProtobufTypeStmt = new ReturnStmt(new StringLiteralExpr("kogito." + protobufType));
-        BlockStmt getProtobufClassBody = new BlockStmt().addStatement(returnProtobufTypeStmt);
-        MethodDeclaration methodProtobufType = clazz.getMethodsByName("getTypeName").get(0);
-        methodProtobufType.setBody(getProtobufClassBody);
-
-        MethodCallExpr readerMethod = new MethodCallExpr(new NameExpr("reader"), "read" + method, NodeList.nodeList(new StringLiteralExpr("data")));
-        clazz.getMethodsByName("readFrom").get(0).setType(javaClazz).getBody().ifPresent(e -> e.addStatement(new ReturnStmt(readerMethod)));
-
-        MethodCallExpr writerMethod = new MethodCallExpr(new NameExpr("writer"), "write" + method, NodeList.nodeList(new StringLiteralExpr("data"), new NameExpr("data")));
-        clazz.getMethodsByName("writeTo").get(0).getBody().ifPresent(e -> e.addStatement(writerMethod));
-        clazz.getMethodsByName("writeTo").get(0).getParameter(1).setType(javaClazz);
-
-        return parsedClazzFile;
     }
 
     protected Collection<GeneratedFile> fileSystemBasedPersistence() {

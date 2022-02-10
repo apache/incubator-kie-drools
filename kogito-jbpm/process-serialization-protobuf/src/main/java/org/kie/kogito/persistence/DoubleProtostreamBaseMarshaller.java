@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
@@ -14,33 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kie.kogito.codegen.process.persistence;
+package org.kie.kogito.persistence;
 
 import java.io.IOException;
 
 import org.infinispan.protostream.MessageMarshaller;
 
-public class ProtostreamBaseMarshallerJavaTemplate implements MessageMarshaller<T> {
+public class DoubleProtostreamBaseMarshaller implements MessageMarshaller<Double> {
 
     @Override
-    public Class<? extends T> getJavaClass() {
-        return T.class;
+    public Class<Double> getJavaClass() {
+        return Double.class;
     }
 
     @Override
     public String getTypeName() {
-        return "kogito.String";
+        return "kogito.Double";
     }
 
     @Override
-    public T readFrom(ProtoStreamReader reader) throws IOException {
-
+    public Double readFrom(ProtoStreamReader reader) throws IOException {
+        return reader.readDouble("data");
     }
 
     @Override
-    public void writeTo(ProtoStreamWriter writer, T data) throws IOException {
-
+    public void writeTo(ProtoStreamWriter writer, Double data) throws IOException {
+        writer.writeDouble("data", data);
     }
-
 }
