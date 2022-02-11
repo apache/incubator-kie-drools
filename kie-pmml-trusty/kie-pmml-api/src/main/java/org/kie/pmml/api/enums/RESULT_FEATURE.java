@@ -23,7 +23,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdType_RESULT-FEATURE>RESULT_FEATURE</a>
  */
-public enum RESULT_FEATURE {
+public enum RESULT_FEATURE implements Named {
     PREDICTED_VALUE("predictedValue"),
     PREDICTED_DISPLAY_VALUE("predictedDisplayValue"),
     TRANSFORMED_VALUE("transformedValue"),

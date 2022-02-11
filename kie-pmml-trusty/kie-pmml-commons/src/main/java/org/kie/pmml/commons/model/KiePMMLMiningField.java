@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.model;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -102,7 +103,7 @@ public class KiePMMLMiningField extends AbstractKiePMMLComponent {
     }
 
     public List<KiePMMLInterval> getIntervals() {
-        return intervals;
+        return Collections.unmodifiableList(intervals);
     }
 
     public boolean isTarget() {

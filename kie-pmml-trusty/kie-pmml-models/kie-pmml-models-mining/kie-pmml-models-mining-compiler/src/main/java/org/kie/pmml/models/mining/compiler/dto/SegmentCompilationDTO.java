@@ -21,7 +21,7 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.mining.Segment;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
+import org.kie.pmml.compiler.commons.dto.AbstractSpecificCompilationDTO;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 

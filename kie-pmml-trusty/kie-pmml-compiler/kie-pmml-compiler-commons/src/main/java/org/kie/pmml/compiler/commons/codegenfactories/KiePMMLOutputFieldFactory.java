@@ -26,7 +26,6 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.OutputField;
-import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -34,7 +33,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpression;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpressionBlockStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForDataType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
@@ -69,7 +68,7 @@ public class KiePMMLOutputFieldFactory {
         final Expression expressionExpr;
         if (outputField.getExpression() != null) {
             String nestedVariableName = String.format("%s_Expression", variableName);
-            BlockStmt toAdd = getKiePMMLExpression(nestedVariableName, outputField.getExpression());
+            BlockStmt toAdd = getKiePMMLExpressionBlockStmt(nestedVariableName, outputField.getExpression());
             toAdd.getStatements().forEach(toReturn::addStatement);
             expressionExpr = new NameExpr(nestedVariableName);
         } else {

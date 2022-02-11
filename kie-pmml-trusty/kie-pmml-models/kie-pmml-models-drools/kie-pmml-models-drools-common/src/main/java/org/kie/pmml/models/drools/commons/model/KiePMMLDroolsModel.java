@@ -147,9 +147,5 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
             return this;
         }
 
-        public Builder<T> withOutputFields(List<KiePMMLOutputField> outputFields) {
-            toBuild.kiePMMLOutputFields = outputFields;
-            return this;
-        }
     }
 }

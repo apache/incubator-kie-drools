@@ -22,12 +22,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.KiePMMLTarget;
-import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
-import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
 /**
  * <b>Fake</b> model used for testing. It is mapped to <code>PMML_MODEL.TEST_MODEL</code>
@@ -55,33 +50,6 @@ public class KiePMMLTestingModel extends KiePMMLModel {
 
         private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
             super("TestingModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTestingModel(name, extensions));
-        }
-
-        public Builder withKiePMMLOutputFields(List<KiePMMLOutputField> kiePMMLOutputFields) {
-            toBuild.kiePMMLOutputFields = kiePMMLOutputFields;
-            return this;
-        }
-
-        public Builder withKiePMMLTargets(List<KiePMMLTarget> kiePMMLTargets) {
-            toBuild.kiePMMLTargets = kiePMMLTargets;
-            return this;
-        }
-
-        public Builder withTransformationDictionary(final KiePMMLTransformationDictionary transformationDictionary) {
-            toBuild.transformationDictionary = transformationDictionary;
-            return this;
-        }
-
-        public Builder withLocalTransformations(final KiePMMLLocalTransformations localTransformations) {
-            toBuild.localTransformations = localTransformations;
-            return this;
-        }
-
-        public Builder withKiePMMLMiningFields(final List<KiePMMLMiningField> kiePMMLMiningFields) {
-            if (kiePMMLMiningFields != null) {
-                toBuild.kiePMMLMiningFields = kiePMMLMiningFields;
-            }
-            return this;
         }
     }
 }

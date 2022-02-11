@@ -28,7 +28,7 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
+import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -105,7 +105,7 @@ public class KiePMMLTreeModelFactory {
 
     static void setConstructor(final DroolsCompilationDTO<TreeModel> compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate) {
-        KiePMMLModelCodegenUtils.init(compilationDTO,
+        KiePMMLModelFactoryUtils.init(compilationDTO,
                                       modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));

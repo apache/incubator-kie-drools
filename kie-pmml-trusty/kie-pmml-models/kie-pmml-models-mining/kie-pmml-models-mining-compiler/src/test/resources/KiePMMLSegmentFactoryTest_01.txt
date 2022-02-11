@@ -1,0 +1,5 @@
+{
+    super("SEGMENTNAME", Collections.emptyList(), getPredicate(), KIEPMMLMODELCLASS.getModel());
+    weight = 12.22;
+    id = "SEGMENTNAME";
+}

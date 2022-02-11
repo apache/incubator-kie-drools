@@ -132,5 +132,50 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
             toBuild.targetField = targetField;
             return this;
         }
+
+        public Builder<T> withMiningFields(List<MiningField> miningFields) {
+            if (miningFields != null) {
+                toBuild.miningFields = miningFields;
+            }
+            return this;
+        }
+
+        public Builder<T> withOutputFields(List<OutputField> outputFields) {
+            if (outputFields != null) {
+                toBuild.outputFields = outputFields;
+            }
+            return this;
+        }
+
+        public Builder<T> withKiePMMLMiningFields(List<KiePMMLMiningField> kiePMMLMiningFields) {
+            if (kiePMMLMiningFields != null) {
+                toBuild.kiePMMLMiningFields = kiePMMLMiningFields;
+            }
+            return this;
+        }
+
+        public Builder<T> withKiePMMLOutputFields(List<KiePMMLOutputField> kiePMMLOutputFields) {
+            if (kiePMMLOutputFields != null) {
+                toBuild.kiePMMLOutputFields = kiePMMLOutputFields;
+            }
+            return this;
+        }
+
+        public Builder<T> withKiePMMLTargets(List<KiePMMLTarget> kiePMMLTargets) {
+            if (kiePMMLTargets != null) {
+                toBuild.kiePMMLTargets = kiePMMLTargets;
+            }
+            return this;
+        }
+
+        public Builder<T> withKiePMMLTransformationDictionary(KiePMMLTransformationDictionary transformationDictionary) {
+            toBuild.transformationDictionary = transformationDictionary;
+            return this;
+        }
+
+        public Builder<T> withKiePMMLLocalTransformations(KiePMMLLocalTransformations localTransformations) {
+            toBuild.localTransformations = localTransformations;
+            return this;
+        }
     }
 }

@@ -22,7 +22,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate>CompoundPredicate</a>
  */
-public enum BOOLEAN_OPERATOR {
+public enum BOOLEAN_OPERATOR implements Named {
 
     OR("or", "||"),
     AND("and", "&&"),

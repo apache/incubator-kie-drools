@@ -66,6 +66,10 @@ public class KiePMMLDefineFunction extends AbstractKiePMMLComponent implements S
         return dataType;
     }
 
+    public KiePMMLExpression getKiePMMLExpression() {
+        return kiePMMLExpression;
+    }
+
     public Object evaluate(final ProcessingDTO processingDTO,
                            final List<Object> paramValues) {
         final List<KiePMMLNameValue> kiePMMLNameValues = new ArrayList<>();

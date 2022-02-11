@@ -53,7 +53,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
                                            compilationDTO.getPackageName(),
                                            compilationDTO.getKieMiningFields(),
                                            compilationDTO.getKieOutputFields(),
-                                           compilationDTO.getKiePMMLTargetFields(),
+                                           compilationDTO.getKieTargetFields(),
                                            sourcesMap);
     }
 

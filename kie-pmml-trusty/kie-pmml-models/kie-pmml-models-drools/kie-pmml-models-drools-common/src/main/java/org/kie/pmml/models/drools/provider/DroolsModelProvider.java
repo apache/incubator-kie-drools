@@ -118,7 +118,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                                                                                        compilationDTO.getPackageName(),
                                                                                        compilationDTO.getKieMiningFields(),
                                                                                        compilationDTO.getKieOutputFields(),
-                                                                                       compilationDTO.getKiePMMLTargetFields(),
+                                                                                       compilationDTO.getKieTargetFields(),
                                                                                        sourcesMap,
                                                                                        pkgUUID,
                                                                                        rulesSourceMap);
@@ -155,7 +155,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                                                                                        compilationDTO.getPackageName(),
                                                                                        compilationDTO.getKieMiningFields(),
                                                                                        compilationDTO.getKieOutputFields(),
-                                                                                       compilationDTO.getKiePMMLTargetFields(),
+                                                                                       compilationDTO.getKieTargetFields(),
                                                                                        sourcesMap,
                                                                                        pkgUUID,
                                                                                        rulesSourceMap);

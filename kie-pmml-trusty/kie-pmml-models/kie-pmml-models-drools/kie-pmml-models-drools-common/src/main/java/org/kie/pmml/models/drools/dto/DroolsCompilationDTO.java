@@ -18,7 +18,7 @@ package org.kie.pmml.models.drools.dto;
 import java.util.Map;
 
 import org.dmg.pmml.Model;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
+import org.kie.pmml.compiler.commons.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 

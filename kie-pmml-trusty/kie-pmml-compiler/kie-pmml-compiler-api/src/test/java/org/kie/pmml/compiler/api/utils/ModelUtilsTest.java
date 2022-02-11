@@ -41,19 +41,18 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ParameterField;
+import org.dmg.pmml.Row;
 import org.dmg.pmml.Target;
-import org.dmg.pmml.TargetValue;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.regression.RegressionModel;
+import org.jpmml.model.inlinetable.InputCell;
+import org.jpmml.model.inlinetable.OutputCell;
 import org.junit.Test;
-import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLTarget;
-import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
 import static org.junit.Assert.assertEquals;
@@ -71,9 +70,11 @@ import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDa
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataType;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningField;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomOutputField;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomRow;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomRowWithCells;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTargetValue;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getTarget;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.getPrefixedName;
 
 public class ModelUtilsTest {
 
@@ -185,6 +186,7 @@ public class ModelUtilsTest {
             final DataField dataField = getDataField(fieldName, OpType.CATEGORICAL, DataType.STRING);
             dataDictionary.addDataFields(dataField);
             final MiningField miningField = getMiningField(fieldName, MiningField.UsageType.PREDICTED);
+            miningField.setOpType(null);
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
@@ -674,6 +676,7 @@ public class ModelUtilsTest {
         final String fieldName = "fieldName";
         final MiningField.UsageType usageType = MiningField.UsageType.ACTIVE;
         final MiningField toConvert = getMiningField(fieldName, usageType);
+        toConvert.setOpType(null);
         final DataField dataField = getDataField(fieldName, OpType.CATEGORICAL, DataType.STRING);
         org.kie.pmml.api.models.MiningField retrieved = ModelUtils.convertToKieMiningField(toConvert, dataField);
         assertNotNull(retrieved);
@@ -707,34 +710,6 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void convertToKiePMMLTarget() {
-        final Target toConvert = getRandomTarget();
-        KiePMMLTarget retrieved = ModelUtils.convertToKiePMMLTarget(toConvert);
-        assertNotNull(retrieved);
-        assertEquals(retrieved.getTargetValues().size(), toConvert.getTargetValues().size());
-        OP_TYPE expectedOpType = OP_TYPE.byName(toConvert.getOpType().value());
-        assertEquals(expectedOpType, retrieved.getOpType());
-        assertEquals(toConvert.getField().getValue(), retrieved.getField());
-        CAST_INTEGER expectedCastInteger = CAST_INTEGER.byName(toConvert.getCastInteger().value());
-        assertEquals(expectedCastInteger, retrieved.getCastInteger());
-        assertEquals(toConvert.getMin().doubleValue(), retrieved.getMin(), 0.0);
-        assertEquals(toConvert.getMax().doubleValue(), retrieved.getMax(), 0.0);
-        assertEquals(toConvert.getRescaleConstant().doubleValue(), retrieved.getRescaleConstant(), 0.0);
-        assertEquals(toConvert.getRescaleFactor().doubleValue(), retrieved.getRescaleFactor(), 0.0);
-    }
-
-    @Test
-    public void convertToKiePMMLTargetValue() {
-        final TargetValue toConvert = getRandomTargetValue();
-        KiePMMLTargetValue retrieved = ModelUtils.convertToKiePMMLTargetValue(toConvert);
-        assertNotNull(retrieved);
-        assertEquals(toConvert.getValue().toString(), retrieved.getValue());
-        assertEquals(toConvert.getDisplayValue(), retrieved.getDisplayValue());
-        assertEquals(toConvert.getPriorProbability().doubleValue(), retrieved.getPriorProbability(), 0.0);
-        assertEquals(toConvert.getDefaultValue().doubleValue(), retrieved.getDefaultValue(), 0.0);
-    }
-
-    @Test
     public void getBoxedClassNameByParameterFields() {
         List<ParameterField> parameterFields = getParameterFields();
         parameterFields.forEach(parameterField -> {
@@ -752,6 +727,29 @@ public class ModelUtilsTest {
         });
     }
 
+    @Test
+    public void getRowDataMap() {
+        Row source = getRandomRowWithCells();
+        Map<String, Object> retrieved = ModelUtils.getRowDataMap(source);
+        InputCell inputCell = source.getContent().stream()
+                .filter(InputCell.class::isInstance)
+                .map(InputCell.class::cast)
+                .findFirst()
+                .get();
+        OutputCell outputCell = source.getContent().stream()
+                .filter(OutputCell.class::isInstance)
+                .map(OutputCell.class::cast)
+                .findFirst()
+                .get();
+        assertEquals(2, retrieved.size());
+        String expected = getPrefixedName(inputCell.getName());
+        assertTrue(retrieved.containsKey(expected));
+        assertEquals(inputCell.getValue(), retrieved.get(expected));
+
+        expected = getPrefixedName(outputCell.getName());
+        assertTrue(retrieved.containsKey(expected));
+        assertEquals(outputCell.getValue(), retrieved.get(expected));
+    }
 
     private void commonVerifyEventuallyBoxedClassName(String toVerify, DataType dataType) {
         assertEquals(expectedBoxedClassName.get(dataType.value()), toVerify);

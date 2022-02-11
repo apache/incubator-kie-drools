@@ -42,6 +42,13 @@ public class KiePMMLNormDiscrete extends AbstractKiePMMLComponent implements Kie
         this.mapMissingTo = mapMissingTo;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public Number getMapMissingTo() {
+        return mapMissingTo;
+    }
 
     @Override
     public Object evaluate(final ProcessingDTO processingDTO) {

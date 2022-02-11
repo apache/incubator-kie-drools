@@ -38,7 +38,7 @@ import static org.kie.pmml.api.enums.builtinfunctions.StringFunctions.isStringFu
 /**
  * @see <a http://dmg.org/pmml/v4-4-1/BuiltinFunctions.html>Built-in functions</a>
  */
-public enum BUILTIN_FUNCTIONS {
+public enum BUILTIN_FUNCTIONS implements Named {
 
     PLUS("+"),
     MINUS("-"),

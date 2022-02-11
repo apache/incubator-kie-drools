@@ -24,7 +24,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
+import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
@@ -99,7 +99,7 @@ public class KiePMMLScorecardModelFactory {
 
     static void setConstructor(final DroolsCompilationDTO<Scorecard> compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate) {
-        KiePMMLModelCodegenUtils.init(compilationDTO,
+        KiePMMLModelFactoryUtils.init(compilationDTO,
                                       modelTemplate);
     }
 }

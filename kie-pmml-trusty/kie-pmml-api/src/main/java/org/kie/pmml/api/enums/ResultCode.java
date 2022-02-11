@@ -23,7 +23,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * Indicates the possible end-result of a model evaluation
  */
-public enum ResultCode {
+public enum ResultCode implements Named {
     OK("OK"),
     FAIL("FAIL");
 

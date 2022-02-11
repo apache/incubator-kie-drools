@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
@@ -42,6 +43,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     private String targetField = null;
     private Integer rank;
     private DATA_TYPE dataType;
+    private OP_TYPE opType;
     private Object value;
     private KiePMMLExpression kiePMMLExpression;
 
@@ -85,6 +87,14 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
 
     public KiePMMLExpression getKiePMMLExpression() {
         return kiePMMLExpression;
+    }
+
+    public DATA_TYPE getDataType() {
+        return dataType;
+    }
+
+    public OP_TYPE getOpType() {
+        return opType;
     }
 
     public Object evaluate(final ProcessingDTO processingDTO) {
@@ -205,6 +215,13 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         public Builder withDataType(DATA_TYPE dataType) {
             if (dataType != null) {
                 toBuild.dataType = dataType;
+            }
+            return this;
+        }
+
+        public Builder withOpType(OP_TYPE opType) {
+            if (opType != null) {
+                toBuild.opType = opType;
             }
             return this;
         }
