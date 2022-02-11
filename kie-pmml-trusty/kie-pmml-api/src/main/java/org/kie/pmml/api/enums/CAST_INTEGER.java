@@ -26,7 +26,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Targets.html>castInteger</a>
  */
-public enum CAST_INTEGER {
+public enum CAST_INTEGER implements Named {
 
     ROUND("round", CAST_INTEGER::getRound),
     CEILING("ceiling", CAST_INTEGER::getCeiling),

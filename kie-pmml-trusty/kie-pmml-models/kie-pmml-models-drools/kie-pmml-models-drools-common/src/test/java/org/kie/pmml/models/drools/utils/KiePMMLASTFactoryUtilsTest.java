@@ -45,7 +45,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomValue;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomObject;
 
 public class KiePMMLASTFactoryUtilsTest {
 
@@ -70,7 +70,7 @@ public class KiePMMLASTFactoryUtilsTest {
                                      new KiePMMLOriginalTypeGeneratedType(entry.getValue().value(),
                                                                           getSanitizedClassName(entry.getKey().toUpperCase())));
                     return PMMLModelTestUtils.getSimplePredicate(entry.getKey(),
-                                                                 getRandomValue(entry.getValue()),
+                                                                 getRandomObject(entry.getValue()),
                                                                  getRandomSimplePredicateOperator());
                 })
                 .collect(Collectors.toList());

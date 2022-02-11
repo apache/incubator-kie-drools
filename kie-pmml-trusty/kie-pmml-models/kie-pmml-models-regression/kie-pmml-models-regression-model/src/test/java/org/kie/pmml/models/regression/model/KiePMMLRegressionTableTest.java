@@ -18,6 +18,7 @@ package org.kie.pmml.models.regression.model;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
-import org.kie.pmml.commons.testingutility.PMMLContextTest;
+import org.kie.pmml.api.runtime.PMMLContext;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
 public class KiePMMLRegressionTableTest {
@@ -75,17 +77,21 @@ public class KiePMMLRegressionTableTest {
         input.put(SECOND_NUMERIC_INPUT, secondNumericalInput);
         input.put(FIRST_CATEGORICAL_INPUT, "unused");
         input.put(SECOND_CATEGORICAL_INPUT, "unused");
-        Object retrieved = regressionTable.evaluateRegression(input, new PMMLContextTest());
+        Object retrieved = regressionTable.evaluateRegression(input, mock(PMMLContext.class));
         assertEquals(expectedResult, retrieved);
     }
 
     private KiePMMLRegressionTable getKiePMMLRegressionTable() {
-        final KiePMMLRegressionTable toReturn = new KiePMMLRegressionTable() {};
-        toReturn.targetField = TARGET_FIELD;
-        toReturn.numericFunctionMap.put(FIRST_NUMERIC_INPUT, FIRST_NUMERIC_FUNCTION);
-        toReturn.numericFunctionMap.put(SECOND_NUMERIC_INPUT, SECOND_NUMERIC_FUNCTION);
-        toReturn.categoricalFunctionMap.put(FIRST_CATEGORICAL_INPUT, firstCategoricalFunction);
-        toReturn.categoricalFunctionMap.put(SECOND_CATEGORICAL_INPUT, secondCategoricalFunction);
-        return toReturn;
+        Map<String, SerializableFunction<Double, Double>> numericFunctionMapLocal = new HashMap<>();
+        numericFunctionMapLocal.put(FIRST_NUMERIC_INPUT, FIRST_NUMERIC_FUNCTION);
+        numericFunctionMapLocal.put(SECOND_NUMERIC_INPUT, SECOND_NUMERIC_FUNCTION);
+        Map<String, SerializableFunction<String, Double>> categoricalFunctionMapLocal = new HashMap<>();
+        categoricalFunctionMapLocal.put(FIRST_CATEGORICAL_INPUT, firstCategoricalFunction);
+        categoricalFunctionMapLocal.put(SECOND_CATEGORICAL_INPUT, secondCategoricalFunction);
+        return KiePMMLRegressionTable.builder("", Collections.emptyList())
+                .withTargetField(TARGET_FIELD)
+                .withNumericFunctionMap(numericFunctionMapLocal)
+                .withCategoricalFunctionMap(categoricalFunctionMapLocal)
+                .build();
     }
 }

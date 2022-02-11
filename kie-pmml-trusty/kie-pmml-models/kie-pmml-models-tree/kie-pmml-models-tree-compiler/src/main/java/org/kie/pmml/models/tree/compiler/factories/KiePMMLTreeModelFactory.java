@@ -25,7 +25,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
+import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
@@ -89,7 +89,7 @@ public class KiePMMLTreeModelFactory {
     static void setConstructor(final TreeCompilationDTO compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String fullNodeClassName) {
-        KiePMMLModelCodegenUtils.init(compilationDTO,
+        KiePMMLModelFactoryUtils.init(compilationDTO,
                                       modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));

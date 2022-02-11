@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,6 +44,10 @@ public class KiePMMLRow implements Serializable {
 
     public KiePMMLRow(Map<String, Object> columnValues) {
         this.columnValues = columnValues;
+    }
+
+    public Map<String, Object> getColumnValues() {
+        return Collections.unmodifiableMap(columnValues);
     }
 
     public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn,

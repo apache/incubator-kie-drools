@@ -1,6 +1,2 @@
-KiePMMLTargetValue.builder("%s", Collections.emptyList())
-    .withValue("%s")
-    .withDisplayValue("%s")
-    .withPriorProbability(%s)
-    .withDefaultValue(%s)
+KiePMMLTargetValue.builder("%s", Collections.emptyList(), new TargetValue("%s", "%s", %s, %s))
     .build()

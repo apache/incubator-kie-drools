@@ -24,7 +24,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
  * PMML models
  * @see <a href=http://dmg.org/pmml/v4-4/GeneralStructure.html#xsdGroup_MODEL-ELEMENT>MODEL-ELEMENT</a>
  */
-public enum PMML_MODEL {
+public enum PMML_MODEL implements Named {
 
     ANOMALY_DETECTION_MODEL("AnomalyDetectionModel"),
     ASSOCIATION_MODEL("AssociationModel"),

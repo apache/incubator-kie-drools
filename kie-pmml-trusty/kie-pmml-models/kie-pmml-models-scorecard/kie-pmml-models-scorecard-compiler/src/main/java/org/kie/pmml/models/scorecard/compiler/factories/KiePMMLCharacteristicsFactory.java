@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getArraysAsListInvocationMethodCall;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicFactory.getCharacteristicVariableDeclaration;
@@ -104,7 +105,7 @@ public class KiePMMLCharacteristicsFactory {
         int counter = 0;
         NodeList<Expression> arguments = new NodeList<>();
         for (Characteristic characteristic : characteristics.getCharacteristics()) {
-            String characteristicVariableName = String.format("%s_%s", characteristicsClassName, counter);
+            String characteristicVariableName = String.format(VARIABLE_NAME_TEMPLATE, characteristicsClassName, counter);
             addGetCharacteristicMethod(characteristicVariableName, characteristic, fields, characteristicsTemplate);
             MethodCallExpr toAdd = new MethodCallExpr();
             toAdd.setScope(new NameExpr(characteristicsClassName));

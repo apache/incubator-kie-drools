@@ -17,34 +17,58 @@ package org.kie.pmml.compiler.api.testutils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
+import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DefineFunction;
+import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Discretize;
+import org.dmg.pmml.DiscretizeBin;
+import org.dmg.pmml.Field;
+import org.dmg.pmml.FieldColumnPair;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.InlineTable;
+import org.dmg.pmml.Interval;
+import org.dmg.pmml.InvalidValueTreatmentMethod;
+import org.dmg.pmml.LinearNorm;
+import org.dmg.pmml.LocalTransformations;
+import org.dmg.pmml.MapValues;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.MissingValueTreatmentMethod;
+import org.dmg.pmml.NormContinuous;
+import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.OutlierTreatmentMethod;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.ResultFeature;
+import org.dmg.pmml.Row;
 import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
+import org.dmg.pmml.TableLocator;
 import org.dmg.pmml.Target;
 import org.dmg.pmml.TargetValue;
+import org.dmg.pmml.TextIndex;
+import org.dmg.pmml.TextIndexNormalization;
 import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.Value;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
@@ -53,7 +77,10 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.jpmml.model.inlinetable.InputCell;
+import org.jpmml.model.inlinetable.OutputCell;
 import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.compiler.api.mocks.TestModel;
 
@@ -105,9 +132,26 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
+    public static TransformationDictionary getRandomTransformationDictionary() {
+        final TransformationDictionary toReturn = new TransformationDictionary();
+        IntStream.range(0, 3).forEach(i -> {
+            toReturn.addDerivedFields(getDerivedField("DerivedField-" + i));
+            toReturn.addDefineFunctions(getDefineFunction("DefineFunction-" + i));
+        });
+        return toReturn;
+    }
+
+    public static LocalTransformations getRandomLocalTransformations() {
+        final LocalTransformations toReturn = new LocalTransformations();
+        IntStream.range(0, 3).forEach(i -> {
+            toReturn.addDerivedFields(getDerivedField("DerivedField-" + i));
+        });
+        return toReturn;
+    }
+
     public static MiningSchema getRandomMiningSchema() {
         MiningSchema toReturn = new MiningSchema();
-        IntStream.range(0, new Random().nextInt(3)+ 2)
+        IntStream.range(0, new Random().nextInt(3) + 2)
                 .forEach(i -> toReturn.addMiningFields(getRandomMiningField()));
         return toReturn;
     }
@@ -181,6 +225,25 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
+    public static DiscretizeBin getRandomDiscretizeBin() {
+        Interval interval = getRandomInterval();
+        DiscretizeBin toReturn = new DiscretizeBin();
+        toReturn.setInterval(interval);
+        toReturn.setBinValue(RandomStringUtils.random(6, true, false));
+        return toReturn;
+    }
+
+    public static Interval getRandomInterval() {
+        Random random = new Random();
+        Number leftMargin = random.nextInt(100) / 10;
+        Number rightMargin = leftMargin.doubleValue() + random.nextInt(50) / 10;
+        Interval toReturn = new Interval();
+        toReturn.setLeftMargin(leftMargin);
+        toReturn.setRightMargin(rightMargin);
+        toReturn.setClosure(getRandomClosure());
+        return toReturn;
+    }
+
     public static RegressionModel getRegressionModel(String modelName, MiningFunction miningFunction,
                                                      MiningSchema miningSchema,
                                                      List<RegressionTable> regressionTables) {
@@ -243,7 +306,8 @@ public class PMMLModelTestUtils {
     }
 
     public static MiningField getMiningField(String fieldName, MiningField.UsageType usageType) {
-        MiningField toReturn = new MiningField(FieldName.create(fieldName));
+        MiningField toReturn = getRandomMiningField();
+        toReturn.setName(FieldName.create(fieldName));
         toReturn.setUsageType(usageType);
         return toReturn;
     }
@@ -255,49 +319,92 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
+    public static DefineFunction getDefineFunction(String functionName) {
+        DefineFunction toReturn = new DefineFunction();
+        toReturn.setName(functionName);
+        toReturn.setDataType(getRandomDataType());
+        toReturn.setOpType(getRandomOpType());
+        Constant expression = new Constant(5);
+        expression.setDataType(DataType.INTEGER);
+        toReturn.setExpression(expression);
+        IntStream.range(0, 3).forEach(i -> toReturn.addParameterFields(getParameterField("ParameterField-" + i)));
+        return toReturn;
+    }
+
+    public static DerivedField getDerivedField(String fieldName) {
+        DerivedField toReturn = new DerivedField();
+        toReturn.setName(FieldName.create(fieldName));
+        toReturn.setDataType(getRandomDataType());
+        toReturn.setOpType(getRandomOpType());
+        Constant expression = new Constant(5);
+        expression.setDataType(DataType.INTEGER);
+        toReturn.setExpression(expression);
+        toReturn.setDisplayName("Display-" + fieldName);
+        return toReturn;
+    }
+
     public static DataField getRandomDataField() {
         DataField toReturn = new DataField();
         toReturn.setName(FieldName.create(RandomStringUtils.random(6, true, false)));
         toReturn.setDataType(getRandomDataType());
         toReturn.setOpType(getRandomOpType());
+        IntStream.range(0, 3).forEach(i -> {
+            toReturn.addValues(getRandomValue(toReturn.getDataType()));
+            toReturn.addIntervals(getRandomInterval());
+        });
         return toReturn;
     }
 
-    public static DataType getRandomDataType() {
-        List<DataType> dataTypes = getDataTypes();
-        return dataTypes.get(new Random().nextInt(dataTypes.size()));
-    }
-
-    public static OpType getRandomOpType() {
+    public static MiningField getRandomMiningField(DataField dataField) {
         Random random = new Random();
-        return OpType.values()[random.nextInt(OpType.values().length)];
-    }
-
-    public static Target.CastInteger getRandomCastInteger() {
-        Random random = new Random();
-        return Target.CastInteger.values()[random.nextInt(Target.CastInteger.values().length)];
+        MiningField toReturn = getRandomMiningField();
+        DataType dataType = dataField.getDataType();
+        toReturn.setName(dataField.getName());
+        toReturn.setInvalidValueReplacement(getRandomObject(dataType).toString());
+        toReturn.setMissingValueReplacement(getRandomObject(dataType).toString());
+        toReturn.setImportance(random.nextInt(10));
+        toReturn.setLowValue(random.nextInt(10));
+        toReturn.setHighValue(toReturn.getLowValue().intValue() + random.nextInt(30));
+        toReturn.setUsageType(getRandomUsageType());
+        toReturn.setOpType(getRandomOpType());
+        return toReturn;
     }
 
     public static MiningField getRandomMiningField() {
         Random random = new Random();
         MiningField toReturn = new MiningField(FieldName.create(RandomStringUtils.random(6, true, false)));
-        toReturn.setUsageType(MiningField.UsageType.values()[random.nextInt(MiningField.UsageType.values().length)]);
+        toReturn.setInvalidValueTreatment(getRandomInvalidValueTreatmentMethod());
+        toReturn.setMissingValueTreatment(getRandomMissingValueTreatmentMethod());
+        toReturn.setOutlierTreatment(getRandomOutlierTreatmentMethod());
+        DataType dataType = getRandomDataType();
+        toReturn.setInvalidValueReplacement(getRandomObject(dataType).toString());
+        toReturn.setMissingValueReplacement(getRandomObject(dataType).toString());
+        toReturn.setImportance(random.nextInt(10));
+        toReturn.setLowValue(random.nextInt(10));
+        toReturn.setHighValue(toReturn.getLowValue().intValue() + random.nextInt(30));
+        toReturn.setUsageType(getRandomUsageType());
         toReturn.setOpType(getRandomOpType());
         return toReturn;
     }
 
+    public static OutputField getRandomOutputField(DataField dataField) {
+        OutputField toReturn = getRandomOutputField();
+        toReturn.setName(dataField.getName());
+        toReturn.setDataType(dataField.getDataType());
+        return toReturn;
+    }
+
     public static OutputField getRandomOutputField() {
-        Random random = new Random();
         FieldName fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
         OutputField toReturn = new OutputField();
         toReturn.setName(fieldName);
         toReturn.setOpType(getRandomOpType());
-        List<DataType> dataTypes = getDataTypes();
-        toReturn.setDataType(dataTypes.get(random.nextInt(dataTypes.size())));
+        toReturn.setDataType(getRandomDataType());
+        toReturn.setValue(getRandomValue(toReturn.getDataType()));
         fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
         toReturn.setTargetField(fieldName);
-        List<ResultFeature> resultFeatures = getResultFeature();
-        toReturn.setResultFeature(resultFeatures.get(random.nextInt(resultFeatures.size())));
+        toReturn.setResultFeature(getRandomResultFeature());
+        toReturn.setExpression(getRandomConstant());
         return toReturn;
     }
 
@@ -322,7 +429,113 @@ public class PMMLModelTestUtils {
         toReturn.setValue(random.nextDouble());
         toReturn.setDisplayValue(RandomStringUtils.random(6, true, false));
         toReturn.setDefaultValue(random.nextFloat());
-        toReturn.setPriorProbability((double)random.nextInt(100)/13);
+        toReturn.setPriorProbability((double) random.nextInt(100) / 13);
+        return toReturn;
+    }
+
+    public static FieldColumnPair getRandomFieldColumnPair() {
+        FieldColumnPair toReturn = new FieldColumnPair();
+        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setColumn(RandomStringUtils.random(6, true, false));
+        return toReturn;
+    }
+
+    // Expressions
+
+    public static Apply getRandomApply() {
+        Apply toReturn = new Apply();
+        toReturn.setFunction(RandomStringUtils.random(6, true, false));
+        toReturn.setDefaultValue(RandomStringUtils.random(6, true, false));
+        toReturn.setMapMissingTo(RandomStringUtils.random(6, true, false));
+        toReturn.setInvalidValueTreatment(getRandomInvalidValueTreatmentMethod());
+        toReturn.addExpressions(getRandomConstant());
+        toReturn.addExpressions(getRandomDiscretize());
+        toReturn.addExpressions(getRandomFieldRef());
+        return toReturn;
+    }
+
+    public static Constant getRandomConstant() {
+        Constant toReturn = new Constant();
+        toReturn.setDataType(getRandomDataType());
+        toReturn.setValue(getRandomObject(toReturn.getDataType()));
+        return toReturn;
+    }
+
+    public static Discretize getRandomDiscretize() {
+        Discretize toReturn = new Discretize();
+        toReturn.setDataType(getRandomDataType());
+        toReturn.setDefaultValue(RandomStringUtils.random(6, true, false));
+        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setMapMissingTo(RandomStringUtils.random(6, true, false));
+        IntStream.range(0, 3).forEach(i -> toReturn.addDiscretizeBins(getRandomDiscretizeBin()));
+        return toReturn;
+    }
+
+    public static FieldRef getRandomFieldRef() {
+        FieldRef toReturn = new FieldRef();
+        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setMapMissingTo(RandomStringUtils.random(6, true, false));
+        return toReturn;
+    }
+
+    public static MapValues getRandomMapValues() {
+        MapValues toReturn = new MapValues();
+        toReturn.setDataType(getRandomDataType());
+        toReturn.setDefaultValue(getRandomObject(toReturn.getDataType()));
+        toReturn.setMapMissingTo(RandomStringUtils.random(6, true, false));
+        toReturn.setOutputColumn(RandomStringUtils.random(6, true, false));
+        toReturn.setInlineTable(getRandomInlineTableWithCells());
+        toReturn.setTableLocator(getRandomTableLocator());
+        return toReturn;
+    }
+
+    public static NormContinuous getRandomNormContinuous() {
+        Random random = new Random();
+        double mapMissingTo = random.nextInt(100) / 10;
+        NormContinuous toReturn = new NormContinuous();
+        IntStream.range(0, 3).forEach(i -> toReturn.addLinearNorms(getRandomLinearNorm()));
+        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setOutliers(getRandomOutlierTreatmentMethod());
+        toReturn.setMapMissingTo(mapMissingTo);
+        return toReturn;
+    }
+
+    public static NormDiscrete getRandomNormDiscrete() {
+        NormDiscrete toReturn = new NormDiscrete();
+        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setValue(getRandomObject(DataType.INTEGER));
+        toReturn.setMapMissingTo((Number) getRandomObject(DataType.INTEGER));
+        toReturn.setMethod(getRandomMethod());
+        return toReturn;
+    }
+
+    public static TextIndex getRandomTextIndex() {
+        Random random = new Random();
+        TextIndex toReturn = new TextIndex();
+        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setExpression(getRandomFieldRef());
+        toReturn.setLocalTermWeights(getRandomLocalTermWeights());
+        toReturn.setWordSeparatorCharacterRE(RandomStringUtils.random(1, true, false));
+        toReturn.setTokenize(true);
+        toReturn.setCaseSensitive(false);
+        toReturn.setMaxLevenshteinDistance(random.nextInt(10));
+        toReturn.setTextField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        IntStream.range(0, 3).forEach(i -> toReturn.addTextIndexNormalizations(getRandomTextIndexNormalization()));
+        return toReturn;
+    }
+
+    public static LinearNorm getRandomLinearNorm() {
+        Random random = new Random();
+        double orig = random.nextInt(100) / 10;
+        double norm = random.nextInt(100) / 10;
+        return new LinearNorm(orig, norm);
+    }
+
+    public static ParameterField getParameterField(String fieldName) {
+        ParameterField toReturn = new ParameterField(FieldName.create(fieldName));
+        toReturn.setDataType(getRandomDataType());
+        toReturn.setOpType(getRandomOpType());
+        toReturn.setDisplayName("Display-" + fieldName);
         return toReturn;
     }
 
@@ -344,21 +557,11 @@ public class PMMLModelTestUtils {
     }
 
     public static List<DataType> getDataTypes() {
-        DATA_TYPE[] dataTypes = DATA_TYPE.values();
-        List<DataType> toReturn = new ArrayList<>();
-        for (int i = 0; i < dataTypes.length; i++) {
-            toReturn.add(DataType.fromValue(dataTypes[i].getName()));
-        }
-        return toReturn;
+        return getEnumList(DATA_TYPE.values(), DataType.class);
     }
 
     public static List<ResultFeature> getResultFeature() {
-        RESULT_FEATURE[] resultFeatures = RESULT_FEATURE.values();
-        List<ResultFeature> toReturn = new ArrayList<>();
-        for (int i = 0; i < resultFeatures.length; i++) {
-            toReturn.add(ResultFeature.fromValue(resultFeatures[i].getName()));
-        }
-        return toReturn;
+        return getEnumList(RESULT_FEATURE.values(), ResultFeature.class);
     }
 
     public static SimplePredicate getSimplePredicate(final String predicateName,
@@ -403,9 +606,17 @@ public class PMMLModelTestUtils {
         return new FieldRef(FieldName.create(fieldName));
     }
 
-    public static Object getRandomValue(DataType dataType) {
+    public static Object getRandomObject(DataType dataType) {
         switch (dataType) {
             case INTEGER:
+            case DATE_DAYS_SINCE_0:
+            case DATE_DAYS_SINCE_1960:
+            case DATE_DAYS_SINCE_1970:
+            case DATE_DAYS_SINCE_1980:
+            case DATE_DAYS_SINCE_1990:
+            case DATE_DAYS_SINCE_2000:
+            case DATE_DAYS_SINCE_2010:
+            case DATE_DAYS_SINCE_2020:
                 return new Random().nextInt(40);
             case DOUBLE:
                 return new Random().nextDouble();
@@ -413,22 +624,161 @@ public class PMMLModelTestUtils {
                 return new Random().nextBoolean();
             case STRING:
                 return RandomStringUtils.random(6, true, false);
+            case FLOAT:
+                return new Random().nextFloat();
+            case DATE:
+            case TIME:
+            case DATE_TIME:
+                return new Date();
+            case TIME_SECONDS:
+            case DATE_TIME_SECONDS_SINCE_0:
+            case DATE_TIME_SECONDS_SINCE_1960:
+            case DATE_TIME_SECONDS_SINCE_1970:
+            case DATE_TIME_SECONDS_SINCE_1980:
+            case DATE_TIME_SECONDS_SINCE_1990:
+            case DATE_TIME_SECONDS_SINCE_2000:
+            case DATE_TIME_SECONDS_SINCE_2010:
+            case DATE_TIME_SECONDS_SINCE_2020:
+                return new Random().nextLong();
             default:
-                return null;
+                return new Random().nextInt();
         }
     }
 
+    public static Value getRandomValue(DataType dataType) {
+        Value toReturn = getRandomValue();
+        toReturn.setValue(getRandomObject(dataType));
+        return toReturn;
+    }
+
+    public static Value getRandomValue() {
+        Value toReturn = new Value();
+        toReturn.setValue(getRandomObject(getRandomDataType()));
+        toReturn.setDisplayValue(RandomStringUtils.random(6, true, false));
+        toReturn.setProperty(getRandomProperty());
+        return toReturn;
+    }
+
+    public static TextIndexNormalization getRandomTextIndexNormalization() {
+        Random random = new Random();
+        TextIndexNormalization toReturn = new TextIndexNormalization();
+        toReturn.setCaseSensitive(false);
+        toReturn.setInlineTable(getRandomInlineTableWithCells());
+        toReturn.setWordSeparatorCharacterRE(RandomStringUtils.random(1, true, false));
+        toReturn.setTokenize(true);
+        toReturn.setCaseSensitive(false);
+        toReturn.setMaxLevenshteinDistance(random.nextInt(10));
+        toReturn.setOutField(RandomStringUtils.random(1, true, false));
+        toReturn.setTableLocator(getRandomTableLocator());
+        toReturn.setInField(RandomStringUtils.random(1, true, false));
+        toReturn.setRecursive(false);
+        toReturn.setRegexField(RandomStringUtils.random(1, true, false));
+        return toReturn;
+    }
+
+    public static TableLocator getRandomTableLocator() {
+        return new TableLocator();
+    }
+
+    public static InlineTable getRandomInlineTableWithCells() {
+        InlineTable toReturn = new InlineTable();
+        IntStream.range(0, 3).forEach(i -> toReturn.addRows(getRandomRowWithCells()));
+        return toReturn;
+    }
+
+    public static Row getRandomRow() {
+        Row toReturn = new Row();
+        toReturn.addContent(RandomStringUtils.random(6, true, false));
+        return toReturn;
+    }
+
+    public static Row getRandomRowWithCells() {
+        Row toReturn = new Row();
+        toReturn.addContent(new InputCell(RandomStringUtils.random(6, true, false)));
+        toReturn.addContent(new OutputCell(RandomStringUtils.random(6, true, false)));
+        return toReturn;
+    }
+
+    // Enums
+
+    public static Array.Type getArrayType(DataType dataType) {
+        switch (dataType) {
+            case INTEGER:
+                return Array.Type.INT;
+            case STRING:
+                return Array.Type.STRING;
+            default:
+                return Array.Type.REAL;
+        }
+    }
+
+    public static Array.Type getRandomArrayType() {
+        return getRandomEnum(Array.Type.values());
+    }
+
+    public static CompoundPredicate.BooleanOperator getRandomCompoundPredicateBooleanOperator() {
+        return getRandomEnum(CompoundPredicate.BooleanOperator.values());
+    }
+
+    public static Target.CastInteger getRandomCastInteger() {
+        return getRandomEnum(Target.CastInteger.values());
+    }
+
+    public static DataType getRandomDataType() {
+        List<DataType> dataTypes = getDataTypes();
+        return getRandomEnum(dataTypes.toArray(new DataType[0]));
+    }
+
+    public static Interval.Closure getRandomClosure() {
+        return getRandomEnum(Interval.Closure.values());
+    }
+
+    public static InvalidValueTreatmentMethod getRandomInvalidValueTreatmentMethod() {
+        return getRandomEnum(InvalidValueTreatmentMethod.values());
+    }
+
+    public static TextIndex.LocalTermWeights getRandomLocalTermWeights() {
+        return getRandomEnum(TextIndex.LocalTermWeights.values());
+    }
+
+    public static NormDiscrete.Method getRandomMethod() {
+        return getRandomEnum(NormDiscrete.Method.values());
+    }
+
+    public static MissingValueTreatmentMethod getRandomMissingValueTreatmentMethod() {
+        return getRandomEnum(MissingValueTreatmentMethod.values());
+    }
+
+    public static OpType getRandomOpType() {
+        return getRandomEnum(OpType.values());
+    }
+
+    public static OutlierTreatmentMethod getRandomOutlierTreatmentMethod() {
+        return getRandomEnum(OutlierTreatmentMethod.values());
+    }
+
+    public static Value.Property getRandomProperty() {
+        return getRandomEnum(Value.Property.values());
+    }
+
+    public static ResultFeature getRandomResultFeature() {
+        List<ResultFeature> resultFeatures = getResultFeature();
+        return getRandomEnum(resultFeatures.toArray(new ResultFeature[0]));
+    }
+
     public static SimplePredicate.Operator getRandomSimplePredicateOperator() {
-        final SimplePredicate.Operator[] values = SimplePredicate.Operator.values();
-        int rndIndex = new Random().nextInt(values.length - 3);
-        return values[rndIndex];
+        return getRandomEnum(SimplePredicate.Operator.values());
     }
 
     public static SimpleSetPredicate.BooleanOperator getRandomSimpleSetPredicateOperator() {
-        final SimpleSetPredicate.BooleanOperator[] values = SimpleSetPredicate.BooleanOperator.values();
-        int rndIndex = new Random().nextInt(values.length);
-        return values[rndIndex];
+        return getRandomEnum(SimpleSetPredicate.BooleanOperator.values());
     }
+
+    public static MiningField.UsageType getRandomUsageType() {
+        return getRandomEnum(MiningField.UsageType.values());
+    }
+
+    //
 
     public static List<ScoreDistribution> getRandomPMMLScoreDistributions(boolean withProbability) {
         List<Double> probabilities = withProbability ? Arrays.asList(0.1, 0.3, 0.6) : Arrays.asList(null, null, null);
@@ -449,18 +799,77 @@ public class PMMLModelTestUtils {
 
     public static List<String> getStringObjects(Array.Type arrayType, int size) {
         return IntStream.range(0, size).mapToObj(index -> {
-            switch (arrayType) {
-                case INT:
-                    return String.valueOf(new Random().nextInt(40));
-                case REAL:
-                    return String.valueOf(new Random().nextDouble());
-                case STRING:
-                    return RandomStringUtils.random(6, true, false);
-                default:
-                    return null;
-            }
-        })
+                    switch (arrayType) {
+                        case INT:
+                            return String.valueOf(new Random().nextInt(40));
+                        case REAL:
+                            return String.valueOf(new Random().nextDouble());
+                        case STRING:
+                            return RandomStringUtils.random(6, true, false);
+                        default:
+                            return null;
+                    }
+                })
                 .collect(Collectors.toList());
+    }
+
+    public static CompoundPredicate getRandomCompoundPredicate(List<Field<?>> fields) {
+        CompoundPredicate toReturn = new CompoundPredicate();
+        toReturn.setBooleanOperator(getRandomCompoundPredicateAndOrOperator(new Random().nextInt(10)));
+        IntStream.range(0, fields.size() - 1).forEach(i -> {
+            toReturn.addPredicates(getRandomSimplePredicate((DataField) fields.get(i)));
+        });
+        toReturn.addPredicates(getRandomSimpleSetPredicate((DataField) fields.get(fields.size() - 1)));
+        return toReturn;
+    }
+
+    public static CompoundPredicate getRandomCompoundPredicate() {
+        CompoundPredicate toReturn = new CompoundPredicate();
+        toReturn.setBooleanOperator(getRandomCompoundPredicateAndOrOperator(new Random().nextInt(10)));
+        IntStream.range(0, 3).forEach(i -> {
+            toReturn.addPredicates(getRandomSimplePredicate());
+        });
+        toReturn.addPredicates(getRandomSimpleSetPredicate());
+        return toReturn;
+    }
+
+    public static SimplePredicate getRandomSimplePredicate(DataField dataField) {
+        SimplePredicate toReturn = getRandomSimplePredicate();
+        toReturn.setField(dataField.getName());
+        toReturn.setValue(getRandomObject(dataField.getDataType()));
+        return toReturn;
+    }
+
+    public static SimplePredicate getRandomSimplePredicate() {
+        FieldName fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
+        SimplePredicate toReturn = new SimplePredicate();
+        toReturn.setField(fieldName);
+        toReturn.setOperator(getRandomSimplePredicateOperator());
+        toReturn.setValue(getRandomObject(getRandomDataType()));
+        return toReturn;
+    }
+
+    public static SimpleSetPredicate getRandomSimpleSetPredicate(DataField dataField) {
+        SimpleSetPredicate toReturn = getRandomSimpleSetPredicate();
+        toReturn.setField(dataField.getName());
+        toReturn.setBooleanOperator(getRandomSimpleSetPredicateOperator());
+        Array.Type arrayType = getArrayType(dataField.getDataType());
+        List<String> values = getStringObjects(arrayType, 3);
+        Array array = getArray(arrayType, values);
+        toReturn.setArray(array);
+        return toReturn;
+    }
+
+    public static SimpleSetPredicate getRandomSimpleSetPredicate() {
+        FieldName fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
+        SimpleSetPredicate toReturn = new SimpleSetPredicate();
+        toReturn.setField(fieldName);
+        toReturn.setBooleanOperator(getRandomSimpleSetPredicateOperator());
+        Array.Type arrayType = getRandomArrayType();
+        List<String> values = getStringObjects(arrayType, 3);
+        Array array = getArray(arrayType, values);
+        toReturn.setArray(array);
+        return toReturn;
     }
 
     private static List<SimplePredicate> getRandomSimplePredicates(final List<SimplePredicate> simplePredicates) {
@@ -474,5 +883,14 @@ public class PMMLModelTestUtils {
 
     private static CompoundPredicate.BooleanOperator getRandomCompoundPredicateAndOrOperator(int counter) {
         return counter % 2 == 0 ? CompoundPredicate.BooleanOperator.AND : CompoundPredicate.BooleanOperator.OR;
+    }
+
+    private static <T extends Named, E extends Enum<E>> List<E> getEnumList(T[] source, Class<E> enumClass) {
+        return Arrays.stream(source).map(namedEnum -> Enum.valueOf(enumClass, namedEnum.toString())).collect(Collectors.toList());
+    }
+
+    private static <T extends Enum<?>> T getRandomEnum(T[] source) {
+        Random random = new Random();
+        return source[random.nextInt(source.length)];
     }
 }

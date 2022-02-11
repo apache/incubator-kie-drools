@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.model.expressions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +35,10 @@ public class KiePMMLInlineTable extends AbstractKiePMMLComponent {
     public KiePMMLInlineTable(String name, List<KiePMMLExtension> extensions, List<KiePMMLRow> rows) {
         super(name, extensions);
         this.rows = rows;
+    }
+
+    public List<KiePMMLRow> getRows() {
+        return Collections.unmodifiableList(rows);
     }
 
     public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn, final String regexField) {

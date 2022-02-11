@@ -28,7 +28,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
+import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
@@ -86,7 +86,7 @@ public class KiePMMLScorecardModelFactory {
     static void setConstructor(final ScorecardCompilationDTO compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String fullCharacteristicsClassName) {
-        KiePMMLModelCodegenUtils.init(compilationDTO,
+        KiePMMLModelFactoryUtils.init(compilationDTO,
                                       modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));

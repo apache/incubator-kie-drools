@@ -23,7 +23,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
  */
-public enum OPERATOR {
+public enum OPERATOR implements Named {
 
     EQUAL("equal", "=="),
     NOT_EQUAL("notEqual", "!="),

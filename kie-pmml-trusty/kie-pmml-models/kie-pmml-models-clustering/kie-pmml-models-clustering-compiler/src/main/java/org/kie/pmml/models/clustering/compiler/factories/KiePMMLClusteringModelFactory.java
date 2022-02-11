@@ -39,7 +39,7 @@ import org.dmg.pmml.clustering.MissingValueWeights;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
-import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
+import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.clustering.model.KiePMMLCluster;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringField;
@@ -103,7 +103,7 @@ public class KiePMMLClusteringModelFactory {
 
     static void setConstructor(final CompilationDTO<ClusteringModel> compilationDTO,
                                final ClassOrInterfaceDeclaration modelTemplate) {
-        KiePMMLModelCodegenUtils.init(compilationDTO, modelTemplate);
+        KiePMMLModelFactoryUtils.init(compilationDTO, modelTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();

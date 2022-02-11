@@ -25,6 +25,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -37,6 +39,7 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.mining.Segment;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
@@ -49,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -156,6 +160,7 @@ public class KiePMMLSegmentFactory {
         final Map<String, String> toReturn = new HashMap<>();
 
         setConstructor(segmentCompilationDTO.getId(), className, constructorDeclaration, kiePMMLModelClass,
+                       segmentCompilationDTO.getPMML_MODEL(),
                        segmentCompilationDTO.getWeight().doubleValue());
         populateGetPredicateMethod(segmentCompilationDTO.getPredicate(),
                                    segmentCompilationDTO.getFields(),
@@ -168,6 +173,7 @@ public class KiePMMLSegmentFactory {
                                final String generatedClassName,
                                final ConstructorDeclaration constructorDeclaration,
                                final String kiePMMLModelClass,
+                               final PMML_MODEL pmmlModel,
                                final double weight) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, segmentName);
         final BlockStmt body = constructorDeclaration.getBody();
@@ -175,10 +181,23 @@ public class KiePMMLSegmentFactory {
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
                         .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
-        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-        objectCreationExpr.setType(classOrInterfaceType);
+        String modelInstantiationString;
+        switch (pmmlModel) {
+            case REGRESSION_MODEL:
+                MethodCallExpr methodCallExpr = new MethodCallExpr();
+                methodCallExpr.setScope(new NameExpr(kiePMMLModelClass));
+                methodCallExpr.setName(GET_MODEL);
+                modelInstantiationString = methodCallExpr.toString();
+                break;
+            default:
+                ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+                objectCreationExpr.setType(classOrInterfaceType);
+                modelInstantiationString = objectCreationExpr.toString();
+        }
+
+
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "model",
-                                                                        objectCreationExpr.toString());
+                                                                        modelInstantiationString);
         CommonCodegenUtils.setAssignExpressionValue(body, "weight", new DoubleLiteralExpr(weight));
         CommonCodegenUtils.setAssignExpressionValue(body, "id", new StringLiteralExpr(segmentName));
     }

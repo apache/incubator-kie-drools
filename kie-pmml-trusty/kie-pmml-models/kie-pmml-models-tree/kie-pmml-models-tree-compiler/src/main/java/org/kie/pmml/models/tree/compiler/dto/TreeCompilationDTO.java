@@ -17,7 +17,7 @@ package org.kie.pmml.models.tree.compiler.dto;
 
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
+import org.kie.pmml.compiler.commons.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 
 public class TreeCompilationDTO extends AbstractSpecificCompilationDTO<TreeModel> {

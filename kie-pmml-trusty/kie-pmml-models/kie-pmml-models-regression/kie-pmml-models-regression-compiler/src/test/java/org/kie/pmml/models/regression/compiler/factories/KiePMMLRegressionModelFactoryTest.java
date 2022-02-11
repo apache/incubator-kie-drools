@@ -32,9 +32,10 @@ import java.util.stream.IntStream;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -59,8 +60,10 @@ import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
+import org.kie.pmml.models.regression.model.AbstractKiePMMLTable;
+import org.kie.pmml.models.regression.model.KiePMMLClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
@@ -69,6 +72,7 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getCategoricalPredictor;
@@ -84,11 +88,14 @@ import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEva
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA;
+import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.GETKIEPMML_TABLE;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLRegressionModelFactoryTest {
 
     private static CompilationUnit COMPILATION_UNIT;
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
+    private static final String TEST_01_SOURCE = "KiePMMLRegressionModelFactoryTest_01.txt";
 
     private static final String modelName = "firstModel";
     private static final double tableIntercept = 3.5;
@@ -163,10 +170,10 @@ public class KiePMMLRegressionModelFactoryTest {
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()),
                      retrieved.getMiningFunction());
         assertEquals(miningFields.get(0).getName().getValue(), retrieved.getTargetField());
-        final KiePMMLRegressionTable regressionTable = retrieved.getRegressionTable();
+        final AbstractKiePMMLTable regressionTable = retrieved.getRegressionTable();
         assertNotNull(regressionTable);
-        assertTrue(regressionTable instanceof KiePMMLRegressionClassificationTable);
-        evaluateCategoricalRegressionTable((KiePMMLRegressionClassificationTable) regressionTable);
+        assertTrue(regressionTable instanceof KiePMMLClassificationTable);
+        evaluateCategoricalRegressionTable((KiePMMLClassificationTable) regressionTable);
     }
 
     @Test
@@ -201,7 +208,7 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void setConstructor() {
+    public void setStaticGetter() throws IOException {
         String nestedTable = "NestedTable";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
@@ -214,9 +221,9 @@ public class KiePMMLRegressionModelFactoryTest {
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   new ArrayList<>(),
                                                                                                   regressionModel.getNormalizationMethod());
-        KiePMMLRegressionModelFactory.setConstructor(compilationDTO,
-                                                     modelTemplate,
-                                                     nestedTable);
+        KiePMMLRegressionModelFactory.setStaticGetter(compilationDTO,
+                                                      modelTemplate,
+                                                      nestedTable);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", regressionModel.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
@@ -225,16 +232,17 @@ public class KiePMMLRegressionModelFactoryTest {
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL",
                                 new NameExpr(PMML_MODEL.class.getName() + "." + PMML_MODEL.REGRESSION_MODEL.name()));
-        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-        objectCreationExpr.setType(nestedTable);
-        assignExpressionMap.put("regressionTable", objectCreationExpr);
-        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
-        assertTrue(commonEvaluateConstructor(constructorDeclaration,
-                                             getSanitizedClassName(regressionModel.getModelName()),
-                                             superInvocationExpressionsMap, assignExpressionMap));
+        MethodCallExpr methodCallExpr = new MethodCallExpr();
+        methodCallExpr.setScope(new NameExpr(nestedTable));
+        methodCallExpr.setName(GETKIEPMML_TABLE);
+        assignExpressionMap.put("regressionTable", methodCallExpr);
+        MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_MODEL).get(0);
+        String text = getFileContent(TEST_01_SOURCE);
+        MethodDeclaration expected = JavaParserUtils.parseMethod(text);
+        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
     }
 
-    private void evaluateCategoricalRegressionTable(KiePMMLRegressionClassificationTable regressionTable) {
+    private void evaluateCategoricalRegressionTable(KiePMMLClassificationTable regressionTable) {
         assertEquals(REGRESSION_NORMALIZATION_METHOD.byName(regressionModel.getNormalizationMethod().value()),
                      regressionTable.getRegressionNormalizationMethod());
         assertEquals(OP_TYPE.CATEGORICAL, regressionTable.getOpType());

@@ -21,7 +21,7 @@ import org.dmg.pmml.scorecard.Characteristics;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
+import org.kie.pmml.compiler.commons.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;

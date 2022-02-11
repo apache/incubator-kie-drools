@@ -20,9 +20,11 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
@@ -57,29 +59,24 @@ public class KiePMMLTargetValueFactory {
         // Avoid instantiation
     }
 
-    static MethodCallExpr getKiePMMLTargetValueVariableInitializer(final KiePMMLTargetValue kiepmmlTargetValueField) {
+    static MethodCallExpr getKiePMMLTargetValueVariableInitializer(final TargetValue targetValueField) {
         final MethodDeclaration methodDeclaration =
                 TARGETVALUE_TEMPLATE.getMethodsByName(GETKIEPMMLTARGETVALUE).get(0).clone();
         final BlockStmt targetValueBody =
                 methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
         final VariableDeclarator variableDeclarator =
                 getVariableDeclarator(targetValueBody, TARGETVALUE).orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, TARGETVALUE, targetValueBody)));
-        variableDeclarator.setName(kiepmmlTargetValueField.getName());
+        variableDeclarator.setName(targetValueField.getName());
+        final ObjectCreationExpr targetValueFieldInstance = TargetValueFactory.getTargetValueVariableInitializer(targetValueField);
+
         final MethodCallExpr toReturn = variableDeclarator.getInitializer()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,
                                                                       TARGETVALUE, targetValueBody)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", toReturn);
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(kiepmmlTargetValueField.getName());
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(targetValueField.getName());
         builder.setArgument(0, nameExpr);
-        getChainedMethodCallExprFrom("withValue", toReturn).setArgument(0,
-                                                                        getExpressionForObject(kiepmmlTargetValueField.getValue()));
-        getChainedMethodCallExprFrom("withDisplayValue", toReturn).setArgument(0,
-                                                                               getExpressionForObject(kiepmmlTargetValueField.getDisplayValue()));
-        getChainedMethodCallExprFrom("withPriorProbability", toReturn).setArgument(0,
-                                                                                   getExpressionForObject(kiepmmlTargetValueField.getPriorProbability()));
-        getChainedMethodCallExprFrom("withDefaultValue", toReturn).setArgument(0,
-                                                                               getExpressionForObject(kiepmmlTargetValueField.getDefaultValue()));
+        builder.setArgument(2, targetValueFieldInstance);
         return toReturn;
     }
 }
