@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.expr.jq;
+package org.kie.kogito.quarkus.workflows;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import io.quarkus.test.junit.NativeImageTest;
 
-import io.quarkus.runtime.Startup;
+@NativeImageTest
+class NativeGreetRestIT extends GreetRestIT {
 
-import net.thisptr.jackson.jq.Scope;
-
-@Startup
-public class JqQuarkusExtension {
-    @Inject
-    Scope scope;
-
-    @PostConstruct
-    void init() {
-        JqExpressionHandler.setScopeSupplier(() -> scope);
-    }
 }

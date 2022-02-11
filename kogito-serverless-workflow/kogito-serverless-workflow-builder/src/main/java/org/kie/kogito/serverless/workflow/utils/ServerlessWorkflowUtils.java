@@ -52,16 +52,6 @@ public class ServerlessWorkflowUtils {
         return ALTERNATE_WORKFLOW_FORMAT.equals(workflowFormat) ? new YamlObjectMapper() : new JsonObjectMapper();
     }
 
-    public static String conditionScript(String conditionStr) {
-        if (conditionStr.startsWith("{{")) {
-            conditionStr = conditionStr.substring(2);
-        }
-        if (conditionStr.endsWith("}}")) {
-            conditionStr = conditionStr.substring(0, conditionStr.length() - 2);
-        }
-        return conditionStr.trim();
-    }
-
     public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, KogitoBuildContext context) {
         return resolveFunctionMetadata(function, metadataKey, context, "");
     }

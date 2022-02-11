@@ -21,14 +21,17 @@ import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.ExpressionAction;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
+import io.serverlessworkflow.api.Workflow;
+
 public class ExpressionActionSupplier extends ExpressionAction implements ExpressionSupplier {
 
-    public static Builder of(String lang, String expr) {
-        return new Builder(lang, expr);
+    public static Builder of(Workflow workflow, String expr) {
+        return new Builder(workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, expr));
     }
 
     public static class Builder {

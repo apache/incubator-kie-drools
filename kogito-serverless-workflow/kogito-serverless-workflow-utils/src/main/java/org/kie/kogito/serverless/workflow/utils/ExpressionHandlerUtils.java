@@ -26,6 +26,10 @@ import org.kie.kogito.jackson.utils.MergeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
+
 public class ExpressionHandlerUtils {
 
     private ExpressionHandlerUtils() {
@@ -33,6 +37,11 @@ public class ExpressionHandlerUtils {
 
     private static final String EXPR_PREFIX = "${";
     private static final String EXPR_SUFFIX = "}";
+
+    private static final String LEGACY_EXPR_PREFIX = "{{";
+    private static final String LEGACY_EXPR_SUFFIX = "}}";
+
+    private static final String FUNCTION_REFERENCE = "fn:";
     protected static final String SECRET_MAGIC = "$SECRET.";
     protected static final String CONST_MAGIC = "$CONST.";
 
@@ -78,12 +87,35 @@ public class ExpressionHandlerUtils {
     public static String trimExpr(String expr) {
         expr = expr.trim();
         if (expr.startsWith(EXPR_PREFIX)) {
-            expr = expr.substring(EXPR_PREFIX.length());
-            if (expr.endsWith(EXPR_SUFFIX)) {
-                expr = expr.substring(0, expr.length() - EXPR_SUFFIX.length());
-            }
+            expr = trimExpr(expr, EXPR_PREFIX, EXPR_SUFFIX);
+        } else if (expr.startsWith(LEGACY_EXPR_PREFIX)) {
+            expr = trimExpr(expr, LEGACY_EXPR_PREFIX, LEGACY_EXPR_SUFFIX);
         }
         return expr.trim();
+    }
+
+    private static String trimExpr(String expr, String prefix, String suffix) {
+        expr = expr.substring(prefix.length());
+        if (expr.endsWith(suffix)) {
+            expr = expr.substring(0, expr.length() - suffix.length());
+        }
+        return expr;
+    }
+
+    public static String replaceExpr(Workflow workflow, String expr) {
+        expr = trimExpr(expr);
+        if (expr.startsWith(FUNCTION_REFERENCE)) {
+            String functionName = expr.substring(FUNCTION_REFERENCE.length());
+            // covert reference to reference case (and delegate on stack overflow limits for checking loop reference) 
+            return replaceExpr(workflow,
+                    workflow.getFunctions().getFunctionDefs().stream()
+                            .filter(f -> f.getType() == Type.EXPRESSION && f.getName().equals(functionName))
+                            .findAny()
+                            .map(FunctionDefinition::getOperation)
+                            .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName)));
+        } else {
+            return expr;
+        }
     }
 
     public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {

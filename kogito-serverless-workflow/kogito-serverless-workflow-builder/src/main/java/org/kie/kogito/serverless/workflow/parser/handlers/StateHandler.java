@@ -209,7 +209,7 @@ public abstract class StateHandler<S extends State> {
     private ActionNodeFactory<?> handleStateFilter(RuleFlowNodeContainerFactory<?, ?> factory, String filter) {
         ActionNodeFactory<?> result =
                 factory.actionNode(parserContext.newId())
-                        .action(ExpressionActionSupplier.of(workflow.getExpressionLang(), filter).build());
+                        .action(ExpressionActionSupplier.of(workflow, filter).build());
         result.done();
         return result;
     }
@@ -395,7 +395,7 @@ public abstract class StateHandler<S extends State> {
         NodeFactory<?, ?> startNode, currentNode;
 
         if (fromStateExpr != null) {
-            startNode = embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow.getExpressionLang(), fromStateExpr)
+            startNode = embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, fromStateExpr)
                     .withVarNames(DEFAULT_WORKFLOW_VAR, actionVarName).build());
             currentNode = connect(startNode, nodeSupplier.apply(embeddedSubProcess, actionVarName, actionVarName));
 
@@ -405,7 +405,7 @@ public abstract class StateHandler<S extends State> {
 
         if (shouldMerge) {
             if (resultExpr != null) {
-                currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow.getExpressionLang(), resultExpr)
+                currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, resultExpr)
                         .withVarNames(actionVarName, actionVarName).build()));
             }
             if (toStateExpr != null) {

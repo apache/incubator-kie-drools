@@ -26,7 +26,7 @@ import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.node.Split;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.produce.ProduceEvent;
@@ -143,7 +143,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
     private void addConstraint(NodeFactory<?, ?> startNode, long targetId, DataCondition condition) {
         ((SplitFactory<?>) startNode).constraintBuilder(targetId, concatId(startNode.getNode().getId(), targetId),
-                "DROOLS_DEFAULT", workflow.getExpressionLang(), ServerlessWorkflowUtils.conditionScript(condition.getCondition())).withDefault(isDefaultCondition(state, condition))
+                "DROOLS_DEFAULT", workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, condition.getCondition())).withDefault(isDefaultCondition(state, condition))
                 .metadata(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
     }
 

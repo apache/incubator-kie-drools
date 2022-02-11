@@ -171,7 +171,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 return embeddedSubProcess
                         .actionNode(parserContext.newId())
                         .name(actionName)
-                        .action(ExpressionActionSupplier.of(workflow.getExpressionLang(), operation).withVarNames(inputVar, outputVar).withCollectVar(collectVar)
+                        .action(ExpressionActionSupplier.of(workflow, operation).withVarNames(inputVar, outputVar).withCollectVar(collectVar)
                                 .withAddInputVars(extraVariables).build());
             case SYSOUT:
                 return embeddedSubProcess

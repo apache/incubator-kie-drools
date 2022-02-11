@@ -44,20 +44,19 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
 
     @Override
     public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        return joinNodes(factory, state.getOnEvents().stream().map(onEvent -> processOnEvent(factory, onEvent)).collect(Collectors.toList()), state.isExclusive() ? Join.TYPE_XOR : Join.TYPE_AND);
+        return joinNodes(factory, state.getOnEvents().stream().map(onEvent -> processOnEvent(factory, onEvent)).collect(Collectors.toList()));
     }
 
     private MakeNodeResult processOnEvent(RuleFlowNodeContainerFactory<?, ?> factory, OnEvents onEvent) {
         MakeNodeResult result = joinNodes(factory,
                 onEvent.getEventRefs().stream().map(onEventRef -> filterAndMergeNode(factory, onEvent.getEventDataFilter(), isStartState ? ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR : getVarName(),
-                        (f, inputVar, outputVar) -> buildEventNode(f, onEventRef, inputVar, outputVar))).collect(Collectors.toList()),
-                Split.TYPE_XOR);
+                        (f, inputVar, outputVar) -> buildEventNode(f, onEventRef, inputVar, outputVar))).collect(Collectors.toList()));
         CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), onEvent.getActions());
         connect(result.getOutgoingNode(), embeddedSubProcess);
         return new MakeNodeResult(result.getIncomingNode(), embeddedSubProcess);
     }
 
-    private MakeNodeResult joinNodes(RuleFlowNodeContainerFactory<?, ?> factory, List<MakeNodeResult> nodes, int joinType) {
+    private MakeNodeResult joinNodes(RuleFlowNodeContainerFactory<?, ?> factory, List<MakeNodeResult> nodes) {
         NodeFactory<?, ?> incomingNode = null;
         NodeFactory<?, ?> outgoingNode;
         if (nodes.size() == 1) {
@@ -67,7 +66,7 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
             if (!isStartState) {
                 incomingNode = factory.splitNode(parserContext.newId()).name(state.getName() + "Split").type(Split.TYPE_AND);
             }
-            outgoingNode = factory.joinNode(parserContext.newId()).name(state.getName() + "Join").type(joinType);
+            outgoingNode = factory.joinNode(parserContext.newId()).name(state.getName() + "Join").type(state.isExclusive() ? Join.TYPE_XOR : Join.TYPE_AND);
             for (MakeNodeResult node : nodes) {
                 connectNode(node, incomingNode, outgoingNode);
             }
