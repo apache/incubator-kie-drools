@@ -22,10 +22,10 @@ import org.kie.kogito.codegen.api.GeneratorFactory;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 
-public class IncrementalRuleCodegenFactory implements GeneratorFactory {
+public class RuleCodegenFactory implements GeneratorFactory {
 
     @Override
     public Generator create(KogitoBuildContext context, Collection<CollectedResource> collectedResources) {
-        return IncrementalRuleCodegen.ofCollectedResources(context, collectedResources);
+        return RuleCodegen.ofCollectedResources(context, collectedResources);
     }
 }

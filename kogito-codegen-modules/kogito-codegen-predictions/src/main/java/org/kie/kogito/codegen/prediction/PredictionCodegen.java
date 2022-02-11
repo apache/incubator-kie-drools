@@ -36,7 +36,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
-import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.kogito.pmml.openapi.api.PMMLOASResult;
 import org.kie.kogito.pmml.openapi.factories.PMMLOASResultFactory;
 import org.kie.pmml.commons.model.HasNestedModels;
@@ -154,7 +154,7 @@ public class PredictionCodegen extends AbstractGenerator {
 
             for (Map.Entry<String, String> rulesSourceMapEntry : rulesSourceMap.entrySet()) {
                 String path = rulesSourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-                files.add(new GeneratedFile(IncrementalRuleCodegen.RULE_TYPE, path, rulesSourceMapEntry.getValue()));
+                files.add(new GeneratedFile(RuleCodegen.RULE_TYPE, path, rulesSourceMapEntry.getValue()));
 
                 if (rulesSourceMapEntry.getValue().contains(DECLARED_TYPE_IDENTIFIER)) {
                     pojoClasses.add(rulesSourceMapEntry.getKey());

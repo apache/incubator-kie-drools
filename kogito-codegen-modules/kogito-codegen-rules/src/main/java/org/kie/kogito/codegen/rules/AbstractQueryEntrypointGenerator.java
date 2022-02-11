@@ -24,7 +24,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 
-import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
+import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
 import static org.kie.kogito.codegen.rules.RuleCodegenUtils.toCamelCase;
 
 public abstract class AbstractQueryEntrypointGenerator implements RuleFileGenerator {

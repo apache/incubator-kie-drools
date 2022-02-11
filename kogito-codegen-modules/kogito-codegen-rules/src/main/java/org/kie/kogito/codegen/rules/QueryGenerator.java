@@ -46,7 +46,7 @@ import com.github.javaparser.ast.stmt.Statement;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
-import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
+import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
 import static org.kie.kogito.codegen.rules.RuleCodegenUtils.setGeneric;
 
 public class QueryGenerator implements RuleFileGenerator {

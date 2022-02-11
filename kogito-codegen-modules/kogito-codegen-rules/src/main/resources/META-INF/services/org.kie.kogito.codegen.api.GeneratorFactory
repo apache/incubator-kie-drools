@@ -1,1 +1,1 @@
-org.kie.kogito.codegen.rules.IncrementalRuleCodegenFactory
+org.kie.kogito.codegen.rules.RuleCodegenFactory

@@ -44,7 +44,7 @@ import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.openapi.client.OpenApiClientCodegen;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
-import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
@@ -124,10 +124,10 @@ public class AbstractCodegenIT {
 
     static {
         generatorTypeMap.put(TYPE.PROCESS, (context, strings) -> ProcessCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
-        generatorTypeMap.put(TYPE.RULES, (context, strings) -> IncrementalRuleCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
+        generatorTypeMap.put(TYPE.RULES, (context, strings) -> RuleCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
         generatorTypeMap.put(TYPE.DECISION, (context, strings) -> DecisionCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
 
-        generatorTypeMap.put(TYPE.JAVA, (context, strings) -> IncrementalRuleCodegen.ofJavaResources(context, toCollectedResources(TEST_JAVA, strings)));
+        generatorTypeMap.put(TYPE.JAVA, (context, strings) -> RuleCodegen.ofJavaResources(context, toCollectedResources(TEST_JAVA, strings)));
         generatorTypeMap.put(TYPE.PREDICTION, (context, strings) -> PredictionCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
         generatorTypeMap.put(TYPE.OPENAPI, (context, strings) -> OpenApiClientCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
     }

@@ -50,8 +50,8 @@ import com.github.javaparser.ast.type.TypeParameter;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toList;
-import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.RULE_TYPE;
-import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
+import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
+import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
 
 public class RuleUnitGenerator implements RuleFileGenerator {
 

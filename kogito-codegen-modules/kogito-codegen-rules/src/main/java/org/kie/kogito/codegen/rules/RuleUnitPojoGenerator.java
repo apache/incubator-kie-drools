@@ -30,7 +30,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.RULE_TYPE;
+import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
 
 public class RuleUnitPojoGenerator implements RuleFileGenerator {
 

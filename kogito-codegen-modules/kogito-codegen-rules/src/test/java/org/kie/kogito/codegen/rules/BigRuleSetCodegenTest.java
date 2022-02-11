@@ -42,10 +42,10 @@ public class BigRuleSetCodegenTest {
 
         Collection<Resource> resources = generateResourcesToBeCompiled(numberOfResource, rulesPerResource);
 
-        IncrementalRuleCodegen incrementalRuleCodegen = IncrementalRuleCodegen.ofResources(
+        RuleCodegen ruleCodegen = RuleCodegen.ofResources(
                 withLegacyApi(JavaKogitoBuildContext.builder()).build(), resources);
 
-        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.generate();
 
         int legacyApiFiles = 2;
         int domainClasses = 1;

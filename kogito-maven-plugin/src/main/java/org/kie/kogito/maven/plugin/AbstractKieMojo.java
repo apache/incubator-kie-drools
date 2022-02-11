@@ -43,7 +43,7 @@ import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
-import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
@@ -134,7 +134,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
             }
         });
 
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + IncrementalRuleCodegen.GENERATOR_NAME, generateRules);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + RuleCodegen.GENERATOR_NAME, generateRules);
         context.setApplicationProperty(Generator.CONFIG_PREFIX + ProcessCodegen.GENERATOR_NAME, generateProcesses);
         context.setApplicationProperty(Generator.CONFIG_PREFIX + PredictionCodegen.GENERATOR_NAME, generatePredictions);
         context.setApplicationProperty(Generator.CONFIG_PREFIX + DecisionCodegen.GENERATOR_NAME, generateDecisions);

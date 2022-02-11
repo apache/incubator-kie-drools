@@ -76,14 +76,14 @@ import static org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableTo
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 
-public class IncrementalRuleCodegen extends AbstractGenerator {
+public class RuleCodegen extends AbstractGenerator {
 
     public static final GeneratedFileType RULE_TYPE = GeneratedFileType.of("RULE", GeneratedFileType.Category.SOURCE);
     public static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
     public static final String GENERATOR_NAME = "rules";
-    private static final Logger LOGGER = LoggerFactory.getLogger(IncrementalRuleCodegen.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleCodegen.class);
 
-    public static IncrementalRuleCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
+    public static RuleCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         List<Resource> generatedRules = resources.stream()
                 .map(CollectedResource::resource)
                 .filter(r -> isRuleFile(r) || r.getResourceType() == ResourceType.PROPERTIES)
@@ -91,7 +91,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return ofResources(context, generatedRules);
     }
 
-    public static IncrementalRuleCodegen ofJavaResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
+    public static RuleCodegen ofJavaResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         List<Resource> generatedRules =
                 AnnotatedClassPostProcessor.scan(
                         resources.stream()
@@ -102,8 +102,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return ofResources(context, generatedRules);
     }
 
-    public static IncrementalRuleCodegen ofResources(KogitoBuildContext context, Collection<Resource> resources) {
-        return new IncrementalRuleCodegen(context, resources);
+    public static RuleCodegen ofResources(KogitoBuildContext context, Collection<Resource> resources) {
+        return new RuleCodegen(context, resources);
     }
 
     private static final String operationalDashboardDrlTemplate = "/grafana-dashboard-template/operational-dashboard-template.json";
@@ -116,7 +116,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private final boolean decisionTableSupported;
     private final Map<String, RuleUnitConfig> configs;
 
-    private IncrementalRuleCodegen(KogitoBuildContext context, Collection<Resource> resources) {
+    private RuleCodegen(KogitoBuildContext context, Collection<Resource> resources) {
         super(context, GENERATOR_NAME, new RuleConfigGenerator(context));
         this.resources = resources;
         this.kieModuleModel = findKieModuleModel(context.getAppPaths().getResourcePaths());
@@ -195,7 +195,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         KogitoKnowledgeBuilderConfigurationImpl conf = new KogitoKnowledgeBuilderConfigurationImpl(buildContext.getClassLoader());
         for (String prop : buildContext.getApplicationProperties()) {
             if (prop.startsWith("drools")) {
-                conf.setProperty(prop, buildContext.getApplicationProperty(prop).get());
+                conf.setProperty(prop, buildContext.getApplicationProperty(prop).orElseThrow());
             }
         }
         return conf;
@@ -261,7 +261,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private Collection<GeneratedFile> convertGeneratedRuleFile(Collection<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles) {
         return legacyModelFiles.stream().map(f -> new GeneratedFile(
-                IncrementalRuleCodegen.RULE_TYPE,
+                RuleCodegen.RULE_TYPE,
                 f.getPath(), f.getData()))
                 .collect(toList());
     }
@@ -421,13 +421,13 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return ruleUnit.replace('.', '$') + "KieSession";
     }
 
-    public IncrementalRuleCodegen withHotReloadMode() {
+    public RuleCodegen withHotReloadMode() {
         this.hotReloadMode = true;
         return this;
     }
 
     private boolean hasRuleFiles() {
-        return resources.stream().anyMatch(IncrementalRuleCodegen::isRuleFile);
+        return resources.stream().anyMatch(RuleCodegen::isRuleFile);
     }
 
     private static boolean isRuleFile(Resource resource) {
