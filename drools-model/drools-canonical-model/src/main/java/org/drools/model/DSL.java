@@ -135,20 +135,6 @@ public class DSL {
         return new AnnotationValueImpl( key, value );
     }
 
-    // -- Prototype --
-
-    public static Prototype prototype(String pkg, String name, Prototype.Field... fields) {
-        return new PrototypeImpl( pkg, name, fields );
-    }
-
-    public static Prototype.Field field(String name, Class<?> type) {
-        return new PrototypeImpl.FieldImpl( name, type );
-    }
-
-    public static PrototypeVariable declarationOf( Prototype prototype ) {
-        return new PrototypeVariableImpl( prototype );
-    }
-
     // -- Variable --
 
     public static <T> Variable<T> any(Class<T> type) {

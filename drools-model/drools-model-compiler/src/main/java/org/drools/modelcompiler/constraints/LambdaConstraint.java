@@ -26,13 +26,13 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.TupleValueExtractor;
 import org.drools.core.time.Interval;
@@ -132,14 +132,14 @@ public class LambdaConstraint extends AbstractConstraint {
     }
 
     @Override
-    public BitMask getListenedPropertyMask( Class modifiedClass, List<String> settableProperties ) {
+    public BitMask getListenedPropertyMask( ObjectType objectType, List<String> settableProperties ) {
         BitMask mask = adaptBitMask( evaluator.getReactivityBitMask() );
         if (mask != null) {
             return mask;
         }
 
         if (evaluator.getReactiveProps().length == 0) {
-            return super.getListenedPropertyMask( modifiedClass, settableProperties );
+            return super.getListenedPropertyMask( objectType, settableProperties );
         }
 
         mask = getEmptyPropertyReactiveMask(settableProperties.size());

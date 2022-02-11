@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -33,6 +33,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
@@ -690,7 +691,7 @@ public class AddRuleTest {
     public ObjectTypeNode getObjectTypeNode(Rete rete, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = rete.getObjectTypeNodes();
         for (ObjectTypeNode n : nodes) {
-            if (n.getObjectType().getClassType() == nodeClass) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == nodeClass) {
                 return n;
             }
         }

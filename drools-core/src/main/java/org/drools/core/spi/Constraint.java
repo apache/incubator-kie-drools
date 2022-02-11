@@ -76,7 +76,7 @@ public interface Constraint
      */
     boolean isTemporal();
 
-    default BitMask getListenedPropertyMask( Class modifiedClass, List<String> settableProperties ) {
+    default BitMask getListenedPropertyMask( ObjectType objectType, List<String> settableProperties ) {
         return allSetButTraitBitMask();
     }
 

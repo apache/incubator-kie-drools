@@ -22,7 +22,6 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.model.BitMask;
 import org.drools.model.Channel;
@@ -32,8 +31,7 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
-import static java.util.Arrays.asList;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.kiesession.entrypoints.NamedEntryPoint.calculateUpdateBitMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext {
@@ -101,17 +99,8 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public void update(Object object, String... modifiedProperties) {
-        Class modifiedClass = object.getClass();
-        org.drools.core.util.bitmask.BitMask mask = org.drools.core.util.bitmask.AllSetBitMask.get();
-
-        if (modifiedProperties.length > 0) {
-            TypeDeclaration typeDeclaration = reteEvaluator.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
-            if (typeDeclaration.isPropertyReactive()) {
-                mask = calculatePositiveMask( modifiedClass, asList( modifiedProperties ), typeDeclaration.getAccessibleProperties() );
-            }
-        }
-
-        knowledgeHelper.update( getFactHandleForObject( object ), mask, modifiedClass);
+        org.drools.core.util.bitmask.BitMask mask = calculateUpdateBitMask(reteEvaluator.getKnowledgeBase(), object, modifiedProperties);
+        knowledgeHelper.update( getFactHandleForObject( object ), mask, object.getClass() );
     }
 
     private InternalFactHandle getFactHandleForObject( Object object ) {

@@ -30,12 +30,8 @@ public class FactTemplateTest {
     @Test
     public void testFieldsAndGetters() {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
-        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                                0,
-                                                                String.class );
-        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                                 1,
-                                                                 Integer.class );
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name", String.class );
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price", Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese = new FactTemplateImpl( pkg,
                                                           "Cheese",
@@ -48,14 +44,6 @@ public class FactTemplateTest {
 
         assertEquals( 2,
                       cheese.getNumberOfFields() );
-
-        assertSame( fields,
-                    cheese.getAllFieldTemplates() );
-
-        assertSame( cheeseName,
-                    cheese.getFieldTemplate( 0 ) );
-        assertSame( cheesePrice,
-                    cheese.getFieldTemplate( 1 ) );
 
         assertSame( cheeseName,
                     cheese.getFieldTemplate( "name" ) );
@@ -73,21 +61,15 @@ public class FactTemplateTest {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
 
         // Create cheese1 with name and price fields
-        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                                0,
-                                                                String.class );
-        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                                 1,
-                                                                 Integer.class );
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name", String.class );
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price", Integer.class );
         final FieldTemplate[] fields1 = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese1 = new FactTemplateImpl( pkg,
                                                            "Cheese",
                                                            fields1 );
 
         // Create cheese2 with type and price fields
-        final FieldTemplate cheeseType = new FieldTemplateImpl( "type",
-                                                                0,
-                                                                String.class );
+        final FieldTemplate cheeseType = new FieldTemplateImpl( "type", String.class );
         final FieldTemplate[] fields2 = new FieldTemplate[]{cheeseType, cheesePrice};
         final FactTemplate cheese2 = new FactTemplateImpl( pkg,
                                                            "Cheese",
@@ -101,12 +83,8 @@ public class FactTemplateTest {
         assertFalse( cheese1.hashCode() == cheese2.hashCode() );
 
         // create cheese3 with name and price fields, using new instances
-        final FieldTemplate cheeseName2 = new FieldTemplateImpl( "name",
-                                                                 0,
-                                                                 String.class );
-        final FieldTemplate cheesePrice2 = new FieldTemplateImpl( "price",
-                                                                  1,
-                                                                  Integer.class );
+        final FieldTemplate cheeseName2 = new FieldTemplateImpl( "name", String.class );
+        final FieldTemplate cheesePrice2 = new FieldTemplateImpl( "price", Integer.class );
         final FieldTemplate[] fields3 = new FieldTemplate[]{cheeseName2, cheesePrice2};
         final FactTemplate cheese3 = new FactTemplateImpl( pkg,
                                                            "Cheese",
@@ -114,8 +92,6 @@ public class FactTemplateTest {
 
         assertNotSame( cheese1,
                        cheese3 );
-        assertNotSame( cheese1.getAllFieldTemplates(),
-                       cheese3.getAllFieldTemplates() );
         assertEquals( cheese1,
                       cheese3 );
         assertEquals( cheese1.hashCode(),
@@ -125,39 +101,29 @@ public class FactTemplateTest {
     @Test
     public void testFacts() {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
-        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                                0,
-                                                                String.class );
-        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                                 1,
-                                                                 Integer.class );
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name", String.class );
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price", Integer.class );
         final FieldTemplate[] fields1 = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese1 = new FactTemplateImpl( pkg,
                                                            "Cheese",
                                                            fields1 );
 
-        final Fact stilton1 = cheese1.createFact( 10 );
-        stilton1.setFieldValue( "name",
-                                "stilton" );
-        stilton1.setFieldValue( "price",
-                                new Integer( 200 ) );
+        final Fact stilton1 = cheese1.createFact();
+        stilton1.set( "name", "stilton" );
+        stilton1.set( "price", 200 );
 
-        final Fact stilton2 = cheese1.createFact( 11 );
-        stilton2.setFieldValue( 0,
-                                "stilton" );
-        stilton2.setFieldValue( 1,
-                                new Integer( 200 ) );
+        final Fact stilton2 = cheese1.createFact();
+        stilton2.set( "name", "stilton" );
+        stilton2.set( "price",  200 );
 
         assertEquals( stilton1,
                       stilton2 );
         assertEquals( stilton1.hashCode(),
                       stilton2.hashCode() );
 
-        final Fact brie = cheese1.createFact( 12 );
-        brie.setFieldValue( "name",
-                            "brie" );
-        brie.setFieldValue( "price",
-                            new Integer( 55 ) );
+        final Fact brie = cheese1.createFact();
+        brie.set( "name", "brie" );
+        brie.set( "price", 55 );
 
         assertFalse( stilton1.equals( brie ) );
         assertFalse( stilton1.hashCode() == brie.hashCode() );

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
@@ -163,21 +162,14 @@ public abstract class BetaNode extends LeftTupleSource
         if (!isRightInputIsRiaNode()) {
             ObjectType objectType = pattern.getObjectType();
 
-            if (objectType instanceof ClassObjectType) {
-                Class objectClass = objectType.getClassType();
-                if (isPropertyReactive(context, objectClass)) {
-                    rightListenedProperties = pattern.getListenedProperties();
-                    List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
-                    rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);
-                    rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(objectClass, accessibleProperties));
-                    rightNegativeMask = pattern.getNegativeWatchMask(accessibleProperties);
-                } else {
-                    // if property reactive is not on, then accept all modification propagations
-                    rightDeclaredMask = AllSetBitMask.get();
-                }
+            if (isPropertyReactive(context, objectType)) {
+                rightListenedProperties = pattern.getListenedProperties();
+                List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
+                rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);
+                rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(objectType, accessibleProperties));
+                rightNegativeMask = pattern.getNegativeWatchMask(accessibleProperties);
             } else {
-                // InitialFact has no type declaration and cannot be property specific
-                // Only ClassObjectType can use property specific
+                // if property reactive is not on, then accept all modification propagations
                 rightDeclaredMask = AllSetBitMask.get();
             }
         } else {

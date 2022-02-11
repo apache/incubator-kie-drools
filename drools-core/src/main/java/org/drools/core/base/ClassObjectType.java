@@ -16,6 +16,13 @@
 
 package org.drools.core.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.InitialFact;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.reteoo.InitialFactImpl;
@@ -24,13 +31,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Match;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Java class semantics <code>ObjectType</code>.
@@ -96,7 +96,6 @@ public class ClassObjectType
                            final boolean isEvent) {
         this.cls = objectTypeClass;
         this.isEvent = isEvent;
-        //if (objectTypeClass != null)
         this.clsName = this.cls.getName();
         this.valueType = ValueType.determineValueType( objectTypeClass );
     }
@@ -132,17 +131,23 @@ public class ClassObjectType
         out.writeBoolean( isEvent );
     }
 
-    /**
-     * Return the Java object class.
-     *
-     * @return The Java object class.
-     */
     public Class<?> getClassType() {
         return this.cls;
     }
 
+    @Override
+    public Object getTypeKey() {
+        return getClassType();
+    }
+
+    @Override
     public String getClassName() {
         return this.clsName;
+    }
+
+    @Override
+    public boolean hasField(String name) {
+        return ClassUtils.getFieldOrAccessor(cls, name) != null;
     }
 
     public void setClassType(Class<?> cls) {
@@ -150,18 +155,27 @@ public class ClassObjectType
         this.valueType = ValueType.determineValueType( cls );
     }
 
+    @Override
     public boolean isAssignableFrom(ObjectType objectType) {
         return objectType instanceof ClassObjectType && isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() );
     }
 
+    @Override
     public boolean isAssignableFrom(Class<?> clazz) {
         return this.cls.isAssignableFrom( clazz );
     }
 
+    @Override
+    public boolean isAssignableTo(Class<?> clazz) {
+        return clazz.isAssignableFrom( this.cls );
+    }
+
+    @Override
     public ValueType getValueType() {
         return this.valueType;
     }
 
+    @Override
     public boolean isEvent() {
         return isEvent;
     }
@@ -170,6 +184,12 @@ public class ClassObjectType
         this.isEvent = isEvent;
     }
 
+    @Override
+    public boolean isTemplate() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "[ClassObjectType " + (this.isEvent ? "event=" : "class=") + getClassType().getName() + "]";
     }

@@ -19,6 +19,7 @@ package org.drools.core.facttemplates;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.spi.ObjectType;
@@ -93,14 +94,17 @@ public class FactTemplateObjectType
         }
     }
 
-    public boolean isAssignableFrom(Object object) {
-        return this.factTemplate.equals( object );
-    }
-
+    @Override
     public boolean isAssignableFrom(Class<?> clazz) {
         return false;
     }
 
+    @Override
+    public boolean isAssignableTo(Class<?> clazz) {
+        return false;
+    }
+
+    @Override
     public boolean isAssignableFrom(ObjectType objectType) {
         if ( !(objectType instanceof FactTemplateObjectType) ) {
             return false;
@@ -109,10 +113,12 @@ public class FactTemplateObjectType
         }
     }
 
+    @Override
     public ValueType getValueType() {
         return ValueType.FACTTEMPLATE_TYPE;
     }
 
+    @Override
     public boolean isEvent() {
         return isEvent;
     }
@@ -121,27 +127,36 @@ public class FactTemplateObjectType
         this.isEvent = isEvent;
     }
 
-    public Class<?> getClassType() {
-        return null;
+    @Override
+    public Object getTypeKey() {
+        return factTemplate.getName();
     }
 
+    @Override
+    public boolean isTemplate() {
+        return true;
+    }
+
+    @Override
     public String getClassName() {
         return factTemplate.getPackage() + "." + factTemplate.getName();
     }
 
+    @Override
+    public boolean hasField(String name) {
+        return factTemplate.getFieldTemplate(name) != null;
+    }
+
+    public Collection<String> getFieldNames() {
+        return factTemplate.getFieldNames();
+    }
+
+    @Override
     public String toString() {
         return "[FactTemplateObjectType "+( this.isEvent ? "event=" : "template=") + this.factTemplate.getName() + "]";
     }
 
-    /**
-     * Determine if another object is equal to this.
-     *
-     * @param object
-     *            The object to test.
-     *
-     * @return <code>true</code> if <code>object</code> is equal to this,
-     *         otherwise <code>false</code>.
-     */
+    @Override
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
@@ -156,6 +171,7 @@ public class FactTemplateObjectType
         return this.factTemplate.equals( other.factTemplate );
     }
 
+    @Override
     public int hashCode() {
         return this.factTemplate.hashCode();
     }

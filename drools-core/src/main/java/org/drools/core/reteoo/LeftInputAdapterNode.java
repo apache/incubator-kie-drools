@@ -35,7 +35,6 @@ import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
@@ -119,8 +118,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return AllSetBitMask.get();
         }
 
-        Class objectClass = ((ClassWireable) objectType).getClassType();
-        return isPropertyReactive( context, objectClass ) ?
+        return isPropertyReactive( context, objectType ) ?
                pattern.getPositiveWatchMask( pattern.getAccessibleProperties( context.getRuleBase() ) ) :
                AllSetBitMask.get();
     }

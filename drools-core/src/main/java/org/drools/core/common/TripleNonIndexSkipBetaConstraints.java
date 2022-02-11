@@ -27,6 +27,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 
@@ -150,10 +151,10 @@ public class TripleNonIndexSkipBetaConstraints
         return this.constraints.isAllowedCachedRight( context, tuple );
     }
 
-    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
-        return constraint0.getListenedPropertyMask(modifiedClass, settableProperties)
-                          .setAll(constraint1.getListenedPropertyMask(modifiedClass, settableProperties))
-                          .setAll(constraint2.getListenedPropertyMask(modifiedClass, settableProperties));
+    public BitMask getListenedPropertyMask(ObjectType modifiedType, List<String> settableProperties) {
+        return constraint0.getListenedPropertyMask(modifiedType, settableProperties)
+                          .setAll(constraint1.getListenedPropertyMask(modifiedType, settableProperties))
+                          .setAll(constraint2.getListenedPropertyMask(modifiedType, settableProperties));
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {

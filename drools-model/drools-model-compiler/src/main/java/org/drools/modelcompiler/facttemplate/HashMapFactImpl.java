@@ -18,30 +18,19 @@ package org.drools.modelcompiler.facttemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.model.PrototypeFact;
 
 public class HashMapFactImpl implements Fact, PrototypeFact {
 
-    private static AtomicLong staticFactId = new AtomicLong();
-
     private FactTemplate factTemplate;
-    private long factId;
 
     private Map<String, Object> valuesMap = new HashMap<>();
 
     public HashMapFactImpl( FactTemplate factTemplate ) {
-        factId = staticFactId.addAndGet(1);
         this.factTemplate = factTemplate;
-    }
-
-    @Override
-    public long getFactId() {
-        return factId;
     }
 
     @Override
@@ -50,44 +39,12 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
     }
 
     @Override
-    public Object getFieldValue(int index) {
-        FieldTemplate field = factTemplate.getFieldTemplate(index);
-        return valuesMap.get(field.getName());
-    }
-
-    @Override
-    public Object getFieldValue(String key) {
-        return valuesMap.get(key);
-    }
-
-    @Override
-    public void setFieldValue(int index, Object value) {
-        FieldTemplate field = factTemplate.getFieldTemplate(index);
-        valuesMap.put( field.getName(), value );
-    }
-
-    @Override
-    public void setFieldValue(String key, Object value) {
-        valuesMap.put(key, value);
-    }
-
-    @Override
-    public Object get( int index ) {
-        return getFieldValue( index );
-    }
-
-    @Override
     public Object get( String name ) {
-        return getFieldValue( name );
+        return valuesMap.get(name);
     }
 
     @Override
     public void set( String name, Object value ) {
-        setFieldValue( name, value );
-    }
-
-    @Override
-    public void set( int index, Object value ) {
-        setFieldValue( index, value );
+        valuesMap.put(name, value);
     }
 }

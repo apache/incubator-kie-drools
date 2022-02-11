@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.DrlProject;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.api.KieBase;
@@ -332,7 +333,7 @@ public final class KieUtil {
     public static ObjectTypeNode getObjectTypeNode(final RuleBase kbase, final Class<?> nodeClass) {
         final List<ObjectTypeNode> nodes = kbase.getRete().getObjectTypeNodes();
         for (final ObjectTypeNode n : nodes) {
-            if (n.getObjectType().getClassType() == nodeClass) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == nodeClass) {
                 return n;
             }
         }

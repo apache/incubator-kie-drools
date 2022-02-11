@@ -342,7 +342,7 @@ public class ObjectTypeNodeCompiler {
     }
 
     private static boolean shouldCreateCompiledAlphaNetwork(ObjectTypeNode f) {
-        return !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType())
+        return !f.getObjectType().isAssignableTo(InitialFact.class)
                 && !(f.getObjectSinkPropagator() instanceof CompiledNetwork); // DROOLS-6336 Avoid generating an ANC from an ANC, it won't work anyway
     }
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.impl.RuleBase;
@@ -225,7 +226,7 @@ public class NotTest {
     public static ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
         for (ObjectTypeNode n : nodes) {
-            if (n.getObjectType().getClassType() == nodeClass) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == nodeClass) {
                 return n;
             }
         }

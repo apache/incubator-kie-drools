@@ -523,12 +523,12 @@ public class Pattern
     }
 
     public List<String> getAccessibleProperties(RuleBase ruleBase) {
-        return PropertySpecificUtil.getAccessibleProperties( ruleBase, getClassType() );
+        return PropertySpecificUtil.getAccessibleProperties( ruleBase, objectType );
     }
 
     public BitMask getPositiveWatchMask( List<String> accessibleProperties ) {
         if (positiveWatchMask == null) {
-            positiveWatchMask = calculatePositiveMask( getClassType(), listenedProperties, accessibleProperties );
+            positiveWatchMask = calculatePositiveMask( objectType, listenedProperties, accessibleProperties );
         }
         return positiveWatchMask;
     }
@@ -539,17 +539,13 @@ public class Pattern
 
     public BitMask getNegativeWatchMask( List<String> accessibleProperties ) {
         if (negativeWatchMask == null) {
-            negativeWatchMask = calculateNegativeMask(getClassType(), listenedProperties, accessibleProperties);
+            negativeWatchMask = calculateNegativeMask(objectType, listenedProperties, accessibleProperties);
         }
         return negativeWatchMask;
     }
 
     public void setNegativeWatchMask( BitMask negativeWatchMask ) {
         this.negativeWatchMask = negativeWatchMask;
-    }
-
-    private Class<?> getClassType() {
-        return (( ClassObjectType ) objectType).getClassType();
     }
 
     public Map<String, AnnotationDefinition> getAnnotations() {

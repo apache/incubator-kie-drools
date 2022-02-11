@@ -24,6 +24,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
@@ -289,8 +290,8 @@ public class AlphaNode extends ObjectSource
         }
     }
 
-    public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {
-        return constraint.getListenedPropertyMask(modifiedClass, settableProperties);
+    public BitMask calculateDeclaredMask(ObjectType objectType, List<String> settableProperties) {
+        return constraint.getListenedPropertyMask(objectType, settableProperties);
     }
 
     @Override

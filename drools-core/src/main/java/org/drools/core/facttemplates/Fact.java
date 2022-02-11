@@ -18,30 +18,9 @@ package org.drools.core.facttemplates;
 
 public interface Fact {
 
-    /**
-     * Return the value at the given field  index
-     * @param id
-     * @return
-     */
-    Object getFieldValue(int index);
+    Object get(String name);
 
-    Object getFieldValue(String name);
+    void set(String name, Object value);
 
-    void setFieldValue(String name,
-                       Object value);
-
-    void setFieldValue(int index,
-                       Object value);
-
-    /**
-     * Return the unique ID for the fact
-     * @return
-     */
-    long getFactId();
-
-    /**
-     * Return the Deftemplate for the fact
-     * @return
-     */
     FactTemplate getFactTemplate();
 }

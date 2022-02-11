@@ -23,6 +23,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.internal.conf.IndexPrecedenceOption;
@@ -180,11 +181,11 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
-        return constraints[0].getListenedPropertyMask(modifiedClass, settableProperties)
-                             .setAll(constraints[1].getListenedPropertyMask(modifiedClass, settableProperties))
-                             .setAll(constraints[2].getListenedPropertyMask(modifiedClass, settableProperties))
-                             .setAll(constraints[3].getListenedPropertyMask(modifiedClass, settableProperties));
+    public BitMask getListenedPropertyMask(ObjectType modifiedType, List<String> settableProperties) {
+        return constraints[0].getListenedPropertyMask(modifiedType, settableProperties)
+                             .setAll(constraints[1].getListenedPropertyMask(modifiedType, settableProperties))
+                             .setAll(constraints[2].getListenedPropertyMask(modifiedType, settableProperties))
+                             .setAll(constraints[3].getListenedPropertyMask(modifiedType, settableProperties));
     }
 
     public void registerEvaluationContext(BuildContext buildContext) {

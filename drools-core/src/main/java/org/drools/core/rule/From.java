@@ -28,7 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.facttemplates.Fact;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
@@ -133,7 +135,9 @@ public class From extends ConditionalElement
     }
 
     public Class<?> getResultClass() {
-        return resultClass != null ? resultClass : resultPattern.getObjectType().getClassType();
+        return resultClass != null ?
+                resultClass :
+                (resultPattern.getObjectType().isTemplate() ? Fact.class : ((ClassObjectType) resultPattern.getObjectType()).getClassType());
     }
 
     public void setResultClass(Class<?> resultClass) {

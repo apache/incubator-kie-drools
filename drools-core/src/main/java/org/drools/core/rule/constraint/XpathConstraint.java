@@ -354,7 +354,7 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         public Class<?> getReturnedClass() {
             if (returnedType != null) {
-                return returnedType.getClassType();
+                return ((ClassObjectType) returnedType).getClassType();
             }
             try {
                 Method accessor = classObjectType.getClassType().getMethod( field );
