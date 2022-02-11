@@ -98,7 +98,7 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
     }
 
     private boolean ignoredMessageType(T cloudEvent, String type) {
-        return !type.equals(cloudEvent.getType()) && !type.equals(cloudEvent.getSource());
+        return !type.equals(cloudEvent.getType()) && !type.equals(String.valueOf(cloudEvent.getSource()));
     }
 
 }

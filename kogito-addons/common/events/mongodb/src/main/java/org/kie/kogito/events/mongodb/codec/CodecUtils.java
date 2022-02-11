@@ -40,8 +40,8 @@ public class CodecUtils {
 
     static void encodeDataEvent(Document doc, AbstractDataEvent<?> event) {
         doc.put(ID, event.getId());
-        doc.put("specVersion", event.getSpecVersion());
-        doc.put("source", event.getSource());
+        doc.put("specversion", event.getSpecVersion().toString());
+        doc.put("source", event.getSource().toString());
         doc.put("type", event.getType());
         doc.put("time", event.getTime());
         doc.put("subject", event.getSubject());

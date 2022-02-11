@@ -25,6 +25,7 @@ import org.kie.kogito.services.event.AbstractProcessDataEvent;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -34,7 +35,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CloudEventConverterTest {
 
-    static final ObjectMapper objectMapper = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
+    static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(JsonFormat.getCloudEventJacksonModule())
+            .registerModule(new JavaTimeModule());
 
     @Test
     void verifyBasicCloudEventConversion() throws IOException {

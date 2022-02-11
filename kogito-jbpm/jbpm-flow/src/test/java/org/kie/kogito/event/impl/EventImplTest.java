@@ -191,7 +191,6 @@ public class EventImplTest {
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyEvent("pepe"), trigger).toCompletableFuture().get();
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
         verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.isNull(), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(),
                 Mockito.isNull());
         assertEquals(trigger, signal.getValue());

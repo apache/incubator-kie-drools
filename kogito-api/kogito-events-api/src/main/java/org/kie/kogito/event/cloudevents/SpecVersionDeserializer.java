@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package org.kie.kogito.event.cloudevents;
 
-/**
- * Interface for Event metadata information
- */
-public interface EventMeta {
+import java.io.IOException;
 
-    /**
-     * Returns specification version of the cloud event
-     *
-     * @return specification version
-     */
-    String getSpecVersion();
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
-    /**
-     * Returns type of the event this instance represents e.g. ProcessInstanceEvent
-     *
-     * @return type of the event
-     */
-    String getType();
+import io.cloudevents.SpecVersion;
 
-    /**
-     * Returns source of the event that is in URI syntax
-     *
-     * @return uri source
-     */
-    String getSource();
+public class SpecVersionDeserializer extends JsonDeserializer<SpecVersion> {
+
+    @Override
+    public SpecVersion deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        return SpecVersion.parse(jsonParser.getText());
+    }
 }

@@ -15,13 +15,18 @@
  */
 package org.kie.kogito.event.cloudevents.utils;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -221,6 +226,25 @@ public final class CloudEventUtils {
 
         public static ObjectMapper mapper() {
             return OBJECT_MAPPER;
+        }
+    }
+
+    public static Object getAttribute(String name, Object instance) throws IllegalArgumentException {
+        try {
+            return Arrays.stream(Introspector.getBeanInfo(instance.getClass()).getPropertyDescriptors())
+                    .filter(p -> Objects.equals(p.getName(), name))
+                    .map(p -> {
+                        try {
+                            return p.getReadMethod().invoke(instance);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+        } catch (IntrospectionException | RuntimeException e) {
+            throw new IllegalArgumentException("Error getting attribute " + name, e);
         }
     }
 }

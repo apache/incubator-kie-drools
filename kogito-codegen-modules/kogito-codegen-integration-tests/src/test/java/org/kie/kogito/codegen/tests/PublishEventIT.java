@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.codegen.tests;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,7 +86,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("TestCase.SimpleMilestone");
         assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource()).isEqualTo("http://myhost/SimpleMilestone");
+        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/SimpleMilestone");
 
         Set<MilestoneEventBody> milestones = ((ProcessInstanceDataEvent) event).getData().getMilestones();
         assertThat(milestones)
@@ -134,7 +135,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource()).isEqualTo("http://myhost/BusinessRuleTask");
+        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/BusinessRuleTask");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "BusinessRuleTask", "Default Process", 2);
 
@@ -181,7 +182,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("compensateAll");
         assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource()).isEqualTo("http://myhost/compensateAll");
+        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/compensateAll");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "compensateAll", "Compensate All", 2);
 
@@ -606,7 +607,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource()).isEqualTo("http://myhost/BusinessRuleTask");
+        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/BusinessRuleTask");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "BusinessRuleTask", "Default Process", 2);
 
@@ -689,8 +690,8 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(body.getProcessName()).isEqualTo(processName);
         assertThat(body.getState()).isEqualTo(state);
 
-        assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
-        assertThat(event.getTime()).doesNotContain("[");
+        assertThat(event.getSource().toString()).isEqualTo("http://myhost/" + processId);
+        assertThat(event.getTime()).isBeforeOrEqualTo(ZonedDateTime.now().toOffsetDateTime());
 
         assertThat(((ProcessInstanceDataEvent) event).getKogitoAddons()).isEqualTo("test");
 
@@ -715,8 +716,8 @@ public class PublishEventIT extends AbstractCodegenIT {
             assertThat(body.getCompleteDate()).isNull();
         }
 
-        assertThat(event.getSource()).isEqualTo("http://myhost/" + processId);
-        assertThat(event.getTime()).doesNotContain("[");
+        assertThat(event.getSource().toString()).isEqualTo("http://myhost/" + processId);
+        assertThat(event.getTime()).isBeforeOrEqualTo(ZonedDateTime.now().toOffsetDateTime());
 
         assertThat(((UserTaskInstanceDataEvent) event).getKogitoAddons()).isEqualTo("test");
 

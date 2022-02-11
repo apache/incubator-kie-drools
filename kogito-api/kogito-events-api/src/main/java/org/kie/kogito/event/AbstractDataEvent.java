@@ -15,15 +15,27 @@
  */
 package org.kie.kogito.event;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
+import org.kie.kogito.event.cloudevents.SpecVersionDeserializer;
+import org.kie.kogito.event.cloudevents.SpecVersionSerializer;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import io.cloudevents.SpecVersion;
 
 /**
  * This is an abstract implementation of the {@link DataEvent} that contains basic common attributes referring to
@@ -32,7 +44,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @param <T> the payload
  */
-// TODO: to be migrated to actual CE https://issues.redhat.com/browse/KOGITO-6476
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractDataEvent<T> implements DataEvent<T> {
 
@@ -51,20 +62,27 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     public static final String SOURCE_FORMAT = "/process/%s";
     public static final String SPEC_VERSION = "1.0";
 
+    @JsonDeserialize(using = SpecVersionDeserializer.class)
+    @JsonSerialize(using = SpecVersionSerializer.class)
     @JsonProperty("specversion")
-    private String specVersion;
+    private SpecVersion specVersion;
+
     private String id;
-    private String source;
+
+    private URI source;
+
     private String type;
-    private String time;
+
+    private OffsetDateTime time;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String subject;
-    @JsonProperty("datacontenttype")
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String dataContentType;
-    @JsonProperty("dataschema")
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private String dataSchema;
+    private URI dataSchema;
 
     private T data;
 
@@ -97,11 +115,11 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             String kogitoProcessId,
             String kogitoRootProcessId,
             String kogitoAddons) {
-        this.specVersion = SPEC_VERSION;
+        this.specVersion = SpecVersion.parse(SPEC_VERSION);
         this.id = UUID.randomUUID().toString();
-        this.source = source;
+        this.source = Optional.ofNullable(source).map(URI::create).orElse(null);
         this.type = type;
-        this.time = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        this.time = ZonedDateTime.now().toOffsetDateTime();
         this.data = body;
 
         this.kogitoProcessinstanceId = kogitoProcessinstanceId;
@@ -127,25 +145,25 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         this(type, source, body, kogitoProcessinstanceId, kogitoRootProcessinstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons);
         this.subject = subject;
         this.dataContentType = dataContentType;
-        this.dataSchema = dataSchema;
+        this.dataSchema = URI.create(dataSchema);
     }
 
     protected void ensureRequiredFields() {
         if (this.type == null || this.type.isEmpty()) {
             this.type = TYPE_PREFIX;
         }
-        if (this.source == null || this.source.isEmpty()) {
-            this.source = String.format(SOURCE_FORMAT, kogitoProcessId);
+        if (this.source == null) {
+            this.source = URI.create(String.format(SOURCE_FORMAT, kogitoProcessId));
         }
     }
 
     @Override
-    public String getSource() {
+    public URI getSource() {
         return source;
     }
 
     @Override
-    public String getSpecVersion() {
+    public SpecVersion getSpecVersion() {
         return specVersion;
     }
 
@@ -160,7 +178,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
-    public String getTime() {
+    public OffsetDateTime getTime() {
         return time;
     }
 
@@ -175,7 +193,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
-    public String getDataSchema() {
+    public URI getDataSchema() {
         return dataSchema;
     }
 
@@ -202,5 +220,28 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
 
     public String getKogitoAddons() {
         return kogitoAddons;
+    }
+
+    @Override
+    public Object getAttribute(String name) throws IllegalArgumentException {
+        return CloudEventUtils.getAttribute(name, this);
+    }
+
+    //TODO: missing additional attributes as extensions for CloudEvent API.
+    @Override
+    public Object getExtension(String s) {
+        return null;
+    }
+
+    @JsonIgnore
+    @Override
+    public Set<String> getAttributeNames() {
+        return DataEvent.super.getAttributeNames();
+    }
+
+    @JsonIgnore
+    @Override
+    public Set<String> getExtensionNames() {
+        return Collections.emptySet();
     }
 }

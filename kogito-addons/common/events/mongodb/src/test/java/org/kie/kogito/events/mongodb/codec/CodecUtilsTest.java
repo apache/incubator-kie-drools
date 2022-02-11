@@ -53,8 +53,8 @@ class CodecUtilsTest {
         CodecUtils.encodeDataEvent(doc, event);
 
         assertEquals(event.getId(), doc.get(ID));
-        assertEquals(event.getSpecVersion(), doc.get("specVersion"));
-        assertEquals(event.getSource(), doc.get("source"));
+        assertEquals(event.getSpecVersion().toString(), doc.get("specversion"));
+        assertEquals(event.getSource().toString(), doc.get("source"));
         assertEquals(event.getType(), doc.get("type"));
         assertEquals(event.getTime(), doc.get("time"));
         assertEquals(event.getSubject(), doc.get("subject"));

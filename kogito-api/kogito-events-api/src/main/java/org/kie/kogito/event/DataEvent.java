@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.event;
 
+import io.cloudevents.CloudEventContext;
+
 /**
  * Represents top level data event structure that can be emitted
  * from within running process, decision or rule.
@@ -30,7 +32,7 @@ package org.kie.kogito.event;
  *
  * @param <T> type of the body of the event
  */
-public interface DataEvent<T> extends EventMeta {
+public interface DataEvent<T> extends CloudEventContext {
 
     /**
      * Returns unique id of the event
@@ -40,25 +42,11 @@ public interface DataEvent<T> extends EventMeta {
     String getId();
 
     /**
-     * Returns returns time when the event was created
-     *
-     * @return time of the event
-     */
-    String getTime();
-
-    /**
      * The Content type of data value. This attribute enables data to carry any type of content, whereby format and encoding might differ from that of the chosen event format.
      *
      * @return Content type of data value
      */
     String getDataContentType();
-
-    /**
-     * Identifies the schema that data adheres to
-     *
-     * @return the schema that data adheres to
-     */
-    String getDataSchema();
 
     /**
      * The subject of the event in the context of the event producer (identified by source)
