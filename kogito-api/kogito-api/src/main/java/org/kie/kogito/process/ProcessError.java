@@ -21,6 +21,10 @@ public interface ProcessError {
 
     String errorMessage();
 
+    default Throwable errorCause() {
+        return null;
+    }
+
     void retrigger();
 
     void skip();

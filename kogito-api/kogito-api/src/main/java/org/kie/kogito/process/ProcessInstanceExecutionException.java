@@ -29,7 +29,11 @@ public class ProcessInstanceExecutionException extends RuntimeException {
     private String errorMessage;
 
     public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String errorMessage) {
-        super("Process instance with id " + processInstanceId + " not found");
+        this(processInstanceId, failedNodeId, errorMessage, null);
+    }
+
+    public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String errorMessage, Throwable rootCause) {
+        super("Process instance with id " + processInstanceId + " failed becuase of " + errorMessage, rootCause);
         this.processInstanceId = processInstanceId;
         this.failedNodeId = failedNodeId;
         this.errorMessage = errorMessage;

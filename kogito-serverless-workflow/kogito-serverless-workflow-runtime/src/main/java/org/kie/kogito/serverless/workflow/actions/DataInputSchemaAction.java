@@ -48,10 +48,9 @@ public class DataInputSchemaAction implements Action {
             SchemaLoader.load(mapper.readValue(URIContentLoaderFactory.runtimeLoader(schema).toBytes(), JSONObject.class))
                     .validate(mapper.convertValue(getWorkflowData(context), JSONObject.class));
         } catch (ValidationException ex) {
+            logger.warn("There are validation errors {}", ex.getCausingExceptions());
             if (failOnValidationErrors) {
-                throw ex;
-            } else {
-                logger.warn("There are validation errors {}", ex.getCausingExceptions());
+                throw new IllegalArgumentException("Error validating input schema", ex);
             }
         }
 

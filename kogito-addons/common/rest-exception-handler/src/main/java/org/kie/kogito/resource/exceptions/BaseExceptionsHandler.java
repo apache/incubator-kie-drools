@@ -39,79 +39,98 @@ public abstract class BaseExceptionsHandler<T> {
     public static final String NODE_ID = "nodeId";
     public static final String FAILED_NODE_ID = "failedNodeId";
     public static final String ID = "id";
-    private final Map<Class<? extends Exception>, Function<Exception, T>> mapper;
+    private final Map<Class<? extends Exception>, FunctionHolder<T, ?>> mapper;
+
+    private static class FunctionHolder<T, R> {
+        private final Function<Exception, R> contentGenerator;
+        private final Function<R, T> responseGenerator;
+
+        public FunctionHolder(Function<Exception, R> contentGenerator, Function<R, T> responseGenerator) {
+            this.contentGenerator = contentGenerator;
+            this.responseGenerator = responseGenerator;
+        }
+
+        public Function<Exception, R> getContentGenerator() {
+            return contentGenerator;
+        }
+
+        public Function<R, T> getResponseGenerator() {
+            return responseGenerator;
+        }
+    }
+
+    private final FunctionHolder<T, Exception> defaultHolder = new FunctionHolder<>(ex -> ex, BaseExceptionsHandler.this::internalError);
 
     protected BaseExceptionsHandler() {
         mapper = new HashMap<>();
-        mapper.put(InvalidLifeCyclePhaseException.class,
-                ex -> badRequest(Collections.singletonMap(MESSAGE, ex.getMessage())));
+        mapper.put(InvalidLifeCyclePhaseException.class, new FunctionHolder<>(
+                ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), BaseExceptionsHandler.this::badRequest));
 
-        mapper.put(InvalidTransitionException.class,
-                ex -> badRequest(Collections.singletonMap(MESSAGE, ex.getMessage())));
+        mapper.put(InvalidTransitionException.class, new FunctionHolder<>(
+                ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), BaseExceptionsHandler.this::badRequest));
 
-        mapper.put(NodeInstanceNotFoundException.class,
+        mapper.put(NodeInstanceNotFoundException.class, new FunctionHolder<>(
                 ex -> {
                     NodeInstanceNotFoundException exception = (NodeInstanceNotFoundException) ex;
                     Map<String, String> response = new HashMap<>();
                     response.put(MESSAGE, exception.getMessage());
                     response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
                     response.put(NODE_INSTANCE_ID, exception.getNodeInstanceId());
-                    return notFound(response);
-                });
+                    return response;
+                }, BaseExceptionsHandler.this::notFound));
 
-        mapper.put(NodeNotFoundException.class,
+        mapper.put(NodeNotFoundException.class, new FunctionHolder<>(
                 ex -> {
                     NodeNotFoundException exception = (NodeNotFoundException) ex;
                     Map<String, String> response = new HashMap<>();
                     response.put(MESSAGE, exception.getMessage());
                     response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
                     response.put(NODE_ID, exception.getNodeId());
-                    return notFound(response);
-                });
+                    return response;
+                }, BaseExceptionsHandler.this::notFound));
 
-        mapper.put(NotAuthorizedException.class,
-                ex -> forbidden(Collections.singletonMap(MESSAGE, ex.getMessage())));
+        mapper.put(NotAuthorizedException.class, new FunctionHolder<>(
+                ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), BaseExceptionsHandler.this::forbidden));
 
-        mapper.put(ProcessInstanceDuplicatedException.class,
+        mapper.put(ProcessInstanceDuplicatedException.class, new FunctionHolder<>(
                 ex -> {
                     ProcessInstanceDuplicatedException exception = (ProcessInstanceDuplicatedException) ex;
                     Map<String, String> response = new HashMap<>();
                     response.put(MESSAGE, exception.getMessage());
                     response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
-                    return conflict(response);
-                });
+                    return response;
+                }, BaseExceptionsHandler.this::conflict));
 
-        mapper.put(ProcessInstanceExecutionException.class,
+        mapper.put(ProcessInstanceExecutionException.class, new FunctionHolder<>(
                 ex -> {
                     ProcessInstanceExecutionException exception = (ProcessInstanceExecutionException) ex;
                     Map<String, String> response = new HashMap<>();
                     response.put(ID, exception.getProcessInstanceId());
                     response.put(FAILED_NODE_ID, exception.getFailedNodeId());
                     response.put(MESSAGE, exception.getErrorMessage());
-                    return internalError(response);
-                });
+                    return response;
+                }, BaseExceptionsHandler.this::internalError));
 
-        mapper.put(ProcessInstanceNotFoundException.class,
+        mapper.put(ProcessInstanceNotFoundException.class, new FunctionHolder<>(
                 ex -> {
                     ProcessInstanceNotFoundException exception = (ProcessInstanceNotFoundException) ex;
                     Map<String, String> response = new HashMap<>();
                     response.put(MESSAGE, exception.getMessage());
                     response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
-                    return notFound(response);
-                });
+                    return response;
+                }, BaseExceptionsHandler.this::notFound));
 
-        mapper.put(VariableViolationException.class,
+        mapper.put(VariableViolationException.class, new FunctionHolder<>(
                 ex -> {
                     VariableViolationException exception = (VariableViolationException) ex;
                     Map<String, String> response = new HashMap<>();
                     response.put(MESSAGE, exception.getMessage() + " : " + exception.getErrorMessage());
                     response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
                     response.put(VARIABLE, exception.getVariableName());
-                    return badRequest(response);
-                });
+                    return response;
+                }, BaseExceptionsHandler.this::badRequest));
 
-        mapper.put(IllegalArgumentException.class, ex -> badRequest(
-                Collections.singletonMap(MESSAGE, ex.getMessage())));
+        mapper.put(IllegalArgumentException.class, new FunctionHolder<>(ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), BaseExceptionsHandler.this::badRequest));
     }
 
     protected abstract <R> T badRequest(R body);
@@ -124,9 +143,20 @@ public abstract class BaseExceptionsHandler<T> {
 
     protected abstract <R> T forbidden(R body);
 
-    public <R extends Exception> T mapException(R exception) {
-        return mapper
-                .getOrDefault(exception.getClass(), this::internalError)
-                .apply(exception);
+    public <R extends Exception, U> T mapException(R exception) {
+        FunctionHolder<T, U> holder = (FunctionHolder<T, U>) mapper.getOrDefault(exception.getClass(), defaultHolder);
+        U body = holder.getContentGenerator().apply(exception);
+        if (exception instanceof ProcessInstanceExecutionException) {
+            Throwable rootCause = ((ProcessInstanceExecutionException) exception).getCause();
+
+            while (rootCause != null) {
+                if (mapper.containsKey(rootCause.getClass())) {
+                    holder = (FunctionHolder<T, U>) mapper.get(rootCause.getClass());
+                    break;
+                }
+                rootCause = rootCause.getCause();
+            }
+        }
+        return holder.getResponseGenerator().apply(body);
     }
 }

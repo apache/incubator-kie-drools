@@ -17,6 +17,7 @@ package org.kie.kogito.internal.process.runtime;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.process.flexible.AdHocFragment;
@@ -50,7 +51,6 @@ public interface KogitoWorkflowProcessInstance extends WorkflowProcessInstance, 
      * Returns error message associated with this process instance in case it is in an error
      * state. It will consists of
      * <ul>
-     * <li>unique error id (uuid)</li>
      * <li>fully qualified class name of the root cause</li>
      * <li>error message of the root cause</li>
      * </ul>
@@ -58,6 +58,13 @@ public interface KogitoWorkflowProcessInstance extends WorkflowProcessInstance, 
      * @return error message
      */
     String getErrorMessage();
+
+    /**
+     * Returns the throwable originating the error, if available
+     * 
+     * @return
+     */
+    Optional<Throwable> getErrorCause();
 
     /**
      * Returns optional correlation key assigned to process instance

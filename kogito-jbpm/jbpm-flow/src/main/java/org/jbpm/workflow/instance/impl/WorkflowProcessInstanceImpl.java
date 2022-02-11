@@ -135,6 +135,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     private String nodeIdInError;
     private String errorMessage;
+    private transient Optional<Throwable> errorCause = Optional.empty();
 
     private int slaCompliance = KogitoProcessInstance.SLA_NA;
     private Date slaDueDate;
@@ -1056,6 +1057,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     @Override
+    public Optional<Throwable> getErrorCause() {
+        return errorCause;
+    }
+
+    @Override
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
     }
@@ -1075,12 +1081,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     @Override
     public void setErrorState(NodeInstance nodeInstanceInError, Exception e) {
-        String errorId = UUID.randomUUID().toString();
         this.nodeIdInError = nodeInstanceInError.getNodeDefinitionId();
+        this.errorCause = Optional.of(e);
         Throwable rootException = getRootException(e);
-        this.errorMessage = errorId + " - " + rootException.getClass().getCanonicalName() + " - " + rootException.getMessage();
+        this.errorMessage = rootException.getClass().getCanonicalName() + " - " + rootException.getMessage();
         setState(STATE_ERROR);
-        logger.error("Unexpected error (id {}) while executing node {} in process instance {}", errorId, nodeInstanceInError.getNode().getName(), this.getStringId(), e);
+        logger.error("Unexpected error while executing node {} in process instance {}", nodeInstanceInError.getNode().getName(), this.getStringId(), e);
         // remove node instance that caused an error
         ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceInError.getNodeInstanceContainer()).removeNodeInstance(nodeInstanceInError);
     }
@@ -1091,6 +1097,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     public void internalSetErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+        this.errorCause = Optional.empty();
     }
 
     @Override

@@ -16,8 +16,16 @@
 package org.kie.kogito.process.impl;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -578,6 +586,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
         final String errorMessage = pi.getErrorMessage();
         final String nodeInError = pi.getNodeIdInError();
+        final Throwable errorCause = pi.getErrorCause().orElse(null);
         return new ProcessError() {
 
             @Override
@@ -588,6 +597,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             @Override
             public String errorMessage() {
                 return errorMessage;
+            }
+
+            @Override
+            public Throwable errorCause() {
+                return errorCause;
             }
 
             @Override
