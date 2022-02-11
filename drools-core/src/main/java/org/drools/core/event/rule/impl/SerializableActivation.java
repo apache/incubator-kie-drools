@@ -21,29 +21,30 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
-public class SerializableActivation
-    implements
-    Match,
-    Externalizable {
-    private Rule                              rule;
-    private Declaration[]                     declarations;
-    private List< ? extends FactHandle>       factHandles;
-    private PropagationContext                propgationContext;
-    private boolean                           active;
+public class SerializableActivation implements Match, Externalizable {
+
+    private Rule rule;
+    private Map<Declaration, Object> declarations;
+    private PropagationContext propgationContext;
+    private boolean active;
 
     public SerializableActivation() {
         
@@ -51,23 +52,41 @@ public class SerializableActivation
     
     public SerializableActivation(Match activation) {
         this.rule = activation.getRule();
-        this.factHandles = activation.getFactHandles();
         this.propgationContext = ((Activation)activation).getPropagationContext();
         if ( activation instanceof AgendaItemImpl) {
-            declarations = ((org.drools.core.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getTupleSink()).getAllDeclarations();
+            Tuple tuple = ((AgendaItem)activation).getTuple();
+            this.declarations = extractObjectsFromDeclaration(tuple, ((RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations());
         } else if ( activation instanceof SerializableActivation ) {
             this.declarations = ((SerializableActivation)activation).declarations;
+        } else if ( activation instanceof RuleTerminalNodeLeftTuple) {
+            RuleTerminalNodeLeftTuple tuple = (RuleTerminalNodeLeftTuple) activation;
+            this.declarations = extractObjectsFromDeclaration(tuple, ((RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations());
         } else {
             throw new RuntimeException("Unable to get declarations " + activation);
         }
         this.active = ((Activation)activation).isQueued();
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+    private Map<Declaration, Object> extractObjectsFromDeclaration(Tuple tuple, Declaration[] declarationsArray) {
+        Map<Declaration, Object> declarations = new HashMap<>();
+        for (Declaration declaration : declarationsArray) {
+            declarations.put(declaration, tuple.get(declaration).getObject());
+        }
+        return declarations;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.rule = (Rule) in.readObject();
+        this.propgationContext = (PropagationContext) in.readObject();
+        this.declarations = (Map<Declaration, Object>) in.readObject();
+        this.active = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(this.rule);
+        out.writeObject(this.propgationContext);
+        out.writeObject(this.declarations);
+        out.writeBoolean(active);
     }
 
     public Rule getRule() {
@@ -75,7 +94,7 @@ public class SerializableActivation
     }
 
     public List< ? extends FactHandle> getFactHandles() {
-        return this.factHandles;
+        throw new UnsupportedOperationException();
     }
 
     public PropagationContext getPropagationContext() {
@@ -83,21 +102,24 @@ public class SerializableActivation
     }
 
     public List<Object> getObjects() {
-        List<Object> objects = new ArrayList<Object>( this.factHandles.size() );
-        for( FactHandle handle : this.factHandles ) {
-            objects.add( ((InternalFactHandle)handle).getObject() );
-        }
-        return Collections.unmodifiableList( objects );
+        throw new UnsupportedOperationException();
     }
 
     public Object getDeclarationValue(String variableName) {
-        Declaration decl = ((RuleImpl)this.rule).getDeclaration( variableName );
-        return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getObjectIndex())).getObject());
+        throw new UnsupportedOperationException();
+    }
+
+    public Collection<Declaration> getDeclarations() {
+        return declarations.keySet();
+    }
+
+    public Object getObject(Declaration declaration) {
+        return declarations.get(declaration);
     }
 
     public List<String> getDeclarationIds() {
-        List<String> decls = new ArrayList<String>();
-        for( Declaration decl : this.declarations ) {
+        List<String> decls = new ArrayList<>();
+        for( Declaration decl : this.declarations.keySet() ) {
             decls.add( decl.getIdentifier() );
         }
         return Collections.unmodifiableList( decls );
