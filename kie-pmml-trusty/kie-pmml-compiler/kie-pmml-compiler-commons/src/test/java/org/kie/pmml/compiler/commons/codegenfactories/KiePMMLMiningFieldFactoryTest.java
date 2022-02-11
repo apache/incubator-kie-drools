@@ -20,20 +20,18 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.Interval;
 import org.dmg.pmml.MiningField;
-import org.dmg.pmml.Value;
 import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
@@ -49,6 +47,8 @@ public class KiePMMLMiningFieldFactoryTest {
     @Test
     public void getMiningFieldVariableDeclarationNoAllowedValuesNoIntervals() throws IOException {
         DataField dataField = getRandomDataField();
+        dataField.getValues().clear();
+        dataField.getIntervals().clear();
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
@@ -69,7 +69,7 @@ public class KiePMMLMiningFieldFactoryTest {
     @Test
     public void getMiningFieldVariableDeclarationWithAllowedValuesNoIntervals() throws IOException {
         DataField dataField = getRandomDataField();
-        dataField.addValues(new Value("A"), new Value("B"), new Value("C"));
+        dataField.getIntervals().clear();
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
@@ -80,7 +80,10 @@ public class KiePMMLMiningFieldFactoryTest {
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, VARIABLE_NAME,
                                                                       miningField.getName().getValue(),
-                                                                      dataTypeString));
+                                                                      dataTypeString,
+                                                                      dataField.getValues().get(0).getValue(),
+                                                                      dataField.getValues().get(1).getValue(),
+                                                                      dataField.getValues().get(2).getValue()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
                                                KiePMMLMiningField.class, DATA_TYPE.class);
@@ -90,13 +93,6 @@ public class KiePMMLMiningFieldFactoryTest {
     @Test
     public void getMiningFieldVariableDeclarationWithAllowedValuesAndIntervals() throws IOException {
         DataField dataField = getRandomDataField();
-        dataField.addValues(new Value("A"), new Value("B"), new Value("C"));
-        IntStream.range(0, 3).forEach(i -> {
-            Interval toAdd = new Interval(Interval.Closure.CLOSED_CLOSED);
-            toAdd.setLeftMargin(i);
-            toAdd.setRightMargin(i * 10);
-            dataField.addIntervals(toAdd);
-        });
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
@@ -107,7 +103,22 @@ public class KiePMMLMiningFieldFactoryTest {
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, VARIABLE_NAME,
                                                                       miningField.getName().getValue(),
-                                                                      dataTypeString));
+                                                                      dataTypeString,
+                                                                      dataField.getValues().get(0).getValue(),
+                                                                      dataField.getValues().get(1).getValue(),
+                                                                      dataField.getValues().get(2).getValue(),
+
+                                                                      dataField.getIntervals().get(0).getLeftMargin(),
+                                                                      dataField.getIntervals().get(0).getRightMargin(),
+                                                                      dataField.getIntervals().get(0).getClosure().name(),
+
+                                                                      dataField.getIntervals().get(1).getLeftMargin(),
+                                                                      dataField.getIntervals().get(1).getRightMargin(),
+                                                                      dataField.getIntervals().get(1).getClosure().name(),
+
+                                                                      dataField.getIntervals().get(2).getLeftMargin(),
+                                                                      dataField.getIntervals().get(2).getRightMargin(),
+                                                                      dataField.getIntervals().get(2).getClosure().name()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
                                                KiePMMLMiningField.class, DATA_TYPE.class);

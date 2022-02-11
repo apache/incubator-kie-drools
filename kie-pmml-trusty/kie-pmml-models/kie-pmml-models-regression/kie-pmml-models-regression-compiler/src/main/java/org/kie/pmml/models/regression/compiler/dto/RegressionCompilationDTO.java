@@ -24,8 +24,8 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.api.enums.OP_TYPE;
-import org.kie.pmml.compiler.api.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.commons.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<RegressionModel> {

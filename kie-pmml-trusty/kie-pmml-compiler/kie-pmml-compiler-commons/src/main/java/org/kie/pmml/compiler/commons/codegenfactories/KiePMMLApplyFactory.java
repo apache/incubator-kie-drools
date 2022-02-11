@@ -33,11 +33,12 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpressionBlockStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpression;
 
 /**
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLApply</code> code-generators
@@ -55,7 +56,6 @@ public class KiePMMLApplyFactory {
     static final String APPLY = "apply";
     static final ClassOrInterfaceDeclaration APPLY_TEMPLATE;
 
-
     static {
         CompilationUnit cloneCU = JavaParserUtils.getFromFileName(KIE_PMML_APPLY_TEMPLATE_JAVA);
         APPLY_TEMPLATE = cloneCU.getClassByName(KIE_PMML_APPLY_TEMPLATE)
@@ -65,18 +65,20 @@ public class KiePMMLApplyFactory {
 
     static BlockStmt getApplyVariableDeclaration(final String variableName, final Apply apply) {
         final MethodDeclaration methodDeclaration = APPLY_TEMPLATE.getMethodsByName(GETKIEPMMLAPPLY).get(0).clone();
-        final BlockStmt applyBody = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
-        final VariableDeclarator variableDeclarator = getVariableDeclarator(applyBody, APPLY) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, APPLY, applyBody)));
+        final BlockStmt applyBody =
+                methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        final VariableDeclarator variableDeclarator =
+                getVariableDeclarator(applyBody, APPLY).orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, APPLY, applyBody)));
         variableDeclarator.setName(variableName);
         final BlockStmt toReturn = new BlockStmt();
         int counter = 0;
         final NodeList<Expression> arguments = new NodeList<>();
         for (org.dmg.pmml.Expression expression : apply.getExpressions()) {
-            String nestedVariableName = String.format("%s_%s", variableName, counter);
+            String nestedVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, counter);
             arguments.add(new NameExpr(nestedVariableName));
-            BlockStmt toAdd = getKiePMMLExpression(nestedVariableName, expression);
+            BlockStmt toAdd = getKiePMMLExpressionBlockStmt(nestedVariableName, expression);
             toAdd.getStatements().forEach(toReturn::addStatement);
-            counter ++;
+            counter++;
         }
         final MethodCallExpr initializer = variableDeclarator.getInitializer()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, APPLY, toReturn)))

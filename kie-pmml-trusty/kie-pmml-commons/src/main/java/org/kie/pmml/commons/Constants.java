@@ -24,6 +24,7 @@ public class Constants {
     public static final String DONE = "DONE";
     public static final String MISSING_BODY_TEMPLATE = "Missing body in %s";
     public static final String MISSING_DEFAULT_CONSTRUCTOR = "Missing default constructor in ClassOrInterfaceDeclaration %s ";
+    public static final String EXPECTING_EXACTLY_ONE_METHOD = "Expecting exactly one %s method in ClassOrInterfaceDeclaration %s, found %s ";
     public static final String MISSING_VARIABLE_IN_BODY = "Missing expected variable '%s' in body %s";
     public static final String MISSING_METHOD_IN_CLASS = "Missing expected method '%s' in class %s";
     public static final String MISSING_BODY_IN_METHOD = "Missing expected body in method %s";
@@ -41,7 +42,11 @@ public class Constants {
     public static final String PACKAGE_CLASS_TEMPLATE = "%s.%s";
     public static final String WRONG_EXPRESSION_TEMPLATE = "Retrieved %s (%s) while a %s was expected from \n%s";
     public static final String EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE = "Expecting HasKnowledgeBuilder, received %s";
+    public static final String VARIABLE_NAME_TEMPLATE = "%s_%s";
+    public static final String EXPRESSION_NOT_MANAGED = "Expression %s not managed";
+
     //
+    public static final String GET_MODEL = "getModel";
     public static final String PACKAGE_NAME = "PACKAGE_NAME";
     public static final String EVALUATE_PREDICATE = "evaluatePredicate";
     public static final String PREDICATE_FUNCTION = "predicateFunction";
@@ -52,6 +57,7 @@ public class Constants {
     public static final String REASON_CODE_ALGORITHM = "reasonCodeAlgorithm";
     public static final String EMPTY_LIST = "emptyList";
     public static final String AS_LIST = "asList";
+    public static final String TO_RETURN = "toReturn";
 
     private Constants() {
         // Avoid instantiation

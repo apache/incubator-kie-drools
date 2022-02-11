@@ -25,6 +25,7 @@ import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
 
+import static org.kie.pmml.commons.Constants.EXPRESSION_NOT_MANAGED;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory.getConstantVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDiscretizeFactory.getDiscretizeVariableDeclaration;
@@ -39,13 +40,14 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTextIndexFac
  */
 public class KiePMMLExpressionFactory {
 
-    private static final String EXPRESSION_NOT_MANAGED = "Expression %s not managed";
-
     private KiePMMLExpressionFactory() {
         // Avoid instantiation
     }
 
-    public static BlockStmt getKiePMMLExpression(final String variableName, final org.dmg.pmml.Expression expression) {
+    // Source code generation
+
+    public static BlockStmt getKiePMMLExpressionBlockStmt(final String variableName,
+                                                          final org.dmg.pmml.Expression expression) {
         if (expression instanceof Apply) {
             return getApplyVariableDeclaration(variableName, (Apply) expression);
         } else if (expression instanceof Constant) {

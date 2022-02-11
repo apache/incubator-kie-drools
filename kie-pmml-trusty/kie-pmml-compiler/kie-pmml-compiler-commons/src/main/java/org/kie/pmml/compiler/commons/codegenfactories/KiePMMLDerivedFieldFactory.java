@@ -31,7 +31,8 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpression;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpressionBlockStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForDataType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
@@ -71,8 +72,8 @@ public class KiePMMLDerivedFieldFactory {
                 getVariableDeclarator(derivedFieldBody, DERIVED_FIELD).orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, DERIVED_FIELD, derivedFieldBody)));
         variableDeclarator.setName(variableName);
         final BlockStmt toReturn = new BlockStmt();
-        String nestedVariableName = String.format("%s_%s", variableName, 0);
-        BlockStmt toAdd = getKiePMMLExpression(nestedVariableName, derivedField.getExpression());
+        String nestedVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, 0);
+        BlockStmt toAdd = getKiePMMLExpressionBlockStmt(nestedVariableName, derivedField.getExpression());
         toAdd.getStatements().forEach(toReturn::addStatement);
         final MethodCallExpr initializer = variableDeclarator.getInitializer()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, DERIVED_FIELD, derivedFieldBody)))

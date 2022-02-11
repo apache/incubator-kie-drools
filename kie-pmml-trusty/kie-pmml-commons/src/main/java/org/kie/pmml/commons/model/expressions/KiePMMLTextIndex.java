@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.model.expressions;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -178,13 +179,50 @@ public class KiePMMLTextIndex extends AbstractKiePMMLComponent implements KiePMM
                 .collect(Collectors.toList());
     }
 
+    public KiePMMLExpression getExpression() {
+        return expression;
+    }
+
+    public LOCAL_TERM_WEIGHTS getLocalTermWeights() {
+        return localTermWeights;
+    }
+
+    public boolean isCaseSensitive() {
+        return isCaseSensitive;
+    }
+
+    public int getMaxLevenshteinDistance() {
+        return maxLevenshteinDistance;
+    }
+
+    public COUNT_HITS getCountHits() {
+        return countHits;
+    }
+
+    public String getWordSeparatorCharacterRE() {
+        return wordSeparatorCharacterRE;
+    }
+
+    public boolean isTokenize() {
+        return tokenize;
+    }
+
+    public LevenshteinDistance getLevenshteinDistance() {
+        return levenshteinDistance;
+    }
+
+    public List<KiePMMLTextIndexNormalization> getTextIndexNormalizations() {
+        return Collections.unmodifiableList(textIndexNormalizations);
+    }
+
     @Override
     public Object evaluate(final ProcessingDTO processingDTO) {
         String term = (String) expression.evaluate(processingDTO);
         String text = (String) getFromPossibleSources(name, processingDTO).orElseThrow(() -> new KiePMMLException("No text to scan in " + this));
         if (textIndexNormalizations != null) {
             for (KiePMMLTextIndexNormalization textIndexNormalization : textIndexNormalizations) {
-                text = textIndexNormalization.replace(text, isCaseSensitive, maxLevenshteinDistance, false, DEFAULT_TOKENIZER);
+                text = textIndexNormalization.replace(text, isCaseSensitive, maxLevenshteinDistance, false,
+                                                      DEFAULT_TOKENIZER);
             }
         }
         return evaluateRaw(isCaseSensitive,

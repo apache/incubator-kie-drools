@@ -70,6 +70,10 @@ public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Ser
         return displayName;
     }
 
+    public KiePMMLExpression getKiePMMLExpression() {
+        return kiePMMLExpression;
+    }
+
     public Object evaluate(final ProcessingDTO processingDTO) {
         return commonEvaluate(kiePMMLExpression.evaluate(processingDTO), dataType);
     }

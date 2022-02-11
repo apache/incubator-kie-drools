@@ -22,7 +22,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/DataDictionary.html#xsdElement_Interval>Interval</a>
  */
-public enum CLOSURE {
+public enum CLOSURE implements Named {
 
     OPEN_CLOSED("openClosed"),
     OPEN_OPEN("openOpen"),

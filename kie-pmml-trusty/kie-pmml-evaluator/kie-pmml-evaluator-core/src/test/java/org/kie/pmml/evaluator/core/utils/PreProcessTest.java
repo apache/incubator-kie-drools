@@ -415,7 +415,7 @@ public class PreProcessTest {
                 .build();
         KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
-                .withTransformationDictionary(transformationDictionary)
+                .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         //
         final PMMLRequestData pmmlRequestData = new PMMLRequestData();

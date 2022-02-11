@@ -22,7 +22,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#baselinemethod>baselinemethod</a>
  */
-public enum BASELINE_METHOD {
+public enum BASELINE_METHOD implements Named {
 
     MAX("max"),
     MIN("min"),
