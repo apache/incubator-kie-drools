@@ -121,7 +121,7 @@ elif [[ "${PWD}" == */packages/trusty ]]; then
     echo 'script starts from the ui-trusty folder'
 else
     echo >&2 "error: script starts from unexpected location: ${PWD}"
-    echo >&2 "error: script expects /ui-packages/packages/trusty or /ui-packages/packages/trusty/it-tests/docker-compose folders"
+    echo >&2 "error: script expects /ui-packages/packages/trusty or /ui-packages/packages/trusty/cypress/docker-compose folders"
     exit 1
 fi
 
@@ -129,8 +129,8 @@ cd $(tr --delete '\r' <<<${kogito_apps})
 if [[ "${PWD}" == */kogito-apps ]]; then
     #create environment file for docker compose. The content is based on actual project version
     project_version=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-    rm --force ui-packages/packages/trusty/it-tests/docker-compose/.env
-    echo VERSION=${project_version} >>ui-packages/packages/trusty/it-tests/docker-compose/.env
+    rm --force ui-packages/packages/trusty/cypress/docker-compose/.env
+    echo VERSION=${project_version} >> ui-packages/packages/trusty/cypress/docker-compose/.env
 
     mvn clean install -DskipTests
 else

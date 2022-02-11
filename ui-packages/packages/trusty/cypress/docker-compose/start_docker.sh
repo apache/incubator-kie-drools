@@ -37,10 +37,10 @@ elif [[ "${PWD}" == */packages/trusty ]]
 then 
     echo 'Application starts from the trusty folder - probably run some yarn script'
     echo 'Move to the docker-compose folder'
-    cd it-tests/docker-compose
+    cd cypress/docker-compose
 else
     >&2 echo "error: script starts from unexpected location: ${PWD}"
-    >&2 echo "error: script expects /ui-packages/packages/trusty or /ui-packages/packages/trusty/it-tests/docker-compose folders"
+    >&2 echo "error: script expects /ui-packages/packages/trusty or /ui-packages/packages/trusty/cypress/docker-compose folders"
     exit
 fi
 
