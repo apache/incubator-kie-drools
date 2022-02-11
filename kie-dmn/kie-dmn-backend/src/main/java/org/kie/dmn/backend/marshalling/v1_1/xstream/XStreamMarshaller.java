@@ -16,8 +16,6 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -27,18 +25,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.stream.StreamResult;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.AbstractPullReader;
@@ -93,7 +83,6 @@ import org.kie.dmn.model.v1_1.TUnaryTests;
 import org.kie.utll.xml.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
 
 public class XStreamMarshaller
         implements DMNMarshaller {
