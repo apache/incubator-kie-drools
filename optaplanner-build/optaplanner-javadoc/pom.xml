@@ -18,25 +18,11 @@
     <!-- Javadoc dependencies -->
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core-impl</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-constraint-drl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-constraint-drl</artifactId>
-      <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
@@ -108,10 +94,7 @@
               <reportOutputDirectory>${project.build.directory}/aggregated-javadocs</reportOutputDirectory>
               <includeDependencySources>true</includeDependencySources>
               <dependencySourceIncludes>
-                <dependencySourceInclude>org.optaplanner:optaplanner-core</dependencySourceInclude>
-                <dependencySourceInclude>org.optaplanner:optaplanner-benchmark</dependencySourceInclude>
-                <dependencySourceInclude>org.optaplanner:optaplanner-persistence-*</dependencySourceInclude>
-                <dependencySourceInclude>org.optaplanner:optaplanner-test</dependencySourceInclude>
+                <dependencySourceInclude>org.optaplanner:*</dependencySourceInclude>
               </dependencySourceIncludes>
             </configuration>
           </execution>

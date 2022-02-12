@@ -12,7 +12,7 @@
 
   <artifactId>optaplanner-core-parent</artifactId>
 
-  <name>OptaPlanner core</name>
+  <name>OptaPlanner core parent</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
