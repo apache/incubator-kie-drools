@@ -238,7 +238,6 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
         } catch (TimeoutException e) {
             logger.error("Timed out while waiting for prediction");
         }
-
         logger.debug("Feature distance: {}", -Math.abs(primarySoftScore));
         return BendableBigDecimalScore.of(
                 new BigDecimal[] {

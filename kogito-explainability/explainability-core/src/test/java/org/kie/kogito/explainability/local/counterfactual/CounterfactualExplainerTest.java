@@ -33,13 +33,13 @@ import java.util.stream.Stream;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
+import org.kie.kogito.explainability.local.counterfactual.score.MockCounterFactualScoreCalculator;
 import org.kie.kogito.explainability.model.CounterfactualPrediction;
 import org.kie.kogito.explainability.model.DataDomain;
 import org.kie.kogito.explainability.model.Feature;
@@ -802,40 +802,25 @@ class CounterfactualExplainerTest {
         assertEquals(numberOfIntermediateSolutions + 1, (int) sequenceIds.stream().distinct().count());
     }
 
-    @Disabled("FAI-713")
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2 })
     void testIntermediateUniqueIds(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0));
+        final List<Output> goal = new ArrayList<>();
 
-        List<Feature> features = new LinkedList<>();
-        List<FeatureDomain> featureBoundaries = new LinkedList<>();
-        List<Boolean> constraints = new LinkedList<>();
-        features.add(FeatureFactory.newNumericalFeature("f-num1", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num2", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num3", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num4", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
+        List<Feature> features = List.of(FeatureFactory.newNumericalFeature("f-num1", 10.0));
+        List<FeatureDomain> featureBoundaries = List.of(NumericalFeatureDomain.create(0, 20));
+        List<Boolean> constraints = List.of(false);
 
-        final double center = 400.0;
-        final double epsilon = 10.0;
-
-        PredictionProvider model = TestUtils.getSumThresholdModel(center, epsilon);
+        PredictionProvider model = TestUtils.getFeaturePassModel(0);
 
         final TerminationConfig terminationConfig =
-                new TerminationConfig().withBestScoreFeasible(true).withScoreCalculationCountLimit(10_000L);
+                new TerminationConfig().withScoreCalculationCountLimit(100_000L);
         final SolverConfig solverConfig = SolverConfigBuilder
-                .builder().withTerminationConfig(terminationConfig).build();
+                .builder().withTerminationConfig(terminationConfig)
+                .build();
 
         solverConfig.setRandomSeed((long) seed);
         solverConfig.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
@@ -852,6 +837,8 @@ class CounterfactualExplainerTest {
         };
 
         final CounterfactualConfig counterfactualConfig = new CounterfactualConfig().withSolverConfig(solverConfig);
+
+        solverConfig.withEasyScoreCalculatorClass(MockCounterFactualScoreCalculator.class);
         final CounterfactualExplainer counterfactualExplainer =
                 new CounterfactualExplainer(counterfactualConfig);
 
@@ -879,38 +866,22 @@ class CounterfactualExplainerTest {
         assertEquals(executionIds.get(0), executionId);
     }
 
-    @Disabled("FAI-713")
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2 })
     void testFinalUniqueIds(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.5));
+        final List<Output> goal = new ArrayList<>();
 
-        List<Feature> features = new LinkedList<>();
-        List<FeatureDomain> featureBoundaries = new LinkedList<>();
-        List<Boolean> constraints = new LinkedList<>();
-        features.add(FeatureFactory.newNumericalFeature("f-num1", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num2", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num3", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num4", 10.0));
-        constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
+        List<Feature> features = List.of(FeatureFactory.newNumericalFeature("f-num1", 10.0));
+        List<FeatureDomain> featureBoundaries = List.of(NumericalFeatureDomain.create(0, 20));
+        List<Boolean> constraints = List.of(false);
 
-        final double center = 400.0;
-        final double epsilon = 10;
-
-        PredictionProvider model = TestUtils.getSumThresholdModel(center, epsilon);
+        PredictionProvider model = TestUtils.getFeaturePassModel(0);
 
         final TerminationConfig terminationConfig =
-                new TerminationConfig().withBestScoreFeasible(true).withScoreCalculationCountLimit(10_000L);
+                new TerminationConfig().withScoreCalculationCountLimit(100_000L);
         final SolverConfig solverConfig = SolverConfigBuilder
                 .builder().withTerminationConfig(terminationConfig).build();
 
@@ -929,6 +900,7 @@ class CounterfactualExplainerTest {
         };
 
         final CounterfactualConfig counterfactualConfig = new CounterfactualConfig().withSolverConfig(solverConfig);
+        solverConfig.withEasyScoreCalculatorClass(MockCounterFactualScoreCalculator.class);
         final CounterfactualExplainer counterfactualExplainer =
                 new CounterfactualExplainer(counterfactualConfig);
 
