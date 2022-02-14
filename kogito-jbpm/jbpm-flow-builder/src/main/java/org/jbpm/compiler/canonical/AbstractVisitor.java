@@ -37,9 +37,9 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.utils.StringEscapeUtils;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_ADD_COMPENSATION_CONTEXT;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VARIABLE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_METADATA;
@@ -100,7 +100,7 @@ public abstract class AbstractVisitor {
                 Object defaultValue = variable.getValue();
                 body.tryAddImportToParentCompilationUnit(variable.getType().getClass());
                 body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()),
-                        new MethodCallExpr(DataTypeResolver.class.getName() + ".fromClass", new ClassExpr(new ClassOrInterfaceType(null, variable.getType().getStringType()))),
+                        new MethodCallExpr(DataTypeResolver.class.getName() + ".fromClass", new ClassExpr(parseClassOrInterfaceType(variable.getType().getStringType()).removeTypeArguments())),
                         defaultValue != null ? new StringLiteralExpr(defaultValue.toString()) : new NullLiteralExpr(), new StringLiteralExpr(Variable.VARIABLE_TAGS),
                         tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
             }

@@ -12,6 +12,7 @@
              xmlns:tns="http://www.jboss.org/drools">
 
   <itemDefinition id="_sItem" structureRef="String" />
+  <itemDefinition id="_lItem" structureRef="java.util.List&lt;String&gt;" />
 
   
   <interface id="_2_ServiceInterface" implementationRef="org.kie.kogito.codegen.data.HelloService" name="HelloService">
@@ -24,6 +25,7 @@
     <!-- process variables -->
     <property id="s" itemSubjectRef="_sItem"/>
     <property id="x" itemSubjectRef="_sItem"/>
+    <property id="l" itemSubjectRef="_lItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />

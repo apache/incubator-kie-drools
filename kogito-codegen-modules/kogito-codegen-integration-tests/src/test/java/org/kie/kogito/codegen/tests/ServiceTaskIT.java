@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.tests;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +180,7 @@ public class ServiceTaskIT extends AbstractCodegenIT {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("s", "john");
         parameters.put("x", "doe");
+        parameters.put("l", Collections.singletonList("pepe"));
         m.fromMap(parameters);
 
         ProcessInstance<?> processInstance = p.createInstance(m);
@@ -186,7 +188,7 @@ public class ServiceTaskIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(2).containsKeys("s", "x");
+        assertThat(result.toMap()).hasSize(3).containsKeys("s", "x", "l");
         assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Hello (first and lastname) john doe!");
     }
 
