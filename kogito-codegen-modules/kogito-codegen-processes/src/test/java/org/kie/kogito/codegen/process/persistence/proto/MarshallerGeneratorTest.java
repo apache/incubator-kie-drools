@@ -50,13 +50,13 @@ class MarshallerGeneratorTest {
                 .withDataClasses(Collections.singleton(Person.class))
                 .build(null);
 
-        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test", "import \"kogito-types.proto\";");
         assertThat(proto).isNotNull();
         assertThat(proto.getMessages()).hasSize(1);
 
         MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
 
-        List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
+        List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
         assertThat(classes).hasSize(1);
 
@@ -78,7 +78,7 @@ class MarshallerGeneratorTest {
 
         MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
 
-        List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
+        List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
         assertThat(classes).hasSize(1);
 
@@ -98,7 +98,7 @@ class MarshallerGeneratorTest {
 
         MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
 
-        List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
+        List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
         assertThat(classes).hasSize(2);
 
@@ -118,11 +118,9 @@ class MarshallerGeneratorTest {
         assertThat(proto).isNotNull();
         assertThat(proto.getMessages()).hasSize(2);
 
-        System.out.println(proto.getMessages());
-
         MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
 
-        List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
+        List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
         assertThat(classes).hasSize(2);
 
@@ -147,7 +145,7 @@ class MarshallerGeneratorTest {
 
             List<CompilationUnit> classes = null;
             try {
-                classes = marshallerGenerator.generate(proto.toString());
+                classes = marshallerGenerator.generate(proto.serialize());
             } catch (IOException e) {
                 fail("Error generating marshaller for " + c.getName(), e);
             }
@@ -182,7 +180,7 @@ class MarshallerGeneratorTest {
 
             List<CompilationUnit> classes = null;
             try {
-                classes = marshallerGenerator.generate(proto.toString());
+                classes = marshallerGenerator.generate(proto.serialize());
             } catch (IOException ex) {
                 fail("Error generating marshaller for " + e.getName(), e);
             }

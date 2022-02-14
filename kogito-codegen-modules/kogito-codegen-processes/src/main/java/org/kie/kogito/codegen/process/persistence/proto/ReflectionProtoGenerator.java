@@ -46,6 +46,7 @@ import org.kie.kogito.codegen.process.persistence.ExclusionTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toSet;
 
 public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
@@ -140,7 +141,11 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
                 protoType = optionalProtoType.get();
             }
 
-            message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName()).setComment(completeFieldComment);
+            ProtoField protoField = message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName());
+            protoField.setComment(completeFieldComment);
+            if (KOGITO_SERIALIZABLE.equals(protoType)) {
+                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString));
+            }
         }
         message.setComment(messageComment);
         proto.addMessage(message);

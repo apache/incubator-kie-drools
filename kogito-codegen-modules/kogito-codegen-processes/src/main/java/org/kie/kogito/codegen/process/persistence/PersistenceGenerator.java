@@ -316,6 +316,8 @@ public class PersistenceGenerator extends AbstractGenerator {
             variableMarshallers.add("org.kie.kogito.persistence.FloatProtostreamBaseMarshaller");
             variableMarshallers.add("org.kie.kogito.persistence.IntegerProtostreamBaseMarshaller");
             variableMarshallers.add("org.kie.kogito.persistence.LongProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.InstantProtostreamBaseMarshaller");
+            variableMarshallers.add("org.kie.kogito.persistence.SerializableProtostreamBaseMarshaller");
 
             for (CompilationUnit unit : files) {
                 String packageName = unit.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");

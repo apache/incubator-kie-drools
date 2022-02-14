@@ -16,6 +16,9 @@
 package org.kie.kogito;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +30,9 @@ public class Person implements Serializable {
     private int age;
     private boolean adult;
     private Person parent;
+    private Instant created;
+    private ZonedDateTime updated;
+    private BigDecimal score;
 
     private transient String ignoreMe;
 
@@ -37,9 +43,12 @@ public class Person implements Serializable {
     public Person() {
     }
 
-    public Person(String name, int age) {
+    public Person(String name, int age, BigDecimal score, Instant created, ZonedDateTime updated) {
         this.name = name;
         this.age = age;
+        this.score = score;
+        this.created = created;
+        this.updated = updated;
     }
 
     public String getName() {
@@ -110,13 +119,39 @@ public class Person implements Serializable {
         this.parent = parent;
     }
 
+    public Instant getCreated() {
+        return created;
+    }
+
+    public void setCreated(Instant created) {
+        this.created = created;
+    }
+
+    public ZonedDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(ZonedDateTime updated) {
+        this.updated = updated;
+    }
+
+    public BigDecimal getScore() {
+        return score;
+    }
+
+    public void setScore(BigDecimal score) {
+        this.score = score;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", age=" + age +
                 ", adult=" + adult +
                 ", parent=" + parent +
+                ", created=" + created +
                 ", ignoreMe='" + ignoreMe + '\'' +
                 ", addresses=" + addresses +
                 '}';

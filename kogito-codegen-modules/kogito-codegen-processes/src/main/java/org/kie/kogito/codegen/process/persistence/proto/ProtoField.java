@@ -21,7 +21,7 @@ public class ProtoField {
     private String type;
     private String name;
     private int index;
-
+    private String option;
     private String comment;
 
     public ProtoField(String applicability, String type, String name, int index) {
@@ -64,12 +64,24 @@ public class ProtoField {
         this.comment = comment;
     }
 
+    public void setOption(String option) {
+        this.option = option;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
     public String serialize() {
         StringBuilder tostring = new StringBuilder();
         if (comment != null) {
             tostring.append("\t/* ").append(comment).append(" */ \n");
         }
-        tostring.append("\t").append(applicability).append(" ").append(type).append(" ").append(name).append(" = ").append(index).append("; \n");
+        tostring.append("\t").append(applicability).append(" ").append(type).append(" ").append(name).append(" = ").append(index);
+        if (option != null) {
+            tostring.append(option);
+        }
+        tostring.append("; \n");
         return tostring.toString();
     }
 

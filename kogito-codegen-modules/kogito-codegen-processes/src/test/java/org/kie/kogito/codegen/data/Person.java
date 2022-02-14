@@ -15,7 +15,15 @@
  */
 package org.kie.kogito.codegen.data;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +34,14 @@ public class Person {
     private int age;
     private boolean adult;
     private Person parent;
+    private Instant instant;
+    private LocalDateTime localDateTime;
+    private LocalDate localDate;
+    private Duration duration;
+    private ZonedDateTime zonedDateTime;
+    private OffsetDateTime offsetDateTime;
+    private Date date;
+    private BigDecimal bigDecimal;
 
     private transient String ignoreMe;
 
@@ -109,16 +125,89 @@ public class Person {
         this.parent = parent;
     }
 
+    public Instant getInstant() {
+        return instant;
+    }
+
+    public void setInstant(Instant instant) {
+        this.instant = instant;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public ZonedDateTime getZonedDateTime() {
+        return zonedDateTime;
+    }
+
+    public void setZonedDateTime(ZonedDateTime zonedDateTime) {
+        this.zonedDateTime = zonedDateTime;
+    }
+
+    public OffsetDateTime getOffsetDateTime() {
+        return offsetDateTime;
+    }
+
+    public void setOffsetDateTime(OffsetDateTime offsetDateTime) {
+        this.offsetDateTime = offsetDateTime;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public BigDecimal getBigDecimal() {
+        return bigDecimal;
+    }
+
+    public void setBigDecimal(BigDecimal bigDecimal) {
+        this.bigDecimal = bigDecimal;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", age=" + age +
                 ", adult=" + adult +
                 ", parent=" + parent +
+                ", instant=" + instant +
+                ", localDateTime=" + localDateTime +
+                ", localDate=" + localDate +
+                ", duration=" + duration +
+                ", zonedDateTime=" + zonedDateTime +
+                ", offsetDateTime=" + offsetDateTime +
+                ", date=" + date +
+                ", bigDecimal=" + bigDecimal +
                 ", ignoreMe='" + ignoreMe + '\'' +
                 ", addresses=" + addresses +
                 '}';
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override

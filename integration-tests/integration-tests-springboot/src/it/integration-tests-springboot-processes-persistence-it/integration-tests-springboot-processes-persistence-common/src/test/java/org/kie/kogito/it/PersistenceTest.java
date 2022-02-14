@@ -15,6 +15,12 @@
  */
 package org.kie.kogito.it;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +32,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
@@ -49,7 +56,7 @@ public abstract class PersistenceTest {
 
     @Test
     void testPersistence() {
-        Person person = new Person("Name", 10);
+        Person person = new Person("Name", 10, BigDecimal.valueOf(5.0), Instant.now(), ZonedDateTime.now(ZoneOffset.UTC));
         final String pid = given().contentType(ContentType.JSON)
                 .when()
                 .body(Map.of("var1", "Tiago", "person", person))
@@ -62,6 +69,9 @@ public abstract class PersistenceTest {
                 .body("var2", equalTo("Hello Tiago! Script"))
                 .body("person.name", equalTo(person.getName()))
                 .body("person.age", equalTo(person.getAge()))
+                .body("person.score", equalTo(person.getScore().floatValue()))
+                .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated())))
+                .body("person.updated", equalTo(person.getUpdated().format(ISO_ZONED_DATE_TIME)))
                 .extract()
                 .path("id");
 
@@ -75,6 +85,9 @@ public abstract class PersistenceTest {
                 .body("var2", equalTo("Hello Tiago! Script"))
                 .body("person.name", equalTo(person.getName()))
                 .body("person.age", equalTo(person.getAge()))
+                .body("person.score", equalTo(person.getScore().floatValue()))
+                .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated().truncatedTo(ChronoUnit.MILLIS))))
+                .body("person.updated", equalTo(person.getUpdated().format(ISO_ZONED_DATE_TIME)))
                 .extract()
                 .path("id");
 

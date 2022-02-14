@@ -56,7 +56,6 @@ public class ProtobufObjectMarshallerStrategy implements ObjectMarshallerStrateg
         } catch (IOException e) {
             throw new ProcessInstanceMarshallerException("Not possible to unmarshall value: " + unmarshalled, e);
         }
-
     }
 
     @Override
@@ -74,7 +73,7 @@ public class ProtobufObjectMarshallerStrategy implements ObjectMarshallerStrateg
     }
 
     private Object readObject(byte[] data) {
-        try (InputStream is = new ByteArrayInputStream(data); ObjectInputStream ois = new ObjectInputStream(is);) {
+        try (InputStream is = new ByteArrayInputStream(data); ObjectInputStream ois = new ObjectInputStream(is)) {
             return ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new ProcessInstanceMarshallerException("Unexpected error while trying to read object", e);

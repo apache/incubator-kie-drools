@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.process.persistence;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,10 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -67,6 +71,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.ast.Modifier.Keyword.PUBLIC;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
+import static java.lang.String.format;
+import static org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator.KOGITO_JAVA_CLASS_OPTION;
 
 public class MarshallerGenerator {
 
@@ -163,8 +169,8 @@ public class MarshallerGenerator {
                 for (FieldDescriptor field : msg.getFields()) {
 
                     String protoStreamMethodType = protoStreamMethodType(field.getTypeName());
-                    MethodCallExpr write = null;
-                    MethodCallExpr read = null;
+                    Expression write = null;
+                    Expression read = null;
                     if (protoStreamMethodType != null && !field.isRepeated()) {
                         // has a mapped type
                         read = new MethodCallExpr(new NameExpr("reader"), "read" + protoStreamMethodType)
@@ -199,6 +205,15 @@ public class MarshallerGenerator {
                                     .addArgument(new StringLiteralExpr(field.getName()))
                                     .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.ucFirst(field.getName())))
                                     .addArgument(new NameExpr(customTypeName + ".class"));
+                        }
+
+                        if (customTypeName.equals(Serializable.class.getName())) {
+                            String fieldClazz = (String) field.getOptionByName(KOGITO_JAVA_CLASS_OPTION);
+                            if (fieldClazz == null) {
+                                throw new IllegalArgumentException(format("Serializable proto field '%s' is missing value for option %s", field.getName(), KOGITO_JAVA_CLASS_OPTION));
+                            } else {
+                                read = new CastExpr().setExpression(new EnclosedExpr(read)).setType(fieldClazz);
+                            }
                         }
                     }
 
@@ -283,7 +298,6 @@ public class MarshallerGenerator {
     }
 
     protected String javaTypeForMessage(FileDescriptor d, String messageName, SerializationContext serializationContext) {
-
         Map<String, FileDescriptor> descriptors = serializationContext.getFileDescriptors();
         for (Entry<String, FileDescriptor> entry : descriptors.entrySet()) {
 

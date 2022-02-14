@@ -30,3 +30,13 @@ message Date {
   option java_package = "java.util";    
   optional int64 data = 1;
 }
+
+message Instant {
+  option java_package = "java.time";
+  optional fixed64 data = 1;
+}
+
+message Serializable {
+  option java_package = "java.io";
+  optional bytes data = 1;
+}

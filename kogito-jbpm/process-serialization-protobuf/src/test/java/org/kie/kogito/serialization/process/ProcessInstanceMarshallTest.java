@@ -19,93 +19,39 @@ package org.kie.kogito.serialization.process;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.jbpm.process.core.context.variable.Variable;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.kie.kogito.serialization.process.impl.ProtobufMarshallerReaderContext;
 import org.kie.kogito.serialization.process.impl.ProtobufProcessMarshallerWriteContext;
 import org.kie.kogito.serialization.process.impl.ProtobufVariableReader;
 import org.kie.kogito.serialization.process.impl.ProtobufVariableWriter;
 import org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ProcessInstanceMarshallTest {
-
-    @Test
-    public void testRoundtripIntVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("integer", 1);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripStringVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("string", "hello");
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripBoolVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("bool", Boolean.TRUE);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripFloatVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("float", 2f);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripDoubleVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("double", 3d);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripDateVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("date", new Date());
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripTimestampVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("timestamp", new Timestamp(System.currentTimeMillis()));
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripLongVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("long", 5L);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
 
     public static class MarshableObject implements Serializable {
 
@@ -137,57 +83,47 @@ public class ProcessInstanceMarshallTest {
         }
     }
 
-    @Test
-    public void testRoundtripCustomObjectVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("object", new MarshableObject("henry"));
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
+    private static Stream<Arguments> testRoundTrip() throws Exception {
+        return Stream.of(
+                Arguments.of(1),
+                Arguments.of("hello"),
+                Arguments.of(Boolean.TRUE),
+                Arguments.of(2f),
+                Arguments.of(3d),
+                Arguments.of(5l),
+                Arguments.of(BigDecimal.valueOf(10l)),
+                Arguments.of(new MarshableObject("henry")),
+                Arguments.of(new ObjectMapper().readTree("{ \"key\" : \"value\" }")),
+                Arguments.of(new ObjectMapper().valueToTree(new MarshableObject("henry"))),
+                Arguments.of(new Date()),
+                Arguments.of(Instant.now()),
+                Arguments.of(OffsetDateTime.now()),
+                Arguments.of(LocalDateTime.now()),
+                Arguments.of(LocalDate.now()),
+                Arguments.of(ZonedDateTime.now()),
+                Arguments.of(new Timestamp(System.currentTimeMillis())),
+                Arguments.of(Duration.ofDays(1))
+
+        );
     }
 
-    @Test
-    public void testRoundtripNullVarMarshaller() {
-        Map<String, Object> in = new HashMap<>();
-        in.put("object", null);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripJsonNodeVarMarshaller() throws Exception {
-        JsonNode node = new ObjectMapper().readTree("{ \"key\" : \"value\" }");
-        Map<String, Object> in = new HashMap<>();
-        in.put("node", node);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    @Test
-    public void testRoundtripJsonNodePojoMarshaller() throws Exception {
-        JsonNode node = new ObjectMapper().valueToTree(new MarshableObject("henry"));
-        Map<String, Object> in = new HashMap<>();
-        in.put("node", node);
-        Map<String, Object> out = roundtrip(in);
-        Assertions.assertThat(in).isEqualTo(out);
-    }
-
-    private Map<String, Object> roundtrip(Map<String, Object> toMarshall) {
+    @ParameterizedTest
+    @MethodSource
+    @NullSource
+    public void testRoundTrip(Object toMarshall) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ProtobufProcessMarshallerWriteContext ctxOut = new ProtobufProcessMarshallerWriteContext(out);
         ctxOut.set(MarshallerContextName.OBJECT_MARSHALLING_STRATEGIES, defaultStrategies());
         ProtobufVariableWriter writer = new ProtobufVariableWriter(ctxOut);
-        List<KogitoTypesProtobuf.Variable> variables = writer.buildVariables(toMarshall.entrySet().stream().collect(Collectors.toList()));
+        List<KogitoTypesProtobuf.Variable> variables = writer.buildVariables(singletonMap("var", toMarshall).entrySet().stream().collect(Collectors.toList()));
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         ProtobufMarshallerReaderContext ctxIn = new ProtobufMarshallerReaderContext(in);
         ctxIn.set(MarshallerContextName.OBJECT_MARSHALLING_STRATEGIES, defaultStrategies());
         ProtobufVariableReader reader = new ProtobufVariableReader(ctxIn);
         List<Variable> unmarshalledVars = reader.buildVariables(variables);
-        Map<String, Object> outcome = new HashMap<>();
-        for (Variable var : unmarshalledVars) {
-            outcome.put(var.getName(), var.getValue());
-        }
-        return outcome;
+        assertThat(unmarshalledVars).hasSize(1);
+        assertThat(unmarshalledVars.get(0).getValue()).isEqualTo(toMarshall);
     }
 
     private ObjectMarshallerStrategy[] defaultStrategies() {

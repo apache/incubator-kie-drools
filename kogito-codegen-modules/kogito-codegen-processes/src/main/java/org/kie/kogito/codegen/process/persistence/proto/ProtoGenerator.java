@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.codegen.process.persistence.proto;
 
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -22,10 +24,14 @@ import java.util.Set;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 
+import static java.lang.String.format;
+
 public interface ProtoGenerator {
 
     GeneratedFileType PROTO_TYPE = GeneratedFileType.of("PROTO", GeneratedFileType.Category.STATIC_HTTP_RESOURCE);
     String INDEX_COMMENT = "@Field(index = Index.NO, store = Store.YES) @SortableField";
+    String KOGITO_JAVA_CLASS_OPTION = "kogito_java_class";
+    String KOGITO_SERIALIZABLE = "kogito.Serializable";
 
     Proto protoOfDataClasses(String packageName, String... headers);
 
@@ -35,7 +41,7 @@ public interface ProtoGenerator {
 
     /**
      * Returns params of first constructor of persistence class
-     * 
+     *
      * @return
      */
     Collection<String> getPersistenceClassParams();
@@ -49,7 +55,6 @@ public interface ProtoGenerator {
     }
 
     default String protoType(String type) {
-
         if (String.class.getCanonicalName().equals(type) || String.class.getSimpleName().equalsIgnoreCase(type)) {
             return "string";
         } else if (Integer.class.getCanonicalName().equals(type) || "int".equalsIgnoreCase(type)) {
@@ -64,6 +69,23 @@ public interface ProtoGenerator {
             return "bool";
         } else if (Date.class.getCanonicalName().equals(type) || "date".equalsIgnoreCase(type)) {
             return "kogito.Date";
+        } else if (Instant.class.getCanonicalName().equals(type)) {
+            return "kogito.Instant";
+        } else if (type.startsWith("java.lang") || type.startsWith("java.util") || type.startsWith("java.time") || type.startsWith("java.math")) {
+            try {
+                Class<?> cls = Class.forName(type);
+                if (cls.isInterface()) {
+                    return null;
+                }
+                boolean assignable = Serializable.class.isAssignableFrom(cls);
+                if (assignable) {
+                    return KOGITO_SERIALIZABLE;
+                } else {
+                    throw new IllegalArgumentException(format("Java type %s is no supported by Kogito persistence, please consider using a class that extends java.io.Serializable", type));
+                }
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
         }
 
         return null;

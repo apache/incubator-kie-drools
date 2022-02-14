@@ -42,10 +42,12 @@ import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.process.persistence.proto.AbstractProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoEnum;
+import org.kie.kogito.codegen.process.persistence.proto.ProtoField;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toSet;
 
 public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
@@ -168,7 +170,11 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
                 protoType = optionalProtoType.get();
             }
 
-            message.addField(applicabilityByType(fieldTypeString), protoType, pd.name()).setComment(completeFieldComment);
+            ProtoField protoField = message.addField(applicabilityByType(fieldTypeString), protoType, pd.name());
+            protoField.setComment(completeFieldComment);
+            if (KOGITO_SERIALIZABLE.equals(protoType)) {
+                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString));
+            }
         }
         message.setComment(messageComment);
         proto.addMessage(message);
