@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.base.ClassFieldInspector;
-import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils;
+import org.drools.drl.parser.MessageImpl;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.InternalMessage;
 import org.kie.internal.builder.KnowledgeBuilderResult;
