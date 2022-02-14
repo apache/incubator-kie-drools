@@ -13,7 +13,7 @@ def getDefaultJobParams(String repoName = 'optaplanner') {
 }
 
 Map getMultijobPRConfig(boolean isNative = false) {
-    return [
+    def jobConfig = [
         parallel: true,
         buildchain: true,
         jobs : [
@@ -54,6 +54,10 @@ Map getMultijobPRConfig(boolean isNative = false) {
             ]
         ]
     ]
+    if (isNative) { // Optawebs should not be used in native.
+        jobConfig.jobs.retainAll { !it.id.startsWith('optaweb') }
+    }
+    return jobConfig
 }
 
 def getJobParams(String jobName, String jobFolder, String jenkinsfileName, String jobDescription = '') {
