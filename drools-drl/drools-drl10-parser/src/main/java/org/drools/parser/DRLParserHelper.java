@@ -118,6 +118,6 @@ public class DRLParserHelper {
         if (node instanceof TerminalNode) {
             return ((TerminalNode) node).getSymbol().getTokenIndex();
         }
-        return node.getChildCount() == 0 ? 0: getNodeIndex(node.getChild(node.getChildCount()-1));
+        return node.getChildCount() == 0 ? 0: getNodeIndex(node.getChild(0));
     }
 }
