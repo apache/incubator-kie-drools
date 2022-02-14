@@ -16,28 +16,24 @@
 
 package org.drools.drl.parser;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.core.io.internal.InternalResource;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.lang.DRLLexer;
 import org.drools.drl.parser.lang.DRLParser;
 import org.drools.drl.parser.lang.DroolsSentence;
 import org.drools.drl.parser.lang.Expander;
 import org.drools.drl.parser.lang.ExpanderException;
 import org.drools.drl.parser.lang.Location;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.lang.dsl.DefaultExpanderResolver;
-import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.drools.drl.parser.DRLFactory.buildLexer;
-import static org.drools.drl.parser.DRLFactory.buildParser;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a low level parser API. This will return textual AST representations

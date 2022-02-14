@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.compiler;
+package org.drools.drl.parser;
 
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.ResultSeverity;

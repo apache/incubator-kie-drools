@@ -27,7 +27,7 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.core.io.impl.DescrResource;
 import org.drools.drl.ast.descr.PackageDescr;

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.compiler.compiler;
+package org.drools.drl.parser;
 
-import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.InternalMessage;
 import org.kie.internal.builder.KnowledgeBuilderResult;

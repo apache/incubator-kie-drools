@@ -17,6 +17,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.parser.DroolsError;
 
 public class GlobalError extends DroolsError {
     private final GlobalDescr globalDescr;

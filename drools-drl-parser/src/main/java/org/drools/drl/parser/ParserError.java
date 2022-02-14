@@ -16,7 +16,6 @@
 
 package org.drools.drl.parser;
 
-import org.drools.compiler.compiler.DroolsError;
 import org.kie.api.io.Resource;
 
 public class ParserError extends DroolsError {

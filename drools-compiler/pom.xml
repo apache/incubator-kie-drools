@@ -33,10 +33,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-builder-extensions</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-wiring-api</artifactId>
     </dependency>
     <dependency>

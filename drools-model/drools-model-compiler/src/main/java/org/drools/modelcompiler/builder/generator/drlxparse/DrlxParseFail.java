@@ -18,7 +18,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 

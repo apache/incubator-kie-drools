@@ -14,7 +14,7 @@
 
 package org.drools.mvel.java;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 
 public class JavaDialectError extends DroolsError {
     private String message;
