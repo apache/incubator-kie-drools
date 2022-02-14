@@ -21,14 +21,13 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class ScoreDifferencePercentage {
 
     public static <Score_ extends Score<Score_>> ScoreDifferencePercentage calculateScoreDifferencePercentage(
             Score_ baseScore, Score_ valueScore) {
-        double[] baseLevels = ScoreUtils.extractLevelDoubles(baseScore);
-        double[] valueLevels = ScoreUtils.extractLevelDoubles(valueScore);
+        double[] baseLevels = baseScore.toLevelDoubles();
+        double[] valueLevels = valueScore.toLevelDoubles();
         if (baseLevels.length != valueLevels.length) {
             throw new IllegalStateException("The baseScore (" + baseScore + ")'s levelsLength (" + baseLevels.length
                     + ") is different from the valueScore (" + valueScore + ")'s levelsLength (" + valueLevels.length

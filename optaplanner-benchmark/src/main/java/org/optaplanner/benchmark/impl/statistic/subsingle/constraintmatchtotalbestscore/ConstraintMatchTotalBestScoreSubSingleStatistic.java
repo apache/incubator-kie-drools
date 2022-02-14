@@ -43,7 +43,6 @@ import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
@@ -114,7 +113,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
                 BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (ConstraintMatchTotalBestScoreStatisticPoint point : getPointList()) {
             long timeMillisSpent = point.getTimeMillisSpent();
-            double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScoreTotal());
+            double[] levelValues = point.getScoreTotal().toLevelDoubles();
             for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                 if (i >= constraintIdToWeightSeriesMapList.size()) {
                     constraintIdToWeightSeriesMapList.add(new LinkedHashMap<>());

@@ -19,10 +19,10 @@ package org.optaplanner.test.impl.score.stream;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.optaplanner.constraint.streams.bavet.BavetConstraintSession;
+import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 final class BavetSessionBasedAssertionBuilder<Solution_, Score_ extends Score<Score_>>
         implements SessionBasedAssertionBuilder<Solution_, Score_> {

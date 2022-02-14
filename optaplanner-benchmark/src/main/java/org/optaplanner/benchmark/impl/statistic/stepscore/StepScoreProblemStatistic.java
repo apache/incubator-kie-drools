@@ -40,7 +40,6 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class StepScoreProblemStatistic extends ProblemStatistic {
 
@@ -84,7 +83,7 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
                         continue;
                     }
                     long timeMillisSpent = point.getTimeMillisSpent();
-                    double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
+                    double[] levelValues = point.getScore().toLevelDoubles();
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(

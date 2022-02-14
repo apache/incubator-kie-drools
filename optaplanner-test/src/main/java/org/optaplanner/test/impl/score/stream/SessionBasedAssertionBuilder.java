@@ -16,11 +16,11 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.drools.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 
 /**
  * Drools and Bavet sessions have vastly different interfaces and therefore the assertion generation is generalized

@@ -32,6 +32,10 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-constraint-streams</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-constraint-drl</artifactId>
     </dependency>
   </dependencies>
@@ -42,7 +46,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <skip>true</skip> <!-- This is an empty JAR to drag in dependencies; enforcer makes no sense here. -->
+          <skip>true</skip> <!-- This is an empty JAR to drag in dependencies; dep checks make no sense here. -->
         </configuration>
       </plugin>
     </plugins>

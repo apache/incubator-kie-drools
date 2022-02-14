@@ -515,6 +515,10 @@ public class ConfigUtils {
         return abbreviate(list, 3);
     }
 
+    public static boolean isNativeImage() {
+        return System.getProperty("org.graalvm.nativeimage.imagecode") != null;
+    }
+
     // ************************************************************************
     // Private constructor
     // ************************************************************************

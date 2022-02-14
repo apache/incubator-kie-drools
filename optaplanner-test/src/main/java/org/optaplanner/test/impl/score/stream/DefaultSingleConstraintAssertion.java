@@ -26,14 +26,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.optaplanner.constraint.streams.common.AbstractConstraint;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.DefaultScoreExplanation;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
-import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
 
 public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Score<Score_>>

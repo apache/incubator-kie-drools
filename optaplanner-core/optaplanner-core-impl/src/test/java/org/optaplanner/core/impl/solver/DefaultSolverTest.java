@@ -44,10 +44,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -274,15 +272,17 @@ class DefaultSolverTest {
         assertThat(meterRegistry.getMeasurement(SolverMetric.ERROR_COUNT.getMeterId(), "COUNT")).isZero();
     }
 
-    public static class BestScoreMetricConstraintProvider implements ConstraintProvider {
+    public static class BestScoreMetricEasyScoreCalculator
+            implements EasyScoreCalculator<TestdataHardSoftScoreSolution, HardSoftScore> {
 
         @Override
-        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-            return new Constraint[] {
-                    constraintFactory.forEach(TestdataEntity.class)
-                            .filter(entity -> entity.getValue().getCode().startsWith("reward"))
-                            .reward("rewarding value", HardSoftScore.ONE_SOFT)
-            };
+        public HardSoftScore calculateScore(TestdataHardSoftScoreSolution testdataSolution) {
+            long count = testdataSolution.getEntityList()
+                    .stream()
+                    .filter(e -> e.getValue() != null)
+                    .filter(e -> e.getValue().getCode().startsWith("reward"))
+                    .count();
+            return HardSoftScore.ofSoft((int) count);
         }
     }
 
@@ -303,7 +303,7 @@ class DefaultSolverTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataHardSoftScoreSolution.class, TestdataEntity.class);
         solverConfig.setScoreDirectorFactoryConfig(
-                new ScoreDirectorFactoryConfig().withConstraintProviderClass(BestScoreMetricConstraintProvider.class));
+                new ScoreDirectorFactoryConfig().withEasyScoreCalculatorClass(BestScoreMetricEasyScoreCalculator.class));
         solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0hard/2soft"));
         solverConfig.setMonitoringConfig(new MonitoringConfig()
                 .withSolverMetricList(List.of(SolverMetric.BEST_SCORE)));
@@ -394,7 +394,7 @@ class DefaultSolverTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataHardSoftScoreSolution.class, TestdataEntity.class);
         solverConfig.setScoreDirectorFactoryConfig(
-                new ScoreDirectorFactoryConfig().withConstraintProviderClass(BestScoreMetricConstraintProvider.class));
+                new ScoreDirectorFactoryConfig().withEasyScoreCalculatorClass(BestScoreMetricEasyScoreCalculator.class));
         solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0hard/3soft"));
         solverConfig.setMonitoringConfig(new MonitoringConfig()
                 .withSolverMetricList(List.of(SolverMetric.STEP_SCORE)));
@@ -487,17 +487,11 @@ class DefaultSolverTest {
                 .isEqualTo(3);
     }
 
-    public static class ErrorThrowingConstraintProvider implements ConstraintProvider {
+    public static class ErrorThowingEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
 
         @Override
-        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-            return new Constraint[] {
-                    constraintFactory.forEach(TestdataEntity.class)
-                            .filter(e -> {
-                                throw new IllegalStateException("Thrown exception in constraint provider");
-                            })
-                            .penalize("throwing constraint", SimpleScore.ONE)
-            };
+        public SimpleScore calculateScore(TestdataSolution testdataSolution) {
+            throw new IllegalStateException("Thrown exception in constraint provider");
         }
     }
 
@@ -510,7 +504,7 @@ class DefaultSolverTest {
                 TestdataSolution.class, TestdataEntity.class);
 
         solverConfig.setScoreDirectorFactoryConfig(
-                new ScoreDirectorFactoryConfig().withConstraintProviderClass(ErrorThrowingConstraintProvider.class));
+                new ScoreDirectorFactoryConfig().withEasyScoreCalculatorClass(ErrorThowingEasyScoreCalculator.class));
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();

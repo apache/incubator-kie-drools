@@ -23,7 +23,6 @@ import java.util.Locale;
 
 import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class StatisticUtils {
 
@@ -51,7 +50,7 @@ public class StatisticUtils {
             if (benchmarkResult.hasAllSuccess()) {
                 Score difference = benchmarkResult.getAverageScore().subtract(averageScore);
                 // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
-                double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
+                double[] differenceDoubles = difference.toLevelDoubles();
                 if (differenceSquaredTotalDoubles == null) {
                     differenceSquaredTotalDoubles = new double[differenceDoubles.length];
                 }

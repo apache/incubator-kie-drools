@@ -27,4 +27,6 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
  */
 public interface PentaJoiner<A, B, C, D, E> {
 
+    PentaJoiner<A, B, C, D, E> and(PentaJoiner<A, B, C, D, E> otherJoiner);
+
 }

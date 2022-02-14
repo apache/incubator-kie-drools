@@ -27,4 +27,6 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
  */
 public interface TriJoiner<A, B, C> {
 
+    TriJoiner<A, B, C> and(TriJoiner<A, B, C> otherJoiner);
+
 }

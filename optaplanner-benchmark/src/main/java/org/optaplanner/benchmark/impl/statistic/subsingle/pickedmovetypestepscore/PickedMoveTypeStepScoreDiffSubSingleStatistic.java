@@ -43,7 +43,6 @@ import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFo
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 import io.micrometer.core.instrument.Tag;
@@ -111,7 +110,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
         for (PickedMoveTypeStepScoreDiffStatisticPoint point : points) {
             long timeMillisSpent = point.getTimeMillisSpent();
             String moveType = point.getMoveType();
-            double[] levelValues = ScoreUtils.extractLevelDoubles(point.getStepScoreDiff());
+            double[] levelValues = point.getStepScoreDiff().toLevelDoubles();
             for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                 if (i >= moveTypeToSeriesMapList.size()) {
                     moveTypeToSeriesMapList.add(new LinkedHashMap<>());

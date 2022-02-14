@@ -40,7 +40,6 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class BestScoreProblemStatistic extends ProblemStatistic {
 
@@ -88,7 +87,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
                         continue;
                     }
                     long timeMillisSpent = point.getTimeMillisSpent();
-                    double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
+                    double[] levelValues = point.getScore().toLevelDoubles();
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
@@ -100,7 +99,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
                 // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
                 long timeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
-                double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getMedian().getScore());
+                double[] bestScoreLevels = singleBenchmarkResult.getMedian().getScore().toLevelDoubles();
                 for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     if (i >= seriesList.size()) {
                         seriesList.add(new XYSeries(

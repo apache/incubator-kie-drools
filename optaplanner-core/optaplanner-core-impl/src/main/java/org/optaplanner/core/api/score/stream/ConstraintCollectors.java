@@ -62,10 +62,6 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
-import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 
 /**
  * Creates an {@link UniConstraintCollector}, {@link BiConstraintCollector}, ... instance

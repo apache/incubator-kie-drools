@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -57,8 +56,7 @@ public class BestScoreFeasibleTermination<Solution_> extends AbstractTermination
 
     @Override
     public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
-        return calculateFeasibilityTimeGradient(
-                solverScope.getStartingInitializedScore(), solverScope.getBestScore());
+        return calculateFeasibilityTimeGradient(solverScope.getStartingInitializedScore(), solverScope.getBestScore());
     }
 
     @Override
@@ -66,20 +64,20 @@ public class BestScoreFeasibleTermination<Solution_> extends AbstractTermination
         return calculateFeasibilityTimeGradient((Score) phaseScope.getStartingScore(), (Score) phaseScope.getBestScore());
     }
 
-    protected double calculateFeasibilityTimeGradient(Score startScore, Score score) {
+    protected <Score_ extends Score<Score_>> double calculateFeasibilityTimeGradient(Score_ startScore, Score_ score) {
         if (startScore == null || !startScore.isSolutionInitialized()) {
             return 0.0;
         }
-        Score totalDiff = startScore.negate();
+        Score_ totalDiff = startScore.negate();
         Number[] totalDiffNumbers = totalDiff.toLevelNumbers();
-        Score scoreDiff = score.subtract(startScore);
+        Score_ scoreDiff = score.subtract(startScore);
         Number[] scoreDiffNumbers = scoreDiff.toLevelNumbers();
         if (scoreDiffNumbers.length != totalDiffNumbers.length) {
             throw new IllegalStateException("The startScore (" + startScore + ") and score (" + score
                     + ") don't have the same levelsSize.");
         }
-        return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightFeasibleNumbers,
-                feasibleLevelsSize);
+        return BestScoreTermination.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers,
+                timeGradientWeightFeasibleNumbers, feasibleLevelsSize);
     }
 
     // ************************************************************************

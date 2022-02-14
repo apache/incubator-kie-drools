@@ -39,7 +39,6 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 
 /**
  * A {@link ConstraintStream} that matches three facts.
@@ -85,7 +84,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @return never null, a stream that matches every combination of [A, B, C] and D
      */
     default <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream) {
-        return join(otherStream, new NoneQuadJoiner<>());
+        return join(otherStream, new QuadJoiner[0]);
     }
 
     /**
@@ -193,7 +192,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @return never null, a stream that matches every combination of [A, B, C] and D
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass) {
-        return join(otherClass, new NoneQuadJoiner<>());
+        return join(otherClass, new QuadJoiner[0]);
     }
 
     /**

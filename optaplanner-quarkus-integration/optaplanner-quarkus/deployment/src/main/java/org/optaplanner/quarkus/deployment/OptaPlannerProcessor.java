@@ -59,6 +59,7 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
+import org.optaplanner.core.impl.score.stream.JoinerService;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
@@ -108,7 +109,11 @@ class OptaPlannerProcessor {
 
     @BuildStep
     void registerScoreDirectorFactorySpi(BuildProducer<ServiceProviderBuildItem> services) {
-        String serviceName = ScoreDirectorFactoryService.class.getName();
+        registerSpi(ScoreDirectorFactoryService.class, services);
+    }
+
+    private static void registerSpi(Class<?> serviceClass, BuildProducer<ServiceProviderBuildItem> services) {
+        String serviceName = serviceClass.getName();
         String service = "META-INF/services/" + serviceName;
         try {
             // Find out all the provider implementation classes listed in the service files.
@@ -117,7 +122,8 @@ class OptaPlannerProcessor {
             // Register every listed implementation class, so they can be instantiated in native-image at run-time.
             services.produce(new ServiceProviderBuildItem(serviceName, implementations.toArray(new String[0])));
         } catch (IOException e) {
-            throw new IllegalStateException("Impossible state: Failed registering score directors.", e);
+            throw new IllegalStateException("Impossible state: Failed registering service " + serviceClass.getCanonicalName(),
+                    e);
         }
     }
 
@@ -695,6 +701,15 @@ class OptaPlannerProcessor {
                 reflectiveClassSet.add(clazz);
             }
         });
+    }
+
+    @BuildStep
+    void registerJoinerSpi(SolverConfigBuildItem solverConfigBuildItem, BuildProducer<ServiceProviderBuildItem> services) {
+        if (solverConfigBuildItem.getSolverConfig().getScoreDirectorFactoryConfig()
+                .getConstraintProviderClass() != null) {
+            // The JoinerService SPI is required for constraint streams.
+            registerSpi(JoinerService.class, services);
+        }
     }
 
 }

@@ -112,16 +112,25 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             validateNoDroolsAlphaNetworkCompilation();
             validateNoGizmoKieBaseSupplier();
             return easyScoreDirectorFactorySupplier.get();
-        } else if (constraintStreamScoreDirectorFactorySupplier != null) {
+        } else if (incrementalScoreDirectorFactorySupplier != null) {
+            validateNoDroolsAlphaNetworkCompilation();
+            validateNoGizmoKieBaseSupplier();
+            return incrementalScoreDirectorFactorySupplier.get();
+        }
+
+        if (constraintStreamScoreDirectorFactorySupplier != null) {
             if (config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
                 validateNoDroolsAlphaNetworkCompilation();
                 validateNoGizmoKieBaseSupplier();
             }
             return constraintStreamScoreDirectorFactorySupplier.get();
-        } else if (incrementalScoreDirectorFactorySupplier != null) {
-            validateNoDroolsAlphaNetworkCompilation();
-            validateNoGizmoKieBaseSupplier();
-            return incrementalScoreDirectorFactorySupplier.get();
+        } else {
+            if (config.getConstraintProviderClass() != null) {
+                throw new IllegalStateException("Constraint Streams requested via constraintProviderClass (" +
+                        config.getConstraintProviderClass() + ") but the supporting classes were not found on the classpath.\n"
+                        +
+                        "Maybe include org.optaplanner:optaplanner-constraint-streams dependency in your project?");
+            }
         }
 
         if (drlScoreDirectorFactorySupplier != null) {
@@ -136,7 +145,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             }
         }
         throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
-                + "easyScoreCalculatorClass, a constraintProviderClass or an incrementalScoreCalculatorClass.");
+                + "easyScoreCalculatorClass or an incrementalScoreCalculatorClass.");
     }
 
     private void assertOnlyOneScoreDirectorFactory(

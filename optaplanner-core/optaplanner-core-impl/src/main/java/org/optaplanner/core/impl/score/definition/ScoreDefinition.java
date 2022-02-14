@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -118,7 +117,6 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      * @param scoreString never null
      * @return never null
      * @see #formatScore(Score)
-     * @see ScoreUtils#parseScore(Class, String)
      */
     Score_ parseScore(String scoreString);
 

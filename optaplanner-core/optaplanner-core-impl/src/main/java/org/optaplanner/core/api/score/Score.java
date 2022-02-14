@@ -157,6 +157,20 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
     Number[] toLevelNumbers();
 
     /**
+     * As defined by {@link #toLevelNumbers()}, only returns double[] instead of Number[].
+     *
+     * @return never null
+     */
+    default double[] toLevelDoubles() {
+        Number[] levelNumbers = toLevelNumbers();
+        double[] levelDoubles = new double[levelNumbers.length];
+        for (int i = 0; i < levelNumbers.length; i++) {
+            levelDoubles[i] = levelNumbers[i].doubleValue();
+        }
+        return levelDoubles;
+    }
+
+    /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints
      * and {@link #isSolutionInitialized()} is true.
      *

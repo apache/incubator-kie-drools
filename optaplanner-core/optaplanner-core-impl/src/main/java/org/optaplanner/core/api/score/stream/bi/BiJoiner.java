@@ -27,4 +27,6 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
  */
 public interface BiJoiner<A, B> {
 
+    BiJoiner<A, B> and(BiJoiner<A, B> otherJoiner);
+
 }

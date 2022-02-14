@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -83,17 +82,68 @@ public class BestScoreTermination<Solution_> extends AbstractTermination<Solutio
         return calculateTimeGradient(startingInitializedScore, bestScoreLimit, bestScore);
     }
 
-    protected double calculateTimeGradient(Score startScore, Score endScore, Score score) {
-        Score totalDiff = endScore.subtract(startScore);
+    protected <Score_ extends Score<Score_>> double calculateTimeGradient(Score_ startScore, Score_ endScore,
+            Score_ score) {
+        Score_ totalDiff = endScore.subtract(startScore);
         Number[] totalDiffNumbers = totalDiff.toLevelNumbers();
-        Score scoreDiff = score.subtract(startScore);
+        Score_ scoreDiff = score.subtract(startScore);
         Number[] scoreDiffNumbers = scoreDiff.toLevelNumbers();
         if (scoreDiffNumbers.length != totalDiffNumbers.length) {
             throw new IllegalStateException("The startScore (" + startScore + "), endScore (" + endScore
                     + ") and score (" + score + ") don't have the same levelsSize.");
         }
-        return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightNumbers,
+        return calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightNumbers,
                 levelsSize);
+    }
+
+    /**
+     *
+     * @param totalDiffNumbers never null
+     * @param scoreDiffNumbers never null
+     * @param timeGradientWeightNumbers never null
+     * @param levelDepth The number of levels of the diffNumbers that are included
+     * @return {@code 0.0 <= value <= 1.0}
+     */
+    static double calculateTimeGradient(Number[] totalDiffNumbers, Number[] scoreDiffNumbers,
+            double[] timeGradientWeightNumbers, int levelDepth) {
+        double timeGradient = 0.0;
+        double remainingTimeGradient = 1.0;
+        for (int i = 0; i < levelDepth; i++) {
+            double levelTimeGradientWeight;
+            if (i != (levelDepth - 1)) {
+                levelTimeGradientWeight = remainingTimeGradient * timeGradientWeightNumbers[i];
+                remainingTimeGradient -= levelTimeGradientWeight;
+            } else {
+                levelTimeGradientWeight = remainingTimeGradient;
+                remainingTimeGradient = 0.0;
+            }
+            double totalDiffLevel = totalDiffNumbers[i].doubleValue();
+            double scoreDiffLevel = scoreDiffNumbers[i].doubleValue();
+            if (scoreDiffLevel == totalDiffLevel) {
+                // Max out this level
+                timeGradient += levelTimeGradientWeight;
+            } else if (scoreDiffLevel > totalDiffLevel) {
+                // Max out this level and all softer levels too
+                timeGradient += levelTimeGradientWeight + remainingTimeGradient;
+                break;
+            } else if (scoreDiffLevel == 0.0) {
+                // Ignore this level
+                // timeGradient += 0.0
+            } else if (scoreDiffLevel < 0.0) {
+                // Ignore this level and all softer levels too
+                // timeGradient += 0.0
+                break;
+            } else {
+                double levelTimeGradient = scoreDiffLevel / totalDiffLevel;
+                timeGradient += levelTimeGradient * levelTimeGradientWeight;
+            }
+
+        }
+        if (timeGradient > 1.0) {
+            // Rounding error due to calculating with doubles
+            timeGradient = 1.0;
+        }
+        return timeGradient;
     }
 
     // ************************************************************************

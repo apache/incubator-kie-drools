@@ -11,7 +11,7 @@
 
   <artifactId>optaplanner-constraint-drl</artifactId>
 
-  <name>OptaPlanner score: DRL constraints</name>
+  <name>OptaPlanner constraints: DRL</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
@@ -33,30 +33,8 @@
 
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-internal</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-tms</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-dynamic</artifactId>
-      <scope>runtime</scope>
+      <artifactId>drools-engine</artifactId> <!-- Brings in everything that Drools needs. -->
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -114,4 +92,22 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration> <!-- Drools will bring whatever it needs. -->
+          <ignoredUsedUndeclaredDependencies>
+            <dependency>org.kie:*</dependency>
+            <dependency>org.drools:*</dependency>
+          </ignoredUsedUndeclaredDependencies>
+          <ignoredUnusedDeclaredDependencies>
+            <dependency>org.drools:drools-engine</dependency>
+          </ignoredUnusedDeclaredDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

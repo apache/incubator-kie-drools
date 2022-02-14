@@ -20,19 +20,17 @@ import java.time.Duration;
 import java.time.temporal.Temporal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
-import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
@@ -63,17 +61,30 @@ public class ExperimentalConstraintCollectors {
      */
     public static <A> UniConstraintCollector<A, ConsecutiveSetTree<A, Integer, Integer>, ConsecutiveInfo<A, Integer>>
             consecutive(ToIntFunction<A> indexMap) {
-        return new DefaultUniConstraintCollector<>(
-                () -> new ConsecutiveSetTree<>(
+        return new UniConstraintCollector<>() {
+
+            @Override
+            public Supplier<ConsecutiveSetTree<A, Integer, Integer>> supplier() {
+                return () -> new ConsecutiveSetTree<>(
                         indexMap::applyAsInt,
                         (Integer a, Integer b) -> b - a,
                         Integer::sum,
-                        1, 0),
-                (acc, a) -> {
+                        1, 0);
+            }
+
+            @Override
+            public BiFunction<ConsecutiveSetTree<A, Integer, Integer>, A, Runnable> accumulator() {
+                return (acc, a) -> {
                     acc.add(a);
                     return () -> acc.remove(a);
-                },
-                tree -> tree);
+                };
+            }
+
+            @Override
+            public Function<ConsecutiveSetTree<A, Integer, Integer>, ConsecutiveInfo<A, Integer>> finisher() {
+                return tree -> tree;
+            }
+        };
     }
 
     /**
@@ -89,16 +100,29 @@ public class ExperimentalConstraintCollectors {
     public static <A, B, Result>
             BiConstraintCollector<A, B, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveInfo<Result, Integer>>
             consecutive(BiFunction<A, B, Result> resultMap, ToIntFunction<Result> indexMap) {
-        return new DefaultBiConstraintCollector<>(() -> new ConsecutiveSetTree<>(
-                indexMap::applyAsInt,
-                (Integer a, Integer b) -> b - a,
-                Integer::sum, 1, 0),
-                (acc, a, b) -> {
+        return new BiConstraintCollector<>() {
+            @Override
+            public Supplier<ConsecutiveSetTree<Result, Integer, Integer>> supplier() {
+                return () -> new ConsecutiveSetTree<>(
+                        indexMap::applyAsInt,
+                        (Integer a, Integer b) -> b - a,
+                        Integer::sum, 1, 0);
+            }
+
+            @Override
+            public TriFunction<ConsecutiveSetTree<Result, Integer, Integer>, A, B, Runnable> accumulator() {
+                return (acc, a, b) -> {
                     Result result = resultMap.apply(a, b);
                     acc.add(result);
                     return () -> acc.remove(result);
-                },
-                tree -> tree);
+                };
+            }
+
+            @Override
+            public Function<ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveInfo<Result, Integer>> finisher() {
+                return tree -> tree;
+            }
+        };
     }
 
     /**
@@ -115,15 +139,28 @@ public class ExperimentalConstraintCollectors {
     public static <A, B, C, Result>
             TriConstraintCollector<A, B, C, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveInfo<Result, Integer>>
             consecutive(TriFunction<A, B, C, Result> resultMap, ToIntFunction<Result> indexMap) {
-        return new DefaultTriConstraintCollector<>(() -> new ConsecutiveSetTree<>(
-                indexMap::applyAsInt,
-                (Integer a, Integer b) -> b - a, Integer::sum, 1, 0),
-                (acc, a, b, c) -> {
+        return new TriConstraintCollector<>() {
+            @Override
+            public Supplier<ConsecutiveSetTree<Result, Integer, Integer>> supplier() {
+                return () -> new ConsecutiveSetTree<>(
+                        indexMap::applyAsInt,
+                        (Integer a, Integer b) -> b - a, Integer::sum, 1, 0);
+            }
+
+            @Override
+            public QuadFunction<ConsecutiveSetTree<Result, Integer, Integer>, A, B, C, Runnable> accumulator() {
+                return (acc, a, b, c) -> {
                     Result result = resultMap.apply(a, b, c);
                     acc.add(result);
                     return () -> acc.remove(result);
-                },
-                tree -> tree);
+                };
+            }
+
+            @Override
+            public Function<ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveInfo<Result, Integer>> finisher() {
+                return tree -> tree;
+            }
+        };
     }
 
     /**
@@ -141,15 +178,28 @@ public class ExperimentalConstraintCollectors {
     public static <A, B, C, D, Result>
             QuadConstraintCollector<A, B, C, D, ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveInfo<Result, Integer>>
             consecutive(QuadFunction<A, B, C, D, Result> resultMap, ToIntFunction<Result> indexMap) {
-        return new DefaultQuadConstraintCollector<>(() -> new ConsecutiveSetTree<>(
-                indexMap::applyAsInt,
-                (Integer a, Integer b) -> b - a, Integer::sum, 1, 0),
-                (acc, a, b, c, d) -> {
+        return new QuadConstraintCollector<>() {
+            @Override
+            public Supplier<ConsecutiveSetTree<Result, Integer, Integer>> supplier() {
+                return () -> new ConsecutiveSetTree<>(
+                        indexMap::applyAsInt,
+                        (Integer a, Integer b) -> b - a, Integer::sum, 1, 0);
+            }
+
+            @Override
+            public PentaFunction<ConsecutiveSetTree<Result, Integer, Integer>, A, B, C, D, Runnable> accumulator() {
+                return (acc, a, b, c, d) -> {
                     Result result = resultMap.apply(a, b, c, d);
                     acc.add(result);
                     return () -> acc.remove(result);
-                },
-                tree -> tree);
+                };
+            }
+
+            @Override
+            public Function<ConsecutiveSetTree<Result, Integer, Integer>, ConsecutiveInfo<Result, Integer>> finisher() {
+                return tree -> tree;
+            }
+        };
     }
 
     /**
@@ -179,16 +229,29 @@ public class ExperimentalConstraintCollectors {
             UniConstraintCollector<A, IntervalTree<A, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<A, PointType_, DifferenceType_>>
             consecutiveIntervals(Function<A, PointType_> startMap, Function<A, PointType_> endMap,
                     BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
-        return new DefaultUniConstraintCollector<>(
-                () -> new IntervalTree<>(
+        return new UniConstraintCollector<>() {
+            @Override
+            public Supplier<IntervalTree<A, PointType_, DifferenceType_>> supplier() {
+                return () -> new IntervalTree<>(
                         startMap,
-                        endMap, differenceFunction),
-                (acc, a) -> {
+                        endMap, differenceFunction);
+            }
+
+            @Override
+            public BiFunction<IntervalTree<A, PointType_, DifferenceType_>, A, Runnable> accumulator() {
+                return (acc, a) -> {
                     Interval<A, PointType_> interval = acc.getInterval(a);
                     acc.add(interval);
                     return () -> acc.remove(interval);
-                },
-                IntervalTree::getConsecutiveIntervalData);
+                };
+            }
+
+            @Override
+            public Function<IntervalTree<A, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<A, PointType_, DifferenceType_>>
+                    finisher() {
+                return IntervalTree::getConsecutiveIntervalData;
+            }
+        };
     }
 
     /**
@@ -241,17 +304,30 @@ public class ExperimentalConstraintCollectors {
             consecutiveIntervals(BiFunction<A, B, IntervalType_> intervalMap, Function<IntervalType_, PointType_> startMap,
                     Function<IntervalType_, PointType_> endMap,
                     BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
-        return new DefaultBiConstraintCollector<>(
-                () -> new IntervalTree<>(
+        return new BiConstraintCollector<>() {
+            @Override
+            public Supplier<IntervalTree<IntervalType_, PointType_, DifferenceType_>> supplier() {
+                return () -> new IntervalTree<>(
                         startMap,
-                        endMap, differenceFunction),
-                (acc, a, b) -> {
+                        endMap, differenceFunction);
+            }
+
+            @Override
+            public TriFunction<IntervalTree<IntervalType_, PointType_, DifferenceType_>, A, B, Runnable> accumulator() {
+                return (acc, a, b) -> {
                     IntervalType_ intervalObj = intervalMap.apply(a, b);
                     Interval<IntervalType_, PointType_> interval = acc.getInterval(intervalObj);
                     acc.add(interval);
                     return () -> acc.remove(interval);
-                },
-                IntervalTree::getConsecutiveIntervalData);
+                };
+            }
+
+            @Override
+            public Function<IntervalTree<IntervalType_, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType_, PointType_, DifferenceType_>>
+                    finisher() {
+                return IntervalTree::getConsecutiveIntervalData;
+            }
+        };
     }
 
     /**
@@ -312,17 +388,30 @@ public class ExperimentalConstraintCollectors {
             consecutiveIntervals(TriFunction<A, B, C, IntervalType_> intervalMap, Function<IntervalType_, PointType_> startMap,
                     Function<IntervalType_, PointType_> endMap,
                     BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
-        return new DefaultTriConstraintCollector<>(
-                () -> new IntervalTree<>(
+        return new TriConstraintCollector<>() {
+            @Override
+            public Supplier<IntervalTree<IntervalType_, PointType_, DifferenceType_>> supplier() {
+                return () -> new IntervalTree<>(
                         startMap,
-                        endMap, differenceFunction),
-                (acc, a, b, c) -> {
+                        endMap, differenceFunction);
+            }
+
+            @Override
+            public QuadFunction<IntervalTree<IntervalType_, PointType_, DifferenceType_>, A, B, C, Runnable> accumulator() {
+                return (acc, a, b, c) -> {
                     IntervalType_ intervalObj = intervalMap.apply(a, b, c);
                     Interval<IntervalType_, PointType_> interval = acc.getInterval(intervalObj);
                     acc.add(interval);
                     return () -> acc.remove(interval);
-                },
-                IntervalTree::getConsecutiveIntervalData);
+                };
+            }
+
+            @Override
+            public Function<IntervalTree<IntervalType_, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType_, PointType_, DifferenceType_>>
+                    finisher() {
+                return IntervalTree::getConsecutiveIntervalData;
+            }
+        };
     }
 
     /**
@@ -386,17 +475,30 @@ public class ExperimentalConstraintCollectors {
             consecutiveIntervals(QuadFunction<A, B, C, D, IntervalType_> intervalMap,
                     Function<IntervalType_, PointType_> startMap, Function<IntervalType_, PointType_> endMap,
                     BiFunction<PointType_, PointType_, DifferenceType_> differenceFunction) {
-        return new DefaultQuadConstraintCollector<>(
-                () -> new IntervalTree<>(
+        return new QuadConstraintCollector<>() {
+            @Override
+            public Supplier<IntervalTree<IntervalType_, PointType_, DifferenceType_>> supplier() {
+                return () -> new IntervalTree<>(
                         startMap,
-                        endMap, differenceFunction),
-                (acc, a, b, c, d) -> {
+                        endMap, differenceFunction);
+            }
+
+            @Override
+            public PentaFunction<IntervalTree<IntervalType_, PointType_, DifferenceType_>, A, B, C, D, Runnable> accumulator() {
+                return (acc, a, b, c, d) -> {
                     IntervalType_ intervalObj = intervalMap.apply(a, b, c, d);
                     Interval<IntervalType_, PointType_> interval = acc.getInterval(intervalObj);
                     acc.add(interval);
                     return () -> acc.remove(interval);
-                },
-                IntervalTree::getConsecutiveIntervalData);
+                };
+            }
+
+            @Override
+            public Function<IntervalTree<IntervalType_, PointType_, DifferenceType_>, ConsecutiveIntervalInfo<IntervalType_, PointType_, DifferenceType_>>
+                    finisher() {
+                return IntervalTree::getConsecutiveIntervalData;
+            }
+        };
     }
 
     /**

@@ -70,7 +70,6 @@ import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -364,7 +363,7 @@ public class BenchmarkReport {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 String problemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
                 if (singleBenchmarkResult.hasAllSuccess()) {
-                    double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
+                    double[] levelValues = singleBenchmarkResult.getAverageScore().toLevelDoubles();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new DefaultCategoryDataset());
@@ -399,7 +398,7 @@ public class BenchmarkReport {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 if (singleBenchmarkResult.hasAllSuccess()) {
                     long problemScale = singleBenchmarkResult.getProblemBenchmarkResult().getProblemScale();
-                    double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
+                    double[] levelValues = singleBenchmarkResult.getAverageScore().toLevelDoubles();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesListList.size()) {
                             seriesListList.add(new ArrayList<>(
@@ -442,7 +441,7 @@ public class BenchmarkReport {
                     List<List<Double>> distributionLevelList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
                             .getSubSingleBenchmarkResultList()) {
-                        double[] levelValues = ScoreUtils.extractLevelDoubles(subSingleBenchmarkResult.getAverageScore());
+                        double[] levelValues = subSingleBenchmarkResult.getAverageScore().toLevelDoubles();
                         for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                             if (i >= distributionLevelList.size()) {
                                 distributionLevelList.add(new ArrayList<>(singleBenchmarkResult.getSubSingleCount()));
@@ -484,7 +483,7 @@ public class BenchmarkReport {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 String problemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
                 if (singleBenchmarkResult.hasAllSuccess()) {
-                    double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getWinningScoreDifference());
+                    double[] levelValues = singleBenchmarkResult.getWinningScoreDifference().toLevelDoubles();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new DefaultCategoryDataset());
@@ -643,7 +642,7 @@ public class BenchmarkReport {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 if (singleBenchmarkResult.hasAllSuccess()) {
                     long timeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
-                    double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
+                    double[] levelValues = singleBenchmarkResult.getAverageScore().toLevelDoubles();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesListList.size()) {
                             seriesListList.add(new ArrayList<>(
@@ -790,15 +789,15 @@ public class BenchmarkReport {
         for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult
                 .getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
-                double[] winningScoreLevels = ScoreUtils.extractLevelDoubles(
-                        problemBenchmarkResult.getWinningSingleBenchmarkResult().getAverageScore());
+                double[] winningScoreLevels =
+                        problemBenchmarkResult.getWinningSingleBenchmarkResult().getAverageScore().toLevelDoubles();
                 int[] differenceCount = new int[winningScoreLevels.length];
                 for (int i = 0; i < differenceCount.length; i++) {
                     differenceCount[i] = 0;
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.hasAllSuccess()) {
-                        double[] scoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
+                        double[] scoreLevels = singleBenchmarkResult.getAverageScore().toLevelDoubles();
                         for (int i = 0; i < scoreLevels.length; i++) {
                             if (scoreLevels[i] != winningScoreLevels[i]) {
                                 differenceCount[i] = differenceCount[i] + 1;
