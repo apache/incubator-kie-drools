@@ -21,24 +21,10 @@ import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.services.event.impl.AbstractMessageProducer;
 
 @org.springframework.stereotype.Component()
-public class MessageProducer extends AbstractMessageProducer<$DataType$, $DataEventType$> {
+public class MessageProducer extends AbstractMessageProducer<$DataType$> {
 
     @org.springframework.beans.factory.annotation.Autowired()
     MessageProducer(EventEmitter emitter) {
         super(emitter,"$Trigger$");
-    }
-
-    protected $DataEventType$ dataEventTypeConstructor($DataType$ e, KogitoProcessInstance pi, String trigger) {
-        return new $DataEventType$(
-                trigger,
-                "",
-                e,
-                pi.getStringId(),
-                pi.getParentProcessInstanceStringId(),
-                pi.getRootProcessInstanceId(),
-                pi.getProcessId(),
-                pi.getRootProcessId(),
-                String.valueOf(pi.getState()),
-                pi.getReferenceId());
     }
 }

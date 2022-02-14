@@ -270,7 +270,6 @@ public class ProcessCodegen extends AbstractGenerator {
         List<ProcessInstanceGenerator> pis = new ArrayList<>();
         List<ProcessExecutableModelGenerator> processExecutableModelGenerators = new ArrayList<>();
         List<ProcessResourceGenerator> rgs = new ArrayList<>(); // REST resources
-        List<MessageDataEventGenerator> mdegs = new ArrayList<>(); // message data events
         List<MessageConsumerGenerator> megs = new ArrayList<>(); // message endpoints/consumers
         List<MessageProducerGenerator> mpgs = new ArrayList<>(); // message producers
 
@@ -365,31 +364,19 @@ public class ProcessCodegen extends AbstractGenerator {
 
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
-                        MessageDataEventGenerator msgDataEventGenerator =
-                                new MessageDataEventGenerator(context(), workFlowProcess, trigger);
-
-                        mdegs.add(msgDataEventGenerator);
                         MessageConsumerGenerator messageConsumerGenerator = new MessageConsumerGenerator(
                                 context(),
                                 workFlowProcess,
                                 modelClassGenerator.className(),
                                 execModelGen.className(),
                                 applicationCanonicalName(),
-                                msgDataEventGenerator.className(),
                                 trigger);
                         megs.add(messageConsumerGenerator);
                         metaData.getConsumers().put(trigger.getName(), messageConsumerGenerator.compilationUnit());
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
-
-                        MessageDataEventGenerator msgDataEventGenerator =
-                                new MessageDataEventGenerator(context(), workFlowProcess, trigger);
-                        mdegs.add(msgDataEventGenerator);
                         MessageProducerGenerator messageProducerGenerator = new MessageProducerGenerator(
                                 context(),
                                 workFlowProcess,
-                                modelClassGenerator.className(),
-                                execModelGen.className(),
-                                msgDataEventGenerator.className(),
                                 trigger);
                         mpgs.add(messageProducerGenerator);
                         metaData.getProducers().put(trigger.getName(), messageProducerGenerator.compilationUnit());
@@ -450,11 +437,6 @@ public class ProcessCodegen extends AbstractGenerator {
                     .generate()
                     .entrySet()
                     .forEach(entry -> storeFile(PRODUCER_TYPE, entry.getKey(), entry.getValue()));
-        }
-
-        for (MessageDataEventGenerator messageDataEventGenerator : mdegs) {
-            storeFile(GeneratedFileType.SOURCE, messageDataEventGenerator.generatedFilePath(),
-                    messageDataEventGenerator.generate());
         }
 
         for (MessageConsumerGenerator messageConsumerGenerator : megs) {

@@ -34,7 +34,7 @@ public class SWFProduceEventAction extends ProduceEventAction<JsonNode> {
     private Expression expr;
     private JsonNode value;
 
-    public SWFProduceEventAction(String triggerName, String varName, Supplier<AbstractMessageProducer<JsonNode, ?>> supplier, String exprLang, String data) {
+    public SWFProduceEventAction(String triggerName, String varName, Supplier<AbstractMessageProducer<JsonNode>> supplier, String exprLang, String data) {
         super(triggerName, varName, supplier);
         if (data != null) {
             this.expr = ExpressionHandlerFactory.get(exprLang, data);

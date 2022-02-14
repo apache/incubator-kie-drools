@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.prediction.PredictionModels;
 
 import io.quarkus.runtime.Startup;
@@ -40,9 +41,12 @@ public class QuarkusEventDrivenPredictionsController extends EventDrivenPredicti
     @Inject
     EventReceiver eventReceiver;
 
+    @Inject
+    EventUnmarshaller<Object> eventUnmarshaller;
+
     @PostConstruct
     private void onPostConstruct() {
-        init(predictionModels, config, eventEmitter, eventReceiver);
+        init(predictionModels, config, eventEmitter, eventReceiver, eventUnmarshaller);
         subscribe();
     }
 }

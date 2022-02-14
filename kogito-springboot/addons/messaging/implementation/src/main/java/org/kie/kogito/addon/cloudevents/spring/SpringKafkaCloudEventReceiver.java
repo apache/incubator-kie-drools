@@ -60,7 +60,7 @@ public class SpringKafkaCloudEventReceiver implements EventReceiver {
         for (String message : messages) {
             for (Subscription<Object> consumer : consumers) {
                 try {
-                    futures.add(consumer.getConsumer().apply(consumer.getInfo().getConverter().unmarshall(message, consumer.getInfo().getOutputClass())));
+                    futures.add(consumer.getConsumer().apply(consumer.getInfo().getConverter().unmarshall(message, consumer.getInfo().getOutputClass(), consumer.getInfo().getParametrizedClasses())));
                 } catch (IOException e) {
                     log.info("Cannot convert to {} from {}, ignoring type {}, exception message is {}", consumer.getInfo().getOutputClass(), message, consumer.getInfo().getType(),
                             e.getMessage());

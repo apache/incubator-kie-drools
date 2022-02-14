@@ -27,5 +27,5 @@ public interface EventUnmarshaller<S> {
      * @return ouput object
      * @throws IOException if conversion cannot be performed. IMPORTANT!!!! any other exception will be considered unexpected, so this implementation should not willingly throw any runtime exception
      */
-    <T> T unmarshall(S input, Class<T> outputClass) throws IOException;
+    <T> T unmarshall(S input, Class<T> outputClass, Class<?>... parametrizedClasses) throws IOException;
 }

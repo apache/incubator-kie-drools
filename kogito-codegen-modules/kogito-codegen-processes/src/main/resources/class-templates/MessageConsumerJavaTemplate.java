@@ -28,7 +28,7 @@ import org.kie.kogito.services.event.EventConsumerFactory;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
 import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 
-public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
+public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$> {
 
     Process<$Type$> process;
 

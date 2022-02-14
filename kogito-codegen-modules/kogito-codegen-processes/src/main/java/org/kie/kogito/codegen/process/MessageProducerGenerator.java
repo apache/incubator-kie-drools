@@ -39,7 +39,6 @@ public class MessageProducerGenerator {
     private final String processPackageName;
     protected final String resourceClazzName;
     private final String processName;
-    protected final String messageDataEventClassName;
     protected final KogitoBuildContext context;
     protected WorkflowProcess process;
     private String processId;
@@ -51,19 +50,13 @@ public class MessageProducerGenerator {
     public MessageProducerGenerator(
             KogitoBuildContext context,
             WorkflowProcess process,
-            String modelfqcn,
-            String processfqcn,
-            String messageDataEventClassName,
             TriggerMetaData trigger) {
-        this(context, process, modelfqcn, processfqcn, messageDataEventClassName, trigger, "MessageProducer");
+        this(context, process, trigger, "MessageProducer");
     }
 
     public MessageProducerGenerator(
             KogitoBuildContext context,
             WorkflowProcess process,
-            String modelfqcn,
-            String processfqcn,
-            String messageDataEventClassName,
             TriggerMetaData trigger,
             String templateName) {
         this.context = context;
@@ -74,7 +67,6 @@ public class MessageProducerGenerator {
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
         String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "MessageProducer_" + trigger.getOwnerId();
-        this.messageDataEventClassName = messageDataEventClassName;
 
         this.generator = TemplatedGenerator.builder()
                 .withTargetTypeName(resourceClazzName)
@@ -95,7 +87,6 @@ public class MessageProducerGenerator {
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> CodegenUtils.interpolateTypes(cls, trigger.getDataType()));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ClassName$", resourceClazzName)));
-        template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         template.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$channel$", trigger.getName())));
 

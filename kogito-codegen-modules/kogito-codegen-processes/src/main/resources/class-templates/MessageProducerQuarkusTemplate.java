@@ -21,7 +21,7 @@ import org.kie.kogito.services.event.impl.AbstractMessageProducer;
 import javax.inject.Inject;
 
 @io.quarkus.runtime.Startup
-public class MessageProducer extends AbstractMessageProducer<$DataType$, $DataEventType$> {
+public class MessageProducer extends AbstractMessageProducer<$DataType$> {
 
     @Inject
     EventEmitter emitter;
@@ -29,19 +29,5 @@ public class MessageProducer extends AbstractMessageProducer<$DataType$, $DataEv
     @javax.annotation.PostConstruct
     public void init() {
         setParams(emitter,"$Trigger$");
-    }
-
-    protected $DataEventType$ dataEventTypeConstructor($DataType$ e, KogitoProcessInstance pi, String trigger) {
-        return new $DataEventType$(
-                trigger,
-                "",
-                e,
-                pi.getStringId(),
-                pi.getParentProcessInstanceStringId(),
-                pi.getRootProcessInstanceId(),
-                pi.getProcessId(),
-                pi.getRootProcessId(),
-                String.valueOf(pi.getState()),
-                pi.getReferenceId());
     }
 }

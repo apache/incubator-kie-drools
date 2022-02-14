@@ -79,8 +79,8 @@ public class EventDrivenDecisionController {
     }
 
     protected void subscribe() {
-        eventReceiver.subscribe(this::handleRequest, new SubscriptionInfo<>(new DefaultEventUnmarshaller(CloudEventUtils.Mapper.mapper()),
-                CloudEvent.class));
+        eventReceiver.subscribe(this::handleRequest,
+                new SubscriptionInfo.SubscriptionInfoBuilder().converter(new DefaultEventUnmarshaller(CloudEventUtils.Mapper.mapper())).outputClass(CloudEvent.class).createSubscriptionInfo());
     }
 
     private CompletionStage<Void> handleRequest(CloudEvent event) {

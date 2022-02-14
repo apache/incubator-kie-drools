@@ -18,14 +18,14 @@ package com.myspace.demo;
 import java.util.Optional;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.services.event.AbstractProcessDataEvent;
+import org.kie.kogito.services.event.ProcessDataEvent;
 import org.kie.kogito.services.event.impl.StringEventMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.kie.kogito.event.EventMarshaller;
 
-public class MessageProducer extends org.kie.kogito.services.event.impl.AbstractMessageProducer<java.lang.String,AbstractProcessDataEvent<String>>{
+public class MessageProducer extends org.kie.kogito.services.event.impl.AbstractMessageProducer<java.lang.String>{
 
 
     Optional<Boolean> useCloudEvents = Optional.of(true);
@@ -41,7 +41,9 @@ public class MessageProducer extends org.kie.kogito.services.event.impl.Abstract
     }
 
     private String marshall(KogitoProcessInstance pi, $Type$ eventData) {
-        return marshaller.marshall(useCloudEvents.orElse(true) ? new $DataEventType$("",
+        return marshaller.marshall(useCloudEvents.orElse(true) ? new ProcessDataEvent<>(
+                "",
+                "",
                 eventData,
                 pi.getStringId(),
                 pi.getParentProcessInstanceStringId(),
@@ -49,11 +51,7 @@ public class MessageProducer extends org.kie.kogito.services.event.impl.Abstract
                 pi.getProcessId(),
                 pi.getRootProcessId(),
                 String.valueOf(pi.getState()),
-                pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId()): eventData);
-    }
-    
-    @Override
-    protected  AbstractProcessDataEvent<String>  dataEventTypeConstructor(String e, KogitoProcessInstance pi, String trigger)  {
-        return null;
+                null,
+                pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId()) : eventData);
     }
 }

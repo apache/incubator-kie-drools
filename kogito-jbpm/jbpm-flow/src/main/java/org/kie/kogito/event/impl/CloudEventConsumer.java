@@ -26,12 +26,12 @@ import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
+import org.kie.kogito.services.event.ProcessDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDataEvent<D>> implements EventConsumer<M> {
+public class CloudEventConsumer<D, M extends Model, T extends ProcessDataEvent<D>> implements EventConsumer<M> {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudEventConsumer.class);
 

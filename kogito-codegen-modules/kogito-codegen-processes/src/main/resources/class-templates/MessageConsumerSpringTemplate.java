@@ -29,7 +29,7 @@ import org.kie.kogito.event.KogitoEventExecutor;
 
 
 @org.springframework.stereotype.Component()
-public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
+public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$> {
 
     @org.springframework.beans.factory.annotation.Autowired()
     $Type$MessageConsumer(
@@ -46,11 +46,9 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
               new DefaultEventConsumerFactory(),
               eventReceiver,
               $DataType$.class,
-              $DataEventType$.class,
               configBean.useCloudEvents(),
               processService,
               executorService,
               eventUnmarshaller);
     }
-
 }

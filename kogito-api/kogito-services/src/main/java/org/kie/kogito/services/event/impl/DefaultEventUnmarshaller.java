@@ -16,11 +16,13 @@
 package org.kie.kogito.services.event.impl;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.kie.kogito.event.EventUnmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DefaultEventUnmarshaller implements EventUnmarshaller<Object> {
@@ -33,14 +35,17 @@ public class DefaultEventUnmarshaller implements EventUnmarshaller<Object> {
     }
 
     @Override
-    public <T> T unmarshall(Object value, Class<T> clazz) throws IOException {
+    public <T> T unmarshall(Object value, Class<T> clazz, Class<?>... parametrizedClasses) throws IOException {
         logger.debug("Converting event with payload {} to class {} ", value, clazz);
         if (clazz.isInstance(value)) {
             return clazz.cast(value);
-        } else if (value instanceof byte[]) {
-            return objectMapper.readValue((byte[]) value, clazz);
+        }
+        final JavaType type = Objects.isNull(parametrizedClasses) ? objectMapper.getTypeFactory().constructType(clazz)
+                : objectMapper.getTypeFactory().constructParametricType(clazz, parametrizedClasses);
+        if (value instanceof byte[]) {
+            return objectMapper.readValue((byte[]) value, type);
         } else {
-            return objectMapper.readValue(value.toString(), clazz);
+            return objectMapper.readValue(value.toString(), type);
         }
     }
 }

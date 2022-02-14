@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 
-public class ProcessInstanceDataEvent extends AbstractProcessDataEvent<ProcessInstanceEventBody> {
+public class ProcessInstanceDataEvent extends ProcessDataEvent<ProcessInstanceEventBody> {
 
     public ProcessInstanceDataEvent(String source, String addons, Map<String, String> metaData, ProcessInstanceEventBody body) {
         super("ProcessInstanceEvent",

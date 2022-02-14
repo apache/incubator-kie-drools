@@ -70,7 +70,6 @@ public class MessageConsumerGenerator {
     private String dataClazzName;
     private final String processName;
     private final String appCanonicalName;
-    private final String messageDataEventClassName;
     private final TriggerMetaData trigger;
     private CompilationUnit clazz;
 
@@ -80,7 +79,6 @@ public class MessageConsumerGenerator {
             String modelfqcn,
             String processfqcn,
             String appCanonicalName,
-            String messageDataEventClassName,
             TriggerMetaData trigger) {
         this.context = context;
         this.trigger = trigger;
@@ -92,8 +90,6 @@ public class MessageConsumerGenerator {
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
         this.processClazzName = processfqcn;
         this.appCanonicalName = appCanonicalName;
-        this.messageDataEventClassName = messageDataEventClassName;
-
         this.generator = TemplatedGenerator.builder()
                 .withTargetTypeName(resourceClazzName)
                 .withPackageName(processPackageName)
@@ -126,7 +122,6 @@ public class MessageConsumerGenerator {
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ProcessName$", processName)));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
-        template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
 

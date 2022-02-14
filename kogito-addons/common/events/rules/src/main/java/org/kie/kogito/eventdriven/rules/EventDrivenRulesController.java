@@ -27,6 +27,7 @@ import java.util.stream.StreamSupport;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.event.cloudevents.extension.KogitoRulesExtension;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
@@ -53,27 +54,30 @@ public class EventDrivenRulesController {
     private ConfigBean config;
     private EventEmitter eventEmitter;
     private EventReceiver eventReceiver;
+    private EventUnmarshaller<Object> eventUnmarshaller;
 
     protected EventDrivenRulesController() {
     }
 
-    protected EventDrivenRulesController(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+    protected EventDrivenRulesController(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver,
+            EventUnmarshaller<Object> eventUnmarshaller) {
         this.executors = buildExecutorsMap(executors);
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
+        this.eventUnmarshaller = eventUnmarshaller;
     }
 
-    protected void init(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+    protected void init(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver, EventUnmarshaller<Object> eventUnmarshaller) {
         this.executors = buildExecutorsMap(executors);
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
+        this.eventUnmarshaller = eventUnmarshaller;
     }
 
     protected void subscribe() {
-        eventReceiver.subscribe(this::handleRequest,
-                new SubscriptionInfo<>(CloudEventUtils::readValue, CloudEvent.class));
+        eventReceiver.subscribe(this::handleRequest, SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(CloudEvent.class).createSubscriptionInfo());
     }
 
     private CompletionStage<Void> handleRequest(CloudEvent event) {

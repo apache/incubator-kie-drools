@@ -21,7 +21,7 @@ import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
+public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
 
     @JsonProperty(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -43,10 +43,10 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoBusinessKey;
 
-    public AbstractProcessDataEvent() {
+    public ProcessDataEvent() {
     }
 
-    public AbstractProcessDataEvent(String source,
+    public ProcessDataEvent(String source,
             T body,
             String kogitoProcessinstanceId,
             String kogitoParentProcessinstanceId,
@@ -67,7 +67,7 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
                 kogitoAddons);
     }
 
-    public AbstractProcessDataEvent(String type,
+    public ProcessDataEvent(String type,
             String source,
             T body,
             String kogitoProcessinstanceId,
@@ -77,8 +77,7 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
             String kogitoRootProcessId,
             String kogitoProcessinstanceState,
             String kogitoAddons) {
-        this(
-                type,
+        this(type,
                 source,
                 body,
                 kogitoProcessinstanceId,
@@ -91,7 +90,7 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
                 null);
     }
 
-    public AbstractProcessDataEvent(String type,
+    public ProcessDataEvent(String type,
             String source,
             T body,
             String kogitoProcessinstanceId,
@@ -113,7 +112,6 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
         this.kogitoParentProcessinstanceId = kogitoParentProcessinstanceId;
         this.kogitoProcessinstanceState = kogitoProcessinstanceState;
         this.kogitoReferenceId = kogitoReferenceId;
-
     }
 
     public String getKogitoParentProcessinstanceId() {
@@ -153,5 +151,4 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
                 ", getKogitoRootProcessId()=" + getKogitoRootProcessId() + ", getKogitoAddons()=" + getKogitoAddons() +
                 "]";
     }
-
 }

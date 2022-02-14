@@ -33,9 +33,9 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
+import org.kie.kogito.services.event.ProcessDataEvent;
 import org.kie.kogito.services.event.impl.StringEventMarshaller;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
@@ -97,7 +97,7 @@ public class EventImplTest {
         }
     }
 
-    private static class DummyCloudEvent extends AbstractProcessDataEvent<DummyEvent> {
+    private static class DummyCloudEvent extends ProcessDataEvent<DummyEvent> {
 
         public DummyCloudEvent() {
         }

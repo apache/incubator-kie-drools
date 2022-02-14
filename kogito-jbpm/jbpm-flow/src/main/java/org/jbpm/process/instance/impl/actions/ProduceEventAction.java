@@ -31,9 +31,9 @@ public class ProduceEventAction<T> implements Action, Serializable {
 
     private final String varName;
     private final String triggerName;
-    private final Supplier<AbstractMessageProducer<T, ?>> supplier;
+    private final Supplier<AbstractMessageProducer<T>> supplier;
 
-    public ProduceEventAction(String triggerName, String varName, Supplier<AbstractMessageProducer<T, ?>> supplier) {
+    public ProduceEventAction(String triggerName, String varName, Supplier<AbstractMessageProducer<T>> supplier) {
         this.triggerName = triggerName;
         this.varName = varName;
         this.supplier = supplier;
