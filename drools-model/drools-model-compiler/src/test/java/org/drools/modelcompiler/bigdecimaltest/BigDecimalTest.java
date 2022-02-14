@@ -315,4 +315,48 @@ public class BigDecimalTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
         assertEquals(new BigDecimal("9090909.09090909090909090909090909"), order.getTax());
     }
+
+    @Test
+    public void testBigDecimalAndStringComparison() {
+        // DROOLS-6823
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Order.class.getCanonicalName() + ";\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "    $o : Order( $price : price )\n" +
+                "    String( this == $price )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Order order = new Order();
+        order.setPrice(new BigDecimal(300));
+        ksession.insert(order);
+        ksession.insert("300");
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testStringAndBigDecimalComparison() {
+        // DROOLS-6823
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Order.class.getCanonicalName() + ";\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "    $s : String()\n" +
+                "    $o : Order( price == $s )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Order order = new Order();
+        order.setPrice(new BigDecimal(300));
+        ksession.insert(order);
+        ksession.insert("300");
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
