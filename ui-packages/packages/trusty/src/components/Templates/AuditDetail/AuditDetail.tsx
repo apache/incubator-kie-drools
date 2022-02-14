@@ -76,7 +76,7 @@ const AuditDetail = () => {
                 </div>
               }
             >
-              <OutlinedQuestionCircleIcon title="Experimental feature" />
+              <OutlinedQuestionCircleIcon />
             </Tooltip>
           )
         });

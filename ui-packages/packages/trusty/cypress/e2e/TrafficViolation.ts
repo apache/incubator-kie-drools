@@ -94,10 +94,7 @@ describe('Traffic Violation', () => {
               expect($items.eq(1)).have.text('Outcomes details');
               expect($items.eq(2)).have.text('Input data');
               expect($items.eq(3)).have.text('Model lookup');
-              /*
-               * TODO: FAI-665
-               */
-              expect($items.eq(4)).to.contain('Counterfactual analysis');
+              expect($items.eq(4)).have.text('Counterfactual analysis');
             });
         });
       cy.get('section.outcomes').should('be.visible');
