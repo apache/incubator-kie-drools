@@ -28,10 +28,15 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
@@ -50,8 +55,9 @@ public class KiePMMLFactoryFactory {
         // Avoid instantiation
     }
 
-    public static Map<String, String> getFactorySourceCode(String factoryClassName, String packageName, Set<String> generatedClasses) {
-        logger.trace("getFactorySourceCode {} {} {}", factoryClassName, packageName, generatedClasses);
+    public static Map<String, String> getFactorySourceCode(String factoryClassName, String packageName, Map<String,
+            PMML_MODEL> generatedClassesModelTypeMap) {
+        logger.trace("getFactorySourceCode {} {} {}", factoryClassName, packageName, generatedClassesModelTypeMap);
         String fullClassName = packageName + "." + factoryClassName;
         Map<String, String> toReturn = new HashMap<>();
         CompilationUnit templateCU = getFromFileName(KIE_PMML_MODEL_FACTORY_TEMPLATE_JAVA);
@@ -61,17 +67,39 @@ public class KiePMMLFactoryFactory {
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         modelTemplate.setName(factoryClassName);
         final FieldDeclaration fieldByName = modelTemplate.getFieldByName(KIE_PMML_MODELS_FIELD)
-                .orElseThrow(() -> new KiePMMLException(String.format("Failed to find FieldDeclaration %s in template %s", KIE_PMML_MODELS_FIELD, KIE_PMML_MODEL_FACTORY_TEMPLATE_JAVA)));
-        populateKiePmmlFields(fieldByName, generatedClasses);
+                .orElseThrow(() -> new KiePMMLException(String.format("Failed to find FieldDeclaration %s in template" +
+                                                                              " %s", KIE_PMML_MODELS_FIELD,
+                                                                      KIE_PMML_MODEL_FACTORY_TEMPLATE_JAVA)));
+        populateKiePmmlFields(fieldByName, generatedClassesModelTypeMap);
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
 
-    private static void populateKiePmmlFields(final FieldDeclaration toPopulate, Set<String> generatedClasses) {
+    static void populateKiePmmlFields(final FieldDeclaration toPopulate,
+                                      Map<String, PMML_MODEL> generatedClassesModelTypeMap) {
         final VariableDeclarator variable = toPopulate.getVariable(0);
-        Set<Expression> methodCallExpressions = generatedClasses.stream().map(generatedClass -> new MethodCallExpr(String.format("new %s", generatedClass))).collect(Collectors.toSet());
+        Set<Expression> methodCallExpressions = generatedClassesModelTypeMap
+                .entrySet()
+                .stream()
+                .map(entry -> getInstantiationExpression(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toSet());
         NodeList<Expression> expressions = NodeList.nodeList(methodCallExpressions);
         MethodCallExpr initializer = new MethodCallExpr(new NameExpr("Arrays"), "asList", expressions);
         variable.setInitializer(initializer);
+    }
+
+    static Expression getInstantiationExpression(String kiePMMLModelClass, PMML_MODEL pmmlModel) {
+        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
+        switch (pmmlModel) {
+            case REGRESSION_MODEL:
+                MethodCallExpr methodCallExpr = new MethodCallExpr();
+                methodCallExpr.setScope(new NameExpr(kiePMMLModelClass));
+                methodCallExpr.setName(GET_MODEL);
+                return methodCallExpr;
+            default:
+                ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+                objectCreationExpr.setType(classOrInterfaceType);
+                return objectCreationExpr;
+        }
     }
 }
