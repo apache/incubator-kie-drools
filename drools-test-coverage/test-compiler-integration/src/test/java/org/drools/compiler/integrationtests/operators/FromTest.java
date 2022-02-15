@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.FromNode;
@@ -1052,6 +1053,80 @@ public class FromTest {
 
         public List<String> getValues() {
             return this.values;
+        }
+    }
+
+    private final String RULE_HEAD = "package org.drools.compiler.integrationtests.operators;\n" +
+                                     "import " + Person.class.getCanonicalName() + ";\n" +
+                                     "global java.util.List list\n";
+
+    private final String RULE_WITH_JOIN = "rule R1\n" +
+                                          "agenda-group \"group2\"\n" +
+                                          "no-loop true\n" +
+                                          "    when\n" +
+                                          "        $p1 : Person ( )\n" +
+                                          "        $s : String(this == \"ABC\")\n" +
+                                          "    then\n" +
+                                          "end\n";
+
+    private final String RULE_WITH_FROM = "rule R2\n" +
+                                          "salience -70\n" +
+                                          "agenda-group \"group1\"\n" +
+                                          "no-loop true\n" + // no-loop is required for eager activation creation
+                                          "    when\n" +
+                                          "        $p1 : Person ( )\n" +
+                                          "        $p2 : Person ( age < 2 ) from $p1\n" + // meaningless use of "from" but valid syntax
+                                          "    then\n" +
+                                          "       list.add( $p2.getName() );\n" +
+                                          "end\n" +
+                                          "rule R3\n" +
+                                          "agenda-group \"group1\"\n" +
+                                          "salience -30\n" +
+                                          "no-loop true\n" +
+                                          "    when\n" +
+                                          "        $p : Person ( age == 1 )\n" +
+                                          "    then\n" +
+                                          "       modify($p){setAge(10)};\n" +
+                                          "end\n";
+
+    @Test
+    public void testJoinAndFrom() {
+        // DROOLS-6821
+        // Add JoinNode first
+        runKSessionWithAgendaGroup(RULE_HEAD +
+                                   RULE_WITH_JOIN +
+                                   RULE_WITH_FROM);
+    }
+
+    @Test
+    public void testFromAndJoin() {
+        // DROOLS-6821
+        // Add FromNode first
+        runKSessionWithAgendaGroup(RULE_HEAD +
+                                   RULE_WITH_FROM +
+                                   RULE_WITH_JOIN);
+    }
+
+    private void runKSessionWithAgendaGroup(String drl) {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+
+        final KieSession ksession = kbase.newKieSession();
+        ksession.addEventListener(new DebugAgendaEventListener());
+        try {
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            final Person p = new Person("John", 1);
+            ksession.insert(p);
+            ksession.fireAllRules();
+            ksession.getAgenda().getAgendaGroup("group1").setFocus();
+            ksession.fireAllRules();
+
+            assertEquals(0, list.size()); // R2 should not be fired
+        } finally {
+            ksession.dispose();
         }
     }
 }
