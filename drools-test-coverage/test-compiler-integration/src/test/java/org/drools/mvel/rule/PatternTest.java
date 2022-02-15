@@ -57,16 +57,10 @@ public class PatternTest {
     public void testDeclarationsFactTemplate() throws Exception {
 
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.store" );
-        final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
-                                                                0,
-                                                                String.class );
-        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price",
-                                                                 1,
-                                                                 Integer.class );
+        final FieldTemplate cheeseName = new FieldTemplateImpl( "name", String.class );
+        final FieldTemplate cheesePrice = new FieldTemplateImpl( "price", Integer.class );
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        final FactTemplate cheese = new FactTemplateImpl( pkg,
-                                                          "Cheese",
-                                                          fields );
+        final FactTemplate cheese = new FactTemplateImpl( pkg, "Cheese", fields );
 
         final ObjectType type = new FactTemplateObjectType( cheese );
 
@@ -78,10 +72,10 @@ public class PatternTest {
         assertEquals( Fact.class,
                       ext.getExtractToClass() );
 
-        final Fact stilton = cheese.createFact( 10 );
-        stilton.setFieldValue( "name",
+        final Fact stilton = cheese.createFact();
+        stilton.set( "name",
                                "stilton" );
-        stilton.setFieldValue( "price",
+        stilton.set( "price",
                                new Integer( 200 ) );
 
         assertEquals( stilton,

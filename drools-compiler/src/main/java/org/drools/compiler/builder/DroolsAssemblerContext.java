@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.spi.ObjectType;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
@@ -43,6 +44,7 @@ public interface DroolsAssemblerContext {
     TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String name);
 
     TypeDeclaration getTypeDeclaration(Class<?> typeClass);
+    TypeDeclaration getTypeDeclaration(ObjectType objectType);
 
     ClassLoader getRootClassLoader();
 

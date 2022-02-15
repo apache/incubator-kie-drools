@@ -18,7 +18,6 @@ package org.drools.core.reteoo;
 
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -27,7 +26,6 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
@@ -35,6 +33,7 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -127,24 +126,16 @@ public abstract class ObjectSource extends BaseNode {
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
         
-        if ( !(objectType instanceof ClassObjectType)) {
-            // Only ClassObjectType can use property specific
-            declaredMask = AllSetBitMask.get();
-            return;
-        }
-        
-        Class objectClass = ((ClassObjectType)objectType).getClassType();        
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if ( typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
+        if ( isPropertyReactive(context, objectType) ) {
+            List<String> settableProperties = getAccessibleProperties( context.getRuleBase(), objectType );
+            declaredMask = calculateDeclaredMask(objectType, settableProperties);
+        } else {
             // if property specific is not on, then accept all modification propagations
             declaredMask = AllSetBitMask.get();
-        } else {
-            List<String> settableProperties = getAccessibleProperties( context.getRuleBase(), objectClass );
-            declaredMask = calculateDeclaredMask(objectClass, settableProperties);
         }
     }
     
-    public abstract BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties);
+    public abstract BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties);
     
     public void resetInferredMask() {
         this.inferredMask = EmptyBitMask.get();

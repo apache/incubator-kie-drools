@@ -20,12 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.EvaluatorWrapper;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.facttemplates.Fact;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.XpathBackReference;
+import org.drools.core.spi.ObjectType;
 
 public class BoundIdentifiers {
     private Map<String, Class< ? >>       declrClasses;
@@ -52,8 +55,8 @@ public class BoundIdentifiers {
     public BoundIdentifiers(Pattern pattern,
                             PackageBuildContext context,
                             Map<String, EvaluatorWrapper> operators,
-                            Class< ? > thisClass) {
-        this(getDeclarationsMap( pattern, context ), context, operators, thisClass);
+                            ObjectType objectType) {
+        this(getDeclarationsMap( pattern, context ), context, operators, objectType.isTemplate() ? Fact.class : ((ClassObjectType) objectType).getClassType());
     }
 
     public BoundIdentifiers(Map<String, Class< ? >> declarations,

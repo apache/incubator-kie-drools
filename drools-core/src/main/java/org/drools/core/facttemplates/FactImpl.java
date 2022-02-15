@@ -20,112 +20,40 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 //import woolfel.engine.rule.Rule;
 
-public class FactImpl
-    implements
-    Fact,
-    Externalizable {
-
-    private static int hashCode(final Object[] array) {
-        final int PRIME = 31;
-        if ( array == null ) {
-            return 0;
-        }
-        int result = 1;
-        for ( int index = 0; index < array.length; index++ ) {
-            result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
-        }
-        return result;
-    }
+public class FactImpl implements Fact, Externalizable {
 
     private FactTemplate factTemplate = null;
-    private Object[]     values       = null;
-    private int          hashCode;
-
-    /**
-     * the Fact id must be unique, since we use it for the indexes
-     */
-    private long         id;
+    private Map<String, Object> values = new HashMap<>();
 
     public FactImpl() {
     }
 
-    /**
-     * this is the default constructor
-     * @param instance
-     * @param values
-     */
-    public FactImpl(final FactTemplate template,
-                    final Object[] values,
-                    final long id) {
+    public FactImpl(final FactTemplate template) {
         this.factTemplate = template;
-        this.values = values;
-        this.id = id;
-    }
-
-    public FactImpl(final FactTemplate template,
-                    final long id) {
-        this.factTemplate = template;
-        this.values = new Object[template.getNumberOfFields()];
-        this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         factTemplate    = (FactTemplate)in.readObject();
-        values          = (Object[])in.readObject();
-        hashCode        = in.readInt();
-        id              = in.readLong();
+        values          = (Map<String, Object>)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(factTemplate);
         out.writeObject(values);
-        out.writeInt(hashCode);
-        out.writeLong(id);
     }
 
-    /**
-     * Method returns the value of the given slot at the
-     * id.
-     * @param id
-     * @return
-     */
-    public Object getFieldValue(final int index) {
-        return this.values[index];
+    public Object get(final String name) {
+        return this.values.get( name );
     }
 
-    public Object getFieldValue(final String name) {
-        return this.values[this.factTemplate.getFieldTemplateIndex( name )];
-    }
-
-    public void setFieldValue(final String name,
-                              final Object value) {
-        setFieldValue( this.factTemplate.getFieldTemplateIndex( name ),
-                       value );
-    }
-
-    public void setFieldValue(final int index,
-                              final Object value) {
-        this.values[index] = value;
-    }
-
-    /**
-     * Return the long factId
-     */
-    public long getFactId() {
-        return this.id;
-    }
-
-    /**
-     * this is used to reset the id, in the event an user tries to
-     * assert the same fact again, we reset the id to the existing one.
-     * @param fact
-     */
-    protected void resetId(final Fact fact) {
-        this.id = fact.getFactId();
+    public void set(final String name, final Object value) {
+        this.values.put( name, value );
     }
 
     /**
@@ -135,38 +63,16 @@ public class FactImpl
         return this.factTemplate;
     }
 
-    public int hashCode() {
-        if ( this.hashCode == 0 ) {
-            final int PRIME = 31;
-            int result = 1;
-            result = PRIME * result + this.factTemplate.hashCode();
-            result = PRIME * result + FactImpl.hashCode( this.values );
-            this.hashCode = result;
-
-        }
-        return this.hashCode;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FactImpl fact = (FactImpl) o;
+        return factTemplate.equals(fact.factTemplate) && values.equals(fact.values);
     }
 
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || FactImpl.class != object.getClass() ) {
-            return false;
-        }
-
-        final FactImpl other = (FactImpl) object;
-
-        if ( !this.factTemplate.equals( other.factTemplate ) ) {
-            return false;
-        }
-
-        if ( !Arrays.equals( this.values,
-                             other.values ) ) {
-            return false;
-        }
-
-        return true;
+    @Override
+    public int hashCode() {
+        return Objects.hash(factTemplate, values);
     }
 }

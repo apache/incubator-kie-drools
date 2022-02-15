@@ -296,7 +296,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         if (objectType instanceof ClassObjectType) {
             // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
             context.getPkg().wireObjectType(objectType, pattern);
-            Class<?> cls = objectType.getClassType();
+            Class<?> cls = ((ClassObjectType) objectType).getClassType();
             if (cls.getPackage() != null && !cls.getPackage().getName().equals("java.lang")) {
                 // register the class in its own package unless it is primitive or belongs to java.lang
                 TypeDeclaration typeDeclr = context.getKnowledgeBuilder().getAndRegisterTypeDeclaration(cls, cls.getPackage().getName());
@@ -517,7 +517,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             return;
         }
 
-        List<String> settableProperties = getSettableProperties(context, patternDescr, pattern);
+        Collection<String> settableProperties = getSettableProperties(context, patternDescr, pattern);
 
         List<String> listenedProperties = new ArrayList<>();
         for (String propertyName : watchedValues.split(",")) {
@@ -547,12 +547,13 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         pattern.addWatchedProperties(listenedProperties);
     }
 
-    protected List<String> getSettableProperties(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
+    protected Collection<String> getSettableProperties(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
         ObjectType patternType = pattern.getObjectType();
-        if (!(patternType instanceof ClassObjectType)) {
-            return null;
+        if (patternType.isTemplate()) {
+            return ((FactTemplateObjectType) patternType).getFieldNames();
         }
-        Class<?> patternClass = patternType.getClassType();
+
+        Class<?> patternClass = ((ClassObjectType) patternType).getClassType();
         TypeDeclaration typeDeclaration = getTypeDeclaration(pattern, context);
         if (!typeDeclaration.isPropertyReactive()) {
             registerDescrBuildError(context, patternDescr,
@@ -647,12 +648,11 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                     Pattern pattern,
                                     ExprConstraintDescr descr) {
         if (descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType) {
-            Class<?> klazz = pattern.getObjectType().getClassType();
-            TypeDeclaration tDecl = context.getKnowledgeBuilder().getTypeDeclaration(klazz);
+            TypeDeclaration tDecl = context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType());
 
             if (tDecl == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional definitions for :" + klazz + "\n");
+                                        "Unable to find @positional definitions for :" + pattern.getObjectType() + "\n");
                 return;
             }
 
@@ -800,13 +800,18 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         if (xpathAnalysis.hasError()) {
             registerDescrBuildError(context, patternDescr,
-                                    "Invalid xpath expression '" + expression + "': " + xpathAnalysis.getError());
+                    "Invalid xpath expression '" + expression + "': " + xpathAnalysis.getError());
             return null;
         }
 
         XpathConstraint xpathConstraint = new XpathConstraint();
         ObjectType objectType = pattern.getObjectType();
-        Class<?> patternClass = objectType.getClassType();
+
+        if (objectType.isTemplate()) {
+            throw new UnsupportedOperationException("xpath is not supported with fact templates");
+        }
+
+        Class<?> patternClass = ((ClassObjectType) objectType).getClassType();
 
         List<Class<?>> backReferenceClasses = new ArrayList<>();
         backReferenceClasses.add(patternClass);
@@ -828,7 +833,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
                 if (xpathChunk == null) {
                     registerDescrBuildError(context, patternDescr,
-                                            "Invalid xpath expression '" + expression + "': cannot access " + part.getField() + " on " + patternClass);
+                            "Invalid xpath expression '" + expression + "': cannot access " + part.getField() + " on " + patternClass);
                     pattern.setObjectType(originalType);
                     return null;
                 }
@@ -838,7 +843,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                         patternClass = context.getDialect().getTypeResolver().resolveType(part.getInlineCast());
                     } catch (ClassNotFoundException e) {
                         registerDescrBuildError(context, patternDescr,
-                                                "Unknown class " + part.getInlineCast() + " in xpath expression '" + expression + "'");
+                                "Unknown class " + part.getInlineCast() + " in xpath expression '" + expression + "'");
                         return null;
                     }
                     part.addInlineCastConstraint(patternClass);
@@ -1044,11 +1049,12 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             return declaration.getValueType();
         }
 
-        if (pattern.getObjectType() instanceof FactTemplateObjectType) {
-            return ((FactTemplateObjectType) pattern.getObjectType()).getFactTemplate().getFieldTemplate(leftValue).getValueType();
+        ObjectType objectType = pattern.getObjectType();
+        if (objectType.isTemplate()) {
+            return ((FactTemplateObjectType) objectType).getFactTemplate().getFieldTemplate(leftValue).getValueType();
         }
 
-        Class<?> clazz = pattern.getObjectType().getClassType();
+        Class<?> clazz = ((ClassObjectType) objectType).getClassType();
         Class<?> fieldType = context.getPkg().getFieldType(clazz, leftValue);
         return fieldType != null ? ValueType.determineValueType(fieldType) : null;
     }
@@ -1078,7 +1084,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         ExprBindings valueExpr = new ExprBindings();
         ConstraintBuilder.get().setExprInputs( context, valueExpr,
                                                (pattern.getObjectType() instanceof ClassObjectType) ?
-                                                       pattern.getObjectType().getClassType() :
+                                                       ((ClassObjectType) pattern.getObjectType()).getClassType() :
                                                        FactTemplate.class,
                                                value);
         if (!isIdentifierLiteral(value)) {
@@ -1223,7 +1229,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         AnalysisResult analysis = context.getDialect().analyzeExpression(context,
                                                                          returnValueRestrictionDescr,
                                                                          returnValueRestrictionDescr.getContent(),
-                                                                         new BoundIdentifiers(pattern, context, null, pattern.getObjectType().getClassType()));
+                                                                         new BoundIdentifiers(pattern, context, null, pattern.getObjectType()));
         if (analysis == null) {
             // something bad happened
             return null;
@@ -1455,7 +1461,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
     }
 
     private TypeDeclaration getTypeDeclaration(Pattern pattern, RuleBuildContext context) {
-        return context.getKnowledgeBuilder().getTypeDeclaration( pattern.getObjectType().getClassType() );
+        return context.getKnowledgeBuilder().getTypeDeclaration( pattern.getObjectType() );
     }
 
     protected Constraint buildEval(final RuleBuildContext context,
@@ -1515,9 +1521,9 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             mvelDeclarations[i++] = context.getDeclarationResolver().getDeclaration(global);
         }
 
-        boolean isDynamic =
-                !pattern.getObjectType().getClassType().isArray() &&
-                        !context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType().getClassType()).isTypesafe();
+        boolean isDynamic = pattern.getObjectType().isTemplate() ||
+                ( !((ClassObjectType) pattern.getObjectType()).getClassType().isArray() &&
+                        !context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType()).isTypesafe() );
 
         return getConstraintBuilder().buildMvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, getOperators(usedIdentifiers.getOperators()),
                 context, previousDeclarations, localDeclarations, predicateDescr, analysis, isDynamic);
@@ -1569,7 +1575,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                       new BoundIdentifiers(pattern,
                                                                            context,
                                                                            operators,
-                                                                           pattern.getObjectType().getClassType()));
+                                                                           pattern.getObjectType()));
     }
 
     public static Map<String, EvaluatorWrapper> buildOperators(RuleBuildContext context,
@@ -1735,7 +1741,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         if (ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType())) {
             //@todo use accessor cache            
             final FactTemplate factTemplate = ((FactTemplateObjectType) objectType).getFactTemplate();
-            reader = new FactTemplateFieldExtractor(factTemplate, factTemplate.getFieldTemplateIndex(fieldName));
+            reader = new FactTemplateFieldExtractor(factTemplate, fieldName);
             if (target != null) {
                 target.setReadAccessor(reader);
             }
@@ -1766,7 +1772,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             } finally {
 
                 if (reportError) {
-                    Collection<KnowledgeBuilderResult> results = context.getPkg().getWiringResults(objectType.getClassType(), fieldName);
+                    Collection<KnowledgeBuilderResult> results = context.getPkg().getWiringResults(((ClassObjectType) objectType).getClassType(), fieldName);
                     if (!results.isEmpty()) {
                         for (KnowledgeBuilderResult res : results) {
                             if (res.getSeverity() == ResultSeverity.ERROR) {

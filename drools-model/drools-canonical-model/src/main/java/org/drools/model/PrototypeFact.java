@@ -19,11 +19,7 @@ package org.drools.model;
 
 public interface PrototypeFact {
 
-    Object get(int index);
-
     Object get(String name);
 
     void set(String name, Object value);
-
-    void set(int index, Object value);
 }

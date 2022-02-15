@@ -116,7 +116,7 @@ public class JavaDialectTest {
         List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {
-            if ( n.getObjectType().getClassType() == Person.class ) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == Person.class ) {
                 node = n;
                 break;
             }

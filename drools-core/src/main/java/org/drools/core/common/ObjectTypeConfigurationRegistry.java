@@ -29,6 +29,7 @@ import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.ObjectType;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
     private static final long serialVersionUID = 510l;
@@ -78,8 +79,8 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
                 new ClassObjectTypeConf( entrypoint, (Class<?>) key, this.ruleBase );
     }
 
-    public ObjectTypeConf getObjectTypeConfByClass(Class<?> cls) {
-        return typeConfMap.get(cls);
+    public ObjectTypeConf getConfForObjectType(ObjectType objectType) {
+        return typeConfMap.get(objectType.getTypeKey());
     }
 
     public Collection<ObjectTypeConf> values() {

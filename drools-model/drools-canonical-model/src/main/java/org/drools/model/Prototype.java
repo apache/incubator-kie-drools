@@ -17,12 +17,29 @@
 
 package org.drools.model;
 
+import java.util.Collection;
+import java.util.function.Function;
+
 public interface Prototype extends NamedModelItem {
 
-    Field[] getFields();
+    Collection<String> getFieldNames();
+
+    Field getField(String name);
+
+    int getFieldIndex(final String name);
+
+    default Function<PrototypeFact, Object> getFieldValueExtractor(String name) {
+        Field field = getField(name);
+        return field != null ? field.getExtractor() : p -> p.get(name);
+    }
 
     interface Field {
         String getName();
+
+        Function<PrototypeFact, Object> getExtractor();
+
+        boolean isTyped();
+
         Class<?> getType();
     }
 }

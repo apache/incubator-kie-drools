@@ -15,11 +15,13 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.TypeDeclaration;
@@ -36,11 +38,10 @@ public class PropertySpecificUtil {
     public static final int CUSTOM_BITS_OFFSET = 1;
 
     public static boolean isPropertyReactive(BuildContext context, ObjectType objectType) {
-        return objectType instanceof ClassObjectType && isPropertyReactive(context, ((ClassObjectType) objectType).getClassType());
-    }
-
-    public static boolean isPropertyReactive(BuildContext context, Class<?> objectClass) {
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration( objectClass );
+        if (objectType.isTemplate()) {
+            return !((FactTemplateObjectType) objectType).getFieldNames().isEmpty();
+        }
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(((ClassObjectType) objectType).getClassType() );
         return typeDeclaration != null && typeDeclaration.isPropertyReactive();
     }
 
@@ -64,15 +65,23 @@ public class PropertySpecificUtil {
         return mask instanceof AllSetButLastBitMask;
     }
 
-    public static BitMask calculatePositiveMask( Class modifiedClass, Collection<String> listenedProperties, List<String> accessibleProperties ) {
-        return calculatePatternMask(modifiedClass, listenedProperties, accessibleProperties, true);
+    public static BitMask calculatePositiveMask( ObjectType modifiedType, Collection<String> listenedProperties, List<String> accessibleProperties ) {
+        return calculatePositiveMask( modifiedType.getClassName(), listenedProperties, accessibleProperties );
     }
 
-    public static BitMask calculateNegativeMask(Class modifiedClass, Collection<String> listenedProperties, List<String> accessibleProperties) {
-        return calculatePatternMask(modifiedClass, listenedProperties, accessibleProperties, false);
+    public static BitMask calculatePositiveMask( String modifiedTypeName, Collection<String> listenedProperties, List<String> accessibleProperties ) {
+        return calculatePatternMask(modifiedTypeName, listenedProperties, accessibleProperties, true);
     }
 
-    private static BitMask calculatePatternMask(Class modifiedClass, Collection<String> listenedProperties, List<String> accessibleProperties, boolean isPositive) {
+    public static BitMask calculateNegativeMask(ObjectType modifiedType, Collection<String> listenedProperties, List<String> accessibleProperties) {
+        return calculateNegativeMask(modifiedType.getClassName(), listenedProperties, accessibleProperties);
+    }
+
+    public static BitMask calculateNegativeMask(String modifiedTypeName, Collection<String> listenedProperties, List<String> accessibleProperties) {
+        return calculatePatternMask(modifiedTypeName, listenedProperties, accessibleProperties, false);
+    }
+
+    private static BitMask calculatePatternMask(String modifiedTypeName, Collection<String> listenedProperties, List<String> accessibleProperties, boolean isPositive) {
         if (listenedProperties.isEmpty()) {
             return EmptyBitMask.get();
         }
@@ -95,15 +104,15 @@ public class PropertySpecificUtil {
                 propertyName = propertyName.substring(1);
             }
 
-            mask = setPropertyOnMask(modifiedClass, mask, accessibleProperties, propertyName);
+            mask = setPropertyOnMask(modifiedTypeName, mask, accessibleProperties, propertyName);
         }
         return mask;
     }
 
-    public static BitMask setPropertyOnMask(Class modifiedClass, BitMask mask, List<String> settableProperties, String propertyName) {
+    public static BitMask setPropertyOnMask(String modifiedTypeName, BitMask mask, List<String> settableProperties, String propertyName) {
         int index = settableProperties.indexOf(propertyName);
         if (index < 0) {
-            throw new RuntimeException("Unknown property '" + propertyName + "' on " + modifiedClass);
+            throw new RuntimeException("Unknown property '" + propertyName + "' on " + modifiedTypeName);
         }
         return setPropertyOnMask(mask, index);
     }
@@ -114,6 +123,12 @@ public class PropertySpecificUtil {
 
     public static boolean isPropertySetOnMask(BitMask mask, int index) {
         return mask.isSet(index + CUSTOM_BITS_OFFSET);
+    }
+
+    public static List<String> getAccessibleProperties(RuleBase ruleBase, ObjectType objectType ) {
+        return objectType.isTemplate() ?
+                new ArrayList<>(((FactTemplateObjectType) objectType).getFieldNames()) :
+                getAccessibleProperties(ruleBase, ((ClassObjectType) objectType).getClassType());
     }
 
     public static List<String> getAccessibleProperties(RuleBase ruleBase, Class<?> nodeClass ) {

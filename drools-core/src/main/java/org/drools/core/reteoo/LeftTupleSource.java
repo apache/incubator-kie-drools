@@ -24,7 +24,6 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -233,14 +232,12 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
             return;
         }
 
-        Class objectClass = ((ClassWireable) objectType).getClassType();
-        // if pattern is null (e.g. for eval or query nodes) we cannot calculate the mask, so we set it all
-        if ( pattern != null && isPropertyReactive(context, objectClass) ) {
+        if ( pattern != null && isPropertyReactive(context, objectType) ) {
             Collection<String> leftListenedProperties = pattern.getListenedProperties();
-            List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectClass );
-            leftDeclaredMask = calculatePositiveMask( objectClass, leftListenedProperties, accessibleProperties );
-            leftDeclaredMask = setNodeConstraintsPropertyReactiveMask(leftDeclaredMask, objectClass, accessibleProperties);
-            leftNegativeMask = calculateNegativeMask( objectClass, leftListenedProperties, accessibleProperties );
+            List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectType );
+            leftDeclaredMask = calculatePositiveMask( objectType, leftListenedProperties, accessibleProperties );
+            leftDeclaredMask = setNodeConstraintsPropertyReactiveMask(leftDeclaredMask, objectType, accessibleProperties);
+            leftNegativeMask = calculateNegativeMask( objectType, leftListenedProperties, accessibleProperties );
             setLeftListenedProperties(leftListenedProperties);
         } else {
             // if property specific is not on, then accept all modification propagations
@@ -248,7 +245,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
         }
     }
 
-    protected BitMask setNodeConstraintsPropertyReactiveMask(BitMask mask, Class objectClass, List<String> accessibleProperties) {
+    protected BitMask setNodeConstraintsPropertyReactiveMask(BitMask mask, ObjectType objectType, List<String> accessibleProperties) {
         return mask;
     }
 

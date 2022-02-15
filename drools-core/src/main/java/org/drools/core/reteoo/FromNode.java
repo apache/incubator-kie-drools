@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -35,7 +34,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -163,15 +161,12 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
         ObjectType objectType = pattern.getObjectType();
 
-        if ( objectType instanceof ClassObjectType ) {
-            Class objectClass = (( ClassWireable ) objectType).getClassType();
-            // if pattern is null (e.g. for eval or query nodes) we cannot calculate the mask, so we set it all
-            if ( isPropertyReactive( context, objectClass ) ) {
-                Collection<String> leftListenedProperties = pattern.getListenedProperties();
-                List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectClass );
-                leftDeclaredMask = leftDeclaredMask.setAll( calculatePositiveMask( objectClass, leftListenedProperties, accessibleProperties ) );
-                leftNegativeMask = leftNegativeMask.setAll( calculateNegativeMask( objectClass, leftListenedProperties, accessibleProperties ) );
-            }
+        // if pattern is null (e.g. for eval or query nodes) we cannot calculate the mask, so we set it all
+        if ( isPropertyReactive( context, objectType ) ) {
+            Collection<String> leftListenedProperties = pattern.getListenedProperties();
+            List<String> accessibleProperties = getAccessibleProperties( context.getRuleBase(), objectType );
+            leftDeclaredMask = leftDeclaredMask.setAll( calculatePositiveMask( objectType, leftListenedProperties, accessibleProperties ) );
+            leftNegativeMask = leftNegativeMask.setAll( calculateNegativeMask( objectType, leftListenedProperties, accessibleProperties ) );
         }
     }
 
@@ -181,9 +176,9 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     @Override
-    protected BitMask setNodeConstraintsPropertyReactiveMask( BitMask mask, Class objectClass, List<String> accessibleProperties) {
+    protected BitMask setNodeConstraintsPropertyReactiveMask( BitMask mask, ObjectType objectType, List<String> accessibleProperties) {
         for (int i = 0; i < alphaConstraints.length; i++) {
-            mask = mask.setAll(alphaConstraints[i].getListenedPropertyMask(objectClass, accessibleProperties));
+            mask = mask.setAll(alphaConstraints[i].getListenedPropertyMask(objectType, accessibleProperties));
         }
         return mask;
     }

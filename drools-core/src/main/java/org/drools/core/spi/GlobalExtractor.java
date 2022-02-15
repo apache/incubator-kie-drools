@@ -46,7 +46,7 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
 
     public GlobalExtractor(final String identifier,
                            final ObjectType objectType) {
-        super( -1, objectType.getClassType(), objectType.getValueType() );
+        super( -1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
         this.identifier = identifier;
         this.objectType = objectType;
     }
@@ -56,7 +56,7 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
         identifier = in.readUTF();
         objectType = (ObjectType) in.readObject();
         setIndex( -1 );
-        setFieldType( objectType.getClassType() );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
         setValueType( objectType.getValueType() );
     }
 

@@ -262,7 +262,7 @@ public class IndexingTest {
             final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
-                if (n.getObjectType().getClassType() == DroolsQuery.class) {
+                if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {
                     node = n;
                     break;
                 }
@@ -432,7 +432,7 @@ public class IndexingTest {
             final List<ObjectTypeNode> nodes = ((RuleBase) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
             for (final ObjectTypeNode n : nodes) {
-                if (n.getObjectType().getClassType() == DroolsQuery.class) {
+                if (((ClassObjectType) n.getObjectType()).getClassType() == DroolsQuery.class) {
                     node = n;
                     break;
                 }

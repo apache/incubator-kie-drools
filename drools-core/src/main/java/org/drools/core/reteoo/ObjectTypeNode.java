@@ -213,7 +213,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
     }
 
     @Override
-    public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
         return EmptyBitMask.get();
     }
 
@@ -384,17 +384,12 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
         super.doAttach(context);
         this.source.addObjectSink(this);
 
-        Class<?> nodeTypeClass = objectType.getClassType();
-        if (nodeTypeClass == null) {
-            return;
-        }
-
         EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) source).getEntryPoint() );
         if (epn == null) {
             return;
         }
 
-        ObjectTypeConf objectTypeConf = epn.getTypeConfReg().getObjectTypeConfByClass( nodeTypeClass );
+        ObjectTypeConf objectTypeConf = epn.getTypeConfReg().getConfForObjectType( objectType );
         if ( objectTypeConf != null ) {
             objectTypeConf.resetCache();
         }
@@ -453,7 +448,10 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
      */
     @Override
     public ObjectTypeNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        Class<?> classType = getObjectType().getClassType();
+        if (objectType.isTemplate()) {
+            throw new UnsupportedOperationException("this method is used only for the initial fact and during incremental compilation which is not supported yet for fact templates");
+        }
+        Class<?> classType = ((ClassObjectType) objectType).getClassType();
         if (InitialFact.class.isAssignableFrom(classType)) {
             return new InitialFactObjectTypeNodeMemory(classType);
         }

@@ -1,12 +1,12 @@
 package org.drools.compiler.rule.builder.util;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.rule.Pattern;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.rule.Pattern;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.index.IndexUtil;
 
 public class ConstraintUtil {
 
@@ -31,14 +31,13 @@ public class ConstraintUtil {
         if (!ENABLE_NORMALIZE) {
             return expression;
         }
-        Class<?> clazz = pattern.getObjectType().getClassType();
 
         String leftProp = getFirstProp(leftValue);
         String rightProp = getFirstProp(rightValue);
 
         OperatorDescr operatorDescr = relDescr.getOperatorDescr();
 
-        if (canInverse(pattern, operator, operatorDescr, leftProp, rightProp) && isPropertyOnRight(clazz, leftProp, rightProp)) {
+        if (canInverse(pattern, operator, operatorDescr, leftProp, rightProp) && isPropertyOnRight(pattern.getObjectType(), leftProp, rightProp)) {
             boolean negate = false;
             if ( isNegatedExpression(expression, leftValue, rightValue, operator)) {
                 if (relDescr.getOperatorDescr().isNegated()) {
@@ -69,8 +68,8 @@ public class ConstraintUtil {
         return expression;
     }
 
-    private static boolean isPropertyOnRight(Class<?> clazz, String leftProp, String rightProp) {
-        return (ClassUtils.getFieldOrAccessor(clazz, leftProp) == null) && ((ClassUtils.getFieldOrAccessor(clazz, rightProp) != null) || (rightProp.equals("this")));
+    private static boolean isPropertyOnRight(ObjectType objectType, String leftProp, String rightProp) {
+        return !objectType.hasField(leftProp) && ( objectType.hasField(rightProp) || "this".equals(rightProp) );
     }
 
     private static boolean canInverse(Pattern pattern, String operator, OperatorDescr operatorDescr, String leftProp, String rightProp) {

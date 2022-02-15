@@ -125,8 +125,7 @@ public class GroupElementBuilder
         }
 
         private boolean isTerminalAlpha( BuildContext context, RuleConditionElement child ) {
-            Class<?> patternClass = ((Pattern) child).getObjectType().getClassType();
-            boolean isInitialFact = patternClass != null && InitialFact.class.isAssignableFrom( patternClass );
+            boolean isInitialFact = ((Pattern) child).getObjectType().isAssignableTo(InitialFact.class);
             boolean hasTimer = context.getRule().getTimer() != null;
             RuleBaseConfiguration conf = context.getRuleBase().getConfiguration();
             boolean lockOnActive = context.getRule().isLockOnActive();

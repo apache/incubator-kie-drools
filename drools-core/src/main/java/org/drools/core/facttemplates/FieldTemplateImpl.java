@@ -23,31 +23,24 @@ import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
 
-public class FieldTemplateImpl
-    implements
-    FieldTemplate, Externalizable {
+public class FieldTemplateImpl implements FieldTemplate, Externalizable {
 
     private static final long serialVersionUID = 510l;
 
     private String      name;
-    private int         index;
     private ValueType   valueType;
 
     public FieldTemplateImpl() {
 
     }
 
-    public FieldTemplateImpl(final String name,
-                             final int index,
-                             final Class clazz) {
+    public FieldTemplateImpl(String name, Class clazz) {
         this.name = name;
-        this.index = index;
-        this.valueType = ValueType.determineValueType( clazz );
+        this.valueType = clazz != null ? ValueType.OBJECT_TYPE : ValueType.determineValueType( clazz );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name    = (String)in.readObject();
-        index   = in.readInt();
         valueType   = (ValueType)in.readObject();
         if (valueType != null)
             valueType   = ValueType.determineValueType(valueType.getClassType());
@@ -55,26 +48,13 @@ public class FieldTemplateImpl
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(name);
-        out.writeInt(index);
         out.writeObject(valueType);
     }
-    /* (non-Javadoc)
-     * @see org.kie.facttemplates.FieldTemplate#getQueueIndex()
-     */
-    public int getIndex() {
-        return this.index;
-    }
 
-    /* (non-Javadoc)
-     * @see org.kie.facttemplates.FieldTemplate#getName()
-     */
     public String getName() {
         return this.name;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.facttemplates.FieldTemplate#getValueType()
-     */
     public ValueType getValueType() {
         return this.valueType;
     }
@@ -82,7 +62,6 @@ public class FieldTemplateImpl
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.index;
         result = PRIME * result + this.name.hashCode();
         result = PRIME * result + this.valueType.hashCode();
         return result;
@@ -99,7 +78,7 @@ public class FieldTemplateImpl
 
         final FieldTemplateImpl other = (FieldTemplateImpl) object;
 
-        return this.index == other.index && this.name.equals( other.name ) && this.valueType.equals( other.valueType );
+        return this.name.equals( other.name ) && this.valueType.equals( other.valueType );
     }
 
 }
