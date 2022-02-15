@@ -116,13 +116,15 @@ class BasicTypeMappingIT {
     void testBasicTypeMappingUpdate() {
         final Storage<String, BasicType> cache = storageService.getCache(CACHE_NAME, BasicType.class);
         cache.put("key1", new BasicType(1, 2L, "A"));
-        assertResultSize(1);
+        cache.put("key2", new BasicType(2, 4L, "B"));
+        cache.put("key3", new BasicType(3, 6L, "C"));
+        assertResultSize(3);
 
         //Clear JPA cache to ensure we fetch queries from the database
         repository.getEntityManager().clear();
 
-        cache.put("key1", new BasicType(3, 4L, "B"));
-        assertResultSize(1);
+        cache.put("key2", new BasicType(22, 8L, "BBB"));
+        assertResultSize(3);
 
         @SuppressWarnings("unchecked")
         final List<BasicTypeExtractRow> results = repository
@@ -130,12 +132,24 @@ class BasicTypeMappingIT {
                 .createNativeQuery(SQL, "BasicTypeExtractMapping")
                 .getResultList();
 
-        assertThat(results).hasSize(1);
+        assertThat(results).hasSize(3);
         final BasicTypeExtractRow row0 = results.get(0);
         assertEquals("key1", row0.key);
         assertEquals(CACHE_NAME, row0.name);
-        assertEquals(3, row0.field1MappedField);
-        assertEquals("B", row0.field2MappedField);
+        assertEquals(1, row0.field1MappedField);
+        assertEquals("A", row0.field2MappedField);
+
+        final BasicTypeExtractRow row1 = results.get(1);
+        assertEquals("key2", row1.key);
+        assertEquals(CACHE_NAME, row1.name);
+        assertEquals(22, row1.field1MappedField);
+        assertEquals("BBB", row1.field2MappedField);
+
+        final BasicTypeExtractRow row2 = results.get(2);
+        assertEquals("key3", row2.key);
+        assertEquals(CACHE_NAME, row2.name);
+        assertEquals(3, row2.field1MappedField);
+        assertEquals("C", row2.field2MappedField);
     }
 
     @SuppressWarnings("unchecked")

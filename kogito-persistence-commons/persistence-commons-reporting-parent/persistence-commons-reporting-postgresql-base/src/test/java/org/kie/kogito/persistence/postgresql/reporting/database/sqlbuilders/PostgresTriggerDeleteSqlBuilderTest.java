@@ -45,16 +45,20 @@ class PostgresTriggerDeleteSqlBuilderTest extends BaseSqlBuilderImplTest {
     protected void assertCreateSql(final String sql) {
         assertNotNull(sql);
         assertSequentialContent(sql,
-                "CREATE TRIGGER trgDelete_mappingId AFTER DELETE OR UPDATE ON sourceTableName",
+                "CREATE TRIGGER trgDelete_mappingId_DELETES AFTER DELETE ON sourceTableName",
                 "FOR EACH ROW",
-                "EXECUTE PROCEDURE spDelete_mappingId()");
+                "EXECUTE PROCEDURE spDelete_mappingId_DELETES()",
+                "CREATE TRIGGER trgDelete_mappingId_UPDATES BEFORE UPDATE ON sourceTableName",
+                "FOR EACH ROW",
+                "EXECUTE PROCEDURE spDelete_mappingId_UPDATES()");
     }
 
     @Override
     protected void assertDestroySql(final String sql) {
         assertNotNull(sql);
         assertSequentialContent(sql,
-                "DROP TRIGGER IF EXISTS trgDelete_mappingId ON sourceTableName");
+                "DROP TRIGGER IF EXISTS trgDelete_mappingId_DELETES ON sourceTableName",
+                "DROP TRIGGER IF EXISTS trgDelete_mappingId_UPDATES ON sourceTableName");
     }
 
     @Test
@@ -65,10 +69,16 @@ class PostgresTriggerDeleteSqlBuilderTest extends BaseSqlBuilderImplTest {
 
         assertNotNull(sql);
         assertSequentialContent(sql,
-                "CREATE FUNCTION spDelete_mappingId() RETURNS trigger AS",
+                "CREATE FUNCTION spDelete_mappingId_DELETES() RETURNS trigger AS",
                 "DELETE FROM targetTableName",
                 "WHERE",
-                "id = OLD.id");
+                "id = OLD.id",
+                "RETURN OLD;",
+                "CREATE FUNCTION spDelete_mappingId_UPDATES() RETURNS trigger AS",
+                "DELETE FROM targetTableName",
+                "WHERE",
+                "id = NEW.id",
+                "RETURN NEW;");
     }
 
     @Test
@@ -79,6 +89,7 @@ class PostgresTriggerDeleteSqlBuilderTest extends BaseSqlBuilderImplTest {
 
         assertNotNull(sql);
         assertSequentialContent(sql,
-                "DROP FUNCTION IF EXISTS spDelete_mappingId");
+                "DROP FUNCTION IF EXISTS spDelete_mappingId_DELETES",
+                "DROP FUNCTION IF EXISTS spDelete_mappingId_UPDATES");
     }
 }

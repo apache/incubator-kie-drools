@@ -34,6 +34,11 @@ public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresTriggerDeleteSqlBuilder.class);
 
+    private enum PseudoTable {
+        OLD,
+        NEW
+    }
+
     private static final String CREATE_DELETE_TRIGGER_FUNCTION_TEMPLATE =
             "CREATE FUNCTION spDelete_%s() RETURNS trigger AS %n" +
                     "$$ %n" +
@@ -41,12 +46,18 @@ public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<
                     "DELETE FROM %s %n" +
                     "  WHERE %n" +
                     "%s; %n" +
-                    "RETURN OLD; %n" +
+                    "RETURN %s; %n" +
                     "END; %n" +
                     "$$ LANGUAGE PLPGSQL; %n";
 
-    private static final String CREATE_DELETE_TRIGGER_TEMPLATE =
-            "CREATE TRIGGER trgDelete_%s AFTER DELETE OR UPDATE ON %s %n" +
+    private static final String CREATE_DELETE_TRIGGER_TEMPLATE_FOR_DELETES =
+            "CREATE TRIGGER trgDelete_%s AFTER DELETE ON %s %n" +
+                    "FOR EACH ROW %n" +
+                    "%s" +
+                    "EXECUTE PROCEDURE spDelete_%s();%n";
+
+    private static final String CREATE_DELETE_TRIGGER_TEMPLATE_FOR_UPDATES =
+            "CREATE TRIGGER trgDelete_%s BEFORE UPDATE ON %s %n" +
                     "FOR EACH ROW %n" +
                     "%s" +
                     "EXECUTE PROCEDURE spDelete_%s();%n";
@@ -72,17 +83,38 @@ public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<
                 .map(pf -> new PostgresField(pf.getFieldName(), pf.getFieldType()))
                 .collect(Collectors.toList()));
 
-        final String sql = String.format(CREATE_DELETE_TRIGGER_FUNCTION_TEMPLATE,
-                mappingId,
+        final StringBuilder sql = new StringBuilder();
+        sql.append(createDeleteTriggerFunctionSql(mappingId,
+                "DELETES",
                 targetTableName,
-                simpleMappings
-                        .stream()
-                        .map(PostgresTriggerDeleteSqlBuilder::buildTargetIdentityFieldSql)
-                        .collect(Collectors.joining(" AND " + String.format("%n"))));
+                simpleMappings,
+                PseudoTable.OLD));
+        sql.append(createDeleteTriggerFunctionSql(mappingId,
+                "UPDATES",
+                targetTableName,
+                simpleMappings,
+                PseudoTable.NEW));
+
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("Create DELETE TRIGGER FUNCTION SQL:%n%s", sql));
         }
-        return sql;
+
+        return sql.toString();
+    }
+
+    private String createDeleteTriggerFunctionSql(final String mappingId,
+            final String suffix,
+            final String targetTableName,
+            final List<PostgresField> simpleMappings,
+            final PseudoTable type) {
+        return String.format(CREATE_DELETE_TRIGGER_FUNCTION_TEMPLATE,
+                String.format("%s_%s", mappingId, suffix),
+                targetTableName,
+                simpleMappings
+                        .stream()
+                        .map(m -> buildTargetIdentityFieldSql(type, m))
+                        .collect(Collectors.joining(" AND " + String.format("%n"))),
+                type.name());
     }
 
     @Override
@@ -91,26 +123,54 @@ public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<
         final String sourceTableName = context.getSourceTableName();
         final List<PostgresPartitionField> sourceTablePartitionFields = context.getSourceTablePartitionFields();
 
-        final String sql = String.format(CREATE_DELETE_TRIGGER_TEMPLATE,
+        final StringBuilder sql = new StringBuilder();
+        sql.append(createDeleteTriggerSql(CREATE_DELETE_TRIGGER_TEMPLATE_FOR_DELETES,
                 mappingId,
+                "DELETES",
                 sourceTableName,
-                buildTargetPartitionFieldsSql(sourceTablePartitionFields),
-                mappingId);
+                sourceTablePartitionFields,
+                PseudoTable.OLD));
+        sql.append(createDeleteTriggerSql(CREATE_DELETE_TRIGGER_TEMPLATE_FOR_UPDATES,
+                mappingId,
+                "UPDATES",
+                sourceTableName,
+                sourceTablePartitionFields,
+                PseudoTable.NEW));
+
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("Create DELETE TRIGGER SQL:%n%s", sql));
         }
-        return sql;
+
+        return sql.toString();
+    }
+
+    private String createDeleteTriggerSql(final String template,
+            final String mappingId,
+            final String suffix,
+            final String sourceTableName,
+            final List<PostgresPartitionField> sourceTablePartitionFields,
+            final PseudoTable type) {
+        return String.format(template,
+                String.format("%s_%s", mappingId, suffix),
+                sourceTableName,
+                buildTargetPartitionFieldsSql(type,
+                        sourceTablePartitionFields),
+                String.format("%s_%s", mappingId, suffix));
     }
 
     @Override
     public String dropDeleteTriggerFunctionSql(final PostgresContext context) {
         final String mappingId = context.getMappingId();
 
-        final String sql = String.format(DROP_DELETE_TRIGGER_FUNCTION_TEMPLATE, mappingId);
+        final StringBuilder sql = new StringBuilder();
+        sql.append(String.format(DROP_DELETE_TRIGGER_FUNCTION_TEMPLATE, mappingId + "_DELETES"));
+        sql.append(String.format(DROP_DELETE_TRIGGER_FUNCTION_TEMPLATE, mappingId + "_UPDATES"));
+
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("Drop DELETE TRIGGER FUNCTION SQL:%n%s", sql));
         }
-        return sql;
+
+        return sql.toString();
     }
 
     @Override
@@ -118,32 +178,42 @@ public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<
         final String mappingId = context.getMappingId();
         final String sourceTableName = context.getSourceTableName();
 
-        final String sql = String.format(DROP_DELETE_TRIGGER_TEMPLATE, mappingId, sourceTableName);
+        final StringBuilder sql = new StringBuilder();
+        sql.append(String.format(DROP_DELETE_TRIGGER_TEMPLATE, mappingId + "_DELETES", sourceTableName));
+        sql.append(String.format(DROP_DELETE_TRIGGER_TEMPLATE, mappingId + "_UPDATES", sourceTableName));
+
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("Drop DELETE TRIGGER SQL:%n%s", sql));
         }
-        return sql;
+
+        return sql.toString();
     }
 
-    private static String buildTargetIdentityFieldSql(final PostgresField sourceIdentifyField) {
-        return String.format("  %s = OLD.%s",
+    private static String buildTargetIdentityFieldSql(final PseudoTable type,
+            final PostgresField sourceIdentifyField) {
+        return String.format("  %s = %s.%s",
                 sourceIdentifyField.getFieldName(),
+                type.name(),
                 sourceIdentifyField.getFieldName());
     }
 
-    private static String buildTargetPartitionFieldsSql(final List<PostgresPartitionField> sourcePartitionFields) {
+    private static String buildTargetPartitionFieldsSql(final PseudoTable type,
+            final List<PostgresPartitionField> sourcePartitionFields) {
         if (sourcePartitionFields.isEmpty()) {
             return "";
         }
         return String.format(CREATE_DELETE_TRIGGER_WHEN_TEMPLATE,
                 sourcePartitionFields.stream()
-                        .map(PostgresTriggerDeleteSqlBuilder::buildTargetPartitionFieldSql)
+                        .map(p -> buildTargetPartitionFieldSql(type, p))
                         .collect(Collectors.joining(" AND " + String.format("%n"))));
     }
 
-    private static String buildTargetPartitionFieldSql(final PostgresPartitionField sourcePartitionField) {
-        return String.format("    OLD.%s = '%s' ",
+    private static String buildTargetPartitionFieldSql(final PseudoTable type,
+            final PostgresPartitionField sourcePartitionField) {
+        return String.format("    %s.%s = '%s' ",
+                type.name(),
                 sourcePartitionField.getFieldName(),
                 sourcePartitionField.getFieldValue());
     }
+
 }
