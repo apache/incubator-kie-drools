@@ -527,7 +527,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
     private void normalizeSampleWeights(ShapStatistics shapStats, ShapDataCarrier sdc) {
         double nonFullWeight = MatrixUtilsExtensions.sum(
                 shapStats.getWeightOfSubsetSize()
-                        .getSubVector(shapStats.getNumFullSubsets(), shapStats.getNumFullSubsets()));
+                        .getSubVector(shapStats.getNumFullSubsets(), shapStats.getNumSubsetSizes() - shapStats.getNumFullSubsets()));
 
         double nonFixedWeight = 0.;
         for (int i = 0; i < sdc.getSamplesAddedSize(); i++) {

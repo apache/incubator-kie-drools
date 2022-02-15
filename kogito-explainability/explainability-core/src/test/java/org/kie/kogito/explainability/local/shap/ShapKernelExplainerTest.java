@@ -348,6 +348,51 @@ class ShapKernelExplainerTest {
     }
 
     @Test
+    void testLargeBackground2() throws InterruptedException, TimeoutException, ExecutionException {
+        // establish background data and desired data to explain
+        double[][] largeBackground = new double[100][10];
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 10; j++) {
+                largeBackground[i][j] = i / 100. + j;
+            }
+        }
+        double[][] toExplainLargeBackground = {
+                { 0, 1., -2., 3.5, -4.1, 5.5, -12., .8, .11, 15. }
+        };
+
+        double[][][] expected = {
+                { { -0.495, 0., -4.495, 0.005, -8.595, 0.005, -18.495,
+                        -6.695, -8.385, 5.505 } }
+        };
+
+        List<PredictionInput> background = createPIFromMatrix(largeBackground);
+        List<PredictionInput> toExplain = createPIFromMatrix(toExplainLargeBackground);
+
+        PredictionProvider model = TestUtils.getSumSkipModel(1);
+        ShapConfig skConfig = testConfig.withBackground(background).withNSamples(1000).build();
+
+        //initialize explainer
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        List<Prediction> predictions = new ArrayList<>();
+        for (int i = 0; i < predictionOutputs.size(); i++) {
+            predictions.add(new SimplePrediction(toExplain.get(i), predictionOutputs.get(i)));
+        }
+
+        // evaluate if the explanations match the expected value
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
+        for (int i = 0; i < toExplain.size(); i++) {
+            Saliency[] explanationSaliencies = ske.explainAsync(predictions.get(i), model)
+                    .get(5, TimeUnit.SECONDS).getSaliencies();
+            RealMatrix[] explanationsAndConfs = saliencyToMatrix(explanationSaliencies);
+            RealMatrix explanations = explanationsAndConfs[0];
+
+            for (int j = 0; j < explanations.getRowDimension(); j++) {
+                assertArrayEquals(expected[i][j], explanations.getRow(j), 1e-2);
+            }
+        }
+    }
+
+    @Test
     void testParallel() throws InterruptedException, ExecutionException {
         // establish background data and desired data to explain
         double[][] largeBackground = new double[100][10];
