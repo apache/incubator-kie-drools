@@ -41,6 +41,7 @@ import org.kie.utll.xml.XStreamUtils;
 import org.w3c.dom.Document;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCESIM_MODEL_DESCRIPTOR_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
@@ -50,7 +51,7 @@ public class ScenarioSimulationXMLPersistence {
 
     private static final ScenarioSimulationXMLPersistence INSTANCE = new ScenarioSimulationXMLPersistence();
     private static final String CURRENT_VERSION = new ScenarioSimulationModel().getVersion();
-    private static final Pattern p = Pattern.compile("version=\"([0-9]+\\.[0-9]+)");
+    private static final Pattern p = Pattern.compile(SCENARIO_SIMULATION_MODEL_NODE + " version=\"([0-9]+\\.[0-9]+)");
 
     private XStream xt;
     private MigrationStrategy migrationStrategy = new InMemoryMigrationStrategy();
