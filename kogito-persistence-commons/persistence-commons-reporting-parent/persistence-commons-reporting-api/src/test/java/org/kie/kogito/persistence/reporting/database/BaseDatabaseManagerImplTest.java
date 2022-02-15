@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.persistence.postgresql.reporting.database;
+package org.kie.kogito.persistence.reporting.database;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -23,18 +24,21 @@ import javax.persistence.Query;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresContext;
-import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;
-import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTableSqlBuilder;
-import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerDeleteSqlBuilder;
-import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerInsertSqlBuilder;
-import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
-import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
-import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
-import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
-import org.kie.kogito.persistence.postgresql.reporting.model.paths.PostgresTerminalPathSegment;
 import org.kie.kogito.persistence.reporting.model.paths.JoinPathSegment;
 import org.kie.kogito.persistence.reporting.model.paths.PathSegment;
+import org.kie.kogito.persistence.reporting.model.paths.TerminalPathSegment;
+import org.kie.kogito.persistence.reporting.test.TestTypes;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestContext;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestIndexesSqlBuilder;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestMapping;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestMappingDefinition;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestTableSqlBuilder;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestTriggerDeleteSqlBuilder;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestTriggerInsertSqlBuilder;
+import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestContextImpl;
+import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestFieldImpl;
+import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestMappingDefinitionImpl;
+import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestMappingImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -49,16 +53,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BasePostgresDatabaseManagerImplTest {
+class BaseDatabaseManagerImplTest {
 
-    private static final PostgresMappingDefinition DEFINITION = new PostgresMappingDefinition("mappingId",
+    private static final TestMappingDefinition DEFINITION = new TestMappingDefinitionImpl("mappingId",
             "sourceTableName",
             "sourceTableJsonFieldName",
-            List.of(new PostgresField("id", JsonType.STRING)),
+            List.of(new TestFieldImpl("id", String.class)),
+            Collections.emptyList(),
             "targetTableName",
-            List.of(new PostgresMapping("sourceJsonPath",
-                    new PostgresField("field1",
-                            JsonType.STRING))));
+            List.of(new TestMappingImpl("sourceJsonPath",
+                    new TestFieldImpl("field1",
+                            String.class))));
 
     @Mock
     private EntityManager entityManager;
@@ -67,26 +72,26 @@ class BasePostgresDatabaseManagerImplTest {
     private Query query;
 
     @Mock
-    private PostgresIndexesSqlBuilder indexesSqlBuilder;
+    private TestIndexesSqlBuilder indexesSqlBuilder;
 
     @Mock
-    private PostgresTableSqlBuilder tableSqlBuilder;
+    private TestTableSqlBuilder tableSqlBuilder;
 
     @Mock
-    private PostgresTriggerDeleteSqlBuilder triggerDeleteSqlBuilder;
+    private TestTriggerDeleteSqlBuilder triggerDeleteSqlBuilder;
 
     @Mock
-    private PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder;
+    private TestTriggerInsertSqlBuilder triggerInsertSqlBuilder;
 
     @Captor
-    private ArgumentCaptor<PostgresContext> contextArgumentCaptor;
+    private ArgumentCaptor<TestContextImpl> contextArgumentCaptor;
 
-    private class TestBasePostgresDatabaseManagerImpl extends BasePostgresDatabaseManagerImpl {
+    private class TestBasePostgresDatabaseManagerImpl extends BaseDatabaseManagerImpl<Object, TestTypes.TestField, TestTypes.TestPartitionField, TestMapping, TestMappingDefinition, TestContext> {
 
-        TestBasePostgresDatabaseManagerImpl(final PostgresIndexesSqlBuilder indexesSqlBuilder,
-                final PostgresTableSqlBuilder tableSqlBuilder,
-                final PostgresTriggerDeleteSqlBuilder triggerDeleteSqlBuilder,
-                final PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder) {
+        TestBasePostgresDatabaseManagerImpl(final TestIndexesSqlBuilder indexesSqlBuilder,
+                final TestTableSqlBuilder tableSqlBuilder,
+                final TestTriggerDeleteSqlBuilder triggerDeleteSqlBuilder,
+                final TestTriggerInsertSqlBuilder triggerInsertSqlBuilder) {
             super(indexesSqlBuilder,
                     tableSqlBuilder,
                     triggerDeleteSqlBuilder,
@@ -94,16 +99,30 @@ class BasePostgresDatabaseManagerImplTest {
         }
 
         @Override
-        protected EntityManager getEntityManager(String sourceTableName) {
+        protected EntityManager getEntityManager(final String sourceTableName) {
             return entityManager;
         }
 
         @Override
-        //Change visibility for Unit Tests
-        public List<PathSegment> parsePathSegments(final List<PostgresMapping> mappings) {
-            return super.parsePathSegments(mappings);
+        protected TerminalPathSegment<TestMapping> buildTerminalPathSegment(final String segment,
+                final PathSegment parent,
+                final TestMapping mapping) {
+            return new TerminalPathSegment<>(segment,
+                    parent,
+                    mapping);
         }
 
+        @Override
+        public TestContext createContext(final TestMappingDefinition definition) {
+            return new TestContextImpl(definition.getMappingId(),
+                    definition.getSourceTableName(),
+                    definition.getSourceTableJsonFieldName(),
+                    definition.getSourceTableIdentityFields(),
+                    definition.getSourceTablePartitionFields(),
+                    definition.getTargetTableName(),
+                    definition.getFieldMappings(),
+                    parsePathSegments(definition.getFieldMappings()));
+        }
     }
 
     private TestBasePostgresDatabaseManagerImpl manager;
@@ -238,7 +257,7 @@ class BasePostgresDatabaseManagerImplTest {
         assertPostgresContext(contextArgumentCaptor.getValue());
     }
 
-    private void assertPostgresContext(final PostgresContext context) {
+    private void assertPostgresContext(final TestContext context) {
         assertEquals(context.getMappingId(), DEFINITION.getMappingId());
         assertEquals(context.getSourceTableName(), DEFINITION.getSourceTableName());
         assertEquals(context.getSourceTableIdentityFields(), DEFINITION.getSourceTableIdentityFields());
@@ -251,9 +270,9 @@ class BasePostgresDatabaseManagerImplTest {
     @Test
     void testParsePathSegments_OneMapping_OneSegment() {
         // $ ---> field1[1a]
-        final PostgresMapping mapping = new PostgresMapping("field1",
-                new PostgresField("targetFieldName",
-                        JsonType.STRING));
+        final TestMapping mapping = new TestMappingImpl("field1",
+                new TestFieldImpl("targetFieldName",
+                        String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping));
         assertNotNull(segments);
@@ -263,18 +282,18 @@ class BasePostgresDatabaseManagerImplTest {
         assertNull(segment1a.getParent());
         assertTrue(segment1a.getChildren().isEmpty());
         assertEquals("field1", segment1a.getSegment());
-        assertTrue(segment1a instanceof PostgresTerminalPathSegment);
+        assertTrue(segment1a instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal1a = (PostgresTerminalPathSegment) segment1a;
+        final TerminalPathSegment<?> terminal1a = (TerminalPathSegment<?>) segment1a;
         assertEquals(mapping, terminal1a.getMapping());
     }
 
     @Test
     void testParsePathSegments_OneMapping_TwoSegments() {
         // $ ---> field1[1a] ---> field2[1b]
-        final PostgresMapping mapping = new PostgresMapping("field1.field2",
-                new PostgresField("targetFieldName",
-                        JsonType.STRING));
+        final TestMapping mapping = new TestMappingImpl("field1.field2",
+                new TestFieldImpl("targetFieldName",
+                        String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping));
         assertNotNull(segments);
@@ -289,9 +308,9 @@ class BasePostgresDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof PostgresTerminalPathSegment);
+        assertTrue(segment1b instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal1b = (PostgresTerminalPathSegment) segment1b;
+        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
         assertEquals(mapping, terminal1b.getMapping());
     }
 
@@ -300,12 +319,12 @@ class BasePostgresDatabaseManagerImplTest {
         // $ ---> field1[1a] ---> field2[1b]
         //   \
         //    +-> field3[2a]
-        final PostgresMapping mapping1 = new PostgresMapping("field1.field2",
-                new PostgresField("targetFieldName1",
-                        JsonType.STRING));
-        final PostgresMapping mapping2 = new PostgresMapping("field3",
-                new PostgresField("targetFieldName2",
-                        JsonType.STRING));
+        final TestMapping mapping1 = new TestMappingImpl("field1.field2",
+                new TestFieldImpl("targetFieldName1",
+                        String.class));
+        final TestMapping mapping2 = new TestMappingImpl("field3",
+                new TestFieldImpl("targetFieldName2",
+                        String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping1, mapping2));
         assertNotNull(segments);
@@ -320,18 +339,18 @@ class BasePostgresDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof PostgresTerminalPathSegment);
+        assertTrue(segment1b instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal1b = (PostgresTerminalPathSegment) segment1b;
+        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
         assertEquals(mapping1, terminal1b.getMapping());
 
         final PathSegment segment2a = segments.get(1);
         assertNull(segment2a.getParent());
         assertTrue(segment2a.getChildren().isEmpty());
         assertEquals("field3", segment2a.getSegment());
-        assertTrue(segment2a instanceof PostgresTerminalPathSegment);
+        assertTrue(segment2a instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal2a = (PostgresTerminalPathSegment) segment2a;
+        final TerminalPathSegment<?> terminal2a = (TerminalPathSegment<?>) segment2a;
         assertEquals(mapping2, terminal2a.getMapping());
     }
 
@@ -340,12 +359,12 @@ class BasePostgresDatabaseManagerImplTest {
         // $ ---> field1[1a] ---> field2[1b]
         //                   \
         //                    +-> field3[2b]
-        final PostgresMapping mapping1 = new PostgresMapping("field1.field2",
-                new PostgresField("targetFieldName1",
-                        JsonType.STRING));
-        final PostgresMapping mapping2 = new PostgresMapping("field1.field3",
-                new PostgresField("targetFieldName2",
-                        JsonType.STRING));
+        final TestMapping mapping1 = new TestMappingImpl("field1.field2",
+                new TestFieldImpl("targetFieldName1",
+                        String.class));
+        final TestMapping mapping2 = new TestMappingImpl("field1.field3",
+                new TestFieldImpl("targetFieldName2",
+                        String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping1, mapping2));
         assertNotNull(segments);
@@ -360,18 +379,18 @@ class BasePostgresDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof PostgresTerminalPathSegment);
+        assertTrue(segment1b instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal1b = (PostgresTerminalPathSegment) segment1b;
+        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
         assertEquals(mapping1, terminal1b.getMapping());
 
         final PathSegment segment2b = segment1a.getChildren().get(1);
         assertEquals(segment1a, segment2b.getParent());
         assertTrue(segment2b.getChildren().isEmpty());
         assertEquals("field3", segment2b.getSegment());
-        assertTrue(segment2b instanceof PostgresTerminalPathSegment);
+        assertTrue(segment2b instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal2b = (PostgresTerminalPathSegment) segment2b;
+        final TerminalPathSegment<?> terminal2b = (TerminalPathSegment<?>) segment2b;
         assertEquals(mapping2, terminal2b.getMapping());
     }
 
@@ -380,12 +399,12 @@ class BasePostgresDatabaseManagerImplTest {
         // $ ---> field1[1a] ---> field2[1b]
         //                   \
         //                    +-> field3[2b] ---> field4[2c]
-        final PostgresMapping mapping1 = new PostgresMapping("field1.field2",
-                new PostgresField("targetFieldName1",
-                        JsonType.STRING));
-        final PostgresMapping mapping2 = new PostgresMapping("field1.field3.field4",
-                new PostgresField("targetFieldName2",
-                        JsonType.STRING));
+        final TestMapping mapping1 = new TestMappingImpl("field1.field2",
+                new TestFieldImpl("targetFieldName1",
+                        String.class));
+        final TestMapping mapping2 = new TestMappingImpl("field1.field3.field4",
+                new TestFieldImpl("targetFieldName2",
+                        String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping1, mapping2));
         assertNotNull(segments);
@@ -400,9 +419,9 @@ class BasePostgresDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof PostgresTerminalPathSegment);
+        assertTrue(segment1b instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal1b = (PostgresTerminalPathSegment) segment1b;
+        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
         assertEquals(mapping1, terminal1b.getMapping());
 
         final PathSegment segment2b = segment1a.getChildren().get(1);
@@ -414,18 +433,18 @@ class BasePostgresDatabaseManagerImplTest {
         assertEquals(segment2b, segment2c.getParent());
         assertTrue(segment2c.getChildren().isEmpty());
         assertEquals("field4", segment2c.getSegment());
-        assertTrue(segment2c instanceof PostgresTerminalPathSegment);
+        assertTrue(segment2c instanceof TerminalPathSegment);
 
-        final PostgresTerminalPathSegment terminal2c = (PostgresTerminalPathSegment) segment2c;
+        final TerminalPathSegment<?> terminal2c = (TerminalPathSegment<?>) segment2c;
         assertEquals(mapping2, terminal2c.getMapping());
     }
 
     @Test
     void testParsePathSegments_OneMapping_OneSegment_WithJoin() {
         // $ ---> field1[1a] ---> field2[1b]
-        final PostgresMapping mapping = new PostgresMapping("field1[].field2",
-                new PostgresField("targetFieldName",
-                        JsonType.STRING));
+        final TestMapping mapping = new TestMappingImpl("field1[].field2",
+                new TestFieldImpl("targetFieldName",
+                        String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping));
         assertNotNull(segments);
@@ -444,9 +463,9 @@ class BasePostgresDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof PostgresTerminalPathSegment);
+        assertTrue(segment1b instanceof TerminalPathSegment<?>);
 
-        final PostgresTerminalPathSegment terminal1b = (PostgresTerminalPathSegment) segment1b;
+        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
         assertEquals(mapping, terminal1b.getMapping());
     }
 }

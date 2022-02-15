@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.persistence.reporting.model;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface MappingDefinition<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>> {
@@ -32,5 +31,5 @@ public interface MappingDefinition<T, F extends Field<T>, P extends PartitionFie
 
     String getTargetTableName();
 
-    Collection<M> getFieldMappings();
+    List<M> getFieldMappings();
 }

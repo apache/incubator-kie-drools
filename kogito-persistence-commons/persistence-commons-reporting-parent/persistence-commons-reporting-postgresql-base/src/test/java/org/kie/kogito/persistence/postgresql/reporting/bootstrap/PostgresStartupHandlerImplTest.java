@@ -29,6 +29,7 @@ import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefi
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinitions;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.postgresql.reporting.service.PostgresMappingServiceImpl;
+import org.kie.kogito.persistence.reporting.database.SchemaGenerationAction;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -55,7 +56,8 @@ class PostgresStartupHandlerImplTest {
     public void setup() {
         this.service = new PostgresStartupHandlerImpl(loader,
                 databaseManager,
-                mappingService);
+                mappingService,
+                SchemaGenerationAction.DROP_AND_CREATE.getActionString());
     }
 
     @Test

@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresDatabaseManagerImpl;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresContext;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
@@ -29,6 +30,7 @@ import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefi
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.postgresql.reporting.service.PostgresMappingServiceImpl;
 import org.kie.kogito.persistence.reporting.bootstrap.BaseStartupHandler;
+import org.kie.kogito.persistence.reporting.database.SchemaGenerationAction;
 
 import io.quarkus.runtime.StartupEvent;
 
@@ -43,10 +45,12 @@ public class PostgresStartupHandlerImpl
     @Inject
     public PostgresStartupHandlerImpl(final PostgresBootstrapLoaderImpl loader,
             final BasePostgresDatabaseManagerImpl databaseManager,
-            final PostgresMappingServiceImpl mappingService) {
+            final PostgresMappingServiceImpl mappingService,
+            final @ConfigProperty(name = "quarkus.hibernate-orm.database.generation") String action) {
         super(loader,
                 databaseManager,
-                mappingService);
+                mappingService,
+                SchemaGenerationAction.fromString(action));
     }
 
     void onStartup(final @Observes StartupEvent event) {

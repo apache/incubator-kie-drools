@@ -19,6 +19,7 @@ import java.util.Objects;
 
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.persistence.reporting.database.DatabaseManager;
+import org.kie.kogito.persistence.reporting.database.SchemaGenerationAction;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.Context;
 import org.kie.kogito.persistence.reporting.model.Field;
 import org.kie.kogito.persistence.reporting.model.Mapping;
@@ -39,6 +40,7 @@ public abstract class BaseStartupHandler<T, F extends Field<T>, P extends Partit
     private BootstrapLoader<T, F, P, M, D, S> loader;
     private DatabaseManager<T, F, P, M, D, C> databaseManager;
     private MappingService<T, F, P, M, D> mappingService;
+    private SchemaGenerationAction action;
 
     protected BaseStartupHandler() {
         //CDI proxy
@@ -46,35 +48,51 @@ public abstract class BaseStartupHandler<T, F extends Field<T>, P extends Partit
 
     public BaseStartupHandler(final BootstrapLoader<T, F, P, M, D, S> loader,
             final DatabaseManager<T, F, P, M, D, C> databaseManager,
-            final MappingService<T, F, P, M, D> mappingService) {
+            final MappingService<T, F, P, M, D> mappingService,
+            final SchemaGenerationAction action) {
         this.loader = Objects.requireNonNull(loader);
         this.mappingService = Objects.requireNonNull(mappingService);
         this.databaseManager = Objects.requireNonNull(databaseManager);
+        this.action = Objects.requireNonNull(action);
     }
 
     protected void onStartup() {
-        LOGGER.info("Loading bootstrap Mapping Definitions...");
+        switch (action) {
+            case NONE:
+                LOGGER.info("Database Schema Action is 'NONE'. Exiting.");
+                break;
+            case DROP:
+                LOGGER.info("Database Schema Action is 'DROP'. Destroying existing database artifacts...");
+                mappingService.getAllMappingDefinitions().forEach(databaseManager::destroyArtifacts);
+                break;
+            case DROP_AND_CREATE:
+                LOGGER.info("Database Schema Action is 'DROP-AND-CREATE'. Destroying existing database artifacts...");
+                mappingService.getAllMappingDefinitions().forEach(databaseManager::destroyArtifacts);
+            case CREATE:
+                LOGGER.info("Loading bootstrap Mapping Definitions...");
 
-        loader.load().ifPresent(mappingDefinitions -> {
-            try {
-                final ObjectMapper mapper = CloudEventUtils.Mapper.mapper();
-                LOGGER.info(String.format("Bootstrap Mapping Definitions are:%n%s",
-                        mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mappingDefinitions)));
-            } catch (JsonProcessingException jpe) {
-                LOGGER.error(String.format("Failed to load bootstrap Mapping Definitions: %s",
-                        jpe.getMessage()));
-            }
+                loader.load().ifPresent(mappingDefinitions -> {
+                    try {
+                        final ObjectMapper mapper = CloudEventUtils.Mapper.mapper();
+                        LOGGER.info(String.format("Bootstrap Mapping Definitions are:%n%s",
+                                mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mappingDefinitions)));
+                    } catch (JsonProcessingException jpe) {
+                        LOGGER.error(String.format("Failed to load bootstrap Mapping Definitions: %s",
+                                jpe.getMessage()));
+                    }
 
-            mappingDefinitions.getMappingDefinitions().forEach(definition -> {
-                try {
-                    mappingService.saveMappingDefinition(definition);
-                    databaseManager.createArtifacts(definition);
-                } catch (Exception e) {
-                    LOGGER.error(String.format("Failed to process MappingDefinition '%s'%n%s",
-                            definition.getMappingId(),
-                            e.getMessage()));
-                }
-            });
-        });
+                    mappingDefinitions.getMappingDefinitions().forEach(definition -> {
+                        try {
+                            mappingService.saveMappingDefinition(definition);
+                            databaseManager.createArtifacts(definition);
+                        } catch (Exception e) {
+                            LOGGER.error(String.format("Failed to process MappingDefinition '%s'%n%s",
+                                    definition.getMappingId(),
+                                    e.getMessage()));
+                        }
+                    });
+                });
+        }
+
     }
 }

@@ -17,11 +17,11 @@ package org.kie.kogito.persistence.reporting.model.paths;
 
 import org.kie.kogito.persistence.reporting.model.Mapping;
 
-public abstract class TerminalPathSegment<M extends Mapping> extends PathSegment {
+public class TerminalPathSegment<M extends Mapping> extends PathSegment {
 
     private M mapping;
 
-    protected TerminalPathSegment(final String segment,
+    public TerminalPathSegment(final String segment,
             final PathSegment parent,
             final M mapping) {
         super(segment, parent);
