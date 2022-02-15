@@ -8,7 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: 'echo ${{ github.event.issue.title }}'
     - name: Send a stream message
       uses: zulip/github-actions-zulip/send-message@e71e15b429b0e79cc7b63e4e3dad0146443fab6f
       env:
