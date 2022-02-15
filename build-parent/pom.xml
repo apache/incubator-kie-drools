@@ -2727,6 +2727,22 @@
 
     <profiles>
         <profile>
+            <id>skip-validation</id>
+            <activation>
+                <property>
+                    <name>skip-validation</name>
+                </property>
+            </activation>
+            <properties>
+                <formatter.skip>true</formatter.skip>
+                <invoker.skip>true</invoker.skip>
+                <enforcer.skip>true</enforcer.skip>
+                <revapi.skip>true</revapi.skip>
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+                <checkstyle.skip>true</checkstyle.skip>
+            </properties>
+        </profile>
+        <profile>
             <!-- Performs the quick build: all plugins deactivated -->
             <id>quick-build</id>
             <activation>

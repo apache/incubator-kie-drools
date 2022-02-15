@@ -1,0 +1,40 @@
+name: Drools - Validate Formatting
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - 'docsimg/**'
+      - '.ci/jenkins/**'
+
+
+jobs:
+  runtime-build:
+    concurrency:
+      group: kogito_runtimes_pr-${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 120
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java-version: [11]
+        maven-version: ['3.8.1']
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: Maven Build
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v2
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Maven - Validate Formatting
+        run: mvn --batch-mode process-sources
