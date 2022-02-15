@@ -158,8 +158,6 @@
     <module>drools-drl-ast</module>
     <module>drools-drl-parser</module>
     <module>drools-drl-extensions</module>
-    <module>drools-builder-extensions</module>
-    <module>drools-compiler-builder-shared</module>
     <module>drools-compiler</module>
     <module>drools-mvel</module>
     <module>drools-xml-support</module>
