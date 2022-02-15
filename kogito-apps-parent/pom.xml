@@ -53,6 +53,7 @@
         <module>kogito-apps-build-parent</module>
         <module>explainability</module>
         <module>task-assigning</module>
+        <module>trusty</module>
         <module>apps-integration-tests/integration-tests-task-assigning-service</module>
         <!-- Used by task assigning integration tests -->
         <module>persistence-commons</module>
