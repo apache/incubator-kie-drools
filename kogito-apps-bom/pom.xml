@@ -387,23 +387,23 @@
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
-                <artifactId>persistence-commons-reporting</artifactId>
+                <artifactId>persistence-commons-reporting-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
-                <artifactId>persistence-commons-reporting</artifactId>
+                <artifactId>persistence-commons-reporting-api</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
-                <artifactId>persistence-commons-postgresql-reporting</artifactId>
+                <artifactId>persistence-commons-reporting-postgresql-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
-                <artifactId>persistence-commons-postgresql-reporting</artifactId>
+                <artifactId>persistence-commons-reporting-postgresql-base</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>

@@ -1,0 +1,130 @@
+{
+  "mappingDefinitions": [
+    {
+      "mappingId": "BasicTypeMappingId",
+      "sourceTableName": "kogito_data_cache",
+      "sourceTableJsonFieldName": "json_value",
+      "sourceTableIdentityFields": [
+        {
+          "fieldName":"key",
+          "fieldType": "STRING"
+        }
+      ],
+      "sourceTablePartitionFields": [
+        {
+          "fieldName": "name",
+          "fieldType": "STRING",
+          "fieldValue": "BasicType"
+        }
+      ],
+      "targetTableName": "BasicTypeExtract",
+      "fieldMappings": [
+        {
+          "sourceJsonPath": "field1",
+          "targetField":{
+            "fieldName": "field1MappedField",
+            "fieldType": "NUMBER"
+          }
+        },
+        {
+          "sourceJsonPath": "field3",
+          "targetField": {
+            "fieldName": "field2MappedField",
+            "fieldType": "STRING"
+          }
+        }
+      ]
+    },
+    {
+      "mappingId": "HierarchicalTypeMappingId",
+      "sourceTableName": "kogito_data_cache",
+      "sourceTableJsonFieldName": "json_value",
+      "sourceTableIdentityFields": [
+        {
+          "fieldName":"key",
+          "fieldType": "STRING"
+        }
+      ],
+      "sourceTablePartitionFields": [
+        {
+          "fieldName": "name",
+          "fieldType": "STRING",
+          "fieldValue": "HierarchicalType"
+        }
+      ],
+      "targetTableName": "HierarchicalTypeExtract",
+      "fieldMappings": [
+        {
+          "sourceJsonPath": "root",
+          "targetField": {
+            "fieldName": "root",
+            "fieldType": "STRING"
+          }
+        },
+        {
+          "sourceJsonPath": "nestedBasic.field3",
+          "targetField": {
+            "fieldName": "nestedBasicMappedField",
+            "fieldType": "STRING"
+          }
+        },
+        {
+          "sourceJsonPath": "nestedBasicCollection[].field3",
+          "targetField": {
+            "fieldName": "nestedBasicCollectionMappedField",
+            "fieldType": "STRING"
+          }
+        }
+      ]
+    },
+    {
+      "mappingId": "ComplexHierarchicalTypeMappingId",
+      "sourceTableName": "kogito_data_cache",
+      "sourceTableJsonFieldName": "json_value",
+      "sourceTableIdentityFields": [
+        {
+          "fieldName":"key",
+          "fieldType": "STRING"
+        }
+      ],
+      "sourceTablePartitionFields": [
+        {
+          "fieldName": "name",
+          "fieldType": "STRING",
+          "fieldValue": "ComplexHierarchicalType"
+        }
+      ],
+      "targetTableName": "ComplexHierarchicalTypeExtract",
+      "fieldMappings": [
+        {
+          "sourceJsonPath": "root",
+          "targetField": {
+            "fieldName": "root",
+            "fieldType": "STRING"
+          }
+        },
+        {
+          "sourceJsonPath": "nestedBasic.field3",
+          "targetField": {
+            "fieldName": "nestedBasicMappedField",
+            "fieldType": "STRING"
+          }
+        },
+        {
+          "sourceJsonPath": "nestedComplexCollection[].root",
+          "targetField": {
+            "fieldName": "nestedComplexCollectionMappedField1",
+            "fieldType": "STRING"
+          }
+        },
+        {
+          "sourceJsonPath": "nestedComplexCollection[].nestedComplexCollection[].root",
+          "targetField": {
+            "fieldName": "nestedComplexCollectionMappedSubField1",
+            "fieldType": "STRING"
+          }
+        }
+      ]
+    }
+  ]
+}
