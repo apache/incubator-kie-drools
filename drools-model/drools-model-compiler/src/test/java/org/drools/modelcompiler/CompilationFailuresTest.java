@@ -27,6 +27,7 @@ import org.kie.api.builder.Results;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CompilationFailuresTest extends BaseModelTest {
 
@@ -214,5 +215,29 @@ public class CompilationFailuresTest extends BaseModelTest {
         public BigDecimal getFortyTwo() {
             return BigDecimal.valueOf(42);
         }
+    }
+
+    @Test
+    public void testTypeSafe() {
+        String str =
+                "import " + Parent.class.getCanonicalName() + ";" +
+                     "declare\n" +
+                     "   Parent @typesafe(false)\n" +
+                     "end\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "   $a : Parent( x == 1 )\n" +
+                     "then\n" +
+                     "end\n";
+
+        Results results = createKieBuilder(str).getResults();
+        if (testRunType.isExecutableModel()) {
+            assertThat(results.getMessages(Message.Level.ERROR).get(0).getText().contains("@typesafe(false) is not supported in executable model"));
+        } else {
+            assertTrue(results.getMessages(Message.Level.ERROR).isEmpty());
+        }
+    }
+
+    public static class Parent {
     }
 }
