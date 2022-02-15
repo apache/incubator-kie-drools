@@ -31,7 +31,6 @@ import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessGenerator;
-import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.quarkus.addons.common.deployment.AnyEngineKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.common.deployment.KogitoAddonsGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
@@ -99,10 +98,10 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
         }
 
         if (!inputDefault) {
-            channelsInfo.stream().filter(channel -> channel.getChannelName().equals(KogitoEventStreams.INCOMING)).findFirst().ifPresent(c -> result.add(buildEventGenerator(context, c)));
+            channelsInfo.stream().filter(ChannelInfo::isInputDefault).findFirst().ifPresent(c -> result.add(buildEventGenerator(context, c)));
         }
         if (!outputDefault) {
-            channelsInfo.stream().filter(channel -> channel.getChannelName().equals(KogitoEventStreams.OUTGOING)).findFirst().ifPresent(c -> result.add(buildEventGenerator(context, c)));
+            channelsInfo.stream().filter(ChannelInfo::isOutputDefault).findFirst().ifPresent(c -> result.add(buildEventGenerator(context, c)));
         }
         return result;
 
@@ -111,10 +110,8 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
     private void collect(ProcessGenerator process, Collection<ChannelInfo> channelsInfo, Map<DotName, EventGenerator> eventGenerators, KogitoBuildContext context) {
         ProcessMetaData processMetadata = process.getProcessExecutable().generate();
         for (ChannelInfo channelInfo : channelsInfo) {
-            if (channelInfo.isInput()) {
-                collect(processMetadata.getConsumers(), channelInfo, eventGenerators, context);
-            } else if (channelInfo.isOutput()) {
-                collect(processMetadata.getProducers(), channelInfo, eventGenerators, context);
+            if (!channelInfo.isDefault()) {
+                collect(channelInfo.isInput() ? processMetadata.getConsumers() : processMetadata.getProducers(), channelInfo, eventGenerators, context);
             }
         }
     }

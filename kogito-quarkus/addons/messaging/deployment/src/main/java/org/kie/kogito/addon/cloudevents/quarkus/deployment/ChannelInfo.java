@@ -22,11 +22,13 @@ public class ChannelInfo {
     private final String channelName;
     private final String className;
     private final boolean isInput;
+    private final boolean isDefault;
 
-    public ChannelInfo(String channelName, String className, boolean isInput) {
+    public ChannelInfo(String channelName, String className, boolean isInput, boolean isDefault) {
         this.className = className;
         this.channelName = channelName;
         this.isInput = isInput;
+        this.isDefault = isDefault;
     }
 
     public String getChannelName() {
@@ -39,10 +41,6 @@ public class ChannelInfo {
 
     public boolean isInput() {
         return isInput;
-    }
-
-    public boolean isOutput() {
-        return !isInput;
     }
 
     @Override
@@ -59,5 +57,17 @@ public class ChannelInfo {
         ChannelInfo other = (ChannelInfo) obj;
         return Objects.equals(channelName, other.channelName) && Objects.equals(className, other.className) &&
                 isInput == other.isInput;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public boolean isInputDefault() {
+        return isInput && isDefault;
+    }
+
+    public boolean isOutputDefault() {
+        return !isInput && isDefault;
     }
 }

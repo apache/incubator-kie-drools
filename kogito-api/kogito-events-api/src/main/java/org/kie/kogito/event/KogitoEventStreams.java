@@ -18,10 +18,6 @@ package org.kie.kogito.event;
 public class KogitoEventStreams {
     public static final String INCOMING = "kogito_incoming_stream";
     public static final String OUTGOING = "kogito_outgoing_stream";
-    public static final String PUBLISHER = "kogito_event_publisher";
-    public static final String WORKER_THREAD = "kogito-event-worker";
-    public static final String DEFAULT_OUTGOING_BEAN_NAME = OUTGOING + "_eventEmitter";
-    public static final String DEFAULT_INCOMING_BEAN_NAME = INCOMING + "_eventReceiver";
 
     private KogitoEventStreams() {
     }

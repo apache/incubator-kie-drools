@@ -25,7 +25,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.addon.cloudevents.AbstractTopicDiscovery;
 import org.kie.kogito.event.ChannelType;
-import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.event.Topic;
 
 @ApplicationScoped
@@ -36,11 +35,12 @@ public class QuarkusTopicDiscovery extends AbstractTopicDiscovery {
     private static final String INCOMING_PREFIX = "mp.messaging.incoming.";
     private static final String TOPIC_SUFFIX = ".topic";
 
+    @Override
     protected List<Topic> getTopics() {
         final List<Topic> topics = new ArrayList<>();
         ConfigProvider.getConfig().getPropertyNames().forEach(n -> {
             if (n.startsWith(OUTGOING_PREFIX)) {
-                final String topicName = this.extractChannelName(n, OUTGOING_PREFIX, KogitoEventStreams.OUTGOING);
+                final String topicName = this.extractChannelName(n, OUTGOING_PREFIX);
                 if (topics.stream().noneMatch(t -> t.getName().equals(topicName) && t.getType() == ChannelType.OUTGOING)) {
                     final Topic topic = new Topic();
                     topic.setType(ChannelType.OUTGOING);
@@ -48,7 +48,7 @@ public class QuarkusTopicDiscovery extends AbstractTopicDiscovery {
                     topics.add(topic);
                 }
             } else if (n.startsWith(INCOMING_PREFIX)) {
-                final String topicName = this.extractChannelName(n, INCOMING_PREFIX, KogitoEventStreams.INCOMING);
+                final String topicName = this.extractChannelName(n, INCOMING_PREFIX);
                 if (topics.stream().noneMatch(t -> t.getName().equals(topicName) && t.getType() == ChannelType.INCOMING)) {
                     final Topic topic = new Topic();
                     topic.setType(ChannelType.INCOMING);
@@ -60,10 +60,7 @@ public class QuarkusTopicDiscovery extends AbstractTopicDiscovery {
         return topics;
     }
 
-    private String extractChannelName(String property, String prefix, String defaultChannel) {
-        if (property.length() <= prefix.length()) {
-            return defaultChannel;
-        }
+    private String extractChannelName(String property, String prefix) {
         String channelName = property.substring(prefix.length());
         if (channelName.contains(".")) {
             channelName = channelName.substring(0, channelName.indexOf("."));

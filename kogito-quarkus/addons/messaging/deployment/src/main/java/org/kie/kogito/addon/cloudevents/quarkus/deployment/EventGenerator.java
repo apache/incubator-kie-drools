@@ -22,7 +22,6 @@ import org.drools.core.util.StringUtils;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.event.KogitoEventStreams;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -52,7 +51,7 @@ public class EventGenerator implements ClassGenerator {
         ClassOrInterfaceDeclaration clazz = generator.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new InvalidTemplateException(template, "Cannot find class declaration"));
         clazz.setName(className);
         String annotationName = null;
-        if (!channelInfo.getChannelName().equals(KogitoEventStreams.INCOMING) && !channelInfo.getChannelName().equals(KogitoEventStreams.OUTGOING)) {
+        if (!channelInfo.isDefault()) {
             annotationName = StringUtils.ucFirst(polishClassName(channelInfo, "Qualifier"));
         }
         this.annotationName = Optional.ofNullable(annotationName);

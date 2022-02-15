@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.kogito.event.KogitoEventStreams;
 
 public class ChannelMappingStrategy {
 
@@ -34,19 +35,22 @@ public class ChannelMappingStrategy {
 
     public static Collection<ChannelInfo> getChannelMapping() {
         Collection<ChannelInfo> result = new ArrayList<>();
+        final String defaultIncomingChannel = config.getOptionalValue("kogito.addon.messaging.incoming.defaultName", String.class).orElse(KogitoEventStreams.INCOMING);
+        final String defaultOutgoingChannel = config.getOptionalValue("kogito.addon.messaging.outgoing.defaultName", String.class).orElse(KogitoEventStreams.OUTGOING);
         for (String property : config.getPropertyNames()) {
             if (property.startsWith(INCOMING_PREFIX) && property.endsWith(".connector")) {
-                result.add(getChannelInfo(property, INCOMING_PREFIX, true));
+                result.add(getChannelInfo(property, INCOMING_PREFIX, true, defaultIncomingChannel));
             } else if (property.startsWith(OUTGOING_PREFIX) && property.endsWith(".connector")) {
-                result.add(getChannelInfo(property, OUTGOING_PREFIX, false));
+                result.add(getChannelInfo(property, OUTGOING_PREFIX, false, defaultOutgoingChannel));
             }
         }
         return result;
     }
 
-    private static ChannelInfo getChannelInfo(String property, String prefix, boolean isInput) {
+    private static ChannelInfo getChannelInfo(String property, String prefix, boolean isInput, String defaultChannelName) {
         String name = extractChannelName(prefix, property);
-        return new ChannelInfo(name, getClassName(config.getOptionalValue(getPropertyName(prefix, name, "value." + (isInput ? "deserializer" : "serializer")), String.class)), isInput);
+        return new ChannelInfo(name, getClassName(config.getOptionalValue(getPropertyName(prefix, name, "value." + (isInput ? "deserializer" : "serializer")), String.class)), isInput,
+                name.equals(defaultChannelName));
     }
 
     private static String extractChannelName(String prefix, String property) {
