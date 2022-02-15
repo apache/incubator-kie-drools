@@ -86,7 +86,7 @@ if (Utils.isLTSBranch(this)) {
 
 // Tools job
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-runtimes', 'Kogito Runtimes', [
-  modules: [ 'kogito-dependencies-bom', 'kogito-build-parent', 'kogito-quarkus-bom' ],
+  modules: [ 'kogito-dependencies-bom', 'kogito-build-parent', 'kogito-quarkus-bom', 'kogito-build-no-bom-parent' ],
   compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
   properties: [ 'version.io.quarkus', 'version.io.quarkus.quarkus-test-maven' ],
 ])
