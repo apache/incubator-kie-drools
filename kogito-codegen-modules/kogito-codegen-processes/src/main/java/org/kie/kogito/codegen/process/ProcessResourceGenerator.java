@@ -317,10 +317,14 @@ public class ProcessResourceGenerator {
         String documentation =
                 process.getMetaData()
                         .getOrDefault("Documentation", processName).toString();
+        String processInstanceDescription = process.getMetaData()
+                .getOrDefault("customDescription", "")
+                .toString();
         String interpolated =
                 s.replace("$name$", processName)
                         .replace("$id$", processId)
-                        .replace("$documentation$", documentation);
+                        .replace("$documentation$", documentation)
+                        .replace("$processInstanceDescription$", processInstanceDescription);
         vv.setString(interpolated);
     }
 

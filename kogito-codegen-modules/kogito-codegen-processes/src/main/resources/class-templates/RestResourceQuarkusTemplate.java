@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -43,6 +42,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -68,6 +68,7 @@ public class $Type$Resource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public Response createResource_$name$(@Context HttpHeaders httpHeaders,
                                           @Context UriInfo uriInfo,
                                           @QueryParam("businessKey") @DefaultValue("") String businessKey,
@@ -83,6 +84,7 @@ public class $Type$Resource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public List<$Type$Output> getResources_$name$() {
         return processService.getProcessInstanceOutput(process);
     }
@@ -90,6 +92,7 @@ public class $Type$Resource {
     @GET
     @Path("schema")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public Map<String, Object> getResourceSchema_$name$() {
         return JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id());
     }
@@ -98,6 +101,7 @@ public class $Type$Resource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public $Type$Output getResource_$name$(@PathParam("id") String id) {
         return processService.findById(process, id).orElseThrow(NotFoundException::new);
     }
@@ -105,6 +109,7 @@ public class $Type$Resource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public $Type$Output deleteResource_$name$(@PathParam("id") final String id) {
         return processService.delete(process, id).orElseThrow(NotFoundException::new);
     }
@@ -113,6 +118,7 @@ public class $Type$Resource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public $Type$Output updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
         return processService.update(process, id, resource).orElseThrow(NotFoundException::new);
     }
@@ -120,6 +126,7 @@ public class $Type$Resource {
     @GET
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public List<TaskModel> getTasks_$name$(@PathParam("id") String id,
                                           @QueryParam("user") final String user,
                                           @QueryParam("group") final List<String> groups) {

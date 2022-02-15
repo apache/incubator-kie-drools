@@ -57,6 +57,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/$name$")
 public class $Type$Resource {
@@ -67,6 +69,7 @@ public class $Type$Resource {
     ProcessService processService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public ResponseEntity<$Type$Output> createResource_$name$(@RequestHeader HttpHeaders httpHeaders,
                                                               @RequestParam(value = "businessKey", required = false) String businessKey,
                                                               @RequestBody(required = false) $Type$Input resource,
@@ -80,32 +83,38 @@ public class $Type$Resource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public List<$Type$Output> getResources_$name$() {
         return processService.getProcessInstanceOutput(process);
     }
 
     @GetMapping(value = "/schema", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public Map<String, Object> getResourceSchema_$name$() {
         return JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public $Type$Output getResource_$name$(@PathVariable("id") String id) {
         return processService.findById(process, id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public $Type$Output deleteResource_$name$(@PathVariable("id") final String id) {
         return processService.delete(process, id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public $Type$Output updateModel_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$ resource) {
         return processService.update(process, id, resource).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
     public List<TaskModel> getTasks_$name$(@PathVariable("id") String id,
                                            @RequestParam(value = "user", required = false) final String user,
                                            @RequestParam(value = "group", required = false) final List<String> groups) {
