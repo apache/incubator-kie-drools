@@ -15,15 +15,25 @@
  */
 package org.kie.kogito.addon.quarkus.messaging.common.message;
 
+import javax.inject.Inject;
+
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@QuarkusTest
 class MessageMessageDecoratorFactoryTest {
+
+    @Inject
+    MessageDecoratorProvider provider;
 
     @Test
     void verifyCloudEventHttpIsOnClasspath() {
-        final MessageDecorator decorator = MessageDecoratorFactory.newInstance();
-        assertThat(decorator).isNotNull().isInstanceOf(CloudEventHttpOutgoingDecorator.class);
+        Message<String> message = Message.of("pepe");
+        message = provider.decorate(message);
+        assertThat(message.getMetadata(CloudEventHttpOutgoingDecorator.class)).isNotNull();
     }
 }

@@ -20,11 +20,13 @@ import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Metadata;
 
+import io.quarkus.arc.properties.IfBuildProperty;
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 
 /**
  * Decorators for Http CloudEvents outgoing messages
  */
+@IfBuildProperty(name = "kogito.messaging.as-cloudevents", stringValue = "true")
 public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
 
     // Note: this constant is also declared in cloudevents-json-jackson.
@@ -44,7 +46,7 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
      * @param <T> Payload type
      */
     @Override
-    public <T> Message<T> decorate(T payload) {
-        return Message.of(payload, HTTP_RESPONSE_METADATA);
+    public <T> Message<T> decorate(Message<T> message) {
+        return message.addMetadata(HTTP_RESPONSE_METADATA);
     }
 }

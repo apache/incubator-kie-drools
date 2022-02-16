@@ -15,18 +15,30 @@
  */
 package org.kie.kogito.addon.quarkus.messaging.common.message;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+import org.eclipse.microprofile.reactive.messaging.Message;
+
 /**
  * Provides a {@link MessageDecorator} instance. Ideally should not be used outside the {@link MessageFactory}.
  */
-public final class MessageDecoratorFactory {
+@ApplicationScoped
+public class MessageDecoratorProvider {
 
-    private static final String QUARKUS_HTTP_METADATA_CLASS = "io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata";
+    @Inject
+    Instance<MessageDecorator> messageDecorators;
 
-    private MessageDecoratorFactory() {
-    }
+    private Collection<MessageDecorator> sortedMessageDecorators;
 
-    public static MessageDecorator newInstance() {
-        return newInstance(true);
+    @PostConstruct
+    void init() {
+        sortedMessageDecorators = messageDecorators.stream().sorted().collect(Collectors.toList());
     }
 
     /**
@@ -34,15 +46,10 @@ public final class MessageDecoratorFactory {
      *
      * @return an instance of {@link MessageDecorator}
      */
-    public static MessageDecorator newInstance(boolean useCloudEvent) {
-        if (useCloudEvent) {
-            try {
-                Class.forName(QUARKUS_HTTP_METADATA_CLASS, false, MessageDecoratorFactory.class.getClassLoader());
-                return new CloudEventHttpOutgoingDecorator();
-            } catch (ClassNotFoundException e) {
-                // returning NoOpMessageDecorator (complementary comment forced by sonar) 
-            }
+    public <T> Message<T> decorate(Message<T> message) {
+        for (MessageDecorator messageDecorator : sortedMessageDecorators) {
+            message = messageDecorator.decorate(message);
         }
-        return new NoOpMessageDecorator();
+        return message;
     }
 }

@@ -19,11 +19,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.addon.quarkus.messaging.common.message.MessageFactory;
+import org.kie.kogito.addon.quarkus.messaging.common.message.MessageDecoratorProvider;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
@@ -45,18 +44,14 @@ public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitte
     @Inject
     ObjectMapper mapper;
 
-    private MessageFactory messageFactory;
-
-    @PostConstruct
-    void init() {
-        messageFactory = new MessageFactory(configBean.useCloudEvents());
-    }
+    @Inject
+    MessageDecoratorProvider messageDecorator;
 
     @Override
     public <T> CompletionStage<Void> emit(T e, String type, Optional<Function<T, Object>> processDecorator) {
         logger.debug("publishing event {} for type {}", e, type);
-        final Message<M> message = this.messageFactory.getMessageDecorator().decorate(marshaller.marshall(
-                configBean.useCloudEvents() ? processDecorator.map(d -> d.apply(e)).orElse(e) : e));
+        final Message<M> message = messageDecorator.decorate(Message.of(marshaller.marshall(
+                configBean.useCloudEvents() ? processDecorator.map(d -> d.apply(e)).orElse(e) : e)));
         emit(message);
         return message.getAck().get();
     }
