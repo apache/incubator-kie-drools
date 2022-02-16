@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.config.statistic;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
@@ -60,6 +62,10 @@ public enum ProblemStatisticType implements StatisticType {
     public boolean hasScoreLevels() {
         return this == BEST_SCORE
                 || this == STEP_SCORE;
+    }
+
+    public static List<ProblemStatisticType> defaultList() {
+        return List.of(ProblemStatisticType.BEST_SCORE);
     }
 
 }

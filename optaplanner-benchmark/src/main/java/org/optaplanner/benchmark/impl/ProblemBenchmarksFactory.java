@@ -131,13 +131,11 @@ public class ProblemBenchmarksFactory {
             if (!ConfigUtils.isEmptyCollection(config.getProblemStatisticTypeList())) {
                 throw new IllegalArgumentException("The problemStatisticEnabled (" + config.getProblemStatisticEnabled()
                         + ") and problemStatisticTypeList (" + config.getProblemStatisticTypeList()
-                        + ") can be used together.");
+                        + ") cannot be used together.");
             }
             problemStatisticList = Collections.emptyList();
         } else {
-            List<ProblemStatisticType> problemStatisticTypeList_ = (config.getProblemStatisticTypeList() == null)
-                    ? Collections.singletonList(ProblemStatisticType.BEST_SCORE)
-                    : config.getProblemStatisticTypeList();
+            List<ProblemStatisticType> problemStatisticTypeList_ = config.determineProblemStatisticTypeList();
             problemStatisticList = new ArrayList<>(problemStatisticTypeList_.size());
             for (ProblemStatisticType problemStatisticType : problemStatisticTypeList_) {
                 problemStatisticList.add(problemStatisticType.buildProblemStatistic(problemBenchmarkResult));
@@ -152,17 +150,15 @@ public class ProblemBenchmarksFactory {
             ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
+        List<SingleStatisticType> singleStatisticTypeList = config.determineSingleStatisticTypeList();
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-            subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<>(
-                    config.getSingleStatisticTypeList() == null ? 0 : config.getSingleStatisticTypeList().size()));
+            subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<>(singleStatisticTypeList.size()));
         }
-        if (config.getSingleStatisticTypeList() != null) {
-            for (SingleStatisticType singleStatisticType : config.getSingleStatisticTypeList()) {
-                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
-                        .getSubSingleBenchmarkResultList()) {
-                    subSingleBenchmarkResult.getPureSubSingleStatisticList().add(
-                            singleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
-                }
+        for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
+            for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
+                    .getSubSingleBenchmarkResultList()) {
+                subSingleBenchmarkResult.getPureSubSingleStatisticList().add(
+                        singleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
             }
         }
         singleBenchmarkResult.initSubSingleStatisticMaps();
