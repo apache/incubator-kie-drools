@@ -17,6 +17,9 @@ package org.kie.kogito.explainability.model;
 
 import java.util.Objects;
 
+import org.kie.kogito.explainability.model.domain.EmptyFeatureDomain;
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
+
 /**
  * A feature represents fixed portions of an input, having a name, a {@link Type} and an associated {@link Value}.
  */
@@ -26,10 +29,27 @@ public class Feature {
     private final Type type;
     private final Value value;
 
+    private final FeatureDomain domain;
+    private final boolean constrained;
+    private final FeatureDistribution distribution;
+
     public Feature(String name, Type type, Value value) {
+        this(name, type, value, true, EmptyFeatureDomain.create());
+
+    }
+
+    public Feature(String name, Type type, Value value, boolean constrained, FeatureDomain domain) {
+        this(name, type, value, constrained, domain, null);
+    }
+
+    public Feature(String name, Type type, Value value, boolean constrained, FeatureDomain domain,
+            FeatureDistribution distribution) {
         this.name = name;
         this.type = type;
         this.value = value;
+        this.domain = domain;
+        this.constrained = constrained;
+        this.distribution = distribution;
     }
 
     /**
@@ -80,6 +100,18 @@ public class Feature {
         return Objects.equals(name, feature.name) &&
                 type == feature.type &&
                 Objects.equals(value, feature.value);
+    }
+
+    public FeatureDomain getDomain() {
+        return domain;
+    }
+
+    public boolean isConstrained() {
+        return constrained;
+    }
+
+    public FeatureDistribution getDistribution() {
+        return distribution;
     }
 
     @Override

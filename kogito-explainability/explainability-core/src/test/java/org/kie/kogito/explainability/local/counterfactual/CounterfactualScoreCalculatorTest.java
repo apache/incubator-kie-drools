@@ -1086,14 +1086,14 @@ class CounterfactualScoreCalculatorTest {
 
         PredictionInput input = new PredictionInput(features);
         PredictionFeatureDomain domains = new PredictionFeatureDomain(featureDomains);
-        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input, domains, constraints, null);
+        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input);
 
         List<Output> goal = new ArrayList<>();
         goal.add(new Output("f-2", Type.NUMBER, new Value(2.0), 0.0));
         goal.add(new Output("f-3", Type.BOOLEAN, new Value(true), 0.0));
 
         final CounterfactualSolution solution =
-                new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
+                new CounterfactualSolution(entities, features, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
 
         BendableBigDecimalScore score = scoreCalculator.calculateScore(solution);
 
@@ -1144,7 +1144,7 @@ class CounterfactualScoreCalculatorTest {
 
         PredictionInput input = new PredictionInput(features);
         PredictionFeatureDomain domains = new PredictionFeatureDomain(featureDomains);
-        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input, domains, constraints, null);
+        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input);
 
         List<Output> goal = new ArrayList<>();
         goal.add(new Output("f-2", Type.NUMBER, new Value(2.0), 0.0));
@@ -1156,7 +1156,7 @@ class CounterfactualScoreCalculatorTest {
         assertEquals(2, predictionOutputs.get(0).getOutputs().size()); // Single prediction with two features
 
         final CounterfactualSolution solution =
-                new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
+                new CounterfactualSolution(entities, features, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             scoreCalculator.calculateScore(solution);
@@ -1197,7 +1197,7 @@ class CounterfactualScoreCalculatorTest {
 
         PredictionInput input = new PredictionInput(features);
         PredictionFeatureDomain domains = new PredictionFeatureDomain(featureDomains);
-        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input, domains, constraints, null);
+        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input);
 
         List<Output> goal = new ArrayList<>();
         goal.add(new Output("f-1", Type.NUMBER, new Value(1.0), 0.0));
@@ -1211,7 +1211,7 @@ class CounterfactualScoreCalculatorTest {
         assertEquals(2, predictionOutputs.get(0).getOutputs().size()); // Single prediction with two features
 
         final CounterfactualSolution solution =
-                new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
+                new CounterfactualSolution(entities, features, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             scoreCalculator.calculateScore(solution);
@@ -1251,14 +1251,14 @@ class CounterfactualScoreCalculatorTest {
 
         PredictionInput input = new PredictionInput(features);
         PredictionFeatureDomain domains = new PredictionFeatureDomain(featureDomains);
-        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input, domains, constraints, null);
+        List<CounterfactualEntity> entities = CounterfactualEntityFactory.createEntities(input);
 
         List<Output> goal = new ArrayList<>();
         goal.add(new Output("f-2", Type.BOOLEAN, new Value(null), 0.0));
         goal.add(new Output("f-3", Type.BOOLEAN, new Value(true), 0.0));
 
         final CounterfactualSolution solution =
-                new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
+                new CounterfactualSolution(entities, features, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
 
         BendableBigDecimalScore score = scoreCalculator.calculateScore(solution);
 
@@ -1306,7 +1306,7 @@ class CounterfactualScoreCalculatorTest {
         PredictionFeatureDomain domains = new PredictionFeatureDomain(featureDomains);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CounterfactualEntityFactory.createEntities(input, domains, constraints, null);
+            CounterfactualEntityFactory.createEntities(input);
         });
 
         assertEquals("Null numeric features are not supported in counterfactuals", exception.getMessage());
@@ -1340,7 +1340,7 @@ class CounterfactualScoreCalculatorTest {
         PredictionFeatureDomain domains = new PredictionFeatureDomain(featureDomains);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CounterfactualEntityFactory.createEntities(input, domains, constraints, null);
+            CounterfactualEntityFactory.createEntities(input);
         });
 
         assertEquals("Null numeric features are not supported in counterfactuals", exception.getMessage());
@@ -1372,7 +1372,7 @@ class CounterfactualScoreCalculatorTest {
         final PredictionInput input = new PredictionInput(features);
         final PredictionFeatureDomain domain = new PredictionFeatureDomain(featureDomains);
         final List<CounterfactualEntity> entities =
-                CounterfactualEntityFactory.createEntities(input, domain, constraints, null);
+                CounterfactualEntityFactory.createEntities(input);
 
         // Create score calculator and model
         final CounterFactualScoreCalculator scoreCalculator = new CounterFactualScoreCalculator();
@@ -1385,7 +1385,7 @@ class CounterfactualScoreCalculatorTest {
         }
 
         final CounterfactualSolution solution =
-                new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
+                new CounterfactualSolution(entities, features, model, goal, UUID.randomUUID(), UUID.randomUUID(), 0.0);
 
         final BendableBigDecimalScore score = scoreCalculator.calculateScore(solution);
 

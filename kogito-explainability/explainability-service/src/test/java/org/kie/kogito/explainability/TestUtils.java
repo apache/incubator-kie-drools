@@ -109,6 +109,7 @@ public class TestUtils {
                     MAX_RUNNING_TIME_SECONDS);
 
     public static final CounterfactualResult COUNTERFACTUAL_RESULT = new CounterfactualResult(Collections.emptyList(),
+            Collections.emptyList(),
             List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 2.0)))),
             true,
             UUID.fromString(SOLUTION_ID),

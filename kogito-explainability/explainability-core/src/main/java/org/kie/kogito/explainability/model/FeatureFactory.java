@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
+
 /**
  * Factory class for {@link Feature}s
  */
@@ -40,6 +42,10 @@ public class FeatureFactory {
 
     public static Feature newTextFeature(String name, String text) {
         return new Feature(name, Type.TEXT, new Value(text));
+    }
+
+    public static Feature newTextFeature(String name, String text, FeatureDomain domain) {
+        return new Feature(name, Type.TEXT, new Value(text), false, domain);
     }
 
     public static Feature newFulltextFeature(String name, String text, Function<String, List<String>> tokenizer) {
@@ -61,32 +67,64 @@ public class FeatureFactory {
         return new Feature(name, Type.CATEGORICAL, new Value(category));
     }
 
+    public static Feature newCategoricalFeature(String name, String category, FeatureDomain domain) {
+        return new Feature(name, Type.CATEGORICAL, new Value(category), false, domain);
+    }
+
     public static Feature newNumericalFeature(String name, Number number) {
         return new Feature(name, Type.NUMBER, new Value(number));
+    }
+
+    public static Feature newNumericalFeature(String name, Number number, FeatureDomain domain) {
+        return new Feature(name, Type.NUMBER, new Value(number), false, domain);
     }
 
     public static Feature newBooleanFeature(String name, Boolean truthValue) {
         return new Feature(name, Type.BOOLEAN, new Value(truthValue));
     }
 
+    public static Feature newBooleanFeature(String name, Boolean truthValue, FeatureDomain domain) {
+        return new Feature(name, Type.BOOLEAN, new Value(truthValue), false, domain);
+    }
+
     public static Feature newCurrencyFeature(String name, Currency currency) {
         return new Feature(name, Type.CURRENCY, new Value(currency));
+    }
+
+    public static Feature newCurrencyFeature(String name, Currency currency, FeatureDomain domain) {
+        return new Feature(name, Type.CURRENCY, new Value(currency), false, domain);
     }
 
     public static Feature newBinaryFeature(String name, ByteBuffer byteBuffer) {
         return new Feature(name, Type.BINARY, new Value(byteBuffer));
     }
 
+    public static Feature newBinaryFeature(String name, ByteBuffer byteBuffer, FeatureDomain domain) {
+        return new Feature(name, Type.BINARY, new Value(byteBuffer), false, domain);
+    }
+
     public static Feature newURIFeature(String name, URI uri) {
         return new Feature(name, Type.URI, new Value(uri));
+    }
+
+    public static Feature newURIFeature(String name, URI uri, FeatureDomain domain) {
+        return new Feature(name, Type.URI, new Value(uri), false, domain);
     }
 
     public static Feature newDurationFeature(String name, Duration duration) {
         return new Feature(name, Type.DURATION, new Value(duration));
     }
 
+    public static Feature newDurationFeature(String name, Duration duration, FeatureDomain domain) {
+        return new Feature(name, Type.DURATION, new Value(duration), false, domain);
+    }
+
     public static Feature newTimeFeature(String name, LocalTime time) {
         return new Feature(name, Type.TIME, new Value(time));
+    }
+
+    public static Feature newTimeFeature(String name, LocalTime time, FeatureDomain domain) {
+        return new Feature(name, Type.TIME, new Value(time), false, domain);
     }
 
     public static Feature newVectorFeature(String name, double... doubles) {
@@ -95,6 +133,10 @@ public class FeatureFactory {
 
     public static Feature newObjectFeature(String name, Object object) {
         return new Feature(name, Type.UNDEFINED, new Value(object));
+    }
+
+    public static Feature newObjectFeature(String name, Object object, FeatureDomain domain) {
+        return new Feature(name, Type.UNDEFINED, new Value(object), false, domain);
     }
 
     public static Feature newCompositeFeature(String name, Map<String, Object> map) {

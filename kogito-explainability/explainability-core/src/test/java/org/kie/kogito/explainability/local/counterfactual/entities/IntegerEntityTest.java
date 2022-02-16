@@ -34,9 +34,9 @@ class IntegerEntityTest {
 
     @Test
     void distanceUnscaled() {
-        final Feature integerFeature = FeatureFactory.newNumericalFeature("feature-integer", 20);
         final FeatureDomain featureDomain = NumericalFeatureDomain.create(0, 100);
-        IntegerEntity entity = (IntegerEntity) CounterfactualEntityFactory.from(integerFeature, false, featureDomain);
+        final Feature integerFeature = FeatureFactory.newNumericalFeature("feature-integer", 20, featureDomain);
+        IntegerEntity entity = (IntegerEntity) CounterfactualEntityFactory.from(integerFeature);
         entity.proposedValue = 40;
         assertEquals(20.0, entity.distance());
     }
@@ -47,12 +47,11 @@ class IntegerEntityTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final Feature integerFeature = FeatureFactory.newNumericalFeature("feature-integer", 20);
         final FeatureDomain featureDomain = NumericalFeatureDomain.create(0, 100);
-        final FeatureDistribution featureDistribution =
-                new NumericFeatureDistribution(integerFeature, random.ints(5000, 10, 40).mapToDouble(x -> x).toArray());
-        IntegerEntity entity =
-                (IntegerEntity) CounterfactualEntityFactory.from(integerFeature, false, featureDomain, featureDistribution);
+        final Feature integerFeature = FeatureFactory.newNumericalFeature("feature-integer", 20, featureDomain);
+        final FeatureDistribution featureDistribution = new NumericFeatureDistribution(integerFeature, random.ints(5000, 10, 40).mapToDouble(x -> x).toArray());
+
+        IntegerEntity entity = (IntegerEntity) CounterfactualEntityFactory.from(integerFeature, featureDistribution);
         entity.proposedValue = 40;
         final double distance = entity.distance();
         assertTrue(distance > 0.2 && distance < 0.3);

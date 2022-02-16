@@ -48,7 +48,6 @@ import org.kie.kogito.explainability.model.CounterfactualPrediction;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Prediction;
-import org.kie.kogito.explainability.model.PredictionFeatureDomain;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
@@ -58,8 +57,6 @@ import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.explainability.ConversionUtils.toFeatureConstraintList;
-import static org.kie.kogito.explainability.ConversionUtils.toFeatureDomainList;
 import static org.kie.kogito.explainability.ConversionUtils.toFeatureList;
 import static org.kie.kogito.explainability.ConversionUtils.toOutputList;
 
@@ -116,15 +113,12 @@ public class CounterfactualExplainerServiceHandler
             throw new IllegalArgumentException("Counterfactual explanations only support flat models.");
         }
 
-        PredictionInput input = new PredictionInput(toFeatureList(originalInputs));
+        PredictionInput input = new PredictionInput(toFeatureList(originalInputs, searchDomains));
+
         PredictionOutput output = new PredictionOutput(toOutputList(goals));
-        PredictionFeatureDomain featureDomain = new PredictionFeatureDomain(toFeatureDomainList(searchDomains));
-        List<Boolean> featureConstraints = toFeatureConstraintList(searchDomains);
 
         return new CounterfactualPrediction(input,
                 output,
-                featureDomain,
-                featureConstraints,
                 null,
                 UUID.fromString(request.getExecutionId()),
                 maxRunningTimeSeconds);

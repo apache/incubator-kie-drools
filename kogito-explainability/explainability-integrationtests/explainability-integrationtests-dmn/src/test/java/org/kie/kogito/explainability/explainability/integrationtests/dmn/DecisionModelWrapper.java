@@ -65,14 +65,19 @@ class DecisionModelWrapper implements PredictionProvider {
             for (DMNDecisionResult decisionResult : dmnResult.getDecisionResults()) {
                 String decisionName = decisionResult.getDecisionName();
                 if (!skippedDecisions.contains(decisionName)) {
-                    Value value = new Value(decisionResult.getResult());
+                    Object result = decisionResult.getResult();
+                    Value value = new Value(result);
                     Type type;
-                    if (value.getUnderlyingObject() instanceof Boolean) {
-                        type = Type.BOOLEAN;
-                    } else if (Double.isNaN(value.asNumber())) {
+                    if (result == null) {
                         type = Type.TEXT;
                     } else {
-                        type = Type.NUMBER;
+                        if (result instanceof Boolean) {
+                            type = Type.BOOLEAN;
+                        } else if (result instanceof String) {
+                            type = Type.TEXT;
+                        } else {
+                            type = Type.NUMBER;
+                        }
                     }
                     Output output = new Output(decisionName, type, value, 1d);
                     outputs.add(output);

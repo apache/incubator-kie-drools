@@ -18,9 +18,7 @@ package org.kie.kogito.explainability.local.counterfactual.entities;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedBinaryEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedBooleanEntity;
@@ -35,10 +33,8 @@ import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTe
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTimeEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedURIEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedVectorEntity;
-import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
-import org.kie.kogito.explainability.model.PredictionFeatureDomain;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.domain.BinaryFeatureDomain;
@@ -48,21 +44,24 @@ import org.kie.kogito.explainability.model.domain.DurationFeatureDomain;
 import org.kie.kogito.explainability.model.domain.FeatureDomain;
 import org.kie.kogito.explainability.model.domain.ObjectFeatureDomain;
 import org.kie.kogito.explainability.model.domain.URIFeatureDomain;
+import org.kie.kogito.explainability.utils.CompositeFeatureUtils;
 
 public class CounterfactualEntityFactory {
 
     private CounterfactualEntityFactory() {
     }
 
-    public static CounterfactualEntity from(Feature feature, Boolean isConstrained, FeatureDomain featureDomain) {
-        return CounterfactualEntityFactory.from(feature, isConstrained, featureDomain, null);
+    public static CounterfactualEntity from(Feature feature) {
+        return CounterfactualEntityFactory.from(feature, null);
     }
 
-    public static CounterfactualEntity from(Feature feature, Boolean isConstrained, FeatureDomain featureDomain,
-            FeatureDistribution featureDistribution) {
+    public static CounterfactualEntity from(Feature feature, FeatureDistribution featureDistribution) {
         CounterfactualEntity entity = null;
         validateFeature(feature);
-        if (feature.getType() == Type.NUMBER) {
+        final Type type = feature.getType();
+        final FeatureDomain featureDomain = feature.getDomain();
+        final boolean isConstrained = feature.isConstrained();
+        if (type == Type.NUMBER) {
             if (feature.getValue().getUnderlyingObject() instanceof Double) {
                 if (isConstrained) {
                     entity = FixedDoubleEntity.from(feature);
@@ -180,20 +179,10 @@ public class CounterfactualEntityFactory {
         }
     }
 
-    public static List<CounterfactualEntity> createEntities(PredictionInput predictionInput,
-            PredictionFeatureDomain featureDomain, List<Boolean> constraints, DataDistribution dataDistribution) {
-        final List<FeatureDomain> domains = featureDomain.getFeatureDomains();
-        return IntStream.range(0, predictionInput.getFeatures().size())
-                .mapToObj(featureIndex -> {
-                    final Feature feature = predictionInput.getFeatures().get(featureIndex);
-                    final Boolean isConstrained = constraints.get(featureIndex);
-                    final FeatureDomain domain = domains.get(featureIndex);
-                    final FeatureDistribution featureDistribution = Optional
-                            .ofNullable(dataDistribution)
-                            .map(dd -> dd.asFeatureDistributions().get(featureIndex))
-                            .orElse(null);
-                    return CounterfactualEntityFactory
-                            .from(feature, isConstrained, domain, featureDistribution);
-                }).collect(Collectors.toList());
+    public static List<CounterfactualEntity> createEntities(PredictionInput predictionInput) {
+        final List<Feature> linearizedFeatures = CompositeFeatureUtils.flattenFeatures(predictionInput.getFeatures());
+        return linearizedFeatures.stream().map(
+                (Feature feature) -> CounterfactualEntityFactory.from(feature, feature.getDistribution()))
+                .collect(Collectors.toList());
     }
 }

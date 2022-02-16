@@ -35,7 +35,7 @@ public class CounterfactualConfig {
     private SolverConfig solverConfig = SolverConfigBuilder.builder().build();
     private double goalThreshold = DEFAULT_GOAL_THRESHOLD;
     private Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory =
-            solverConfig -> SolverManager.create(solverConfig, new SolverManagerConfig());
+            sc -> SolverManager.create(sc, new SolverManagerConfig());
 
     public Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> getSolverManagerFactory() {
         return solverManagerFactory;

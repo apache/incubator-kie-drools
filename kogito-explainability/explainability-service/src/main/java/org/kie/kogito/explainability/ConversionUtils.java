@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -65,6 +66,24 @@ public class ConversionUtils {
      * Feature conversion
      * ---------------------------------------
      */
+
+    public static List<Feature> toFeatureList(Collection<? extends HasNameValue<TypedValue>> values,
+            Collection<CounterfactualSearchDomain> searchDomains) {
+        if (searchDomains.isEmpty()) {
+            return toFeatureList(values);
+        } else {
+            AtomicInteger index = new AtomicInteger();
+            final List<FeatureDomain> featureDomains = toFeatureDomainList(searchDomains);
+            final List<Boolean> featureConstraints = toFeatureConstraintList(searchDomains);
+            return values.stream().map(hnv -> {
+                final String name = hnv.getName();
+                final TypedValue value = hnv.getValue();
+                final int i = index.getAndIncrement();
+                return toFeature(name, value, featureDomains.get(i), featureConstraints.get(i));
+            }).collect(Collectors.toList());
+        }
+    }
+
     public static List<Feature> toFeatureList(Collection<? extends HasNameValue<TypedValue>> values) {
         return toList(values, ConversionUtils::toFeature);
     }
@@ -77,6 +96,26 @@ public class ConversionUtils {
         if (value.isUnit()) {
             return toTypeValuePair(value.toUnit().getValue())
                     .map(p -> new Feature(name, p.getLeft(), p.getRight()))
+                    .orElse(null);
+        } else if (value.isStructure()) {
+            return FeatureFactory.newCompositeFeature(name, toFeatureList(value.toStructure().getValue()));
+        } else if (value.isCollection()) {
+            return FeatureFactory.newCompositeFeature(name, toFeatureList(name, value.toCollection()));
+        } else {
+            throw new IllegalArgumentException(String.format("unexpected value kind %s", value.getKind()));
+        }
+    }
+
+    static Feature toFeature(String name, TypedValue value, FeatureDomain domain, Boolean isContrained) {
+        if (value.isUnit()) {
+            return toTypeValuePair(value.toUnit().getValue())
+                    .map(p -> {
+                        if (isContrained) {
+                            return new Feature(name, p.getLeft(), p.getRight());
+                        } else {
+                            return new Feature(name, p.getLeft(), p.getRight(), false, domain);
+                        }
+                    })
                     .orElse(null);
         } else if (value.isStructure()) {
             return FeatureFactory.newCompositeFeature(name, toFeatureList(value.toStructure().getValue()));
