@@ -49,6 +49,7 @@ public class DrlSpecificFeaturesTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
+        // This class is meant to test features only supported by non-exec-model.
         return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
@@ -97,6 +98,7 @@ public class DrlSpecificFeaturesTest {
             assertEquals(4, ksession.fireAllRules());
 
             // give time to async jitting to complete
+            // actually, the constraint is not jitted because MVELConstraint.isDynamic == true
             Thread.sleep(100);
 
             ksession.insert(new ChildA(1));

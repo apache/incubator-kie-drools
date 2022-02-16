@@ -42,6 +42,7 @@ import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
+import org.drools.modelcompiler.builder.errors.UnsupportedFeatureError;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
@@ -192,6 +193,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                 type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
             }
             TypeDeclarationFactory.processAnnotations(typeDescr, type);
+            if (!type.isTypesafe()) {
+                addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
+            }
             getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
         } catch (ClassNotFoundException e) {
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
