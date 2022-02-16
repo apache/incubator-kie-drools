@@ -29,6 +29,11 @@ public class PrototypeVariableImpl extends DeclarationImpl<PrototypeFact> implem
         this.prototype = prototype;
     }
 
+    public PrototypeVariableImpl( Prototype prototype, String name ) {
+        super( PrototypeFact.class, name );
+        this.prototype = prototype;
+    }
+
     @Override
     public Prototype getPrototype() {
         return prototype;

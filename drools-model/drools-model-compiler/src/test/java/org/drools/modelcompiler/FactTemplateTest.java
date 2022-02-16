@@ -27,6 +27,7 @@ import org.drools.model.Index;
 import org.drools.model.Model;
 import org.drools.model.Prototype;
 import org.drools.model.PrototypeVariable;
+import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
@@ -37,6 +38,8 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Row;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
@@ -45,6 +48,7 @@ import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.declarationOf;
 import static org.drools.model.PatternDSL.on;
 import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.PrototypeDSL.field;
@@ -321,5 +325,86 @@ public class FactTemplateTest {
 
         ksession.fireAllRules();
         assertEquals("total = 77; average = 38.5", result.getValue());
+    }
+
+    @Test
+    public void testQuery() {
+        Prototype customerFact = prototype( "customer" );
+        Prototype addressFact = prototype( "address" );
+
+        PrototypeVariable customerV = variable( customerFact, "c" );
+        PrototypeVariable addressV = variable( addressFact, "a" );
+
+        Query query = query( "Q0" ).build(
+                protoPattern(customerV),
+                protoPattern(addressV).expr( "customer_id", Index.ConstraintType.EQUAL, customerV, "id" ));
+
+        Model model = new ModelImpl().addQuery( query );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        MaterializedViewChangedEventListener listener = new MaterializedViewChangedEventListener();
+        ksession.openLiveQuery("Q0", new Object[0], listener);
+
+        Fact address1 = createMapBasedFact( addressFact );
+        address1.set("id", "100001");
+        address1.set("customer_id", "1001");
+        address1.set("street", "42 Main Street");
+        FactHandle fhA1 = ksession.insert( address1 );
+        ksession.fireAllRules();
+
+        Fact customer1 = createMapBasedFact( customerFact );
+        customer1.set("id", "1001");
+        customer1.set("first_name", "Sally");
+        ksession.insert( customer1 );
+        ksession.fireAllRules();
+
+        assertEquals(1, listener.inserts);
+        assertEquals(0, listener.updates);
+        assertEquals(0, listener.deletes);
+
+        Fact address2 = createMapBasedFact( addressFact );
+        address2.set("id", "100002");
+        address2.set("customer_id", "1001");
+        address2.set("street", "11 Post Dr.");
+        ksession.insert( address2 );
+        ksession.fireAllRules();
+
+        assertEquals(2, listener.inserts);
+        assertEquals(0, listener.updates);
+        assertEquals(0, listener.deletes);
+
+        ksession.delete( fhA1 );
+        ksession.fireAllRules();
+
+        assertEquals(2, listener.inserts);
+        assertEquals(0, listener.updates);
+        assertEquals(1, listener.deletes);
+    }
+
+    private static class MaterializedViewChangedEventListener implements ViewChangedEventListener {
+
+        int inserts = 0;
+        int updates = 0;
+        int deletes = 0;
+
+        @Override
+        public void rowInserted(Row row) {
+            inserts++;
+            System.out.println("rowInserted: " + row.get("c") + "; " + row.get("a"));
+        }
+
+        @Override
+        public void rowDeleted(Row row) {
+            deletes++;
+            System.out.println("rowDeleted: " + row.get("c") + "; " + row.get("a"));
+        }
+
+        @Override
+        public void rowUpdated(Row row) {
+            updates++;
+            System.out.println("rowUpdated: " + row.get("c") + "; " + row.get("a"));
+        }
     }
 }
