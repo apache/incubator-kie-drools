@@ -26,7 +26,7 @@ import org.drools.verifier.report.components.Gap;
 
 import java.util.Date;
 import java.util.Calendar;
-import java.util.GregorianCalendar
+import java.util.GregorianCalendar;
 import org.drools.drl.parser.impl.Operator;
 
 

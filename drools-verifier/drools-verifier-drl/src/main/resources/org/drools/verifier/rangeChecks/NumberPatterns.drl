@@ -28,7 +28,7 @@ import org.drools.verifier.FindMissingNumber;
 import org.drools.verifier.data.VerifierReport;
 
 import java.util.ArrayList;
-import java.util.List
+import java.util.List;
 
 //declare any global variables here
 global VerifierReport result;
