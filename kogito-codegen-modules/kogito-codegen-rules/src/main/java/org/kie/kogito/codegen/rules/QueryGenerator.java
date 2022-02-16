@@ -17,7 +17,9 @@ package org.kie.kogito.codegen.rules;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.api.GeneratedFile;
@@ -48,6 +50,7 @@ import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
 import static org.kie.kogito.codegen.rules.RuleCodegenUtils.setGeneric;
+import static org.kie.kogito.codegen.rules.RuleCodegenUtils.toCamelCase;
 
 public class QueryGenerator implements RuleFileGenerator {
 
@@ -56,27 +59,57 @@ public class QueryGenerator implements RuleFileGenerator {
     private final TemplatedGenerator generator;
     private final KogitoBuildContext context;
     private final RuleUnitDescription ruleUnit;
-    private final QueryModel query;
+    private final QueryModel queryModel;
 
     private final String targetClassName;
+    private final String name;
 
-    public QueryGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, QueryModel query, String name) {
+    public QueryGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, QueryModel queryModel) {
         this.context = context;
         this.ruleUnit = ruleUnit;
-        this.query = query;
+        this.queryModel = queryModel;
+        this.name = toCamelCase(queryModel.getName());
 
         this.targetClassName = ruleUnit.getSimpleName() + "Query" + name;
         this.generator = TemplatedGenerator.builder()
-                .withPackageName(query.getNamespace())
+                .withPackageName(queryModel.getNamespace())
                 .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
                 .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
                 .withTargetTypeName(targetClassName)
                 .build(context, "RuleUnitQuery");
-
     }
 
-    public String getQueryClassName() {
+    public String name() {
+        return name;
+    }
+
+    public RuleUnitDescription ruleUnit() {
+        return ruleUnit;
+    }
+
+    public QueryModel model() {
+        return queryModel;
+    }
+
+    public KogitoBuildContext context() {
+        return context;
+    }
+
+    public String className() {
         return generator.targetTypeName();
+    }
+
+    @Override
+    public boolean validate() {
+        return !queryModel.getBindings().isEmpty();
+    }
+
+    @Override
+    public DroolsError getError() {
+        if (queryModel.getBindings().isEmpty()) {
+            return new NoBindingQuery(queryModel);
+        }
+        return null;
     }
 
     @Override
@@ -128,8 +161,8 @@ public class QueryGenerator implements RuleFileGenerator {
     private String getReturnType(ClassOrInterfaceDeclaration clazz) {
         MethodDeclaration toResultMethod = clazz.getMethodsByName("toResult").get(0);
         String returnType;
-        if (query.getBindings().size() == 1) {
-            Map.Entry<String, Class<?>> binding = query.getBindings().entrySet().iterator().next();
+        if (queryModel.getBindings().size() == 1) {
+            Map.Entry<String, Class<?>> binding = queryModel.getBindings().entrySet().iterator().next();
             String name = binding.getKey();
             returnType = binding.getValue().getCanonicalName();
 
@@ -161,7 +194,7 @@ public class QueryGenerator implements RuleFileGenerator {
         BlockStmt resultMethodBody = toResultMethod.createBody();
         resultMethodBody.addStatement(new ReturnStmt(resultCreation));
 
-        query.getBindings().forEach((name, type) -> {
+        queryModel.getBindings().forEach((name, type) -> {
             resultClass.addField(type, name, Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
 
             MethodDeclaration getterMethod = resultClass.addMethod("get" + ucFirst(name), Modifier.Keyword.PUBLIC);
@@ -179,7 +212,48 @@ public class QueryGenerator implements RuleFileGenerator {
     }
 
     private void interpolateStrings(StringLiteralExpr vv) {
-        String interpolated = vv.getValue().replace("$queryName$", query.getName());
+        String interpolated = vv.getValue().replace("$queryName$", queryModel.getName());
         vv.setString(interpolated);
+    }
+
+    public static class NoBindingQuery extends DroolsError {
+
+        private static final int[] ERROR_LINES = new int[0];
+
+        private final QueryModel query;
+
+        public NoBindingQuery(QueryModel query) {
+            this.query = query;
+        }
+
+        @Override
+        public String getMessage() {
+            return "Query " + query.getName() + " has no bound variable. At least one binding is required to determine the value returned by this query";
+        }
+
+        @Override
+        public int[] getLines() {
+            return ERROR_LINES;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
+            NoBindingQuery that = (NoBindingQuery) o;
+            return Objects.equals(query, that.query);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), query);
+        }
     }
 }

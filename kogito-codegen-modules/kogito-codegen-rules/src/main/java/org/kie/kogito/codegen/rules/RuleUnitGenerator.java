@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.rules;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.ruleunits.api.RuleUnitConfig;
@@ -66,7 +67,7 @@ public class RuleUnitGenerator implements RuleFileGenerator {
     private final String targetCanonicalName;
     private final String targetTypeName;
     private RuleUnitConfig config;
-    private Collection<QueryModel> queries;
+    private List<QueryGenerator> queryGenerators;
 
     public RuleUnitGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
@@ -97,22 +98,12 @@ public class RuleUnitGenerator implements RuleFileGenerator {
         return this;
     }
 
-    public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper, List<String> queryClasses) {
-        return new RuleUnitInstanceGenerator(context, ruleUnit, ruleUnitHelper, queryClasses);
+    public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper) {
+        return new RuleUnitInstanceGenerator(context, ruleUnit, ruleUnitHelper, queries().stream().map(QueryGenerator::className).collect(Collectors.toUnmodifiableList()));
     }
 
-    public List<QueryEndpointGenerator> queries() {
-        return queries.stream()
-                .filter(query -> !query.hasParameters())
-                .map(query -> new QueryEndpointGenerator(ruleUnit, query, context))
-                .collect(toList());
-    }
-
-    public List<QueryEventDrivenExecutorGenerator> queryEventDrivenExecutors() {
-        return queries.stream()
-                .filter(query -> !query.hasParameters())
-                .map(query -> new QueryEventDrivenExecutorGenerator(ruleUnit, query, context))
-                .collect(toList());
+    public Collection<QueryGenerator> queries() {
+        return this.queryGenerators;
     }
 
     @Override
@@ -224,7 +215,11 @@ public class RuleUnitGenerator implements RuleFileGenerator {
     }
 
     public RuleUnitGenerator withQueries(Collection<QueryModel> queries) {
-        this.queries = queries;
+        this.queryGenerators = queries.stream()
+                .filter(query -> !query.hasParameters())
+                .map(query -> new QueryGenerator(context, ruleUnit, query))
+                .collect(toList());
+
         return this;
     }
 

@@ -16,6 +16,8 @@
 package org.kie.kogito.codegen.rules;
 
 import org.drools.ruleunits.impl.AssignableChecker;
+import org.drools.ruleunits.impl.ReflectiveRuleUnitDescription;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
@@ -24,21 +26,32 @@ import org.kie.kogito.rules.SingletonStore;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class RuleUnitHelper {
+    private AssignableChecker defaultChecker;
     private AssignableChecker assignableChecker;
 
     public RuleUnitHelper() {
+    }
+
+    public RuleUnitHelper(ClassLoader cl, boolean hotReloadMode) {
+        this.defaultChecker = AssignableChecker.create(cl, hotReloadMode);
     }
 
     public RuleUnitHelper(AssignableChecker assignableChecker) {
         this.assignableChecker = assignableChecker;
     }
 
-    public AssignableChecker getAssignableChecker() {
-        return assignableChecker;
+    void initRuleUnitHelper(RuleUnitDescription ruleUnitDesc) {
+        if (ruleUnitDesc instanceof ReflectiveRuleUnitDescription) {
+            assignableChecker = ((ReflectiveRuleUnitDescription) ruleUnitDesc).getAssignableChecker();
+        } else {
+            if (assignableChecker == null) {
+                assignableChecker = defaultChecker;
+            }
+        }
     }
 
-    public void setAssignableChecker(AssignableChecker assignableChecker) {
-        this.assignableChecker = assignableChecker;
+    public AssignableChecker getAssignableChecker() {
+        return assignableChecker;
     }
 
     public boolean isAssignableFrom(Class<?> source, Class<?> target) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,20 @@
 package org.kie.kogito.codegen.rules;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 public class KogitoKnowledgeBuilderConfigurationImpl extends KnowledgeBuilderConfigurationImpl {
+
+    public static KogitoKnowledgeBuilderConfigurationImpl fromContext(KogitoBuildContext buildContext) {
+        KogitoKnowledgeBuilderConfigurationImpl conf = new KogitoKnowledgeBuilderConfigurationImpl(buildContext.getClassLoader());
+        for (String prop : buildContext.getApplicationProperties()) {
+            if (prop.startsWith("drools")) {
+                conf.setProperty(prop, buildContext.getApplicationProperty(prop).orElseThrow());
+            }
+        }
+        return conf;
+
+    }
 
     public KogitoKnowledgeBuilderConfigurationImpl() {
     }

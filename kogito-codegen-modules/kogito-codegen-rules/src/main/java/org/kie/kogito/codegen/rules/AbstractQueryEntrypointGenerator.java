@@ -15,22 +15,17 @@
  */
 package org.kie.kogito.codegen.rules;
 
-import java.util.Objects;
-
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 
 import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
-import static org.kie.kogito.codegen.rules.RuleCodegenUtils.toCamelCase;
 
 public abstract class AbstractQueryEntrypointGenerator implements RuleFileGenerator {
 
     protected final RuleUnitDescription ruleUnit;
-    protected final QueryModel query;
+    protected final QueryGenerator query;
     protected final KogitoBuildContext context;
 
     protected final String queryName;
@@ -39,21 +34,19 @@ public abstract class AbstractQueryEntrypointGenerator implements RuleFileGenera
     protected final TemplatedGenerator generator;
 
     protected AbstractQueryEntrypointGenerator(
-            RuleUnitDescription ruleUnit,
-            QueryModel query,
-            KogitoBuildContext context,
+            QueryGenerator query,
             String targetClassNameSuffix,
             String templateName) {
-        this.ruleUnit = ruleUnit;
+        this.ruleUnit = query.ruleUnit();
         this.query = query;
-        this.context = context;
+        this.context = query.context();
 
-        this.queryName = toCamelCase(query.getName());
+        this.queryName = query.name();
         this.queryClassName = ruleUnit.getSimpleName() + "Query" + queryName;
         this.targetClassName = queryClassName + targetClassNameSuffix;
 
         this.generator = TemplatedGenerator.builder()
-                .withPackageName(query.getNamespace())
+                .withPackageName(query.model().getNamespace())
                 .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
                 .withTargetTypeName(targetClassName)
                 .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
@@ -65,57 +58,4 @@ public abstract class AbstractQueryEntrypointGenerator implements RuleFileGenera
         return generator.generatedFilePath();
     }
 
-    @Override
-    public boolean validate() {
-        return !query.getBindings().isEmpty();
-    }
-
-    @Override
-    public DroolsError getError() {
-        if (query.getBindings().isEmpty()) {
-            return new NoBindingQuery(query);
-        }
-        return null;
-    }
-
-    public static class NoBindingQuery extends DroolsError {
-
-        private static final int[] ERROR_LINES = new int[0];
-
-        private final QueryModel query;
-
-        public NoBindingQuery(QueryModel query) {
-            this.query = query;
-        }
-
-        @Override
-        public String getMessage() {
-            return "Query " + query.getName() + " has no bound variable. At least one binding is required to determine the value returned by this query";
-        }
-
-        @Override
-        public int[] getLines() {
-            return ERROR_LINES;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            if (!super.equals(o)) {
-                return false;
-            }
-            NoBindingQuery that = (NoBindingQuery) o;
-            return Objects.equals(query, that.query);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(super.hashCode(), query);
-        }
-    }
 }
