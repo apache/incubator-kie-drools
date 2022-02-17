@@ -641,6 +641,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
     }
 
     public void dispose() {
+        reset();
         if( dynamicFacts != null ) {
             // first we check for facts that were inserted into the working memory
             // using the old API and setting a per instance dynamic flag and remove the

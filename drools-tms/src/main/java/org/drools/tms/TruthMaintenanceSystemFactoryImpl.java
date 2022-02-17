@@ -45,7 +45,7 @@ public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystem
 
     @Override
     public void clearTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint) {
-        TruthMaintenanceSystem tms = tmsForEntryPoints.get(entryPoint);
+        TruthMaintenanceSystem tms = tmsForEntryPoints.remove(entryPoint);
         if (tms != null) {
             tms.clear();
         }
