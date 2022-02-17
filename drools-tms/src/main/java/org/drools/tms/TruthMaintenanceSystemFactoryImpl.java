@@ -55,4 +55,9 @@ public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystem
     public QueryImpl createTmsQuery(String name, Predicate<Class<? extends Annotation>> hasAnnotation) {
         return hasAnnotation.test(Abductive.class) ? new AbductiveQuery(name) : new QueryImpl(name);
     }
+
+    public int getEntryPointsMapSize() {
+        // only for testing purposes
+        return tmsForEntryPoints.size();
+    }
 }

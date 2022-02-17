@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
+import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AlphaNode;
@@ -44,6 +45,7 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.tms.TruthMaintenanceSystemFactoryImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -120,6 +122,11 @@ public class MemoryLeakTest {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
         assertNull( stagedRightTuples.getDeleteFirst() );
         assertNull( stagedRightTuples.getInsertFirst() );
+
+        // DROOLS-6809
+        assertEquals(1, ((TruthMaintenanceSystemFactoryImpl) TruthMaintenanceSystemFactory.get()).getEntryPointsMapSize());
+        ksession.dispose();
+        assertEquals(0, ((TruthMaintenanceSystemFactoryImpl) TruthMaintenanceSystemFactory.get()).getEntryPointsMapSize());
     }
 
     @Test
