@@ -17,16 +17,10 @@
 
     <properties>
         <java.module.name>org.drools.drl.parser</java.module.name>
-        <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
-        <surefire.forkCount>2</surefire.forkCount>
     </properties>
 
     <dependencies>
         <!-- Internal dependencies -->
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-wiring-api</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
@@ -36,38 +30,12 @@
             <artifactId>drools-drl-ast</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-kiesession</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-core</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-memory-compiler</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-ecj</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-util-xml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-util-maven-support</artifactId>
         </dependency>
         <!-- External dependencies -->
         <dependency>
@@ -78,70 +46,6 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>gunit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-wiring-dynamic</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-test-util</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -181,41 +85,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>runTurtleTests</id>
-            <activation>
-                <property>
-                    <name>runTurtleTests</name>
-                </property>
-            </activation>
-            <properties>
-                <excludedGroups/>
-            </properties>
-        </profile>
-        <profile>
-            <id>enableTestStatusListener</id>
-            <activation>
-                <property>
-                    <name>enableTestStatusListener</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <properties>
-                                <property>
-                                    <name>listener</name>
-                                    <value>org.kie.test.util.TestStatusListener</value>
-                                </property>
-                            </properties>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>grammarsProfile</id>
             <activation>
@@ -275,16 +144,6 @@
                                                 <include name="**/*.java"/>
                                             </fileset>
                                         </move>
-                                        <echo message="Generating Antlr Java.g"/>
-                                        <java classname="org.antlr.Tool" fork="true">
-                                            <arg line="-lib src/main/resources/org/drools/compiler/semantics/java/parser src/main/resources/org/drools/compiler/semantics/java/parser/Java.g"/>
-                                            <classpath refid="maven.compile.classpath"/>
-                                        </java>
-                                        <move todir="src/main/java/org/drools/compiler/rule/builder/dialect/java/parser">
-                                            <fileset dir="src/main/resources/org/drools/compiler/semantics/java/parser">
-                                                <include name="**/*.java"/>
-                                            </fileset>
-                                        </move>
                                         <delete>
                                             <fileset dir=".">
                                                 <include name="*.tokens"/>
@@ -295,10 +154,6 @@
                                                 <include name="dsl/DSLMap__.g"/>
                                                 <include name="__Test__.java"/>
                                                 <include name="classes"/>
-                                            </fileset>
-                                            <fileset dir="src/main/resources/org/drools/compiler/semantics/java/parser">
-                                                <include name="**/*.tokens"/>
-                                                <include name="Java__.g"/>
                                             </fileset>
                                         </delete>
                                     </target>
