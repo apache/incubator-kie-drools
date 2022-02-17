@@ -33,6 +33,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLRowFactory.getRowVariableDeclaration;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -70,7 +71,7 @@ public class KiePMMLInlineTableFactory {
         int counter = 0;
         final NodeList<Expression> arguments = new NodeList<>();
         for (Row row : inlineTable.getRows()) {
-            String nestedVariableName = String.format("%s_%s", variableName, counter);
+            String nestedVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, counter);
             arguments.add(new NameExpr(nestedVariableName));
             BlockStmt toAdd = getRowVariableDeclaration(nestedVariableName, row);
             toAdd.getStatements().forEach(toReturn::addStatement);

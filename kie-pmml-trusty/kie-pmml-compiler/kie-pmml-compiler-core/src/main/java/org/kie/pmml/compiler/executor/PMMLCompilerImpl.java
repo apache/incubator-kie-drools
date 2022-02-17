@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.PMML;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -75,14 +76,17 @@ public class PMMLCompilerImpl implements PMMLCompiler {
         logger.trace("getModels {} {}", inputStream, hasClassloader);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
-            Set<String> expectedClasses = commonPMMLModel.getModels()
-                    .stream()
-                    .map(model -> {
-                        String modelPackageName = getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, packageName,
-                                                                                        model.getModelName()));
-                        return modelPackageName + "." + getSanitizedClassName(model.getModelName());
-                    })
-                    .collect(Collectors.toSet());
+            Map<String, PMML_MODEL> expectedClassModelTypeMap =
+                    commonPMMLModel.getModels()
+                            .stream()
+                            .collect(Collectors.toMap(model -> {
+                                                          String modelPackageName =
+                                                                  getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, packageName,
+                                                                                                                          model.getModelName()));
+                                                          return modelPackageName + "." + getSanitizedClassName(model.getModelName());
+                                                      },
+                                                      model -> PMML_MODEL.byName(model.getClass().getSimpleName())));
+
             List<KiePMMLModel> toReturn = getModelsWithSources(packageName, commonPMMLModel, hasClassloader);
             Set<String> generatedClasses = new HashSet<>();
             toReturn.forEach(kiePMMLModel -> {
@@ -93,13 +97,14 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                                                              HasSourcesMap.class.getCanonicalName()));
                 }
             });
+            Set<String> expectedClasses = expectedClassModelTypeMap.keySet();
             if (!generatedClasses.containsAll(expectedClasses)) {
                 expectedClasses.removeAll(generatedClasses);
                 String missingClasses = String.join(", ", expectedClasses);
                 throw new KiePMMLException("Expected generated class " + missingClasses + " not found");
             }
 
-            Map<String, String> factorySourceMap = getFactorySourceCode(factoryClassName, packageName, expectedClasses);
+            Map<String, String> factorySourceMap = getFactorySourceCode(factoryClassName, packageName, expectedClassModelTypeMap);
             KiePMMLFactoryModel kiePMMLFactoryModel = new KiePMMLFactoryModel(factoryClassName, packageName,
                                                                               factorySourceMap);
             toReturn.add(kiePMMLFactoryModel);

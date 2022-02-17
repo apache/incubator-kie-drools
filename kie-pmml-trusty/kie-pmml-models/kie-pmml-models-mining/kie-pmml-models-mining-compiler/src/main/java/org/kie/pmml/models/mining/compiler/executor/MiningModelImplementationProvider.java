@@ -74,7 +74,7 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
                                                  compilationDTO.getPackageName(),
                                                  compilationDTO.getKieMiningFields(),
                                                  compilationDTO.getKieOutputFields(),
-                                                 compilationDTO.getKiePMMLTargetFields(),
+                                                 compilationDTO.getKieTargetFields(),
                                                  sourcesMap,
                                                  nestedModels);
     }

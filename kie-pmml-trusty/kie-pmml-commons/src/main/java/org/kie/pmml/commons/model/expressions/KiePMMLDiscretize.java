@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.model.expressions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +49,22 @@ public class KiePMMLDiscretize extends AbstractKiePMMLComponent implements KiePM
         this.mapMissingTo = mapMissingTo;
         this.defaultValue = defaultValue;
         this.dataType = dataType;
+    }
+
+    public List<KiePMMLDiscretizeBin> getDiscretizeBins() {
+        return Collections.unmodifiableList(discretizeBins);
+    }
+
+    public String getMapMissingTo() {
+        return mapMissingTo;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public DATA_TYPE getDataType() {
+        return dataType;
     }
 
     @Override

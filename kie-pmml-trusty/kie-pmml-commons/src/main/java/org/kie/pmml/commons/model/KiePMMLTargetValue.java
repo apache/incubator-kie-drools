@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 /**
@@ -27,33 +28,31 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 public class KiePMMLTargetValue extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = -4948552909458142415L;
-    private String value;
-    private String displayValue;
-    private Double priorProbability; // double between 0.0 and 1.0, usually describing a probability.
-    private Double defaultValue;
+    private final TargetValue targetValue;
 
-    private KiePMMLTargetValue(String name, List<KiePMMLExtension> extensions) {
+    private KiePMMLTargetValue(String name, List<KiePMMLExtension> extensions, TargetValue targetValue) {
         super(name, extensions);
+        this.targetValue = targetValue;
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions) {
-        return new Builder(name, extensions);
+    public static Builder builder(String name, List<KiePMMLExtension> extensions, TargetValue targetValue) {
+        return new Builder(name, extensions, targetValue);
     }
 
     public String getValue() {
-        return value;
+        return targetValue.getValue();
     }
 
     public String getDisplayValue() {
-        return displayValue;
+        return targetValue.getDisplayValue();
     }
 
     public Double getPriorProbability() {
-        return priorProbability;
+        return targetValue.getPriorProbability();
     }
 
     public Double getDefaultValue() {
-        return defaultValue;
+        return targetValue.getDefaultValue();
     }
 
     @Override
@@ -65,21 +64,18 @@ public class KiePMMLTargetValue extends AbstractKiePMMLComponent {
             return false;
         }
         KiePMMLTargetValue that = (KiePMMLTargetValue) o;
-        return Objects.equals(value, that.value) && Objects.equals(displayValue, that.displayValue) && Objects.equals(priorProbability, that.priorProbability) && Objects.equals(defaultValue, that.defaultValue);
+        return Objects.equals(targetValue, that.targetValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, displayValue, priorProbability, defaultValue);
+        return Objects.hash(targetValue);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", KiePMMLTargetValue.class.getSimpleName() + "[", "]")
-                .add("value='" + value + "'")
-                .add("displayValue='" + displayValue + "'")
-                .add("priorProbability=" + priorProbability)
-                .add("defaultValue=" + defaultValue)
+                .add("targetValue='" + targetValue + "'")
                 .add("name='" + name + "'")
                 .add("extensions=" + extensions)
                 .add("id='" + id + "'")
@@ -89,36 +85,8 @@ public class KiePMMLTargetValue extends AbstractKiePMMLComponent {
 
     public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLTargetValue> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions) {
-            super("TargetValue-", () -> new KiePMMLTargetValue(name, extensions));
-        }
-
-        public Builder withValue(String value) {
-            if (value != null) {
-                toBuild.value = value;
-            }
-            return this;
-        }
-
-        public Builder withDisplayValue(String displayValue) {
-            if (displayValue != null) {
-                toBuild.displayValue = displayValue;
-            }
-            return this;
-        }
-
-        public Builder withPriorProbability(Number priorProbability) {
-            if (priorProbability != null) {
-                toBuild.priorProbability =  priorProbability.doubleValue();
-            }
-            return this;
-        }
-
-        public Builder withDefaultValue(Number defaultValue) {
-            if (defaultValue != null) {
-                toBuild.defaultValue = defaultValue.doubleValue();
-            }
-            return this;
+        private Builder(String name, List<KiePMMLExtension> extensions, TargetValue targetValue) {
+            super("TargetValue-", () -> new KiePMMLTargetValue(name, extensions, targetValue));
         }
     }
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.api.runtime.PMMLContext;
 
 /**
@@ -33,14 +34,14 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
     private final String kmodulePackageName;
     private final List<MiningField> miningFields;
     private final List<OutputField> outputFields;
-    private final List<KiePMMLTarget> targetFields;
+    private final List<TargetField> targetFields;
     private final Map<String, String> sourcesMap;
 
     public KiePMMLModelWithSources(final String modelName,
                                    final String kmodulePackageName,
                                    final List<MiningField> miningFields,
                                    final List<OutputField> outputFields,
-                                   final List<KiePMMLTarget> targetFields,
+                                   final List<TargetField> targetFields,
                                    final Map<String, String> sourcesMap) {
         super(modelName, Collections.emptyList());
         this.kmodulePackageName = kmodulePackageName;
@@ -66,7 +67,7 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
         return outputFields;
     }
 
-    public List<KiePMMLTarget> getTargetFields() {
+    public List<TargetField> getTargetFields() {
         return targetFields;
     }
 

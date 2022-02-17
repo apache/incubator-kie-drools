@@ -38,6 +38,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getArraysAsListInvocationMethodCall;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
@@ -82,7 +83,7 @@ public class KiePMMLCharacteristicFactory {
         int counter = 0;
         NodeList<Expression> arguments = new NodeList<>();
         for (Attribute attribute : characteristic.getAttributes()) {
-            String attributeVariableName = String.format("%s_%s", variableName, counter);
+            String attributeVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, counter);
             BlockStmt toAdd = getAttributeVariableDeclaration(attributeVariableName, attribute, fields);
             toAdd.getStatements().forEach(toReturn::addStatement);
             arguments.add(new NameExpr(attributeVariableName));

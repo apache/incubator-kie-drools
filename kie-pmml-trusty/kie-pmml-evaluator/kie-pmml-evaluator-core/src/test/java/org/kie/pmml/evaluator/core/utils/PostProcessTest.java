@@ -31,6 +31,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.enums.ResultCode;
+import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
@@ -67,12 +68,14 @@ public class PostProcessTest {
         // Build model
         String TARGET_NAME = "TARGET_NAME";
         String FIELD_NAME = "FIELD_NAME";
-        KiePMMLTarget kiePMMLTarget = KiePMMLTarget.builder(TARGET_NAME, Collections.emptyList())
-                .withMin(4.34)
-                .withField(FIELD_NAME)
+        TargetField targetField = new TargetField(Collections.emptyList(), null, FIELD_NAME, null, 4.34, null, null,
+                                                  null);
+        KiePMMLTarget kiePMMLTarget = KiePMMLTarget.builder(TARGET_NAME, Collections.emptyList(), targetField)
                 .build();
         List<KiePMMLTarget> kiePMMLTargets = Arrays.asList(kiePMMLTarget, KiePMMLTarget.builder("NEW_TARGET",
-                                                                                                Collections.emptyList()).build());
+                                                                                                Collections.emptyList(),
+                                                                                                new TargetField(Collections.emptyList(), null, "NEW_TARGET", null, null, null, null,
+                                                                                                                                          null)).build());
         KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .withKiePMMLTargets(kiePMMLTargets)
@@ -217,7 +220,7 @@ public class PostProcessTest {
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel1 = testingModelBuilder(outputField)
-                .withTransformationDictionary(transformationDictionary)
+                .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         ProcessingDTO processingDTO1 = buildProcessingDTOWithEmptyNameValues(kiePMMLModel1);
         PMML4Result toUpdate1 = new PMML4Result();
@@ -234,7 +237,7 @@ public class PostProcessTest {
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
-                .withLocalTransformations(localTransformations)
+                .withKiePMMLLocalTransformations(localTransformations)
                 .build();
         ProcessingDTO processingDTO2 = buildProcessingDTOWithEmptyNameValues(kiePMMLModel2);
         PMML4Result toUpdate2 = new PMML4Result();
@@ -287,7 +290,7 @@ public class PostProcessTest {
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
         KiePMMLTestingModel kiePMMLModel1 = testingModelBuilder(outputField)
-                .withTransformationDictionary(transformationDictionary)
+                .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         ProcessingDTO processingDTO1 = buildProcessingDTOWithEmptyNameValues(kiePMMLModel1);
         PMML4Result toUpdate1 = new PMML4Result();
@@ -304,7 +307,7 @@ public class PostProcessTest {
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
-                .withLocalTransformations(localTransformations)
+                .withKiePMMLLocalTransformations(localTransformations)
                 .build();
         ProcessingDTO processingDTO2 = buildProcessingDTOWithEmptyNameValues(kiePMMLModel2);
         PMML4Result toUpdate2 = new PMML4Result();
@@ -354,7 +357,7 @@ public class PostProcessTest {
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel1 = testingModelBuilder(outputField)
-                .withTransformationDictionary(transformationDictionary)
+                .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         ProcessingDTO processingDTO1 = buildProcessingDTOWithEmptyNameValues(kiePMMLModel1);
         PMML4Result toUpdate1 = new PMML4Result();
@@ -371,7 +374,7 @@ public class PostProcessTest {
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
-                .withLocalTransformations(localTransformations)
+                .withKiePMMLLocalTransformations(localTransformations)
                 .build();
         ProcessingDTO processingDTO2 = buildProcessingDTOWithEmptyNameValues(kiePMMLModel2);
         PMML4Result toUpdate2 = new PMML4Result();
@@ -416,7 +419,7 @@ public class PostProcessTest {
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
         KiePMMLTestingModel kiePMMLModel = testingModelBuilder(outputField)
-                .withTransformationDictionary(transformationDictionary)
+                .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         ProcessingDTO processingDTO = buildProcessingDTOWithEmptyNameValues(kiePMMLModel);
         PMML4Result toUpdate = new PMML4Result();
@@ -469,7 +472,7 @@ public class PostProcessTest {
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel = testingModelBuilder(outputField)
-                .withTransformationDictionary(transformationDictionary)
+                .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         ProcessingDTO processingDTO = buildProcessingDTOWithEmptyNameValues(kiePMMLModel);
         PMML4Result toUpdate = new PMML4Result();
@@ -523,7 +526,7 @@ public class PostProcessTest {
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
         KiePMMLTestingModel kiePMMLModel = testingModelBuilder(outputField)
-                .withTransformationDictionary(transformationDictionary)
+                .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         ProcessingDTO processingDTO = buildProcessingDTOWithEmptyNameValues(kiePMMLModel);
         PMML4Result toUpdate = new PMML4Result();
@@ -595,7 +598,8 @@ public class PostProcessTest {
     }
 
     private static KiePMMLTestingModel.Builder testingModelBuilder(KiePMMLOutputField outputField) {
-        return KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+        return (KiePMMLTestingModel.Builder) KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                         MINING_FUNCTION.REGRESSION)
                 .withKiePMMLOutputFields(Collections.singletonList(outputField));
     }
 

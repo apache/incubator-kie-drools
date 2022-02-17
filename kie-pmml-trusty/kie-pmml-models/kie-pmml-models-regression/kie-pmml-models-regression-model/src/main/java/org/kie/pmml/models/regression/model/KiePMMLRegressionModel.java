@@ -18,19 +18,25 @@ package org.kie.pmml.models.regression.model;
 import java.util.Collections;
 import java.util.Map;
 
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Regression.html>Regression</a>
  */
-public abstract class KiePMMLRegressionModel extends KiePMMLModel {
+public class KiePMMLRegressionModel extends KiePMMLModel {
 
     private static final long serialVersionUID = -6870859552385880008L;
-    protected KiePMMLRegressionTable regressionTable;
+    private AbstractKiePMMLTable regressionTable;
 
-    public KiePMMLRegressionModel(String modelName) {
+    private KiePMMLRegressionModel(String modelName) {
         super(modelName, Collections.emptyList());
+    }
+
+    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
+        return new Builder(name, miningFunction);
     }
 
     @Override
@@ -39,7 +45,21 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
         return regressionTable.evaluateRegression(requestData, context);
     }
 
-    public KiePMMLRegressionTable getRegressionTable() {
+    public AbstractKiePMMLTable getRegressionTable() {
         return regressionTable;
+    }
+
+    public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
+
+        private Builder(String name, MINING_FUNCTION miningFunction) {
+            super("Regression-", PMML_MODEL.REGRESSION_MODEL, miningFunction, () -> new KiePMMLRegressionModel(name));
+        }
+
+        public Builder withAbstractKiePMMLTable(AbstractKiePMMLTable regressionTable) {
+            if (regressionTable != null) {
+                toBuild.regressionTable = regressionTable;
+            }
+            return this;
+        }
     }
 }

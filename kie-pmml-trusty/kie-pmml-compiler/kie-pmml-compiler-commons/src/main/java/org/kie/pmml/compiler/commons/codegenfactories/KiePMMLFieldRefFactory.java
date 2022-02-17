@@ -23,13 +23,11 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.dmg.pmml.FieldRef;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
-import static org.kie.pmml.commons.Constants.MISSING_PARENT_NODE_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
@@ -52,7 +50,6 @@ public class KiePMMLFieldRefFactory {
     static final String FIELD_REF = "fieldRef";
     static final ClassOrInterfaceDeclaration FIELDREF_TEMPLATE;
 
-
     static {
         CompilationUnit cloneCU = JavaParserUtils.getFromFileName(KIE_PMML_FIELDREF_TEMPLATE_JAVA);
         FIELDREF_TEMPLATE = cloneCU.getClassByName(KIE_PMML_FIELDREF_TEMPLATE)
@@ -61,13 +58,17 @@ public class KiePMMLFieldRefFactory {
     }
 
     static BlockStmt getFieldRefVariableDeclaration(final String variableName, final FieldRef fieldRef) {
-        final MethodDeclaration methodDeclaration = FIELDREF_TEMPLATE.getMethodsByName(GETKIEPMMLFIELDREF).get(0).clone();
-        final BlockStmt toReturn = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
-        final VariableDeclarator variableDeclarator = getVariableDeclarator(toReturn, FIELD_REF) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, FIELD_REF, toReturn)));
+        final MethodDeclaration methodDeclaration =
+                FIELDREF_TEMPLATE.getMethodsByName(GETKIEPMMLFIELDREF).get(0).clone();
+        final BlockStmt toReturn =
+                methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        final VariableDeclarator variableDeclarator =
+                getVariableDeclarator(toReturn, FIELD_REF).orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, FIELD_REF, toReturn)));
         variableDeclarator.setName(variableName);
         final ObjectCreationExpr objectCreationExpr = variableDeclarator.getInitializer()
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, FIELD_REF, toReturn)))
-        .asObjectCreationExpr();
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,
+                                                                      FIELD_REF, toReturn)))
+                .asObjectCreationExpr();
 
         final StringLiteralExpr nameExpr = new StringLiteralExpr(fieldRef.getField().getValue());
         final Expression mapMissingToExpr = getExpressionForObject(fieldRef.getMapMissingTo());

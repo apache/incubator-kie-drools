@@ -24,12 +24,13 @@ import java.util.List;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.junit.Test;
+import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTargetValue;
-import static org.kie.pmml.compiler.api.utils.ModelUtils.convertToKiePMMLTargetValue;
+import static org.kie.pmml.compiler.api.utils.ModelUtils.convertToKieTargetValue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
@@ -39,7 +40,7 @@ public class KiePMMLTargetValueFactoryTest {
 
     @Test
     public void getKiePMMLTargetValueVariableInitializer() throws IOException {
-        KiePMMLTargetValue targetValue = convertToKiePMMLTargetValue(getRandomTargetValue());
+        TargetValue targetValue = convertToKieTargetValue(getRandomTargetValue());
         MethodCallExpr retrieved = KiePMMLTargetValueFactory.getKiePMMLTargetValueVariableInitializer(targetValue);
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, targetValue.getName(),
@@ -48,7 +49,7 @@ public class KiePMMLTargetValueFactoryTest {
                                                                             targetValue.getPriorProbability(),
                                                                             targetValue.getDefaultValue()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTargetValue.class);
+        List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTargetValue.class, TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

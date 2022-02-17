@@ -26,13 +26,15 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.junit.Test;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.api.models.TargetField;
+import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
+import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
-import static org.kie.pmml.compiler.api.utils.ModelUtils.convertToKiePMMLTarget;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
@@ -42,38 +44,36 @@ public class KiePMMLTargetFactoryTest {
 
     @Test
     public void getKiePMMLTargetValueVariableInitializer() throws IOException {
-        KiePMMLTarget kiePMMLTarget = convertToKiePMMLTarget(getRandomTarget());
-        MethodCallExpr retrieved = KiePMMLTargetFactory.getKiePMMLTargetVariableInitializer(kiePMMLTarget);
+        TargetField kieTargetField = ModelUtils.convertToKieTargetField(getRandomTarget());
+        MethodCallExpr retrieved = KiePMMLTargetFactory.getKiePMMLTargetVariableInitializer(kieTargetField);
         String text = getFileContent(TEST_01_SOURCE);
-        List<KiePMMLTargetValue> targetValues = kiePMMLTarget.getTargetValues();
-        String opType = OP_TYPE.class.getCanonicalName() + "." + kiePMMLTarget.getOpType().toString();
-        String castInteger = CAST_INTEGER.class.getCanonicalName() + "." + kiePMMLTarget.getCastInteger().toString();
-        Expression expected = JavaParserUtils.parseExpression(String.format(text, kiePMMLTarget.getName(),
-                                                                            targetValues.get(0).getName(),
-                                                                            targetValues.get(0).getValue(),
-                                                                            targetValues.get(0).getDisplayValue(),
-                                                                            targetValues.get(0).getPriorProbability(),
-                                                                            targetValues.get(0).getDefaultValue(),
-                                                                            targetValues.get(1).getName(),
-                                                                            targetValues.get(1).getValue(),
-                                                                            targetValues.get(1).getDisplayValue(),
-                                                                            targetValues.get(1).getPriorProbability(),
-                                                                            targetValues.get(1).getDefaultValue(),
-                                                                            targetValues.get(2).getName(),
-                                                                            targetValues.get(2).getValue(),
-                                                                            targetValues.get(2).getDisplayValue(),
-                                                                            targetValues.get(2).getPriorProbability(),
-                                                                            targetValues.get(2).getDefaultValue(),
+        List<TargetValue> kieTargetValues = kieTargetField.getTargetValues();
+        String opType = OP_TYPE.class.getCanonicalName() + "." + kieTargetField.getOpType().toString();
+        String castInteger = CAST_INTEGER.class.getCanonicalName() + "." + kieTargetField.getCastInteger().toString();
+        Expression expected = JavaParserUtils.parseExpression(String.format(text,
+                                                                            kieTargetField.getName(),
+                                                                            kieTargetValues.get(0).getValue(),
+                                                                            kieTargetValues.get(0).getDisplayValue(),
+                                                                            kieTargetValues.get(0).getPriorProbability(),
+                                                                            kieTargetValues.get(0).getDefaultValue(),
+                                                                            kieTargetValues.get(1).getValue(),
+                                                                            kieTargetValues.get(1).getDisplayValue(),
+                                                                            kieTargetValues.get(1).getPriorProbability(),
+                                                                            kieTargetValues.get(1).getDefaultValue(),
+                                                                            kieTargetValues.get(2).getValue(),
+                                                                            kieTargetValues.get(2).getDisplayValue(),
+                                                                            kieTargetValues.get(2).getPriorProbability(),
+                                                                            kieTargetValues.get(2).getDefaultValue(),
                                                                             opType,
-                                                                            kiePMMLTarget.getField(),
+                                                                            kieTargetField.getField(),
                                                                             castInteger,
-                                                                            kiePMMLTarget.getMin(),
-                                                                            kiePMMLTarget.getMax(),
-                                                                            kiePMMLTarget.getRescaleConstant(),
-                                                                            kiePMMLTarget.getRescaleFactor()));
+                                                                            kieTargetField.getMin(),
+                                                                            kieTargetField.getMax(),
+                                                                            kieTargetField.getRescaleConstant(),
+                                                                            kieTargetField.getRescaleFactor()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTarget.class,
-                                               KiePMMLTargetValue.class);
+                                               KiePMMLTargetValue.class, TargetField.class, TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

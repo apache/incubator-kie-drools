@@ -19,9 +19,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 /**
@@ -30,21 +33,27 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 public class KiePMMLTarget extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = -6336733489238275499L;
-    private List<KiePMMLTargetValue> targetValues = null;
-    private OP_TYPE opType;
-    private String field;
-    private CAST_INTEGER castInteger;
-    private Double min = null;
-    private Double max = null;
-    private double rescaleConstant = 0;
-    private double rescaleFactor = 1;
 
-    private KiePMMLTarget(String name, List<KiePMMLExtension> extensions) {
+    private final TargetField targetField;
+    private final List<KiePMMLTargetValue> targetValues;
+
+    private KiePMMLTarget(String name, List<KiePMMLExtension> extensions, TargetField targetField) {
         super(name, extensions);
+        this.targetField = targetField;
+        if (targetField.getTargetValues() != null) {
+            targetValues = targetField.getTargetValues()
+                    .stream()
+                    .map(targetValue -> KiePMMLTargetValue.builder(UUID.randomUUID().toString(),
+                                                                   Collections.emptyList(), targetValue)
+                            .build())
+                    .collect(Collectors.toList());
+        } else {
+            targetValues = Collections.emptyList();
+        }
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions) {
-        return new Builder(name, extensions);
+    public static Builder builder(String name, List<KiePMMLExtension> extensions, TargetField targetField) {
+        return new Builder(name, extensions, targetField);
     }
 
     public Object modifyPrediction(Object prediction) {
@@ -54,7 +63,7 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
         }
         double predictionDouble = (double) prediction;
         Number toReturn = applyMin(predictionDouble);
-        toReturn = applyMax((double)toReturn);
+        toReturn = applyMax((double) toReturn);
         toReturn = applyRescaleFactor((double)toReturn);
         toReturn = applyRescaleConstant((double)toReturn);
         toReturn = applyCastInteger((double)toReturn);
@@ -63,55 +72,56 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
     }
 
     Double applyMin(double predictionDouble) {
-        return  min != null ? Math.max(min, predictionDouble) : predictionDouble;
+        return targetField.getMin() != null ? Math.max(targetField.getMin(), predictionDouble) : predictionDouble;
     }
 
     Double applyMax(double predictionDouble) {
-        return  max != null ? Math.min(max, predictionDouble) : predictionDouble;
+        return targetField.getMax() != null ? Math.min(targetField.getMax(), predictionDouble) : predictionDouble;
     }
 
     Double applyRescaleFactor(double predictionDouble) {
-        return  predictionDouble * rescaleFactor;
+        return predictionDouble * targetField.getRescaleFactor();
     }
 
     Double applyRescaleConstant(double predictionDouble) {
-        return  predictionDouble + rescaleConstant;
+        return predictionDouble + targetField.getRescaleConstant();
     }
 
     Number applyCastInteger(double predictionDouble) {
-        return  castInteger != null ? castInteger.getScaledValue(predictionDouble) : predictionDouble;
+        return targetField.getCastInteger() != null ? targetField.getCastInteger().getScaledValue(predictionDouble) :
+                predictionDouble;
     }
 
     public String getField() {
-        return field;
+        return targetField.getField();
     }
 
     public List<KiePMMLTargetValue> getTargetValues() {
-        return targetValues;
+        return Collections.unmodifiableList(targetValues);
     }
 
     public OP_TYPE getOpType() {
-        return opType;
+        return targetField.getOpType();
     }
 
     public CAST_INTEGER getCastInteger() {
-        return castInteger;
+        return targetField.getCastInteger();
     }
 
     public Double getMin() {
-        return min;
+        return targetField.getMin();
     }
 
     public Double getMax() {
-        return max;
+        return targetField.getMax();
     }
 
     public double getRescaleConstant() {
-        return rescaleConstant;
+        return targetField.getRescaleConstant();
     }
 
     public double getRescaleFactor() {
-        return rescaleFactor;
+        return targetField.getRescaleFactor();
     }
 
     @Override
@@ -123,26 +133,18 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
             return false;
         }
         KiePMMLTarget that = (KiePMMLTarget) o;
-        return Double.compare(that.rescaleConstant, rescaleConstant) == 0 && Double.compare(that.rescaleFactor,
-                                                                                            rescaleFactor) == 0 && Objects.equals(targetValues, that.targetValues) && opType == that.opType && Objects.equals(field, that.field) && castInteger == that.castInteger && Objects.equals(min, that.min) && Objects.equals(max, that.max);
+        return Objects.equals(targetField, that.targetField);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(targetValues, opType, field, castInteger, min, max, rescaleConstant, rescaleFactor);
+        return Objects.hash(targetField);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", KiePMMLTarget.class.getSimpleName() + "[", "]")
-                .add("targetValues=" + targetValues)
-                .add("opType=" + opType)
-                .add("field='" + field + "'")
-                .add("castInteger=" + castInteger)
-                .add("min=" + min)
-                .add("max=" + max)
-                .add("rescaleConstant=" + rescaleConstant)
-                .add("rescaleFactor=" + rescaleFactor)
+                .add("targetField=" + targetField)
                 .add("name='" + name + "'")
                 .add("extensions=" + extensions)
                 .add("id='" + id + "'")
@@ -152,52 +154,8 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
 
     public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLTarget> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions) {
-            super("Target-", () -> new KiePMMLTarget(name, extensions));
-        }
-
-        public Builder withTargetValues(List<KiePMMLTargetValue> targetValues) {
-            toBuild.targetValues = Collections.unmodifiableList(targetValues);
-            return this;
-        }
-
-        public Builder withOpType(OP_TYPE opType) {
-            toBuild.opType = opType;
-            return this;
-        }
-
-        public Builder withField(String field) {
-            toBuild.field = field;
-            return this;
-        }
-
-        public Builder withCastInteger(CAST_INTEGER castInteger) {
-            toBuild.castInteger = castInteger;
-            return this;
-        }
-
-        public Builder withMin(Double min) {
-            toBuild.min = min;
-            return this;
-        }
-
-        public Builder withMax(Double max) {
-            toBuild.max = max;
-            return this;
-        }
-
-        public Builder withRescaleConstant(Double rescaleConstant) {
-            if (rescaleConstant != null) {
-                toBuild.rescaleConstant = rescaleConstant;
-            }
-            return this;
-        }
-
-        public Builder withRescaleFactor(Double rescaleFactor) {
-            if (rescaleFactor != null) {
-                toBuild.rescaleFactor = rescaleFactor;
-            }
-            return this;
+        private Builder(String name, List<KiePMMLExtension> extensions, TargetField targetField) {
+            super("Target-", () -> new KiePMMLTarget(name, extensions, targetField));
         }
     }
 }

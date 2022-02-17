@@ -30,7 +30,8 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpression;
+import static org.kie.pmml.commons.Constants.VARIABLE_NAME_TEMPLATE;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpressionBlockStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 
@@ -64,8 +65,8 @@ public class KiePMMLComplexPartialScoreFactory {
         final VariableDeclarator variableDeclarator = getVariableDeclarator(complexPartialScoreBody, COMPLEX_PARTIAL_SCORE) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, COMPLEX_PARTIAL_SCORE, complexPartialScoreBody)));
         variableDeclarator.setName(variableName);
         final BlockStmt toReturn = new BlockStmt();
-        String nestedVariableName = String.format("%s_%s", variableName, 0);
-        BlockStmt toAdd = getKiePMMLExpression(nestedVariableName, complexPartialScore.getExpression());
+        String nestedVariableName = String.format(VARIABLE_NAME_TEMPLATE, variableName, 0);
+        BlockStmt toAdd = getKiePMMLExpressionBlockStmt(nestedVariableName, complexPartialScore.getExpression());
         toAdd.getStatements().forEach(toReturn::addStatement);
 
         final ObjectCreationExpr objectCreationExpr = variableDeclarator.getInitializer()
