@@ -637,6 +637,38 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                         }
                     }
                 }
+                if (isPassThroughPattern(pattern, identifier)) {
+                    props.addAll(collectProps(pattern));
+                }
+
+            }
+        }
+        return props;
+    }
+
+    private static boolean isPassThroughPattern(PatternDescr pattern, String identifier) {
+        // e.g. $p1 : Person()
+        //      $p2 : Person(age > 10) from $p1
+        // This use of "from" means the 2nd pattern is the same pattern as the 1st pattern.
+        // We should add properties in the 2nd pattern to create a correct property reactivity mask.
+        if (pattern.getSource() instanceof FromDescr) {
+            FromDescr from = (FromDescr)pattern.getSource();
+            String expr = from.getExpression().trim();
+            if (identifier.equals(expr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Collection<String> collectProps(PatternDescr pattern) {
+        Collection<String> props = new HashSet<>();
+        for (BaseDescr expr : pattern.getDescrs()) {
+            if (expr instanceof ExprConstraintDescr) {
+                String text = expr.getText();
+                String prop = StringUtils.extractFirstIdentifier(text, 0);
+                String propFromGetter = ClassUtils.getter2property(prop);
+                props.add(propFromGetter != null ? propFromGetter : StringUtils.lcFirst(prop));
             }
         }
         return props;

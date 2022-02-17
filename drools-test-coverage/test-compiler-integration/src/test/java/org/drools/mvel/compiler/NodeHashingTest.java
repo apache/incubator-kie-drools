@@ -42,8 +42,7 @@ public class NodeHashingTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testNodeHashTypeMismatchWithBigDecimal, testNodeHashTypeMismatchWithBigInteger, testNodeHashTypeMismatchWithPrimitiveDouble. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
