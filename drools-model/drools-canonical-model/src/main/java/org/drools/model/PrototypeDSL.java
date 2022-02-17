@@ -61,6 +61,10 @@ public class PrototypeDSL {
         return new PrototypeVariableImpl(prototype);
     }
 
+    public static PrototypeVariable variable(Prototype prototype, String name) {
+        return new PrototypeVariableImpl(prototype, name);
+    }
+
     public static PrototypePatternDef protoPattern(PrototypeVariable protoVar) {
         return new PrototypePatternDefImpl(protoVar);
     }
@@ -101,6 +105,7 @@ public class PrototypeDSL {
             Prototype prototype = protoVar.getPrototype();
             Prototype.Field field = prototype.getField(fieldName);
             Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
+            Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : Object.class);
             int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
 
             Prototype otherPrototype = other.getPrototype();
@@ -108,7 +113,7 @@ public class PrototypeDSL {
 
             expr("expr:" + fieldName + ":" + constraintType + ":" + otherFieldName,
                     other, asPredicate(extractor, constraintType, otherExtractor),
-                    betaIndexedBy( (Class<Object>) field.getType(), constraintType, fieldIndex, extractor, otherExtractor ),
+                    betaIndexedBy( fieldClass, constraintType, fieldIndex, extractor, otherExtractor ),
                     reactOn( fieldName ));
 
             return this;
