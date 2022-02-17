@@ -717,4 +717,26 @@ class ShapKernelExplainerTest {
         double coefMSE = (data.getRowVector(100).ebeMultiply(modelWeights)).getDistance(explanations.getRowVector(0));
         assertTrue(coefMSE < .01);
     }
+
+    @Test
+    void testExceedSubsetSamplerRange() throws ExecutionException, InterruptedException {
+        RealVector modelWeights = MatrixUtils.createRealMatrix(generateN(1, 50, "5021")).getRowVector(0);
+        PredictionProvider model = TestUtils.getLinearModel(modelWeights.toArray());
+        RealMatrix data = MatrixUtils.createRealMatrix(generateN(101, 50, "8629"));
+        List<PredictionInput> toExplain = createPIFromMatrix(data.getRowMatrix(100).getData());
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
+        Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+        List<PredictionInput> bg = createPIFromMatrix(new double[100][50]);
+
+        ShapConfig sk = testConfig.copy()
+                .withBackground(bg)
+                .withRegularizer(ShapConfig.RegularizerType.AIC)
+                .withNSamples(2000)
+                .build();
+
+        ShapKernelExplainer ske = new ShapKernelExplainer(sk);
+        ShapResults shapResults = ske.explainAsync(p, model).get();
+        assertTrue(true);
+    }
 }

@@ -498,6 +498,11 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
 
             int sampleIdx = 0;
             while (shapStats.getNumSamplesRemaining() > 0) {
+                if (sampleIdx >= sizeSamples.size()) {
+                    sizeSamples = subsetSampler.sample(shapStats.getNumSamplesRemaining() * 4,
+                            this.config.getPC().getRandom());
+                    sampleIdx = 0;
+                }
                 int subsetSize = sizeSamples.get(sampleIdx);
                 sampleIdx += 1;
                 Collections.shuffle(maskSizes);
