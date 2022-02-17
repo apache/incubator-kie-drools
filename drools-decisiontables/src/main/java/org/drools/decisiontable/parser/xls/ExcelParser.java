@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.ExcelNumberFormat;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -37,6 +38,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.drools.core.util.DateUtils;
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.template.parser.DataListener;
@@ -207,6 +209,13 @@ public class ExcelParser
                     case NUMERIC:
                         if ( isNumericDisabled(listeners) ) {
                             // don't get a double value. rely on DataFormatter
+                        } else if ( DateUtil.isCellDateFormatted(cell) ) {
+                            newCell(listeners,
+                                    i,
+                                    cellNum,
+                                    "\"" + DateUtils.format(cell.getDateCellValue()) + "\"",
+                                    mergedColStart);
+                            break;
                         } else {
                             num = cell.getNumericCellValue();
                             if (doesIgnoreNumericFormat(listeners) && !isGeneralFormat(cell)) {
