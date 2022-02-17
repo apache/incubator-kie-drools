@@ -47,8 +47,14 @@ public class TypeConverterRegistry {
         return converters.getOrDefault(type, defaultConverter);
     }
 
-    public <T> Function<T, String> forTypeReverse(String type) {
-        return (Function<T, String>) unconverters.getOrDefault(type, Object::toString);
+    public <T> Function<T, String> forTypeReverse(T obj) {
+        Function<T, String> result = null;
+        Class<?> clazz = obj.getClass();
+        do {
+            result = (Function<T, String>) unconverters.get(clazz.getName());
+            clazz = clazz.getSuperclass();
+        } while (clazz != null && result == null);
+        return result == null ? Object::toString : result;
     }
 
     public void register(String type, Function<String, ? extends Object> converter) {

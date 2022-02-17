@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -80,6 +81,18 @@ public class JsonObjectUtils {
     }
 
     public static Object toJavaValue(JsonNode jsonNode) {
+        return internalToJavaValue(jsonNode, node -> {
+            Map<String, Object> result = new HashMap<>();
+            node.fields().forEachRemaining(iter -> result.put(iter.getKey(), toJavaValue(iter.getValue())));
+            return result;
+        });
+    }
+
+    public static Object simpleToJavaValue(JsonNode jsonNode) {
+        return internalToJavaValue(jsonNode, node -> node);
+    }
+
+    private static Object internalToJavaValue(JsonNode jsonNode, Function<JsonNode, Object> function) {
         if (jsonNode.isNull()) {
             return null;
         } else if (jsonNode.isTextual()) {
@@ -95,13 +108,11 @@ public class JsonObjectUtils {
         } else if (jsonNode.isArray()) {
             Collection result = new ArrayList<>();
             for (JsonNode item : ((ArrayNode) jsonNode)) {
-                result.add(toJavaValue(item));
+                result.add(internalToJavaValue(item, function));
             }
             return result;
         } else if (jsonNode.isObject()) {
-            Map<String, Object> result = new HashMap<>();
-            jsonNode.fields().forEachRemaining(iter -> result.put(iter.getKey(), toJavaValue(iter.getValue())));
-            return result;
+            return function.apply(jsonNode);
         } else {
             return ObjectMapperFactory.get().convertValue(jsonNode, Object.class);
         }

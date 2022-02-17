@@ -63,7 +63,7 @@ public class JsonPathExpression implements Expression {
             }
             return (T) sb.toString();
         } else {
-            Object result = parsedContext.read(expr);
+            Object result = parsedContext.read(ExpressionHandlerUtils.prepareExpr(expr, Optional.ofNullable(processInfo)));
             return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
                     : jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig);
         }
@@ -95,5 +95,10 @@ public class JsonPathExpression implements Expression {
     @Override
     public void assign(Object target, Object value, KogitoProcessContext context) {
         assign(JsonObjectUtils.fromValue(target), JsonObjectUtils.fromValue(value), context);
+    }
+
+    @Override
+    public String asString() {
+        return expr;
     }
 }

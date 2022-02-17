@@ -249,7 +249,7 @@ public class ProcessVisitor extends AbstractVisitor {
             return new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
                     NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
                     NodeList.nodeList(
-                            new StringLiteralExpr(TypeConverterRegistry.get().forTypeReverse(objectClass.getName()).apply((object)))));
+                            new StringLiteralExpr(TypeConverterRegistry.get().forTypeReverse(object).apply((object)))));
         } else {
             return new StringLiteralExpr(object.toString());
         }

@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jbpm.compiler.canonical.NodeValidator;
+import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -221,8 +222,12 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
 
     public static Object processWorkItemValue(String exprLang, Object object, String paramName, Class<? extends ExpressionWorkItemResolver> clazz, boolean isExpression) {
         return isExpression
-                ? new WorkItemParamResolverSupplier(clazz, () -> new StringLiteralExpr(exprLang), () -> new StringLiteralExpr(object.toString()), () -> new StringLiteralExpr(paramName))
+                ? new WorkItemParamResolverSupplier(clazz, () -> new StringLiteralExpr(exprLang), () -> new StringLiteralExpr(toString(object)), () -> new StringLiteralExpr(paramName))
                 : object;
+    }
+
+    private static String toString(Object obj) {
+        return TypeConverterRegistry.get().forTypeReverse(obj).apply(obj);
     }
 
 }

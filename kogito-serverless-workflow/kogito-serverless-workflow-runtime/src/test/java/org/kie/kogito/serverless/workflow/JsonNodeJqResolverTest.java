@@ -31,13 +31,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-class JsonNodeJsonPathResolverTest {
+class JsonNodeJqResolverTest {
 
     final ObjectMapper mapper = new ObjectMapper();
     private KogitoWorkItem workItem;
@@ -55,34 +54,18 @@ class JsonNodeJsonPathResolverTest {
     }
 
     @Test
-    void verifyMultipleBranchesNode() throws JsonProcessingException {
-        final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
-        when(workItem.getParameter("pepe")).thenReturn(inputModel);
-        final String parameterDefinition = "{\n" +
-                "   \"SubtractionOperation\":{\n" +
-                "      \"leftElement\":\"$.fahrenheit\",\n" +
-                "      \"rightElement\":\"$.subtractValue\"\n" +
-                "   }\n" +
-                "}";
-        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
-        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
-        assertThat(processedNode.get("SubtractionOperation").get("leftElement").asInt(), is(32));
-        assertThat(processedNode.get("SubtractionOperation").get("rightElement").asInt(), is(3));
-    }
-
-    @Test
     void verifyArrayNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final String parameterDefinition = "[\n" +
                 "   {\n" +
-                "      \"leftElement\":\"$.fahrenheit\"\n" +
+                "      \"leftElement\":.fahrenheit\n" +
                 "   },\n" +
                 "   {\n" +
-                "      \"rightElement\":\"$.subtractValue\"\n" +
+                "      \"rightElement\":.subtractValue\n" +
                 "   }\n" +
                 "]";
-        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jq", parameterDefinition, "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isArray());
         assertThat(processedNode.findValue("leftElement").asInt(), equalTo(32));
@@ -93,33 +76,11 @@ class JsonNodeJsonPathResolverTest {
     void verifyValueNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
-        final String parameterDefinition = "\"$.fahrenheit\"";
-        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
+        final String parameterDefinition = ".fahrenheit";
+        final JsonNodeResolver resolver = new JsonNodeResolver("jq", parameterDefinition, "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isValueNode());
         assertThat(processedNode.asInt(), equalTo(32));
     }
 
-    @Test
-    void verifyArrayValueNode() throws JsonProcessingException {
-        final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
-        when(workItem.getParameter("pepe")).thenReturn(inputModel);
-        final String parameterDefinition = "[\"$.fahrenheit\", \"$.subtractValue\"]";
-        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
-        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
-        assertTrue(processedNode.isArray());
-        assertThat(processedNode.get(0).asInt(), equalTo(32));
-        assertThat(processedNode.get(1).asInt(), equalTo(3));
-    }
-
-    @Test
-    void verifyParameterAsJsonPath() throws JsonProcessingException {
-        final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
-        when(workItem.getParameter("pepe")).thenReturn(inputModel);
-        final String parameterDefinition = "$.fahrenheit";
-        final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", parameterDefinition, "pepe");
-        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
-        assertTrue(processedNode.isValueNode());
-        assertThat(processedNode.asInt(), equalTo(32));
-    }
 }

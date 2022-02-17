@@ -188,4 +188,9 @@ public class JqExpression implements Expression {
         }
         return isValid;
     }
+
+    @Override
+    public String asString() {
+        return expr;
+    }
 }

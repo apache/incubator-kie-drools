@@ -26,10 +26,8 @@ import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 
 public class JsonNodeResolver extends ExpressionWorkItemResolver {
 
@@ -37,47 +35,41 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
         super(exprLang, jsonPathExpr, paramName);
     }
 
-    private JsonNode parse(String exprStr) {
-        if (ExpressionHandlerFactory.get(language, exprStr).isValid()) {
-            return TextNode.valueOf(exprStr);
-        } else {
-            ObjectMapper objectMapper = ObjectMapperFactory.get();
-            try {
-                return objectMapper.readTree(exprStr);
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException("Failed to parse input model from ordinary String to Json tree", e);
-            }
-        }
-    }
-
     @Override
     protected Object evalExpression(Object inputModel, KogitoProcessContext context) {
-        return processInputModel(inputModel, parse(expression), context);
+        return processInputModel(inputModel, ExpressionHandlerFactory.get(language, expression), context);
     }
 
-    private JsonNode processInputModel(final Object inputModel, final JsonNode expression, KogitoProcessContext context) {
-        if (expression.isArray()) {
-            final JsonNode processedDefinition = expression.deepCopy();
-            for (int index = 0; index < processedDefinition.size(); index++) {
-                ((ArrayNode) processedDefinition).set(index, this.processInputModel(inputModel, processedDefinition.get(index), context));
+    private JsonNode processInputModel(final Object inputModel, Expression exprHandler, KogitoProcessContext context) {
+        return exprHandler.isValid() ? exprHandler.eval(inputModel, JsonNode.class, context) : processInputModel(inputModel, parse(exprHandler.asString()), context);
+    }
+
+    private JsonNode processInputModel(final Object inputModel, JsonNode node, KogitoProcessContext context) {
+        if (node.isObject()) {
+            final ObjectNode processedDefinition = ObjectMapperFactory.get().createObjectNode();
+            final Iterator<Entry<String, JsonNode>> fields = node.fields();
+            while (fields.hasNext()) {
+                final Entry<String, JsonNode> jsonField = fields.next();
+                processedDefinition.set(jsonField.getKey(), processInputModel(inputModel, jsonField.getValue(), context));
             }
             return processedDefinition;
-        } else if (expression.isValueNode()) {
-            final String jsonPathExpr = expression.asText();
-            Expression evalExpr = ExpressionHandlerFactory.get(language, jsonPathExpr);
-            if (evalExpr.isValid()) {
-                return evalExpr.eval(inputModel, JsonNode.class, context);
-            }
-            return expression.deepCopy();
+        } else if (node.isArray()) {
+            final ArrayNode processedDefinition = ObjectMapperFactory.get().createArrayNode();
+            ((ArrayNode) node).forEach(item -> processedDefinition.add(processInputModel(inputModel, item, context)));
+            return processedDefinition;
+        } else if (node.isTextual()) {
+            Expression expr = ExpressionHandlerFactory.get(language, node.asText());
+            return expr.isValid() ? expr.eval(inputModel, JsonNode.class, context) : node;
+        } else {
+            return node;
         }
-
-        final JsonNode processedDefinition = expression.deepCopy();
-        final Iterator<Entry<String, JsonNode>> fields = processedDefinition.fields();
-        while (fields.hasNext()) {
-            final Entry<String, JsonNode> jsonField = fields.next();
-            ((ObjectNode) processedDefinition).replace(jsonField.getKey(), this.processInputModel(inputModel, jsonField.getValue(), context));
-        }
-        return processedDefinition;
     }
 
+    private JsonNode parse(String exprStr) {
+        try {
+            return ObjectMapperFactory.get().readTree(exprStr);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Failed to parse input model from ordinary String to Json tree", e);
+        }
+    }
 }

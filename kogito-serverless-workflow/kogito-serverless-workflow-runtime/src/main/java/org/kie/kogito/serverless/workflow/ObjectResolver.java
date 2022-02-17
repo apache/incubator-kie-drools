@@ -15,18 +15,12 @@
  */
 package org.kie.kogito.serverless.workflow;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.process.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class ObjectResolver extends ExpressionWorkItemResolver {
+public class ObjectResolver extends JsonNodeResolver {
 
     public ObjectResolver(String exprLang, String jsonPathExpr, String paramName) {
         super(exprLang, jsonPathExpr, paramName);
@@ -34,38 +28,6 @@ public class ObjectResolver extends ExpressionWorkItemResolver {
 
     @Override
     protected Object evalExpression(Object inputModel, KogitoProcessContext context) {
-        return readValue(ExpressionHandlerFactory.get(language, expression).eval(inputModel, JsonNode.class, context));
-    }
-
-    private Object readValue(JsonNode node) {
-        switch (node.getNodeType()) {
-            case NUMBER:
-                if (node.isInt()) {
-                    return node.asInt();
-                } else if (node.isLong()) {
-                    return node.asLong();
-                } else {
-                    return node.asDouble();
-                }
-            case BOOLEAN:
-                return node.asBoolean();
-            case NULL:
-                return null;
-            case ARRAY:
-                return readArray((ArrayNode) node);
-            case STRING:
-                return node.asText();
-            default:
-                return node;
-        }
-    }
-
-    private Object readArray(ArrayNode node) {
-        Iterator<JsonNode> elements = node.elements();
-        Collection<Object> result = new ArrayList<>();
-        while (elements.hasNext()) {
-            result.add(readValue(elements.next()));
-        }
-        return result;
+        return JsonObjectUtils.simpleToJavaValue((JsonNode) super.evalExpression(inputModel, context));
     }
 }

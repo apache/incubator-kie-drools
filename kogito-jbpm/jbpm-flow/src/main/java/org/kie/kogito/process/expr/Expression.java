@@ -24,4 +24,6 @@ public interface Expression {
     boolean isValid();
 
     void assign(Object target, Object value, KogitoProcessContext context);
+
+    String asString();
 }

@@ -300,7 +300,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             Iterator<Entry<String, JsonNode>> iter = jsonNode.fields();
             while (iter.hasNext()) {
                 Entry<String, JsonNode> entry = iter.next();
-                map.put(entry.getKey(), JsonObjectUtils.toJavaValue(entry.getValue()));
+                map.put(entry.getKey(), JsonObjectUtils.simpleToJavaValue(entry.getValue()));
             }
         }
         return map;
@@ -312,7 +312,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private void processArg(Entry<String, Object> entry, WorkItemNodeFactory<?> workItemFactory, String paramName, Class<? extends ExpressionWorkItemResolver> clazz) {
-        boolean isExpr = isExpression(entry.getValue());
+        boolean isExpr = isExpression(entry.getValue()) || entry.getValue() instanceof JsonNode;
         workItemFactory
                 .workParameter(entry.getKey(),
                         AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), entry.getValue(), paramName, clazz, isExpr))
