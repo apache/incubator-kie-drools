@@ -60,4 +60,9 @@ public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystem
         // only for testing purposes
         return tmsForEntryPoints.size();
     }
+
+    public int clearEntryPointsMap() {
+        // only for testing purposes
+        return tmsForEntryPoints.size();
+    }
 }

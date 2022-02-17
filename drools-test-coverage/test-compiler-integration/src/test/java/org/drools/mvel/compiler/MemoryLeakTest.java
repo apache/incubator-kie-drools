@@ -102,6 +102,9 @@ public class MemoryLeakTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
+        TruthMaintenanceSystemFactoryImpl tms = (TruthMaintenanceSystemFactoryImpl) TruthMaintenanceSystemFactory.get();
+        tms.clearEntryPointsMap();
+
         for ( int i = 0; i < 10; i++ ) {
             ksession.insert( i );
             ksession.fireAllRules();
@@ -124,9 +127,9 @@ public class MemoryLeakTest {
         assertNull( stagedRightTuples.getInsertFirst() );
 
         // DROOLS-6809
-        assertEquals(1, ((TruthMaintenanceSystemFactoryImpl) TruthMaintenanceSystemFactory.get()).getEntryPointsMapSize());
+        assertEquals(1, tms.getEntryPointsMapSize());
         ksession.dispose();
-        assertEquals(0, ((TruthMaintenanceSystemFactoryImpl) TruthMaintenanceSystemFactory.get()).getEntryPointsMapSize());
+        assertEquals(0, tms.getEntryPointsMapSize());
     }
 
     @Test
