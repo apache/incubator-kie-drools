@@ -36,19 +36,22 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
     private final List<OutputField> outputFields;
     private final List<TargetField> targetFields;
     private final Map<String, String> sourcesMap;
+    private final boolean isInterpreted;
 
     public KiePMMLModelWithSources(final String modelName,
                                    final String kmodulePackageName,
                                    final List<MiningField> miningFields,
                                    final List<OutputField> outputFields,
                                    final List<TargetField> targetFields,
-                                   final Map<String, String> sourcesMap) {
+                                   final Map<String, String> sourcesMap,
+                                   final boolean isInterpreted) {
         super(modelName, Collections.emptyList());
         this.kmodulePackageName = kmodulePackageName;
         this.miningFields = miningFields;
         this.outputFields = outputFields;
         this.targetFields = targetFields;
         this.sourcesMap = sourcesMap;
+        this.isInterpreted = isInterpreted;
     }
 
     @Override
@@ -85,4 +88,10 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
     public String getKModulePackageName() {
         return kmodulePackageName;
     }
+
+    @Override
+    public boolean isInterpreted() {
+        return isInterpreted;
+    }
+
 }

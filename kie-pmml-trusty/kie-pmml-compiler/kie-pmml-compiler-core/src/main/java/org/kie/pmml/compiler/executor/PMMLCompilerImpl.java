@@ -24,12 +24,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.PMML;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -76,16 +76,16 @@ public class PMMLCompilerImpl implements PMMLCompiler {
         logger.trace("getModels {} {}", inputStream, hasClassloader);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
-            Map<String, PMML_MODEL> expectedClassModelTypeMap =
+            Map<String, Boolean> expectedClassModelTypeMap =
                     commonPMMLModel.getModels()
                             .stream()
                             .collect(Collectors.toMap(model -> {
                                                           String modelPackageName =
                                                                   getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, packageName,
-                                                                                                                          model.getModelName()));
+                                                                                                        model.getModelName()));
                                                           return modelPackageName + "." + getSanitizedClassName(model.getModelName());
                                                       },
-                                                      model -> PMML_MODEL.byName(model.getClass().getSimpleName())));
+                                                      IsInterpreted.class::isInstance));
 
             List<KiePMMLModel> toReturn = getModelsWithSources(packageName, commonPMMLModel, hasClassloader);
             Set<String> generatedClasses = new HashSet<>();
