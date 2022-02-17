@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Singleton;
 
@@ -108,8 +109,9 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
-    void registerScoreDirectorFactorySpi(BuildProducer<ServiceProviderBuildItem> services) {
-        registerSpi(ScoreDirectorFactoryService.class, services);
+    void registerSpi(BuildProducer<ServiceProviderBuildItem> services) {
+        Stream.of(ScoreDirectorFactoryService.class, JoinerService.class)
+                .forEach(service -> registerSpi(service, services));
     }
 
     private static void registerSpi(Class<?> serviceClass, BuildProducer<ServiceProviderBuildItem> services) {
@@ -144,7 +146,7 @@ class OptaPlannerProcessor {
     @BuildStep
     IndexDependencyBuildItem indexDependencyBuildItem() {
         // Add @PlanningEntity and other annotations in the Jandex index for Gizmo
-        return new IndexDependencyBuildItem("org.optaplanner", "optaplanner-core");
+        return new IndexDependencyBuildItem("org.optaplanner", "optaplanner-core-impl");
     }
 
     @BuildStep(onlyIf = NativeBuild.class)
@@ -701,15 +703,6 @@ class OptaPlannerProcessor {
                 reflectiveClassSet.add(clazz);
             }
         });
-    }
-
-    @BuildStep
-    void registerJoinerSpi(SolverConfigBuildItem solverConfigBuildItem, BuildProducer<ServiceProviderBuildItem> services) {
-        if (solverConfigBuildItem.getSolverConfig().getScoreDirectorFactoryConfig()
-                .getConstraintProviderClass() != null) {
-            // The JoinerService SPI is required for constraint streams.
-            registerSpi(JoinerService.class, services);
-        }
     }
 
 }
