@@ -32,6 +32,11 @@
       "operation": ".message |=.+\\\" and in my native language dog is translated to $CONST.dog.castellano\\\""
     },
     {
+      "name": "contextMessage",
+      "type": "expression",
+      "operation": ".message |=.+\\\" and the process id is $CONTEXT.workflowId\\\""
+    },
+    {
       "name": "discardedResult",
       "type": "expression",
       "operation": ".discardedResult |=\\\"This string won't be added to the data\\\""
@@ -77,6 +82,12 @@
            "name": "costantMessageAction",
            "functionRef" : {
              "refName" : "constantMessage"
+            }
+         },
+         {
+           "name": "contextMessageAction",
+           "functionRef" : {
+             "refName" : "contextMessage"
             }
          },
          {

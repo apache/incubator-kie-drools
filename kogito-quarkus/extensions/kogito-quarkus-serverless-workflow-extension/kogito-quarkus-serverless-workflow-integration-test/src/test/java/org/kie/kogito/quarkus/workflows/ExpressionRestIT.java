@@ -38,7 +38,7 @@ class ExpressionRestIT {
                 .statusCode(201)
                 .body("workflowdata.result", is(4))
                 .body("workflowdata.number", nullValue())
-                .body("workflowdata.message", is("my name is javierito and in my native language dog is translated to perro"))
+                .body("workflowdata.message", is("my name is javierito and in my native language dog is translated to perro and the process id is expression"))
                 .body("workflowdata.discardedResult", nullValue());
     }
 
