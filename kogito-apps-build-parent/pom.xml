@@ -252,6 +252,7 @@
                 <enforcer.skip>true</enforcer.skip>
                 <checkstyle.skip>true</checkstyle.skip>
                 <quarkus.build.image>false</quarkus.build.image>
+                <docker.skip>true</docker.skip>
             </properties>
         </profile>
     </profiles>
