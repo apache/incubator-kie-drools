@@ -5,7 +5,7 @@
     <parent>
         <artifactId>drools-parent</artifactId>
         <groupId>org.kie</groupId>
-        <version>8.17.0-SNAPSHOT</version>
+        <version>8.18.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -233,7 +233,7 @@
         <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
 
         <version.org.awaitility>4.1.0</version.org.awaitility>
-        <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>
+        <version.io.github.bonigarcia>5.0.3</version.io.github.bonigarcia>
     </properties>
 
     <dependencyManagement>

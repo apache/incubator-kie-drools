@@ -795,6 +795,9 @@ public class KnowledgeBaseImpl implements RuleBase {
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
             KieWeavers weavers = KieService.load(KieWeavers.class);
+            if (weavers == null) {
+                throw new IllegalStateException("Unable to find KieWeavers implementation");
+            }
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                 weavers.merge( pkg, rtkKpg );
             }
