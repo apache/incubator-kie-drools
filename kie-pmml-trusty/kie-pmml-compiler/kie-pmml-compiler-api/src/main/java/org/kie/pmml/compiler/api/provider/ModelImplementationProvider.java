@@ -54,7 +54,8 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
                                            compilationDTO.getKieMiningFields(),
                                            compilationDTO.getKieOutputFields(),
                                            compilationDTO.getKieTargetFields(),
-                                           sourcesMap);
+                                           sourcesMap,
+                                           this.isInterpreted());
     }
 
     Map<String, String> getSourcesMap(final CompilationDTO<T> compilationDTO);
@@ -75,5 +76,9 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
             throw new KiePMMLException(e);
         }
         return toReturn;
+    }
+
+    default boolean isInterpreted() {
+        return false;
     }
 }

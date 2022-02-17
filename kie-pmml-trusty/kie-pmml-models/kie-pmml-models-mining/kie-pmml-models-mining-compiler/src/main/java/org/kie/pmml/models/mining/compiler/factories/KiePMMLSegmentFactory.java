@@ -25,21 +25,17 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.mining.Segment;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
@@ -51,13 +47,12 @@ import org.kie.pmml.models.mining.compiler.dto.SegmentCompilationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLPredicateFactory.getKiePMMLPredicate;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getInstantiationExpression;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -142,10 +137,11 @@ public class KiePMMLSegmentFactory {
                                                "does not implement HasSources");
         }
         nestedModels.add(nestedModel);
-        return getSegmentSourcesMap(segmentCompilationDTO);
+        return getSegmentSourcesMap(segmentCompilationDTO, ((HasSourcesMap) nestedModel).isInterpreted());
     }
 
-    static Map<String, String> getSegmentSourcesMap(final SegmentCompilationDTO segmentCompilationDTO) {
+    static Map<String, String> getSegmentSourcesMap(final SegmentCompilationDTO segmentCompilationDTO,
+                                                    final boolean isInterpreted) {
         logger.debug(GET_SEGMENT, segmentCompilationDTO.getSegment());
         String kiePMMLModelClass = segmentCompilationDTO.getPackageCanonicalClassName();
         final String className = getSanitizedClassName(segmentCompilationDTO.getId());
@@ -160,7 +156,7 @@ public class KiePMMLSegmentFactory {
         final Map<String, String> toReturn = new HashMap<>();
 
         setConstructor(segmentCompilationDTO.getId(), className, constructorDeclaration, kiePMMLModelClass,
-                       segmentCompilationDTO.getPMML_MODEL(),
+                       isInterpreted,
                        segmentCompilationDTO.getWeight().doubleValue());
         populateGetPredicateMethod(segmentCompilationDTO.getPredicate(),
                                    segmentCompilationDTO.getFields(),
@@ -173,28 +169,15 @@ public class KiePMMLSegmentFactory {
                                final String generatedClassName,
                                final ConstructorDeclaration constructorDeclaration,
                                final String kiePMMLModelClass,
-                               final PMML_MODEL pmmlModel,
+                               final boolean isInterpreted,
                                final double weight) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, segmentName);
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
                         .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
-        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
-        String modelInstantiationString;
-        switch (pmmlModel) {
-            case REGRESSION_MODEL:
-                MethodCallExpr methodCallExpr = new MethodCallExpr();
-                methodCallExpr.setScope(new NameExpr(kiePMMLModelClass));
-                methodCallExpr.setName(GET_MODEL);
-                modelInstantiationString = methodCallExpr.toString();
-                break;
-            default:
-                ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-                objectCreationExpr.setType(classOrInterfaceType);
-                modelInstantiationString = objectCreationExpr.toString();
-        }
-
+        final Expression instantiationExpression = getInstantiationExpression(kiePMMLModelClass, isInterpreted);
+        String modelInstantiationString = instantiationExpression.toString();
 
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "model",
                                                                         modelInstantiationString);

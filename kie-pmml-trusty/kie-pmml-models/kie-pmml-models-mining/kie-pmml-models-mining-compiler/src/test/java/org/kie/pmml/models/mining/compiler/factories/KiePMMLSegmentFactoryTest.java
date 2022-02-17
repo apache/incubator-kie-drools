@@ -39,7 +39,6 @@ import org.dmg.pmml.mining.Segment;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -169,7 +168,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final SegmentCompilationDTO segmentCompilationDTO =
                 SegmentCompilationDTO.fromGeneratedPackageNameAndFields(compilationDTO, segment,
                                                                         compilationDTO.getFields());
-        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(segmentCompilationDTO);
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(segmentCompilationDTO, true);
         commonEvaluateMap(retrieved, segment);
     }
 
@@ -184,7 +183,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                                              generatedClassName,
                                              constructorDeclaration,
                                              kiePMMLModelClass,
-                                             PMML_MODEL.TEST_MODEL,
+                                             false,
                                              weight);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", segmentName)));
@@ -210,7 +209,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                                              generatedClassName,
                                              constructorDeclaration,
                                              kiePMMLModelClass,
-                                             PMML_MODEL.REGRESSION_MODEL,
+                                             true,
                                              weight);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", segmentName)));

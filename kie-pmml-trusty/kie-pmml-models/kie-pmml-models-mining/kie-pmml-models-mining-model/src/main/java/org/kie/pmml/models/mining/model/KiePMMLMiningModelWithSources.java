@@ -25,7 +25,6 @@ import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
-import org.kie.pmml.commons.model.KiePMMLTarget;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html>MiningModel</a>
@@ -42,7 +41,7 @@ public class KiePMMLMiningModelWithSources extends KiePMMLModelWithSources imple
                                          final List<TargetField> targetFields,
                                          final Map<String, String> sourcesMap,
                                          final List<KiePMMLModel> nestedModels) {
-        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap);
+        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
         this.nestedModels = Collections.unmodifiableList(nestedModels);
     }
 
