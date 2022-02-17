@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -35,6 +34,7 @@ import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -45,18 +45,13 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -165,7 +160,6 @@ public class AddRuleTest {
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
     }
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testPopulatedRuleMidwayShare() throws Exception {
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() B() C(1;) X() E()\n");
@@ -229,7 +223,6 @@ public class AddRuleTest {
         assertEquals( 1, ((A)((Match)list.get(5)).getDeclarationValue("a")).getObject() );
     }
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testPopulatedRuleWithEvals() throws Exception {
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
@@ -294,7 +287,6 @@ public class AddRuleTest {
         assertEquals( 1, ((A)((Match)list.get(5)).getDeclarationValue("a")).getObject() );
     }
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testPopulatedSharedLiaNode() throws Exception {
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() X() E()\n");
@@ -346,7 +338,6 @@ public class AddRuleTest {
         assertTrue(results.containsAll(asList(1, 2, 3)));
     }
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testPopulatedSharedToRtn() throws Exception {
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() X() E()\n");
@@ -386,7 +377,6 @@ public class AddRuleTest {
         assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
     }
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testPopulatedMultipleShares() throws Exception {
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n" );
@@ -424,7 +414,6 @@ public class AddRuleTest {
         assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
     }
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testSplitTwoBeforeCreatedSegment() throws Exception {
         InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n" );
@@ -478,7 +467,6 @@ public class AddRuleTest {
     }
 
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testSplitOneBeforeCreatedSegment() throws Exception {
         InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n" );
@@ -551,7 +539,6 @@ public class AddRuleTest {
         assertNull( smems[1]);
     }
 
-    // TODO: EM Not really using the exec model, need to migrate those to incremental compilation
     @Test
     public void testSplitOnCreatedSegment() throws Exception {
         // this test splits D1 and D2 on the later add rule
@@ -622,32 +609,7 @@ public class AddRuleTest {
     }
 
     private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
-        String str = "";
-        str += "package org.kie \n";
-        str += "import " + A.class.getCanonicalName() + "\n" ;
-        str += "import " + B.class.getCanonicalName() + "\n" ;
-        str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + X.class.getCanonicalName() + "\n" ;
-        str += "import " + E.class.getCanonicalName() + "\n" ;
-        str += "global java.util.List list \n";
-
-        int i = 0;
-        str += "rule " + ruleName + "  when \n";
-        str +=  rule;
-        str += "then \n";
-        str += " list.add( kcontext.getMatch() );\n";
-        str += "end \n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        return kbase;
+        return (InternalKnowledgeBase)KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, buildKnowledgePackageDrl(ruleName, rule));
     }
 
     private String buildKnowledgePackageDrl(String ruleName, String rule) {
@@ -660,7 +622,6 @@ public class AddRuleTest {
         str += "import " + E.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
 
-        int i = 0;
         str += "rule " + ruleName + "  when \n";
         str += rule;
         str += "then \n";
@@ -671,16 +632,7 @@ public class AddRuleTest {
     }
 
     private Collection<KiePackage> buildKnowledgePackage(String ruleName, String rule) {
-        String str = buildKnowledgePackageDrl(ruleName, rule);
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        return kbuilder.getKnowledgePackages();
+        return KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, buildKnowledgePackageDrl(ruleName, rule)).getKiePackages();
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
