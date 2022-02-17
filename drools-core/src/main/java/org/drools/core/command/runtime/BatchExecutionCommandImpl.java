@@ -50,6 +50,7 @@ import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.core.fluent.impl.Batch;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
@@ -86,6 +87,7 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
                          @XmlElement(name = "query", type = QueryCommand.class),
                          @XmlElement(name = "insert", type = InsertObjectCommand.class),
                          @XmlElement(name = "modify", type = ModifyCommand.class),
+                         @XmlElement(name = "update", type = UpdateCommand.class),
                          @XmlElement(name = "get-object", type = GetObjectCommand.class),
                          @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
                          @XmlElement(name = "fire-until-halt", type = FireUntilHaltCommand.class),
