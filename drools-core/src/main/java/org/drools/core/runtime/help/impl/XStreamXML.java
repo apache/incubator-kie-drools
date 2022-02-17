@@ -63,7 +63,9 @@ import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
@@ -71,6 +73,7 @@ import org.drools.core.spi.ObjectType;
 import org.kie.api.command.Command;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -94,6 +97,7 @@ public class XStreamXML {
         xstream.registerConverter( new DeleteConverter( xstream ) );
         xstream.registerConverter( new InsertConverter( xstream ) );
         xstream.registerConverter( new ModifyConverter( xstream ) );
+        xstream.registerConverter( new UpdateConverter( xstream ) );
         xstream.registerConverter( new GetObjectConverter( xstream ) );
         xstream.registerConverter( new InsertElementsConverter( xstream ) );
         xstream.registerConverter( new FireAllRulesConverter( xstream ) );
@@ -249,6 +253,59 @@ public class XStreamXML {
             return clazz.equals( ModifyCommand.class );
         }
 
+    }
+
+    public static class UpdateConverter extends AbstractCollectionConverter implements Converter {
+
+        public UpdateConverter(XStream xstream) {
+            super(xstream.getMapper());
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            UpdateCommand cmd = (UpdateCommand) object;
+
+            writer.addAttribute("fact-handle", cmd.getHandle().toExternalForm());
+            writer.addAttribute("entryPoint", cmd.getEntryPoint());
+
+            writeItem(cmd.getObject(), context, writer);
+
+            String[] modifiedProperties = cmd.getModifiedProperties();
+            if (modifiedProperties != null) {
+                for (String modifiedProperty : modifiedProperties) {
+                    writer.startNode("modifiedProperty");
+                    writer.addAttribute("value", modifiedProperty);
+                    writer.endNode();
+                }
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            FactHandle factHandle = new DisconnectedFactHandle(reader.getAttribute("fact-handle"));
+            String entryPoint = reader.getAttribute("entryPoint");
+
+            reader.moveDown();
+            Object object = readItem(reader, context, null);
+            reader.moveUp();
+
+            List<String> modifiedProperties = new ArrayList();
+            while (reader.hasMoreChildren()) {
+                reader.moveDown();
+                modifiedProperties.add(reader.getAttribute("value"));
+                reader.moveUp();
+            }
+
+            UpdateCommand command = new UpdateCommand(factHandle, object, modifiedProperties.toArray(new String[modifiedProperties.size()]));
+            command.setEntryPoint(entryPoint);
+
+            return command;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals(UpdateCommand.class);
+        }
     }
 
     public static class DeleteConverter
@@ -581,6 +638,14 @@ public class XStreamXML {
                 writer.addAttribute( "out-identifier",
                                      cmd.getOutIdentifier() );
             }
+
+            if (cmd.getAgendaFilter() != null) {
+                AgendaFilter agendaFilter = cmd.getAgendaFilter();
+                writer.startNode("agendaFilter");
+                writer.addAttribute("class", agendaFilter.getClass().getName());
+                writeBareItem(agendaFilter, context, writer);
+                writer.endNode();
+            }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
@@ -598,6 +663,18 @@ public class XStreamXML {
 
             if ( outIdentifier != null ) {
                 cmd.setOutIdentifier( outIdentifier );
+            }
+
+            // only one AgendaFilter
+            if (reader.hasMoreChildren()) {
+                reader.moveDown();
+                Object child = readItem(reader,
+                                        context,
+                                        null);
+                reader.moveUp();
+                if (child instanceof AgendaFilter) {
+                    cmd.setAgendaFilter((AgendaFilter) child);
+                }
             }
 
             return cmd;
