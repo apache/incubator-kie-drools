@@ -236,7 +236,7 @@ public class BinaryHeapQueueTest {
          * Is the value equal to another value, as tested by the
          * {@link java.lang.Object#equals} invokedMethod?
          */
-        @Factory
+        
         public static Matcher<List<InternalFactHandle>> isTuple(List<InternalFactHandle> operand) {
             return new IsTuple( operand );
         }
