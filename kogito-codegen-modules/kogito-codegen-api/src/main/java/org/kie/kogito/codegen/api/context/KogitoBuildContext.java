@@ -88,7 +88,6 @@ public interface KogitoBuildContext {
     /**
      * Define the collection of {@link ApplicationSection}, usually during the code-gen phase.
      * It's possible that the context won't hold any application sections before the code-gen state.
-     * 
      */
     void addAllApplicationSections(Set<ApplicationSection> applicationSections);
 
@@ -101,7 +100,7 @@ public interface KogitoBuildContext {
      * Method to check if REST available and enabled for a specific resource
      * This is platform/classpath specific (e.g. Quarkus)
      * It can also be explicitly disabled i.e. for "decisions"
-     *
+     * <p>
      * kogito.generate.rest.decisions = false
      */
     default boolean hasRESTForGenerator(Generator generator) {
@@ -121,6 +120,10 @@ public interface KogitoBuildContext {
 
     default boolean isValidationSupported() {
         return hasClassAvailable(KogitoCodeGenConstants.VALIDATION_CLASS);
+    }
+
+    default boolean isOpenApiSpecSupported() {
+        return hasClassAvailable(KogitoCodeGenConstants.OPENAPI_SPEC_CLASS);
     }
 
     Optional<String> getApplicationProperty(String property);
@@ -143,9 +146,9 @@ public interface KogitoBuildContext {
      * Attributes shared among generators and client code.
      * Any generator can write or read from this context.
      * </p>
-     * 
-     * @see ContextAttributesConstants for a list of possible attributes
+     *
      * @return An unmodifiable map with all attributes. If you need to write to the context, use {@link #addContextAttribute(String, Object)}
+     * @see ContextAttributesConstants for a list of possible attributes
      */
     Map<String, Object> getContextAttributes();
 
@@ -154,9 +157,9 @@ public interface KogitoBuildContext {
     /**
      * Get an attribute by a given key
      *
-     * @see ContextAttributesConstants for a list of possible attributes
      * @param key the named key to retrieve from the context
      * @return The value in the context or null if it does not exist
+     * @see ContextAttributesConstants for a list of possible attributes
      */
     <T> T getContextAttribute(String key, Class<T> asClass);
 

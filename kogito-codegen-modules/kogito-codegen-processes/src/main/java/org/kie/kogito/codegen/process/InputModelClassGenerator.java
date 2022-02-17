@@ -43,6 +43,7 @@ public class InputModelClassGenerator {
         // create model class for all variables
         modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateInputModel(workFlowProcess);
         modelMetaData.setSupportsValidation(context.isValidationSupported());
+        modelMetaData.setSupportsOpenApiGeneration(context.isOpenApiSpecSupported());
 
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
         return modelMetaData;

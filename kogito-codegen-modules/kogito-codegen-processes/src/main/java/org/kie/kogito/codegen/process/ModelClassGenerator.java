@@ -45,6 +45,7 @@ public class ModelClassGenerator {
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
 
         modelMetaData.setSupportsValidation(context.isValidationSupported());
+        modelMetaData.setSupportsOpenApiGeneration(context.isOpenApiSpecSupported());
 
         return modelMetaData;
     }

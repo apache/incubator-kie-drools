@@ -44,6 +44,7 @@ public class OutputModelClassGenerator {
         modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateOutputModel(workFlowProcess);
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
         modelMetaData.setSupportsValidation(context.isValidationSupported());
+        modelMetaData.setSupportsOpenApiGeneration(context.isOpenApiSpecSupported());
         return modelMetaData;
     }
 

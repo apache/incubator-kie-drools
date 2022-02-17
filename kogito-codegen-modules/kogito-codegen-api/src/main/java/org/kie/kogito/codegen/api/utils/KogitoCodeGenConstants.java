@@ -22,4 +22,5 @@ public class KogitoCodeGenConstants {
     }
 
     public static final String VALIDATION_CLASS = "javax.validation.constraints.NotNull";
+    public static final String OPENAPI_SPEC_CLASS = "org.eclipse.microprofile.openapi.annotations.media.Schema";
 }

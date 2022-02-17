@@ -51,11 +51,6 @@
         <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
         <version>${version.io.quarkiverse.reactivemessaging.http}</version>
       </dependency>
-      <dependency>
-        <groupId>org.eclipse.microprofile.openapi</groupId>
-        <artifactId>microprofile-openapi-api</artifactId>
-        <version>${version.org.eclipse.microprofile-openapi-api}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 

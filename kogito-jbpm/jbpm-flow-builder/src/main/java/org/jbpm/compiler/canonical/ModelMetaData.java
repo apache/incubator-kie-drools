@@ -22,14 +22,15 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.jbpm.process.core.context.variable.Variable;
 import org.kie.kogito.codegen.Generated;
 import org.kie.kogito.codegen.VariableInfo;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -40,6 +41,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -73,6 +75,7 @@ public class ModelMetaData {
     private Consumer<CompilationUnit>[] customGenerator;
 
     private boolean supportsValidation;
+    private boolean supportsOpenApiGeneration;
 
     public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden) {
         this(processId, packageName, modelClassSimpleName, visibility, variableScope, hidden, "/class-templates/ModelTemplate.java");
@@ -200,12 +203,13 @@ public class ModelMetaData {
 
             List<String> tags = variable.getValue().getTags();
             fd.addAnnotation(new NormalAnnotationExpr(new Name(VariableInfo.class.getCanonicalName()),
-                    NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(tags.stream().collect(Collectors.joining(",")))))));
+                    NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(String.join(",", tags))))));
             fd.addAnnotation(new NormalAnnotationExpr(new Name(JsonProperty.class.getCanonicalName()),
                     NodeList.nodeList(new MemberValuePair("value",
                             new StringLiteralExpr(varName)))));
 
             applyValidation(fd, tags);
+            applyOpenApiSchemaForJsonNodeModel(fd);
 
             fd.createGetter();
             fd.createSetter();
@@ -231,6 +235,20 @@ public class ModelMetaData {
         }
     }
 
+    /**
+     * The JsonNode class can't be parsed by the OpenApi parser.
+     * In essence, JsonNode should be represented by a generic JSON node: `{}`.
+     * The Swagger parser will handle a Java Object class as this generic Json node.
+     * This method will apply the `Schema(class=Object.class)` annotation if the model type os a JsonNode type.
+     *
+     * @see <a href="https://github.com/smallrye/smallrye-open-api/issues/1048">Jackson's JsonNode class is being incorrectly rendered in the spec file</a>
+     */
+    private void applyOpenApiSchemaForJsonNodeModel(final FieldDeclaration modelFieldDeclaration) {
+        if (this.supportsOpenApiGeneration && JsonNode.class.getCanonicalName().equals(modelFieldDeclaration.getElementType().asString())) {
+            modelFieldDeclaration.addAndGetAnnotation(Schema.class).addPair("implementation", new ClassExpr().setType(Object.class.getCanonicalName()));
+        }
+    }
+
     private FieldDeclaration declareField(String name, String type) {
         return new FieldDeclaration().addVariable(
                 new VariableDeclarator()
@@ -247,16 +265,20 @@ public class ModelMetaData {
         return modelClassName;
     }
 
-    public String getGeneratedClassModel() {
-        return generate();
-    }
-
     public boolean isSupportsValidation() {
         return supportsValidation;
     }
 
     public void setSupportsValidation(boolean supportsValidation) {
         this.supportsValidation = supportsValidation;
+    }
+
+    public boolean isSupportsOpenApiGeneration() {
+        return supportsOpenApiGeneration;
+    }
+
+    public void setSupportsOpenApiGeneration(boolean supportsOpenApiGeneration) {
+        this.supportsOpenApiGeneration = supportsOpenApiGeneration;
     }
 
     @Override
