@@ -98,6 +98,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
@@ -1305,6 +1306,9 @@ public class KnowledgeBaseImpl
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
             KieWeavers weavers = ServiceRegistry.getService(KieWeavers.class);
+            if (weavers == null) {
+                throw new IllegalStateException("Unable to find KieWeavers implementation");
+            }
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                 weavers.merge( this, pkg, rtkKpg );
             }
