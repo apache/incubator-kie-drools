@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package java.lang;
+package org.kie.dmn.feel.util;
 
-public class NoSuchMethodException extends ReflectiveOperationException {
+import java.lang.reflect.Modifier;
 
-    public NoSuchMethodException() {
+public class ModifierUtil {
 
-    }
+    public static final int STATIC = 0x00000008;
 
-    public NoSuchMethodException(String s) {
-
+    public static boolean isStatic(int mod) {
+        return (mod & STATIC) != 0;
     }
 }
