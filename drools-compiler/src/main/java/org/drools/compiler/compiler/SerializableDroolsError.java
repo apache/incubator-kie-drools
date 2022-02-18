@@ -16,6 +16,9 @@
 
 package org.drools.compiler.compiler;
 
+import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
+import org.drools.drl.parser.DroolsError;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

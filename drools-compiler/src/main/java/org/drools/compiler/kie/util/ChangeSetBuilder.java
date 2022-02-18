@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.compiler.DrlParser;
+import org.drools.drl.parser.DrlParser;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.FunctionDescr;

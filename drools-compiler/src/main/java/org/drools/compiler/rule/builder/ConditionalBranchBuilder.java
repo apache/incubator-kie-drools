@@ -17,7 +17,7 @@ package org.drools.compiler.rule.builder;
 
 import java.util.List;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.ConditionalBranch;

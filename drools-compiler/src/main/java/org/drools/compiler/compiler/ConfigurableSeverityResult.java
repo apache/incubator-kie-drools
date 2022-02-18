@@ -15,6 +15,7 @@
 */
 package org.drools.compiler.compiler;
 
+import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
@@ -40,6 +41,6 @@ public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderRes
         return severity;
     }
     
-    abstract String getOptionKey();
+    protected abstract String getOptionKey();
   
 }

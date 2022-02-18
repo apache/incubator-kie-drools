@@ -14,7 +14,7 @@
 
 package org.drools.mvel;
 
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.spi.BetaNodeFieldConstraint;

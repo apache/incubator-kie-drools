@@ -17,6 +17,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.parser.DroolsError;
 
 public class FieldTemplateError extends DroolsError {
     private Package   pkg;

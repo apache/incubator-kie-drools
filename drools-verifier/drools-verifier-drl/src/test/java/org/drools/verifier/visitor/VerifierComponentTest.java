@@ -23,7 +23,7 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.compiler.compiler.DrlParser;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.components.Field;

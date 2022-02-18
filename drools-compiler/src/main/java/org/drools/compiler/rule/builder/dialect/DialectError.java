@@ -15,7 +15,7 @@
 
 package org.drools.compiler.rule.builder.dialect;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 
 public class DialectError extends DroolsError {

@@ -22,7 +22,7 @@ import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.compiler.DecisionTableProvider;
+import org.drools.drl.extensions.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
 import org.drools.template.parser.DecisionTableParseException;
 import org.kie.api.io.Resource;

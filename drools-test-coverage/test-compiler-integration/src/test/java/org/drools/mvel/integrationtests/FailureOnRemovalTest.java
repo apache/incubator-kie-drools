@@ -18,7 +18,7 @@ package org.drools.mvel.integrationtests;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
