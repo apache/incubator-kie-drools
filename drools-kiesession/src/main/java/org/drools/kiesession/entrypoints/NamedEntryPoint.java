@@ -641,19 +641,20 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
     }
 
     public void dispose() {
-        if( dynamicFacts != null ) {
+        if ( dynamicFacts != null ) {
             // first we check for facts that were inserted into the working memory
             // using the old API and setting a per instance dynamic flag and remove the
             // session from the listeners list in the bean
-            for( InternalFactHandle handle : dynamicFacts ) {
+            for ( InternalFactHandle handle : dynamicFacts ) {
                 removePropertyChangeListener( handle, false );
             }
             dynamicFacts = null;
         }
-        for( ObjectTypeConf conf : getObjectTypeConfigurationRegistry().values() ) {
+
+        for ( ObjectTypeConf conf : getObjectTypeConfigurationRegistry().values() ) {
             // then, we check if any of the object types were configured using the
             // @propertyChangeSupport annotation, and clean them up
-            if( conf.isDynamic() ) {
+            if ( conf.isDynamic() ) {
                 // it is enough to iterate the facts on the concrete object type nodes
                 // only, as the facts will always be in their concrete object type nodes
                 // even if they were also asserted into higher level OTNs as well
@@ -666,6 +667,8 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                 }
             }
         }
+
+        reset();
     }
 
     public TraitHelper getTraitHelper() {
