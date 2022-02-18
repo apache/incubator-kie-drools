@@ -364,7 +364,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(person.getName()).isEqualTo("Person");
         assertThat(person.getComment()).isEqualTo("@Indexed");
         assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.codegen.data");
-        assertThat(person.getFields()).hasSize(13);
+        assertThat(person.getFields()).hasSize(14);
 
         ProtoField field = person.getFields().get(0);
         assertThat(field).isNotNull();
@@ -456,6 +456,14 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
 
         field = person.getFields().get(12);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("salary");
+        assertThat(field.getType()).isEqualTo("kogito.Serializable");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"org.kie.kogito.codegen.data.Money\"]");
+
+        field = person.getFields().get(13);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("zonedDateTime");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
@@ -801,13 +809,13 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(person).isNotNull();
         assertThat(person.getName()).isEqualTo("Person");
         assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.codegen.data");
-        assertThat(person.getFields()).hasSize(13);
+        assertThat(person.getFields()).hasSize(14);
 
         ProtoMessage personSubClass = proto.getMessages().get(1);
         assertThat(personSubClass).isNotNull();
         assertThat(personSubClass.getName()).isEqualTo("PersonSubClass");
         assertThat(personSubClass.getJavaPackageOption()).isEqualTo("org.kie.kogito.codegen.data");
-        assertThat(personSubClass.getFields()).hasSize(14);
+        assertThat(personSubClass.getFields()).hasSize(15);
 
         assertClassIsIncludedInSubclass(person, personSubClass);
     }

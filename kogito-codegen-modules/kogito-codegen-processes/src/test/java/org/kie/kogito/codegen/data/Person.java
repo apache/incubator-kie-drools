@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Person {
 
     private String id;
@@ -42,6 +44,8 @@ public class Person {
     private OffsetDateTime offsetDateTime;
     private Date date;
     private BigDecimal bigDecimal;
+    @JsonIgnore
+    private Money salary;
 
     private transient String ignoreMe;
 
@@ -55,6 +59,7 @@ public class Person {
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
+        salary = Money.of(BigDecimal.valueOf(100));
     }
 
     public String getName() {
@@ -183,6 +188,14 @@ public class Person {
 
     public void setBigDecimal(BigDecimal bigDecimal) {
         this.bigDecimal = bigDecimal;
+    }
+
+    public Money getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Money salary) {
+        this.salary = salary;
     }
 
     @Override

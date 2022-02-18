@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.process.persistence.proto;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
@@ -23,6 +24,8 @@ import java.util.Set;
 
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static java.lang.String.format;
 
@@ -71,6 +74,8 @@ public interface ProtoGenerator {
             return "kogito.Date";
         } else if (Instant.class.getCanonicalName().equals(type)) {
             return "kogito.Instant";
+        } else if (JsonNode.class.getCanonicalName().equals(type)) {
+            return KOGITO_SERIALIZABLE;
         } else if (type.startsWith("java.lang") || type.startsWith("java.util") || type.startsWith("java.time") || type.startsWith("java.math")) {
             try {
                 Class<?> cls = Class.forName(type);
@@ -86,9 +91,30 @@ public interface ProtoGenerator {
             } catch (ClassNotFoundException e) {
                 return null;
             }
+        } else {
+            try {
+                Class<?> cls = Class.forName(type);
+                if (cls.isEnum() || containsValidConstructor(cls)) {
+                    return null;
+                } else if (Serializable.class.isAssignableFrom(cls)) {
+                    return KOGITO_SERIALIZABLE;
+                } else {
+                    throw new IllegalArgumentException(
+                            format("Custom type %s is no supported by Kogito persistence, please consider using a class that extends java.io.Serializable and contains a no arg constructor", type));
+                }
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
         }
+    }
 
-        return null;
+    private boolean containsValidConstructor(Class<?> cls) {
+        for (Constructor c : cls.getConstructors()) {
+            if (c.getParameterCount() == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     interface Builder<E, T extends ProtoGenerator> {
