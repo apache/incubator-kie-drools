@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;

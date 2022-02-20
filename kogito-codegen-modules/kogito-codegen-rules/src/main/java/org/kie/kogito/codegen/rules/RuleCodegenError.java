@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 
 public class RuleCodegenError extends Error {
 

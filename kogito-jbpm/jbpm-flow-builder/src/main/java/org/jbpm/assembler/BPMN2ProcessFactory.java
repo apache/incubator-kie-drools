@@ -15,18 +15,20 @@
  */
 package org.jbpm.assembler;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.kie.api.io.ResourceType;
+import org.kie.api.internal.utils.KieService;
+import org.kie.internal.builder.KnowledgeBuilder;
 
-public class BPMN2AssemblerService extends AbstractProcessAssembler {
+public class BPMN2ProcessFactory {
 
-    @Override
-    public ResourceType getResourceType() {
-        return ResourceType.BPMN2;
+    private static class LazyHolder {
+        private static BPMN2ProcessProvider provider = KieService.load(BPMN2ProcessProvider.class);
     }
 
-    @Override
-    protected void configurePackageBuilder(KnowledgeBuilderImpl kb) {
-        BPMN2ProcessFactory.configurePackageBuilder(kb);
+    public static void configurePackageBuilder(KnowledgeBuilder kBuilder) {
+        getBPMN2ProcessProvider().configurePackageBuilder(kBuilder);
+    }
+
+    public static BPMN2ProcessProvider getBPMN2ProcessProvider() {
+        return LazyHolder.provider;
     }
 }

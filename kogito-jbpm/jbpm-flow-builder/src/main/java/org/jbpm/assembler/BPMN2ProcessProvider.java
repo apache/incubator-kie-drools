@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.rules;
+package org.jbpm.assembler;
 
-import org.drools.drl.parser.DroolsError;
-import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.api.internal.utils.KieService;
+import org.kie.internal.builder.KnowledgeBuilder;
 
-public interface RuleFileGenerator {
-    String generatedFilePath();
+public interface BPMN2ProcessProvider extends KieService {
 
-    GeneratedFile generate();
+    void configurePackageBuilder(KnowledgeBuilder packageBuilder);
 
-    default boolean validate() {
-        return true;
-    }
-
-    default DroolsError getError() {
-        return null;
-    }
 }

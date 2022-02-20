@@ -16,8 +16,8 @@
 package org.jbpm.process.builder;
 
 import org.drools.compiler.builder.impl.errors.ErrorHandler;
-import org.drools.compiler.compiler.DroolsError;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.parser.DroolsError;
 import org.jbpm.compiler.ProcessBuildError;
 import org.kie.api.definition.process.Process;
 

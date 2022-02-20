@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;

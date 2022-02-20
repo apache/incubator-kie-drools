@@ -18,7 +18,6 @@ package org.jbpm.assembler;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -45,7 +44,7 @@ public abstract class AbstractProcessAssembler implements KieAssemblerService {
 
         try {
             List<Process> processes = processBuilder.addProcessFromXml(resource);
-            List<BaseKnowledgeBuilderResultImpl> errors = processBuilder.getErrors();
+            List<KnowledgeBuilderResult> errors = processBuilder.getErrors();
             if (errors.isEmpty()) {
 
                 for (Process process : processes) {

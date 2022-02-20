@@ -27,21 +27,19 @@ import javax.xml.parsers.FactoryConfigurationError;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.DuplicateProcess;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.compiler.ParserError;
-import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ProcessPackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.ParserError;
 import org.drools.mvel.java.JavaDialect;
+import org.jbpm.assembler.DuplicateProcess;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
@@ -79,6 +77,7 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +90,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     private static final Logger logger = LoggerFactory.getLogger(ProcessBuilderImpl.class);
 
     private KnowledgeBuilderImpl knowledgeBuilder;
-    private final List<BaseKnowledgeBuilderResultImpl> errors = new ArrayList<BaseKnowledgeBuilderResultImpl>();
+    private final List<KnowledgeBuilderResult> errors = new ArrayList<KnowledgeBuilderResult>();
 
     public ProcessBuilderImpl(KnowledgeBuilderImpl packageBuilder) {
         this.knowledgeBuilder = packageBuilder;
@@ -105,7 +104,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         }
     }
 
-    public List<BaseKnowledgeBuilderResultImpl> getErrors() {
+    public List<KnowledgeBuilderResult> getErrors() {
         return errors;
     }
 

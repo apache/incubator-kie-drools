@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.compiler.compiler.DecisionTableFactory;
+import org.drools.drl.extensions.DecisionTableFactory;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.ApplicationSection;
