@@ -31,7 +31,7 @@
             "refName": "getPerson",
             "arguments": {
               "name": ".name",
-              "age": ".age"
+              "age": 27
             }
           },
           "actionDataFilter": {

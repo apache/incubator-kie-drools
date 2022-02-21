@@ -15,8 +15,6 @@
  */
 package org.jbpm.compiler.canonical;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,15 +24,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.jbpm.compiler.canonical.descriptors.AbstractServiceTaskDescriptor;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
@@ -67,21 +63,15 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.CharLiteralExpr;
-import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -211,48 +201,8 @@ public class ProcessVisitor extends AbstractVisitor {
             }
         }
         process.getMetaData().entrySet().stream().filter(e -> e.getKey().startsWith("custom"))
-                .forEach(entry -> body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "metaData", new StringLiteralExpr(entry.getKey()), getMetadataValueExpression(entry.getValue()))));
-    }
-
-    private Expression getMetadataValueExpression(Object object) {
-        if (object == null) {
-            return new NullLiteralExpr();
-        } else if (object instanceof Boolean) {
-            return new BooleanLiteralExpr(((Boolean) object).booleanValue());
-        } else if (object instanceof Character) {
-            return new CharLiteralExpr(((Character) object).charValue());
-        } else if (object instanceof Integer) {
-            return new BooleanLiteralExpr(((Boolean) object).booleanValue());
-        } else if (object instanceof Long) {
-            return new LongLiteralExpr(object.toString());
-        } else if (object instanceof Integer || object instanceof Short) {
-            return new IntegerLiteralExpr(object.toString());
-        } else if (object instanceof BigInteger) {
-            return new BigIntegerLiteralExpr((BigInteger) object);
-        } else if (object instanceof BigDecimal) {
-            return new BigDecimalLiteralExpr((BigDecimal) object);
-        } else if (object instanceof Number) {
-            return new DoubleLiteralExpr(((Number) object).doubleValue());
-        } else if (object instanceof String) {
-            return new StringLiteralExpr(object.toString());
-        } else {
-            return convertExpression(object);
-        }
-    }
-
-    private Expression convertExpression(Object object) {
-        Class<?> objectClass = object.getClass();
-        while (objectClass != null && !TypeConverterRegistry.get().isRegistered(objectClass.getName())) {
-            objectClass = objectClass.getSuperclass();
-        }
-        if (objectClass != null) {
-            return new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
-                    NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
-                    NodeList.nodeList(
-                            new StringLiteralExpr(TypeConverterRegistry.get().forTypeReverse(object).apply((object)))));
-        } else {
-            return new StringLiteralExpr(object.toString());
-        }
+                .forEach(entry -> body
+                        .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "metaData", new StringLiteralExpr(entry.getKey()), AbstractServiceTaskDescriptor.getLiteralExpr(entry.getValue()))));
     }
 
     private <U extends org.kie.api.definition.process.Node> void visitNodes(List<U> nodes, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
