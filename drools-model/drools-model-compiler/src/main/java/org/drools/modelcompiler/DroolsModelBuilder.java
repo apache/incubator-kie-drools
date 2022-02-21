@@ -48,14 +48,14 @@ public class DroolsModelBuilder {
     private final boolean decisionTableSupported;
     private final boolean hotReloadMode;
 
-    public DroolsModelBuilder(Collection<Resource> resources, boolean decisionTableSupported, boolean hotReloadMode, ClassLoader classLoader) {
+    public DroolsModelBuilder(Collection<Resource> resources, KnowledgeBuilderConfigurationImpl config, boolean decisionTableSupported, boolean hotReloadMode) {
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
         this.hotReloadMode = hotReloadMode;
-        this.modelBuilder = makeModelBuilder(classLoader);
+        this.modelBuilder = makeModelBuilder(config);
     }
 
-    void build() {
+    public Collection<GeneratedFile> build() {
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
         resources.forEach(f -> addResource(batch, f));
 
@@ -75,23 +75,21 @@ public class DroolsModelBuilder {
             }
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
-    }
 
-    public Collection<GeneratedFile> generateCanonicalModelSources() {
-        List<GeneratedFile> legacyModelFiles = new ArrayList<>();
+        List<GeneratedFile> modelFiles = new ArrayList<>();
 
         for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
-            pkgSources.collectGeneratedFiles(legacyModelFiles);
+            pkgSources.collectGeneratedFiles(modelFiles);
         }
 
-        return legacyModelFiles;
+        return modelFiles;
     }
 
     Collection<KogitoPackageSources> packageSources() {
         return modelBuilder.getPackageSources();
     }
 
-    private ModelBuilderImpl<KogitoPackageSources> makeModelBuilder(ClassLoader cl) {
+    private ModelBuilderImpl<KogitoPackageSources> makeModelBuilder(KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration) {
         if (!decisionTableSupported &&
                 resources.stream().anyMatch(r -> r.getResourceType() == ResourceType.DTABLE)) {
             throw new RuntimeException("MissingDecisionTableDependencyError");
@@ -99,7 +97,7 @@ public class DroolsModelBuilder {
 
         return new ModelBuilderImpl<>(
                 KogitoPackageSources::dumpSources,
-                new KnowledgeBuilderConfigurationImpl(cl),
+                knowledgeBuilderConfiguration,
                 DUMMY_RELEASE_ID,
                 hotReloadMode);
     }
