@@ -170,7 +170,8 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 toReturn.stream().filter(kiePMMLModel -> {
                             String fullSourceName =
                                     String.format(PACKAGE_CLASS_TEMPLATE,
-                                                  kiePMMLModel.getKModulePackageName(), kiePMMLModel.getName());
+                                                  kiePMMLModel.getKModulePackageName(),
+                                                  getSanitizedClassName(kiePMMLModel.getName()));
                             return expectedClass.equals(fullSourceName);
                         })
                         .findFirst()
