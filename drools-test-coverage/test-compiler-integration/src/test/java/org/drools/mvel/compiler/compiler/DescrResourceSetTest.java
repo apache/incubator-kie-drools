@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.DrlParser;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.io.impl.InputStreamResource;
 import org.junit.Test;

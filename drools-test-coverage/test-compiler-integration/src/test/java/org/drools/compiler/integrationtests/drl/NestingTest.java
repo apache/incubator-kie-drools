@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.DrlParser;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;

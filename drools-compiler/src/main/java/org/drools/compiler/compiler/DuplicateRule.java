@@ -50,7 +50,7 @@ public class DuplicateRule extends ConfigurableSeverityResult {
 	}
 
     @Override
-    String getOptionKey() {
+    protected String getOptionKey() {
         return KEY;
     }
 

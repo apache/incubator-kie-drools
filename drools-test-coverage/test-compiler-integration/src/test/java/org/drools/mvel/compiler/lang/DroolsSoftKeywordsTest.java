@@ -15,7 +15,7 @@
 
 package org.drools.mvel.compiler.lang;
 
-import org.drools.compiler.lang.DroolsSoftKeywords;
+import org.drools.drl.parser.lang.DroolsSoftKeywords;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.junit.Test;
 

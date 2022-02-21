@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.lang.Expander;
-import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
+import org.drools.drl.parser.lang.Expander;
+import org.drools.drl.parser.lang.dsl.DefaultExpanderResolver;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.compiler.Cheese;

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.compiler.AnnotationDeclarationError;
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.PackageDescr;

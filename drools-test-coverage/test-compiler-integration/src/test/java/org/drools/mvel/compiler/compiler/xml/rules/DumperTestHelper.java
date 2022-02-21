@@ -21,7 +21,7 @@ import java.io.StringReader;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.compiler.DrlParser;
+import org.drools.drl.parser.DrlParser;
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.mvel.DrlDumper;

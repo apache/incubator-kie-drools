@@ -29,10 +29,10 @@ import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.assertj.core.api.Assertions;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.lang.DRL6Lexer;
-import org.drools.compiler.lang.DRL6Parser;
-import org.drools.compiler.lang.DRLParser;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.lang.DRL6Lexer;
+import org.drools.drl.parser.lang.DRL6Parser;
+import org.drools.drl.parser.lang.DRLParser;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AndDescr;
@@ -68,7 +68,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.drools.drl.parser.DRLFactory.buildParser;
 
 public class RuleParserTest extends TestCase {
 

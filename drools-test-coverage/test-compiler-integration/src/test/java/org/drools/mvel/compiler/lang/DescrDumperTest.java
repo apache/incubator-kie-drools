@@ -15,7 +15,7 @@
 
 package org.drools.mvel.compiler.lang;
 
-import org.drools.compiler.compiler.DrlExprParser;
+import org.drools.drl.parser.DrlExprParser;
 import org.drools.compiler.lang.DescrDumper;
 import org.drools.compiler.lang.DumperContext;
 import org.drools.drl.ast.descr.AtomicExprDescr;

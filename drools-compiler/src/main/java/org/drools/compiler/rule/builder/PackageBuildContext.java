@@ -27,7 +27,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;

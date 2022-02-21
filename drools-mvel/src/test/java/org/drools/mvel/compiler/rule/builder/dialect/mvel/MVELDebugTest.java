@@ -16,7 +16,7 @@
 package org.drools.mvel.compiler.rule.builder.dialect.mvel;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.DrlParser;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;

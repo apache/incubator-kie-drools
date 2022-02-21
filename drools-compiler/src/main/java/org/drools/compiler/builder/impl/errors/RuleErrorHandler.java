@@ -15,7 +15,7 @@
 
 package org.drools.compiler.builder.impl.errors;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.core.definitions.rule.impl.RuleImpl;

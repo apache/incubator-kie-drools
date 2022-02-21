@@ -15,7 +15,7 @@
 
 package org.drools.compiler.builder.impl.errors;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.kie.internal.jci.CompilationProblem;
 
 import java.util.ArrayList;

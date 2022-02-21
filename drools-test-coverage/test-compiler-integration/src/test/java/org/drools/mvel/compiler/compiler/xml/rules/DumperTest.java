@@ -16,8 +16,8 @@
 package org.drools.mvel.compiler.compiler.xml.rules;
 
 import org.assertj.core.api.Assertions;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.mvel.DrlDumper;

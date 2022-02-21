@@ -21,7 +21,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;

@@ -23,7 +23,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.NodeTypeEnums;

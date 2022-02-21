@@ -20,10 +20,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.drools.compiler.lang.dsl.DSLMappingEntry;
-import org.drools.compiler.lang.dsl.DSLMappingFile;
-import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.compiler.lang.dsl.DefaultExpander;
+import org.drools.drl.parser.lang.dsl.DSLMappingEntry;
+import org.drools.drl.parser.lang.dsl.DSLMappingFile;
+import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.drl.parser.lang.dsl.DefaultExpander;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

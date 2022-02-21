@@ -21,6 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 
+import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
+import org.drools.drl.parser.DroolsError;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 

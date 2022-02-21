@@ -20,14 +20,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.DRLParser;
-import org.drools.compiler.lang.Expander;
-import org.drools.compiler.lang.dsl.DefaultExpander;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.lang.DRLParser;
+import org.drools.drl.parser.lang.Expander;
+import org.drools.drl.parser.lang.dsl.DefaultExpander;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.drools.drl.parser.DRLFactory.buildParser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
