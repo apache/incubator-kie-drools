@@ -63,6 +63,14 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
         public String getType() {
             return type;
         }
+
+        @Override
+        public String toString() {
+            return "Argument{" +
+                    "type='" + type + '\'' +
+                    ", name='" + name + '\'' +
+                    '}';
+        }
     }
 
     protected final List<Argument> parameters;
