@@ -91,16 +91,6 @@ public class LiveQueriesBadResultTest {
     }
 
     @Test
-    public void testBadAccessToParameterWithoutType() {
-        Assertions.assertThatThrownBy(() -> KieBaseUtil.getKieBaseFromClasspathResources(
-                    getClass(),
-                    kieBaseTestConfiguration,
-                    "query-bad-parametr-access.drl"))
-                .isInstanceOf(AssertionError.class)
-                .hasMessageContaining("Comparison operation requires compatible types");
-    }
-
-    @Test
     public void testAccessToNotExistingVariable() {
 
         ViewChangedEventListener listener = new ViewChangedEventListener() {
