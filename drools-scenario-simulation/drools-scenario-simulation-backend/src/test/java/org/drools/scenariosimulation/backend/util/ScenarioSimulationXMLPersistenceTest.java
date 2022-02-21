@@ -305,6 +305,22 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertEquals("1.0", version);
     }
 
+    @Test
+    public void extractVersionWhenXmlPrologIsPresent() {
+        String version = instance.extractVersion("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                                         "<ScenarioSimulationModel version=\"1.1\">");
+        assertEquals("1.1", version);
+    }
+
+    @Test
+    public void extractVersionWhenMoreVersionAttributesArePresent() {
+        String version = instance.extractVersion("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                                         "<ScenarioSimulationModel version=\"1.2\">\n" +
+                                                         "<someUnknownTag version=\"1.1\"/>\n" +
+                                                         "</ScenarioSimulationModel>");
+        assertEquals("1.2", version);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void unmarshalEmptyContent() throws Exception {
         ScenarioSimulationXMLPersistence.getInstance().unmarshal("");
@@ -334,6 +350,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     /**
      * Verify the given <code>Map</code> has one single entry, whose <code>List</code> value also has a single children.
      * If <b>expectedTextContent</b> is given, it also check the children text content match
+     *
      * @param toCheck
      * @param expectedTextContent
      */
