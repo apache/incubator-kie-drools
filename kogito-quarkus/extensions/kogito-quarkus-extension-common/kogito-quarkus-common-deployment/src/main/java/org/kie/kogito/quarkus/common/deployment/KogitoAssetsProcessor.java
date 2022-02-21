@@ -233,7 +233,7 @@ public class KogitoAssetsProcessor {
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.event.AbstractDataEvent"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.AbstractProcessDataEvent"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.ProcessDataEvent"));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.ProcessInstanceDataEvent"));
         reflectiveClass.produce(
@@ -268,7 +268,7 @@ public class KogitoAssetsProcessor {
         optionalIndex.ifPresent(index -> {
             // not sure there is any generated class directly inheriting from AbstractDataEvent, keeping just in case
             addChildrenClasses(index, "org.kie.kogito.event.AbstractDataEvent", reflectiveClass);
-            addChildrenClasses(index, "org.kie.kogito.services.event.AbstractProcessDataEvent", reflectiveClass);
+            addChildrenClasses(index, "org.kie.kogito.services.event.ProcessDataEvent", reflectiveClass);
         });
     }
 

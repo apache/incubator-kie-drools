@@ -145,6 +145,8 @@ public class ProcessesAssetsProcessor {
                 "org.kie.kogito.process.impl.BaseWorkItem",
                 "org.kie.kogito.event.Topic",
                 "org.kie.kogito.event.cloudevents.CloudEventMeta",
+                "org.kie.kogito.event.cloudevents.SpecVersionDeserializer",
+                "org.kie.kogito.event.cloudevents.SpecVersionSerializer",
                 "org.kie.kogito.jobs.api.Job");
     }
 
