@@ -26,6 +26,6 @@ public class KiePMMLTestingModelWithSources extends KiePMMLModelWithSources {
 
     public KiePMMLTestingModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
         super(modelName, kmodulePackageName, Collections.emptyList(), Collections.emptyList(),
-              Collections.emptyList(), sourcesMap);
+              Collections.emptyList(), sourcesMap, false);
     }
 }

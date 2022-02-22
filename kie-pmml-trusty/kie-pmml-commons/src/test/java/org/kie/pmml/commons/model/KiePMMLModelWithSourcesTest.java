@@ -43,7 +43,8 @@ public class KiePMMLModelWithSourcesTest {
                                                               Collections.emptyList(),
                                                               Collections.emptyList(),
                                                               Collections.emptyList(),
-                                                              SOURCES_MAP);
+                                                              SOURCES_MAP,
+                                                              false);
     }
 
     @Test(expected = KiePMMLException.class)
