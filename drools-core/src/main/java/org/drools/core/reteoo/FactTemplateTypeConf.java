@@ -58,7 +58,6 @@ public class FactTemplateTypeConf
         this.entryPoint = entryPoint;
         this.objectType = new FactTemplateObjectType( factTemplate );
         this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
-        this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -87,7 +86,7 @@ public class FactTemplateTypeConf
 
     public ObjectTypeNode[] getObjectTypeNodes() {
         if ( this.cache == null ) {
-            this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
+            this.cache = this.concreteObjectTypeNode != null ? new ObjectTypeNode[]{this.concreteObjectTypeNode} : new ObjectTypeNode[0];
         }
         return this.cache;
     }
