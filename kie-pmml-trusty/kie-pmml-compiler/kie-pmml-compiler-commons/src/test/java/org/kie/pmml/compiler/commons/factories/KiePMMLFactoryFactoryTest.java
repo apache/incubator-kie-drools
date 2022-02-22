@@ -14,14 +14,10 @@ package org.kie.pmml.compiler.commons.factories;/*
  * limitations under the License.
  */
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import org.junit.Test;
-import org.kie.pmml.api.enums.PMML_MODEL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -30,19 +26,13 @@ import static org.kie.pmml.commons.Constants.GET_MODEL;
 
 public class KiePMMLFactoryFactoryTest {
 
-    private static final List<PMML_MODEL> NOT_CODEGEN = Arrays.asList(PMML_MODEL.REGRESSION_MODEL);
-
     @Test
     public void getInstantiationExpression() {
         final String kiePMMLModelClass = "org.kie.model.ClassModel";
-        for (PMML_MODEL pmmlModel : PMML_MODEL.values()) {
-            Expression retrieved = KiePMMLFactoryFactory.getInstantiationExpression(kiePMMLModelClass, pmmlModel);
-            if (NOT_CODEGEN.contains(pmmlModel)) {
-                validateNotCodegen(retrieved, kiePMMLModelClass);
-            } else {
-                validateCodegen(retrieved, kiePMMLModelClass);
-            }
-        }
+        Expression retrieved = KiePMMLFactoryFactory.getInstantiationExpression(kiePMMLModelClass, true);
+        validateNotCodegen(retrieved, kiePMMLModelClass);
+        retrieved = KiePMMLFactoryFactory.getInstantiationExpression(kiePMMLModelClass, false);
+        validateCodegen(retrieved, kiePMMLModelClass);
     }
 
     private void validateNotCodegen(Expression toValidate, String kiePMMLModelClass) {

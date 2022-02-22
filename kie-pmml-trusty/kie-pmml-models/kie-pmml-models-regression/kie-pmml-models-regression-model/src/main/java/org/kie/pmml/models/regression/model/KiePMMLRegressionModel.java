@@ -21,12 +21,13 @@ import java.util.Map;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Regression.html>Regression</a>
  */
-public class KiePMMLRegressionModel extends KiePMMLModel {
+public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterpreted {
 
     private static final long serialVersionUID = -6870859552385880008L;
     private AbstractKiePMMLTable regressionTable;
