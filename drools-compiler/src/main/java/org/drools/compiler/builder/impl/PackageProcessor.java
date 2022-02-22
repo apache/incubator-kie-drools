@@ -56,14 +56,15 @@ import java.util.Set;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 
-public class PackageProcessor {
+public class PackageProcessor extends AbstractPackageProcessor{
     private KnowledgeBuilderConfigurationImpl configuration;
     private TypeDeclarationBuilder typeBuilder;
-    private Collection<KnowledgeBuilderResult> results;
-    PackageRegistry pkgRegistry;
-    PackageDescr packageDescr;
 
-    void process() {
+    public PackageProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+        super(pkgRegistry, packageDescr);
+    }
+
+    public void process() {
         for (final ImportDescr importDescr : packageDescr.getImports()) {
             pkgRegistry.addImport(importDescr);
         }
@@ -114,7 +115,6 @@ class TypeDeclarationAnnotationNormalizer {
     private final AnnotationNormalizer annotationNormalizer;
     final PackageDescr packageDescr;
     final TypeResolver typeResolver;
-    boolean isStrict; // = configuration.getLanguageLevel().useJavaAnnotations();
     private Collection<KnowledgeBuilderResult> results;
 
     public TypeDeclarationAnnotationNormalizer(AnnotationNormalizer annotationNormalizer, PackageDescr packageDescr, TypeResolver typeResolver) {
@@ -273,10 +273,6 @@ abstract class AnnotationNormalizer {
 }
 
 class RuleAnnotationNormalizer {
-
-
-    private KnowledgeBuilderConfigurationImpl configuration;
-    boolean isStrict ; // = configuration.getLanguageLevel().useJavaAnnotations();
     AnnotationNormalizer annotationNormalizer;
     private PackageDescr packageDescr;
 
