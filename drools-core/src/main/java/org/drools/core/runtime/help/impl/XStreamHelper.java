@@ -43,6 +43,7 @@ import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
@@ -55,6 +56,8 @@ public class XStreamHelper {
                        InsertObjectCommand.class );
         xstream.alias( "modify",
                        ModifyCommand.class );
+        xstream.alias( "update",
+                       UpdateCommand.class );
         xstream.alias( "setters",
                        SetterImpl.class );
         // TODO retract is deprecated and should be removed
