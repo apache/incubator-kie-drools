@@ -538,14 +538,17 @@ public class ConditionAnalyzer {
             return;
         }
 
+        // if it's a vararg, but the last argument is already an array there's no need for any special treatment
+        isVarArgs &= !(params.length == paramTypes.length && params[paramTypes.length-1].getKnownEgressType().isArray());
+
         for (int i = 0; i < (isVarArgs ? paramTypes.length-1 : paramTypes.length); i++) {
             invocation.addArgument(statementToExpression(params[i], paramTypes[i]));
         }
 
         if (isVarArgs) {
-            Class<?> varargType = paramTypes[paramTypes.length-1];
+            Class<?> varargType = paramTypes[paramTypes.length - 1];
             ArrayCreationExpression varargParam = new ArrayCreationExpression(varargType);
-            for (int i = paramTypes.length-1; i < params.length; i++) {
+            for (int i = paramTypes.length - 1; i < params.length; i++) {
                 varargParam.addItem(statementToExpression(params[i], varargType.getComponentType()));
             }
             invocation.addArgument(varargParam);

@@ -172,7 +172,7 @@ public class CoercedExpression {
                 || Number.class.isAssignableFrom(rightClass)
                 || Boolean.class == rightClass
                 || String.class == rightClass
-                || (Object.class == rightClass && equalityExpr)
+                || Object.class == rightClass
                 || (Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
     }
 
