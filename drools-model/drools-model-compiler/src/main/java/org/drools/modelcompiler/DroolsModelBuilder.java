@@ -56,12 +56,19 @@ public class DroolsModelBuilder {
     }
 
     public Collection<GeneratedFile> build() {
-        CompositeKnowledgeBuilder batch = modelBuilder.batch();
-        resources.forEach(f -> addResource(batch, f));
+//        CompositeKnowledgeBuilder batch = modelBuilder.batch();
+//        resources.forEach(f -> addResource(batch, f));
 
         try {
-            batch.build();
-        } catch (RuntimeException e) {
+//            batch.build();
+
+            for (Resource r : resources) {
+                modelBuilder.addPackageFromDrl(r);
+
+            }
+
+
+        } catch (Exception e) {
             for (DroolsError error : modelBuilder.getErrors().getErrors()) {
                 LOGGER.error(error.toString());
             }
