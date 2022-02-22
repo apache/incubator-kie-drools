@@ -193,7 +193,8 @@ final class IndirectPatternVariable<A, PatternVar_>
         Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
-        Predicate2<PatternVar_, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(a, rightExtractor.apply(b));
+        Predicate2<PatternVar_, LeftJoinVar_> predicate =
+                (b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b));
         return new IndirectPatternVariable<>(this, p -> {
             BetaIndex<PatternVar_, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
                     AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor,

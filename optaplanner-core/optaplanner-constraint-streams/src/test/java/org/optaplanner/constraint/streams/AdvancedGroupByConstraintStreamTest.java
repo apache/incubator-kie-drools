@@ -59,7 +59,7 @@ class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().add(entity);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                factory -> factory.from(TestdataLavishEntity.class)
+                factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(e -> e.getCode().substring(0, 1), count())
                         .groupBy(Pair::of)
                         .filter(pair -> !pair.getKey().equals("G"))
@@ -91,7 +91,7 @@ class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .groupBy(count())
                     .filter(count -> count == 10)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, i -> i);
@@ -116,7 +116,7 @@ class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .groupBy(toSet())
                     .groupBy(sum(Set::size))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, count -> count);
@@ -140,7 +140,7 @@ class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup)
                     .groupBy(toSet())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, Set::size);
@@ -466,7 +466,7 @@ class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup, count())
                     .ifExists(TestdataLavishEntityGroup.class, equal((groupA, count) -> groupA, Function.identity()))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
@@ -501,7 +501,7 @@ class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .ifExists(TestdataLavishEntityGroup.class,
                             equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
                     .groupBy(TestdataLavishEntity::getEntityGroup, count())
@@ -594,7 +594,7 @@ class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
     void groupByThenJoinThenGroupBy() { // PLANNER-2270
         assumeDrools();
         assertThatCode(() -> buildScoreDirector(factory -> {
-            return factory.from(TestdataLavishEntity.class)
+            return factory.forEach(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue)
                     .join(TestdataLavishEntity.class)
                     .groupBy((group, value, entity) -> group,
