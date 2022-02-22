@@ -6,5 +6,6 @@ import java.util.Collection;
 
 public interface Processor {
     void process();
+
     Collection<? extends KnowledgeBuilderResult> getResults();
 }

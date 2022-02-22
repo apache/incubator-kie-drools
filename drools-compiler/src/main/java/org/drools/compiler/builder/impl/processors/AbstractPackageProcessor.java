@@ -19,6 +19,7 @@ public abstract class AbstractPackageProcessor implements Processor {
     }
 
     public abstract void process();
+
     public Collection<KnowledgeBuilderResult> getResults() {
         return results;
     }

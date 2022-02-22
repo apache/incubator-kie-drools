@@ -17,7 +17,7 @@ import org.drools.drl.parser.DroolsError;
 
 class WindowDeclarationProcessor extends AbstractPackageProcessor {
 
-    private DroolsAssemblerContext kBuilder;
+    private final DroolsAssemblerContext kBuilder;
 
     public WindowDeclarationProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, DroolsAssemblerContext kBuilder) {
         super(pkgRegistry, packageDescr);

@@ -14,17 +14,16 @@ import java.util.Collection;
 import static org.drools.core.util.StringUtils.ucFirst;
 
 abstract class AnnotationNormalizer {
-    public static AnnotationNormalizer of(TypeResolver typeResolver, boolean isStrict) {
-        if (isStrict) return new AnnotationNormalizer.Strict(typeResolver);
-        else return new AnnotationNormalizer.NonStrict(typeResolver);
-    }
-
     protected final TypeResolver typeResolver;
     protected final Collection<KnowledgeBuilderResult> results;
-
     AnnotationNormalizer(TypeResolver typeResolver) {
         this.typeResolver = typeResolver;
         this.results = new ArrayList<>();
+    }
+
+    public static AnnotationNormalizer of(TypeResolver typeResolver, boolean isStrict) {
+        if (isStrict) return new AnnotationNormalizer.Strict(typeResolver);
+        else return new AnnotationNormalizer.NonStrict(typeResolver);
     }
 
     abstract boolean isStrict();

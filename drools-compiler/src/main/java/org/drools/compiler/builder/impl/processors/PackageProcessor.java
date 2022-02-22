@@ -1,13 +1,12 @@
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -16,14 +15,14 @@ import static java.util.Arrays.asList;
 
 public final class PackageProcessor extends AbstractPackageProcessor {
     private final KnowledgeBuilderImpl knowledgeBuilder;
-    private final KnowledgeBaseImpl kBase;
+    private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final TypeDeclarationBuilder typeBuilder;
     private final BiConsumer<InternalKnowledgePackage, String> globalCleanupCallback;
 
     public PackageProcessor(
             KnowledgeBuilderImpl knowledgeBuilder,
-            KnowledgeBaseImpl kBase,
+            InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration,
             TypeDeclarationBuilder typeBuilder,
             BiConsumer<InternalKnowledgePackage, String> globalCleanupCallback,

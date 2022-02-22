@@ -4,28 +4,24 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.internal.builder.ResourceChange;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 class GlobalProcessor extends AbstractPackageProcessor {
     protected static final transient Logger logger = LoggerFactory.getLogger(GlobalProcessor.class);
 
-    private final KnowledgeBaseImpl kBase;
+    private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderImpl knowledgeBuilder;
     private final BiConsumer<InternalKnowledgePackage, String> cleanupCallback;
 
-    public GlobalProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, KnowledgeBaseImpl kBase, KnowledgeBuilderImpl knowledgeBuilder, BiConsumer<InternalKnowledgePackage, String> cleanupCallback) {
+    public GlobalProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, BiConsumer<InternalKnowledgePackage, String> cleanupCallback) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.knowledgeBuilder = knowledgeBuilder;
