@@ -1584,6 +1584,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         PackageProcessor packageProcessor =
                 new PackageProcessor(this, kBase, configuration, typeBuilder, this::globalCleanup, pkgRegistry, packageDescr);
+        packageProcessor.process();
+        this.results.addAll(packageProcessor.getResults());
     }
 
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
