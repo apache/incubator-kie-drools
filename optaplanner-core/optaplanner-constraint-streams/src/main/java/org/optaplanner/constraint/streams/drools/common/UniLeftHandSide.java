@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,11 +101,11 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         this(new DirectPatternVariable<>(variableFactory.createVariable(aClass, "var")), variableFactory);
     }
 
-    protected UniLeftHandSide(Variable<A> variable, List<ViewItem<?>> viewItems, DroolsVariableFactory variableFactory) {
+    UniLeftHandSide(Variable<A> variable, List<ViewItem<?>> viewItems, DroolsVariableFactory variableFactory) {
         this(new DirectPatternVariable<>(variable, viewItems), variableFactory);
     }
 
-    protected UniLeftHandSide(PatternVariable<A, ?, ?> patternVariable, DroolsVariableFactory variableFactory) {
+    UniLeftHandSide(PatternVariable<A, ?, ?> patternVariable, DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariable = Objects.requireNonNull(patternVariable);
         this.ruleContext = buildRuleContext();

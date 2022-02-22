@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,37 +16,15 @@
 
 package org.optaplanner.constraint.streams.drools.common;
 
-import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.drools.model.BetaIndex;
-import org.drools.model.BetaIndex2;
-import org.drools.model.BetaIndex3;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
-import org.drools.model.functions.Predicate2;
-import org.drools.model.functions.Predicate3;
-import org.drools.model.functions.Predicate4;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
-import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.QuadPredicate;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.impl.score.stream.JoinerType;
 
 /**
  * Represents a single variable with all of its patterns in the left hand side of a Drools rule.
@@ -120,184 +98,41 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
  *
  * @param <A> generic type of the primary variable
  */
-class DirectPatternVariable<A> implements PatternVariable<A, A, DirectPatternVariable<A>> {
-
-    private final Variable<A> primaryVariable;
-    private final Supplier<PatternDSL.PatternDef<A>> patternSupplier;
-    private final List<ViewItem<?>> prerequisiteExpressions;
-    private final List<ViewItem<?>> dependentExpressions;
+final class DirectPatternVariable<A> extends AbstractPatternVariable<A, A, DirectPatternVariable<A>> {
 
     DirectPatternVariable(Variable<A> aVariable) {
         this(aVariable, Collections.emptyList());
+    }
+
+    DirectPatternVariable(Variable<A> aVariable, List<ViewItem<?>> prerequisiteExpressions) {
+        super(aVariable, () -> pattern(aVariable), prerequisiteExpressions, Collections.emptyList());
     }
 
     DirectPatternVariable(Variable<A> aVariable, ViewItem<?> prerequisiteExpression) {
         this(aVariable, Collections.singletonList(prerequisiteExpression));
     }
 
-    DirectPatternVariable(Variable<A> aVariable, List<ViewItem<?>> prerequisiteExpressions) {
-        this.primaryVariable = aVariable;
-        this.patternSupplier = () -> pattern(aVariable);
-        this.prerequisiteExpressions = prerequisiteExpressions;
-        this.dependentExpressions = Collections.emptyList();
-    }
-
     private DirectPatternVariable(DirectPatternVariable<A> patternCreator,
             UnaryOperator<PatternDSL.PatternDef<A>> patternMutator) {
-        this.primaryVariable = patternCreator.primaryVariable;
-        this.patternSupplier = () -> patternMutator.apply(patternCreator.patternSupplier.get());
-        this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
-        this.dependentExpressions = patternCreator.dependentExpressions;
+        super(patternCreator, patternMutator);
     }
 
     private DirectPatternVariable(DirectPatternVariable<A> patternCreator, ViewItem<?> dependentExpression) {
-        this.primaryVariable = patternCreator.primaryVariable;
-        this.patternSupplier = patternCreator.patternSupplier;
-        this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
-        this.dependentExpressions = Stream.concat(patternCreator.dependentExpressions.stream(), Stream.of(dependentExpression))
-                .collect(Collectors.toList());
+        super(patternCreator, dependentExpression);
     }
 
     @Override
-    public Variable<A> getPrimaryVariable() {
-        return primaryVariable;
-    }
-
-    public Supplier<PatternDSL.PatternDef<A>> getPatternSupplier() {
-        return patternSupplier;
+    protected A extract(A a) {
+        return a; // Values of direct variables come straight from the pattern.
     }
 
     @Override
-    public List<ViewItem<?>> getPrerequisiteExpressions() {
-        return prerequisiteExpressions;
+    protected DirectPatternVariable<A> create(UnaryOperator<PatternDSL.PatternDef<A>> patternMutator) {
+        return new DirectPatternVariable<>(this, patternMutator);
     }
 
     @Override
-    public List<ViewItem<?>> getDependentExpressions() {
-        return dependentExpressions;
+    protected DirectPatternVariable<A> create(ViewItem<?> dependentExpression) {
+        return new DirectPatternVariable<>(this, dependentExpression);
     }
-
-    @Override
-    public DirectPatternVariable<A> filter(Predicate<A> predicate) {
-        return new DirectPatternVariable<>(this, p -> p.expr("Filter using " + predicate, predicate::test));
-    }
-
-    @Override
-    public <LeftJoinVar_> DirectPatternVariable<A> filter(BiPredicate<LeftJoinVar_, A> predicate,
-            Variable<LeftJoinVar_> leftJoinVariable) {
-        return new DirectPatternVariable<>(this,
-                p -> p.expr("Filter using " + predicate, leftJoinVariable, (a, leftJoinVar) -> predicate.test(leftJoinVar, a)));
-    }
-
-    @Override
-    public <LeftJoinVarA_, LeftJoinVarB_> DirectPatternVariable<A> filter(
-            TriPredicate<LeftJoinVarA_, LeftJoinVarB_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
-            Variable<LeftJoinVarB_> leftJoinVariableB) {
-        return new DirectPatternVariable<>(this, p -> p.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB,
-                (a, leftJoinVarA, leftJoinVarB) -> predicate.test(leftJoinVarA, leftJoinVarB, a)));
-    }
-
-    @Override
-    public <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> DirectPatternVariable<A> filter(
-            QuadPredicate<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
-            Variable<LeftJoinVarC_> leftJoinVariableC) {
-        return new DirectPatternVariable<>(this,
-                p -> p.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
-                        (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> predicate.test(leftJoinVarA, leftJoinVarB,
-                                leftJoinVarC, a)));
-    }
-
-    @Override
-    public <LeftJoinVar_> PatternVariable<A, A, DirectPatternVariable<A>> filterForJoin(
-            Variable<LeftJoinVar_> leftJoinVar, DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType,
-            int mappingIndex) {
-        Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        Predicate2<A, LeftJoinVar_> predicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
-        return new DirectPatternVariable<>(this, p -> {
-            BetaIndex<A, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
-                    AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightMapping::apply, leftMapping::apply);
-            return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
-        });
-    }
-
-    @Override
-    public <LeftJoinVarA_, LeftJoinVarB_> PatternVariable<A, A, DirectPatternVariable<A>> filterForJoin(
-            Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB,
-            DefaultTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner, JoinerType joinerType, int mappingIndex) {
-        BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        Predicate3<A, LeftJoinVarA_, LeftJoinVarB_> predicate =
-                (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightMapping.apply(c));
-        return new DirectPatternVariable<>(this, p -> {
-            BetaIndex2<A, LeftJoinVarA_, LeftJoinVarB_, Object> index =
-                    betaIndexedBy(Object.class, AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex,
-                            rightMapping::apply, leftMapping::apply, Object.class);
-            return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
-        });
-    }
-
-    @Override
-    public <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> PatternVariable<A, A, DirectPatternVariable<A>> filterForJoin(
-            Variable<LeftJoinVarA_> leftJoinVarA, Variable<LeftJoinVarB_> leftJoinVarB, Variable<LeftJoinVarC_> leftJoinVarC,
-            DefaultQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
-            int mappingIndex) {
-        TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =
-                joiner.getLeftMapping(mappingIndex);
-        Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        Predicate4<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> predicate =
-                (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightMapping.apply(d));
-        return new DirectPatternVariable<>(this, p -> {
-            BetaIndex3<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> index =
-                    betaIndexedBy(Object.class, AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex,
-                            rightMapping::apply, leftMapping::apply, Object.class);
-            return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
-                    leftJoinVarC, predicate, index);
-        });
-    }
-
-    @Override
-    public <BoundVar_> DirectPatternVariable<A> bind(Variable<BoundVar_> boundVariable,
-            Function<A, BoundVar_> bindingFunction) {
-        return new DirectPatternVariable<>(this, p -> p.bind(boundVariable, bindingFunction::apply));
-    }
-
-    @Override
-    public <BoundVar_, LeftJoinVar_> DirectPatternVariable<A> bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVar_> leftJoinVariable, BiFunction<A, LeftJoinVar_, BoundVar_> bindingFunction) {
-        return new DirectPatternVariable<>(this, p -> p.bind(boundVariable, leftJoinVariable, bindingFunction::apply));
-    }
-
-    @Override
-    public <BoundVar_, LeftJoinVarA_, LeftJoinVarB_> DirectPatternVariable<A> bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
-            TriFunction<A, LeftJoinVarA_, LeftJoinVarB_, BoundVar_> bindingFunction) {
-        return new DirectPatternVariable<>(this,
-                p -> p.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, bindingFunction::apply));
-    }
-
-    @Override
-    public <BoundVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> DirectPatternVariable<A> bind(
-            Variable<BoundVar_> boundVariable, Variable<LeftJoinVarA_> leftJoinVariableA,
-            Variable<LeftJoinVarB_> leftJoinVariableB, Variable<LeftJoinVarC_> leftJoinVariableC,
-            QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction) {
-        return new DirectPatternVariable<>(this,
-                p -> p.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
-                        bindingFunction::apply));
-    }
-
-    @Override
-    public DirectPatternVariable<A> addDependentExpression(ViewItem<?> expression) {
-        return new DirectPatternVariable<>(this, expression);
-    }
-
-    @Override
-    public List<ViewItem<?>> build() {
-        Stream<ViewItem<?>> prerequisites = prerequisiteExpressions.stream();
-        Stream<ViewItem<?>> dependents = dependentExpressions.stream();
-        return Stream.concat(Stream.concat(prerequisites, Stream.of(patternSupplier.get())), dependents)
-                .collect(Collectors.toList());
-    }
-
 }

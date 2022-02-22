@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,13 +65,13 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     private final PatternVariable<C, ?, ?> patternVariableC;
     private final TriRuleContext<A, B, C> ruleContext;
 
-    protected TriLeftHandSide(Variable<A> variableA, Variable<B> variableB, PatternVariable<C, ?, ?> patternVariableC,
+    TriLeftHandSide(Variable<A> variableA, Variable<B> variableB, PatternVariable<C, ?, ?> patternVariableC,
             DroolsVariableFactory variableFactory) {
         this(new DetachedPatternVariable<>(variableA), new DetachedPatternVariable<>(variableB), patternVariableC,
                 variableFactory);
     }
 
-    protected TriLeftHandSide(PatternVariable<A, ?, ?> patternVariableA, PatternVariable<B, ?, ?> patternVariableB,
+    TriLeftHandSide(PatternVariable<A, ?, ?> patternVariableA, PatternVariable<B, ?, ?> patternVariableB,
             PatternVariable<C, ?, ?> patternVariableC, DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariableA = Objects.requireNonNull(patternVariableA);

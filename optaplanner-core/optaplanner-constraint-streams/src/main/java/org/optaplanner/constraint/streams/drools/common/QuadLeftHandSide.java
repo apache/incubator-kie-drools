@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,13 +67,13 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     private final PatternVariable<D, ?, ?> patternVariableD;
     private final QuadRuleContext<A, B, C, D> ruleContext;
 
-    protected QuadLeftHandSide(Variable<A> variableA, Variable<B> variableB, Variable<C> variableC,
+    QuadLeftHandSide(Variable<A> variableA, Variable<B> variableB, Variable<C> variableC,
             PatternVariable<D, ?, ?> patternVariableD, DroolsVariableFactory variableFactory) {
         this(new DetachedPatternVariable<>(variableA), new DetachedPatternVariable<>(variableB),
                 new DetachedPatternVariable<>(variableC), patternVariableD, variableFactory);
     }
 
-    protected QuadLeftHandSide(PatternVariable<A, ?, ?> patternVariableA, PatternVariable<B, ?, ?> patternVariableB,
+    QuadLeftHandSide(PatternVariable<A, ?, ?> patternVariableA, PatternVariable<B, ?, ?> patternVariableB,
             PatternVariable<C, ?, ?> patternVariableC, PatternVariable<D, ?, ?> patternVariableD,
             DroolsVariableFactory variableFactory) {
         super(variableFactory);

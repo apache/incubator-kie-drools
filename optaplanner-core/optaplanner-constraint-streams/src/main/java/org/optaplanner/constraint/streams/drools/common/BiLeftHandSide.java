@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,11 +91,11 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     private final PatternVariable<B, ?, ?> patternVariableB;
     private final BiRuleContext<A, B> ruleContext;
 
-    protected BiLeftHandSide(Variable<A> left, PatternVariable<B, ?, ?> right, DroolsVariableFactory variableFactory) {
+    BiLeftHandSide(Variable<A> left, PatternVariable<B, ?, ?> right, DroolsVariableFactory variableFactory) {
         this(new DetachedPatternVariable<>(left), right, variableFactory);
     }
 
-    protected BiLeftHandSide(PatternVariable<A, ?, ?> left, PatternVariable<B, ?, ?> right,
+    BiLeftHandSide(PatternVariable<A, ?, ?> left, PatternVariable<B, ?, ?> right,
             DroolsVariableFactory variableFactory) {
         super(variableFactory);
         this.patternVariableA = Objects.requireNonNull(left);
