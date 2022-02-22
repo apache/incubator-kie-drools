@@ -1643,11 +1643,15 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
 
         for (String toBeRemoved : existingGlobals) {
-            if (filterAcceptsRemoval(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
-                pkg.removeGlobal(toBeRemoved);
-                if (kBase != null) {
-                    kBase.removeGlobal(toBeRemoved);
-                }
+            globalCleanup(pkg, toBeRemoved);
+        }
+    }
+
+    private void globalCleanup(InternalKnowledgePackage pkg, String toBeRemoved) {
+        if (filterAcceptsRemoval(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
+            pkg.removeGlobal(toBeRemoved);
+            if (kBase != null) {
+                kBase.removeGlobal(toBeRemoved);
             }
         }
     }
