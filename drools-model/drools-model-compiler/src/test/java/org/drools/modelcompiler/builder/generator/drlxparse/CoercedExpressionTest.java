@@ -185,13 +185,6 @@ public class CoercedExpressionTest {
         assertEquals(expr("null", MethodUtils.NullType.class), coerce.getCoercedRight());
     }
 
-    @Test(expected = CoercedExpression.CoercedExpressionException.class)
-    public void testException() {
-        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAge()", int.class);
-        final TypedExpression right = expr("rage", java.lang.Object.class);
-        new CoercedExpression(left, right, false).coerce();
-    }
-
     private TypedExpression expr(String exprString, Class<?> exprClass) {
         return new TypedExpression(DrlxParseUtil.parseExpression(exprString).getExpr(), exprClass);
     }
