@@ -46,6 +46,7 @@ import java.util.function.Supplier;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
+import org.drools.compiler.builder.impl.processors.OtherDeclarationProcessor;
 import org.drools.compiler.builder.impl.processors.PackageProcessor;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
@@ -1583,16 +1584,26 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         PackageProcessor packageProcessor =
-                new PackageProcessor(this, kBase, configuration, typeBuilder, this::globalCleanup, pkgRegistry, packageDescr);
+                new PackageProcessor(this,
+                        kBase,
+                        configuration,
+                        typeBuilder,
+                        this::globalCleanup,
+                        pkgRegistry,
+                        packageDescr);
         packageProcessor.process();
         this.results.addAll(packageProcessor.getResults());
     }
 
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        processAccumulateFunctions(pkgRegistry, packageDescr);
-        processWindowDeclarations(pkgRegistry, packageDescr);
-        processFunctions(pkgRegistry, packageDescr);
-        processGlobals(pkgRegistry, packageDescr);
+        OtherDeclarationProcessor otherDeclarationProcessor = new OtherDeclarationProcessor(this,
+                kBase,
+                configuration,
+                this::globalCleanup,
+                pkgRegistry,
+                packageDescr);
+        otherDeclarationProcessor.process();
+        this.results.addAll(otherDeclarationProcessor.getResults());
     }
 
     protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
