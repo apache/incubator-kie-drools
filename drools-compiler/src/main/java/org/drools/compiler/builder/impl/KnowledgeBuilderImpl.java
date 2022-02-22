@@ -46,6 +46,7 @@ import java.util.function.Supplier;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
+import org.drools.compiler.builder.impl.processors.PackageProcessor;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
@@ -1581,27 +1582,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        for (final ImportDescr importDescr : packageDescr.getImports()) {
-            pkgRegistry.addImport(importDescr);
-        }
-
-        normalizeTypeDeclarationAnnotations(packageDescr, pkgRegistry.getTypeResolver());
-        processAccumulateFunctions(pkgRegistry, packageDescr);
-        processEntryPointDeclarations(pkgRegistry, packageDescr);
-
-        Map<String, AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<>();
-        List<TypeDefinition> unresolvedTypes = new ArrayList<>();
-        List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<>();
-        unsortedDescrs.addAll(packageDescr.getTypeDeclarations());
-        unsortedDescrs.addAll(packageDescr.getEnumDeclarations());
-
-        typeBuilder.processTypeDeclarations(packageDescr, pkgRegistry, unsortedDescrs, unresolvedTypes, unprocesseableDescrs);
-        for (AbstractClassTypeDeclarationDescr descr : unprocesseableDescrs.values()) {
-            this.addBuilderResult(new TypeDeclarationError(descr, "Unable to process type " + descr.getTypeName()));
-        }
-
-        processOtherDeclarations(pkgRegistry, packageDescr);
-        normalizeRuleAnnotations(packageDescr, pkgRegistry.getTypeResolver());
+        PackageProcessor packageProcessor =
+                new PackageProcessor(this, kBase, configuration, typeBuilder, this::globalCleanup, pkgRegistry, packageDescr);
     }
 
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
