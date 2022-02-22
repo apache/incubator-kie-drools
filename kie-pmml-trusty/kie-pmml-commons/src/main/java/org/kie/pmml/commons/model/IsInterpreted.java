@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,23 +15,10 @@
  */
 package org.kie.pmml.commons.model;
 
-import java.util.Map;
-
 /**
- * Interface used to define if a given <code>KiePMMLModel</code> contains a <b>sources map</b>
+ * Marker interface used to define if a given <code>KiePMMLModel</code> implements the interpreted version.
+ * This is used, at codegen-time, to generate the correct instantiation inside <code>KiePMMLFactoryFactory.getInstantiationExpression</code>
  */
-public interface HasSourcesMap {
-
-    Map<String, String> getSourcesMap();
-
-    void addSourceMap(String key, String value);
-
-    default Map<String, String> getRulesSourcesMap() {
-        return null;
-    }
-
-    default boolean isInterpreted() {
-        return false;
-    }
+public interface IsInterpreted {
 
 }

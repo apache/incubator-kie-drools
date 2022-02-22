@@ -24,7 +24,6 @@ import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.HasRule;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
-import org.kie.pmml.commons.model.KiePMMLTarget;
 
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation
@@ -44,7 +43,7 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources imple
                                          final Map<String, String> sourcesMap,
                                          final String pkgUUID,
                                          final Map<String, String> rulesSourceMap) {
-        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap);
+        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
         this.pkgUUID = pkgUUID;
         this.rulesSourceMap = rulesSourceMap;
     }
