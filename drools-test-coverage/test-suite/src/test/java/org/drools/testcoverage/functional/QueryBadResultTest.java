@@ -94,13 +94,6 @@ public class QueryBadResultTest {
         }
     }
 
-    @Test
-    public void testBadAccessToParameterWithoutType() {
-        final KieBuilder kieBuilder =
-                KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "query-bad-parametr-access.drl");
-        Assertions.assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void testAccessToNotExistingVariable() {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,"query.drl");
