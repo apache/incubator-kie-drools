@@ -19,12 +19,12 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-// Check the generated resources - no resources should be added in the basic-project
+// Check the generated resources - all resources should be added in the basic-project
 Path projectPath = basedir.toPath().resolve("project/basic-project")
-assert !Files.exists(projectPath.resolve("src/main/resources/test-process.bpmn2"))
-assert !Files.exists(projectPath.resolve("src/test/java/it/pkg/GreetingsTest.java"))
-assert !Files.exists(projectPath.resolve("src/main/resources/TrafficViolation.dmn"))
-assert !Files.exists(projectPath.resolve("src/test/java/it/pkg/TrafficViolationTest.java"))
+assert Files.exists(projectPath.resolve("src/main/resources/test-process.bpmn2"))
+assert Files.exists(projectPath.resolve("src/test/java/it/pkg/GreetingsTest.java"))
+assert Files.exists(projectPath.resolve("src/main/resources/TrafficViolation.dmn"))
+assert Files.exists(projectPath.resolve("src/test/java/it/pkg/TrafficViolationTest.java"))
 
 // Check starters in pom.xml - no starters specified, so kogito-spring-boot-starter should be added in the basic-project
 String pomContent = Files.readString(projectPath.resolve("pom.xml"))

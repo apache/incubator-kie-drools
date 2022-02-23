@@ -114,7 +114,7 @@ def addDependenciesToPOM(String starters, String addons) {
  * Remove the resources that requires a specific starter
  */
 def removeUnneededResources(String starters, String appPackage) {
-    if (starters == "" || starters == null) {
+    if (starters == "_UNDEFINED_" || starters == "" || starters == null) {
         // in this case we will have all starters in the project, let's include everything in the final project
         return
     }
