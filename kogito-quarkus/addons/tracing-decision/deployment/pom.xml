@@ -11,7 +11,7 @@
   <name>Kogito Add-On Tracing Decision - Deployment</name>
 
   <properties>
-    <version.org.kie.kogito.trusty-service-postgresql>1.16.0</version.org.kie.kogito.trusty-service-postgresql>
+    <version.org.kie.kogito.trusty-service-postgresql>1.17.0</version.org.kie.kogito.trusty-service-postgresql>
   </properties>
 
   <dependencies>
