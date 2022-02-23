@@ -42,6 +42,7 @@ import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
+import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.memorycompiler.CompilationResult;
@@ -105,7 +106,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 KogitoBuildContext context = discoverKogitoRuntimeContext(cl);
 
                 // Generate persistence files
-                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(context, protoGenerator);
+                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(context, protoGenerator, new ReflectionMarshallerGenerator(context, protoGenerator.getDataClasses()));
                 Collection<GeneratedFile> persistenceFiles = persistenceGenerator.generate();
 
                 validateGeneratedFileTypes(persistenceFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.INTERNAL_RESOURCE, GeneratedFileType.Category.STATIC_HTTP_RESOURCE));

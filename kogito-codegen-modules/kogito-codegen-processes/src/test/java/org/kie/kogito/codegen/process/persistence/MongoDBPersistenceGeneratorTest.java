@@ -30,6 +30,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
+import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -63,7 +64,8 @@ class MongoDBPersistenceGeneratorTest extends AbstractPersistenceGeneratorTest {
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
                 context,
-                protoGenerator);
+                protoGenerator,
+                new ReflectionMarshallerGenerator(context));
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
         if (context.hasDI()) {

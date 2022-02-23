@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.process.persistence.proto;
+package org.kie.kogito.codegen.process.persistence.marshaller;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -32,29 +33,44 @@ import org.kie.kogito.codegen.data.PersonWithAddresses;
 import org.kie.kogito.codegen.data.PersonWithList;
 import org.kie.kogito.codegen.data.Question;
 import org.kie.kogito.codegen.data.QuestionWithAnnotatedEnum;
-import org.kie.kogito.codegen.process.persistence.MarshallerGenerator;
+import org.kie.kogito.codegen.process.persistence.proto.AbstractProtoGenerator;
+import org.kie.kogito.codegen.process.persistence.proto.Proto;
+import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-class MarshallerGeneratorTest {
+public abstract class AbstractMarshallerGeneratorTest<T> {
 
     KogitoBuildContext context = JavaKogitoBuildContext.builder().build();
 
+    protected abstract MarshallerGenerator generator(KogitoBuildContext context, Collection<T> rawDataClasses);
+
+    protected abstract ProtoGenerator.Builder<T, ? extends AbstractProtoGenerator<T>> protoGeneratorBuilder();
+
+    protected abstract T convertToType(Class<?> clazz);
+
+    protected Collection<T> convertTypes(Class<?>... classes) {
+        return Arrays.stream(classes).map(c -> convertToType(c)).collect(toList());
+    }
+
+    protected MarshallerGenerator withGenerator(Class<?>... classes) {
+        return generator(context, convertTypes(classes));
+    }
+
     @Test
     void testPersonMarshallers() throws Exception {
-        ProtoGenerator generator = ReflectionProtoGenerator.builder()
-                .withDataClasses(Collections.singleton(Person.class))
-                .build(null);
+        ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(Person.class)).build(null);
 
         Proto proto = generator.protoOfDataClasses("org.kie.kogito.test", "import \"kogito-types.proto\";");
         assertThat(proto).isNotNull();
         assertThat(proto.getMessages()).hasSize(1);
 
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
+        MarshallerGenerator marshallerGenerator = withGenerator(Person.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
@@ -66,17 +82,13 @@ class MarshallerGeneratorTest {
 
     @Test
     void testPersonWithListMarshallers() throws Exception {
-        ProtoGenerator generator = ReflectionProtoGenerator.builder()
-                .withDataClasses(Collections.singleton(PersonWithList.class))
-                .build(null);
+        ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(PersonWithList.class)).build(null);
 
         Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
         assertThat(proto.getMessages()).hasSize(1);
 
-        System.out.println(proto.getMessages());
-
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
+        MarshallerGenerator marshallerGenerator = withGenerator(PersonWithList.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
@@ -88,15 +100,13 @@ class MarshallerGeneratorTest {
 
     @Test
     void testPersonWithAddressMarshallers() throws Exception {
-        ProtoGenerator generator = ReflectionProtoGenerator.builder()
-                .withDataClasses(Collections.singleton(PersonWithAddress.class))
-                .build(null);
+        ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(PersonWithAddress.class)).build(null);
 
         Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
         assertThat(proto.getMessages()).hasSize(2);
 
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
+        MarshallerGenerator marshallerGenerator = withGenerator(PersonWithAddresses.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
@@ -110,15 +120,13 @@ class MarshallerGeneratorTest {
 
     @Test
     void testPersonWithAddressesMarshallers() throws Exception {
-        ProtoGenerator generator = ReflectionProtoGenerator.builder()
-                .withDataClasses(Collections.singleton(PersonWithAddresses.class))
-                .build(null);
+        ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(PersonWithAddresses.class)).build(null);
 
         Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
         assertThat(proto.getMessages()).hasSize(2);
 
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
+        MarshallerGenerator marshallerGenerator = withGenerator(PersonWithAddresses.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull();
@@ -133,15 +141,13 @@ class MarshallerGeneratorTest {
     @Test
     void testEnumInPojosMarshallers() {
         Stream.of(Question.class, QuestionWithAnnotatedEnum.class).forEach(c -> {
-            ProtoGenerator generator = ReflectionProtoGenerator.builder()
-                    .withDataClasses(Collections.singleton(c))
-                    .build(null);
+            ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(c)).build(null);
 
             Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
             assertThat(proto).isNotNull();
             assertThat(proto.getMessages()).hasSize(1);
 
-            MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
+            MarshallerGenerator marshallerGenerator = withGenerator(c);
 
             List<CompilationUnit> classes = null;
             try {
@@ -168,15 +174,13 @@ class MarshallerGeneratorTest {
     @Test
     void testEnumMarshallers() {
         Stream.of(Answer.class, AnswerWithAnnotations.class).forEach(e -> {
-            ProtoGenerator generator = ReflectionProtoGenerator.builder()
-                    .withDataClasses(Collections.singleton(e))
-                    .build(null);
+            ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(e)).build(null);
 
             Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
             assertThat(proto).isNotNull();
             assertThat(proto.getEnums()).hasSize(1);
 
-            MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context);
+            MarshallerGenerator marshallerGenerator = withGenerator(e);
 
             List<CompilationUnit> classes = null;
             try {

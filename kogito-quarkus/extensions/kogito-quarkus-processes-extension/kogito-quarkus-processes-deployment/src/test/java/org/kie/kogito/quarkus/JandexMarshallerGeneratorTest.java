@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.quarkus;
+
+import java.util.Collection;
 
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.Index;
 import org.junit.jupiter.api.BeforeAll;
-import org.kie.kogito.codegen.process.persistence.proto.AbstractProtoGeneratorTest;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.process.persistence.marshaller.AbstractMarshallerGeneratorTest;
+import org.kie.kogito.codegen.process.persistence.marshaller.MarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
+import org.kie.kogito.quarkus.processes.deployment.JandexMarshallerGenerator;
 import org.kie.kogito.quarkus.processes.deployment.JandexProtoGenerator;
 
-/**
- * This class is intended to cover only JandexProtoGenerator specific tests (if any)
- *
- * NOTE: Add all tests to AbstractProtoGeneratorTest class to test both JandexProtoGenerator and ReflectionProtoGenerator
- */
-class JandexProtoGeneratorTest extends AbstractProtoGeneratorTest<ClassInfo> {
+public class JandexMarshallerGeneratorTest extends AbstractMarshallerGeneratorTest<ClassInfo> {
 
     protected static Index indexWithAllClass;
 
@@ -37,13 +38,17 @@ class JandexProtoGeneratorTest extends AbstractProtoGeneratorTest<ClassInfo> {
     }
 
     @Override
+    protected MarshallerGenerator generator(KogitoBuildContext context, Collection<ClassInfo> rawDataClasses) {
+        return new JandexMarshallerGenerator(context, rawDataClasses);
+    }
+
+    @Override
     protected ProtoGenerator.Builder<ClassInfo, JandexProtoGenerator> protoGeneratorBuilder() {
         return JandexProtoGenerator.builder(indexWithAllClass);
     }
 
     @Override
-    protected ClassInfo convertToType(Class<?> clazz) {
+    protected ClassInfo convertToType(Class clazz) {
         return JandexTestUtils.findClassInfo(indexWithAllClass, clazz);
     }
-
 }

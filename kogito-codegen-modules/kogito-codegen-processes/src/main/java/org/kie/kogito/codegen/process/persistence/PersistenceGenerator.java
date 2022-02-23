@@ -36,6 +36,7 @@ import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.codegen.process.persistence.marshaller.MarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.slf4j.Logger;
@@ -136,10 +137,12 @@ public class PersistenceGenerator extends AbstractGenerator {
     protected static final String CLASS_TEMPLATES_PERSISTENCE = "/class-templates/persistence/";
 
     private final ProtoGenerator protoGenerator;
+    private final MarshallerGenerator marshallerGenerator;
 
-    public PersistenceGenerator(KogitoBuildContext context, ProtoGenerator protoGenerator) {
+    public PersistenceGenerator(KogitoBuildContext context, ProtoGenerator protoGenerator, MarshallerGenerator marshallerGenerator) {
         super(context, GENERATOR_NAME);
         this.protoGenerator = protoGenerator;
+        this.marshallerGenerator = marshallerGenerator;
     }
 
     @Override
@@ -276,8 +279,6 @@ public class PersistenceGenerator extends AbstractGenerator {
         Proto proto = protoGenerator.protoOfDataClasses(context().getPackageName(), "import \"kogito-types.proto\";");
 
         List<String> variableMarshallers = new ArrayList<>();
-
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context());
 
         String protoContent = proto.serialize();
 

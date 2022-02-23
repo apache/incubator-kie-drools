@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,7 @@ public class Person implements Serializable {
     private Instant created;
     private ZonedDateTime updated;
     private BigDecimal score;
+    private Person[] relatives;
 
     private transient String ignoreMe;
 
@@ -143,6 +145,14 @@ public class Person implements Serializable {
         this.score = score;
     }
 
+    public Person[] getRelatives() {
+        return relatives;
+    }
+
+    public void setRelatives(Person[] relatives) {
+        this.relatives = relatives;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -152,6 +162,9 @@ public class Person implements Serializable {
                 ", adult=" + adult +
                 ", parent=" + parent +
                 ", created=" + created +
+                ", updated=" + updated +
+                ", score=" + score +
+                ", relatives=" + Arrays.toString(relatives) +
                 ", ignoreMe='" + ignoreMe + '\'' +
                 ", addresses=" + addresses +
                 '}';

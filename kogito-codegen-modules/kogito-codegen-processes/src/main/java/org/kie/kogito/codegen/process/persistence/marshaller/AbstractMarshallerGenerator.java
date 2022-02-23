@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.process.persistence;
+package org.kie.kogito.codegen.process.persistence.marshaller;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,6 +44,7 @@ import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.codegen.process.persistence.ExclusionTypeUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -74,18 +77,21 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 import static java.lang.String.format;
 import static org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator.KOGITO_JAVA_CLASS_OPTION;
 
-public class MarshallerGenerator {
+public abstract class AbstractMarshallerGenerator<T> implements MarshallerGenerator {
 
     public static final String TEMPLATE_PERSISTENCE_FOLDER = "/class-templates/persistence/";
     private static final String JAVA_PACKAGE_OPTION = "java_package";
     private static final String STATE_PARAM = "state";
 
     private final KogitoBuildContext context;
+    protected final Collection<T> modelClasses;
 
-    public MarshallerGenerator(KogitoBuildContext context) {
+    public AbstractMarshallerGenerator(KogitoBuildContext context, Collection<T> rawDataClasses) {
         this.context = context;
+        this.modelClasses = rawDataClasses == null ? Collections.emptyList() : rawDataClasses;
     }
 
+    @Override
     public List<CompilationUnit> generate(String content) throws IOException {
         FileDescriptorSource proto = FileDescriptorSource.fromString(UUID.randomUUID().toString(), content);
         return generate(proto);
@@ -100,7 +106,7 @@ public class MarshallerGenerator {
 
         Predicate<String> typeExclusions = ExclusionTypeUtils.createTypeExclusions();
 
-        // filter types that don't required to create a marshaller
+        // filter types that don't require to create a marshaller
         Predicate<Descriptor> packagePredicate = (msg) -> !msg.getFileDescriptor().getPackage().equals("kogito");
         Predicate<Descriptor> jacksonPredicate = (msg) -> !typeExclusions.test(packageFromOption(msg.getFileDescriptor(), msg) + "." + msg.getName());
 
@@ -188,11 +194,22 @@ public class MarshallerGenerator {
                                 customTypeName = primaryTypeClassName(field.getTypeName());
                             }
 
-                            read = new MethodCallExpr(new NameExpr("reader"), "readCollection")
-                                    .addArgument(new StringLiteralExpr(field.getName()))
-                                    .addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ArrayList.class.getCanonicalName()), NodeList.nodeList()))
-                                    .addArgument(new NameExpr(customTypeName + ".class"));
-                            write = new MethodCallExpr(new NameExpr("writer"), "writeCollection")
+                            String writeMethod;
+
+                            if (isArray(javaType, field)) {
+                                writeMethod = "writeArray";
+                                read = new MethodCallExpr(new NameExpr("reader"), "readArray")
+                                        .addArgument(new StringLiteralExpr(field.getName()))
+                                        .addArgument(new NameExpr(customTypeName + ".class"));
+                            } else {
+                                writeMethod = "writeCollection";
+                                read = new MethodCallExpr(new NameExpr("reader"), "readCollection")
+                                        .addArgument(new StringLiteralExpr(field.getName()))
+                                        .addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ArrayList.class.getCanonicalName()), NodeList.nodeList()))
+                                        .addArgument(new NameExpr(customTypeName + ".class"));
+                            }
+
+                            write = new MethodCallExpr(new NameExpr("writer"), writeMethod)
                                     .addArgument(new StringLiteralExpr(field.getName()))
                                     .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.ucFirst(field.getName())))
                                     .addArgument(new NameExpr(customTypeName + ".class"));
@@ -248,14 +265,15 @@ public class MarshallerGenerator {
                         .setType(new ClassOrInterfaceType(null, new SimpleName(Class.class.getName()), NodeList.nodeList(new ClassOrInterfaceType(null, javaType))))
                         .setBody(new BlockStmt().addStatement(new ReturnStmt(new ClassExpr(new ClassOrInterfaceType(null, javaType)))));
 
-                BlockStmt encodeBlock = new BlockStmt().addStatement(
-                        new IfStmt(
-                                new BinaryExpr(new NullLiteralExpr(), new NameExpr(STATE_PARAM), EQUALS),
-                                new ThrowStmt(new ObjectCreationExpr(
-                                        null,
-                                        new ClassOrInterfaceType(null, IllegalArgumentException.class.getName()),
-                                        NodeList.nodeList(new StringLiteralExpr("Invalid value provided to enum")))),
-                                null))
+                BlockStmt encodeBlock = new BlockStmt()
+                        .addStatement(
+                                new IfStmt(
+                                        new BinaryExpr(new NullLiteralExpr(), new NameExpr(STATE_PARAM), EQUALS),
+                                        new ThrowStmt(new ObjectCreationExpr(
+                                                null,
+                                                new ClassOrInterfaceType(null, IllegalArgumentException.class.getName()),
+                                                NodeList.nodeList(new StringLiteralExpr("Invalid value provided to enum")))),
+                                        null))
                         .addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(STATE_PARAM), "ordinal")));
                 classDeclaration.addMethod("encode", PUBLIC)
                         .setType("int")
@@ -344,6 +362,9 @@ public class MarshallerGenerator {
             case "bool":
                 methodReader = "Boolean";
                 break;
+            case "bytes":
+                methodReader = "Bytes";
+                break;
             default:
                 methodReader = null;
         }
@@ -379,4 +400,6 @@ public class MarshallerGenerator {
 
         return className;
     }
+
+    protected abstract boolean isArray(String javaType, FieldDescriptor field);
 }

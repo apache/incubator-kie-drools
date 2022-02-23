@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
+import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -51,7 +52,8 @@ class FileSystemPersistenceGeneratorTest extends AbstractPersistenceGeneratorTes
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
                 context,
-                protoGenerator);
+                protoGenerator,
+                new ReflectionMarshallerGenerator(context));
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
         int factoryFiles = context.hasRESTForGenerator(persistenceGenerator) ? 1 : 0;

@@ -116,7 +116,11 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             String fieldTypeString = pd.getPropertyType().getCanonicalName();
             Class<?> fieldType = pd.getPropertyType();
             String protoType;
-            if (Collection.class.isAssignableFrom(pd.getPropertyType())) {
+            if (pd.getPropertyType().isArray() && !pd.getPropertyType().getComponentType().isPrimitive()) {
+                fieldTypeString = "Array";
+                fieldType = pd.getPropertyType().getComponentType();
+                protoType = protoType(fieldType.getCanonicalName());
+            } else if (Collection.class.isAssignableFrom(pd.getPropertyType())) {
                 fieldTypeString = "Collection";
                 Type type = propertyField.getGenericType();
                 if (type instanceof ParameterizedType) {

@@ -36,7 +36,7 @@ class PersistenceGeneratorTest {
                         .build())
                 .build();
 
-        PersistenceGenerator emptyCodeGenerator = new PersistenceGenerator(noPersistenceContext, null);
+        PersistenceGenerator emptyCodeGenerator = new PersistenceGenerator(noPersistenceContext, null, null);
 
         assertThat(emptyCodeGenerator.isEmpty()).isTrue();
         assertThat(emptyCodeGenerator.isEnabled()).isFalse();
@@ -49,7 +49,7 @@ class PersistenceGeneratorTest {
                         .withPersistence(true)
                         .build())
                 .build();
-        PersistenceGenerator codeGenerator = new PersistenceGenerator(persistenceContext, null);
+        PersistenceGenerator codeGenerator = new PersistenceGenerator(persistenceContext, null, null);
 
         assertThat(codeGenerator.isEmpty()).isFalse();
         assertThat(codeGenerator.isEnabled()).isTrue();

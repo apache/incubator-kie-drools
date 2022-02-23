@@ -50,7 +50,7 @@ public interface ProtoGenerator {
     Collection<String> getPersistenceClassParams();
 
     default String applicabilityByType(String type) {
-        if (type.equals("Collection")) {
+        if (type.equals("Collection") || type.equals("Array")) {
             return "repeated";
         }
 
@@ -72,6 +72,8 @@ public interface ProtoGenerator {
             return "bool";
         } else if (Date.class.getCanonicalName().equals(type) || "date".equalsIgnoreCase(type)) {
             return "kogito.Date";
+        } else if (byte[].class.getCanonicalName().equals(type) || "[B".equalsIgnoreCase(type)) {
+            return "bytes";
         } else if (Instant.class.getCanonicalName().equals(type)) {
             return "kogito.Instant";
         } else if (JsonNode.class.getCanonicalName().equals(type)) {

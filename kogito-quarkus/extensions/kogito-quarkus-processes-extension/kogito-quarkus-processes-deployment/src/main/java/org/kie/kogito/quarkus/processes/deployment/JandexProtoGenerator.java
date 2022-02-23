@@ -141,7 +141,11 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
 
             DotName fieldType = pd.type().name();
             String protoType;
-            if (pd.type().kind() == Kind.PARAMETERIZED_TYPE) {
+            if (isArray(pd)) {
+                fieldTypeString = "Array";
+                fieldType = pd.type().asArrayType().component().name();
+                protoType = protoType(fieldType.toString());
+            } else if (isCollection(pd)) {
                 fieldTypeString = "Collection";
 
                 List<Type> typeParameters = pd.type().asParameterizedType().arguments();
@@ -181,9 +185,25 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         return message;
     }
 
+    private boolean isCollection(FieldInfo pd) {
+        if (pd.type().kind() == Kind.PARAMETERIZED_TYPE) {
+            try {
+                Class<?> clazz = Class.forName(pd.type().name().toString());
+                return Collection.class.isAssignableFrom(clazz);
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private boolean isArray(FieldInfo pd) {
+        return pd.type().kind() == Kind.ARRAY && pd.type().asArrayType().component().kind() != Kind.PRIMITIVE;
+    }
+
     /**
      * ClassInfo.fields() returns only fields of current class so this method fetch fields from all hierarchy
-     * 
+     *
      * @param clazz
      * @return
      */

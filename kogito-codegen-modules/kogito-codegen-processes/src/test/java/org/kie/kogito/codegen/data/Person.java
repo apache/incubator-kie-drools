@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,8 +35,10 @@ public class Person {
     private String id;
     private String name;
     private int age;
+    private byte[] bytes;
     private boolean adult;
     private Person parent;
+    private Person[] relatives;
     private Instant instant;
     private LocalDateTime localDateTime;
     private LocalDate localDate;
@@ -198,6 +201,26 @@ public class Person {
         this.salary = salary;
     }
 
+    public Person[] getRelatives() {
+        return relatives;
+    }
+
+    public void setRelatives(Person[] relatives) {
+        this.relatives = relatives;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -206,6 +229,7 @@ public class Person {
                 ", age=" + age +
                 ", adult=" + adult +
                 ", parent=" + parent +
+                ", relatives=" + Arrays.toString(relatives) +
                 ", instant=" + instant +
                 ", localDateTime=" + localDateTime +
                 ", localDate=" + localDate +
@@ -214,13 +238,10 @@ public class Person {
                 ", offsetDateTime=" + offsetDateTime +
                 ", date=" + date +
                 ", bigDecimal=" + bigDecimal +
+                ", salary=" + salary +
                 ", ignoreMe='" + ignoreMe + '\'' +
                 ", addresses=" + addresses +
                 '}';
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     @Override

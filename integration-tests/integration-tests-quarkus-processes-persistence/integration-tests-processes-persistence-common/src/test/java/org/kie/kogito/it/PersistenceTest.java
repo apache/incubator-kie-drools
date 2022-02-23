@@ -50,6 +50,8 @@ public abstract class PersistenceTest {
     @Test
     void testPersistence() {
         Person person = new Person("Name", 10, BigDecimal.valueOf(5.0), Instant.now(), ZonedDateTime.now(ZoneOffset.UTC));
+        Person relative = new Person("relative", 5, BigDecimal.valueOf(5.0), Instant.now(), ZonedDateTime.now(ZoneOffset.UTC));
+        person.setRelatives(new Person[] { relative });
         final String pid = given().contentType(ContentType.JSON)
                 .when()
                 .body(Map.of("var1", "Tiago", "person", person))
@@ -65,6 +67,9 @@ public abstract class PersistenceTest {
                 .body("person.score", equalTo(person.getScore().floatValue()))
                 .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated())))
                 .body("person.updated", equalTo(person.getUpdated().format(ISO_ZONED_DATE_TIME)))
+                .body("person.relatives.size()", equalTo(1))
+                .body("person.relatives[0].name", equalTo(relative.getName()))
+                .body("person.relatives[0].age", equalTo(relative.getAge()))
                 .extract()
                 .path("id");
 
@@ -81,6 +86,9 @@ public abstract class PersistenceTest {
                 .body("person.score", equalTo(person.getScore().floatValue()))
                 .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated().truncatedTo(ChronoUnit.MILLIS))))
                 .body("person.updated", equalTo(person.getUpdated().format(ISO_ZONED_DATE_TIME)))
+                .body("person.relatives.size()", equalTo(1))
+                .body("person.relatives[0].name", equalTo(relative.getName()))
+                .body("person.relatives[0].age", equalTo(relative.getAge()))
                 .extract()
                 .path("id");
 

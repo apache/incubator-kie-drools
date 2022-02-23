@@ -28,6 +28,7 @@ import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
+import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
@@ -84,7 +85,8 @@ public abstract class AbstractPersistenceGeneratorTest {
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
                 context,
-                protoGenerator);
+                protoGenerator,
+                new ReflectionMarshallerGenerator(context, null));
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
         int expectedDataIndexProto = hasDataIndexProto(context) ? 2 : 0;
