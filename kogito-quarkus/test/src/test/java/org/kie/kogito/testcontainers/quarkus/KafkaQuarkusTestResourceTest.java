@@ -28,7 +28,7 @@ public class KafkaQuarkusTestResourceTest {
 
     private KafkaQuarkusTestResource resource;
 
-    private static final String IMAGE = "confluentinc/cp-kafka:1.0";
+    private static final String IMAGE = "vectorized/redpanda:latest";
 
     @BeforeEach
     public void setup() {
