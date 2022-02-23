@@ -18,9 +18,9 @@ package org.drools.mvel.compiler.lang;
 import java.util.LinkedList;
 
 import org.antlr.runtime.RecognitionException;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.Location;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.lang.Location;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.junit.Before;

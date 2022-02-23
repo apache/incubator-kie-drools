@@ -16,7 +16,7 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.drl.ast.descr.FieldConstraintDescr;
 import org.drools.drl.ast.descr.LiteralRestrictionDescr;
 import org.drools.drl.ast.descr.PredicateDescr;

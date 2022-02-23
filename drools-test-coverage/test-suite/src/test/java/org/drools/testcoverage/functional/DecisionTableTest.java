@@ -18,6 +18,7 @@ package org.drools.testcoverage.functional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -44,6 +45,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.DecisionTableInputType;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests all features which can be used in decision tables.
@@ -85,6 +88,8 @@ public class DecisionTableTest {
     private static Resource sampleDatesCsvDecisionTable;
 
     private static Resource sampleDatesXlsDecisionTable;
+
+    private static Resource sampleDateXLSXDecisionTable;
 
     @BeforeClass
     public static void loadDecisionTablesToAvoidLoadingThemForEachKieBaseConfiguration() {
@@ -135,6 +140,11 @@ public class DecisionTableTest {
         sampleDatesXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.xls",
                                                                                          DecisionTableTest.class,
                                                                                          DecisionTableInputType.XLS);
+
+        sampleDateXLSXDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("inputObjectExample.xlsx",
+                                                                                         DecisionTableTest.class,
+                                                                                         DecisionTableInputType.XLSX);
+
     }
 
     @Test
@@ -567,5 +577,37 @@ public class DecisionTableTest {
         final KiePackage kiePackage = (KiePackage) pkgs.toArray()[names.indexOf(TestConstants.PACKAGE_FUNCTIONAL)];
 
         Assertions.assertThat(kiePackage.getRules().size()).isEqualTo(3);
+    }
+
+    public static class InputObject {
+
+        private Date date;
+
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+    }
+
+
+    @Test
+    public void testXLSXComparingDates() {
+        // DROOLS-6820
+        KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, sampleDateXLSXDecisionTable);
+        KieSession ksession = kbase.newKieSession();
+
+        InputObject inputObject1 = new InputObject();
+        inputObject1.setDate(new Date());
+        ksession.insert(inputObject1);
+
+        InputObject inputObject2 = new InputObject();
+        inputObject2.setDate(new Date(0));
+        ksession.insert(inputObject2);
+
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

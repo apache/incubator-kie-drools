@@ -45,7 +45,7 @@ public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystem
 
     @Override
     public void clearTruthMaintenanceSystem(InternalWorkingMemoryEntryPoint entryPoint) {
-        TruthMaintenanceSystem tms = tmsForEntryPoints.get(entryPoint);
+        TruthMaintenanceSystem tms = tmsForEntryPoints.remove(entryPoint);
         if (tms != null) {
             tms.clear();
         }
@@ -54,5 +54,15 @@ public class TruthMaintenanceSystemFactoryImpl implements TruthMaintenanceSystem
     @Override
     public QueryImpl createTmsQuery(String name, Predicate<Class<? extends Annotation>> hasAnnotation) {
         return hasAnnotation.test(Abductive.class) ? new AbductiveQuery(name) : new QueryImpl(name);
+    }
+
+    public int getEntryPointsMapSize() {
+        // only for testing purposes
+        return tmsForEntryPoints.size();
+    }
+
+    public void clearEntryPointsMap() {
+        // only for testing purposes
+        tmsForEntryPoints.clear();
     }
 }

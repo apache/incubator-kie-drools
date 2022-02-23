@@ -29,6 +29,7 @@ import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.spi.Evaluator;
+import org.drools.drl.parser.impl.Operator;
 
 /**
  * A registry class for all available evaluators

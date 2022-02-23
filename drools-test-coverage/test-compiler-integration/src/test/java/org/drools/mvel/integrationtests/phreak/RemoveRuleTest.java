@@ -35,24 +35,35 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-// TODO: EM Need to migrate this to executable model
+@RunWith(Parameterized.class)
 public class RemoveRuleTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public RemoveRuleTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testPopulatedSingleRuleNoSharing() throws Exception {
@@ -666,60 +677,31 @@ public class RemoveRuleTest {
         return ( RuleTerminalNode ) kbase.getReteooBuilder().getTerminalNodes(ruleName)[0];
     }
 
-    private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
+    private String buildKnowledgePackageDrl(String ruleName, String rule) {
         String str = "";
         str += "package org.kie \n";
-        str += "import " + A.class.getCanonicalName() + "\n" ;
-        str += "import " + B.class.getCanonicalName() + "\n" ;
-        str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + X.class.getCanonicalName() + "\n" ;
-        str += "import " + E.class.getCanonicalName() + "\n" ;
+        str += "import " + A.class.getCanonicalName() + "\n";
+        str += "import " + B.class.getCanonicalName() + "\n";
+        str += "import " + C.class.getCanonicalName() + "\n";
+        str += "import " + X.class.getCanonicalName() + "\n";
+        str += "import " + E.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
 
-        int i = 0;
         str += "rule " + ruleName + "  when \n";
-        str +=  rule;
+        str += rule;
         str += "then \n";
         str += " list.add( kcontext.getMatch() );\n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        return str;
+    }
 
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        return kbase;
+    private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
+        return (InternalKnowledgeBase)KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, buildKnowledgePackageDrl(ruleName, rule));
     }
 
     private Collection<KiePackage> buildKnowledgePackage(String ruleName, String rule) {
-        String str = "";
-        str += "package org.kie \n";
-        str += "import " + A.class.getCanonicalName() + "\n" ;
-        str += "import " + B.class.getCanonicalName() + "\n" ;
-        str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + X.class.getCanonicalName() + "\n" ;
-        str += "import " + E.class.getCanonicalName() + "\n" ;
-        str += "global java.util.List list \n";
-
-        int i = 0;
-        str += "rule " + ruleName + "  when \n";
-        str +=  rule;
-        str += "then \n";
-        str += " list.add( kcontext.getMatch() );\n";
-        str += "end \n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        return kbuilder.getKnowledgePackages();
+        return KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, buildKnowledgePackageDrl(ruleName, rule)).getKiePackages();
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {

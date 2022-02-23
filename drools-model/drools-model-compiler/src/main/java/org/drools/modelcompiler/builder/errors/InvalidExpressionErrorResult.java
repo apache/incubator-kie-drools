@@ -18,7 +18,7 @@ package org.drools.modelcompiler.builder.errors;
 
 import java.util.Optional;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.kie.internal.builder.ResultSeverity;
 

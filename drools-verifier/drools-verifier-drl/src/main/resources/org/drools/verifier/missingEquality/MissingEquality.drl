@@ -18,7 +18,7 @@
 package org.drools.verifier.missingEquality
 
 //list any import classes here.
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.VariableRestriction;

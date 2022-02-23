@@ -16,7 +16,7 @@
 
 package org.drools.modelcompiler.builder.errors;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.kie.internal.builder.ResultSeverity;
 
 public class UnknownDeclarationError extends DroolsError {

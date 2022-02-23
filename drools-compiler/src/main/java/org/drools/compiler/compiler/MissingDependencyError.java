@@ -15,6 +15,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.core.common.MissingDependencyException;
+import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 
 public class MissingDependencyError extends DroolsError {

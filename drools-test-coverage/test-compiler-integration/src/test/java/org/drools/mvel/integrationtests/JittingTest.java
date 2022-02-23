@@ -52,8 +52,7 @@ public class JittingTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -333,5 +332,24 @@ public class JittingTest {
             kieSession.insert(person);
             assertEquals(1, kieSession.fireAllRules());
         }
+    }
+
+    @Test
+    public void testJittingVarargsCall() {
+        // DROOLS-6841
+        final String drl =
+                " rule R1 \n" +
+                " when \n" +
+                "    String( java.util.Arrays.asList(\"CI,CV\".split(\",\")).contains(this) )\n" +
+                " then \n" +
+                " end ";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert("CV");
+        kieSession.insert("CX");
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.Restriction;

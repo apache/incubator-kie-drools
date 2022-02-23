@@ -19,18 +19,18 @@ import java.util.LinkedList;
 
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.DRLParser;
-import org.drools.compiler.lang.DroolsEditorType;
-import org.drools.compiler.lang.DroolsToken;
-import org.drools.compiler.lang.Location;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.lang.DRLParser;
+import org.drools.drl.parser.lang.DroolsEditorType;
+import org.drools.drl.parser.lang.DroolsToken;
+import org.drools.drl.parser.lang.Location;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.drools.drl.parser.DRLFactory.buildParser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

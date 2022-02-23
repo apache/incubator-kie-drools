@@ -17,13 +17,14 @@
 //created on: 24.9.2007
 package org.drools.verifier.rangeChecks.cleanUp
 
-import org.drools.compiler.builder.impl.Operator;
+import org.drools.drl.parser.impl.Operator;
 
 import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 
 import org.drools.verifier.data.VerifierReport;
+import org.drools.drl.parser.impl.Operator;
 
 //declare any global variables here
 global VerifierReport result;

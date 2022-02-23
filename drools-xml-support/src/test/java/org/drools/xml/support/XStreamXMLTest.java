@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
+import org.assertj.core.api.Assertions;
+import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
 import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
@@ -32,8 +34,10 @@ import org.drools.core.command.runtime.rule.ClearAgendaCommand;
 import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
 import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
 import org.drools.core.command.runtime.rule.DeleteCommand;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
+import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
@@ -366,4 +370,42 @@ public class XStreamXMLTest {
         }
     }
 
+    @Test
+    public void testUpdateCommand() {
+        FactHandle factHandle = DefaultFactHandle.createFromExternalFormat("0:1:10:10:20:null:NON_TRAIT:null");
+        UpdateCommand cmd = new UpdateCommand(factHandle, new Message("Hello World!"), new String[]{"msg"});
+        String xmlString = xstream.toXML(cmd);
+        String expected = "<update fact-handle=\"0:1:10:10:20:null:NON_TRAIT:null\" entryPoint=\"DEFAULT\">\n" +
+                          "  <org.drools.xml.support.XStreamXMLTest_-Message>\n" +
+                          "    <msg>Hello World!</msg>\n" +
+                          "  </org.drools.xml.support.XStreamXMLTest_-Message>\n" +
+                          "  <modifiedProperty value=\"msg\"/>\n" +
+                          "</update>";
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
+
+        UpdateCommand cmd2 = (UpdateCommand) xstream.fromXML(xmlString);
+        Assert.assertEquals(factHandle.toExternalForm(), cmd2.getHandle().toExternalForm());
+        Assert.assertEquals(1, cmd2.getModifiedProperties().length);
+        Assert.assertEquals("msg", cmd2.getModifiedProperties()[0]);
+    }
+
+    @Test
+    public void testFireAllRulesCommand() {
+        RuleNameEndsWithAgendaFilter filter = new RuleNameEndsWithAgendaFilter("mySuffix", true);
+        FireAllRulesCommand cmd = new FireAllRulesCommand("ABC", 100, filter);
+        String xmlString = xstream.toXML(cmd);
+        String expected = "<fire-all-rules max=\"100\" out-identifier=\"ABC\">\n" +
+                          "  <agendaFilter class=\"org.drools.core.base.RuleNameEndsWithAgendaFilter\">\n" +
+                          "    <suffix>mySuffix</suffix>\n" +
+                          "    <accept>true</accept>\n" +
+                          "  </agendaFilter>\n" +
+                          "</fire-all-rules>";
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
+
+        FireAllRulesCommand cmd2 = (FireAllRulesCommand) xstream.fromXML(xmlString);
+        Assert.assertEquals(100, cmd2.getMax());
+        Assert.assertEquals(RuleNameEndsWithAgendaFilter.class, cmd2.getAgendaFilter().getClass());
+        Assert.assertEquals("mySuffix", ((RuleNameEndsWithAgendaFilter) cmd2.getAgendaFilter()).getSuffix());
+        Assert.assertTrue(((RuleNameEndsWithAgendaFilter) cmd2.getAgendaFilter()).isAccept());
+    }
 }

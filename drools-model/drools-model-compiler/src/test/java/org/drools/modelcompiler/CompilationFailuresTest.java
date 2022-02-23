@@ -98,21 +98,6 @@ public class CompilationFailuresTest extends BaseModelTest {
     }
 
     @Test
-    public void testBadQueryArg() {
-        String drl =
-                "import " + Person.class.getCanonicalName() + "\n" +
-                "query queryWithParamWithoutType( tname , tage)\n" +
-                "    person : Person(name == tname, age < tage )\n" +
-                "end\n";
-
-        Results results = getCompilationResults(drl);
-        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
-
-        // line = -1 even with STANDARD_FROM_DRL (PredicateDescr)
-        assertEquals(-1, results.getMessages().get(0).getLine());
-    }
-
-    @Test
     public void testMaxIntegerResultOnDoublePatternShouldntCompile() {
         checkCompilationFailureOnMismatchingAccumulate("Integer", "max");
     }

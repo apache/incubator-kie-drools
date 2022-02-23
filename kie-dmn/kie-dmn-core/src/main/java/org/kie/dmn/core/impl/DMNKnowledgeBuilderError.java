@@ -1,6 +1,6 @@
 package org.kie.dmn.core.impl;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.internal.builder.InternalMessage;

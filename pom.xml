@@ -13,7 +13,7 @@
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
-  <version>8.18.0-SNAPSHOT</version>
+  <version>8.19.0-SNAPSHOT</version>
 
   <name>Drools :: Parent</name>
   <description>
@@ -156,6 +156,8 @@
     <module>drools-kiesession</module>
     <module>drools-ecj</module>
     <module>drools-drl-ast</module>
+    <module>drools-drl-parser</module>
+    <module>drools-drl-extensions</module>
     <module>drools-compiler</module>
     <module>drools-mvel</module>
     <module>drools-xml-support</module>
