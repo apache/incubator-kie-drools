@@ -60,7 +60,7 @@ public class DataIndexInfinispanResource implements TestResource {
         dataIndex.addProtoFileFolder();
         dataIndex.withNetwork(network);
         dataIndex.setInfinispanURL("infinispan:11222");
-        dataIndex.setKafkaURL("kafka:9092");
+        dataIndex.setKafkaURL("kafka:29092");
         dataIndex.start();
         LOGGER.debug("Data Index Service started");
     }

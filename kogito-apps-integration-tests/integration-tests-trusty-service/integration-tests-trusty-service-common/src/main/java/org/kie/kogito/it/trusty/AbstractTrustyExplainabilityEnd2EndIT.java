@@ -52,7 +52,6 @@ import org.kie.kogito.trusty.storage.api.model.decision.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 
@@ -82,7 +81,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
     private static final String INFINISPAN_SERVER_LIST = INFINISPAN_ALIAS + ":11222";
 
     private static final String KAFKA_ALIAS = "kafka";
-    private static final String KAFKA_BOOTSTRAP_SERVERS = KAFKA_ALIAS + ":9092";
+    private static final String KAFKA_BOOTSTRAP_SERVERS = KAFKA_ALIAS + ":29092";
 
     private static final String KEYCLOAK_ALIAS = "keycloak";
     private static final String KEYCLOAK_DB_VENDOR_VARIABLE = "DB_VENDOR";
@@ -129,7 +128,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                         .withNetwork(network)
                         .withNetworkAliases(INFINISPAN_ALIAS);
 
-                final KafkaContainer kafka = new KogitoKafkaContainer()
+                final KogitoKafkaContainer kafka = new KogitoKafkaContainer()
                         .withNetwork(network)
                         .withNetworkAliases(KAFKA_ALIAS);
 

@@ -59,7 +59,7 @@ public class DataIndexMongoDBResource implements TestResource {
         dataIndex.addProtoFileFolder();
         dataIndex.withNetwork(network);
         dataIndex.setMongoDBURL("mongodb://mongo:27017/test");
-        dataIndex.setKafkaURL("kafka:9092");
+        dataIndex.setKafkaURL("kafka:29092");
         dataIndex.start();
         LOGGER.debug("Data Index Service started");
     }

@@ -68,7 +68,7 @@ public class TaskAssigningServiceResource implements TestResource {
         // external access url
         String kafkaURL = kafka.getBootstrapServers();
         // internal access url
-        String kafkaInternalUrl = "kafka:9092";
+        String kafkaInternalUrl = "kafka:29092";
         properties.put("kafka.bootstrap.servers", kafkaURL);
 
         LOGGER.debug("Start DataIndex test resource");
@@ -84,7 +84,7 @@ public class TaskAssigningServiceResource implements TestResource {
         taskAssigningProcesses.withNetworkAliases("processes");
         String kogitoServiceURL = "http://processes:" + TaskAssigningProcessesContainer.PORT;
         taskAssigningProcesses.setKogitoServiceURL(kogitoServiceURL);
-        taskAssigningProcesses.setKafkaURL("kafka:9092");
+        taskAssigningProcesses.setKafkaURL("kafka:29092");
         taskAssigningProcesses.start();
 
         LOGGER.debug("Start TaskAssigningService test resource");

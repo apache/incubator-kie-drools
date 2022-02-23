@@ -65,7 +65,7 @@ public class DataIndexPostgreSqlResource implements TestResource {
         dataIndex
                 .setPostgreSqlURL("jdbc:postgresql://postgresql:5432/" + postgresql.getDatabaseName(), postgresql.getUsername(),
                         postgresql.getPassword());
-        dataIndex.setKafkaURL("kafka:9092");
+        dataIndex.setKafkaURL("kafka:29092");
         dataIndex.start();
         LOGGER.debug("PostgreSQL Quarkus test resource started");
     }
