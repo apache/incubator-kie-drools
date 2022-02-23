@@ -42,7 +42,7 @@ public class KogitoProcessContextResolverTest {
 
     @Test
     void testGetSimpleKey() {
-        assertEquals("pepe", KogitoProcessContextResolver.get().readKey(context, "workflowInstanceId"));
+        assertEquals("pepe", KogitoProcessContextResolver.get().readKey(context, "instanceId"));
     }
 
 }

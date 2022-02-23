@@ -119,7 +119,7 @@ public class JsonObjectUtils {
     }
 
     public static String toString(JsonNode node) throws JsonProcessingException {
-        return ObjectMapperFactory.get().writeValueAsString(node).replace("\"", "\\\"");
+        return ObjectMapperFactory.get().writeValueAsString(node);
     }
 
     public static void addToNode(String name, Object value, ObjectNode dest) {

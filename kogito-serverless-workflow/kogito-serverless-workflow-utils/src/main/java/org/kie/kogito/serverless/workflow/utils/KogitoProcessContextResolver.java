@@ -33,9 +33,9 @@ public class KogitoProcessContextResolver {
 
     public KogitoProcessContextResolver() {
         methods = new HashMap<>();
-        methods.put("workflowInstanceId", k -> k.getProcessInstance().getId());
-        methods.put("workflowId", k -> k.getProcessInstance().getProcessId());
-        methods.put("workflowName", k -> k.getProcessInstance().getProcessName());
+        methods.put("instanceId", k -> k.getProcessInstance().getId());
+        methods.put("id", k -> k.getProcessInstance().getProcessId());
+        methods.put("name", k -> k.getProcessInstance().getProcessName());
     }
 
     public String readKey(KogitoProcessContext context, String key) {

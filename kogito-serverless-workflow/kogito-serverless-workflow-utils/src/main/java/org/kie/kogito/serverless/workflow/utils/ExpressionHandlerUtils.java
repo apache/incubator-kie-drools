@@ -44,10 +44,9 @@ public class ExpressionHandlerUtils {
     private static final String FUNCTION_REFERENCE = "fn:";
     protected static final String SECRET_MAGIC = "$SECRET.";
     protected static final String CONST_MAGIC = "$CONST.";
-    protected static final String CONTEXT_MAGIC = "$CONTEXT.";
+    protected static final String CONTEXT_MAGIC = "$WORKFLOW.";
 
     public static String prepareExpr(String expr, Optional<KogitoProcessContext> context) {
-
         expr = replaceMagic(expr, SECRET_MAGIC, SecretResolverFactory.getSecretResolver());
         if (context.isPresent()) {
             expr = replaceMagic(expr, CONTEXT_MAGIC, key -> KogitoProcessContextResolver.get().readKey(context.get(), key));

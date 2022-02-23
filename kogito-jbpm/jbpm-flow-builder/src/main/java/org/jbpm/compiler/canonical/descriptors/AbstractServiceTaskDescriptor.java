@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
@@ -234,16 +233,11 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
 
     public static Object processWorkItemValue(String exprLang, Object object, String paramName, Class<? extends ExpressionWorkItemResolver> clazz, boolean isExpression) {
         return isExpression
-                ? new WorkItemParamResolverSupplier(clazz, () -> new StringLiteralExpr(exprLang),
-                        () -> getLiteralExpr(object, o -> new StringLiteralExpr(TypeConverterRegistry.get().forTypeReverse(o).apply(o))), () -> new StringLiteralExpr(paramName))
+                ? new WorkItemParamResolverSupplier(clazz, () -> new StringLiteralExpr(exprLang), () -> getLiteralExpr(object), () -> new StringLiteralExpr(paramName))
                 : object;
     }
 
     public static Expression getLiteralExpr(Object object) {
-        return getLiteralExpr(object, AbstractServiceTaskDescriptor::convertExpression);
-    }
-
-    private static Expression getLiteralExpr(Object object, Function<Object, Expression> complexConverter) {
         if (object == null) {
             return new NullLiteralExpr();
         } else if (object instanceof Boolean) {
@@ -261,9 +255,9 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
         } else if (object instanceof Number) {
             return new DoubleLiteralExpr(((Number) object).doubleValue());
         } else if (object instanceof String) {
-            return new StringLiteralExpr(object.toString());
+            return new StringLiteralExpr().setString(object.toString());
         } else {
-            return complexConverter.apply(object);
+            return convertExpression(object);
         }
     }
 
@@ -276,9 +270,9 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
             // will generate TypeConverterRegistry.get().forType("JsonNode.class").apply("{\"dog\":\"perro\"}"));
             return new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
                     NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
-                    NodeList.nodeList(new StringLiteralExpr(TypeConverterRegistry.get().forTypeReverse(object).apply((object)))));
+                    NodeList.nodeList(new StringLiteralExpr().setString(TypeConverterRegistry.get().forTypeReverse(object).apply((object)))));
         } else {
-            return new StringLiteralExpr(object.toString());
+            return new StringLiteralExpr().setString(object.toString());
         }
     }
 }

@@ -24,6 +24,7 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -57,15 +58,8 @@ class JsonNodeJqResolverTest {
     void verifyArrayNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
-        final String parameterDefinition = "[\n" +
-                "   {\n" +
-                "      \"leftElement\":.fahrenheit\n" +
-                "   },\n" +
-                "   {\n" +
-                "      \"rightElement\":.subtractValue\n" +
-                "   }\n" +
-                "]";
-        final JsonNodeResolver resolver = new JsonNodeResolver("jq", parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jq", ObjectMapperFactory.get().createArrayNode().add(ObjectMapperFactory.get().createObjectNode().put("leftElement", ".fahrenheit"))
+                .add(ObjectMapperFactory.get().createObjectNode().put("rightElement", ".subtractValue")), "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isArray());
         assertThat(processedNode.findValue("leftElement").asInt(), equalTo(32));
@@ -76,11 +70,30 @@ class JsonNodeJqResolverTest {
     void verifyValueNode() throws JsonProcessingException {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
-        final String parameterDefinition = ".fahrenheit";
-        final JsonNodeResolver resolver = new JsonNodeResolver("jq", parameterDefinition, "pepe");
+        final JsonNodeResolver resolver = new JsonNodeResolver("jq", ".fahrenheit", "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
         assertTrue(processedNode.isValueNode());
         assertThat(processedNode.asInt(), equalTo(32));
+    }
+
+    @Test
+    void verifyJsonValue() throws JsonProcessingException {
+        final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
+        final JsonNodeResolver resolver = new JsonNodeResolver("jq", "{leftElement:.fahrenheit}", "pepe");
+        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
+        assertTrue(processedNode.isObject());
+        assertThat(processedNode.findValue("leftElement").asInt(), equalTo(32));
+    }
+
+    @Test
+    void verifyQuotedJsonValue() throws JsonProcessingException {
+        final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
+        final JsonNodeResolver resolver = new JsonNodeResolver("jq", "{leftElement:\".fahrenheit\"}", "pepe");
+        final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
+        assertTrue(processedNode.isObject());
+        assertThat(processedNode.findValue("leftElement").asText(), equalTo(".fahrenheit"));
     }
 
 }

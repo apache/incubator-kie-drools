@@ -27,7 +27,7 @@ public class SupplierUtils {
     public static ObjectCreationExpr getExpression(Class<?> runtimeClass, String... args) {
         ObjectCreationExpr result = new ObjectCreationExpr().setType(runtimeClass.getCanonicalName());
         for (String arg : args) {
-            result.addArgument(arg == null ? new NullLiteralExpr() : new StringLiteralExpr(arg));
+            result.addArgument(arg == null ? new NullLiteralExpr() : new StringLiteralExpr().setString(arg));
         }
         return result;
     }

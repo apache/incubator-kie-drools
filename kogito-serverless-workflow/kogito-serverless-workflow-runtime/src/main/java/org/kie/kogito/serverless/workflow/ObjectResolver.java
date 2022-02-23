@@ -22,8 +22,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ObjectResolver extends JsonNodeResolver {
 
-    public ObjectResolver(String exprLang, String jsonPathExpr, String paramName) {
-        super(exprLang, jsonPathExpr, paramName);
+    public ObjectResolver(String exprLang, Object expr, String paramName) {
+        super(exprLang, expr, paramName);
     }
 
     @Override

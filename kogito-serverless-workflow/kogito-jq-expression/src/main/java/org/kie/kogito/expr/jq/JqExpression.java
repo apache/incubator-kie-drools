@@ -172,7 +172,7 @@ public class JqExpression implements Expression {
         String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr, context);
         if (this.query == null || !resolvedExpr.equals(compiledExpr)) {
             compiledExpr = resolvedExpr;
-            this.query = JsonQuery.compile(ExpressionHandlerUtils.prepareExpr(compiledExpr, context), Versions.JQ_1_6);
+            this.query = JsonQuery.compile(compiledExpr, Versions.JQ_1_6);
         }
     }
 

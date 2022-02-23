@@ -23,10 +23,10 @@ import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
 public abstract class ExpressionWorkItemResolver implements WorkItemParamResolver {
 
     protected final String language;
-    protected final String expression;
+    protected final Object expression;
     private final String paramName;
 
-    protected ExpressionWorkItemResolver(String language, String expression, String paramName) {
+    protected ExpressionWorkItemResolver(String language, Object expression, String paramName) {
         this.language = language;
         this.expression = expression;
         this.paramName = paramName;
