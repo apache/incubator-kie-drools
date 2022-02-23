@@ -63,9 +63,12 @@ public class SingleConstraint4<A, B, C, D> extends AbstractSingleConstraint {
 
     @Override
     public PredicateN getPredicate() {
-        return objs -> {
-            return predicate.test((A) objs[0], (B) objs[1], (C) objs[2], (D) objs[3]);
-        };
+        return objs -> predicate.test((A) objs[0], (B) objs[1], (C) objs[2], (D) objs[3]);
+    }
+
+    @Override
+    public Predicate4 getPredicate4() {
+        return predicate;
     }
 
     @Override

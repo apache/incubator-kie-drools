@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
@@ -32,6 +31,9 @@ import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
+import org.drools.model.functions.Predicate4;
+import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.PredicateN;
 
 public class ConstraintEvaluator {
@@ -77,15 +79,25 @@ public class ConstraintEvaluator {
             setPatternDeclaration( patternDeclaration );
             return null;
         }
-        if (declarations.length == 1) {
-            return declarations[0].isInternalFact() ?
-                    new InnerEvaluator._1(patternDeclaration, declarations[0], constraint.getPredicate1()) :
-                    new InnerEvaluator._1_FH(patternDeclaration, declarations[0], constraint.getPredicate1());
+        switch (declarations.length) {
+            case 1:
+                return declarations[0].isInternalFact() ?
+                        new InnerEvaluator._1(patternDeclaration, declarations[0], constraint.getPredicate1()) :
+                        new InnerEvaluator._1_FH(patternDeclaration, declarations[0], constraint.getPredicate1());
+            case 2:
+                return new InnerEvaluator._2(patternDeclaration, declarations[0], declarations[1], constraint.getPredicate2());
+            case 3:
+                return new InnerEvaluator._3(patternDeclaration, declarations[0], declarations[1], declarations[2],
+                        constraint.getPredicate3());
+            case 4:
+                return new InnerEvaluator._4(patternDeclaration, declarations[0], declarations[1], declarations[2],
+                        declarations[3], constraint.getPredicate4());
+            case 5:
+                return new InnerEvaluator._5(patternDeclaration, declarations[0], declarations[1], declarations[2],
+                        declarations[3], declarations[4], constraint.getPredicate5());
+            default:
+                return new InnerEvaluator._N(patternDeclaration, declarations, constraint.getPredicate());
         }
-        if (declarations.length == 2) {
-            return new InnerEvaluator._2(patternDeclaration, declarations[0], declarations[1], constraint.getPredicate2());
-        }
-        return new InnerEvaluator._N(patternDeclaration, declarations, constraint.getPredicate());
     }
 
     private Declaration findPatternDeclaration() {
@@ -176,17 +188,54 @@ public class ConstraintEvaluator {
         for ( int i = 0; i < declarations.length; i++) {
             if ( declarations[i].equals( oldDecl )) {
                 declarations[i] = newDecl;
-                if (i == 0) {
-                    if (innerEvaluator instanceof InnerEvaluator._1) {
-                        (( InnerEvaluator._1 ) innerEvaluator).declaration = newDecl;
-                    } else if (innerEvaluator instanceof InnerEvaluator._1_FH) {
-                        (( InnerEvaluator._1_FH ) innerEvaluator).declaration = newDecl;
-                    } else if (innerEvaluator instanceof InnerEvaluator._2) {
-                        (( InnerEvaluator._2 ) innerEvaluator).declaration1 = newDecl;
-                    }
-                }
-                if (i == 1 && innerEvaluator instanceof InnerEvaluator._2) {
-                    (( InnerEvaluator._2 ) innerEvaluator).declaration2 = newDecl;
+                switch (i) {
+                    case 0:
+                        if (innerEvaluator instanceof InnerEvaluator._1) {
+                            (( InnerEvaluator._1 ) innerEvaluator).declaration = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._1_FH) {
+                            (( InnerEvaluator._1_FH ) innerEvaluator).declaration = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._2) {
+                            (( InnerEvaluator._2 ) innerEvaluator).declaration1 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._3) {
+                            (( InnerEvaluator._3 ) innerEvaluator).declaration1 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._4) {
+                            (( InnerEvaluator._4 ) innerEvaluator).declaration1 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._5) {
+                            (( InnerEvaluator._5 ) innerEvaluator).declaration1 = newDecl;
+                        }
+                        break;
+                    case 1:
+                        if (innerEvaluator instanceof InnerEvaluator._2) {
+                            (( InnerEvaluator._2 ) innerEvaluator).declaration2 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._3) {
+                            (( InnerEvaluator._3 ) innerEvaluator).declaration2 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._4) {
+                            (( InnerEvaluator._4 ) innerEvaluator).declaration2 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._5) {
+                            (( InnerEvaluator._5 ) innerEvaluator).declaration2 = newDecl;
+                        }
+                        break;
+                    case 2:
+                        if (innerEvaluator instanceof InnerEvaluator._3) {
+                            (( InnerEvaluator._3 ) innerEvaluator).declaration3 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._4) {
+                            (( InnerEvaluator._4 ) innerEvaluator).declaration3 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._5) {
+                            (( InnerEvaluator._5 ) innerEvaluator).declaration3 = newDecl;
+                        }
+                        break;
+                    case 3:
+                        if (innerEvaluator instanceof InnerEvaluator._4) {
+                            (( InnerEvaluator._4 ) innerEvaluator).declaration4 = newDecl;
+                        } else if (innerEvaluator instanceof InnerEvaluator._5) {
+                            (( InnerEvaluator._5 ) innerEvaluator).declaration4 = newDecl;
+                        }
+                        break;
+                    case 4:
+                        if (innerEvaluator instanceof InnerEvaluator._5) {
+                            (( InnerEvaluator._5 ) innerEvaluator).declaration5 = newDecl;
+                        }
+                        break;
                 }
                 break;
             }
@@ -307,6 +356,112 @@ public class ConstraintEvaluator {
             @Override
             public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
                 return predicate.test( getArgument( handle, reteEvaluator, declaration1, tuple ), getArgument( handle, reteEvaluator, declaration2, tuple ) );
+            }
+        }
+
+        static class _3 extends InnerEvaluator {
+
+            private Declaration declaration1;
+            private Declaration declaration2;
+            private Declaration declaration3;
+            private final Predicate3 predicate;
+
+            public _3( Declaration patternDeclaration, Declaration declaration1, Declaration declaration2,
+                       Declaration declaration3, Predicate3 predicate ) {
+                super( patternDeclaration );
+                this.declaration1 = declaration1;
+                this.declaration2 = declaration2;
+                this.declaration3 = declaration3;
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, null ),
+                        getArgument( handle, reteEvaluator, declaration2, null ),
+                        getArgument( handle, reteEvaluator, declaration3, null ));
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, tuple ),
+                        getArgument( handle, reteEvaluator, declaration2, tuple ),
+                        getArgument( handle, reteEvaluator, declaration3, tuple ));
+            }
+        }
+
+        static class _4 extends InnerEvaluator {
+
+            private Declaration declaration1;
+            private Declaration declaration2;
+            private Declaration declaration3;
+            private Declaration declaration4;
+            private final Predicate4 predicate;
+
+            public _4( Declaration patternDeclaration, Declaration declaration1, Declaration declaration2,
+                       Declaration declaration3, Declaration declaration4, Predicate4 predicate ) {
+                super( patternDeclaration );
+                this.declaration1 = declaration1;
+                this.declaration2 = declaration2;
+                this.declaration3 = declaration3;
+                this.declaration4 = declaration4;
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, null ),
+                        getArgument( handle, reteEvaluator, declaration2, null ),
+                        getArgument( handle, reteEvaluator, declaration3, null ),
+                        getArgument( handle, reteEvaluator, declaration4, null ));
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, tuple ),
+                        getArgument( handle, reteEvaluator, declaration2, tuple ),
+                        getArgument( handle, reteEvaluator, declaration3, tuple ),
+                        getArgument( handle, reteEvaluator, declaration4, tuple ));
+            }
+        }
+
+        static class _5 extends InnerEvaluator {
+
+            private Declaration declaration1;
+            private Declaration declaration2;
+            private Declaration declaration3;
+            private Declaration declaration4;
+            private Declaration declaration5;
+            private final Predicate5 predicate;
+
+            public _5( Declaration patternDeclaration, Declaration declaration1, Declaration declaration2,
+                       Declaration declaration3, Declaration declaration4, Declaration declaration5,
+                       Predicate5 predicate ) {
+                super( patternDeclaration );
+                this.declaration1 = declaration1;
+                this.declaration2 = declaration2;
+                this.declaration3 = declaration3;
+                this.declaration4 = declaration4;
+                this.declaration5 = declaration5;
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, null ),
+                        getArgument( handle, reteEvaluator, declaration2, null ),
+                        getArgument( handle, reteEvaluator, declaration3, null ),
+                        getArgument( handle, reteEvaluator, declaration4, null ),
+                        getArgument( handle, reteEvaluator, declaration5, null ));
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, ReteEvaluator reteEvaluator ) throws Exception {
+                return predicate.test( getArgument( handle, reteEvaluator, declaration1, tuple ),
+                        getArgument( handle, reteEvaluator, declaration2, tuple ),
+                        getArgument( handle, reteEvaluator, declaration3, tuple ),
+                        getArgument( handle, reteEvaluator, declaration4, tuple ),
+                        getArgument( handle, reteEvaluator, declaration5, tuple ));
             }
         }
 

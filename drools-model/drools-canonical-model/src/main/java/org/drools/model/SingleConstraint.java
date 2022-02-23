@@ -34,6 +34,9 @@ import org.drools.model.constraints.SingleConstraint8;
 import org.drools.model.constraints.SingleConstraint9;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
+import org.drools.model.functions.Predicate4;
+import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.impl.ModelComponent;
@@ -62,6 +65,18 @@ public interface SingleConstraint extends Constraint {
     }
 
     default Predicate2 getPredicate2() {
+        throw new UnsupportedOperationException();
+    }
+
+    default Predicate3 getPredicate3() {
+        throw new UnsupportedOperationException();
+    }
+
+    default Predicate4 getPredicate4() {
+        throw new UnsupportedOperationException();
+    }
+
+    default Predicate5 getPredicate5() {
         throw new UnsupportedOperationException();
     }
 
