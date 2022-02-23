@@ -23,8 +23,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.common.DisconnectedFactHandle;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -38,8 +40,10 @@ public class UpdateCommand implements ExecutableCommand<Void> {
 
     private static final long serialVersionUID = 3255044102543531497L;
 
+    @XmlElement(name="fact-handle", required=true)
     private DisconnectedFactHandle handle;
 
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     @XmlElement
     private Object object;
 
@@ -85,13 +89,16 @@ public class UpdateCommand implements ExecutableCommand<Void> {
         return this.handle;
     }
 
-    @XmlElement(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
         handle = new DisconnectedFactHandle(factHandleId);
     }
 
     public String getFactHandleFromString() {
         return handle.toExternalForm();
+    }
+
+    public String[] getModifiedProperties() {
+        return modifiedProperties;
     }
 
     public Void execute(Context context) {

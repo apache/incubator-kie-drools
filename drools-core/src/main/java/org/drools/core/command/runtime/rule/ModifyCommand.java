@@ -34,6 +34,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class ModifyCommand implements ExecutableCommand<Object> {
 
