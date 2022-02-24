@@ -61,13 +61,6 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         return new IntervalTreeIterator<>(splitPointSet);
     }
 
-    public boolean add(Interval_ interval) {
-        if (interval == null) {
-            return false;
-        }
-        return add(getInterval(interval));
-    }
-
     public boolean add(Interval<Interval_, Point_> interval) {
         IntervalSplitPoint<Interval_, Point_> startSplitPoint = interval.getStartSplitPoint();
         IntervalSplitPoint<Interval_, Point_> endSplitPoint = interval.getEndSplitPoint();
@@ -95,13 +88,6 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
             consecutiveIntervalData.addInterval(interval);
         }
         return true;
-    }
-
-    public boolean remove(Interval_ interval) {
-        if (interval == null) {
-            return false;
-        }
-        return remove(getInterval(interval));
     }
 
     public boolean remove(Interval<Interval_, Point_> interval) {

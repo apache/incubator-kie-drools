@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.TreeSet;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -33,11 +32,11 @@ import org.optaplanner.examples.common.experimental.api.IntervalBreak;
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
 
 class IntervalTreeTest {
-    private static class Interval {
-        final int start;
-        final int end;
+    private static class TestInterval {
+        int start;
+        int end;
 
-        public Interval(int start, int end) {
+        public TestInterval(int start, int end) {
             this.start = start;
             this.end = end;
         }
@@ -50,13 +49,21 @@ class IntervalTreeTest {
             return end;
         }
 
+        public void setStart(int start) {
+            this.start = start;
+        }
+
+        public void setEnd(int end) {
+            this.end = end;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o)
                 return true;
             if (o == null || getClass() != o.getClass())
                 return false;
-            Interval interval = (Interval) o;
+            TestInterval interval = (TestInterval) o;
             return start == interval.start && end == interval.end;
         }
 
@@ -71,28 +78,31 @@ class IntervalTreeTest {
         }
     }
 
-    private IntervalTree<Interval, Integer, Integer> getIntegerIntervalTree() {
-        return new IntervalTree<>(Interval::getStart, Interval::getEnd, (a, b) -> b - a);
+    private IntervalTree<TestInterval, Integer, Integer> getIntegerIntervalTree() {
+        return new IntervalTree<>(TestInterval::getStart, TestInterval::getEnd, (a, b) -> b - a);
     }
 
     @Test
     void testNonConsecutiveIntervals() {
-        IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
-        tree.add(new Interval(0, 2));
-        tree.add(new Interval(3, 4));
-        tree.add(new Interval(5, 7));
+        IntervalTree<TestInterval, Integer, Integer> tree = getIntegerIntervalTree();
+        Interval<TestInterval, Integer> a = tree.getInterval(new TestInterval(0, 2));
+        Interval<TestInterval, Integer> b = tree.getInterval(new TestInterval(3, 4));
+        Interval<TestInterval, Integer> c = tree.getInterval(new TestInterval(5, 7));
+        tree.add(a);
+        tree.add(b);
+        tree.add(c);
 
-        IterableList<IntervalCluster<Interval, Integer, Integer>> clusterList =
+        IterableList<IntervalCluster<TestInterval, Integer, Integer>> clusterList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(3);
 
-        assertThat(clusterList.get(0)).containsExactly(new Interval(0, 2));
+        assertThat(clusterList.get(0)).containsExactly(new TestInterval(0, 2));
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(1)).containsExactly(new Interval(3, 4));
+        assertThat(clusterList.get(1)).containsExactly(new TestInterval(3, 4));
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(2)).containsExactly(new Interval(5, 7));
+        assertThat(clusterList.get(2)).containsExactly(new TestInterval(5, 7));
         assertThat(clusterList.get(2).hasOverlap()).isFalse();
 
         verifyBreaks(tree);
@@ -100,161 +110,181 @@ class IntervalTreeTest {
 
     @Test
     void testConsecutiveIntervals() {
-        IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
-        tree.add(new Interval(0, 2));
-        tree.add(new Interval(2, 4));
-        tree.add(new Interval(4, 7));
+        IntervalTree<TestInterval, Integer, Integer> tree = getIntegerIntervalTree();
+        Interval<TestInterval, Integer> a = tree.getInterval(new TestInterval(0, 2));
+        Interval<TestInterval, Integer> b = tree.getInterval(new TestInterval(2, 4));
+        Interval<TestInterval, Integer> c = tree.getInterval(new TestInterval(4, 7));
+        tree.add(a);
+        tree.add(b);
+        tree.add(c);
 
-        IterableList<IntervalCluster<Interval, Integer, Integer>> clusterList =
+        IterableList<IntervalCluster<TestInterval, Integer, Integer>> clusterList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(1);
 
-        assertThat(clusterList.get(0)).containsExactly(new Interval(0, 2), new Interval(2, 4), new Interval(4, 7));
+        assertThat(clusterList.get(0)).containsExactly(new TestInterval(0, 2), new TestInterval(2, 4), new TestInterval(4, 7));
         verifyBreaks(tree);
     }
 
     @Test
     void testDuplicateIntervals() {
-        IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
-        Interval a = new Interval(0, 2);
-        Interval b = new Interval(4, 7);
+        IntervalTree<TestInterval, Integer, Integer> tree = getIntegerIntervalTree();
+        Interval<TestInterval, Integer> a = tree.getInterval(new TestInterval(0, 2));
+        Interval<TestInterval, Integer> b = tree.getInterval(new TestInterval(4, 7));
         tree.add(a);
         tree.add(a);
         tree.add(b);
 
-        IterableList<IntervalCluster<Interval, Integer, Integer>> clusterList =
+        IterableList<IntervalCluster<TestInterval, Integer, Integer>> clusterList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(2);
 
-        assertThat(clusterList.get(0)).containsExactly(a, a);
-        assertThat(clusterList.get(1)).containsExactly(b);
+        assertThat(clusterList.get(0)).containsExactly(a.getValue(), a.getValue());
+        assertThat(clusterList.get(1)).containsExactly(b.getValue());
         verifyBreaks(tree);
     }
 
     @Test
     void testIntervalRemoval() {
-        IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
-        Interval a = new Interval(0, 2);
-        Interval b = new Interval(2, 4);
-        Interval c = new Interval(4, 7);
+        IntervalTree<TestInterval, Integer, Integer> tree = getIntegerIntervalTree();
+        TestInterval removedInterval = new TestInterval(2, 4);
+        Interval<TestInterval, Integer> a = tree.getInterval(new TestInterval(0, 2));
+        Interval<TestInterval, Integer> b = tree.getInterval(removedInterval);
+        Interval<TestInterval, Integer> c = tree.getInterval(new TestInterval(4, 7));
         tree.add(a);
         tree.add(b);
         tree.add(c);
 
+        // Imitate changing planning variables
+        removedInterval.setStart(10);
+        removedInterval.setEnd(12);
+
         tree.remove(b);
 
-        IterableList<IntervalCluster<Interval, Integer, Integer>> clusterList =
+        IterableList<IntervalCluster<TestInterval, Integer, Integer>> clusterList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(2);
 
-        assertThat(clusterList.get(0)).containsExactly(new Interval(0, 2));
-        assertThat(clusterList.get(1)).containsExactly(new Interval(4, 7));
+        assertThat(clusterList.get(0)).containsExactly(new TestInterval(0, 2));
+        assertThat(clusterList.get(1)).containsExactly(new TestInterval(4, 7));
         verifyBreaks(tree);
     }
 
     @Test
     void testIntervalAddUpdatingOldBreak() {
-        IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
-        Interval beforeAll = new Interval(1, 2);
-        Interval newStart = new Interval(3, 8);
-        Interval oldStart = new Interval(4, 5);
-        Interval betweenOldAndNewStart = new Interval(6, 7);
-        Interval afterAll = new Interval(9, 10);
+        IntervalTree<TestInterval, Integer, Integer> tree = getIntegerIntervalTree();
+        TestInterval beforeAll = new TestInterval(1, 2);
+        TestInterval newStart = new TestInterval(3, 8);
+        TestInterval oldStart = new TestInterval(4, 5);
+        TestInterval betweenOldAndNewStart = new TestInterval(6, 7);
+        TestInterval afterAll = new TestInterval(9, 10);
 
-        tree.add(beforeAll);
+        tree.add(tree.getInterval(beforeAll));
         verifyBreaks(tree);
 
-        tree.add(afterAll);
+        tree.add(tree.getInterval(afterAll));
         verifyBreaks(tree);
 
-        tree.add(oldStart);
+        tree.add(tree.getInterval(oldStart));
         verifyBreaks(tree);
 
-        tree.add(betweenOldAndNewStart);
+        tree.add(tree.getInterval(betweenOldAndNewStart));
         verifyBreaks(tree);
 
-        tree.add(newStart);
+        tree.add(tree.getInterval(newStart));
         verifyBreaks(tree);
     }
 
     @Test
     void testOverlappingInterval() {
-        IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
-        Interval a = new Interval(0, 2);
-        Interval b = new Interval(1, 3);
-        Interval c = new Interval(2, 4);
+        IntervalTree<TestInterval, Integer, Integer> tree = getIntegerIntervalTree();
+        Interval<TestInterval, Integer> a = tree.getInterval(new TestInterval(0, 2));
+        TestInterval removedTestInterval1 = new TestInterval(1, 3);
+        Interval<TestInterval, Integer> removedInterval1 = tree.getInterval(removedTestInterval1);
+        Interval<TestInterval, Integer> c = tree.getInterval(new TestInterval(2, 4));
 
-        Interval d = new Interval(5, 6);
+        Interval<TestInterval, Integer> d = tree.getInterval(new TestInterval(5, 6));
 
-        Interval e = new Interval(7, 9);
-        Interval f = new Interval(7, 9);
+        Interval<TestInterval, Integer> e = tree.getInterval(new TestInterval(7, 9));
+        TestInterval removedTestInterval2 = new TestInterval(7, 9);
+        Interval<TestInterval, Integer> removedInterval2 = tree.getInterval(removedTestInterval2);
 
         tree.add(a);
-        tree.add(b);
+        tree.add(removedInterval1);
         tree.add(c);
         tree.add(d);
         tree.add(e);
-        tree.add(f);
+        tree.add(removedInterval2);
 
-        IterableList<IntervalCluster<Interval, Integer, Integer>> clusterList =
+        IterableList<IntervalCluster<TestInterval, Integer, Integer>> clusterList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(3);
 
-        assertThat(clusterList.get(0)).containsExactly(a, b, c);
+        assertThat(clusterList.get(0)).containsExactly(a.getValue(), removedTestInterval1, c.getValue());
         assertThat(clusterList.get(0).hasOverlap()).isTrue();
 
-        assertThat(clusterList.get(1)).containsExactly(d);
+        assertThat(clusterList.get(1)).containsExactly(d.getValue());
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(2)).containsExactly(e, f);
+        assertThat(clusterList.get(2)).containsExactly(e.getValue(), removedTestInterval2);
         assertThat(clusterList.get(2).hasOverlap()).isTrue();
 
         verifyBreaks(tree);
-        tree.remove(b);
+
+        // Simulate changing planning variables
+        removedTestInterval1.setStart(0);
+        removedTestInterval1.setEnd(10);
+
+        tree.remove(removedInterval1);
 
         clusterList = new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(3);
 
-        assertThat(clusterList.get(0)).containsExactly(a, c);
+        assertThat(clusterList.get(0)).containsExactly(a.getValue(), c.getValue());
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(1)).containsExactly(d);
+        assertThat(clusterList.get(1)).containsExactly(d.getValue());
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(2)).containsExactly(e, f);
+        assertThat(clusterList.get(2)).containsExactly(e.getValue(), removedTestInterval2);
         assertThat(clusterList.get(2).hasOverlap()).isTrue();
 
         verifyBreaks(tree);
-        tree.remove(f);
+
+        // Simulate changing planning variables
+        removedTestInterval2.setStart(2);
+        removedTestInterval2.setEnd(4);
+
+        tree.remove(removedInterval2);
         clusterList = new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(3);
 
-        assertThat(clusterList.get(0)).containsExactly(a, c);
+        assertThat(clusterList.get(0)).containsExactly(a.getValue(), c.getValue());
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(1)).containsExactly(d);
+        assertThat(clusterList.get(1)).containsExactly(d.getValue());
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(2)).containsExactly(e);
+        assertThat(clusterList.get(2)).containsExactly(e.getValue());
         assertThat(clusterList.get(2).hasOverlap()).isFalse();
 
         verifyBreaks(tree);
-        Interval g = new Interval(6, 7);
+        Interval<TestInterval, Integer> g = tree.getInterval(new TestInterval(6, 7));
         tree.add(g);
         clusterList = new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
         assertThat(clusterList).hasSize(2);
 
-        assertThat(clusterList.get(0)).containsExactly(a, c);
+        assertThat(clusterList.get(0)).containsExactly(a.getValue(), c.getValue());
         assertThat(clusterList.get(0).hasOverlap()).isFalse();
 
-        assertThat(clusterList.get(1)).containsExactly(d, g, e);
+        assertThat(clusterList.get(1)).containsExactly(d.getValue(), g.getValue(), e.getValue());
         assertThat(clusterList.get(1).hasOverlap()).isFalse();
     }
 
-    public void verifyBreaks(IntervalTree<Interval, Integer, Integer> tree) {
-        IterableList<IntervalCluster<Interval, Integer, Integer>> clusterList =
+    public void verifyBreaks(IntervalTree<TestInterval, Integer, Integer> tree) {
+        IterableList<IntervalCluster<TestInterval, Integer, Integer>> clusterList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getIntervalClusters());
-        IterableList<IntervalBreak<Interval, Integer, Integer>> breakList =
+        IterableList<IntervalBreak<TestInterval, Integer, Integer>> breakList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getBreaks());
 
         if (clusterList.size() == 0) {
@@ -276,25 +306,26 @@ class IntervalTreeTest {
         Random random = new Random(1);
 
         for (int i = 0; i < 100; i++) {
-            Map<Interval, Interval> intervalToInstanceMap = new HashMap<>();
-            TreeSet<IntervalSplitPoint<Interval, Integer>> splitPoints = new TreeSet<>();
-            IntervalTree<Interval, Integer, Integer> tree =
-                    new IntervalTree<>(Interval::getStart, Interval::getEnd, (a, b) -> b - a);
+            Map<TestInterval, Interval<TestInterval, Integer>> intervalToInstanceMap = new HashMap<>();
+            TreeSet<IntervalSplitPoint<TestInterval, Integer>> splitPoints = new TreeSet<>();
+            IntervalTree<TestInterval, Integer, Integer> tree =
+                    new IntervalTree<>(TestInterval::getStart, TestInterval::getEnd, (a, b) -> b - a);
             for (int j = 0; j < 100; j++) {
                 // Create a random interval
                 String old = formatIntervalTree(tree);
                 int from = random.nextInt(5);
                 int to = from + random.nextInt(5);
-                Interval interval = intervalToInstanceMap.computeIfAbsent(new Interval(from, to), Function.identity());
-                org.optaplanner.examples.common.experimental.impl.Interval<Interval, Integer> treeInterval =
-                        new org.optaplanner.examples.common.experimental.impl.Interval<>(interval, Interval::getStart,
-                                Interval::getEnd);
+                TestInterval data = new TestInterval(from, to);
+                Interval<TestInterval, Integer> interval = intervalToInstanceMap.computeIfAbsent(data, tree::getInterval);
+                Interval<TestInterval, Integer> treeInterval =
+                        new Interval<>(data, TestInterval::getStart, TestInterval::getEnd);
                 splitPoints.add(treeInterval.getStartSplitPoint());
                 splitPoints.add(treeInterval.getEndSplitPoint());
 
                 // Get the split points from the set (since those split points have collections)
-                IntervalSplitPoint<Interval, Integer> startSplitPoint = splitPoints.floor(treeInterval.getStartSplitPoint());
-                IntervalSplitPoint<Interval, Integer> endSplitPoint = splitPoints.floor(treeInterval.getEndSplitPoint());
+                IntervalSplitPoint<TestInterval, Integer> startSplitPoint =
+                        splitPoints.floor(treeInterval.getStartSplitPoint());
+                IntervalSplitPoint<TestInterval, Integer> endSplitPoint = splitPoints.floor(treeInterval.getEndSplitPoint());
 
                 // Create the collections if they do not exist
                 if (startSplitPoint.startIntervalToCountMap == null) {
@@ -325,16 +356,16 @@ class IntervalTreeTest {
                 }
 
                 // Recompute all interval clusters
-                IntervalSplitPoint<Interval, Integer> previous = null;
-                IntervalSplitPoint<Interval, Integer> current = splitPoints.isEmpty() ? null : splitPoints.first();
-                List<IntervalClusterImpl<Interval, Integer, Integer>> intervalClusterList = new ArrayList<>();
-                List<IntervalBreakImpl<Interval, Integer, Integer>> breakList = new ArrayList<>();
+                IntervalSplitPoint<TestInterval, Integer> previous = null;
+                IntervalSplitPoint<TestInterval, Integer> current = splitPoints.isEmpty() ? null : splitPoints.first();
+                List<IntervalClusterImpl<TestInterval, Integer, Integer>> intervalClusterList = new ArrayList<>();
+                List<IntervalBreakImpl<TestInterval, Integer, Integer>> breakList = new ArrayList<>();
                 while (current != null) {
                     intervalClusterList.add(new IntervalClusterImpl<>(splitPoints, (a, b) -> a - b, current));
                     if (previous != null) {
-                        IntervalClusterImpl<Interval, Integer, Integer> before =
+                        IntervalClusterImpl<TestInterval, Integer, Integer> before =
                                 intervalClusterList.get(intervalClusterList.size() - 2);
-                        IntervalClusterImpl<Interval, Integer, Integer> after =
+                        IntervalClusterImpl<TestInterval, Integer, Integer> after =
                                 intervalClusterList.get(intervalClusterList.size() - 1);
                         breakList.add(new IntervalBreakImpl<>(before, after, after.getStart() - before.getEnd()));
                     }
@@ -352,18 +383,18 @@ class IntervalTreeTest {
         }
     }
 
-    private String formatIntervalTree(IntervalTree<Interval, Integer, Integer> intervalTree) {
-        List<List<Interval>> listOfIntervalClusters = new ArrayList<>();
-        for (IntervalCluster<Interval, Integer, Integer> cluster : intervalTree.getConsecutiveIntervalData()
+    private String formatIntervalTree(IntervalTree<TestInterval, Integer, Integer> intervalTree) {
+        List<List<TestInterval>> listOfIntervalClusters = new ArrayList<>();
+        for (IntervalCluster<TestInterval, Integer, Integer> cluster : intervalTree.getConsecutiveIntervalData()
                 .getIntervalClusters()) {
-            List<Interval> intervalsInCluster = new ArrayList<>();
-            for (Interval interval : cluster) {
+            List<TestInterval> intervalsInCluster = new ArrayList<>();
+            for (TestInterval interval : cluster) {
                 intervalsInCluster.add(interval);
             }
             listOfIntervalClusters.add(intervalsInCluster);
         }
         return listOfIntervalClusters.stream()
-                .map(cluster -> cluster.stream().map(Interval::toString).collect(Collectors.joining(",", "[", "]")))
+                .map(cluster -> cluster.stream().map(TestInterval::toString).collect(Collectors.joining(",", "[", "]")))
                 .collect(Collectors.joining(";", "{", "}"));
     }
 

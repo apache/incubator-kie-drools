@@ -131,7 +131,7 @@ class ExperimentalConstraintCollectorsTest {
     private ConsecutiveIntervalInfoImpl<Interval, Integer, Integer> consecutiveIntervalData(Interval... data) {
         IntervalTree<Interval, Integer, Integer> tree =
                 new IntervalTree<>(Interval::getStart, Interval::getEnd, (a, b) -> b - a);
-        asList(data).forEach(tree::add);
+        asList(data).forEach(datum -> tree.add(tree.getInterval(datum)));
         return tree.getConsecutiveIntervalData();
     }
 
