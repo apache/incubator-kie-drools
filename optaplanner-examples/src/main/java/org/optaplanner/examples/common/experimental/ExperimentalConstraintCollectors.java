@@ -66,7 +66,6 @@ public class ExperimentalConstraintCollectors {
             @Override
             public Supplier<ConsecutiveSetTree<A, Integer, Integer>> supplier() {
                 return () -> new ConsecutiveSetTree<>(
-                        indexMap::applyAsInt,
                         (Integer a, Integer b) -> b - a,
                         Integer::sum,
                         1, 0);
@@ -75,7 +74,8 @@ public class ExperimentalConstraintCollectors {
             @Override
             public BiFunction<ConsecutiveSetTree<A, Integer, Integer>, A, Runnable> accumulator() {
                 return (acc, a) -> {
-                    acc.add(a);
+                    Integer value = indexMap.applyAsInt(a);
+                    acc.add(a, value);
                     return () -> acc.remove(a);
                 };
             }
@@ -104,7 +104,6 @@ public class ExperimentalConstraintCollectors {
             @Override
             public Supplier<ConsecutiveSetTree<Result, Integer, Integer>> supplier() {
                 return () -> new ConsecutiveSetTree<>(
-                        indexMap::applyAsInt,
                         (Integer a, Integer b) -> b - a,
                         Integer::sum, 1, 0);
             }
@@ -113,7 +112,8 @@ public class ExperimentalConstraintCollectors {
             public TriFunction<ConsecutiveSetTree<Result, Integer, Integer>, A, B, Runnable> accumulator() {
                 return (acc, a, b) -> {
                     Result result = resultMap.apply(a, b);
-                    acc.add(result);
+                    Integer value = indexMap.applyAsInt(result);
+                    acc.add(result, value);
                     return () -> acc.remove(result);
                 };
             }
@@ -143,7 +143,6 @@ public class ExperimentalConstraintCollectors {
             @Override
             public Supplier<ConsecutiveSetTree<Result, Integer, Integer>> supplier() {
                 return () -> new ConsecutiveSetTree<>(
-                        indexMap::applyAsInt,
                         (Integer a, Integer b) -> b - a, Integer::sum, 1, 0);
             }
 
@@ -151,7 +150,8 @@ public class ExperimentalConstraintCollectors {
             public QuadFunction<ConsecutiveSetTree<Result, Integer, Integer>, A, B, C, Runnable> accumulator() {
                 return (acc, a, b, c) -> {
                     Result result = resultMap.apply(a, b, c);
-                    acc.add(result);
+                    Integer value = indexMap.applyAsInt(result);
+                    acc.add(result, value);
                     return () -> acc.remove(result);
                 };
             }
@@ -182,7 +182,6 @@ public class ExperimentalConstraintCollectors {
             @Override
             public Supplier<ConsecutiveSetTree<Result, Integer, Integer>> supplier() {
                 return () -> new ConsecutiveSetTree<>(
-                        indexMap::applyAsInt,
                         (Integer a, Integer b) -> b - a, Integer::sum, 1, 0);
             }
 
@@ -190,7 +189,8 @@ public class ExperimentalConstraintCollectors {
             public PentaFunction<ConsecutiveSetTree<Result, Integer, Integer>, A, B, C, D, Runnable> accumulator() {
                 return (acc, a, b, c, d) -> {
                     Result result = resultMap.apply(a, b, c, d);
-                    acc.add(result);
+                    Integer value = indexMap.applyAsInt(result);
+                    acc.add(result, value);
                     return () -> acc.remove(result);
                 };
             }

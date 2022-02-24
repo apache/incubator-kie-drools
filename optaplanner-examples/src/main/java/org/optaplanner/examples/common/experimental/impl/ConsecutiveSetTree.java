@@ -17,13 +17,13 @@
 package org.optaplanner.examples.common.experimental.impl;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
@@ -44,7 +44,6 @@ import org.optaplanner.examples.common.experimental.api.Sequence;
  */
 public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
         implements ConsecutiveInfo<Value_, Difference_> {
-    private final Function<Value_, Point_> indexFunction;
     private final BiFunction<Point_, Point_, Difference_> differenceFunction;
     private final BiFunction<Difference_, Difference_, Difference_> sumFunction;
     private final Difference_ maxDifference;
@@ -53,20 +52,20 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
     private final NavigableMap<Value_, SequenceImpl<Value_, Difference_>> startItemToSequence;
     private final NavigableMap<Value_, BreakImpl<Value_, Difference_>> startItemToPreviousBreak;
 
+    private final Map<Value_, Point_> indexMap;
     private final MapValuesIterable<Value_, SequenceImpl<Value_, Difference_>> sequenceList;
     private final MapValuesIterable<Value_, BreakImpl<Value_, Difference_>> breakList;
 
-    public ConsecutiveSetTree(Function<Value_, Point_> indexFunction,
-            BiFunction<Point_, Point_, Difference_> differenceFunction,
+    public ConsecutiveSetTree(BiFunction<Point_, Point_, Difference_> differenceFunction,
             BiFunction<Difference_, Difference_, Difference_> sumFunction,
             Difference_ maxDifference,
             Difference_ zeroDifference) {
-        this.indexFunction = indexFunction;
         this.differenceFunction = differenceFunction;
         this.sumFunction = sumFunction;
         this.maxDifference = maxDifference;
         this.zeroDifference = zeroDifference;
-        Comparator<Value_> comparator = new ValueComparator<>(indexFunction);
+        indexMap = new HashMap<>();
+        Comparator<Value_> comparator = new ValueComparator<>(indexMap);
         itemToCountMap = new TreeMap<>(comparator);
         startItemToSequence = new TreeMap<>(comparator);
         startItemToPreviousBreak = new TreeMap<>(comparator);
@@ -87,16 +86,17 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
         return (Iterable) breakList;
     }
 
-    public boolean add(Value_ item) {
+    public boolean add(Value_ item, Point_ point) {
+        indexMap.put(item, point);
         int newCount = itemToCountMap.compute(item, (key, count) -> count == null ? 1 : count + 1);
         if (newCount > 1) { // Item already in bag.
             return true;
         }
         Value_ firstBeforeItem = startItemToSequence.floorKey(item);
-        Point_ itemIndex = indexFunction.apply(item);
+        Point_ itemIndex = indexMap.get(item);
         if (firstBeforeItem != null) {
             Value_ endOfBeforeSequenceItem = getEndItem(firstBeforeItem);
-            Point_ endOfBeforeSequenceIndex = indexFunction.apply(endOfBeforeSequenceItem);
+            Point_ endOfBeforeSequenceIndex = indexMap.get(endOfBeforeSequenceItem);
             if (isInNaturalOrderAndHashOrderIfEqual(itemIndex, item, endOfBeforeSequenceIndex, endOfBeforeSequenceItem)) {
                 // Item is already in the bag; do nothing
                 return true;
@@ -104,7 +104,7 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
                 // Item is outside the bag
                 Value_ firstAfterItem = startItemToSequence.higherKey(item);
                 if (firstAfterItem != null) {
-                    Point_ startOfAfterSequenceIndex = indexFunction.apply(firstAfterItem);
+                    Point_ startOfAfterSequenceIndex = indexMap.get(firstAfterItem);
                     addBetweenItems(item, itemIndex, firstBeforeItem, endOfBeforeSequenceItem,
                             endOfBeforeSequenceIndex, firstAfterItem, startOfAfterSequenceIndex);
                 } else {
@@ -127,7 +127,7 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
             // No items before it
             Value_ firstAfterItem = startItemToSequence.higherKey(item);
             if (firstAfterItem != null) {
-                Point_ startOfAfterSequenceIndex = indexFunction.apply(firstAfterItem);
+                Point_ startOfAfterSequenceIndex = indexMap.get(firstAfterItem);
 
                 if (isFirstSuccessorOfSecond(startOfAfterSequenceIndex, firstAfterItem, itemIndex, item)) {
                     // We need to move the after bag to use item as key
@@ -186,6 +186,7 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
                     startItemToPreviousBreak.remove(extendedBreakEntry.getKey());
                 }
             }
+            indexMap.remove(item);
             return true;
         }
 
@@ -215,12 +216,12 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
     }
 
     Difference_ getSequenceLength(Sequence<Value_, Difference_> sequence) {
-        return sumFunction.apply(maxDifference, differenceFunction.apply(indexFunction.apply(sequence.getFirstItem()),
-                indexFunction.apply(sequence.getLastItem())));
+        return sumFunction.apply(maxDifference, differenceFunction.apply(indexMap.get(sequence.getFirstItem()),
+                indexMap.get(sequence.getLastItem())));
     }
 
     Difference_ getBreakLengthBetween(Value_ from, Value_ to) {
-        return differenceFunction.apply(indexFunction.apply(from), indexFunction.apply(to));
+        return differenceFunction.apply(indexMap.get(from), indexMap.get(to));
     }
 
     Value_ getEndItem(Value_ key) {
@@ -301,6 +302,7 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
                 updateLengthOfBreak(extendedBreak);
                 startItemToPreviousBreak.put(firstItem, extendedBreak);
             }
+            indexMap.remove(item);
             return true;
         }
         if (item.equals(sequenceEnd)) {
@@ -312,6 +314,7 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
                 BreakImpl<Value_, Difference_> extendedBreak = extendedBreakEntry.getValue();
                 updateLengthOfBreak(extendedBreak);
             }
+            indexMap.remove(item);
             return true;
         }
 
@@ -319,9 +322,10 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
         Value_ firstBeforeItem = bag.getItems().lower(item);
 
         if (isFirstSuccessorOfSecond(
-                indexFunction.apply(firstAfterItem), firstAfterItem,
-                indexFunction.apply(firstBeforeItem), firstBeforeItem)) {
+                indexMap.get(firstAfterItem), firstAfterItem,
+                indexMap.get(firstBeforeItem), firstBeforeItem)) {
             // Bag is not split since the next two items are still close enough
+            indexMap.remove(item);
             return true;
         }
 
@@ -340,6 +344,7 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
         if (maybeNextBreak != null) {
             maybeNextBreak.getValue().setPreviousSequence(splitBag);
         }
+        indexMap.remove(item);
         return true;
     }
 
@@ -353,10 +358,10 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
 
     private static final class ValueComparator<Value_, Point_ extends Comparable<Point_>> implements Comparator<Value_> {
 
-        private final Function<Value_, Point_> indexFunction;
+        private final Map<Value_, Point_> indexMap;
 
-        public ValueComparator(Function<Value_, Point_> indexFunction) {
-            this.indexFunction = Objects.requireNonNull(indexFunction);
+        public ValueComparator(Map<Value_, Point_> indexMap) {
+            this.indexMap = Objects.requireNonNull(indexMap);
         }
 
         @Override
@@ -364,8 +369,8 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
             if (o1 == o2) {
                 return 0;
             }
-            Point_ point1 = indexFunction.apply(o1);
-            Point_ point2 = indexFunction.apply(o2);
+            Point_ point1 = indexMap.get(o1);
+            Point_ point2 = indexMap.get(o2);
             if (point1 == point2) {
                 return compareWithIdentityHashCode(o1, o2);
             }
