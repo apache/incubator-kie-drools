@@ -502,29 +502,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
             IOException {
         this.resource = resource;
-        addPackage(drlToPackageDescr(resource));
+        addPackage(new DrlProcessor(configuration).process(resource));
         this.resource = null;
-    }
-
-    PackageDescr drlToPackageDescr(Resource resource) throws DroolsParserException,
-            IOException {
-        PackageDescr pkg;
-        boolean hasErrors = false;
-        if (resource instanceof DescrResource) {
-            pkg = (PackageDescr) ((DescrResource) resource).getDescr();
-        } else {
-            final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-            pkg = parser.parse(resource);
-            this.results.addAll(parser.getErrors());
-            if (pkg == null) {
-                addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
-            }
-            hasErrors = parser.hasErrors();
-        }
-        if (pkg != null) {
-            pkg.setResource(resource);
-        }
-        return hasErrors ? null : pkg;
     }
 
     /**
