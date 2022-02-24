@@ -423,4 +423,14 @@ class DataUtilsTest {
         assertThat(updatedFeatures.get(1)).isNotEqualTo(features.get(2));
         assertThat(updatedFeatures.get(1).getValue().asString()).isEqualTo("replacement");
     }
+
+    @Test
+    void testTexify() {
+        List<Feature> features = new ArrayList<>();
+        features.add(TestUtils.getMockedTextFeature("we go here and there"));
+        features.add(TestUtils.getMockedTextFeature("as you go there and here"));
+        PredictionInput input = new PredictionInput(features);
+        String textifiedInput = DataUtils.textify(input);
+        assertThat(textifiedInput).isNotNull().isEqualTo("we go here and there as you go there and here");
+    }
 }

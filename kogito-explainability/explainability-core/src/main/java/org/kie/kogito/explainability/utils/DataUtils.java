@@ -662,4 +662,21 @@ public class DataUtils {
             return Double.compare(o2.stream().mapToDouble(Output::getScore).sum(), o1.stream().mapToDouble(Output::getScore).sum());
         }).collect(Collectors.toList());
     }
+
+    /**
+     * Generates a string out of the input features.
+     *
+     * @param input the prediction input
+     * @return the string representation of the input features
+     */
+    public static String textify(PredictionInput input) {
+        StringBuilder text = new StringBuilder();
+        for (Feature f : getLinearizedFeatures(input.getFeatures())) {
+            if (text.length() > 0) {
+                text.append(' ');
+            }
+            text.append(f.getValue().asString());
+        }
+        return text.toString();
+    }
 }
