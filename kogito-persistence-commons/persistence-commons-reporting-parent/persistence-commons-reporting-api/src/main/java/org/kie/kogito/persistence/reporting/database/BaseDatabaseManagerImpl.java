@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
+import org.kie.kogito.persistence.reporting.database.sqlbuilders.ApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.Context;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.IndexesSqlBuilder;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TableSqlBuilder;
@@ -50,6 +51,7 @@ public abstract class BaseDatabaseManagerImpl<T, F extends Field<T>, P extends P
     private TableSqlBuilder<T, F, P, M, C> tableSqlBuilder;
     private TriggerDeleteSqlBuilder<T, F, P, M, C> triggerDeleteSqlBuilder;
     private TriggerInsertSqlBuilder<T, F, P, M, C> triggerInsertSqlBuilder;
+    private ApplyMappingSqlBuilder<T, F, P, M, C> applyMappingSqlBuilder;
 
     protected BaseDatabaseManagerImpl() {
         //CDI proxy
@@ -58,16 +60,18 @@ public abstract class BaseDatabaseManagerImpl<T, F extends Field<T>, P extends P
     protected BaseDatabaseManagerImpl(final IndexesSqlBuilder<T, F, P, M, C> indexesSqlBuilder,
             final TableSqlBuilder<T, F, P, M, C> tableSqlBuilder,
             final TriggerDeleteSqlBuilder<T, F, P, M, C> triggerDeleteSqlBuilder,
-            final TriggerInsertSqlBuilder<T, F, P, M, C> triggerInsertSqlBuilder) {
+            final TriggerInsertSqlBuilder<T, F, P, M, C> triggerInsertSqlBuilder,
+            final ApplyMappingSqlBuilder<T, F, P, M, C> applyMappingSqlBuilder) {
         this.indexesSqlBuilder = Objects.requireNonNull(indexesSqlBuilder);
         this.tableSqlBuilder = Objects.requireNonNull(tableSqlBuilder);
         this.triggerDeleteSqlBuilder = Objects.requireNonNull(triggerDeleteSqlBuilder);
         this.triggerInsertSqlBuilder = Objects.requireNonNull(triggerInsertSqlBuilder);
+        this.applyMappingSqlBuilder = Objects.requireNonNull(applyMappingSqlBuilder);
     }
 
     protected abstract EntityManager getEntityManager(final String sourceTableName);
 
-    protected abstract TerminalPathSegment<M> buildTerminalPathSegment(final String segment,
+    protected abstract TerminalPathSegment<T, F, M> buildTerminalPathSegment(final String segment,
             final PathSegment parent,
             final M mapping);
 
@@ -98,7 +102,7 @@ public abstract class BaseDatabaseManagerImpl<T, F extends Field<T>, P extends P
                     .createNativeQuery(triggerInsertSqlBuilder.createInsertTriggerFunctionSql(context))
                     .executeUpdate();
 
-            LOGGER.info("Creating INSERT TRIGGER ...");
+            LOGGER.info("Creating INSERT TRIGGER...");
             getEntityManager(sourceTableName)
                     .createNativeQuery(triggerInsertSqlBuilder.createInsertTriggerSql(context))
                     .executeUpdate();
@@ -108,10 +112,16 @@ public abstract class BaseDatabaseManagerImpl<T, F extends Field<T>, P extends P
                     .createNativeQuery(triggerDeleteSqlBuilder.createDeleteTriggerFunctionSql(context))
                     .executeUpdate();
 
-            LOGGER.info("Creating DELETE TRIGGER ...");
+            LOGGER.info("Creating DELETE TRIGGER...");
             getEntityManager(sourceTableName)
                     .createNativeQuery(triggerDeleteSqlBuilder.createDeleteTriggerSql(context))
                     .executeUpdate();
+
+            LOGGER.info("Applying mappings to existing data...");
+            getEntityManager(sourceTableName)
+                    .createNativeQuery(applyMappingSqlBuilder.apply(context))
+                    .executeUpdate();
+
         } catch (JsonProcessingException jpe) {
             LOGGER.error(jpe.getMessage());
         }

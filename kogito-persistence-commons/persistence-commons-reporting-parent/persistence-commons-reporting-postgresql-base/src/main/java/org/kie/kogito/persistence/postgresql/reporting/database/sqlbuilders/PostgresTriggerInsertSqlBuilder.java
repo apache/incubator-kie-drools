@@ -32,7 +32,6 @@ import org.kie.kogito.persistence.postgresql.reporting.model.paths.PostgresTermi
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TriggerInsertSqlBuilder;
 import org.kie.kogito.persistence.reporting.model.paths.JoinPathSegment;
 import org.kie.kogito.persistence.reporting.model.paths.PathSegment;
-import org.kie.kogito.persistence.reporting.model.paths.TerminalPathSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,7 +230,7 @@ public class PostgresTriggerInsertSqlBuilder implements TriggerInsertSqlBuilder<
         return parentGroupName;
     }
 
-    private static String getSegmentPathToJoin(final TerminalPathSegment<PostgresMapping> segment,
+    private static String getSegmentPathToJoin(final PostgresTerminalPathSegment segment,
             final String sourceTableJsonFieldName) {
         final List<String> segmentsToJoin = new ArrayList<>();
         final String parentGroupName = getParentGroupName(segment, sourceTableJsonFieldName);

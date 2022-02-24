@@ -28,7 +28,9 @@ import org.kie.kogito.persistence.reporting.model.paths.JoinPathSegment;
 import org.kie.kogito.persistence.reporting.model.paths.PathSegment;
 import org.kie.kogito.persistence.reporting.model.paths.TerminalPathSegment;
 import org.kie.kogito.persistence.reporting.test.TestTypes;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestContext;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestField;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestIndexesSqlBuilder;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestMapping;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestMappingDefinition;
@@ -83,19 +85,24 @@ class BaseDatabaseManagerImplTest {
     @Mock
     private TestTriggerInsertSqlBuilder triggerInsertSqlBuilder;
 
+    @Mock
+    private TestApplyMappingSqlBuilder applyMappingSqlBuilder;
+
     @Captor
     private ArgumentCaptor<TestContextImpl> contextArgumentCaptor;
 
-    private class TestBasePostgresDatabaseManagerImpl extends BaseDatabaseManagerImpl<Object, TestTypes.TestField, TestTypes.TestPartitionField, TestMapping, TestMappingDefinition, TestContext> {
+    private class TestBasePostgresDatabaseManagerImpl extends BaseDatabaseManagerImpl<Object, TestField, TestTypes.TestPartitionField, TestMapping, TestMappingDefinition, TestContext> {
 
         TestBasePostgresDatabaseManagerImpl(final TestIndexesSqlBuilder indexesSqlBuilder,
                 final TestTableSqlBuilder tableSqlBuilder,
                 final TestTriggerDeleteSqlBuilder triggerDeleteSqlBuilder,
-                final TestTriggerInsertSqlBuilder triggerInsertSqlBuilder) {
+                final TestTriggerInsertSqlBuilder triggerInsertSqlBuilder,
+                final TestApplyMappingSqlBuilder applyMappingSqlBuilder) {
             super(indexesSqlBuilder,
                     tableSqlBuilder,
                     triggerDeleteSqlBuilder,
-                    triggerInsertSqlBuilder);
+                    triggerInsertSqlBuilder,
+                    applyMappingSqlBuilder);
         }
 
         @Override
@@ -104,7 +111,7 @@ class BaseDatabaseManagerImplTest {
         }
 
         @Override
-        protected TerminalPathSegment<TestMapping> buildTerminalPathSegment(final String segment,
+        protected TerminalPathSegment<Object, TestField, TestMapping> buildTerminalPathSegment(final String segment,
                 final PathSegment parent,
                 final TestMapping mapping) {
             return new TerminalPathSegment<>(segment,
@@ -132,8 +139,8 @@ class BaseDatabaseManagerImplTest {
         this.manager = new TestBasePostgresDatabaseManagerImpl(indexesSqlBuilder,
                 tableSqlBuilder,
                 triggerDeleteSqlBuilder,
-                triggerInsertSqlBuilder) {
-
+                triggerInsertSqlBuilder,
+                applyMappingSqlBuilder) {
         };
     }
 
@@ -194,6 +201,16 @@ class BaseDatabaseManagerImplTest {
         manager.createArtifacts(DEFINITION);
 
         verify(triggerDeleteSqlBuilder).createDeleteTriggerFunctionSql(contextArgumentCaptor.capture());
+        assertPostgresContext(contextArgumentCaptor.getValue());
+    }
+
+    @Test
+    void testCreateArtifacts_ApplyMapping() {
+        when(entityManager.createNativeQuery(any())).thenReturn(query);
+
+        manager.createArtifacts(DEFINITION);
+
+        verify(applyMappingSqlBuilder).apply(contextArgumentCaptor.capture());
         assertPostgresContext(contextArgumentCaptor.getValue());
     }
 
@@ -282,9 +299,9 @@ class BaseDatabaseManagerImplTest {
         assertNull(segment1a.getParent());
         assertTrue(segment1a.getChildren().isEmpty());
         assertEquals("field1", segment1a.getSegment());
-        assertTrue(segment1a instanceof TerminalPathSegment<?>);
+        assertTrue(segment1a instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal1a = (TerminalPathSegment<?>) segment1a;
+        final TerminalPathSegment<?, ?, ?> terminal1a = (TerminalPathSegment<?, ?, ?>) segment1a;
         assertEquals(mapping, terminal1a.getMapping());
     }
 
@@ -308,9 +325,9 @@ class BaseDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof TerminalPathSegment<?>);
+        assertTrue(segment1b instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
+        final TerminalPathSegment<?, ?, ?> terminal1b = (TerminalPathSegment<?, ?, ?>) segment1b;
         assertEquals(mapping, terminal1b.getMapping());
     }
 
@@ -339,18 +356,18 @@ class BaseDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof TerminalPathSegment<?>);
+        assertTrue(segment1b instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
+        final TerminalPathSegment<?, ?, ?> terminal1b = (TerminalPathSegment<?, ?, ?>) segment1b;
         assertEquals(mapping1, terminal1b.getMapping());
 
         final PathSegment segment2a = segments.get(1);
         assertNull(segment2a.getParent());
         assertTrue(segment2a.getChildren().isEmpty());
         assertEquals("field3", segment2a.getSegment());
-        assertTrue(segment2a instanceof TerminalPathSegment<?>);
+        assertTrue(segment2a instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal2a = (TerminalPathSegment<?>) segment2a;
+        final TerminalPathSegment<?, ?, ?> terminal2a = (TerminalPathSegment<?, ?, ?>) segment2a;
         assertEquals(mapping2, terminal2a.getMapping());
     }
 
@@ -379,18 +396,18 @@ class BaseDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof TerminalPathSegment<?>);
+        assertTrue(segment1b instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
+        final TerminalPathSegment<?, ?, ?> terminal1b = (TerminalPathSegment<?, ?, ?>) segment1b;
         assertEquals(mapping1, terminal1b.getMapping());
 
         final PathSegment segment2b = segment1a.getChildren().get(1);
         assertEquals(segment1a, segment2b.getParent());
         assertTrue(segment2b.getChildren().isEmpty());
         assertEquals("field3", segment2b.getSegment());
-        assertTrue(segment2b instanceof TerminalPathSegment<?>);
+        assertTrue(segment2b instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal2b = (TerminalPathSegment<?>) segment2b;
+        final TerminalPathSegment<?, ?, ?> terminal2b = (TerminalPathSegment<?, ?, ?>) segment2b;
         assertEquals(mapping2, terminal2b.getMapping());
     }
 
@@ -419,9 +436,9 @@ class BaseDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof TerminalPathSegment<?>);
+        assertTrue(segment1b instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
+        final TerminalPathSegment<?, ?, ?> terminal1b = (TerminalPathSegment<?, ?, ?>) segment1b;
         assertEquals(mapping1, terminal1b.getMapping());
 
         final PathSegment segment2b = segment1a.getChildren().get(1);
@@ -433,9 +450,9 @@ class BaseDatabaseManagerImplTest {
         assertEquals(segment2b, segment2c.getParent());
         assertTrue(segment2c.getChildren().isEmpty());
         assertEquals("field4", segment2c.getSegment());
-        assertTrue(segment2c instanceof TerminalPathSegment);
+        assertTrue(segment2c instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal2c = (TerminalPathSegment<?>) segment2c;
+        final TerminalPathSegment<?, ?, ?> terminal2c = (TerminalPathSegment<?, ?, ?>) segment2c;
         assertEquals(mapping2, terminal2c.getMapping());
     }
 
@@ -463,9 +480,9 @@ class BaseDatabaseManagerImplTest {
         assertEquals(segment1a, segment1b.getParent());
         assertTrue(segment1b.getChildren().isEmpty());
         assertEquals("field2", segment1b.getSegment());
-        assertTrue(segment1b instanceof TerminalPathSegment<?>);
+        assertTrue(segment1b instanceof TerminalPathSegment<?, ?, ?>);
 
-        final TerminalPathSegment<?> terminal1b = (TerminalPathSegment<?>) segment1b;
+        final TerminalPathSegment<?, ?, ?> terminal1b = (TerminalPathSegment<?, ?, ?>) segment1b;
         assertEquals(mapping, terminal1b.getMapping());
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.persistence.postgresql.reporting.model;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.kie.kogito.persistence.reporting.model.BaseMappingDefinition;
@@ -26,21 +25,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class PostgresMappingDefinition extends BaseMappingDefinition<JsonType, PostgresField, PostgresPartitionField, PostgresMapping> {
 
     PostgresMappingDefinition() {
-    }
-
-    public PostgresMappingDefinition(final String mappingId,
-            final String sourceTableName,
-            final String sourceTableJsonFieldName,
-            final List<PostgresField> sourceTableIdentityFields,
-            final String targetTableName,
-            final List<PostgresMapping> fieldMappings) {
-        this(mappingId,
-                sourceTableName,
-                sourceTableJsonFieldName,
-                sourceTableIdentityFields,
-                Collections.emptyList(),
-                targetTableName,
-                fieldMappings);
     }
 
     public PostgresMappingDefinition(final String mappingId,

@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresContext;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTableSqlBuilder;
@@ -51,15 +52,17 @@ public abstract class BasePostgresDatabaseManagerImpl extends BaseDatabaseManage
     protected BasePostgresDatabaseManagerImpl(final PostgresIndexesSqlBuilder indexesSqlBuilder,
             final PostgresTableSqlBuilder tableSqlBuilder,
             final PostgresTriggerDeleteSqlBuilder triggerDeleteSqlBuilder,
-            final PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder) {
+            final PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder,
+            final PostgresApplyMappingSqlBuilder applyMappingSqlBuilder) {
         super(indexesSqlBuilder,
                 tableSqlBuilder,
                 triggerDeleteSqlBuilder,
-                triggerInsertSqlBuilder);
+                triggerInsertSqlBuilder,
+                applyMappingSqlBuilder);
     }
 
     @Override
-    protected TerminalPathSegment<PostgresMapping> buildTerminalPathSegment(final String segment,
+    protected TerminalPathSegment<JsonType, PostgresField, PostgresMapping> buildTerminalPathSegment(final String segment,
             final PathSegment parent,
             final PostgresMapping mapping) {
         return new PostgresTerminalPathSegment(segment, parent, mapping);

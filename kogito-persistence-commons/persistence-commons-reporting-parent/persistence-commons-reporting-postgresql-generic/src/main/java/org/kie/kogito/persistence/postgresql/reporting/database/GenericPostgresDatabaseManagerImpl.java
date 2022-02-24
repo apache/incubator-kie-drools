@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.kie.kogito.persistence.postgresql.model.CacheEntityRepository;
+import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTableSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerDeleteSqlBuilder;
@@ -41,11 +42,13 @@ public class GenericPostgresDatabaseManagerImpl extends BasePostgresDatabaseMana
             final PostgresIndexesSqlBuilder indexesSqlBuilder,
             final PostgresTableSqlBuilder tableSqlBuilder,
             final PostgresTriggerDeleteSqlBuilder triggerDeleteSqlBuilder,
-            final PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder) {
+            final PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder,
+            final PostgresApplyMappingSqlBuilder applyMappingSqlBuilder) {
         super(indexesSqlBuilder,
                 tableSqlBuilder,
                 triggerDeleteSqlBuilder,
-                triggerInsertSqlBuilder);
+                triggerInsertSqlBuilder,
+                applyMappingSqlBuilder);
         this.repository = Objects.requireNonNull(repository);
     }
 

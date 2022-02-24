@@ -13,23 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.persistence.reporting.model.paths;
+package org.kie.kogito.persistence.reporting.database.sqlbuilders;
 
 import org.kie.kogito.persistence.reporting.model.Field;
 import org.kie.kogito.persistence.reporting.model.Mapping;
+import org.kie.kogito.persistence.reporting.model.PartitionField;
 
-public class TerminalPathSegment<T, F extends Field<T>, M extends Mapping<T, F>> extends PathSegment {
+public interface ApplyMappingSqlBuilder<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>, C extends Context<T, F, P, M>> {
 
-    private final M mapping;
-
-    public TerminalPathSegment(final String segment,
-            final PathSegment parent,
-            final M mapping) {
-        super(segment, parent);
-        this.mapping = mapping;
-    }
-
-    public M getMapping() {
-        return mapping;
-    }
+    String apply(final C context);
 }

@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.postgresql.model.JobEntityRepository;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.postgresql.model.UserTaskInstanceEntityRepository;
+import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTableSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerDeleteSqlBuilder;
@@ -59,7 +60,8 @@ class PostgresDataIndexDatabaseManagerImplTest {
                 new PostgresIndexesSqlBuilder(),
                 new PostgresTableSqlBuilder(),
                 new PostgresTriggerDeleteSqlBuilder(),
-                new PostgresTriggerInsertSqlBuilder());
+                new PostgresTriggerInsertSqlBuilder(),
+                new PostgresApplyMappingSqlBuilder());
     }
 
     @Test

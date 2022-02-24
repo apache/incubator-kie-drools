@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.persistence.reporting.model.paths;
+package org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders;
 
-import org.kie.kogito.persistence.reporting.model.Field;
-import org.kie.kogito.persistence.reporting.model.Mapping;
+public class DynamicType {
 
-public class TerminalPathSegment<T, F extends Field<T>, M extends Mapping<T, F>> extends PathSegment {
+    private String field1;
+    private Integer field2;
 
-    private final M mapping;
-
-    public TerminalPathSegment(final String segment,
-            final PathSegment parent,
-            final M mapping) {
-        super(segment, parent);
-        this.mapping = mapping;
+    DynamicType() {
     }
 
-    public M getMapping() {
-        return mapping;
+    public DynamicType(final String field1,
+            final Integer field2) {
+        this.field1 = field1;
+        this.field2 = field2;
+    }
+
+    public String getField1() {
+        return field1;
+    }
+
+    public Integer getField2() {
+        return field2;
     }
 }

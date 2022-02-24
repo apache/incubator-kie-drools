@@ -26,6 +26,7 @@ import org.kie.kogito.index.postgresql.model.JobEntityRepository;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.postgresql.model.UserTaskInstanceEntityRepository;
 import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresDatabaseManagerImpl;
+import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTableSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerDeleteSqlBuilder;
@@ -49,11 +50,13 @@ public class PostgresDataIndexDatabaseManagerImpl extends BasePostgresDatabaseMa
             final PostgresIndexesSqlBuilder indexesSqlBuilder,
             final PostgresTableSqlBuilder tableSqlBuilder,
             final PostgresTriggerDeleteSqlBuilder triggerDeleteSqlBuilder,
-            final PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder) {
+            final PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder,
+            final PostgresApplyMappingSqlBuilder applyMappingSqlBuilder) {
         super(indexesSqlBuilder,
                 tableSqlBuilder,
                 triggerDeleteSqlBuilder,
-                triggerInsertSqlBuilder);
+                triggerInsertSqlBuilder,
+                applyMappingSqlBuilder);
         this.processInstanceEntityRepository = Objects.requireNonNull(processInstanceEntityRepository);
         this.userTaskInstanceEntityRepository = Objects.requireNonNull(userTaskInstanceEntityRepository);
         this.jobEntityRepository = Objects.requireNonNull(jobEntityRepository);

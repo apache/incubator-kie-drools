@@ -17,6 +17,7 @@ package org.kie.kogito.persistence.reporting.test;
 
 import org.kie.kogito.persistence.reporting.bootstrap.BootstrapLoader;
 import org.kie.kogito.persistence.reporting.database.DatabaseManager;
+import org.kie.kogito.persistence.reporting.database.sqlbuilders.ApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.Context;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.IndexesSqlBuilder;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TableSqlBuilder;
@@ -71,5 +72,8 @@ public interface TestTypes {
     }
 
     interface TestTriggerInsertSqlBuilder extends TriggerInsertSqlBuilder<Object, TestField, TestPartitionField, TestMapping, TestContext> {
+    }
+
+    interface TestApplyMappingSqlBuilder extends ApplyMappingSqlBuilder<Object, TestField, TestPartitionField, TestMapping, TestContext> {
     }
 }

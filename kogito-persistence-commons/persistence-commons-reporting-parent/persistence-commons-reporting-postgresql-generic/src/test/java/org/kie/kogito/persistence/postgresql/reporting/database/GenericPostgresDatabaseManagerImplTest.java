@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.persistence.postgresql.model.CacheEntityRepository;
+import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTableSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerDeleteSqlBuilder;
@@ -52,6 +53,9 @@ class GenericPostgresDatabaseManagerImplTest {
     @Mock
     private PostgresTriggerInsertSqlBuilder triggerInsertSqlBuilder;
 
+    @Mock
+    private PostgresApplyMappingSqlBuilder applyMappingSqlBuilder;
+
     private GenericPostgresDatabaseManagerImpl manager;
 
     @BeforeEach
@@ -60,7 +64,8 @@ class GenericPostgresDatabaseManagerImplTest {
                 indexesSqlBuilder,
                 tableSqlBuilder,
                 triggerDeleteSqlBuilder,
-                triggerInsertSqlBuilder);
+                triggerInsertSqlBuilder,
+                applyMappingSqlBuilder);
     }
 
     @Test
