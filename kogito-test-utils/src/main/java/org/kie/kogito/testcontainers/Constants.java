@@ -19,7 +19,7 @@ import java.time.Duration;
 
 public class Constants {
 
-    public static final Duration CONTAINER_START_TIMEOUT = Duration.ofMinutes(3);
+    public static final Duration CONTAINER_START_TIMEOUT = Duration.ofMinutes(5);
     public static final String CONTAINER_NAME_PREFIX = "container.image.";
 
 }
