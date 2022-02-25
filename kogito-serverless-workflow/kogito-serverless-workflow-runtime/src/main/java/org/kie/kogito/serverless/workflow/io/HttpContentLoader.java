@@ -31,20 +31,28 @@ class HttpContentLoader extends FallbackContentLoader {
     }
 
     @Override
-    protected byte[] internalToBytes() throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
-        // some http servers required specific accept header (*/* is specified for those we do not care about accept) 
-        conn.setRequestProperty("Accept", "application/json,application/yaml,application/yml,application/text,text/*,*/*");
-        int code = conn.getResponseCode();
-        if (code == HttpURLConnection.HTTP_OK) {
-            try (InputStream is = conn.getInputStream()) {
-                return is.readAllBytes();
+    protected byte[] internalToBytes() {
+        return ResourceCacheFactory.getCache().get(uri, HttpContentLoader::fromUri);
+    }
+
+    private static byte[] fromUri(URI u) {
+        try {
+            HttpURLConnection conn = (HttpURLConnection) u.toURL().openConnection();
+            // some http servers required specific accept header (*/* is specified for those we do not care about accept) 
+            conn.setRequestProperty("Accept", "application/json,application/yaml,application/yml,application/text,text/*,*/*");
+            int code = conn.getResponseCode();
+            if (code == HttpURLConnection.HTTP_OK) {
+                try (InputStream is = conn.getInputStream()) {
+                    return is.readAllBytes();
+                }
+            } else {
+                try (InputStream is = conn.getErrorStream()) {
+                    throw new IllegalArgumentException(String.format(
+                            "Failed to fetch remote file: %s. Status code is %d and response: %n %s", u.toString(), code, new String(is.readAllBytes())));
+                }
             }
-        } else {
-            try (InputStream is = conn.getErrorStream()) {
-                throw new IllegalArgumentException(String.format(
-                        "Failed to fetch remote file: %s. Status code is %d and response: %n %s", uri.toString(), code, new String(is.readAllBytes())));
-            }
+        } catch (IOException io) {
+            throw new IllegalStateException(io);
         }
     }
 }
