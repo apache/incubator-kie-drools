@@ -41,7 +41,7 @@ describe('Audit Details Header', () => {
 
 function checkAuditHeader(reqId: string, thirdNavBar: string[]) {
   cy.ouiaId('exec-table', 'PF4/Table')
-    .ouiaId(reqId, 'PF4/TableRow')
+    .ouiaId(reqId, 'PF4/TableRow', {timeout: 20000})
     .ouiaId('show-detail', 'link')
     .click();
   const title = 'Execution #' + String(reqId).substring(0, 8);

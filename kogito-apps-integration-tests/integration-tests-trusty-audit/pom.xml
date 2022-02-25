@@ -239,6 +239,14 @@
                                     <prefix>%a </prefix>
                                     <file>${project.build.directory}/explainability.log</file>
                                 </log>
+                                <wait>
+                                    <time>60000</time>
+                                    <tcp>
+                                        <ports>
+                                            <port>8080</port>
+                                        </ports>
+                                    </tcp>
+                                </wait>
                             </run>
                         </image>
                         <image>
@@ -291,6 +299,14 @@
                                     <prefix>%a </prefix>
                                     <file>${project.build.directory}/trusty-ui.log</file>
                                 </log>
+                                <wait>
+                                    <time>60000</time>
+                                    <tcp>
+                                        <ports>
+                                            <port>8080</port>
+                                        </ports>
+                                    </tcp>
+                                </wait>
                             </run>
                         </image>
                     </images>

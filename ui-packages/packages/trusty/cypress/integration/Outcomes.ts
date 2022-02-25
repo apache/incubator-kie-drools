@@ -21,7 +21,7 @@ describe('Outcomes - verify mocked data', () => {
 
   it('Simple outcome', () => {
     cy.ouiaId('exec-table', 'PF4/Table')
-      .ouiaId('ac6d2f5f-4eba-4557-9d78-22b1661a876a', 'PF4/TableRow')
+      .ouiaId('ac6d2f5f-4eba-4557-9d78-22b1661a876a', 'PF4/TableRow', {timeout: 20000})
       .ouiaId('show-detail', 'link')
       .click();
     cy.ouiaId('outcomes-gallery', 'outcomes').within(() => {
