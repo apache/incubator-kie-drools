@@ -16,7 +16,6 @@
 package org.kie.kogito.serverless.workflow;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Collections;
 
 import org.jbpm.ruleflow.core.Metadata;
@@ -31,8 +30,6 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -52,17 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServerlessWorkflowParsingTest {
-
-    @BeforeAll
-    public static void init() {
-        System.setProperty("jbpm.enable.multi.con", "true");
-    }
-
-    @AfterAll
-    public static void cleanup() {
-        System.clearProperty("jbpm.enable.multi.con");
-    }
+public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowParsingTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/single-operation.sw.json", "/exec/single-operation.sw.yml" })
@@ -720,14 +707,5 @@ public class ServerlessWorkflowParsingTest {
         assertEquals(ServerlessWorkflowParser.DEFAULT_NAME, process.getName());
         assertEquals(ServerlessWorkflowParser.DEFAULT_VERSION, process.getVersion());
         assertEquals(ServerlessWorkflowParser.DEFAULT_PACKAGE, process.getPackageName());
-    }
-
-    private Process getWorkflowParser(String workflowLocation) throws IOException {
-        String format = workflowLocation.endsWith(".sw.json") ? "json" : "yml";
-        ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(
-                new InputStreamReader(this.getClass().getResourceAsStream(workflowLocation)),
-                format,
-                JavaKogitoBuildContext.builder().build());
-        return parser.getProcessInfo().info();
     }
 }

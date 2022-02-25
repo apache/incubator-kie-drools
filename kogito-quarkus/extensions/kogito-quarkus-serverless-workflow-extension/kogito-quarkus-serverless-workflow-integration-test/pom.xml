@@ -14,6 +14,9 @@
 
   <properties>
     <quarkus.test.list.include>true</quarkus.test.list.include>
+    <!-- base path for serverless workflow files that are being used for testing the parsing specific unit tests, and
+    that we also want to use for testing them executing. -->
+    <shared.test.resources.dir>${project.root.dir}/kogito-serverless-workflow/kogito-serverless-workflow-builder/src/test/resources</shared.test.resources.dir>
   </properties>
 
   <dependencies>
@@ -34,7 +37,7 @@
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-test-utils</artifactId>
       <scope>test</scope>
@@ -65,6 +68,11 @@
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -119,7 +127,40 @@
             <kogito.version>${project.version}</kogito.version>
           </systemPropertyVariables>
         </configuration>
-        </plugin>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/main/resources/shared</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${shared.test.resources.dir}/exec</directory>
+                  <includes>
+                    <include>callback-state.sw.json</include>
+                    <include>callback-state-timeouts.sw.json</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+      <artifactId>maven-clean-plugin</artifactId>
+      <configuration>
+        <filesets>
+          <fileset>
+            <directory>${project.basedir}/src/main/resources/shared</directory>
+          </fileset>
+        </filesets>
+      </configuration>
+    </plugin>
     </plugins>
   </build>
 

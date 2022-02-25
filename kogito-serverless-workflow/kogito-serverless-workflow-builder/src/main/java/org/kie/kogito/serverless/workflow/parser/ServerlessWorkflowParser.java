@@ -28,10 +28,15 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
+import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
+import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DataDefinition;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.Split;
 import org.kie.kogito.codegen.api.GeneratedInfo;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
@@ -46,6 +51,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.EventDefinition;
 import io.serverlessworkflow.api.workflow.Constants;
+
+import static org.jbpm.process.core.timer.Timer.TIME_DURATION;
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
 public class ServerlessWorkflowParser {
 
@@ -160,5 +168,29 @@ public class ServerlessWorkflowParser {
                 .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
                 .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage");
+    }
+
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> eventBasedExclusiveSplitNode(T nodeFactory, long nodeId) {
+        return nodeFactory.splitNode(nodeId)
+                .name("ExclusiveSplit_" + nodeId)
+                .type(Split.TYPE_XAND)
+                .metaData(UNIQUE_ID, Long.toString(nodeId))
+                .metaData("EventBased", "true");
+    }
+
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> JoinFactory<T> joinExclusiveNode(T nodeFactory, long nodeId) {
+        return nodeFactory.joinNode(nodeId)
+                .name("ExclusiveJoin_" + nodeId)
+                .type(Join.TYPE_XOR)
+                .metaData(UNIQUE_ID, Long.toString(nodeId));
+    }
+
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> TimerNodeFactory<T> timerNode(T nodeFactory, long nodeId, String duration) {
+        return nodeFactory.timerNode(nodeId)
+                .name("TimerNode_" + nodeId)
+                .type(TIME_DURATION)
+                .delay(duration)
+                .metaData(UNIQUE_ID, Long.toString(nodeId))
+                .metaData("EventType", "Timer");
     }
 }

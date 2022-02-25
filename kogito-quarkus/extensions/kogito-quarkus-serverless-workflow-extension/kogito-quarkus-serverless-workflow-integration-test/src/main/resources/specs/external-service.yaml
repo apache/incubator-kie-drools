@@ -1,0 +1,24 @@
+---
+openapi: 3.0.3
+info:
+  title: external-service API
+  version: 2.0.0-SNAPSHOT
+paths:
+  /external-service/sendRequest:
+    post:
+      operationId: sendRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      properties:
+        query:
+          type: string
