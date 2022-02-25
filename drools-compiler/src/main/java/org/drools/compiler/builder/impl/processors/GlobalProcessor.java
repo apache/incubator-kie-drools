@@ -7,6 +7,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.kie.internal.builder.ResourceChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +20,13 @@ class GlobalProcessor extends AbstractPackageProcessor {
 
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderImpl knowledgeBuilder;
-    private final BiConsumer<InternalKnowledgePackage, String> cleanupCallback;
+    private final FilterCondition filter;
 
-    public GlobalProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, BiConsumer<InternalKnowledgePackage, String> cleanupCallback) {
+    public GlobalProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, FilterCondition filter) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.knowledgeBuilder = knowledgeBuilder;
-        this.cleanupCallback = cleanupCallback;
+        this.filter = filter;
     }
 
     public void process() {
@@ -61,7 +62,12 @@ class GlobalProcessor extends AbstractPackageProcessor {
         }
 
         for (String toBeRemoved : existingGlobals) {
-            cleanupCallback.accept(pkg, toBeRemoved);
+            if (filter.accepts(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
+                pkg.removeGlobal(toBeRemoved);
+                if (kBase != null) {
+                    kBase.removeGlobal(toBeRemoved);
+                }
+            }
         }
     }
 

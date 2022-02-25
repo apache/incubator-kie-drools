@@ -8,7 +8,6 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.internal.builder.ResourceChange;
 
-import javax.annotation.processing.AbstractProcessor;
 import java.util.List;
 
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
@@ -19,9 +18,10 @@ public class FunctionCompiler extends AbstractPackageProcessor {
     private final FilterCondition filter;
     private ClassLoader rootClassLoader;
 
-    public FunctionCompiler(PackageDescr packageDescr, PackageRegistry pkgRegistry, FilterCondition filter) {
+    public FunctionCompiler(PackageDescr packageDescr, PackageRegistry pkgRegistry, FilterCondition filter, ClassLoader rootClassLoader) {
         super(pkgRegistry, packageDescr);
         this.filter = filter;
+        this.rootClassLoader = rootClassLoader;
     }
 
     public void process() {

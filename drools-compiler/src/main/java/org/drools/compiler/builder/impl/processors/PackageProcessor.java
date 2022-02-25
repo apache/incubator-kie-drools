@@ -18,14 +18,14 @@ public final class PackageProcessor extends AbstractPackageProcessor {
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final TypeDeclarationBuilder typeBuilder;
-    private final BiConsumer<InternalKnowledgePackage, String> globalCleanupCallback;
+    private final FilterCondition filterCondition;
 
     public PackageProcessor(
             KnowledgeBuilderImpl knowledgeBuilder,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration,
             TypeDeclarationBuilder typeBuilder,
-            BiConsumer<InternalKnowledgePackage, String> globalCleanupCallback,
+            FilterCondition filterCondition,
             PackageRegistry pkgRegistry,
             PackageDescr packageDescr) {
         super(pkgRegistry, packageDescr);
@@ -33,7 +33,7 @@ public final class PackageProcessor extends AbstractPackageProcessor {
         this.kBase = kBase;
         this.configuration = configuration;
         this.typeBuilder = typeBuilder;
-        this.globalCleanupCallback = globalCleanupCallback;
+        this.filterCondition = filterCondition;
     }
 
     public void process() {
@@ -50,7 +50,7 @@ public final class PackageProcessor extends AbstractPackageProcessor {
                 new TypeDeclarationProcessor(packageDescr, typeBuilder, pkgRegistry),
                 new WindowDeclarationProcessor(pkgRegistry, packageDescr, knowledgeBuilder),
                 new FunctionProcessor(pkgRegistry, packageDescr, configuration),
-                new GlobalProcessor(pkgRegistry, packageDescr, kBase, knowledgeBuilder, globalCleanupCallback),
+                new GlobalProcessor(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filterCondition),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr));
 
         processors.forEach(Processor::process);

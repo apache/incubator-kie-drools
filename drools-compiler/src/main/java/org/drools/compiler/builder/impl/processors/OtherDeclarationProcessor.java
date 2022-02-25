@@ -18,20 +18,20 @@ public class OtherDeclarationProcessor extends AbstractPackageProcessor {
     private final KnowledgeBuilderImpl knowledgeBuilder;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfiguration configuration;
-    private final BiConsumer<InternalKnowledgePackage, String> globalCleanupCallback;
+    private final FilterCondition filter;
 
     public OtherDeclarationProcessor(
             KnowledgeBuilderImpl knowledgeBuilder,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfiguration configuration,
-            BiConsumer<InternalKnowledgePackage, String> globalCleanupCallback,
+            FilterCondition filter,
             PackageRegistry pkgRegistry,
             PackageDescr packageDescr) {
         super(pkgRegistry, packageDescr);
         this.knowledgeBuilder = knowledgeBuilder;
         this.kBase = kBase;
         this.configuration = configuration;
-        this.globalCleanupCallback = globalCleanupCallback;
+        this.filter = filter;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class OtherDeclarationProcessor extends AbstractPackageProcessor {
                 new AccumulateFunctionProcessor(pkgRegistry, packageDescr),
                 new WindowDeclarationProcessor(pkgRegistry, packageDescr, knowledgeBuilder),
                 new FunctionProcessor(pkgRegistry, packageDescr, configuration),
-                new GlobalProcessor(pkgRegistry, packageDescr, kBase, knowledgeBuilder, globalCleanupCallback));
+                new GlobalProcessor(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filter));
 
         processors.forEach(Processor::process);
         processors.forEach(p -> results.addAll(p.getResults()));

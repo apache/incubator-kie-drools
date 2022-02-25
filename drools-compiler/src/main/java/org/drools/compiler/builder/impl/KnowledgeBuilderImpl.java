@@ -959,7 +959,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     private void compileFunctions(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        FunctionCompiler functionCompiler = new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts);
+        FunctionCompiler functionCompiler = new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts, rootClassLoader);
         functionCompiler.process();
         this.results.addAll(functionCompiler.getResults());
     }
@@ -1142,7 +1142,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                         kBase,
                         configuration,
                         typeBuilder,
-                        this::globalCleanup,
+                        this::filterAccepts,
                         pkgRegistry,
                         packageDescr);
         packageProcessor.process();
@@ -1153,7 +1153,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         OtherDeclarationProcessor otherDeclarationProcessor = new OtherDeclarationProcessor(this,
                 kBase,
                 configuration,
-                this::globalCleanup,
+                this::filterAccepts,
                 pkgRegistry,
                 packageDescr);
         otherDeclarationProcessor.process();
@@ -1192,7 +1192,12 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
 
         for (String toBeRemoved : existingGlobals) {
-            globalCleanup(pkg, toBeRemoved);
+            if (filterAcceptsRemoval(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
+                pkg.removeGlobal(toBeRemoved);
+                if (kBase != null) {
+                    kBase.removeGlobal(toBeRemoved);
+                }
+            }
         }
     }
 
