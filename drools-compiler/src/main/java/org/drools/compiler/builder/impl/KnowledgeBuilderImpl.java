@@ -1133,7 +1133,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     protected void validateUniqueRuleNames(final PackageDescr packageDescr) {
         PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
-        new RuleValidator(packageRegistry, packageDescr, configuration).process();
+        RuleValidator ruleValidator = new RuleValidator(packageRegistry, packageDescr, configuration);
+        ruleValidator.process();
+        this.results.addAll(ruleValidator.getResults());
     }
 
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
