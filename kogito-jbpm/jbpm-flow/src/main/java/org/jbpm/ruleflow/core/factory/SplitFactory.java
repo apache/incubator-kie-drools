@@ -58,6 +58,10 @@ public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends 
     }
 
     public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {
+        return constraint(toNodeId, name, type, dialect, evaluator, priority, false);
+    }
+
+    public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority, boolean isDefault) {
         ReturnValueConstraintEvaluator constraintImpl = new ReturnValueConstraintEvaluator();
         constraintImpl.setName(name);
         constraintImpl.setType(type);
@@ -65,6 +69,7 @@ public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends 
         constraintImpl.setPriority(priority);
         constraintImpl.setEvaluator(evaluator);
         constraintImpl.setConstraint("expression already given as evaluator");
+        constraintImpl.setDefault(isDefault);
         getSplit().addConstraint(
                 new ConnectionRef(name, toNodeId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
         return this;

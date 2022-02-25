@@ -40,6 +40,15 @@ class GreetRestIT {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
+                .body("{\"workflowdata\" : {\"name\" : \"John\", \"language\":\"Unknown\"}}").when()
+                .post("/greet")
+                .then()
+                .statusCode(201)
+                .body("workflowdata.greeting", containsString("Hello"));
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
                 .body("{\"workflowdata\" : {\"name\" : \"Javierito\", \"language\":\"Spanish\"}}").when()
                 .post("/greet")
                 .then()

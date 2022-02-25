@@ -30,6 +30,7 @@ import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -88,7 +89,8 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
                             new StringLiteralExpr(entry.getKey().getToType()),
                             new StringLiteralExpr(entry.getValue().getDialect()),
                             returnValueEvaluator,
-                            new IntegerLiteralExpr(entry.getValue().getPriority())));
+                            new IntegerLiteralExpr(entry.getValue().getPriority()),
+                            new BooleanLiteralExpr(entry.getValue().isDefault())));
                 }
             }
         }
