@@ -60,7 +60,7 @@ import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScor
 
 class ConferenceSchedulingConstraintsXlsxTest {
 
-    public static Collection<Object[]> testSheetParameters() {
+    static Collection<Object[]> testSheetParameters() {
         File testFile = new File(ConferenceSchedulingConstraintsXlsxTest.class.getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
@@ -93,7 +93,7 @@ class ConferenceSchedulingConstraintsXlsxTest {
 
     @ParameterizedTest(name = "{4}")
     @MethodSource("testSheetParameters")
-    public void constraints(String constraintPackage, String constraintName,
+    void constraints(String constraintPackage, String constraintName,
             HardMediumSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
         SCORE_VERIFIER.assertHardWeight(constraintPackage, constraintName, expectedScore.getHardScore(), solution);
         SCORE_VERIFIER.assertMediumWeight(constraintPackage, constraintName, expectedScore.getMediumScore(), solution);

@@ -37,7 +37,7 @@ class ScoreManagerTest {
 
     @ParameterizedTest
     @EnumSource(ConstraintStreamImplType.class)
-    public void indictmentsPresentOnFreshExplanation(ConstraintStreamImplType constraintStreamImplType) {
+    void indictmentsPresentOnFreshExplanation(ConstraintStreamImplType constraintStreamImplType) {
         // Create the environment.
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setConstraintProviderClass(TestdataConstraintProvider.class);

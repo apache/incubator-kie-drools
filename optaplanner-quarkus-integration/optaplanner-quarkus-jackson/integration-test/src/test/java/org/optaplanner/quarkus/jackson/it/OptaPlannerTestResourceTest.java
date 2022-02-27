@@ -33,7 +33,7 @@ class OptaPlannerTestResourceTest {
 
     @Test
     @Timeout(600)
-    public void solveWithSolverFactory() throws Exception {
+    void solveWithSolverFactory() throws Exception {
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .when()

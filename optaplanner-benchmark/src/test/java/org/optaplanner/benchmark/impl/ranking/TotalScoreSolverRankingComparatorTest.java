@@ -41,7 +41,7 @@ class TotalScoreSolverRankingComparatorTest extends AbstractSolverRankingCompara
     private List<SingleBenchmarkResult> bSingleBenchmarkResultList;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         benchmarkReport = mock(BenchmarkReport.class);
         comparator = new TotalScoreSolverRankingComparator();
         a = new SolverBenchmarkResult(null);

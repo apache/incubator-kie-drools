@@ -49,7 +49,7 @@ class LookUpStrategyImmutableTest {
 
     private LookUpManager lookUpManager;
 
-    public static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         return Stream.of(
                 arguments(true, true),
                 arguments((byte) 1, (byte) 1),
@@ -83,26 +83,26 @@ class LookUpStrategyImmutableTest {
     }
 
     @BeforeEach
-    public void setUpLookUpManager() {
+    void setUpLookUpManager() {
         lookUpManager = new LookUpManager(
                 new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
     }
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("data")
-    public void addImmutable(Object internalObject) {
+    void addImmutable(Object internalObject) {
         lookUpManager.addWorkingObject(internalObject);
     }
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("data")
-    public void removeImmutable(Object internalObject) {
+    void removeImmutable(Object internalObject) {
         lookUpManager.removeWorkingObject(internalObject);
     }
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("data")
-    public void lookUpImmutable(Object internalObject, Object externalObject) {
+    void lookUpImmutable(Object internalObject, Object externalObject) {
         assertThat(lookUpManager.lookUpWorkingObject(externalObject)).isEqualTo(internalObject);
     }
 

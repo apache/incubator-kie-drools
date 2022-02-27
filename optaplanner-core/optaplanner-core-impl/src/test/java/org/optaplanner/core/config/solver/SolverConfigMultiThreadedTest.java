@@ -35,14 +35,14 @@ class SolverConfigMultiThreadedTest {
 
     @Test
     @Timeout(5)
-    public void solvingWithTooHighThreadCountFinishes() {
+    void solvingWithTooHighThreadCountFinishes() {
         runSolvingAndVerifySolution(10, 20, "256");
     }
 
     @Disabled("PLANNER-1180")
     @Test
     @Timeout(5)
-    public void solvingOfVerySmallProblemFinishes() {
+    void solvingOfVerySmallProblemFinishes() {
         runSolvingAndVerifySolution(1, 1, "2");
     }
 
@@ -75,7 +75,7 @@ class SolverConfigMultiThreadedTest {
 
     @Test
     @Timeout(5)
-    public void customThreadFactoryClassIsUsed() {
+    void customThreadFactoryClassIsUsed() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
                 TestdataEntity.class);
         solverConfig.setThreadFactoryClass(MockThreadFactory.class);

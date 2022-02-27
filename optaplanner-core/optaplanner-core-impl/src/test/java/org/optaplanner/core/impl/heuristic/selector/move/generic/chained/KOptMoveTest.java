@@ -191,7 +191,7 @@ class KOptMoveTest {
 
     @Test
     @Disabled("Valid 1 chain moves aren't supported yet") // TODO
-    public void doMove3OptWithOnly1Chain() {
+    void doMove3OptWithOnly1Chain() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
@@ -258,7 +258,7 @@ class KOptMoveTest {
 
     @Test
     @Disabled("https://issues.redhat.com/browse/PLANNER-1250") // TODO https://issues.redhat.com/browse/PLANNER-1250
-    public void rebase() {
+    void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();
 
@@ -299,7 +299,7 @@ class KOptMoveTest {
                         .rebase(destinationScoreDirector));
     }
 
-    public void assertSameProperties(Object leftEntity, Iterable<Object> values, KOptMove<TestdataChainedSolution> move) {
+    void assertSameProperties(Object leftEntity, Iterable<Object> values, KOptMove<TestdataChainedSolution> move) {
         assertThat(move.getEntity()).isSameAs(leftEntity);
         assertThat(move.getValues()).hasSameElementsAs(values);
     }

@@ -19,12 +19,12 @@ class GizmoMemberAccessorFactoryTest {
     static ClassLoader contextClassLoader;
 
     @BeforeAll
-    public static void setContextClassLoader() {
+    static void setContextClassLoader() {
         contextClassLoader = Thread.currentThread().getContextClassLoader();
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         Thread.currentThread().setContextClassLoader(contextClassLoader);
     }
 

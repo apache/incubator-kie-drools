@@ -82,7 +82,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
 
     @ParameterizedTest
     @MethodSource("genderLimitationsProvider")
-    public void genderRoomLimitationConstraintTest(Gender gender, GenderLimitation genderLimitation,
+    void genderRoomLimitationConstraintTest(Gender gender, GenderLimitation genderLimitation,
             BiFunction constraintFunction) {
 
         Room room = new Room();
@@ -120,7 +120,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
 
     @ParameterizedTest
     @MethodSource("departmentAgeLimitationProvider")
-    public void departmentAgeLimitationConstraintTest(Department department, int patientAge, BiFunction constraintFunction) {
+    void departmentAgeLimitationConstraintTest(Department department, int patientAge, BiFunction constraintFunction) {
 
         Room room = new Room();
         room.setDepartment(department);

@@ -27,7 +27,7 @@ class TestGenHeadCuttingMutatorTest {
     private ArrayList<Integer> list = new ArrayList<>();
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         for (int i = 0; i < 25; i++) {
             list.add(i);
         }

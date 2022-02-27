@@ -35,7 +35,7 @@ class LookUpStrategyIdOrFailTest {
     private LookUpManager lookUpManager;
 
     @BeforeEach
-    public void setUpLookUpManager() {
+    void setUpLookUpManager() {
         lookUpManager = new LookUpManager(
                 new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_FAIL_FAST));
     }

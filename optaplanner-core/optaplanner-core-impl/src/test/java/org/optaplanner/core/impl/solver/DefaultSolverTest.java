@@ -88,7 +88,7 @@ import io.micrometer.core.instrument.Tags;
 class DefaultSolverTest {
 
     @BeforeEach
-    public void resetGlobalRegistry() {
+    void resetGlobalRegistry() {
         Metrics.globalRegistry.clear();
     }
 
@@ -487,7 +487,7 @@ class DefaultSolverTest {
                 .isEqualTo(3);
     }
 
-    public static class ErrorThowingEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
+    public static class ErrorThrowingEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
 
         @Override
         public SimpleScore calculateScore(TestdataSolution testdataSolution) {
@@ -504,7 +504,7 @@ class DefaultSolverTest {
                 TestdataSolution.class, TestdataEntity.class);
 
         solverConfig.setScoreDirectorFactoryConfig(
-                new ScoreDirectorFactoryConfig().withEasyScoreCalculatorClass(ErrorThowingEasyScoreCalculator.class));
+                new ScoreDirectorFactoryConfig().withEasyScoreCalculatorClass(ErrorThrowingEasyScoreCalculator.class));
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
 
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
@@ -566,7 +566,7 @@ class DefaultSolverTest {
     // TODO https://issues.redhat.com/browse/PLANNER-1738
     @Test
     @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
-    public void solveEmptyValueList() {
+    void solveEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
@@ -582,7 +582,7 @@ class DefaultSolverTest {
 
     @Test
     @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
-    public void solveChainedEmptyValueList() {
+    void solveChainedEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataChainedSolution.class,
                 TestdataChainedEntity.class);
         SolverFactory<TestdataChainedSolution> solverFactory = SolverFactory.create(solverConfig);
@@ -676,7 +676,7 @@ class DefaultSolverTest {
 
     @Test
     @Timeout(60)
-    public void solveWithProblemChange() throws InterruptedException {
+    void solveWithProblemChange() throws InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setDaemon(true); // Avoid terminating the solver too quickly.
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);

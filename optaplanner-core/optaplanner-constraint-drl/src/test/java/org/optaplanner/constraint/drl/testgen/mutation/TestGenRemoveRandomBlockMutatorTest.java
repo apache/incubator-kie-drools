@@ -29,7 +29,7 @@ class TestGenRemoveRandomBlockMutatorTest {
     private ArrayList<Integer> list = new ArrayList<>();
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         for (int i = 0; i < LIST_SIZE; i++) {
             list.add(i);
         }

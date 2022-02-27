@@ -41,7 +41,7 @@ class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTe
 
     @ParameterizedTest(name = "ConstructionHeuristicType: {0}, EntitySorterManner: {1}, ValueSorterManner: {2}")
     @MethodSource("parameters")
-    public void trackConstructionHeuristics(ConstructionHeuristicType constructionHeuristicType,
+    void trackConstructionHeuristics(ConstructionHeuristicType constructionHeuristicType,
             EntitySorterManner entitySorterManner, ValueSorterManner valueSorterManner,
             List<NQueensStepTracking> expectedCoordinates) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
@@ -65,7 +65,7 @@ class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTe
         assertTrackingList(expectedCoordinates, listener.getTrackingList());
     }
 
-    public static Collection<Object[]> parameters() {
+    static Collection<Object[]> parameters() {
         Collection<Object[]> params = new ArrayList<>();
 
         params.add(new Object[] { ConstructionHeuristicType.FIRST_FIT, null, null, Arrays.asList(

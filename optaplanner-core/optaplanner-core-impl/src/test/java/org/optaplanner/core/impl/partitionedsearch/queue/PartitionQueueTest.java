@@ -39,7 +39,7 @@ class PartitionQueueTest {
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     @AfterEach
-    public void tearDown() throws InterruptedException {
+    void tearDown() throws InterruptedException {
         executorService.shutdownNow();
         if (!executorService.awaitTermination(1, TimeUnit.MILLISECONDS)) {
             LOGGER.warn("Thread pool didn't terminate within the timeout.");
@@ -143,7 +143,7 @@ class PartitionQueueTest {
         assertThatIllegalStateException().isThrownBy(it::hasNext).withCause(exception);
     }
 
-    public PartitionChangeMove<TestdataSolution> buildMove() {
+    PartitionChangeMove<TestdataSolution> buildMove() {
         return new PartitionChangeMove<>(null, -1);
     }
 

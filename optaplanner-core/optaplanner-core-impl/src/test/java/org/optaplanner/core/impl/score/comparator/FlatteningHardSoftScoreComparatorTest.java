@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 
 class FlatteningHardSoftScoreComparatorTest {
 
-    public static Collection parameters() {
+    static Collection parameters() {
         String simpleScore = "10hard/123soft";
         String lowHardScore = "10hard/987654321soft";
         String highHardScore = "987654321hard/123soft";
@@ -55,7 +55,7 @@ class FlatteningHardSoftScoreComparatorTest {
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("parameters")
-    public void compare(int expectedResult, int modifier, String firstScore, String secondScore) {
+    void compare(int expectedResult, int modifier, String firstScore, String secondScore) {
         assertThat(new FlatteningHardSoftScoreComparator(modifier)
                 .compare(new HardSoftScoreDefinition().parseScore(firstScore),
                         new HardSoftScoreDefinition().parseScore(secondScore))).isEqualTo(expectedResult);

@@ -54,7 +54,7 @@ class CloudBalancingDaemonTest extends LoggingTest {
     @Disabled("PLANNER-2249")
     @Test
     @Timeout(600)
-    public void daemon() throws InterruptedException {
+    void daemon() throws InterruptedException {
         // In main thread
         Solver<CloudBalance> solver = buildSolver();
         CloudBalance cloudBalance = buildProblem(4, 12);

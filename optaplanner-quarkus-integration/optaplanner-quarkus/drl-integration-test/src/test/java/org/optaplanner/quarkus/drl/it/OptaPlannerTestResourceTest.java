@@ -35,7 +35,7 @@ class OptaPlannerTestResourceTest {
 
     @Test
     @Timeout(600)
-    public void solveWithSolverFactory() throws Exception {
+    void solveWithSolverFactory() throws Exception {
         Properties result = new Properties();
         result.load(new StringReader(RestAssured.given()
                 .header("Content-Type", "application/json")

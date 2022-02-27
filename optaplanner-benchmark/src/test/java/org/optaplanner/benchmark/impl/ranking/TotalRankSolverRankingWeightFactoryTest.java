@@ -43,7 +43,7 @@ class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingCompa
     private List<SingleBenchmarkResult> bSingleBenchmarkResultList;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         benchmarkReport = mock(BenchmarkReport.class);
         factory = new TotalRankSolverRankingWeightFactory();
         solverBenchmarkResultList = new ArrayList<>();

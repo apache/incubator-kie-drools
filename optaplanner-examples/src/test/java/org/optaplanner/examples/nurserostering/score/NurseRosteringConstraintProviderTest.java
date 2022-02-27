@@ -64,7 +64,7 @@ class NurseRosteringConstraintProviderTest {
     private final ShiftType nightShiftType = new ShiftType();
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         idSupplier.set(0);
         indexShiftTypePairToShiftMap.clear();
         indexToShiftDateMap.clear();

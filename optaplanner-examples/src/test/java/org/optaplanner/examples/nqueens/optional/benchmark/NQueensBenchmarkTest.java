@@ -35,7 +35,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 class NQueensBenchmarkTest extends PlannerBenchmarkTest {
 
-    public NQueensBenchmarkTest() {
+    NQueensBenchmarkTest() {
         super(NQueensApp.SOLVER_CONFIG);
     }
 
@@ -44,7 +44,7 @@ class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     // ************************************************************************
 
     @Timeout(600)
-    public void benchmark64queens() {
+    void benchmark64queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
@@ -56,7 +56,7 @@ class NQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     @Test
     @Timeout(600)
-    public void benchmark64queensSingleThread() {
+    void benchmark64queensSingleThread() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();

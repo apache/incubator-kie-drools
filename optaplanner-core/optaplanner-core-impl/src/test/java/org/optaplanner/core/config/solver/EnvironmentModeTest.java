@@ -66,7 +66,7 @@ class EnvironmentModeTest {
     private static TestdataSolution inputProblem;
 
     @BeforeAll
-    public static void setUpInputProblem() {
+    static void setUpInputProblem() {
         inputProblem = new TestdataSolution("s1");
         inputProblem.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"),
                 new TestdataValue("v3")));
@@ -92,7 +92,7 @@ class EnvironmentModeTest {
 
     @ParameterizedTest(name = "{0}")
     @EnumSource(EnvironmentMode.class)
-    public void determinism(EnvironmentMode environmentMode) {
+    void determinism(EnvironmentMode environmentMode) {
         SolverConfig solverConfig = buildSolverConfig(environmentMode);
         setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
@@ -116,7 +116,7 @@ class EnvironmentModeTest {
 
     @ParameterizedTest(name = "{0}")
     @EnumSource(EnvironmentMode.class)
-    public void corruptedCustomMoves(EnvironmentMode environmentMode) {
+    void corruptedCustomMoves(EnvironmentMode environmentMode) {
         SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // Intrusive modes should throw exception about corrupted undoMove
         setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
@@ -146,7 +146,7 @@ class EnvironmentModeTest {
 
     @ParameterizedTest(name = "{0}")
     @EnumSource(EnvironmentMode.class)
-    public void corruptedConstraints(EnvironmentMode environmentMode) {
+    void corruptedConstraints(EnvironmentMode environmentMode) {
         SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // For full assert modes it should throw exception about corrupted score
         setSolverConfigCalculatorClass(solverConfig, TestdataCorruptedDifferentValuesCalculator.class);

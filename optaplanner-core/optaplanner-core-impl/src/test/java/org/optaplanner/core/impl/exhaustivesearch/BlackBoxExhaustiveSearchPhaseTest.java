@@ -74,7 +74,7 @@ class BlackBoxExhaustiveSearchPhaseTest {
      *
      * @return collection of combination of input parameters
      */
-    public static Collection<Object[]> params() {
+    static Collection<Object[]> params() {
         return Stream.concat(getBranchAndBoundConfigs(), getBruteForceConfigs()).collect(Collectors.toList());
     }
 
@@ -413,7 +413,7 @@ class BlackBoxExhaustiveSearchPhaseTest {
 
     @ParameterizedTest(name = "{0}, NodeExplorationType-{1}, EntitySorterManner-{2}, ValueSorterManner-{3}")
     @MethodSource("params")
-    public void verifyExhaustiveSearchSteps(
+    void verifyExhaustiveSearchSteps(
             ExhaustiveSearchType exhaustiveSearchType,
             NodeExplorationType nodeExplorationType,
             EntitySorterManner entitySorterManner,
@@ -470,8 +470,7 @@ class BlackBoxExhaustiveSearchPhaseTest {
         }
     }
 
-    public static class TestdataSolutionStateRecorder
-            extends PhaseLifecycleListenerAdapter<TestdataDifficultyComparingSolution> {
+    static class TestdataSolutionStateRecorder extends PhaseLifecycleListenerAdapter<TestdataDifficultyComparingSolution> {
 
         private final List<String> workingSolutions = new ArrayList<>();
 
@@ -492,7 +491,7 @@ class BlackBoxExhaustiveSearchPhaseTest {
                     .collect(Collectors.joining()));
         }
 
-        public List<String> getWorkingSolutions() {
+        List<String> getWorkingSolutions() {
             return workingSolutions;
         }
     }

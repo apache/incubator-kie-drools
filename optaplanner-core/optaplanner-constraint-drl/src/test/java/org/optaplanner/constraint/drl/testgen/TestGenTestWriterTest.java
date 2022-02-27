@@ -50,7 +50,7 @@ class TestGenTestWriterTest {
 
     @Test
     @Timeout(600)
-    public void fullJournalOutput() throws IOException, URISyntaxException {
+    void fullJournalOutput() throws IOException, URISyntaxException {
         TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
         TestdataEntity entity = new TestdataEntity("E");
         TestdataValue value = new TestdataValue("V");

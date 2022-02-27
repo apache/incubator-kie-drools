@@ -34,7 +34,7 @@ public class ScoreManagerTest {
 
     @ParameterizedTest
     @EnumSource(ScoreManagerSource.class)
-    public void updateScore(ScoreManagerSource scoreManagerSource) {
+    void updateScore(ScoreManagerSource scoreManagerSource) {
         ScoreManager<TestdataSolution, ?> scoreManager = scoreManagerSource.createScoreManager(SOLVER_FACTORY);
         assertThat(scoreManager).isNotNull();
         TestdataSolution solution = TestdataSolution.generateSolution();
@@ -45,7 +45,7 @@ public class ScoreManagerTest {
 
     @ParameterizedTest
     @EnumSource(ScoreManagerSource.class)
-    public void explainScore(ScoreManagerSource scoreManagerSource) {
+    void explainScore(ScoreManagerSource scoreManagerSource) {
         ScoreManager<TestdataSolution, ?> scoreManager = scoreManagerSource.createScoreManager(SOLVER_FACTORY);
         assertThat(scoreManager).isNotNull();
         TestdataSolution solution = TestdataSolution.generateSolution();

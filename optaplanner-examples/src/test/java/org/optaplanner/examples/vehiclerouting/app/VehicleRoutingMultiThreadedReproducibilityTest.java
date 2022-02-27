@@ -54,7 +54,7 @@ class VehicleRoutingMultiThreadedReproducibilityTest {
     private SolverFactory<VehicleRoutingSolution> solverFactory;
 
     @BeforeEach
-    public void createUninitializedSolutions() {
+    void createUninitializedSolutions() {
         final VehicleRoutingImporter importer = new VehicleRoutingImporter();
         for (int i = 0; i < REPETITION_COUNT; i++) {
             File dataSetFile = new File(CommonApp.determineDataDir(vehicleRoutingApp.getDataDirName()), DATA_SET);
@@ -75,7 +75,7 @@ class VehicleRoutingMultiThreadedReproducibilityTest {
     }
 
     @TurtleTest
-    public void multiThreadedSolvingIsReproducible() {
+    void multiThreadedSolvingIsReproducible() {
         IntStream.range(0, REPETITION_COUNT).forEach(this::solveAndCompareWithPrevious);
     }
 

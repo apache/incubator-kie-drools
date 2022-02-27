@@ -200,7 +200,7 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     @Disabled("The problem of BigDecimal ^ BigDecimal.")
-    public void powerHSS() {
+    void powerHSS() {
         // .multiply(1.0) is there to get the proper BigDecimal scale
         assertThat(scoreDefinitionHSS.createScore(THREE, MINUS_FOUR, FIVE).power(2.0))
                 .isEqualTo(scoreDefinitionHSS.createScore(NINE, PLUS_16, PLUS_25));
@@ -323,7 +323,7 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     @Disabled("The problem of BigDecimal ^ BigDecimal.")
-    public void powerHHSSS() {
+    void powerHHSSS() {
         // .multiply(1.0) is there to get the proper BigDecimal scale
         assertThat(scoreDefinitionHHSSS.createScore(THREE, MINUS_FOUR, FIVE, ZERO, ZERO).power(2.0))
                 .isEqualTo(scoreDefinitionHHSSS.createScore(NINE, PLUS_16, PLUS_25, ZERO, ZERO));

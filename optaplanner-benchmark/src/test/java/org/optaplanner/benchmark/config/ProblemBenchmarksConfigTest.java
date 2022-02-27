@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 
-public class ProblemBenchmarksConfigTest {
+class ProblemBenchmarksConfigTest {
 
     @Test
-    public void testDetermineProblemStatisticTypeList() {
+    void testDetermineProblemStatisticTypeList() {
         ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
         assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList())
                 .isEqualTo(ProblemStatisticType.defaultList());
@@ -52,7 +52,7 @@ public class ProblemBenchmarksConfigTest {
     }
 
     @Test
-    public void testDetermineSingleStatisticTypeList() {
+    void testDetermineSingleStatisticTypeList() {
         ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
         assertThat(problemBenchmarksConfig.determineSingleStatisticTypeList()).isEqualTo(Collections.emptyList());
         problemBenchmarksConfig.setSingleStatisticTypeList(Collections.emptyList());

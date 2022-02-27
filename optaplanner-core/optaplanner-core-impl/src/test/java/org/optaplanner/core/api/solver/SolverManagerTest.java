@@ -65,7 +65,7 @@ class SolverManagerTest {
     private SolverManager<TestdataSolution, Long> solverManager;
 
     @AfterEach
-    public void closeSolverManager() {
+    void closeSolverManager() {
         if (solverManager != null) {
             solverManager.close();
         }
@@ -84,7 +84,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void solveBatch_2InParallel() throws ExecutionException, InterruptedException {
+    void solveBatch_2InParallel() throws ExecutionException, InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(createPhaseWithConcurrentSolvingStart(2), new ConstructionHeuristicPhaseConfig());
         solverManager = SolverManager.create(
@@ -113,7 +113,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void getSolverStatus() throws InterruptedException, BrokenBarrierException, ExecutionException {
+    void getSolverStatus() throws InterruptedException, BrokenBarrierException, ExecutionException {
         CyclicBarrier solverThreadReadyBarrier = new CyclicBarrier(2);
         CyclicBarrier mainThreadReadyBarrier = new CyclicBarrier(2);
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
@@ -160,7 +160,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void exceptionInSolver() {
+    void exceptionInSolver() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
                         scoreDirector -> {
@@ -183,7 +183,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void exceptionInConsumer() throws InterruptedException {
+    void exceptionInConsumer() throws InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new ConstructionHeuristicPhaseConfig());
         solverManager = SolverManager.create(
@@ -210,7 +210,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void solveGenerics() throws ExecutionException, InterruptedException {
+    void solveGenerics() throws ExecutionException, InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils
                 .buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverManager = SolverManager
@@ -229,7 +229,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void skipAhead() throws ExecutionException, InterruptedException {
+    void skipAhead() throws ExecutionException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
                 TestdataEntity.class)
@@ -303,7 +303,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(600)
-    public void terminateEarly() throws InterruptedException, BrokenBarrierException {
+    void terminateEarly() throws InterruptedException, BrokenBarrierException {
         CyclicBarrier startedBarrier = new CyclicBarrier(2);
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
                 TestdataEntity.class)
@@ -367,7 +367,7 @@ class SolverManagerTest {
     @Disabled("https://issues.redhat.com/browse/PLANNER-1837")
     @Test
     @Timeout(60)
-    public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
+    void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();
         SolverConfig solverConfig =
                 PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
@@ -397,7 +397,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void submitMoreProblemsThanCpus_allGetSolved() throws InterruptedException, ExecutionException {
+    void submitMoreProblemsThanCpus_allGetSolved() throws InterruptedException, ExecutionException {
         // Use twice the amount of problems than available processors.
         int problemCount = Runtime.getRuntime().availableProcessors() * 2;
 
@@ -521,7 +521,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void runSameIdProcesses_throwsIllegalStateException() {
+    void runSameIdProcesses_throwsIllegalStateException() {
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
 
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,

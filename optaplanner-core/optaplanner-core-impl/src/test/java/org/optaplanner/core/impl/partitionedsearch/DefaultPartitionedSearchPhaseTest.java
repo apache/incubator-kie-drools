@@ -55,17 +55,17 @@ class DefaultPartitionedSearchPhaseTest {
 
     @Test
     @Timeout(5)
-    public void partCount() {
+    void partCount() {
         partCount(SolverConfig.MOVE_THREAD_COUNT_NONE);
     }
 
     @Test
     @Timeout(5)
-    public void partCountAndMoveThreadCount() {
+    void partCountAndMoveThreadCount() {
         partCount("2");
     }
 
-    public void partCount(String moveThreadCount) {
+    void partCount(String moveThreadCount) {
         final int partSize = 3;
         final int partCount = 7;
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, moveThreadCount, partSize);
@@ -114,7 +114,7 @@ class DefaultPartitionedSearchPhaseTest {
 
     @Test
     @Timeout(5)
-    public void exceptionPropagation() {
+    void exceptionPropagation() {
         final int partSize = 7;
         final int partCount = 3;
 
@@ -133,7 +133,7 @@ class DefaultPartitionedSearchPhaseTest {
 
     @Test
     @Timeout(5)
-    public void terminateEarly() throws InterruptedException, ExecutionException {
+    void terminateEarly() throws InterruptedException, ExecutionException {
         final int partSize = 1;
         final int partCount = 2;
 
@@ -167,7 +167,7 @@ class DefaultPartitionedSearchPhaseTest {
     @Disabled("PLANNER-2249")
     @Test
     @Timeout(5)
-    public void shutdownMainThreadAbruptly() throws InterruptedException {
+    void shutdownMainThreadAbruptly() throws InterruptedException {
         final int partSize = 5;
         final int partCount = 3;
 

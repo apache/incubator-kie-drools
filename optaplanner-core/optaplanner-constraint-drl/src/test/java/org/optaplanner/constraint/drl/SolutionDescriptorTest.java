@@ -27,10 +27,10 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class SolutionDescriptorTest {
+class SolutionDescriptorTest {
 
     @Test
-    public void noProblemFactPropertyWithDroolsScoreCalculation() {
+    void noProblemFactPropertyWithDroolsScoreCalculation() {
         assertThatIllegalStateException().isThrownBy(() -> buildSolverFactoryWithDroolsScoreDirector(
                 TestdataNoProblemFactPropertySolution.class, TestdataEntity.class));
     }

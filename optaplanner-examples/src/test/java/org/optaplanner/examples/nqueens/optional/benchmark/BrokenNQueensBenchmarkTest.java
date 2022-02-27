@@ -33,7 +33,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
-    public BrokenNQueensBenchmarkTest() {
+    BrokenNQueensBenchmarkTest() {
         super(NQueensApp.SOLVER_CONFIG);
     }
 
@@ -43,7 +43,7 @@ class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     @Test
     @Timeout(100)
-    public void benchmarkBroken8queens() {
+    void benchmarkBroken8queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/8queens.xml"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();

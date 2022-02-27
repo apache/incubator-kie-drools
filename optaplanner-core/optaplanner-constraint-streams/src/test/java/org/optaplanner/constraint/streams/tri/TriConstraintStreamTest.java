@@ -58,7 +58,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-public class TriConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
+class TriConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
 
     public TriConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);

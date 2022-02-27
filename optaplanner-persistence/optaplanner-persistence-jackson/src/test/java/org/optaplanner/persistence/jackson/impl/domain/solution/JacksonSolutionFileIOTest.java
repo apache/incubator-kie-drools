@@ -35,7 +35,7 @@ class JacksonSolutionFileIOTest {
     private static File solutionTestDir;
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         solutionTestDir = new File("target/solutionTest/");
         solutionTestDir.mkdirs();
     }

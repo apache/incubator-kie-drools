@@ -36,7 +36,7 @@ class OptaPlannerBenchmarkTestResourceTest {
 
     @Test
     @Timeout(600)
-    public void benchmark() throws Exception {
+    void benchmark() throws Exception {
         String benchmarkResultDirectory = RestAssured.given()
                 .header("Content-Type", "text/plain;charset=UTF-8")
                 .when()

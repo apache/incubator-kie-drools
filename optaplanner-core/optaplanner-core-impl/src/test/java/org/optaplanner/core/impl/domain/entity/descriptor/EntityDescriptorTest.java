@@ -48,7 +48,7 @@ class EntityDescriptorTest {
 
     @Test
     @Disabled // TODO FIXME PLANNER-849
-    public void extendedMovableEntitySelectionFilterUsedByParentSelector() {
+    void extendedMovableEntitySelectionFilterUsedByParentSelector() {
         ScoreDirector<TestdataExtendedPinnedSolution> scoreDirector = mock(ScoreDirector.class);
         SolutionDescriptor<TestdataExtendedPinnedSolution> solutionDescriptor =
                 TestdataExtendedPinnedSolution.buildSolutionDescriptor();

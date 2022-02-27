@@ -55,7 +55,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-public class BiConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
+class BiConstraintStreamTest extends AbstractConstraintStreamTest implements ConstraintStreamFunctionalTest {
 
     public BiConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);

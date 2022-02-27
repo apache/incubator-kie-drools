@@ -45,7 +45,7 @@ class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
 
     @ParameterizedTest(name = "AcceptorType: {0}")
     @MethodSource("parameters")
-    public void trackLocalSearch(LocalSearchAcceptorConfig acceptorConfig,
+    void trackLocalSearch(LocalSearchAcceptorConfig acceptorConfig,
             LocalSearchForagerConfig localSearchForagerConfig,
             List<NQueensStepTracking> expectedCoordinates) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
@@ -72,7 +72,7 @@ class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
         assertTrackingList(expectedCoordinates, listener.getTrackingList());
     }
 
-    public static Collection<Object[]> parameters() {
+    static Collection<Object[]> parameters() {
         Collection<Object[]> params = new ArrayList<>();
 
         params.add(new Object[] {
