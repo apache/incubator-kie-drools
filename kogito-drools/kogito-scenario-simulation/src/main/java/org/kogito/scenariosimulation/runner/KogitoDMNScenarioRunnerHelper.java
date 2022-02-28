@@ -15,6 +15,7 @@
  */
 package org.kogito.scenariosimulation.runner;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -126,7 +127,8 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
     }
 
     private boolean filterResource(Path path, String extension) {
-        return path.toString().endsWith(extension) && !path.toString().contains("/target/") && Files.isRegularFile(path);
+        String targetFolder = File.separator + "target" + File.separator;
+        return path.toString().endsWith(extension) && !path.toString().contains(targetFolder) && Files.isRegularFile(path);
     }
 
 }
