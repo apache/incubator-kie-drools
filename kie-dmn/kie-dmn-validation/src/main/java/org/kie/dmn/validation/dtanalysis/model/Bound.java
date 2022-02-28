@@ -16,10 +16,11 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
-import org.kie.dmn.feel.util.Generated;
+import java.time.LocalDate;
 
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.feel.util.Generated;
 
 public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
 
@@ -155,9 +156,19 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
      * Returns true if left is overlapping or adjacent to right
      */
     public static boolean adOrOver(Bound<?> left, Bound<?> right) {
-        boolean isValueEqual = left.getValue().equals(right.getValue());
-        boolean isBothOpen = left.getBoundaryType() == RangeBoundary.OPEN && right.getBoundaryType() == RangeBoundary.OPEN;
-        return isValueEqual && !isBothOpen;
+        final Comparable<?> leftValue = left.getValue();
+        final Comparable<?> rightValue = right.getValue();
+        final boolean isValueEqual = leftValue.equals(rightValue);
+        final boolean isBothOpen = left.getBoundaryType() == RangeBoundary.OPEN && right.getBoundaryType() == RangeBoundary.OPEN;
+        if (isValueEqual && !isBothOpen) { // trivial case.
+            return true;
+        }
+        if (leftValue instanceof LocalDate && rightValue instanceof LocalDate) {
+            final boolean date1dayOff = leftValue.equals(((LocalDate)rightValue).minusDays(1));
+            final boolean isBothClosed = left.getBoundaryType() == RangeBoundary.CLOSED && right.getBoundaryType() == RangeBoundary.CLOSED;
+            return date1dayOff && isBothClosed; // unless we already returned for the trivial case, two date-based Bounds are adjacent for 1day diff closed Bounds.
+        }
+        return false;
     }
 
     public static String boundValueToString(Comparable<?> value) {
