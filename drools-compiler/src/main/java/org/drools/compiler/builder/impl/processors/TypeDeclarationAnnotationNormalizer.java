@@ -9,7 +9,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import java.util.Collection;
 import java.util.Collections;
 
-class TypeDeclarationAnnotationNormalizer implements Processor {
+public class TypeDeclarationAnnotationNormalizer implements Processor {
     private final AnnotationNormalizer annotationNormalizer;
     private final PackageDescr packageDescr;
 

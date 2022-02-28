@@ -13,7 +13,7 @@ import java.util.Collection;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 
-abstract class AnnotationNormalizer {
+public abstract class AnnotationNormalizer {
     protected final TypeResolver typeResolver;
     protected final Collection<KnowledgeBuilderResult> results;
     AnnotationNormalizer(TypeResolver typeResolver) {

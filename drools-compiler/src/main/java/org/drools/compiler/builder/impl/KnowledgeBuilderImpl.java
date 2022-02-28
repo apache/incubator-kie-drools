@@ -20,6 +20,8 @@ import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.OtherDeclarationProcessor;
 import org.drools.compiler.builder.impl.processors.PackageProcessor;
+import org.drools.compiler.builder.impl.processors.Processor;
+import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
@@ -155,6 +157,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
 import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -815,14 +818,24 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
         compileKnowledgePackages( packageDescr, pkgRegistry);
         wireAllRules();
-        compileRete(packageDescr);
+        compileRete(pkgRegistry, packageDescr);
     }
 
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
-        validateUniqueRuleNames(packageDescr);
-        compileFunctions(packageDescr, pkgRegistry);
-        compileRules(packageDescr, pkgRegistry);
+        PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
+//        validateUniqueRuleNames(packageDescr);
+//        compileFunctions(packageDescr, pkgRegistry);
+//        compileRules(packageDescr, pkgRegistry);
+
+        List<Processor> processors = asList(
+                new RuleValidator(packageRegistry, packageDescr, configuration),
+                new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts, rootClassLoader),
+                new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
+                        this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, this));
+        processors.forEach(Processor::process);
+        processors.forEach(p -> this.results.addAll(p.getResults()));
+
     }
 
     protected void wireAllRules() {
@@ -845,18 +858,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
-    protected void compileRete(PackageDescr packageDescr) {
+    protected void compileRete(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         if (!hasErrors() && this.kBase != null) {
-            Collection<RuleImpl> rulesToBeAdded = new ArrayList<>();
-            for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
-                    InternalKnowledgePackage pkg = pkgRegistryMap.get(ruleDescr.getNamespace()).getPackage();
-                    rulesToBeAdded.add(pkg.getRule(ruleDescr.getName()));
-                }
-            }
-            if (!rulesToBeAdded.isEmpty()) {
-                this.kBase.addRules(rulesToBeAdded);
-            }
+            ReteCompiler reteCompiler = new ReteCompiler(pkgRegistry, packageDescr, kBase, this::filterAccepts);
+            reteCompiler.process();
         }
     }
 
@@ -1412,7 +1417,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     private List<KnowledgeBuilderResult> getResultList(ResultSeverity... severities) {
-        List<ResultSeverity> typesToFetch = Arrays.asList(severities);
+        List<ResultSeverity> typesToFetch = asList(severities);
         ArrayList<KnowledgeBuilderResult> problems = new ArrayList<>();
         for (KnowledgeBuilderResult problem : results) {
             if (typesToFetch.contains(problem.getSeverity())) {
@@ -1682,7 +1687,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             throw new IllegalArgumentException("Could not parse knowledge. See the logs for details.");
         }
         RuleBase kbase = RuleBaseFactory.newRuleBase(conf);
-        kbase.addPackages(Arrays.asList(getPackages()));
+        kbase.addPackages(asList(getPackages()));
         return KnowledgeBaseFactory.newKnowledgeBase(kbase);
     }
 
@@ -1878,11 +1883,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);
-        normalizeTypeAnnotations( packages );
+        packages.forEach(packageDescr -> normalizeTypeDeclarationAnnotations(packageDescr, getOrCreatePackageRegistry(packageDescr).getTypeResolver()));
         buildTypeDeclarations(packages);
-        buildEntryPoints( packages );
+        packages.forEach(packageDescr -> processEntryPointDeclarations(getPackageRegistry(packageDescr.getNamespace()), packageDescr));
         buildOtherDeclarations(packages);
-        normalizeRuleAnnotations( packages );
+        packages.forEach(packageDescr -> normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver()));
     }
 
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
@@ -1952,7 +1957,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
         for (CompositePackageDescr packageDescr : packages) {
             setAssetFilter(packageDescr.getFilter());
-            compileRete( packageDescr );
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            compileRete(pkgRegistry, packageDescr);
             setAssetFilter(null);
         }
     }
