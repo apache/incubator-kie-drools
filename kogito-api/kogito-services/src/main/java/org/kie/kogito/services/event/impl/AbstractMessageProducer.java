@@ -30,21 +30,17 @@ public abstract class AbstractMessageProducer<D> {
     private String trigger;
     private EventEmitter emitter;
 
-    // in general we should favor the non-empty constructor
+    // in general, we should favor the non-empty constructor
     // but there is an issue with Quarkus https://github.com/quarkusio/quarkus/issues/2949#issuecomment-513017781
-    // use this in conjuction with setParams()
+    // use this in conjunction with setParams()
     public AbstractMessageProducer() {
     }
 
-    public AbstractMessageProducer(
-            EventEmitter emitter,
-            String trigger) {
+    public AbstractMessageProducer(EventEmitter emitter, String trigger) {
         setParams(emitter, trigger);
     }
 
-    protected void setParams(
-            EventEmitter emitter,
-            String trigger) {
+    protected void setParams(EventEmitter emitter, String trigger) {
         this.emitter = emitter;
         this.trigger = trigger;
     }

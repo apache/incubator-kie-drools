@@ -15,30 +15,28 @@
  */
 package org.kie.kogito.test.quarkus.kafka;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-import io.vertx.kafka.client.consumer.KafkaConsumer;
-import io.vertx.kafka.client.producer.KafkaProducer;
-import io.vertx.kafka.client.producer.KafkaProducerRecord;
-import io.vertx.kafka.client.producer.RecordMetadata;
-
+import static java.lang.String.format;
 import static java.util.Collections.singleton;
 
 /**
@@ -49,50 +47,56 @@ public class KafkaTestClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTestClient.class);
     private static final int TIMEOUT = 10;
 
-    private KafkaProducer<String, String> producer;
-    private KafkaConsumer<String, String> consumer;
-    private Vertx vertx = Vertx.vertx();
+    private ExecutorService executorService;
+    private KafkaConsumerLoop consumer;
     private String hosts;
 
     public KafkaTestClient(String hosts) {
         this.hosts = hosts;
     }
 
-    public KafkaTestClient(KafkaProducer<String, String> producer, KafkaConsumer<String, String> consumer) {
-        this.producer = producer;
-        this.consumer = consumer;
-    }
-
     private KafkaConsumer<String, String> createDefaultConsumer(String hosts) {
-        Map<String, String> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+        Properties consumerConfig = new Properties();
+        consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaTestClient.class.getName() + "Consumer");
-        return KafkaConsumer.create(vertx, consumerConfig);
+        return new KafkaConsumer<>(consumerConfig);
     }
 
     private KafkaProducer<String, String> createDefaultProducer(String hosts) {
         Properties producerConfig = new Properties();
         producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
-        producerConfig.put(ProducerConfig.ACKS_CONFIG, "1");
+        producerConfig.put(ProducerConfig.ACKS_CONFIG, "all");
         producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, KafkaTestClient.class.getName() + "Producer");
         producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        return KafkaProducer.create(vertx, producerConfig);
+        return new KafkaProducer<>(producerConfig);
     }
 
     public void consume(Set<String> topics, Consumer<String> callback) {
-        if (consumer == null) {
-            consumer = createDefaultConsumer(hosts);
-        } else {
-            waitForCompletion(consumer.unsubscribe());
+        if (consumer != null) {
+            shutdown();
         }
-        consumer.handler(record -> callback.accept(record.value()));
-        waitForCompletion(consumer.subscribe(topics)
-                .onSuccess(v -> LOGGER.debug("Kafka consumer subscribed to topic(s): {}", topics)));
+
+        executorService = Executors.newSingleThreadExecutor();
+
+        CountDownLatch awaitSubscribe = new CountDownLatch(1);
+        consumer = new KafkaConsumerLoop(createDefaultConsumer(hosts), topics, callback, v -> {
+            awaitSubscribe.countDown();
+            return null;
+        });
+
+        executorService.execute(consumer);
+        try {
+            if (!awaitSubscribe.await(TIMEOUT, TimeUnit.SECONDS)) {
+                throw new IllegalStateException(format("Timeout while waiting for KafkaTestClient to subscribe to topics: %s", topics));
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public void consume(String topic, Consumer<String> callback) {
@@ -100,34 +104,35 @@ public class KafkaTestClient {
     }
 
     public void produce(String data, String topic) {
-        if (producer == null) {
-            producer = createDefaultProducer(hosts);
-        }
-        LOGGER.info("Publishing event with data {} for topic {}", data, topic);
-        producer.send(KafkaProducerRecord.create(topic, data), this::produceCallback);
-        producer.flush();
-    }
-
-    public void produceCallback(AsyncResult<RecordMetadata> result) {
-        if (result.failed()) {
-            LOGGER.error("Event publishing failed", result.cause());
-        } else {
-            LOGGER.info("Event published {}", result.result());
+        try (KafkaProducer<String, String> producer = createDefaultProducer(hosts)) {
+            LOGGER.info("Publishing event with data {} for topic {}", data, topic);
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, data);
+            waitForCompletion(producer.send(record));
         }
     }
 
     public void shutdown() {
-        if (producer != null) {
-            waitForCompletion(producer.close());
-        }
         if (consumer != null) {
-            waitForCompletion(consumer.close());
+            consumer.shutdown();
+            consumer = null;
+        }
+        if (executorService != null) {
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(TIMEOUT, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                executorService.shutdownNow();
+            }
+            executorService = null;
         }
     }
 
     public void waitForCompletion(Future future) {
         try {
-            future.toCompletionStage().toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
+            future.get(TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (TimeoutException e) {

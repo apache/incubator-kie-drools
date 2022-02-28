@@ -16,152 +16,147 @@
 package org.kie.kogito.test.springboot.kafka;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationListener;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.event.ConsumerStartedEvent;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.listener.MessageListener;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFutureCallback;
+
+import static java.lang.String.format;
+import static java.util.Collections.singleton;
 
 /**
  * Kafka client for Kogito Example tests.
  */
 @Component
 @ConditionalOnProperty(name = "spring.kafka.bootstrap-servers")
-public class KafkaTestClient implements ApplicationListener<ConsumerStartedEvent> {
+public class KafkaTestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTestClient.class);
+    private static final int TIMEOUT = 10;
+
+    private ExecutorService executorService;
+    private KafkaConsumerLoop consumer;
 
     @Value("${spring.kafka.bootstrap-servers}")
-    private String kafkaBootstrapServers;
+    private String hosts;
 
-    private KafkaTemplate<String, String> producer;
-
-    private KafkaMessageListenerContainer<String, String> container;
-
-    private CountDownLatch latch = new CountDownLatch(1);
-
-    @PostConstruct
-    public void setup() {
-        producer = new KafkaTemplate<>(producerFactory());
+    public KafkaTestClient(String hosts) {
+        this.hosts = hosts;
     }
 
     public KafkaTestClient() {
     }
 
-    public KafkaTestClient(KafkaTemplate<String, String> producer) {
-        this.producer = producer;
+    private KafkaConsumer<String, String> createDefaultConsumer(String hosts) {
+        Properties consumerConfig = new Properties();
+        consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
+        consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaTestClient.class.getName() + "Consumer");
+        return new KafkaConsumer<>(consumerConfig);
     }
 
-    private ConsumerFactory<String, String> consumerFactory(String host) {
-        Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-        config.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, host);
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaTestClient.class.getName() + "Consumer");
-        return new DefaultKafkaConsumerFactory<>(config);
-    }
-
-    private ProducerFactory<String, String> producerFactory() {
-        Map<String, Object> config = new HashMap<>();
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
-        config.put(ProducerConfig.ACKS_CONFIG, "1");
-        config.put(ProducerConfig.CLIENT_ID_CONFIG, KafkaTestClient.class.getName() + "Producer");
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        return new DefaultKafkaProducerFactory<>(config);
+    private KafkaProducer<String, String> createDefaultProducer(String hosts) {
+        Properties producerConfig = new Properties();
+        producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
+        producerConfig.put(ProducerConfig.ACKS_CONFIG, "all");
+        producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, KafkaTestClient.class.getName() + "Producer");
+        producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        return new KafkaProducer<>(producerConfig);
     }
 
     public void consume(Collection<String> topics, Consumer<String> callback) {
-        consume(topics, callback, kafkaBootstrapServers);
-    }
+        if (consumer != null) {
+            shutdown();
+        }
 
-    public void consume(Collection<String> topics, Consumer<String> callback, String host) {
-        if (container == null) {
-            ContainerProperties containerProperties = new ContainerProperties(topics.toArray(new String[] {}));
-            container = new KafkaMessageListenerContainer(consumerFactory(host), containerProperties);
-            container.setupMessageListener((MessageListener<String, String>) record -> callback.accept(record.value()));
-            container.setBeanName("kafka-test-client");
-            container.start();
-            try {
-                latch.await(10, TimeUnit.SECONDS);
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        executorService = Executors.newSingleThreadExecutor();
+
+        CountDownLatch awaitSubscribe = new CountDownLatch(1);
+        consumer = new KafkaConsumerLoop(createDefaultConsumer(hosts), topics, callback, v -> {
+            awaitSubscribe.countDown();
+            return null;
+        });
+
+        executorService.execute(consumer);
+        try {
+            if (!awaitSubscribe.await(TIMEOUT, TimeUnit.SECONDS)) {
+                throw new IllegalStateException(format("Timeout while waiting for KafkaTestClient to subscribe to topics: %s", topics));
             }
-        } else {
-            latch = new CountDownLatch(1);
-            container.stop();
-            container = null;
-            consume(topics, callback);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
     public void consume(String topic, Consumer<String> callback) {
-        consume(Collections.singletonList(topic), callback);
+        consume(singleton(topic), callback);
     }
 
     public void produce(String data, String topic) {
-        LOGGER.info("Publishing event with data {} for topic {}", data, topic);
-        producer.send(topic, data).addCallback(produceCallback());
-        producer.flush();
+        try (KafkaProducer<String, String> producer = createDefaultProducer(hosts)) {
+            LOGGER.info("Publishing event with data {} for topic {}", data, topic);
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, data);
+            waitForCompletion(producer.send(record));
+        }
     }
 
-    public ListenableFutureCallback<SendResult<String, String>> produceCallback() {
-        return new ListenableFutureCallback<>() {
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                LOGGER.error("Event publishing failed", throwable);
+    public void waitForCompletion(Future future) {
+        try {
+            future.get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (TimeoutException e) {
+            throw new IllegalStateException(e);
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof RuntimeException) {
+                throw (RuntimeException) e.getCause();
+            } else {
+                throw new KafkaException(e.getCause());
             }
-
-            @Override
-            public void onSuccess(SendResult<String, String> result) {
-                LOGGER.info("Event published {}", result.getRecordMetadata());
-            }
-        };
-    }
-
-    @Override
-    public void onApplicationEvent(ConsumerStartedEvent event) {
-        latch.countDown();
+        }
     }
 
     @PreDestroy
     public void shutdown() {
-        if (producer != null) {
-            producer.destroy();
+        if (consumer != null) {
+            consumer.shutdown();
+            consumer = null;
         }
-        if (container != null) {
-            container.stop();
+        if (executorService != null) {
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(TIMEOUT, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                executorService.shutdownNow();
+            }
+            executorService = null;
         }
     }
+
 }
