@@ -1,16 +1,9 @@
-package org.drools.compiler;
+package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
-import org.drools.compiler.builder.impl.processors.FunctionCompiler;
-import org.drools.compiler.builder.impl.processors.PackageProcessor;
-import org.drools.compiler.builder.impl.processors.Processor;
-import org.drools.compiler.builder.impl.processors.ReteCompiler;
-import org.drools.compiler.builder.impl.processors.RuleCompiler;
-import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.common.ObjectStoreWrapper;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
@@ -54,24 +47,31 @@ public class ExplicitCompilerTest {
         final PackageDescr packageDescr = parser.parse(resource, reader);
         this.results.addAll(parser.getErrors());
 
-        PackageProcessor packageProcessor =
-                new PackageProcessor(kBuilder,
-                        kBase,
-                        configuration,
-                        typeBuilder,
-                        this::filterAccepts,
-                        packageRegistry,
-                        packageDescr);
-        packageProcessor.process();
-        this.results.addAll(packageProcessor.getResults());
+        AnnotationNormalizer annotationNormalizer =
+                AnnotationNormalizer.of(
+                        packageRegistry.getTypeResolver(),
+                        configuration.getLanguageLevel().useJavaAnnotations());
+
 
         packageRegistry.setDialect(getPackageDialect(packageDescr));
 
         List<Processor> processors = asList(
+                new ImportProcessor(packageRegistry, packageDescr),
+                new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr),
+                new EntryPointDeclarationProcessor(packageRegistry, packageDescr),
+                new AccumulateFunctionProcessor(packageRegistry, packageDescr),
+                new TypeDeclarationProcessor(packageDescr, typeBuilder, packageRegistry),
+                new WindowDeclarationProcessor(packageRegistry, packageDescr, kBuilder),
+                new FunctionProcessor(packageRegistry, packageDescr, configuration),
+                new GlobalProcessor(packageRegistry, packageDescr, kBase, kBuilder, this::filterAccepts),
+                new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
+                /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),
                 new FunctionCompiler(packageDescr, packageRegistry, this::filterAccepts, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
                         this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, kBuilder));
+
+
         processors.forEach(Processor::process);
         processors.forEach(p -> this.results.addAll(p.getResults()));
 
