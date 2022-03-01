@@ -23,6 +23,7 @@ import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.util.Pair;
 
 /**
  * Performs a weighted linear regression over the provided features, observations, and weights
@@ -74,9 +75,9 @@ public class WeightedLinearRegression {
             features = WeightedLinearRegression.adjustFeatureMatrix(features);
         }
 
-        RealMatrix wDiag = MatrixUtils.createRealDiagonalMatrix(sampleWeights.toArray());
-        RealMatrix xtWXInv = MatrixUtilsExtensions.safeInvert(features.transpose().multiply(wDiag).multiply(features));
-        RealVector xtWY = features.transpose().multiply(wDiag).operate(observations);
+        Pair<RealMatrix, RealVector> jointXTWXandXTWY = MatrixUtilsExtensions.jointATBATandATBC(features, sampleWeights, observations);
+        RealMatrix xtWXInv = MatrixUtilsExtensions.safeInvert(jointXTWXandXTWY.getFirst());
+        RealVector xtWY = jointXTWXandXTWY.getSecond();
         RealVector coefficients = xtWXInv.operate(xtWY);
 
         ModelSquareSums mss = WeightedLinearRegression.getRSSandTSS(features, observations,
