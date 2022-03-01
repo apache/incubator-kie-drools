@@ -130,8 +130,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResourceType(ResourceBuilder.PKG_RESOURCE_BUILDER, ResourceType.PKG);
         buildResourceType(ResourceBuilder.CHANGE_SET_RESOURCE_BUILDER, ResourceType.CHANGE_SET);
         buildResourceType(ResourceBuilder.XSD_RESOURCE_BUILDER, ResourceType.XSD);
-        buildResourceType(ResourceBuilder.SCD_RESOURCE_BUILDER, ResourceType.SCARD);
-        buildResourceType(ResourceBuilder.GSCD_RESOURCE_BUILDER, ResourceType.SCGD);
     }
 
     private void buildResourceType(ResourceBuilder resourceBuilder, ResourceType resourceType) {
@@ -312,10 +310,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         ResourceBuilder DSL_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addDsl( resourceDescr.resource );
 
         ResourceBuilder XSD_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromXSD( resourceDescr.resource, resourceDescr.configuration );
-
-        ResourceBuilder SCD_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromScoreCard(resourceDescr.resource, resourceDescr.configuration);
-
-        ResourceBuilder GSCD_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromGuidedScoreCard(resourceDescr.resource);
 
         ResourceBuilder CHANGE_SET_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromChangeSet( resourceDescr.resource);
 
