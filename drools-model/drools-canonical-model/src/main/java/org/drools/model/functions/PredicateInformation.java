@@ -119,7 +119,7 @@ public class PredicateInformation {
         private final String ruleName;
 
         public RuleDef(String fileName, String ruleName) {
-            this.fileName = fileName;
+            this.fileName = fileName.replace('\\', '/');
             this.ruleName = ruleName;
         }
 
