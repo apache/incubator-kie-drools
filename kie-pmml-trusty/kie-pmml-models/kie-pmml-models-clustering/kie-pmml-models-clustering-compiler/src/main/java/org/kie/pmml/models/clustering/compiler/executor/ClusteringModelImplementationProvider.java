@@ -22,6 +22,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.models.clustering.compiler.dto.ClusteringCompilationDTO;
 import org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringModelFactory;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 import org.slf4j.Logger;
@@ -44,14 +45,14 @@ private static final Logger logger = LoggerFactory.getLogger(ClusteringModelImpl
     @Override
     public KiePMMLClusteringModel getKiePMMLModel(final CompilationDTO<ClusteringModel> compilationDTO) {
         logger.trace("getKiePMMLModel {}", compilationDTO);
-        return KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(compilationDTO);
+        return KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
     }
 
     @Override
     public Map<String, String> getSourcesMap(final CompilationDTO<ClusteringModel> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {}", compilationDTO);
         try {
-            return KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(compilationDTO);
+            return KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
