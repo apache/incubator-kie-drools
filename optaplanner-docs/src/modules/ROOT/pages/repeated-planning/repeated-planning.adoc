@@ -331,7 +331,7 @@ public interface Solver<Solution_> {
 
     ...
 
-    boolean addProblemChange(ProblemChange<Solution_> problemChange);
+    void addProblemChange(ProblemChange<Solution_> problemChange);
 
     boolean isEveryProblemChangeProcessed();
 
@@ -339,6 +339,37 @@ public interface Solver<Solution_> {
 
 }
 ----
+
+Similarly, you can pass the `ProblemChange` to the `SolverManager`:
+
+[source,java,options="nowrap"]
+----
+public interface SolverManager<Solution_, ProblemId_> {
+
+    ...
+
+    void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
+
+    ...
+
+}
+----
+
+and the `SolverJob`:
+
+[source,java,options="nowrap"]
+----
+public interface SolverJob<Solution_, ProblemId_> {
+
+    ...
+
+    void addProblemChange(ProblemChange<Solution_> problemChange);
+
+    ...
+
+}
+----
+
 
 [source,java,options="nowrap"]
 ----
@@ -400,9 +431,9 @@ Consider the following example of a `ProblemChange` implementation in the cloud 
 * The `workingSolution` in the `Solver` is never the same solution instance as in the rest of your application: it is a planning clone.
 * A planning clone also clones the planning entities and planning entity collections.
 +
-So any change on the planning entities must happen on the instances held by ``scoreDirector.getWorkingSolution()``.
+Thus, any change on the planning entities must happen on the `workingSolution` instance passed to the `ProblemChange.doChange(Solution_ workingSolution, ProblemChangeDirector problemChangeDirector)` method.
 
-. Use the method `ScoreDirector.lookUpWorkingObject()` to translate and retrieve the working solution's instance of an object.
+. Use the method `ProblemChangeDirector.lookUpWorkingObject()` to translate and retrieve the working solution's instance of an object.
 This requires xref:optimization-algorithms/optimization-algorithms.adoc#planningId[annotating a property of that class as the @PlanningId].
 
 . A planning clone does not clone the problem facts, nor the problem fact collections.
