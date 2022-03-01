@@ -16,22 +16,24 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.Domain;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntervalTest {
 
@@ -143,5 +145,23 @@ public class IntervalTest {
         assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith("<="));
         assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain), startsWith("<"));
         assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain), not(startsWith("<=")));
+    }
+    
+    @Test
+    public void testFlatten4() {
+        Interval a = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-31"), RangeBoundary.CLOSED, 0, 0);
+        Interval b = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-04-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.flatten(Arrays.asList(b, a));
+        Assertions.assertThat(result).containsExactly(new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0));
+    }
+    
+    @Test
+    public void testNoFlatten() {
+        Interval a = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-31"), RangeBoundary.CLOSED, 0, 0);
+        Interval b = new Interval(RangeBoundary.OPEN, LocalDate.parse("2021-04-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.flatten(Arrays.asList(b, a));
+        Assertions.assertThat(result).containsExactly(a, b);
     }
 }
