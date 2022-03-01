@@ -20,6 +20,7 @@ import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataDefinition;
+import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 
 public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<ForEachNodeFactory<T>, T> {
@@ -45,6 +46,12 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
         return this;
     }
 
+    @Override
+    protected CompositeContextNode getCompositeNode() {
+        return getForEachNode().getCompositeNode();
+    }
+
+    @Override
     public ForEachNodeFactory<T> variable(String variableName, DataType dataType) {
         return variable(variableName, variableName, dataType);
     }

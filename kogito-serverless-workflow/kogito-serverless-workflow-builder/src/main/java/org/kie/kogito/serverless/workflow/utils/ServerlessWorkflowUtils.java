@@ -40,9 +40,9 @@ public class ServerlessWorkflowUtils {
 
     public static final String DEFAULT_WORKFLOW_FORMAT = "json";
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
-    public static final String APP_PROPERTIES_BASE = "kogito.sw.";
+    private static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = "functions.";
-    public static final String APP_PROPERTIES_STATES_BASE = "states.";
+    private static final String APP_PROPERTIES_STATES_BASE = "states.";
     public static final String OPENAPI_OPERATION_SEPARATOR = "#";
 
     private ServerlessWorkflowUtils() {
@@ -64,6 +64,10 @@ public class ServerlessWorkflowUtils {
             logger.warn("Error converting {} to number", value, ex);
             return null;
         }
+    }
+
+    public static String getForEachVarName(KogitoBuildContext context) {
+        return context.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + "foreach.outputVarName").orElse("_swf_eval_temp");
     }
 
     public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, KogitoBuildContext context, String defaultValue) {

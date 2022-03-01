@@ -36,8 +36,7 @@ public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachStat
 
     protected ForEachStateHandler(ForEachState state, Workflow workflow, ParserContext parserContext) {
         super(state, workflow, parserContext);
-        outputVarName = parserContext.getContext().getApplicationProperty(ServerlessWorkflowUtils.APP_PROPERTIES_BASE + ServerlessWorkflowUtils.APP_PROPERTIES_STATES_BASE + "foreach.outputVarName")
-                .orElse("_swf_eval_temp");
+        outputVarName = ServerlessWorkflowUtils.getForEachVarName(parserContext.getContext());
     }
 
     @Override

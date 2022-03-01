@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
@@ -107,28 +108,24 @@ public abstract class StateHandler<S extends State> {
 
     public void handleEnd() {
         if (state.getEnd() != null) {
-            endNodeFactory = parserContext.factory().endNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_END_NAME);
-            List<ProduceEvent> produceEvents = state.getEnd().getProduceEvents();
-            if (produceEvents == null || produceEvents.isEmpty()) {
-                endNodeFactory.terminate(true);
-            } else {
-                sendEventNode(endNodeFactory.terminate(false), produceEvents.get(0));
-            }
+            endNodeFactory = endNodeFactory(parserContext.factory(), state.getEnd().getProduceEvents()).name(ServerlessWorkflowParser.NODE_END_NAME);
             endNodeFactory.done();
         }
     }
 
-    protected final NodeFactory<?, ?> sendEventNode(NodeFactory<?, ?> actionNode, ProduceEvent event) {
+    protected final <T extends NodeFactory<?, ?> & SupportsAction<?, ?>>
+            NodeFactory<?, ?> sendEventNode(T actionNode, ProduceEvent event) {
         return sendEventNode(actionNode, eventDefinition(event.getEventRef()), event.getData(), DEFAULT_WORKFLOW_VAR);
     }
 
-    protected final NodeFactory<?, ?> sendEventNode(NodeFactory<?, ?> actionNode,
+    protected final <T extends NodeFactory<?, ?> & SupportsAction<?, ?>> NodeFactory<?, ?> sendEventNode(T actionNode,
             EventDefinition eventDefinition,
             String data,
             String defaultWorkflowVar) {
-        assert (actionNode instanceof SupportsAction);
-        ((SupportsAction) actionNode).action(new ProduceEventActionSupplier(workflow.getExpressionLang(), data));
-        return ServerlessWorkflowParser.sendEventNode(actionNode, eventDefinition, defaultWorkflowVar);
+        return ServerlessWorkflowParser.sendEventNode(
+                actionNode.action(new ProduceEventActionSupplier(workflow.getExpressionLang(), data)),
+                eventDefinition,
+                defaultWorkflowVar);
     }
 
     private void handleCompensation(RuleFlowNodeContainerFactory<?, ?> factory) {
@@ -334,14 +331,7 @@ public abstract class StateHandler<S extends State> {
                 }
             } else {
                 final ActionNodeFactory<?> actionNode = factory.actionNode(parserContext.newId());
-                NodeFactory<?, ?> endNode = actionNode;
-                sendEventNode(actionNode, produceEvents.get(0));
-                if (produceEvents.size() > 1) {
-                    ListIterator<ProduceEvent> iter = produceEvents.listIterator(1);
-                    while (iter.hasNext()) {
-                        endNode = connect(endNode, sendEventNode(factory.actionNode(parserContext.newId()), iter.next()));
-                    }
-                }
+                NodeFactory<?, ?> endNode = handleProduceEvents(factory, actionNode, produceEvents);
                 factory.connection(sourceId, actionNode.getNode().getId());
                 if (transition.isCompensate()) {
                     long eventId = compensationEvent(factory, sourceId);
@@ -354,6 +344,18 @@ public abstract class StateHandler<S extends State> {
         } else {
             callback.ifPresent(HandleTransitionCallBack::onEmptyTarget);
         }
+    }
+
+    private <T extends NodeFactory<?, ?> & SupportsAction<?, ?>> NodeFactory<?, ?> handleProduceEvents(RuleFlowNodeContainerFactory<?, ?> factory, T startNode, List<ProduceEvent> produceEvents) {
+        NodeFactory<?, ?> endNode = startNode;
+        sendEventNode(startNode, produceEvents.get(0));
+        if (produceEvents.size() > 1) {
+            ListIterator<ProduceEvent> iter = produceEvents.listIterator(1);
+            while (iter.hasNext()) {
+                endNode = connect(endNode, sendEventNode(factory.actionNode(parserContext.newId()), iter.next()));
+            }
+        }
+        return endNode;
     }
 
     @FunctionalInterface
@@ -387,13 +389,17 @@ public abstract class StateHandler<S extends State> {
         return filterAndMergeNode(embeddedSubProcess, getVarName(), fromStateExpr, resultExpr, toStateExpr, shouldMerge, nodeSupplier);
     }
 
+    protected boolean isTempVariable(String varName) {
+        return !varName.equals(ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
+    }
+
     private final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionVarName, String fromStateExpr, String resultExpr, String toStateExpr,
             boolean shouldMerge,
             FilterableNodeSupplier nodeSupplier) {
-        embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()));
-
+        if (isTempVariable(actionVarName)) {
+            embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
+        }
         NodeFactory<?, ?> startNode, currentNode;
-
         if (fromStateExpr != null) {
             startNode = embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, fromStateExpr)
                     .withVarNames(DEFAULT_WORKFLOW_VAR, actionVarName).build());
@@ -446,9 +452,8 @@ public abstract class StateHandler<S extends State> {
 
     protected EndNodeFactory<?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, List<ProduceEvent> produceEvents) {
         EndNodeFactory<?> nodeFactory = factory.endNode(parserContext.newId());
-        if (produceEvents == null || produceEvents.isEmpty()) {
-            nodeFactory.terminate(true);
-        } else {
+        if (produceEvents != null && !produceEvents.isEmpty()) {
+            // TODO deal with more than one produce events in end state 
             sendEventNode(nodeFactory, produceEvents.get(0));
         }
         return nodeFactory;
