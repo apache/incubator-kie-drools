@@ -16,7 +16,6 @@
 package org.drools.compiler.builder.impl;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -65,7 +64,6 @@ import org.drools.compiler.compiler.DuplicateRule;
 import org.drools.compiler.compiler.GlobalError;
 import org.drools.drl.extensions.GuidedRuleTemplateFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateProvider;
-import org.drools.compiler.compiler.GuidedScoreCardFactory;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -75,7 +73,6 @@ import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.drl.extensions.ResourceConversionResult;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
-import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
@@ -160,9 +157,6 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.internal.builder.ScoreCardConfiguration;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -475,47 +469,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         return new File(dumpDir, fileName.replaceAll("[^a-zA-Z0-9\\.\\-_]+", "_") + extension);
     }
 
-    public void addPackageFromScoreCard(final Resource resource,
-                                        final ResourceConfiguration configuration) throws DroolsParserException, IOException {
-        this.resource = resource;
-        final ScoreCardConfiguration scardConfiguration = configuration instanceof ScoreCardConfiguration ?
-                (ScoreCardConfiguration) configuration :
-                null;
-        final String pmmlString = ScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream(), scardConfiguration);
-        if (pmmlString != null) {
-            addPackageFromScoreCard(pmmlString, "scorecard_generated.pmml");
-        }
-        this.resource = null;
-    }
-
-    public void addPackageFromGuidedScoreCard(final Resource resource) throws DroolsParserException, IOException {
-        this.resource = resource;
-        final String pmmlString = GuidedScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream());
-        if (pmmlString != null) {
-            addPackageFromScoreCard(pmmlString, "guided_scorecard_generated.pmml");
-        }
-        this.resource = null;
-    }
-
-    private void addPackageFromScoreCard(final String pmmlString, final String fileName) throws DroolsParserException, IOException  {
-        final File dumpDir = this.configuration.getDumpDir();
-        if (dumpDir != null) {
-            final String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
-            final String outputPath = dirName + fileName;
-            try (final FileOutputStream fos = new FileOutputStream(outputPath)) {
-                fos.write(pmmlString.getBytes());
-            }
-        }
-        final Resource res = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
-
-        try {
-            ResourceWithConfiguration resCon = new ResourceWithConfigurationImpl(res, null, null, null);
-            addPackageForExternalType(ResourceType.PMML, Collections.singletonList(resCon));
-        } catch (Exception e) {
-            throw new DroolsParserException(e);
-        }
-    }
-
     public void addPackageFromTemplate(Resource resource) throws DroolsParserException,
             IOException {
         this.resource = resource;
@@ -736,14 +689,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 addPackageFromChangeSet(resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, configuration);
-            } else if (ResourceType.SCARD.equals(type)) {
-                addPackageFromScoreCard(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
                 addPackageFromDrl(resource);
             } else if (ResourceType.TEMPLATE.equals(type)) {
                 addPackageFromTemplate(resource);
-            } else if (ResourceType.SCGD.equals(type)) {
-                addPackageFromGuidedScoreCard(resource);
             } else {
                 addPackageForExternalType(resource, type, configuration);
             }
