@@ -21,6 +21,7 @@ jobs:
   quarkus-main:
     name: "Build against latest Quarkus snapshot"
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     if: github.actor == 'quarkusbot'
 
     steps:
