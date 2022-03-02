@@ -739,4 +739,31 @@ class ShapKernelExplainerTest {
         ShapResults shapResults = ske.explainAsync(p, model).get();
         assertTrue(true);
     }
+
+    @Test
+    void testBatched() throws ExecutionException, InterruptedException {
+        RealVector modelWeights = MatrixUtils.createRealMatrix(generateN(1, 10, "5021")).getRowVector(0);
+        PredictionProvider model = TestUtils.getLinearModel(modelWeights.toArray());
+        RealMatrix data = MatrixUtils.createRealMatrix(generateN(101, 10, "8629"));
+        List<PredictionInput> toExplain = createPIFromMatrix(data.getRowMatrix(100).getData());
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
+        Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+        List<PredictionInput> bg = createPIFromMatrix(new double[100][10]);
+
+        ShapConfig skNB = testConfig.copy()
+                .withBackground(bg)
+                .withBatchSize(1)
+                .build();
+        ShapConfig skB = testConfig.copy()
+                .withBackground(bg)
+                .withBatchSize(20)
+                .build();
+
+        ShapKernelExplainer skeNB = new ShapKernelExplainer(skNB);
+        ShapResults shapResultsNB = skeNB.explainAsync(p, model).get();
+        ShapKernelExplainer skeB = new ShapKernelExplainer(skB);
+        ShapResults shapResultsB = skeB.explainAsync(p, model).get();
+        assertEquals(shapResultsNB, shapResultsB);
+    }
 }

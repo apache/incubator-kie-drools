@@ -558,32 +558,57 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      */
 
     private CompletableFuture<RealMatrix> runSyntheticData(ShapDataCarrier sdc) {
-        return sdc.getLinkNull().thenCompose(ln -> sdc.getOutputSize().thenCompose(os -> {
-            HashMap<Integer, CompletableFuture<RealVector>> expectationSlices = new HashMap<>();
+        if (config.getBatchSize() > 1) {
+            int batchSize = this.config.getBatchSize();
+            return sdc.getLinkNull().thenCompose(ln -> sdc.getOutputSize().thenCompose(os -> {
+                CompletableFuture<RealMatrix> expectations = CompletableFuture.supplyAsync(() -> MatrixUtils.createRealMatrix(
+                        new double[sdc.getSamplesAddedSize()][os]),
+                        this.config.getExecutor());
+                //in theory all of these can happen in parallel
+                for (int i = 0; i < sdc.getSamplesAddedSize(); i += batchSize) {
+                    int finalI = i;
+                    List<PredictionInput> batch = IntStream.range(i, Math.min(sdc.getSamplesAddedSize(), i + batchSize))
+                            .mapToObj(b -> sdc.getSamplesAdded(b).getSyntheticData())
+                            .collect(ArrayList::new, List::addAll, List::addAll);
+                    expectations = sdc.getModel().predictAsync(batch)
+                            .thenApply(MatrixUtilsExtensions::matrixFromPredictionOutput)
+                            .thenApply(ops -> MatrixUtilsExtensions.batchRowMean(ops, sdc.getRows()))
+                            .thenCombine(expectations, (expSlices, exps) -> {
+                                IntStream.range(0, expSlices.getRowDimension())
+                                        .forEach(sliceIdx -> exps.setRowVector(finalI + sliceIdx, expSlices.getRowVector(sliceIdx).map(this::link).subtract(ln)));
+                                return exps;
+                            });
+                }
+                return expectations;
+            }));
+        } else {
+            return sdc.getLinkNull().thenCompose(ln -> sdc.getOutputSize().thenCompose(os -> {
+                HashMap<Integer, CompletableFuture<RealVector>> expectationSlices = new HashMap<>();
 
-            //in theory all of these can happen in parallel
-            for (int i = 0; i < sdc.getSamplesAddedSize(); i++) {
-                List<PredictionInput> pis = sdc.getSamplesAdded(i).getSyntheticData();
-                expectationSlices.put(i,
-                        sdc.getModel().predictAsync(pis)
-                                .thenApply(MatrixUtilsExtensions::matrixFromPredictionOutput)
-                                .thenApply(posMatrix -> MatrixUtilsExtensions.rowSum(posMatrix).mapDivide(posMatrix.getRowDimension()))
-                                .thenApply(this::link)
-                                .thenApply(x -> x.subtract(ln)));
-            }
+                //in theory all of these can happen in parallel
+                for (int i = 0; i < sdc.getSamplesAddedSize(); i++) {
+                    List<PredictionInput> pis = sdc.getSamplesAdded(i).getSyntheticData();
+                    expectationSlices.put(i,
+                            sdc.getModel().predictAsync(pis)
+                                    .thenApply(MatrixUtilsExtensions::matrixFromPredictionOutput)
+                                    .thenApply(posMatrix -> MatrixUtilsExtensions.rowSum(posMatrix).mapDivide(posMatrix.getRowDimension()))
+                                    .thenApply(this::link)
+                                    .thenApply(x -> x.subtract(ln)));
+                }
 
-            // reduce parallel operations into single array
-            final CompletableFuture<RealMatrix>[] expectations = new CompletableFuture[] {
-                    CompletableFuture.supplyAsync(() -> MatrixUtils.createRealMatrix(
-                            new double[sdc.getSamplesAddedSize()][os]),
-                            this.config.getExecutor()) };
-            expectationSlices.forEach((idx, slice) -> expectations[0] = expectations[0].thenCompose(
-                    e -> slice.thenApply(s -> {
-                        e.setRowVector(idx, s);
-                        return e;
-                    })));
-            return expectations[0];
-        }));
+                // reduce parallel operations into single array
+                final CompletableFuture<RealMatrix>[] expectations = new CompletableFuture[] {
+                        CompletableFuture.supplyAsync(() -> MatrixUtils.createRealMatrix(
+                                new double[sdc.getSamplesAddedSize()][os]),
+                                this.config.getExecutor()) };
+                expectationSlices.forEach((idx, slice) -> expectations[0] = expectations[0].thenCompose(
+                        e -> slice.thenApply(s -> {
+                            e.setRowVector(idx, s);
+                            return e;
+                        })));
+                return expectations[0];
+            }));
+        }
     }
 
     /**

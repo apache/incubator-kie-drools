@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.Objects;
+
 /**
  * The importance associated to a given {@link Feature}.
  * This is usually the output of an explanation algorithm (local or global).
@@ -56,5 +58,24 @@ public class FeatureImportance {
                 ", score=" + score +
                 ", confidence= +/-" + confidence +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FeatureImportance other = (FeatureImportance) o;
+        return this.getFeature().equals(other.getFeature())
+                && (Math.abs(this.getScore() - other.getScore()) < 1e-6)
+                && (Math.abs(this.getConfidence() - other.getConfidence()) < 1e-6);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(feature, score, confidence);
     }
 }

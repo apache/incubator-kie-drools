@@ -48,6 +48,7 @@ public class ShapConfig {
     private final double confidence;
     private final PerturbationContext pc;
     private final Executor executor;
+    private final int batchSize;
     private final List<PredictionInput> background;
     private final RealMatrix backgroundMatrix;
 
@@ -72,7 +73,7 @@ public class ShapConfig {
      * @param nRegularizationFeatures: If desired, the exact number of top regularization features can be specified
      */
     protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor,
-            Integer nSamples, double confidence, RegularizerType regularizerType, Integer nRegularizationFeatures) {
+            Integer nSamples, Integer batchSize, double confidence, RegularizerType regularizerType, Integer nRegularizationFeatures) {
         this.link = link;
         this.background = background;
         this.backgroundMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(background);
@@ -80,6 +81,7 @@ public class ShapConfig {
         this.executor = executor;
         this.nSamples = nSamples;
         this.confidence = confidence;
+        this.batchSize = batchSize;
         this.regularizerType = regularizerType;
         this.nRegularizationFeatures = nRegularizationFeatures;
     }
@@ -96,6 +98,7 @@ public class ShapConfig {
 
         // optional
         private Executor builderExecutor = ForkJoinPool.commonPool();
+        private int builderBatchSize = 1;
         private Integer builderNSamples = null;
         private RegularizerType builderRegularizerType = RegularizerType.AUTO;
         private Integer builderNRegularizerFeatures = null;
@@ -111,6 +114,7 @@ public class ShapConfig {
                     .withBackground(this.builderBackground)
                     .withExecutor(this.builderExecutor)
                     .withConfidence(this.builderConfidence)
+                    .withBatchSize(this.builderBatchSize)
                     .withPC(this.builderPC);
             output.builderRegularizerType = this.builderRegularizerType;
             output.builderNRegularizerFeatures = this.builderNRegularizerFeatures;
@@ -170,6 +174,18 @@ public class ShapConfig {
          */
         public Builder withNSamples(Integer nSamples) {
             this.builderNSamples = nSamples;
+            return this;
+        }
+
+        /**
+         * Add predictAsync batch size to the builder
+         *
+         * @param batchSize: int, the number of batches of synthetic data per model predict call
+         *
+         * @return Builder
+         */
+        public Builder withBatchSize(int batchSize) {
+            this.builderBatchSize = batchSize;
             return this;
         }
 
@@ -241,7 +257,7 @@ public class ShapConfig {
                 throw new IllegalArgumentException("Background data list cannot be empty.");
             }
             return new ShapConfig(this.builderLink, this.builderBackground, this.builderPC, this.builderExecutor,
-                    this.builderNSamples, this.builderConfidence, this.builderRegularizerType, this.builderNRegularizerFeatures);
+                    this.builderNSamples, this.builderBatchSize, this.builderConfidence, this.builderRegularizerType, this.builderNRegularizerFeatures);
         }
     }
 
@@ -278,6 +294,10 @@ public class ShapConfig {
 
     public RegularizerType getRegularizerType() {
         return this.regularizerType;
+    }
+
+    public int getBatchSize() {
+        return this.batchSize;
     }
 
     public Integer getNRegularizationFeatures() {
