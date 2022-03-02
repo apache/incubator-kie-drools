@@ -50,6 +50,7 @@
     <container.image.infinispan>infinispan/server:${version.org.infinispan}</container.image.infinispan>
     <container.image.keycloak>jboss/keycloak:${version.org.keycloak}</container.image.keycloak>
     <container.image.kafka>vectorized/redpanda:v21.11.8</container.image.kafka>
+    <container.image.wurstmeister.kafka>wurstmeister/kafka:${version.wurstmeister.kafka}</container.image.wurstmeister.kafka>
     <container.image.mongodb>mongo:${version.org.mongo-image}</container.image.mongodb>
 
     <maven.compiler.release>11</maven.compiler.release>
