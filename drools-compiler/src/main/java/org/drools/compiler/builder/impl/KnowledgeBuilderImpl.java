@@ -17,17 +17,20 @@ package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
+import org.drools.compiler.builder.impl.processors.AccumulateFunctionProcessor;
+import org.drools.compiler.builder.impl.processors.EntryPointDeclarationProcessor;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
+import org.drools.compiler.builder.impl.processors.FunctionProcessor;
+import org.drools.compiler.builder.impl.processors.GlobalProcessor;
 import org.drools.compiler.builder.impl.processors.OtherDeclarationProcessor;
 import org.drools.compiler.builder.impl.processors.PackageProcessor;
 import org.drools.compiler.builder.impl.processors.Processor;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
+import org.drools.compiler.builder.impl.processors.WindowDeclarationProcessor;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DroolsWarningWrapper;
@@ -42,8 +45,6 @@ import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -61,9 +62,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
@@ -76,7 +75,6 @@ import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ConditionalElementDescr;
-import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
@@ -88,7 +86,6 @@ import org.drools.drl.ast.descr.PatternDestinationDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
-import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateProvider;
@@ -1153,100 +1150,26 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        Set<String> existingGlobals = new HashSet<>(pkg.getGlobals().keySet());
-
-        for (final GlobalDescr global : packageDescr.getGlobals()) {
-            final String identifier = global.getIdentifier();
-            existingGlobals.remove(identifier);
-            String className = global.getType();
-
-            // JBRULES-3039: can't handle type name with generic params
-            while (className.indexOf('<') >= 0) {
-                className = className.replaceAll("<[^<>]+?>", "");
-            }
-
-            try {
-                Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(className);
-                if (clazz.isPrimitive()) {
-                    addBuilderResult(new GlobalError(global, " Primitive types are not allowed in globals : " + className));
-                    return;
-                }
-                pkg.addGlobal(identifier, clazz);
-                addGlobal(identifier, clazz);
-                if (kBase != null) {
-                    kBase.addGlobal(identifier, clazz);
-                }
-            } catch (final ClassNotFoundException e) {
-                addBuilderResult(new GlobalError(global, e.getMessage()));
-                logger.warn("ClassNotFoundException occured!", e);
-            }
-        }
-
-        for (String toBeRemoved : existingGlobals) {
-            if (filterAcceptsRemoval(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
-                pkg.removeGlobal(toBeRemoved);
-                if (kBase != null) {
-                    kBase.removeGlobal(toBeRemoved);
-                }
-            }
-        }
-    }
-
-    private void globalCleanup(InternalKnowledgePackage pkg, String toBeRemoved) {
-        if (filterAcceptsRemoval(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
-            pkg.removeGlobal(toBeRemoved);
-            if (kBase != null) {
-                kBase.removeGlobal(toBeRemoved);
-            }
-        }
+        GlobalProcessor globalProcessor =
+                new GlobalProcessor(pkgRegistry, packageDescr, kBase, this, this::filterAcceptsRemoval);
+        globalProcessor.process();
+        this.results.addAll(globalProcessor.getResults());
     }
 
     protected void processAccumulateFunctions(PackageRegistry pkgRegistry,
                                               PackageDescr packageDescr) {
-        for (final AccumulateImportDescr aid : packageDescr.getAccumulateImports()) {
-            AccumulateFunction af = loadAccumulateFunction(pkgRegistry,
-                                                           aid.getFunctionName(),
-                                                           aid.getTarget());
-            pkgRegistry.getPackage().addAccumulateFunction(aid.getFunctionName(), af);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private AccumulateFunction loadAccumulateFunction(PackageRegistry pkgRegistry,
-                                                      String identifier,
-                                                      String className) {
-        try {
-            Class<? extends AccumulateFunction> clazz = (Class<? extends AccumulateFunction>) pkgRegistry.getTypeResolver().resolveType(className);
-            return clazz.getConstructor().newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
-                                       e);
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
-                                       e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
-                                       e);
-        }
+        AccumulateFunctionProcessor accumulateFunctionProcessor =
+                new AccumulateFunctionProcessor(pkgRegistry, packageDescr);
+        accumulateFunctionProcessor.process();
+        this.results.addAll(accumulateFunctionProcessor.getResults());
     }
 
     protected void processFunctions(PackageRegistry pkgRegistry,
                                     PackageDescr packageDescr) {
-        for (FunctionDescr function : packageDescr.getFunctions()) {
-            Function existingFunc = pkgRegistry.getPackage().getFunctions().get(function.getName());
-            if (existingFunc != null && function.getNamespace().equals(existingFunc.getNamespace())) {
-                addBuilderResult(
-                        new DuplicateFunction(function,
-                                              this.configuration));
-            }
-        }
-
-        for (final FunctionImportDescr functionImport : packageDescr.getFunctionImports()) {
-            String importEntry = functionImport.getTarget();
-            pkgRegistry.addStaticImport(functionImport);
-            pkgRegistry.getPackage().addStaticImport(importEntry);
-        }
+        FunctionProcessor functionProcessor =
+                new FunctionProcessor(pkgRegistry, packageDescr, configuration);
+        functionProcessor.process();
+        this.results.addAll(functionProcessor.getResults());
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String packageName) {
@@ -1264,55 +1187,18 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     void processEntryPointDeclarations(PackageRegistry pkgRegistry,
                                        PackageDescr packageDescr) {
-        for (EntryPointDeclarationDescr epDescr : packageDescr.getEntryPointDeclarations()) {
-            pkgRegistry.getPackage().addEntryPointId(epDescr.getEntryPointId());
-        }
+        EntryPointDeclarationProcessor entryPointDeclarationProcessor =
+                new EntryPointDeclarationProcessor(pkgRegistry, packageDescr);
+        entryPointDeclarationProcessor.process();
+        this.results.addAll(entryPointDeclarationProcessor.getResults());
     }
 
     protected void processWindowDeclarations(PackageRegistry pkgRegistry,
                                              PackageDescr packageDescr) {
-        for (WindowDeclarationDescr wd : packageDescr.getWindowDeclarations()) {
-            WindowDeclaration window = new WindowDeclaration(wd.getName(), packageDescr.getName());
-            // TODO: process annotations
-
-            // process pattern
-            InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-            DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
-            RuleDescr dummy = new RuleDescr(wd.getName() + " Window Declaration");
-            dummy.setResource(packageDescr.getResource());
-            dummy.addAttribute(new AttributeDescr("dialect", "java"));
-            RuleBuildContext context = new RuleBuildContext(this,
-                                                            dummy,
-                                                            ctr,
-                                                            pkg,
-                                                            ctr.getDialect(pkgRegistry.getDialect()));
-            final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder(wd.getPattern().getClass());
-            if (builder != null) {
-                final Pattern pattern = (Pattern) builder.build(context,
-                                                                wd.getPattern(),
-                                                                null);
-
-                if (pattern.getXpathConstraint() != null) {
-                    context.addError(new DescrBuildError(wd,
-                                                         context.getParentDescr(),
-                                                         null,
-                                                         "OOpath expression " + pattern.getXpathConstraint() + " not allowed in window declaration\n"));
-                }
-
-                window.setPattern(pattern);
-            } else {
-                throw new RuntimeException(
-                        "BUG: assembler not found for descriptor class " + wd.getPattern().getClass());
-            }
-
-            if (!context.getErrors().isEmpty()) {
-                for (DroolsError error : context.getErrors()) {
-                    addBuilderResult(error);
-                }
-            } else {
-                pkgRegistry.getPackage().addWindowDeclaration(window);
-            }
-        }
+        WindowDeclarationProcessor windowDeclarationProcessor =
+                new WindowDeclarationProcessor(pkgRegistry, packageDescr, this);
+        windowDeclarationProcessor.process();
+        this.results.addAll(windowDeclarationProcessor.getResults());
     }
 
     public InternalKnowledgePackage[] getPackages() {
@@ -1881,18 +1767,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
             }
             getOrCreatePackageRegistry( packageDescr );
-        }
-    }
-
-    protected void normalizeTypeAnnotations( Collection<CompositePackageDescr> packages ) {
-        for (CompositePackageDescr packageDescr : packages) {
-            normalizeTypeDeclarationAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver() );
-        }
-    }
-
-    protected void normalizeRuleAnnotations( Collection<CompositePackageDescr> packages ) {
-        for (CompositePackageDescr packageDescr : packages) {
-            normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver() );
         }
     }
 

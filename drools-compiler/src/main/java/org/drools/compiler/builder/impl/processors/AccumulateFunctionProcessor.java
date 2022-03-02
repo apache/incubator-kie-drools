@@ -8,7 +8,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.lang.reflect.InvocationTargetException;
 
-class AccumulateFunctionProcessor extends AbstractPackageProcessor {
+public class AccumulateFunctionProcessor extends AbstractPackageProcessor {
     private final TypeResolver typeResolver;
 
     public AccumulateFunctionProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr) {

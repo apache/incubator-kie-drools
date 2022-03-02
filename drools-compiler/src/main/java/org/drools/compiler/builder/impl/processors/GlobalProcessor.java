@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashSet;
 import java.util.Set;
 
-class GlobalProcessor extends AbstractPackageProcessor {
+public class GlobalProcessor extends AbstractPackageProcessor {
     protected static final transient Logger logger = LoggerFactory.getLogger(GlobalProcessor.class);
 
     private final InternalKnowledgeBase kBase;
