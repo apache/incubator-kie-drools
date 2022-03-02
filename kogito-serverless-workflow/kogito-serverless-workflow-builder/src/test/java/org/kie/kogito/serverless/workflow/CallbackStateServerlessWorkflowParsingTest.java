@@ -107,7 +107,7 @@ class CallbackStateServerlessWorkflowParsingTest extends AbstractServerlessWorkf
         ActionNode afterStateEventMergeNode = assertClassAndGetNode(callbackState, 6, ActionNode.class);
         TimerNode stateTimerNode = assertClassAndGetNode(callbackState, 7, TimerNode.class);
         assertHasName(stateTimerNode, "TimerNode_" + stateTimerNode.getId());
-        assertThat(stateTimerNode.getTimer().getDelay()).isEqualTo("PT1M");
+        assertThat(stateTimerNode.getTimer().getDelay()).isEqualTo("PT5S");
         assertThat(stateTimerNode.getTimer().getTimeType()).isEqualTo(1);
         EndNode stateEndNode = assertClassAndGetNode(callbackState, 8, EndNode.class);
         assertHasName(stateEndNode, "EmbeddedEnd");

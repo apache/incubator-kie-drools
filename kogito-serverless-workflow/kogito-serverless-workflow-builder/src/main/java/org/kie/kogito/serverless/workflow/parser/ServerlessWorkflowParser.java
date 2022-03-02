@@ -167,7 +167,19 @@ public class ServerlessWorkflowParser {
                 .metaData(Metadata.TRIGGER_MAPPING, inputVar)
                 .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
-                .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage");
+                .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage")
+                .metaData(Metadata.DATA_ONLY, isDataOnly(eventDefinition));
+    }
+
+    // TODO remove when SDK is updated to include dataOnly in EventDefinition, see https://github.com/serverlessworkflow/sdk-java/issues/183
+    private static Boolean isDataOnly(EventDefinition eventDefinition) {
+        Boolean result = Boolean.TRUE;
+        Map<String, String> metadata = eventDefinition.getMetadata();
+        final String dataOnlyKey = "dataOnly";
+        if (metadata != null && metadata.containsKey(dataOnlyKey)) {
+            result = Boolean.parseBoolean(metadata.get(dataOnlyKey));
+        }
+        return result;
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> eventBasedExclusiveSplitNode(T nodeFactory, long nodeId) {

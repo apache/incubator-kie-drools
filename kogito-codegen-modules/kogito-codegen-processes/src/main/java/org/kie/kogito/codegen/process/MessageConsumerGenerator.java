@@ -27,6 +27,8 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.services.event.ProcessDataEvent;
+import org.kie.kogito.services.event.ProcessDataEventConverter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
@@ -40,6 +42,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.AssignExpr.Operator;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -158,6 +161,19 @@ public class MessageConsumerGenerator {
             template.addMethod("getModelConverter", Keyword.PROTECTED).addAnnotation(Override.class)
                     .setType(optionalType).setBody(new BlockStmt().addStatement(new ReturnStmt(new MethodCallExpr(
                             new NameExpr(Optional.class.getName()), "of").addArgument(new MethodReferenceExpr(new ThisExpr(), null, eventMethod.getNameAsString())))));
+        }
+        if (!trigger.dataOnly()) {
+            ClassOrInterfaceType eventType = new ClassOrInterfaceType(null, trigger.getDataType());
+            ClassOrInterfaceType processEventType = new ClassOrInterfaceType(null, ProcessDataEvent.class.getCanonicalName()).setTypeArguments(NodeList.nodeList(eventType));
+            ClassOrInterfaceType processEventTypeConverter = new ClassOrInterfaceType(null, ProcessDataEventConverter.class.getCanonicalName()).setTypeArguments(NodeList.nodeList(eventType));
+            final String fieldName = "processDataEventConverter";
+            context.getDependencyInjectionAnnotator()
+                    .withInjection(template.addField(processEventTypeConverter, fieldName));
+            final String varName = "cloudEvent";
+            template.addMethod("getData", Keyword.PROTECTED).addAnnotation(Override.class).addParameter(processEventType, varName)
+                    .setType(eventType)
+                    .setBody(new BlockStmt().addStatement(new ReturnStmt(new MethodCallExpr(new FieldAccessExpr(new ThisExpr(), fieldName), "convert").addArgument(new NameExpr(varName)))));
+
         }
 
     }

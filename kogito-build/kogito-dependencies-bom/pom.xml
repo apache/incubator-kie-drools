@@ -55,7 +55,7 @@
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.8.2</version.io.micrometer>
-    <version.io.serverlessworkflow>4.0.1.Final</version.io.serverlessworkflow>
+    <version.io.serverlessworkflow>4.0.2.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api-core>2.1.17</version.io.smallrye-open-api-core>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>2.18.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 

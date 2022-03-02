@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,6 @@
  */
 package org.kie.kogito.services.event;
 
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.function.Function;
-
-import org.kie.kogito.Model;
-import org.kie.kogito.process.ProcessService;
-
-public interface EventConsumerFactory {
-
-    <M extends Model, D> EventConsumer<M> get(ProcessService service, ExecutorService executor, Optional<Function<D, M>> function, boolean cloudEvents, Function<ProcessDataEvent<D>, D> dataFunction);
+public interface ProcessDataEventConverter<T> {
+    public T convert(ProcessDataEvent<T> cloudEvent);
 }

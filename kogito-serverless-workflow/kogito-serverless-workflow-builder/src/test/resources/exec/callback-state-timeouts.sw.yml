@@ -30,7 +30,7 @@ states:
       - errorRef: callbackError
         transition: FinalizeWithError
     timeouts:
-      eventTimeout: PT1M
+      eventTimeout: PT5S
   - name: FinalizeSuccessful
     type: inject
     data:

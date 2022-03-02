@@ -23,13 +23,15 @@ import org.kie.kogito.Model;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
+import org.kie.kogito.services.event.ProcessDataEvent;
 
 public class DefaultEventConsumerFactory implements EventConsumerFactory {
 
     @Override
-    public <M extends Model, D> EventConsumer<M> get(ProcessService processService, ExecutorService executorService, Optional<Function<D, M>> function, boolean cloudEvents) {
+    public <M extends Model, D> EventConsumer<M> get(ProcessService processService, ExecutorService executorService, Optional<Function<D, M>> function, boolean cloudEvents,
+            Function<ProcessDataEvent<D>, D> dataFunction) {
         return cloudEvents
-                ? new CloudEventConsumer<>(processService, executorService, function)
+                ? new CloudEventConsumer<>(processService, executorService, function, dataFunction)
                 : new DataEventConsumer<>(processService, executorService, function);
     }
 

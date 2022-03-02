@@ -47,7 +47,7 @@
         }
       ],
       "timeouts": {
-        "eventTimeout": "PT1M"
+        "eventTimeout": "PT5S"
       }
     },
     {

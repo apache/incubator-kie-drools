@@ -38,11 +38,13 @@ public class CloudEventConsumer<D, M extends Model, T extends ProcessDataEvent<D
     private Optional<Function<D, M>> function;
     private ProcessService processService;
     private ExecutorService executor;
+    private Function<T, D> dataFunction;
 
-    public CloudEventConsumer(ProcessService processService, ExecutorService executor, Optional<Function<D, M>> function) {
+    public CloudEventConsumer(ProcessService processService, ExecutorService executor, Optional<Function<D, M>> function, Function<T, D> dataFunction) {
         this.processService = processService;
         this.executor = executor;
         this.function = function;
+        this.dataFunction = dataFunction;
     }
 
     @Override
@@ -70,7 +72,7 @@ public class CloudEventConsumer<D, M extends Model, T extends ProcessDataEvent<D
                     logger.info("Process instance with id '{}' not found for triggering signal '{}', starting a new one",
                             cloudEvent.getKogitoReferenceId(),
                             trigger);
-                    return startNewInstance(process, function.get().apply(cloudEvent.getData()), cloudEvent, trigger);
+                    return startNewInstance(process, function.get().apply(dataFunction.apply(cloudEvent)), cloudEvent, trigger);
                 } else {
                     logger.info("Process instance with id {} not found for triggering signal {}", cloudEvent.getKogitoReferenceId(), trigger);
                     return null;
@@ -78,7 +80,7 @@ public class CloudEventConsumer<D, M extends Model, T extends ProcessDataEvent<D
             }, executor);
         } else if (function.isPresent()) {
             logger.debug("Received message without reference id, starting new process instance with trigger '{}'", trigger);
-            return CompletableFuture.supplyAsync(() -> startNewInstance(process, function.get().apply(cloudEvent.getData()), cloudEvent, trigger), executor);
+            return CompletableFuture.supplyAsync(() -> startNewInstance(process, function.get().apply(dataFunction.apply(cloudEvent)), cloudEvent, trigger), executor);
         } else {
             logger.warn("Received not start event without kogito referecence id for trigger {}", trigger);
             return CompletableFuture.completedFuture(null);
@@ -86,7 +88,7 @@ public class CloudEventConsumer<D, M extends Model, T extends ProcessDataEvent<D
     }
 
     private Optional<M> signalProcessInstance(Process process, String trigger, T cloudEvent) {
-        return processService.signalProcessInstance(process, cloudEvent.getKogitoReferenceId(), cloudEvent.getData(), "Message-" + trigger);
+        return processService.signalProcessInstance(process, cloudEvent.getKogitoReferenceId(), dataFunction.apply(cloudEvent), "Message-" + trigger);
     }
 
     private Optional<ProcessInstance<M>> findProcessInstance(Process<M> process, T cloudEvent) {

@@ -74,7 +74,7 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
         this.process = process;
         this.application = application;
         this.trigger = trigger;
-        this.eventConsumer = eventConsumerFactory.get(processService, executorService, getModelConverter(), useCloudEvents);
+        this.eventConsumer = eventConsumerFactory.get(processService, executorService, getModelConverter(), useCloudEvents, this::getData);
         if (useCloudEvents) {
             eventReceiver.subscribe(this::consumeCloud,
                     SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(ProcessDataEvent.class).parametrizedClasses(dataEventClass).type(trigger).createSubscriptionInfo());
@@ -104,5 +104,9 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
 
     protected Optional<Function<D, M>> getModelConverter() {
         return Optional.empty();
+    }
+
+    protected D getData(ProcessDataEvent<D> cloudEvent) {
+        return cloudEvent.getData();
     }
 }

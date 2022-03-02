@@ -55,7 +55,7 @@ class CallbackStateTimeoutsIT extends AbstractCallbackStateIT {
         // assert the process instance is there
         assertProcessInstanceExists(CALLBACK_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId);
         // do nothing more and wait until eventTimeout is fired and the process instance finalizes.
-        assertProcessInstanceHasFinished(CALLBACK_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId, 1, 180);
+        assertProcessInstanceHasFinished(CALLBACK_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId, 1, 10);
     }
 
     @Test

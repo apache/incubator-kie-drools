@@ -24,6 +24,7 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
+import static org.jbpm.ruleflow.core.Metadata.DATA_ONLY;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
@@ -47,6 +48,8 @@ public class TriggerMetaData {
     private final String modelRef;
     // reference to owner of the trigger usually node
     private final String ownerId;
+    // indicates if the whole event should be consumed or just the data
+    private final boolean dataOnly;
     // the owner node
     private final Node node;
 
@@ -62,16 +65,18 @@ public class TriggerMetaData {
                 TriggerType.valueOf((String) nodeMetaData.get(TRIGGER_TYPE)),
                 (String) nodeMetaData.get(MESSAGE_TYPE),
                 mappingVariable,
-                getOwnerId(node)).validate();
+                getOwnerId(node),
+                (Boolean) nodeMetaData.get(DATA_ONLY)).validate();
     }
 
-    private TriggerMetaData(Node node, String name, TriggerType type, String dataType, String modelRef, String ownerId) {
+    private TriggerMetaData(Node node, String name, TriggerType type, String dataType, String modelRef, String ownerId, Boolean dataOnly) {
         this.node = node;
         this.name = name;
         this.type = type;
         this.dataType = dataType;
         this.modelRef = modelRef;
         this.ownerId = ownerId;
+        this.dataOnly = dataOnly == null || dataOnly.booleanValue();
     }
 
     public String getName() {
@@ -96,6 +101,10 @@ public class TriggerMetaData {
 
     public Node getNode() {
         return node;
+    }
+
+    public boolean dataOnly() {
+        return dataOnly;
     }
 
     private TriggerMetaData validate() {

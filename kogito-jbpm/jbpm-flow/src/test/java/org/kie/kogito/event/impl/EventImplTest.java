@@ -159,7 +159,7 @@ public class EventImplTest {
 
     @Test
     void testSigCloudEvent() throws Exception {
-        EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true);
+        EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true, ProcessDataEvent::getData);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe"), "1"), trigger).toCompletableFuture().get();
 
@@ -173,7 +173,7 @@ public class EventImplTest {
     @Test
     void testCloudEvent() throws Exception {
         EventConsumer<DummyModel> consumer =
-                factory.get(processService, executor, getConvertedMethod(), true);
+                factory.get(processService, executor, getConvertedMethod(), true, ProcessDataEvent::getData);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe")), trigger).toCompletableFuture().get();
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -187,7 +187,7 @@ public class EventImplTest {
     @Test
     void testDataEvent() throws Exception {
         EventConsumer<DummyModel> consumer =
-                factory.get(processService, executor, getConvertedMethod(), false);
+                factory.get(processService, executor, getConvertedMethod(), false, ProcessDataEvent::getData);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyEvent("pepe"), trigger).toCompletableFuture().get();
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -213,7 +213,7 @@ public class EventImplTest {
 
     @Test
     void testEventPayloadException() {
-        EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true);
+        EventConsumer<DummyModel> consumer = factory.get(processService, executor, getConvertedMethod(), true, ProcessDataEvent::getData);
         final String trigger = "dummyTopic";
         final String payload = "{ a = b }";
         assertThrows(ClassCastException.class, () -> consumer.consume(application, process, payload, trigger).toCompletableFuture().get());

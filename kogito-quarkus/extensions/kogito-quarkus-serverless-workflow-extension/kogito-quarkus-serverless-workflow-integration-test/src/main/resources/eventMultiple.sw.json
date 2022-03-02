@@ -7,14 +7,10 @@
   "start": "printWaitMessage",
   "events": [
     {
-      "name": "moveEvent",
-      "source": "",
-      "type": "move"
-    },
-    {
       "name": "quietEvent",
       "source": "",
-      "type": "quiet"
+      "type": "quiet",
+      "metadata" : { "dataOnly" : "false"}
     },
     {
       "name": "neverArrivingEvent",
@@ -55,6 +51,9 @@
           "eventRefs": [
             "quietEvent"
           ],
+          "eventDataFilter": {
+            "data": ".data"
+          },
           "actions": [ 
           {
             "name": "printAfterEvent",
