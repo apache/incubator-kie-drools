@@ -44,14 +44,13 @@ public class RuleCompiler extends AbstractPackageProcessor {
 
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
-    //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the
-    //AttributeDescr's name.
-    private final Map<String, Map<String, AttributeDescr>> packageAttributes;
+    //The map contains a map of AttributeDescr's keyed on the AttributeDescr's name.
+    private final Map<String, AttributeDescr> packageAttributes;
     private final Resource resource;
     private final DroolsAssemblerContext kBuilder;
 
 
-    public RuleCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, int parallelRulesBuildThreshold, FilterCondition filterAccepts, FilterCondition filterAcceptsRemoval, Map<String, Map<String, AttributeDescr>> packageAttributes, Resource resource, DroolsAssemblerContext kBuilder) {
+    public RuleCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, int parallelRulesBuildThreshold, FilterCondition filterAccepts, FilterCondition filterAcceptsRemoval, Map<String, AttributeDescr> packageAttributes, Resource resource, DroolsAssemblerContext kBuilder) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.parallelRulesBuildThreshold = parallelRulesBuildThreshold;
@@ -383,7 +382,7 @@ public class RuleCompiler extends AbstractPackageProcessor {
             ruleDescr.setNamespace(packageDescr.getNamespace());
         }
 
-        inheritPackageAttributes(packageAttributes.get(packageDescr.getNamespace()), ruleDescr);
+        inheritPackageAttributes(packageAttributes, ruleDescr);
 
         if (isEmpty(ruleDescr.getDialect())) {
             ruleDescr.addAttribute(new AttributeDescr("dialect", pkgRegistry.getDialect()));

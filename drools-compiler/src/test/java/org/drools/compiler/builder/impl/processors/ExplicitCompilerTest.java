@@ -57,6 +57,7 @@ public class ExplicitCompilerTest {
 
         packageRegistry.setDialect(getPackageDialect(packageDescr));
 
+        Map<String, AttributeDescr> attributesForPackage = packageAttributes.get(packageDescr.getNamespace());
         List<Processor> processors = asList(
                 new ImportProcessor(packageRegistry, packageDescr),
                 new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr),
@@ -71,7 +72,7 @@ public class ExplicitCompilerTest {
                 new RuleValidator(packageRegistry, packageDescr, configuration),
                 new FunctionCompiler(packageDescr, packageRegistry, this::filterAccepts, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, kBuilder));
+                        this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, kBuilder));
 
 
         processors.forEach(Processor::process);

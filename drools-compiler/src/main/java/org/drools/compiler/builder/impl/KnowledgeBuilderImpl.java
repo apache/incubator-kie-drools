@@ -824,18 +824,16 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
         PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
-//        validateUniqueRuleNames(packageDescr);
-//        compileFunctions(packageDescr, pkgRegistry);
-//        compileRules(packageDescr, pkgRegistry);
+
+        Map<String, AttributeDescr> packageAttributes = this.packageAttributes.get(packageDescr.getNamespace());
 
         List<Processor> processors = asList(
-                new RuleValidator(packageRegistry, packageDescr, configuration),
+                new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
                 new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts, rootClassLoader),
                 new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
                         this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, this));
         processors.forEach(Processor::process);
         processors.forEach(p -> this.results.addAll(p.getResults()));
-
     }
 
     protected void wireAllRules() {
@@ -961,19 +959,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                                   attr);
             }
         }
-    }
-
-    private void compileFunctions(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        FunctionCompiler functionCompiler = new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts, rootClassLoader);
-        functionCompiler.process();
-        this.results.addAll(functionCompiler.getResults());
-    }
-
-    private void compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        RuleCompiler ruleCompiler = new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, this);
-        ruleCompiler.process();
-        this.results.addAll(ruleCompiler.getResults());
     }
 
     public static class ForkJoinPoolHolder {

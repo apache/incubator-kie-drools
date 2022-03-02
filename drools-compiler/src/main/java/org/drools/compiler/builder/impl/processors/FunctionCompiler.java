@@ -48,11 +48,8 @@ public class FunctionCompiler extends AbstractPackageProcessor {
                 }
             }
 
-            // We need to compile all the functions now, so scripting
-            // languages like mvel can find them
-//             compileAll();
+            // compile functions in this pkgRegistry
             pkgRegistry.compileAll();
-            // for each package registry: pkgRegistry.compileAll()
 
             for (FunctionDescr functionDescr : functions) {
                 if (filter.accepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName())) {
