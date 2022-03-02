@@ -23,7 +23,6 @@ import org.drools.modelcompiler.domain.CalcFact;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -462,5 +461,19 @@ public class EvalTest extends BaseModelTest {
 
         int fired = ksession.fireAllRules();
         assertEquals(0, fired);
+    }
+
+    @Test
+    public void testParseIntStringConcatenation() throws Exception {
+        String str =
+                "rule R when\n" +
+                     "  $s : String()\n" +
+                     "  eval(Integer.parseInt('1' + $s) > 3)\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+        ksession.insert("5");
+        assertEquals(1, ksession.fireAllRules());
     }
 }

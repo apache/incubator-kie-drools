@@ -36,6 +36,7 @@ import org.junit.Test;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class ExpressionTyperTest {
 
@@ -237,6 +238,14 @@ public class ExpressionTyperTest {
     @Test(expected = CannotTypeExpressionException.class)
     public void invalidHalfPointFree() {
         toTypedExpression("str[endsWith] \"a\" && str[length] 4", Person.class).getExpression();
+    }
+
+    @Test
+    public void parseIntStringConcatenation() {
+        TypedExpression typedExpression = toTypedExpression("Integer.parseInt('1' + this) > 3", String.class);
+        assertFalse(ruleContext.hasCompilationError());
+        String expected = "Integer.parseInt('1' + _this) > 3";
+        assertEquals(expected, typedExpression.getExpression().toString());
     }
 
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {
