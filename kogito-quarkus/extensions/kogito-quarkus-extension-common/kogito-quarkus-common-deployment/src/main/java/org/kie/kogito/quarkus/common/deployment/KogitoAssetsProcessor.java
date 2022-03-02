@@ -281,36 +281,45 @@ public class KogitoAssetsProcessor {
 
     private void registerTracingAddonClasses(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceEvent"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceEvent"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceHeader"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceEventType"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceEventType"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceExecutionStep"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceResourceId"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceExecutionStepType"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.Message"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceHeader"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageLevel"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceInputValue"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageCategory"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceOutputValue"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEvent"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceType"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceResourceId"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageExceptionField"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.Message"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageLevel"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageCategory"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
-
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageFEELEvent"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceInputValue"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageFEELEventSeverity"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceOutputValue"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageExceptionField"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageFEELEventSeverity"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageFEELEventSeverity"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.MessageFEELEventSeverity"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceInputValue"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceOutputValue"));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.typedvalue.BaseTypedValue"));
         reflectiveClass.produce(
@@ -322,12 +331,11 @@ public class KogitoAssetsProcessor {
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.typedvalue.StructureValue"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceExecutionStep"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceExecutionStep"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceExecutionStepType"));
-
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.trace.TraceExecutionStepType"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.model.ModelEvent"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.model.ModelEvent"));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.KogitoGAV"));
         reflectiveClass.produce(
@@ -335,7 +343,11 @@ public class KogitoAssetsProcessor {
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.decision.DecisionModelMetadata"));
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.decision.DecisionModelMetadata$Type"));
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.message.models.DecisionMessage"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.event.model.models.DecisionModelEvent"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.event.ModelMetadata"));
     }
 
     private void registerExplainabilityAddonClasses(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
