@@ -17,11 +17,20 @@ package org.kie.kogito.explainability.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.TestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DatasetTest {
 
@@ -75,6 +84,133 @@ class DatasetTest {
         assertThat(filteredDataset2.getData()).isEmpty();
         assertThat(filteredDataset2.getInputs()).isEmpty();
         assertThat(filteredDataset2.getOutputs()).isEmpty();
+    }
+
+    private Dataset createDatasetFeatureFiltering(Random random) {
+        List<Prediction> predictions = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            final List<Feature> features = new ArrayList<>();
+
+            for (int j = 0; j < 4; j++) {
+                features.add(FeatureFactory.newNumericalFeature("f-" + j, random.nextDouble() * 100.0));
+            }
+
+            for (int j = 4; j < 8; j++) {
+                features.add(FeatureFactory.newNumericalFeature("f-" + j, 100.0 + random.nextDouble() * 100.0));
+            }
+
+            features.add(FeatureFactory.newBooleanFeature("f-8", true));
+            features.add(FeatureFactory.newTextFeature("f-9", UUID.randomUUID().toString()));
+
+            PredictionOutput output = new PredictionOutput(List.of(new Output("output", Type.BOOLEAN, new Value(false), 1.0)));
+            predictions.add(new SimplePrediction(new PredictionInput(features), output));
+        }
+        return new Dataset(predictions);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2 })
+    void testFilterByFeatureName(int seed) {
+        Random random = new Random(seed);
+        final Dataset dataset = createDatasetFeatureFiltering(random);
+
+        // Total dataset entries size
+        assertEquals(1000, dataset.getData().size());
+        // Number of features per entry for random entry
+        final int index = random.nextInt(dataset.getData().size());
+        assertEquals(10, dataset.getData().get(index).getInput().getFeatures().size());
+
+        // Filter by name, remove all "f-3" features
+        Predicate<Feature> featureName = (Feature f) -> f.getName().equals("f-3");
+        final Dataset filteredDataset = dataset.filterByFeature(featureName.negate());
+
+        assertEquals(1000, filteredDataset.getData().size());
+        assertEquals(9, filteredDataset.getData().get(index).getInput().getFeatures().size());
+
+        final List<String> names = filteredDataset
+                .getData()
+                .get(index)
+                .getInput()
+                .getFeatures()
+                .stream()
+                .map(Feature::getName)
+                .collect(Collectors.toList());
+
+        assertFalse(names.contains("f-3"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2 })
+    void testFilterByFeatureType(int seed) {
+        Random random = new Random(seed);
+        final Dataset dataset = createDatasetFeatureFiltering(random);
+
+        // Total dataset entries size
+        assertEquals(1000, dataset.getData().size());
+        // Number of features per entry for random entry
+        final int index = random.nextInt(dataset.getData().size());
+        assertEquals(10, dataset.getData().get(index).getInput().getFeatures().size());
+
+        // Filter by name, remove all numerical features
+        Predicate<Feature> featureType = (Feature f) -> f.getType().equals(Type.NUMBER);
+        final Dataset filteredDataset = dataset.filterByFeature(featureType.negate());
+
+        assertEquals(1000, filteredDataset.getData().size());
+        assertEquals(2, filteredDataset.getData().get(index).getInput().getFeatures().size());
+
+        final List<Type> types = filteredDataset
+                .getData()
+                .get(index)
+                .getInput()
+                .getFeatures()
+                .stream()
+                .map(Feature::getType)
+                .collect(Collectors.toList());
+
+        assertFalse(types.contains(Type.NUMBER));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2 })
+    void testFilterByFeatureValue(int seed) {
+        Random random = new Random(seed);
+        final Dataset dataset = createDatasetFeatureFiltering(random);
+
+        // Total dataset entries size
+        assertEquals(1000, dataset.getData().size());
+        // Number of features per entry for random entry
+        final int index = random.nextInt(dataset.getData().size());
+        assertEquals(10, dataset.getData().get(index).getInput().getFeatures().size());
+
+        // Filter by name, remove all numerical features
+        Predicate<Feature> featureValue = (Feature f) -> f.getValue().asNumber() > 100.0;
+        final Dataset filteredDataset = dataset.filterByFeature(featureValue);
+
+        assertEquals(1000, filteredDataset.getData().size());
+        assertEquals(4, filteredDataset.getData().get(index).getInput().getFeatures().size());
+
+        final List<Double> values = filteredDataset
+                .getData()
+                .get(index)
+                .getInput()
+                .getFeatures()
+                .stream()
+                .map(Feature::getValue)
+                .map(Value::asNumber)
+                .collect(Collectors.toList());
+
+        assertTrue(values.stream().allMatch(x -> x > 100.0));
+
+        final List<Type> types = filteredDataset
+                .getData()
+                .get(index)
+                .getInput()
+                .getFeatures()
+                .stream()
+                .map(Feature::getType)
+                .collect(Collectors.toList());
+
+        assertTrue(types.stream().allMatch(x -> x.equals(Type.NUMBER)));
     }
 
 }

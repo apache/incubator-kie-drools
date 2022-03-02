@@ -18,6 +18,7 @@ package org.kie.kogito.explainability.model;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Dataset {
 
@@ -39,6 +40,30 @@ public class Dataset {
         return data.stream().map(Prediction::getOutput).collect(Collectors.toList());
     }
 
+    /**
+     * Filter dataset per feature.
+     *
+     * Using a feature-wise predicate, filter the original dataset to contain the same number of
+     * items ({@link Prediction}) but with a different set of features. Examples of usage are
+     * filtering the features by name, value or type.
+     * 
+     * @param featureSelector A {@link Predicate<Feature>} with the filter conditions
+     * @return A new {@link Dataset}
+     */
+    public Dataset filterByFeature(Predicate<Feature> featureSelector) {
+
+        final List<PredictionInput> inputs = data.stream().map(prediction -> prediction.getInput().getFeatures())
+                .map(features -> new PredictionInput(features.stream()
+                        .filter(featureSelector).collect(Collectors.toList())))
+                .collect(Collectors.toList());
+
+        return new Dataset(IntStream
+                .range(0, data.size())
+                .mapToObj(i -> new SimplePrediction(inputs.get(i),
+                        data.get(i).getOutput()))
+                .collect(Collectors.toList()));
+    }
+
     public Dataset filterByInput(Predicate<PredictionInput> inputSelector) {
         return new Dataset(data.stream().filter(p -> inputSelector.test(p.getInput())).collect(Collectors.toList()));
     }
@@ -46,4 +71,5 @@ public class Dataset {
     public Dataset filterByOutput(Predicate<PredictionOutput> outputSelector) {
         return new Dataset(data.stream().filter(p -> outputSelector.test(p.getOutput())).collect(Collectors.toList()));
     }
+
 }
