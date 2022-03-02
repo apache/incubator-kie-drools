@@ -33,7 +33,6 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -233,7 +232,7 @@ public class BinaryHeapQueueTest {
          * Is the value equal to another value, as tested by the
          * {@link java.lang.Object#equals} invokedMethod?
          */
-        @Factory
+        
         public static Matcher<List<InternalFactHandle>> isTuple(List<InternalFactHandle> operand) {
             return new IsTuple( operand );
         }
