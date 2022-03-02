@@ -40,4 +40,8 @@ public class DrlProcessor {
         }
         return hasErrors ? null : pkg;
     }
+
+    public Collection<KnowledgeBuilderResult> results() {
+        return results;
+    }
 }

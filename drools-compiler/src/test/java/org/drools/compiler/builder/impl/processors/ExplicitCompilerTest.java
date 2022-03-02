@@ -1,5 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.DrlProcessor;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -16,6 +17,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +33,7 @@ public class ExplicitCompilerTest {
 
     @Test
     @Ignore("not finished")
-    public void testCompile() throws DroolsParserException {
+    public void testCompile() throws DroolsParserException, IOException {
         final Reader reader = null;
         final Resource resource = null;
         InternalKnowledgeBase kBase = null;
@@ -43,9 +45,9 @@ public class ExplicitCompilerTest {
         int parallelRulesBuildThreshold = 0;
         Map<String, Map<String, AttributeDescr>> packageAttributes = Collections.emptyMap();
 
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6_STRICT);
-        final PackageDescr packageDescr = parser.parse(resource, reader);
-        this.results.addAll(parser.getErrors());
+        DrlProcessor drlProcessor = new DrlProcessor(configuration);
+        final PackageDescr packageDescr = drlProcessor.process(resource);
+        this.results.addAll(drlProcessor.results());
 
         AnnotationNormalizer annotationNormalizer =
                 AnnotationNormalizer.of(
@@ -63,7 +65,7 @@ public class ExplicitCompilerTest {
                 new TypeDeclarationProcessor(packageDescr, typeBuilder, packageRegistry),
                 new WindowDeclarationProcessor(packageRegistry, packageDescr, kBuilder),
                 new FunctionProcessor(packageRegistry, packageDescr, configuration),
-                new GlobalProcessor(packageRegistry, packageDescr, kBase, kBuilder, this::filterAccepts),
+                new GlobalProcessor(packageRegistry, packageDescr, kBase, kBuilder, this::filterAcceptsRemoval),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
                 /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),

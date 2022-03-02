@@ -327,7 +327,12 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private interface ResourceToPkgDescrMapper {
         PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception;
 
-        ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> new DrlProcessor(kBuilder.getBuilderConfiguration()).process(resourceDescr.resource);
+        ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> {
+            DrlProcessor drlProcessor = new DrlProcessor(kBuilder.getBuilderConfiguration());
+            PackageDescr result = drlProcessor.process(resourceDescr.resource);
+            drlProcessor.results().forEach(kBuilder::addBuilderResult);
+            return result;
+        };
         ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.templateToPackageDescr( resourceDescr.resource);
         ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.dslrToPackageDescr(resourceDescr.resource);
         ResourceToPkgDescrMapper XML_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.xmlToPackageDescr(resourceDescr.resource);

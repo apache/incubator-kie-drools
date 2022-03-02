@@ -1149,7 +1149,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                         kBase,
                         configuration,
                         typeBuilder,
-                        this::filterAccepts,
+                        this::filterAcceptsRemoval,
                         pkgRegistry,
                         packageDescr);
         packageProcessor.process();
@@ -1160,7 +1160,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         OtherDeclarationProcessor otherDeclarationProcessor = new OtherDeclarationProcessor(this,
                 kBase,
                 configuration,
-                this::filterAccepts,
+                this::filterAcceptsRemoval,
                 pkgRegistry,
                 packageDescr);
         otherDeclarationProcessor.process();

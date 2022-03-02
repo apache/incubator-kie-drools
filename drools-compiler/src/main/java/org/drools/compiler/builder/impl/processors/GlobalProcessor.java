@@ -13,20 +13,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 class GlobalProcessor extends AbstractPackageProcessor {
     protected static final transient Logger logger = LoggerFactory.getLogger(GlobalProcessor.class);
 
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderImpl knowledgeBuilder;
-    private final FilterCondition filter;
+    private final FilterCondition filterAcceptsRemoval;
 
-    public GlobalProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, FilterCondition filter) {
+    public GlobalProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, FilterCondition filterAcceptsRemoval) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.knowledgeBuilder = knowledgeBuilder;
-        this.filter = filter;
+        this.filterAcceptsRemoval = filterAcceptsRemoval;
     }
 
     public void process() {
@@ -62,7 +61,7 @@ class GlobalProcessor extends AbstractPackageProcessor {
         }
 
         for (String toBeRemoved : existingGlobals) {
-            if (filter.accepts(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
+            if (filterAcceptsRemoval.accepts(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
                 pkg.removeGlobal(toBeRemoved);
                 if (kBase != null) {
                     kBase.removeGlobal(toBeRemoved);
