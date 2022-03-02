@@ -61,9 +61,10 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
 
         Collection<ChannelInfo> channelsInfo = ChannelMappingStrategy.getChannelMapping();
         Map<DotName, EventGenerator> generators = new HashMap<>();
+        Map<String, EventGenerator> channels = new HashMap<>();
 
         processBuildItem.ifPresent(kogitoProcessContainerGeneratorBuildItem -> kogitoProcessContainerGeneratorBuildItem.getProcessContainerGenerators()
-                .forEach(containerGenerator -> containerGenerator.getProcesses().forEach(process -> collect(process, channelsInfo, generators, kogitoContext.getKogitoBuildContext()))));
+                .forEach(containerGenerator -> containerGenerator.getProcesses().forEach(process -> collect(process, channelsInfo, generators, channels, kogitoContext.getKogitoBuildContext()))));
 
         Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         metadataProducer.produce(new KogitoMessagingMetadataBuildItem(generators));
@@ -107,19 +108,22 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
 
     }
 
-    private void collect(ProcessGenerator process, Collection<ChannelInfo> channelsInfo, Map<DotName, EventGenerator> eventGenerators, KogitoBuildContext context) {
+    private void collect(ProcessGenerator process, Collection<ChannelInfo> channelsInfo, Map<DotName, EventGenerator> eventGenerators, Map<String, EventGenerator> channels,
+            KogitoBuildContext context) {
         ProcessMetaData processMetadata = process.getProcessExecutable().generate();
         for (ChannelInfo channelInfo : channelsInfo) {
             if (!channelInfo.isDefault()) {
-                collect(channelInfo.isInput() ? processMetadata.getConsumers() : processMetadata.getProducers(), channelInfo, eventGenerators, context);
+                collect(channelInfo.isInput() ? processMetadata.getConsumers() : processMetadata.getProducers(), channelInfo, eventGenerators, channels, context);
             }
         }
     }
 
-    private void collect(Map<String, CompilationUnit> map, ChannelInfo channelInfo, Map<DotName, EventGenerator> eventGenerators, KogitoBuildContext context) {
-        CompilationUnit cu = map.get(channelInfo.getChannelName());
-        if (cu != null) {
-            eventGenerators.computeIfAbsent(DotNamesHelper.createDotName(cu), k -> buildEventGenerator(context, channelInfo));
+    private void collect(Map<String, CompilationUnit> map, ChannelInfo channelInfo, Map<DotName, EventGenerator> eventGenerators, Map<String, EventGenerator> channels, KogitoBuildContext context) {
+        for (String trigger : channelInfo.getTriggers()) {
+            CompilationUnit cu = map.get(trigger);
+            if (cu != null) {
+                eventGenerators.computeIfAbsent(DotNamesHelper.createDotName(cu), k -> channels.computeIfAbsent(channelInfo.getChannelName(), c -> buildEventGenerator(context, channelInfo)));
+            }
         }
     }
 

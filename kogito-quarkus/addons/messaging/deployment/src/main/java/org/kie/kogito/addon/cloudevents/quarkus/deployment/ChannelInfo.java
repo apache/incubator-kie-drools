@@ -15,20 +15,27 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus.deployment;
 
-import java.util.Objects;
+import java.util.Collection;
 
 public class ChannelInfo {
 
     private final String channelName;
     private final String className;
+    private final Collection<String> triggers;
+
     private final boolean isInput;
     private final boolean isDefault;
 
-    public ChannelInfo(String channelName, String className, boolean isInput, boolean isDefault) {
+    public ChannelInfo(String channelName, Collection<String> triggers, String className, boolean isInput, boolean isDefault) {
         this.className = className;
         this.channelName = channelName;
         this.isInput = isInput;
         this.isDefault = isDefault;
+        this.triggers = triggers;
+    }
+
+    public Collection<String> getTriggers() {
+        return triggers;
     }
 
     public String getChannelName() {
@@ -45,7 +52,7 @@ public class ChannelInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(channelName, className, isInput);
+        return channelName.hashCode();
     }
 
     @Override
@@ -54,9 +61,7 @@ public class ChannelInfo {
             return true;
         if (!(obj instanceof ChannelInfo))
             return false;
-        ChannelInfo other = (ChannelInfo) obj;
-        return Objects.equals(channelName, other.channelName) && Objects.equals(className, other.className) &&
-                isInput == other.isInput;
+        return channelName.equals(((ChannelInfo) obj).getChannelName());
     }
 
     public boolean isDefault() {
@@ -70,4 +75,5 @@ public class ChannelInfo {
     public boolean isOutputDefault() {
         return !isInput && isDefault;
     }
+
 }
