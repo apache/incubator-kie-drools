@@ -30,7 +30,7 @@ public abstract class AnnotationNormalizer {
 
     abstract AnnotationDescr doNormalize(AnnotationDescr descr);
 
-    protected void normalize(AnnotatedBaseDescr annotationsContainer) {
+    public void normalize(AnnotatedBaseDescr annotationsContainer) {
         for (AnnotationDescr annotationDescr : annotationsContainer.getAnnotations()) {
             annotationDescr.setResource(annotationsContainer.getResource());
             annotationDescr.setStrict(isStrict());
@@ -43,6 +43,9 @@ public abstract class AnnotationNormalizer {
         annotationsContainer.indexByFQN(isStrict());
     }
 
+    public Collection<KnowledgeBuilderResult> getResults() {
+        return results;
+    }
 
     static class Strict extends AnnotationNormalizer {
         public Strict(TypeResolver typeResolver) {

@@ -9,10 +9,11 @@ import org.drools.drl.ast.descr.PatternDestinationDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-class RuleAnnotationNormalizer implements Processor {
+public class RuleAnnotationNormalizer implements Processor {
     private final AnnotationNormalizer annotationNormalizer;
     private final PackageDescr packageDescr;
 
@@ -30,7 +31,7 @@ class RuleAnnotationNormalizer implements Processor {
 
     @Override
     public Collection<? extends KnowledgeBuilderResult> getResults() {
-        return Collections.emptyList();
+        return annotationNormalizer.getResults();
     }
 
     private void traverseAnnotations(BaseDescr descr) {

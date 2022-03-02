@@ -38,7 +38,7 @@ public class TypeDeclarationAnnotationNormalizer implements Processor {
 
     @Override
     public Collection<? extends KnowledgeBuilderResult> getResults() {
-        return Collections.emptyList();
+        return annotationNormalizer.getResults();
     }
 
 }

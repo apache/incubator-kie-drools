@@ -18,6 +18,7 @@ package org.drools.compiler.builder.impl;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionProcessor;
+import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.EntryPointDeclarationProcessor;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.FunctionProcessor;
@@ -26,8 +27,10 @@ import org.drools.compiler.builder.impl.processors.OtherDeclarationProcessor;
 import org.drools.compiler.builder.impl.processors.PackageProcessor;
 import org.drools.compiler.builder.impl.processors.Processor;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
+import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
+import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationProcessor;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
@@ -1573,142 +1576,41 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {
-        boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
-        for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
-            normalizeAnnotations(typeDeclarationDescr, typeResolver, isStrict);
-            for (TypeFieldDescr typeFieldDescr : typeDeclarationDescr.getFields().values()) {
-                normalizeAnnotations(typeFieldDescr, typeResolver, isStrict);
-            }
-        }
+        AnnotationNormalizer annotationNormalizer =
+                AnnotationNormalizer.of(
+                        typeResolver,
+                        configuration.getLanguageLevel().useJavaAnnotations());
 
-        for (EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations()) {
-            normalizeAnnotations(enumDeclarationDescr, typeResolver, isStrict);
-            for (TypeFieldDescr typeFieldDescr : enumDeclarationDescr.getFields().values()) {
-                normalizeAnnotations(typeFieldDescr, typeResolver, isStrict);
-            }
-        }
+
+        TypeDeclarationAnnotationNormalizer typeDeclarationAnnotationNormalizer =
+                new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr);
+
+        typeDeclarationAnnotationNormalizer.process();
+
+        this.results.addAll(typeDeclarationAnnotationNormalizer.getResults());
     }
 
     public void normalizeRuleAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {
-        boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
-        for (RuleDescr ruleDescr : packageDescr.getRules()) {
-            normalizeAnnotations(ruleDescr, typeResolver, isStrict);
-            traverseAnnotations(ruleDescr.getLhs(), typeResolver, isStrict);
-        }
-    }
+        AnnotationNormalizer annotationNormalizer =
+                AnnotationNormalizer.of(
+                        typeResolver,
+                        configuration.getLanguageLevel().useJavaAnnotations());
 
-    private void traverseAnnotations(BaseDescr descr, TypeResolver typeResolver, boolean isStrict) {
-        if (descr instanceof AnnotatedBaseDescr) {
-            normalizeAnnotations((AnnotatedBaseDescr) descr, typeResolver, isStrict);
-        }
-        if (descr instanceof ConditionalElementDescr) {
-            for (BaseDescr baseDescr : ((ConditionalElementDescr) descr).getDescrs()) {
-                traverseAnnotations(baseDescr, typeResolver, isStrict);
-            }
-        }
-        if (descr instanceof PatternDescr && ((PatternDescr) descr).getSource() != null) {
-            traverseAnnotations(((PatternDescr) descr).getSource(), typeResolver, isStrict);
-        }
-        if (descr instanceof PatternDestinationDescr) {
-            traverseAnnotations(((PatternDestinationDescr) descr).getInputPattern(), typeResolver, isStrict);
-        }
+        RuleAnnotationNormalizer ruleAnnotationNormalizer =
+                new RuleAnnotationNormalizer(annotationNormalizer, packageDescr);
+
+        ruleAnnotationNormalizer.process();
+        this.results.addAll(ruleAnnotationNormalizer.getResults());
     }
 
     protected void normalizeAnnotations(AnnotatedBaseDescr annotationsContainer, TypeResolver typeResolver, boolean isStrict) {
-        for (AnnotationDescr annotationDescr : annotationsContainer.getAnnotations()) {
-            annotationDescr.setResource(annotationsContainer.getResource());
-            annotationDescr.setStrict(isStrict);
-            if (annotationDescr.isDuplicated()) {
-                addBuilderResult(new AnnotationDeclarationError(annotationDescr,
-                                                                "Duplicated annotation: " + annotationDescr.getName()));
-            }
-            if (isStrict) {
-                normalizeStrictAnnotation(typeResolver, annotationDescr);
-            } else {
-                normalizeAnnotation(typeResolver, annotationDescr);
-            }
-        }
-        annotationsContainer.indexByFQN(isStrict);
-    }
+        AnnotationNormalizer annotationNormalizer =
+                AnnotationNormalizer.of(
+                        typeResolver,
+                        configuration.getLanguageLevel().useJavaAnnotations());
 
-    private AnnotationDescr normalizeAnnotation(TypeResolver typeResolver, AnnotationDescr annotationDescr) {
-        Class<?> annotationClass = null;
-        try {
-            annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            String className = normalizeAnnotationNonStrictName(annotationDescr.getName());
-            try {
-                annotationClass = typeResolver.resolveType(className, TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
-            } catch (ClassNotFoundException | NoClassDefFoundError e1) {
-                // non-strict annotation, ignore error
-            }
-        }
-        if (annotationClass != null) {
-            annotationDescr.setFullyQualifiedName(annotationClass.getCanonicalName());
-
-            for (String key : annotationDescr.getValueMap().keySet()) {
-                try {
-                    Method m = annotationClass.getMethod(key);
-                    Object val = annotationDescr.getValue(key);
-                    if (val instanceof Object[] && !m.getReturnType().isArray()) {
-                        addBuilderResult(new AnnotationDeclarationError(annotationDescr,
-                                                                        "Wrong cardinality on property " + key));
-                        return annotationDescr;
-                    }
-                    if (m.getReturnType().isArray() && !(val instanceof Object[])) {
-                        val = new Object[]{val};
-                        annotationDescr.setKeyValue(key, val);
-                    }
-
-                    if (m.getReturnType().isArray()) {
-                        int n = Array.getLength(val);
-                        for (int j = 0; j < n; j++) {
-                            if (Class.class.equals(m.getReturnType().getComponentType())) {
-                                String className = Array.get(val, j).toString().replace(".class", "");
-                                Array.set(val, j, typeResolver.resolveType(className).getName() + ".class");
-                            } else if (m.getReturnType().getComponentType().isAnnotation()) {
-                                Array.set(val, j, normalizeAnnotation(typeResolver,
-                                                                      (AnnotationDescr) Array.get(val, j)));
-                            }
-                        }
-                    } else {
-                        if (Class.class.equals(m.getReturnType())) {
-                            String className = annotationDescr.getValueAsString(key).replace(".class", "");
-                            annotationDescr.setKeyValue(key, typeResolver.resolveType(className));
-                        } else if (m.getReturnType().isAnnotation()) {
-                            annotationDescr.setKeyValue(key,
-                                                        normalizeAnnotation(typeResolver,
-                                                                            (AnnotationDescr) annotationDescr.getValue(key)));
-                        }
-                    }
-                } catch (NoSuchMethodException e) {
-                    addBuilderResult(new AnnotationDeclarationError(annotationDescr,
-                                                                    "Unknown annotation property " + key));
-                } catch (ClassNotFoundException | NoClassDefFoundError e) {
-                    addBuilderResult(new AnnotationDeclarationError(annotationDescr,
-                                                                    "Unknown class " + annotationDescr.getValue(key) + " used in property " + key +
-                                                                            " of annotation " + annotationDescr.getName()));
-                }
-            }
-        }
-        return annotationDescr;
-    }
-
-    private String normalizeAnnotationNonStrictName(String name) {
-        if ("typesafe".equalsIgnoreCase(name)) {
-            return "TypeSafe";
-        }
-        return ucFirst(name);
-    }
-
-    private void normalizeStrictAnnotation(TypeResolver typeResolver, AnnotationDescr annotationDescr) {
-        try {
-            Class<?> annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
-            annotationDescr.setFullyQualifiedName(annotationClass.getCanonicalName());
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            addBuilderResult(new AnnotationDeclarationError(annotationDescr,
-                                                            "Unknown annotation: " + annotationDescr.getName()));
-        }
+        annotationNormalizer.normalize(annotationsContainer);
+        this.results.addAll(annotationNormalizer.getResults());
     }
 
     private Map<String, Object> getBuilderCache() {
