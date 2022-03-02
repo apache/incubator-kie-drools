@@ -38,6 +38,8 @@
         <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
         <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
         <container.image.task-assigning-service>org.kie.kogito/task-assigning-service:${project.version}</container.image.task-assigning-service>
+        <container.image.trusty-ui>org.kie.kogito/trusty-ui:${project.version}</container.image.trusty-ui>
+        <container.image.integration-tests-trusty-service-quarkus>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</container.image.integration-tests-trusty-service-quarkus>
 
         <!-- OptaPlanner version -->
         <version.org.optaplanner>8.19.0-SNAPSHOT</version.org.optaplanner>

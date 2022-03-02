@@ -130,7 +130,7 @@
                         </image>
                         <image>
                             <alias>kafka</alias>
-                            <name>wurstmeister/kafka:2.12-2.2.1</name>
+                            <name>${container.image.wurstmeister.kafka}</name>
 
                             <run>
                                 <dependsOn>
@@ -161,7 +161,7 @@
                         </image>
                         <image>
                             <alias>infinispan</alias>
-                            <name>infinispan/server:13.0.2.Final</name>
+                            <name>${container.image.infinispan}</name>
 
                             <run>
                                 <ports>
@@ -193,7 +193,7 @@
                         </image>
                         <image>
                           <alias>kogito-app</alias>
-                            <name>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</name>
+                            <name>${container.image.integration-tests-trusty-service-quarkus}</name>
 
                             <run>
                                 <dependsOn>
@@ -218,7 +218,7 @@
                         </image>
                         <image>
                             <alias>explainability</alias>
-                            <name>org.kie.kogito/explainability-service-messaging:${project.version}</name>
+                            <name>${container.image.explainability-service-messaging}</name>
 
                             <run>
                                 <dependsOn>
@@ -251,7 +251,7 @@
                         </image>
                         <image>
                             <alias>trusty</alias>
-                            <name>org.kie.kogito/trusty-service-infinispan:${project.version}</name>
+                            <name>${container.image.trusty-service-infinispan}</name>
 
                             <run>
                                 <dependsOn>
@@ -279,7 +279,7 @@
                         </image>
                         <image>
                             <alias>trusty-ui</alias>
-                            <name>org.kie.kogito/trusty-ui:${project.version}</name>
+                            <name>${container.image.trusty-ui}</name>
 
                             <run>
                                 <dependsOn>
