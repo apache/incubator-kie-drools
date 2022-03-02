@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -763,19 +764,25 @@ public class ExpressionTyper {
         toTypedExpressionRec(scope).ifPresent(te -> context.addNullSafeExpression(0, new BinaryExpr(te.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS)));
     }
 
-    private TypedExpressionCursor binaryExpr( BinaryExpr binaryExpr ) {
-        TypedExpressionResult left = toTypedExpression( binaryExpr.getLeft() );
-        binaryExpr.setLeft( left.getTypedExpression()
-                                    .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
-                                    .getExpression() );
-        TypedExpressionResult right = toTypedExpression( binaryExpr.getRight() );
-        binaryExpr.setRight( right.getTypedExpression()
-                                     .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
-                                     .getExpression() );
-        return new TypedExpressionCursor( binaryExpr,
-                                          left.getTypedExpression()
-                                                  .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
-                                                  .getType() );
+    private TypedExpressionCursor binaryExpr(BinaryExpr binaryExpr) {
+        TypedExpressionResult left = toTypedExpression(binaryExpr.getLeft());
+        TypedExpression leftTypedExpression = left.getTypedExpression()
+                                                  .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
+        binaryExpr.setLeft(leftTypedExpression.getExpression());
+        TypedExpressionResult right = toTypedExpression(binaryExpr.getRight());
+        TypedExpression rightTypedExpression = right.getTypedExpression()
+                                                    .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
+        binaryExpr.setRight(rightTypedExpression.getExpression());
+        return new TypedExpressionCursor(binaryExpr, getBinaryType(leftTypedExpression, rightTypedExpression, binaryExpr.getOperator()));
+    }
+
+    private java.lang.reflect.Type getBinaryType(TypedExpression leftTypedExpression, TypedExpression rightTypedExpression, Operator operator) {
+        java.lang.reflect.Type leftType = leftTypedExpression.getType();
+        java.lang.reflect.Type rightType = rightTypedExpression.getType();
+        if ((leftType.equals(String.class) || rightType.equals(String.class)) && operator.equals(Operator.PLUS)) {
+            return String.class; // String Concatenation
+        }
+        return leftType;
     }
 
     private Optional<TypedExpressionCursor> castExpr( CastExpr firstNode, Expression drlxExpr, List<Node> childNodes, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor ) {
