@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GlobalProcessor extends AbstractPackageProcessor {
-    protected static final transient Logger logger = LoggerFactory.getLogger(GlobalProcessor.class);
+public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
+    protected static final transient Logger logger = LoggerFactory.getLogger(GlobalCompilationPhase.class);
 
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderImpl knowledgeBuilder;
     private final FilterCondition filterAcceptsRemoval;
 
-    public GlobalProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, FilterCondition filterAcceptsRemoval) {
+    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, FilterCondition filterAcceptsRemoval) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.knowledgeBuilder = knowledgeBuilder;

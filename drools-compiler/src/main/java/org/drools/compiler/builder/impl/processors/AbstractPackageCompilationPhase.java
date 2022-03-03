@@ -7,12 +7,12 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class AbstractPackageProcessor implements Processor {
+public abstract class AbstractPackageCompilationPhase implements CompilationPhase {
     protected final PackageRegistry pkgRegistry;
     protected final PackageDescr packageDescr;
     protected final Collection<KnowledgeBuilderResult> results;
 
-    public AbstractPackageProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    public AbstractPackageCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         this.pkgRegistry = pkgRegistry;
         this.packageDescr = packageDescr;
         this.results = new ArrayList<>();

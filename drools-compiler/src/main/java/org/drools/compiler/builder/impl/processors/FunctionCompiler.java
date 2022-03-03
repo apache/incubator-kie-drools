@@ -13,7 +13,7 @@ import java.util.List;
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.core.util.StringUtils.isEmpty;
 
-public class FunctionCompiler extends AbstractPackageProcessor {
+public class FunctionCompiler extends AbstractPackageCompilationPhase {
 
     private final FilterCondition filter;
     private ClassLoader rootClassLoader;

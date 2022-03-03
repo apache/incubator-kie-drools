@@ -15,11 +15,11 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.parser.DroolsError;
 
-public class WindowDeclarationProcessor extends AbstractPackageProcessor {
+public class WindowDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
 
     private final DroolsAssemblerContext kBuilder;
 
-    public WindowDeclarationProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr, DroolsAssemblerContext kBuilder) {
+    public WindowDeclarationCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, DroolsAssemblerContext kBuilder) {
         super(pkgRegistry, packageDescr);
         this.kBuilder = kBuilder;
     }

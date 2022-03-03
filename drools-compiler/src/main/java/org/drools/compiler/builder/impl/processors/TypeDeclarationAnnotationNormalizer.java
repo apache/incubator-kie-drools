@@ -7,9 +7,8 @@ import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.Collection;
-import java.util.Collections;
 
-public class TypeDeclarationAnnotationNormalizer implements Processor {
+public class TypeDeclarationAnnotationNormalizer implements CompilationPhase {
     private final AnnotationNormalizer annotationNormalizer;
     private final PackageDescr packageDescr;
 

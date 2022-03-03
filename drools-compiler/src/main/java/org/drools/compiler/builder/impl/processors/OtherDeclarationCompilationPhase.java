@@ -2,17 +2,15 @@ package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static java.util.Arrays.asList;
 
-public class OtherDeclarationProcessor extends AbstractPackageProcessor {
+public class OtherDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
 
 
     private final KnowledgeBuilderImpl knowledgeBuilder;
@@ -20,7 +18,7 @@ public class OtherDeclarationProcessor extends AbstractPackageProcessor {
     private final KnowledgeBuilderConfiguration configuration;
     private final FilterCondition filter;
 
-    public OtherDeclarationProcessor(
+    public OtherDeclarationCompilationPhase(
             KnowledgeBuilderImpl knowledgeBuilder,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfiguration configuration,
@@ -36,14 +34,14 @@ public class OtherDeclarationProcessor extends AbstractPackageProcessor {
 
     @Override
     public void process() {
-        List<Processor> processors = asList(
-                new AccumulateFunctionProcessor(pkgRegistry, packageDescr),
-                new WindowDeclarationProcessor(pkgRegistry, packageDescr, knowledgeBuilder),
-                new FunctionProcessor(pkgRegistry, packageDescr, configuration),
-                new GlobalProcessor(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filter));
+        List<CompilationPhase> phases = asList(
+                new AccumulateFunctionCompilationPhase(pkgRegistry, packageDescr),
+                new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, knowledgeBuilder),
+                new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration),
+                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filter));
 
-        processors.forEach(Processor::process);
-        processors.forEach(p -> results.addAll(p.getResults()));
+        phases.forEach(CompilationPhase::process);
+        phases.forEach(p -> results.addAll(p.getResults()));
     }
 
 }

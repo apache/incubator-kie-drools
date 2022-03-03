@@ -17,28 +17,27 @@ package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
-import org.drools.compiler.builder.impl.processors.AccumulateFunctionProcessor;
+import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
-import org.drools.compiler.builder.impl.processors.EntryPointDeclarationProcessor;
+import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
-import org.drools.compiler.builder.impl.processors.FunctionProcessor;
-import org.drools.compiler.builder.impl.processors.GlobalProcessor;
-import org.drools.compiler.builder.impl.processors.OtherDeclarationProcessor;
-import org.drools.compiler.builder.impl.processors.PackageProcessor;
-import org.drools.compiler.builder.impl.processors.Processor;
+import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
+import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
+import org.drools.compiler.builder.impl.processors.OtherDeclarationCompilationPhase;
+import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
+import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
-import org.drools.compiler.builder.impl.processors.WindowDeclarationProcessor;
-import org.drools.compiler.compiler.AnnotationDeclarationError;
+import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
+import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.DuplicateFunction;
-import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -72,23 +71,10 @@ import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
-import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.ConditionalElementDescr;
-import org.drools.drl.ast.descr.EnumDeclarationDescr;
-import org.drools.drl.ast.descr.FunctionDescr;
-import org.drools.drl.ast.descr.FunctionImportDescr;
-import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.PatternDestinationDescr;
-import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.drl.ast.descr.TypeDeclarationDescr;
-import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateProvider;
@@ -117,7 +103,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -137,9 +122,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -159,7 +141,6 @@ import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.util.StringUtils.isEmpty;
-import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
@@ -495,7 +476,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
             IOException {
         this.resource = resource;
-        addPackage(new DrlProcessor(configuration).process(resource));
+        addPackage(new DrlResourceHandler(configuration).process(resource));
         this.resource = null;
     }
 
@@ -827,13 +808,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
         Map<String, AttributeDescr> packageAttributes = this.packageAttributes.get(packageDescr.getNamespace());
 
-        List<Processor> processors = asList(
+        List<CompilationPhase> phases = asList(
                 new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
                 new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts, rootClassLoader),
                 new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
                         this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, this));
-        processors.forEach(Processor::process);
-        processors.forEach(p -> this.results.addAll(p.getResults()));
+        phases.forEach(CompilationPhase::process);
+        phases.forEach(p -> this.results.addAll(p.getResults()));
     }
 
     protected void wireAllRules() {
@@ -1129,8 +1110,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        PackageProcessor packageProcessor =
-                new PackageProcessor(this,
+        PackageCompilationPhase packageProcessor =
+                new PackageCompilationPhase(this,
                         kBase,
                         configuration,
                         typeBuilder,
@@ -1142,7 +1123,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        OtherDeclarationProcessor otherDeclarationProcessor = new OtherDeclarationProcessor(this,
+        OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(this,
                 kBase,
                 configuration,
                 this::filterAcceptsRemoval,
@@ -1153,24 +1134,24 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        GlobalProcessor globalProcessor =
-                new GlobalProcessor(pkgRegistry, packageDescr, kBase, this, this::filterAcceptsRemoval);
+        GlobalCompilationPhase globalProcessor =
+                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, this, this::filterAcceptsRemoval);
         globalProcessor.process();
         this.results.addAll(globalProcessor.getResults());
     }
 
     protected void processAccumulateFunctions(PackageRegistry pkgRegistry,
                                               PackageDescr packageDescr) {
-        AccumulateFunctionProcessor accumulateFunctionProcessor =
-                new AccumulateFunctionProcessor(pkgRegistry, packageDescr);
+        AccumulateFunctionCompilationPhase accumulateFunctionProcessor =
+                new AccumulateFunctionCompilationPhase(pkgRegistry, packageDescr);
         accumulateFunctionProcessor.process();
         this.results.addAll(accumulateFunctionProcessor.getResults());
     }
 
     protected void processFunctions(PackageRegistry pkgRegistry,
                                     PackageDescr packageDescr) {
-        FunctionProcessor functionProcessor =
-                new FunctionProcessor(pkgRegistry, packageDescr, configuration);
+        FunctionCompilationPhase functionProcessor =
+                new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration);
         functionProcessor.process();
         this.results.addAll(functionProcessor.getResults());
     }
@@ -1190,16 +1171,16 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     void processEntryPointDeclarations(PackageRegistry pkgRegistry,
                                        PackageDescr packageDescr) {
-        EntryPointDeclarationProcessor entryPointDeclarationProcessor =
-                new EntryPointDeclarationProcessor(pkgRegistry, packageDescr);
+        EntryPointDeclarationCompilationPhase entryPointDeclarationProcessor =
+                new EntryPointDeclarationCompilationPhase(pkgRegistry, packageDescr);
         entryPointDeclarationProcessor.process();
         this.results.addAll(entryPointDeclarationProcessor.getResults());
     }
 
     protected void processWindowDeclarations(PackageRegistry pkgRegistry,
                                              PackageDescr packageDescr) {
-        WindowDeclarationProcessor windowDeclarationProcessor =
-                new WindowDeclarationProcessor(pkgRegistry, packageDescr, this);
+        WindowDeclarationCompilationPhase windowDeclarationProcessor =
+                new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, this);
         windowDeclarationProcessor.process();
         this.results.addAll(windowDeclarationProcessor.getResults());
     }

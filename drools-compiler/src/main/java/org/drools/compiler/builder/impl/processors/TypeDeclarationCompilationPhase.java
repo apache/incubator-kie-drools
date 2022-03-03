@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class TypeDeclarationProcessor extends AbstractPackageProcessor {
+class TypeDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
     private final TypeDeclarationBuilder typeBuilder;
 
-    public TypeDeclarationProcessor(PackageDescr packageDescr, TypeDeclarationBuilder typeBuilder, PackageRegistry pkgRegistry) {
+    public TypeDeclarationCompilationPhase(PackageDescr packageDescr, TypeDeclarationBuilder typeBuilder, PackageRegistry pkgRegistry) {
         super(pkgRegistry, packageDescr);
         this.typeBuilder = typeBuilder;
     }

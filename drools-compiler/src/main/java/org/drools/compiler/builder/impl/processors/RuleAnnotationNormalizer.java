@@ -9,11 +9,9 @@ import org.drools.drl.ast.descr.PatternDestinationDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
-public class RuleAnnotationNormalizer implements Processor {
+public class RuleAnnotationNormalizer implements CompilationPhase {
     private final AnnotationNormalizer annotationNormalizer;
     private final PackageDescr packageDescr;
 

@@ -11,7 +11,7 @@ import org.kie.internal.builder.ResourceChange;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ReteCompiler extends AbstractPackageProcessor {
+public class ReteCompiler extends AbstractPackageCompilationPhase {
     private final FilterCondition filter;
     private RuleBase kBase;
 

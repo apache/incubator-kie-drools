@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 import static org.drools.compiler.rule.builder.RuleBuildContext.descrToRule;
 import static org.drools.core.util.StringUtils.isEmpty;
 
-public class RuleCompiler extends AbstractPackageProcessor {
+public class RuleCompiler extends AbstractPackageCompilationPhase {
 
     private InternalKnowledgeBase kBase;
     private int parallelRulesBuildThreshold;

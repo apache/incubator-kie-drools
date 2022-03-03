@@ -8,13 +8,13 @@ import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
-public class FunctionProcessor extends AbstractPackageProcessor {
+public class FunctionCompilationPhase extends AbstractPackageCompilationPhase {
 
     private final KnowledgeBuilderConfiguration configuration;
 
-    public FunctionProcessor(PackageRegistry pkgRegistry,
-                      PackageDescr packageDescr,
-                      KnowledgeBuilderConfiguration configuration) {
+    public FunctionCompilationPhase(PackageRegistry pkgRegistry,
+                                    PackageDescr packageDescr,
+                                    KnowledgeBuilderConfiguration configuration) {
         super(pkgRegistry, packageDescr);
         this.configuration = configuration;
     }

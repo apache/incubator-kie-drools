@@ -8,10 +8,10 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class AccumulateFunctionProcessor extends AbstractPackageProcessor {
+public class AccumulateFunctionCompilationPhase extends AbstractPackageCompilationPhase {
     private final TypeResolver typeResolver;
 
-    public AccumulateFunctionProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    public AccumulateFunctionCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         super(pkgRegistry, packageDescr);
         this.typeResolver = pkgRegistry.getTypeResolver();
     }

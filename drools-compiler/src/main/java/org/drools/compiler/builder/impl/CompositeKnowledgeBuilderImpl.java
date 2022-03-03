@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.internal.assembler.KieAssemblers;
@@ -328,9 +329,9 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception;
 
         ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> {
-            DrlProcessor drlProcessor = new DrlProcessor(kBuilder.getBuilderConfiguration());
-            PackageDescr result = drlProcessor.process(resourceDescr.resource);
-            drlProcessor.results().forEach(kBuilder::addBuilderResult);
+            DrlResourceHandler handler = new DrlResourceHandler(kBuilder.getBuilderConfiguration());
+            PackageDescr result = handler.process(resourceDescr.resource);
+            handler.getResults().forEach(kBuilder::addBuilderResult);
             return result;
         };
         ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.templateToPackageDescr( resourceDescr.resource);

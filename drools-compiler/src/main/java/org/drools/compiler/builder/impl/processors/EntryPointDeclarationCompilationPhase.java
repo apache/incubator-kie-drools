@@ -4,8 +4,8 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 
-public class EntryPointDeclarationProcessor extends AbstractPackageProcessor {
-    public EntryPointDeclarationProcessor(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+public class EntryPointDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
+    public EntryPointDeclarationCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         super(pkgRegistry, packageDescr);
     }
 

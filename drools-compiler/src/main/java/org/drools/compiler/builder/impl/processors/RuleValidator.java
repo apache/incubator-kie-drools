@@ -13,7 +13,7 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RuleValidator extends AbstractPackageProcessor {
+public class RuleValidator extends AbstractPackageCompilationPhase {
 
     private final KnowledgeBuilderConfiguration configuration;
 

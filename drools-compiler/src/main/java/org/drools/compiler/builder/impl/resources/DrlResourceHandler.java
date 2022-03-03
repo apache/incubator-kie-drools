@@ -1,5 +1,6 @@
-package org.drools.compiler.builder.impl;
+package org.drools.compiler.builder.impl.resources;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.io.impl.DescrResource;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
@@ -12,11 +13,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DrlProcessor {
+/**
+ * Translates a Resource into a PackageDescr
+ */
+public class DrlResourceHandler {
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final Collection<KnowledgeBuilderResult> results = new ArrayList<>();
 
-    public DrlProcessor(KnowledgeBuilderConfigurationImpl configuration) {
+    public DrlResourceHandler(KnowledgeBuilderConfigurationImpl configuration) {
         this.configuration = configuration;
     }
 
@@ -41,7 +45,7 @@ public class DrlProcessor {
         return hasErrors ? null : pkg;
     }
 
-    public Collection<KnowledgeBuilderResult> results() {
+    public Collection<KnowledgeBuilderResult> getResults() {
         return results;
     }
 }

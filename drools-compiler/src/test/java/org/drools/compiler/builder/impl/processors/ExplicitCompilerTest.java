@@ -1,13 +1,12 @@
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.impl.DrlProcessor;
+import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.junit.Ignore;
@@ -15,7 +14,6 @@ import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChange;
-import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -45,9 +43,9 @@ public class ExplicitCompilerTest {
         int parallelRulesBuildThreshold = 0;
         Map<String, Map<String, AttributeDescr>> packageAttributes = Collections.emptyMap();
 
-        DrlProcessor drlProcessor = new DrlProcessor(configuration);
-        final PackageDescr packageDescr = drlProcessor.process(resource);
-        this.results.addAll(drlProcessor.results());
+        DrlResourceHandler handler = new DrlResourceHandler(configuration);
+        final PackageDescr packageDescr = handler.process(resource);
+        this.results.addAll(handler.getResults());
 
         AnnotationNormalizer annotationNormalizer =
                 AnnotationNormalizer.of(
@@ -58,15 +56,15 @@ public class ExplicitCompilerTest {
         packageRegistry.setDialect(getPackageDialect(packageDescr));
 
         Map<String, AttributeDescr> attributesForPackage = packageAttributes.get(packageDescr.getNamespace());
-        List<Processor> processors = asList(
-                new ImportProcessor(packageRegistry, packageDescr),
+        List<CompilationPhase> phases = asList(
+                new ImportCompilationPhase(packageRegistry, packageDescr),
                 new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr),
-                new EntryPointDeclarationProcessor(packageRegistry, packageDescr),
-                new AccumulateFunctionProcessor(packageRegistry, packageDescr),
-                new TypeDeclarationProcessor(packageDescr, typeBuilder, packageRegistry),
-                new WindowDeclarationProcessor(packageRegistry, packageDescr, kBuilder),
-                new FunctionProcessor(packageRegistry, packageDescr, configuration),
-                new GlobalProcessor(packageRegistry, packageDescr, kBase, kBuilder, this::filterAcceptsRemoval),
+                new EntryPointDeclarationCompilationPhase(packageRegistry, packageDescr),
+                new AccumulateFunctionCompilationPhase(packageRegistry, packageDescr),
+                new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry),
+                new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, kBuilder),
+                new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
+                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, kBuilder, this::filterAcceptsRemoval),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
                 /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),
@@ -75,8 +73,8 @@ public class ExplicitCompilerTest {
                         this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, kBuilder));
 
 
-        processors.forEach(Processor::process);
-        processors.forEach(p -> this.results.addAll(p.getResults()));
+        phases.forEach(CompilationPhase::process);
+        phases.forEach(p -> this.results.addAll(p.getResults()));
 
 
         ReteCompiler reteCompiler =

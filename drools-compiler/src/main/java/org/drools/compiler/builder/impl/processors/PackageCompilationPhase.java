@@ -4,23 +4,21 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static java.util.Arrays.asList;
 
-public final class PackageProcessor extends AbstractPackageProcessor {
+public final class PackageCompilationPhase extends AbstractPackageCompilationPhase {
     private final KnowledgeBuilderImpl knowledgeBuilder;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final TypeDeclarationBuilder typeBuilder;
     private final FilterCondition filterCondition;
 
-    public PackageProcessor(
+    public PackageCompilationPhase(
             KnowledgeBuilderImpl knowledgeBuilder,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration,
@@ -42,19 +40,19 @@ public final class PackageProcessor extends AbstractPackageProcessor {
                         pkgRegistry.getTypeResolver(),
                         configuration.getLanguageLevel().useJavaAnnotations());
 
-        List<Processor> processors = asList(
-                new ImportProcessor(pkgRegistry, packageDescr),
+        List<CompilationPhase> phases = asList(
+                new ImportCompilationPhase(pkgRegistry, packageDescr),
                 new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr),
-                new EntryPointDeclarationProcessor(pkgRegistry, packageDescr),
-                new AccumulateFunctionProcessor(pkgRegistry, packageDescr),
-                new TypeDeclarationProcessor(packageDescr, typeBuilder, pkgRegistry),
-                new WindowDeclarationProcessor(pkgRegistry, packageDescr, knowledgeBuilder),
-                new FunctionProcessor(pkgRegistry, packageDescr, configuration),
-                new GlobalProcessor(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filterCondition),
+                new EntryPointDeclarationCompilationPhase(pkgRegistry, packageDescr),
+                new AccumulateFunctionCompilationPhase(pkgRegistry, packageDescr),
+                new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, pkgRegistry),
+                new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, knowledgeBuilder),
+                new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration),
+                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filterCondition),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr));
 
-        processors.forEach(Processor::process);
-        processors.forEach(p -> results.addAll(p.getResults()));
+        phases.forEach(CompilationPhase::process);
+        phases.forEach(p -> results.addAll(p.getResults()));
 
     }
 
