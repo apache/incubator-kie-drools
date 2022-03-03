@@ -26,7 +26,7 @@ Soft constraints:
 
 * Total distance: minimize the total distance driven (fuel consumption) of all vehicles.
 
-The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVRPTW) are defined by http://neo.lcc.uma.es/vrp/[the VRP web].
+The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVRPTW) are defined by https://neo.lcc.uma.es/vrp/[the VRP web].
 
 
 [[vehicleRoutingValueProposition]]

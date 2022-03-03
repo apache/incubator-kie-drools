@@ -105,7 +105,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Value <= `2795`
 * Search space <= `10^8380`
 |* Unrealistic
-* http://neo.lcc.uma.es/vrp/[VRP web]
+* https://neo.lcc.uma.es/vrp/[VRP web]
 |* xref:shadow-variable/shadow-variable.adoc#shadowVariable[Shadow variable]
 * xref:repeated-planning/repeated-planning.adoc#realTimePlanning[Real-time planning]
 * xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[Nearby selection]
@@ -118,7 +118,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Value <= `2795`
 * Search space <= `10^8380`
 |* Unrealistic
-* http://neo.lcc.uma.es/vrp/[VRP web]
+* https://neo.lcc.uma.es/vrp/[VRP web]
 |* All of Vehicle routing
 * Custom xref:shadow-variable/shadow-variable.adoc#customVariableListener[VariableListener]
 

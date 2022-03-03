@@ -116,7 +116,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         }
 
         // ************************************************************************
-        // CVRP normal format. See http://neo.lcc.uma.es/vrp/
+        // CVRP normal format. See https://neo.lcc.uma.es/vrp/
         // ************************************************************************
 
         public void readVrpWebFormat() throws IOException {
@@ -442,7 +442,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         }
 
         // ************************************************************************
-        // CVRPTW normal format. See http://neo.lcc.uma.es/vrp/
+        // CVRPTW normal format. See https://neo.lcc.uma.es/vrp/
         // ************************************************************************
 
         public void readTimeWindowedFormat() throws IOException {
