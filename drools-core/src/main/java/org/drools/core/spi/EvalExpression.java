@@ -43,7 +43,7 @@ public interface EvalExpression
     EvalExpression clone();
 
     default EvalExpression clonePreservingDeclarations(EvalExpression original) {
-        return original;
+        return original != null ? original : this;
     }
 
     static boolean isCompiledInvoker(final EvalExpression expression) {
