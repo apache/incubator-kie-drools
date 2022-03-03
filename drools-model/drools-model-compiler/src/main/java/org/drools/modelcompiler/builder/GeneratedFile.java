@@ -46,7 +46,7 @@ public class GeneratedFile {
         this(Type.RULE, path, data);
     }
 
-    private GeneratedFile(String path, byte[] data) {
+    public GeneratedFile(String path, byte[] data) {
         this(Type.RULE, path, data);
     }
 
