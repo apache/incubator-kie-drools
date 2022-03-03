@@ -21,9 +21,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.ExternalizedSingletonInverseVariableSupply;
@@ -38,6 +40,8 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.shadow.order.TestdataShadowVariableOrderEntity;
+import org.optaplanner.core.impl.testdata.domain.shadow.order.TestdataShadowVariableOrderSolution;
 
 class VariableListenerSupportTest {
 
@@ -50,7 +54,7 @@ class VariableListenerSupportTest {
         solution.setEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport<TestdataSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
+        VariableListenerSupport<TestdataSolution> variableListenerSupport = VariableListenerSupport.create(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor<TestdataSolution> variableDescriptor =
@@ -73,7 +77,8 @@ class VariableListenerSupportTest {
         solution.setChainedEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport<TestdataChainedSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
+        VariableListenerSupport<TestdataChainedSolution> variableListenerSupport =
+                VariableListenerSupport.create(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor<TestdataChainedSolution> variableDescriptor =
@@ -101,7 +106,7 @@ class VariableListenerSupportTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
         VariableListenerSupport<TestdataShadowingChainedSolution> variableListenerSupport =
-                new VariableListenerSupport<>(scoreDirector);
+                VariableListenerSupport.create(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor<TestdataShadowingChainedSolution> variableDescriptor = solutionDescriptor
@@ -117,4 +122,54 @@ class VariableListenerSupportTest {
         assertThat(supply2).isSameAs(supply1);
     }
 
+    @Test
+    void shadowVariableListenerOrder() {
+        EntityDescriptor<TestdataShadowVariableOrderSolution> entityDescriptor =
+                TestdataShadowVariableOrderEntity.buildEntityDescriptor();
+        SolutionDescriptor<TestdataShadowVariableOrderSolution> solutionDescriptor = entityDescriptor.getSolutionDescriptor();
+        InnerScoreDirector<TestdataShadowVariableOrderSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
+        when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
+
+        NotifiableRegistry<TestdataShadowVariableOrderSolution> registry = new NotifiableRegistry<>(solutionDescriptor);
+        VariableListenerSupport<TestdataShadowVariableOrderSolution> variableListenerSupport =
+                new VariableListenerSupport<>(scoreDirector, registry, new HashMap<>());
+
+        variableListenerSupport.linkVariableListeners();
+
+        assertThat(registry.getAll())
+                .map(VariableListenerNotifiable::toString)
+                .containsExactly(
+                        "(0) C",
+                        "(1) D",
+                        "(2) E",
+                        "(3) FG");
+
+        assertThat(registry.get(entityDescriptor))
+                .map(VariableListenerNotifiable::toString)
+                .containsExactly(
+                        "(0) C",
+                        "(1) D",
+                        "(2) E",
+                        "(3) FG");
+
+        assertThat(registry.get(entityDescriptor.getVariableDescriptor("x6A")))
+                .map(VariableListenerNotifiable::toString)
+                .containsExactly("(0) C");
+        assertThat(registry.get(entityDescriptor.getVariableDescriptor("x5B")))
+                .map(VariableListenerNotifiable::toString)
+                .containsExactly("(2) E");
+        assertThat(registry.get(entityDescriptor.getVariableDescriptor("x3C")))
+                .map(VariableListenerNotifiable::toString)
+                .containsExactly("(1) D", "(2) E");
+        assertThat(registry.get(entityDescriptor.getVariableDescriptor("x1D")))
+                .isEmpty();
+        assertThat(registry.get(entityDescriptor.getVariableDescriptor("x2E")))
+                .map(VariableListenerNotifiable::toString)
+                .containsExactly("(3) FG");
+        assertThat(registry.get(entityDescriptor.getVariableDescriptor("x4F")))
+                .isEmpty();
+        assertThat(registry.get(entityDescriptor.getVariableDescriptor("x0G")))
+                .isEmpty();
+    }
 }

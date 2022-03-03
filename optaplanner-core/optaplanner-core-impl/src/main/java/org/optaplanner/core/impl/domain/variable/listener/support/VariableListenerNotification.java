@@ -19,25 +19,34 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
-final class VariableListenerNotification {
+abstract class VariableListenerNotification {
 
-    private final Object entity;
-    private final VariableListenerNotificationType type;
+    protected final Object entity;
 
-    public VariableListenerNotification(Object entity, VariableListenerNotificationType type) {
+    static VariableListenerNotification entityAdded(Object entity) {
+        return new EntityAddedNotification(entity);
+    }
+
+    static VariableListenerNotification variableChanged(Object entity) {
+        return new VariableChangedNotification(entity);
+    }
+
+    static VariableListenerNotification entityRemoved(Object entity) {
+        return new EntityRemovedNotification(entity);
+    }
+
+    protected VariableListenerNotification(Object entity) {
         this.entity = entity;
-        this.type = type;
     }
 
-    public Object getEntity() {
-        return entity;
-    }
+    abstract <Solution_> void triggerBefore(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector);
 
-    public VariableListenerNotificationType getType() {
-        return type;
-    }
+    abstract <Solution_> void triggerAfter(VariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector);
 
     /**
      * Warning: do not test equality of {@link VariableListenerNotification}s for different {@link VariableListener}s
@@ -50,17 +59,16 @@ final class VariableListenerNotification {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof VariableListenerNotification) {
-            VariableListenerNotification other = (VariableListenerNotification) o;
-            return entity == other.entity && type == other.type;
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        VariableListenerNotification that = (VariableListenerNotification) o;
+        return entity.equals(that.entity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(System.identityHashCode(entity), type);
+        return Objects.hash(System.identityHashCode(entity), getClass());
     }
-
 }

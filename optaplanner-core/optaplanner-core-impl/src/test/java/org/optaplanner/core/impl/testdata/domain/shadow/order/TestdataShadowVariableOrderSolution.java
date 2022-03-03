@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.shadow.manytomany;
+package org.optaplanner.core.impl.testdata.domain.shadow.order;
 
 import java.util.List;
 
@@ -29,27 +29,22 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataManyToManyShadowedSolution extends TestdataObject {
+public class TestdataShadowVariableOrderSolution extends TestdataObject {
 
-    public static SolutionDescriptor<TestdataManyToManyShadowedSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataManyToManyShadowedSolution.class,
-                TestdataManyToManyShadowedEntity.class);
-    }
-
-    static SolutionDescriptor<TestdataManyToManyShadowedSolution> buildSolutionDescriptorRequiresUniqueEvents() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataManyToManyShadowedSolution.class,
-                TestdataManyToManyShadowedEntityUniqueEvents.class);
+    public static SolutionDescriptor<TestdataShadowVariableOrderSolution> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataShadowVariableOrderSolution.class,
+                TestdataShadowVariableOrderEntity.class);
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataManyToManyShadowedEntity> entityList;
+    private List<TestdataShadowVariableOrderEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataManyToManyShadowedSolution() {
+    public TestdataShadowVariableOrderSolution() {
     }
 
-    public TestdataManyToManyShadowedSolution(String code) {
+    public TestdataShadowVariableOrderSolution(String code) {
         super(code);
     }
 
@@ -64,11 +59,11 @@ public class TestdataManyToManyShadowedSolution extends TestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataManyToManyShadowedEntity> getEntityList() {
+    public List<TestdataShadowVariableOrderEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataManyToManyShadowedEntity> entityList) {
+    public void setEntityList(List<TestdataShadowVariableOrderEntity> entityList) {
         this.entityList = entityList;
     }
 
@@ -80,9 +75,4 @@ public class TestdataManyToManyShadowedSolution extends TestdataObject {
     public void setScore(SimpleScore score) {
         this.score = score;
     }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
 }

@@ -101,7 +101,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 ? new LookUpManager(scoreDirectorFactory.getSolutionDescriptor().getLookUpStrategyResolver())
                 : null;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
-        variableListenerSupport = new VariableListenerSupport<>(this);
+        variableListenerSupport = VariableListenerSupport.create(this);
         variableListenerSupport.linkVariableListeners();
     }
 
@@ -333,7 +333,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (lookUpEnabled) {
             lookUpManager.reset();
         }
-        variableListenerSupport.clearWorkingSolution();
+        variableListenerSupport.close();
     }
 
     // ************************************************************************
@@ -575,7 +575,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             }
             entityToShadowVariableValuesMap.put(entity, shadowVariableValuesMap);
         });
-        variableListenerSupport.triggerAllVariableListeners();
+        variableListenerSupport.forceTriggerAllVariableListeners();
         solutionDescriptor.visitAllEntities(workingSolution, entity -> {
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor

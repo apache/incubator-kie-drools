@@ -18,8 +18,10 @@ package org.optaplanner.core.impl.domain.variable.custom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -35,6 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtende
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedParentEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedSolution;
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedEntity;
+import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedEntityUniqueEvents;
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -174,6 +177,50 @@ class CustomVariableListenerTest {
         scoreDirector.triggerVariableListeners();
         assertThat(c.getComposedCode()).isEqualTo("1-3");
         assertThat(c.getReverseComposedCode()).isEqualTo("3-1");
+    }
+
+    @Test
+    void manyToManyRequiresUniqueEntityEvents() {
+        EntityDescriptor<TestdataManyToManyShadowedSolution> entityDescriptor =
+                TestdataManyToManyShadowedEntityUniqueEvents.buildEntityDescriptor();
+        GenuineVariableDescriptor<TestdataManyToManyShadowedSolution> primaryVariableDescriptor =
+                entityDescriptor.getGenuineVariableDescriptor("primaryValue");
+        GenuineVariableDescriptor<TestdataManyToManyShadowedSolution> secondaryVariableDescriptor =
+                entityDescriptor.getGenuineVariableDescriptor("secondaryValue");
+        InnerScoreDirector<TestdataManyToManyShadowedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(entityDescriptor.getSolutionDescriptor());
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataManyToManyShadowedEntityUniqueEvents b = new TestdataManyToManyShadowedEntityUniqueEvents("b", null, null);
+
+        TestdataManyToManyShadowedSolution solution = new TestdataManyToManyShadowedSolution("solution");
+        solution.setEntityList(List.of(b));
+        solution.setValueList(List.of(val1));
+        scoreDirector.setWorkingSolution(solution);
+
+        scoreDirector.beforeEntityAdded(b);
+        scoreDirector.afterEntityAdded(b);
+        scoreDirector.beforeVariableChanged(primaryVariableDescriptor, b);
+        b.setPrimaryValue(val1);
+        scoreDirector.afterVariableChanged(primaryVariableDescriptor, b);
+        scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, b);
+        b.setSecondaryValue(val1);
+        scoreDirector.afterVariableChanged(secondaryVariableDescriptor, b);
+        scoreDirector.triggerVariableListeners();
+
+        verify(scoreDirector).setWorkingSolution(solution);
+        verify(scoreDirector).beforeEntityAdded(b);
+        verify(scoreDirector).afterEntityAdded(b);
+        verify(scoreDirector).beforeVariableChanged(primaryVariableDescriptor, b);
+        verify(scoreDirector).afterVariableChanged(primaryVariableDescriptor, b);
+        verify(scoreDirector).beforeVariableChanged(secondaryVariableDescriptor, b);
+        verify(scoreDirector).afterVariableChanged(secondaryVariableDescriptor, b);
+        verify(scoreDirector).triggerVariableListeners();
+
+        // The 1st element is caused by afterEntityAdded(). It is unique because it's the only one of the "EntityAdded" type.
+        // The 2nd element is caused by the first afterVariableChanged() event.
+        // The second afterVariableChangedEvent was deduplicated.
+        assertThat(b.getComposedCodeLog()).containsExactly("1-1", "1-1");
     }
 
 }
