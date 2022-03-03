@@ -46,7 +46,7 @@ public class ProduceEventActionSupplier implements ExpressionSupplier, Action {
     public Expression get(KogitoNode node, ProcessMetaData metadata) {
         return AbstractNodeVisitor.buildProducerAction(parseClassOrInterfaceType(SWFProduceEventAction.class.getCanonicalName()), TriggerMetaData.of(node), metadata)
                 .addArgument(new StringLiteralExpr(exprLang))
-                .addArgument(data != null ? new StringLiteralExpr(data) : new NullLiteralExpr());
+                .addArgument(data != null ? new StringLiteralExpr().setString(data) : new NullLiteralExpr());
     }
 
     @Override
