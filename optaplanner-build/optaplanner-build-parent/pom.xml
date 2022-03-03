@@ -25,7 +25,7 @@
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
-    <version.io.quarkus>2.7.1.Final</version.io.quarkus>
+    <version.io.quarkus>2.7.3.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.9</version.org.apache.commons.text>
     <version.org.apache.poi>4.1.2</version.org.apache.poi>
