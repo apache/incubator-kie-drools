@@ -16,8 +16,8 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.7.1.Final</version.io.quarkus>
-    <version.io.quarkus.quarkus-test-maven>2.7.1.Final</version.io.quarkus.quarkus-test-maven>
+    <version.io.quarkus>2.7.3.Final</version.io.quarkus>
+    <version.io.quarkus.quarkus-test-maven>2.7.3.Final</version.io.quarkus.quarkus-test-maven>
     <version.org.springframework.boot>2.4.9</version.org.springframework.boot>
 
     <!-- dependencies versions -->
@@ -54,12 +54,12 @@
 
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
-    <version.io.micrometer>1.8.2</version.io.micrometer>
+    <version.io.micrometer>1.8.3</version.io.micrometer>
     <version.io.serverlessworkflow>4.0.2.Final</version.io.serverlessworkflow>
-    <version.io.smallrye-open-api-core>2.1.17</version.io.smallrye-open-api-core>
+    <version.io.smallrye-open-api-core>2.1.20</version.io.smallrye-open-api-core>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>2.18.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.2.4</version.io.vertx>
+    <version.io.vertx>4.2.5</version.io.vertx>
 
     <version.io.swagger.parser.v3>2.0.24</version.io.swagger.parser.v3>
 
