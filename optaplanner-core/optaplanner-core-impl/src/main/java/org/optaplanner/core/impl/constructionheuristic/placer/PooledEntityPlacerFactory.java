@@ -26,6 +26,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.impl.AbstractFromConfigFactory;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
@@ -63,27 +64,14 @@ public class PooledEntityPlacerFactory<Solution_>
             if (entitySelectorConfig == null) {
                 EntityDescriptor<Solution_> entityDescriptor = new PooledEntityPlacerFactory<Solution_>(config)
                         .deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
-                entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
+                entitySelectorConfig =
+                        AbstractFromConfigFactory.getDefaultEntitySelectorConfigForEntity(configPolicy, entityDescriptor);
                 changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
             }
             changeMoveSelectorConfig.setEntitySelectorConfig(
                     EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
         }
         return config;
-    }
-
-    private static <Solution_> EntitySelectorConfig buildEntitySelectorConfig(
-            HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor) {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        Class<?> entityClass = entityDescriptor.getEntityClass();
-        entitySelectorConfig.setId(entityClass.getName());
-        entitySelectorConfig.setEntityClass(entityClass);
-        if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-            entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            entitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
-        }
-        return entitySelectorConfig;
     }
 
     public PooledEntityPlacerFactory(PooledEntityPlacerConfig placerConfig) {
@@ -102,7 +90,8 @@ public class PooledEntityPlacerFactory<Solution_>
 
     private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
-        EntitySelectorConfig entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
+        EntitySelectorConfig entitySelectorConfig =
+                AbstractFromConfigFactory.getDefaultEntitySelectorConfigForEntity(configPolicy, entityDescriptor);
 
         List<GenuineVariableDescriptor<Solution_>> variableDescriptors = entityDescriptor.getGenuineVariableDescriptorList();
         List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());

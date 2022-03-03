@@ -157,7 +157,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         }
     }
 
-    private static EntityPlacerConfig buildListVariableQueuedValuePlacerConfig(
+    public static EntityPlacerConfig buildListVariableQueuedValuePlacerConfig(
             HeuristicConfigPolicy<?> configPolicy,
             ListVariableDescriptor<?> variableDescriptor) {
         String mimicSelectorId = variableDescriptor.getVariableName();

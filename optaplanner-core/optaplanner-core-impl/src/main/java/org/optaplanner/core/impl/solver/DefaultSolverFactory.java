@@ -17,16 +17,21 @@
 package org.optaplanner.core.impl.solver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -37,7 +42,11 @@ import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.AbstractFromConfigFactory;
+import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicPhaseFactory;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.PhaseFactory;
@@ -194,7 +203,45 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         List<PhaseConfig> phaseConfigList_ = solverConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
-            phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
+            Collection<EntityDescriptor<Solution_>> genuineEntityDescriptors =
+                    configPolicy.getSolutionDescriptor().getGenuineEntityDescriptors();
+            Map<Class<?>, List<ListVariableDescriptor<Solution_>>> entityClassToListVariableDescriptorListMap =
+                    configPolicy.getSolutionDescriptor()
+                            .findListVariableDescriptors()
+                            .stream()
+                            .collect(Collectors.groupingBy(
+                                    listVariableDescriptor -> listVariableDescriptor.getEntityDescriptor().getEntityClass(),
+                                    Collectors.mapping(Function.identity(), Collectors.toList())));
+
+            phaseConfigList_ = new ArrayList<>(genuineEntityDescriptors.size() + 1);
+            for (EntityDescriptor<Solution_> genuineEntityDescriptor : genuineEntityDescriptors) {
+                ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
+                EntityPlacerConfig<?> entityPlacerConfig;
+
+                if (entityClassToListVariableDescriptorListMap.containsKey(genuineEntityDescriptor.getEntityClass())) {
+                    List<ListVariableDescriptor<Solution_>> listVariableDescriptorList =
+                            entityClassToListVariableDescriptorListMap.get(genuineEntityDescriptor.getEntityClass());
+                    if (listVariableDescriptorList.size() != 1) {
+                        // TODO: Do multiple Construction Heuristics for each list variable descriptor?
+                        throw new IllegalArgumentException(
+                                "Construction Heuristic phase does not support multiple list variables ("
+                                        + listVariableDescriptorList + ") for planning entity (" +
+                                        genuineEntityDescriptor.getEntityClass() + ").");
+                    }
+                    entityPlacerConfig =
+                            DefaultConstructionHeuristicPhaseFactory.buildListVariableQueuedValuePlacerConfig(configPolicy,
+                                    listVariableDescriptorList.get(0));
+                } else {
+                    QueuedEntityPlacerConfig queuedEntityPlacerConfig = new QueuedEntityPlacerConfig();
+                    queuedEntityPlacerConfig.setEntitySelectorConfig(AbstractFromConfigFactory
+                            .getDefaultEntitySelectorConfigForEntity(configPolicy, genuineEntityDescriptor));
+                    entityPlacerConfig = queuedEntityPlacerConfig;
+                }
+
+                constructionHeuristicPhaseConfig.setEntityPlacerConfig(entityPlacerConfig);
+                phaseConfigList_.add(constructionHeuristicPhaseConfig);
+            }
+            phaseConfigList_.add(new LocalSearchPhaseConfig());
         }
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
         int phaseIndex = 0;

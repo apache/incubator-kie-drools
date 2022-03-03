@@ -115,16 +115,8 @@ public class QueuedEntityPlacerFactory<Solution_>
     public EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntitySelectorConfig entitySelectorConfig_;
         if (config.getEntitySelectorConfig() == null) {
-            entitySelectorConfig_ = new EntitySelectorConfig();
             EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
-            Class<?> entityClass = entityDescriptor.getEntityClass();
-            entitySelectorConfig_.setId(entityClass.getName());
-            entitySelectorConfig_.setEntityClass(entityClass);
-            if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-                entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
-                entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
-            }
+            entitySelectorConfig_ = getDefaultEntitySelectorConfigForEntity(configPolicy, entityDescriptor);
         } else {
             entitySelectorConfig_ = config.getEntitySelectorConfig();
         }

@@ -57,8 +57,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint roomConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
-                .filter(leftAssignment -> leftAssignment.getRoom() != null)
+        return constraintFactory.forEach(MeetingAssignment.class)
                 .join(MeetingAssignment.class,
                         equal(MeetingAssignment::getRoom),
                         lessThan(MeetingAssignment::getId),

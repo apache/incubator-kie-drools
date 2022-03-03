@@ -23,9 +23,13 @@ import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 public abstract class AbstractFromConfigFactory<Solution_, Config_ extends AbstractConfig<Config_>> {
 
@@ -33,6 +37,20 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
 
     public AbstractFromConfigFactory(Config_ config) {
         this.config = config;
+    }
+
+    public static <Solution_> EntitySelectorConfig getDefaultEntitySelectorConfigForEntity(
+            HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor) {
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+        Class<?> entityClass = entityDescriptor.getEntityClass();
+        entitySelectorConfig.setId(entityClass.getName());
+        entitySelectorConfig.setEntityClass(entityClass);
+        if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
+            entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
+            entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
+            entitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
+        }
+        return entitySelectorConfig;
     }
 
     protected EntityDescriptor<Solution_> deduceEntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor,

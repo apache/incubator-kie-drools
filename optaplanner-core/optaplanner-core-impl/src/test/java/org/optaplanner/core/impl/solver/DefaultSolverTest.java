@@ -65,6 +65,7 @@ import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.DummySimpleScoreEasyScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -74,6 +75,9 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.testdata.domain.multientity.TestdataHerdEntity;
+import org.optaplanner.core.impl.testdata.domain.multientity.TestdataLeadEntity;
+import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
@@ -793,6 +797,27 @@ class DefaultSolverTest {
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1")));
+
+        solution = solver.solve(solution);
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
+
+    @Test
+    void defaultSolveWithMultipleGenuinePlanningEntities() {
+        SolverConfig solverConfig = new SolverConfig()
+                .withSolutionClass(TestdataMultiEntitySolution.class)
+                .withEntityClasses(TestdataLeadEntity.class, TestdataHerdEntity.class)
+                .withEasyScoreCalculatorClass(DummySimpleScoreEasyScoreCalculator.class)
+                .withTerminationConfig(new TerminationConfig()
+                        .withBestScoreLimit("0"));
+        SolverFactory<TestdataMultiEntitySolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataMultiEntitySolution> solver = solverFactory.buildSolver();
+
+        TestdataMultiEntitySolution solution = new TestdataMultiEntitySolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setLeadEntityList(Arrays.asList(new TestdataLeadEntity("lead1"), new TestdataLeadEntity("lead2")));
+        solution.setHerdEntityList(Arrays.asList(new TestdataHerdEntity("herd1"), new TestdataHerdEntity("herd2")));
 
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
