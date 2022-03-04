@@ -103,7 +103,7 @@ public class ProcessInstanceManagementResourceTest {
         lenient().when(processInstance.status()).thenReturn(KogitoProcessInstance.STATE_ACTIVE);
         lenient().when(error.failedNodeId()).thenReturn("xxxxx");
         lenient().when(error.errorMessage()).thenReturn("Test error message");
-        lenient().when(process.process()).thenReturn(mock(KogitoWorkflowProcess.class));
+        lenient().when(process.get()).thenReturn(mock(KogitoWorkflowProcess.class));
 
         lenient().when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
         resource = spy(new ProcessInstanceManagementResource(processes, application));

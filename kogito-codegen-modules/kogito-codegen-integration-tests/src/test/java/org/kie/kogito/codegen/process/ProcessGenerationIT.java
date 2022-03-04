@@ -134,7 +134,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
         AbstractProcess<? extends Model> process = (AbstractProcess<? extends Model>) app.get(Processes.class).processById(expected.getId());
         assertThat(process).isNotNull().isSameAs(app.get(Processes.class).processById(expected.getId()));
 
-        RuleFlowProcess current = (RuleFlowProcess) process.process();
+        RuleFlowProcess current = (RuleFlowProcess) process.get();
 
         assertNotNull(current);
         assertEquals(expected.getId(), current.getId(), "Id");

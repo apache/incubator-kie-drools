@@ -79,7 +79,7 @@ class CacheProcessInstancesIT {
     void testFindByIdReadMode() {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
-        for (Node node : ((WorkflowProcess) process.process()).getNodes()) {
+        for (Node node : ((WorkflowProcess) process.get()).getNodes()) {
             if (node instanceof ActionNode) {
                 DroolsAction a = ((ActionNode) node).getAction();
                 a.setMetaData("Action", (Action) kcontext -> {

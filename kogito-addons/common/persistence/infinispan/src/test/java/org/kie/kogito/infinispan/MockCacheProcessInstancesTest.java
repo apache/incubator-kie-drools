@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.entry;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ERROR;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -100,7 +100,7 @@ public class MockCacheProcessInstancesTest {
     void testFindByIdReadMode() {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
-        for (Node node : ((WorkflowProcess) process.process()).getNodes()) {
+        for (Node node : ((WorkflowProcess) process.get()).getNodes()) {
             if (node instanceof ActionNode) {
                 DroolsAction a = ((ActionNode) node).getAction();
                 a.setMetaData("Action", (Action) kcontext -> {
@@ -215,7 +215,7 @@ public class MockCacheProcessInstancesTest {
     private void testBasicFlowWithError(Consumer<ProcessInstance<BpmnVariables>> op) {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
-        for (Node node : ((WorkflowProcess) process.process()).getNodes()) {
+        for (Node node : ((WorkflowProcess) process.get()).getNodes()) {
             if (node instanceof ActionNode) {
                 DroolsAction a = ((ActionNode) node).getAction();
 

@@ -56,7 +56,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
     public T doGetProcessNodes(String processId) {
         return executeOnProcess(processId, process -> {
-            List<org.kie.api.definition.process.Node> nodes = ((KogitoWorkflowProcess) ((AbstractProcess<?>) process).process()).getNodesRecursively();
+            List<org.kie.api.definition.process.Node> nodes = ((KogitoWorkflowProcess) ((AbstractProcess<?>) process).get()).getNodesRecursively();
             List<Map<String, Object>> list = nodes.stream().map(n -> {
                 Map<String, Object> data = new HashMap<>();
                 data.put("id", n.getId());

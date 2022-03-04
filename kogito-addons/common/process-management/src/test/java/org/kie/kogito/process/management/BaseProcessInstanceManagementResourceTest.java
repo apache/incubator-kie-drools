@@ -95,7 +95,7 @@ class BaseProcessInstanceManagementResourceTest {
         lenient().when(node.getUniqueId()).thenReturn(NODE_ID);
         lenient().when(node.getMetaData()).thenReturn(singletonMap(UNIQUE_ID, NODE_UNIQUE_ID));
         lenient().when(wp.getNodesRecursively()).thenReturn(singletonList(node));
-        lenient().when(process.process()).thenReturn(wp);
+        lenient().when(process.get()).thenReturn(wp);
         lenient().when(processes.processById(anyString())).thenReturn(process);
         lenient().when(process.instances()).thenReturn(instances);
         lenient().when(instances.findById(anyString())).thenReturn(Optional.of(processInstance));
@@ -176,7 +176,7 @@ class BaseProcessInstanceManagementResourceTest {
         Object response = tested.doGetProcessNodes(PROCESS_ID);
 
         verify(processes).processById(PROCESS_ID);
-        verify(process).process();
+        verify(process).get();
         verify(wp).getNodesRecursively();
 
         assertThat(response).isInstanceOf(List.class).asList().hasSize(1).element(0)

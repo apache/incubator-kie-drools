@@ -230,7 +230,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         return process;
     }
 
-    public abstract org.kie.api.definition.process.Process process();
+    protected abstract org.kie.api.definition.process.Process process();
 
     protected InternalProcessRuntime createProcessRuntime() {
         return LightProcessRuntime.of(app, Collections.singletonList(get()), services);

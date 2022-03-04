@@ -100,7 +100,7 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
     @Override
     public BpmnVariables createModel() {
-        VariableScope variableScope = (VariableScope) ((WorkflowProcess) process()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        VariableScope variableScope = (VariableScope) ((WorkflowProcess) get()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
         return new BpmnVariables(variableScope.getVariables(), new HashMap<>());
     }
 
