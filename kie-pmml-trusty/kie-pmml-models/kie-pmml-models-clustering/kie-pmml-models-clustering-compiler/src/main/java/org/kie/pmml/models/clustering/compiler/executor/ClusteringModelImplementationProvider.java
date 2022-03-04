@@ -57,4 +57,9 @@ private static final Logger logger = LoggerFactory.getLogger(ClusteringModelImpl
             throw new KiePMMLException(e);
         }
     }
+
+    @Override
+    public boolean isInterpreted() {
+        return true;
+    }
 }
