@@ -41,7 +41,7 @@ import static org.kie.pmml.api.utils.EnumUtils.enumByName;
 
 public class KiePMMLClusteringConversionUtils {
 
-    private static final Map<Class<? extends Measure>, KiePMMLAggregateFunction> AGGREGATE_FN_MAP = new HashMap<>(9);
+    public static final Map<Class<? extends Measure>, KiePMMLAggregateFunction> AGGREGATE_FN_MAP = new HashMap<>(9);
 
     static {
         AGGREGATE_FN_MAP.put(Euclidean.class, KiePMMLAggregateFunction.EUCLIDEAN);
