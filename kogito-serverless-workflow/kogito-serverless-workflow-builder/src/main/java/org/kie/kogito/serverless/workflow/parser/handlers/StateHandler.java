@@ -123,7 +123,7 @@ public abstract class StateHandler<S extends State> {
             String data,
             String defaultWorkflowVar) {
         return ServerlessWorkflowParser.sendEventNode(
-                actionNode.action(new ProduceEventActionSupplier(workflow.getExpressionLang(), data)),
+                actionNode.action(new ProduceEventActionSupplier(workflow, data)),
                 eventDefinition,
                 defaultWorkflowVar);
     }

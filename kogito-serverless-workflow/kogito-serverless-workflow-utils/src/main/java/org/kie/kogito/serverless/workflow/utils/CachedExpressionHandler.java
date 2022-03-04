@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.expr.jsonpath;
+package org.kie.kogito.serverless.workflow.utils;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.kie.kogito.process.expr.Expression;
-import org.kie.kogito.serverless.workflow.utils.CachedExpressionHandler;
+import org.kie.kogito.process.expr.ExpressionHandler;
 
-public class JsonPathExpressionHandler extends CachedExpressionHandler {
+public abstract class CachedExpressionHandler implements ExpressionHandler {
 
-    @Override
-    public Expression buildExpression(String expr) {
-        return new JsonPathExpression(expr);
-    }
+    private Map<String, Expression> expressions = Collections.synchronizedMap(new WeakHashMap<>());
 
     @Override
-    public String lang() {
-        return "jsonpath";
+    public Expression get(String expr) {
+        return expressions.computeIfAbsent(ExpressionHandlerUtils.trimExpr(expr), this::buildExpression);
     }
+
+    protected abstract Expression buildExpression(String expr);
 }

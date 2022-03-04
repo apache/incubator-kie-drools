@@ -24,11 +24,14 @@ import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.serverless.workflow.actions.SWFProduceEventAction;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+
+import io.serverlessworkflow.api.Workflow;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
@@ -37,9 +40,9 @@ public class ProduceEventActionSupplier implements ExpressionSupplier, Action {
     private final String exprLang;
     private final String data;
 
-    public ProduceEventActionSupplier(String exprLang, String data) {
-        this.exprLang = exprLang;
-        this.data = data;
+    public ProduceEventActionSupplier(Workflow workflow, String data) {
+        this.exprLang = workflow.getExpressionLang();
+        this.data = ExpressionHandlerUtils.replaceExpr(workflow, data);
     }
 
     @Override

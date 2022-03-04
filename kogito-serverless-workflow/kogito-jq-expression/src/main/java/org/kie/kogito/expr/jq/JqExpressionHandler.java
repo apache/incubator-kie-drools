@@ -18,15 +18,14 @@ package org.kie.kogito.expr.jq;
 import java.util.function.Supplier;
 
 import org.kie.kogito.process.expr.Expression;
-import org.kie.kogito.process.expr.ExpressionHandler;
-import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import org.kie.kogito.serverless.workflow.utils.CachedExpressionHandler;
 import org.slf4j.LoggerFactory;
 
 import net.thisptr.jackson.jq.BuiltinFunctionLoader;
 import net.thisptr.jackson.jq.Scope;
 import net.thisptr.jackson.jq.Versions;
 
-public class JqExpressionHandler implements ExpressionHandler {
+public class JqExpressionHandler extends CachedExpressionHandler {
 
     private static Supplier<Scope> scopeSupplier = new DefaultScopeSupplier();
 
@@ -51,8 +50,8 @@ public class JqExpressionHandler implements ExpressionHandler {
     }
 
     @Override
-    public Expression get(String expr) {
-        return new JqExpression(scopeSupplier, ExpressionHandlerUtils.trimExpr(expr));
+    public Expression buildExpression(String expr) {
+        return new JqExpression(scopeSupplier, expr);
     }
 
     @Override

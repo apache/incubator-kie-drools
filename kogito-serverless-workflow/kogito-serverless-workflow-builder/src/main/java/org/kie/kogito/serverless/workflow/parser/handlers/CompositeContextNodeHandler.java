@@ -31,6 +31,7 @@ import org.jbpm.ruleflow.core.factory.AbstractCompositeNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.kie.kogito.jackson.utils.JsonNodeVisitor;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
@@ -41,6 +42,7 @@ import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.RestBodyBuilderSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.SysoutActionSupplier;
+import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 
@@ -294,16 +296,26 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                                 parserContext.getContext()));
     }
 
-    private static Map<String, Object> functionsToMap(JsonNode jsonNode) {
+    private Map<String, Object> functionsToMap(JsonNode jsonNode) {
         Map<String, Object> map = new HashMap<>();
         if (jsonNode != null) {
             Iterator<Entry<String, JsonNode>> iter = jsonNode.fields();
             while (iter.hasNext()) {
                 Entry<String, JsonNode> entry = iter.next();
-                map.put(entry.getKey(), JsonObjectUtils.simpleToJavaValue(entry.getValue()));
+                map.put(entry.getKey(), functionReference(JsonObjectUtils.simpleToJavaValue(entry.getValue())));
             }
         }
         return map;
+    }
+
+    private Object functionReference(Object object) {
+        if (object instanceof JsonNode) {
+            return JsonNodeVisitor.transformTextNode((JsonNode) object, node -> JsonObjectUtils.fromValue(ExpressionHandlerUtils.replaceExpr(workflow, node.asText())));
+        } else if (object instanceof CharSequence) {
+            return ExpressionHandlerUtils.replaceExpr(workflow, object.toString());
+        } else {
+            return object;
+        }
     }
 
     private void processArgs(WorkItemNodeFactory<?> workItemFactory,
@@ -312,7 +324,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private void processArg(Entry<String, Object> entry, WorkItemNodeFactory<?> workItemFactory, String paramName, Class<? extends ExpressionWorkItemResolver> clazz) {
-        boolean isExpr = isExpression(entry.getValue()) || entry.getValue() instanceof JsonNode;
+        boolean isExpr = isExpression(entry.getValue());
         workItemFactory
                 .workParameter(entry.getKey(),
                         AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), entry.getValue(), paramName, clazz, isExpr))
@@ -321,7 +333,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private boolean isExpression(Object expr) {
-        return expr instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), expr.toString()).isValid();
+        return expr instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), expr.toString()).isValid() || expr instanceof JsonNode;
     }
 
     private NodeFactory<?, ?> emptyNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionName) {

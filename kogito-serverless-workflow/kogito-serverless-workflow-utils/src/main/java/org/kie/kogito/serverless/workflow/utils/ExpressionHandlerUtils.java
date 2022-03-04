@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -37,14 +39,13 @@ public class ExpressionHandlerUtils {
 
     private static final String EXPR_PREFIX = "${";
     private static final String EXPR_SUFFIX = "}";
-
     private static final String LEGACY_EXPR_PREFIX = "{{";
     private static final String LEGACY_EXPR_SUFFIX = "}}";
-
     private static final String FUNCTION_REFERENCE = "fn:";
     protected static final String SECRET_MAGIC = "$SECRET.";
     protected static final String CONST_MAGIC = "$CONST.";
     protected static final String CONTEXT_MAGIC = "$WORKFLOW.";
+    private static final Collection<String> MAGIC_WORDS = Arrays.asList(SECRET_MAGIC, CONST_MAGIC, CONTEXT_MAGIC);
 
     public static String prepareExpr(String expr, Optional<KogitoProcessContext> context) {
         expr = replaceMagic(expr, SECRET_MAGIC, SecretResolverFactory.getSecretResolver());
@@ -53,6 +54,10 @@ public class ExpressionHandlerUtils {
         }
         Optional<JsonNode> node = context.map(c -> (JsonNode) c.getProcessInstance().getProcess().getMetaData().get(Metadata.CONSTANTS));
         return node.isPresent() ? replaceMagic(expr, CONST_MAGIC, key -> getConstant(key, node.get())) : expr;
+    }
+
+    public static Collection<String> getMagicWords() {
+        return MAGIC_WORDS;
     }
 
     private static Object getConstant(String key, JsonNode node) {
@@ -106,20 +111,21 @@ public class ExpressionHandlerUtils {
         return expr;
     }
 
-    public static String replaceExpr(Workflow workflow, String expr) {
-        expr = trimExpr(expr);
-        if (expr.startsWith(FUNCTION_REFERENCE)) {
-            String functionName = expr.substring(FUNCTION_REFERENCE.length());
-            // covert reference to reference case (and delegate on stack overflow limits for checking loop reference) 
-            return replaceExpr(workflow,
-                    workflow.getFunctions().getFunctionDefs().stream()
-                            .filter(f -> f.getType() == Type.EXPRESSION && f.getName().equals(functionName))
-                            .findAny()
-                            .map(FunctionDefinition::getOperation)
-                            .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName)));
-        } else {
-            return expr;
+    public static String replaceExpr(Workflow workflow, final String expr) {
+        if (expr != null) {
+            String candidate = trimExpr(expr);
+            if (candidate.startsWith(FUNCTION_REFERENCE)) {
+                String functionName = candidate.substring(FUNCTION_REFERENCE.length());
+                //covert reference to reference case (and delegate on stack overflow limits for checking loop reference) 
+                return replaceExpr(workflow,
+                        workflow.getFunctions().getFunctionDefs().stream()
+                                .filter(f -> f.getType() == Type.EXPRESSION && f.getName().equals(functionName))
+                                .findAny()
+                                .map(FunctionDefinition::getOperation)
+                                .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName)));
+            }
         }
+        return expr;
     }
 
     public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {

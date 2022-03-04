@@ -34,6 +34,8 @@ import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
+import static org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils.getMagicWords;
+
 public class JsonPathExpression implements Expression {
 
     private static final Configuration jsonPathConfig = Configuration
@@ -42,7 +44,16 @@ public class JsonPathExpression implements Expression {
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
 
-    private static final Pattern jsonPathRegexPattern = Pattern.compile("^((\\$\\[).*|(\\$\\.).*)");
+    private static final Pattern jsonPathRegexPattern = Pattern.compile(getPatternString());
+
+    private static final String getPatternString() {
+        StringBuilder sb = new StringBuilder("^((\\$\\[).*|(\\$\\.).*");
+        for (String magicWord : getMagicWords()) {
+            sb.append("|(" + magicWord.replace("$", "\\$").replace(".", "\\.") + ").*");
+        }
+        sb.append(')');
+        return sb.toString();
+    }
 
     private final String expr;
     private final ParseContext jsonPath;
