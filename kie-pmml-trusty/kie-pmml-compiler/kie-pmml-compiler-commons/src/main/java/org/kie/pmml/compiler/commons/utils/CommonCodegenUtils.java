@@ -316,7 +316,7 @@ public class CommonCodegenUtils {
                                                 final MethodDeclaration methodDeclaration,
                                                 final String listName) {
         final BlockStmt body = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD, methodDeclaration)));
-        Optional<ReturnStmt> oldReturn =  body.getStatements().parallelStream().filter(statement -> statement instanceof ReturnStmt)
+        Optional<ReturnStmt> oldReturn =  body.getStatements().parallelStream().filter(ReturnStmt.class::isInstance)
                 .map(ReturnStmt.class::cast)
                 .findFirst();
         oldReturn.ifPresent(Node::remove);
