@@ -8208,12 +8208,22 @@ public class Misc2Test {
     }
 
     @Test
-    public void testCCEAfterDeserialization() throws Exception {
-     // kbase serialization is not supported. But leave it for standard-drl.
+    public void testMvelEvalDeserializationWithOr() throws Exception {
         // DROOLS-1155
+        checkEvalDeserialization("mvel");
+    }
+
+    @Test
+    public void testJavaEvalDeserializationWithOr() throws Exception {
+        // DROOLS-6850
+        checkEvalDeserialization("java");
+    }
+
+    private void checkEvalDeserialization(String dialect) throws Exception {
+        // kbase serialization is not supported. But leave it for standard-drl.
         String drl =
                 "function boolean checkLength(int length) { return true; }\n" +
-                "rule R dialect \"mvel\" when\n" +
+                "rule R dialect \"" + dialect +"\" when\n" +
                 "    Boolean()" +
                 "    String( $length : length )\n" +
                 "    eval( checkLength($length) )\n" +
