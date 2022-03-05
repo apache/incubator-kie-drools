@@ -119,13 +119,11 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         }
         List<ExhaustiveSearchLayer> layerList = new ArrayList<>((int) entitySize);
         int depth = 0;
-        InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
         for (Object entity : entitySelector) {
             ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity);
             // Keep in sync with ExhaustiveSearchPhaseConfig.buildMoveSelectorConfig()
             // which includes all genuineVariableDescriptors
-            int reinitializeVariableCount = entitySelector.getEntityDescriptor()
-                    .countReinitializableVariables(scoreDirector, entity);
+            int reinitializeVariableCount = entitySelector.getEntityDescriptor().countReinitializableVariables(entity);
             // Ignore entities with only initialized variables to avoid confusing bound decisions
             if (reinitializeVariableCount == 0) {
                 continue;

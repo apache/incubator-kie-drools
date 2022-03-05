@@ -613,10 +613,10 @@ public class EntityDescriptor<Solution_> {
         return true;
     }
 
-    public int countReinitializableVariables(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    public int countReinitializableVariables(Object entity) {
         int count = 0;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
-            if (variableDescriptor.isReinitializable(scoreDirector, entity)) {
+            if (variableDescriptor.isReinitializable(entity)) {
                 count++;
             }
         }

@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.testdata.domain.nullable;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -28,6 +29,10 @@ public class TestdataNullableEntity extends TestdataObject {
     public static EntityDescriptor<TestdataNullableSolution> buildEntityDescriptor() {
         return TestdataNullableSolution.buildSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataNullableEntity.class);
+    }
+
+    public static GenuineVariableDescriptor<TestdataNullableSolution> buildVariableDescriptorForValue() {
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private TestdataValue value;

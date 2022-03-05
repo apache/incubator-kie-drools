@@ -27,7 +27,6 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -42,7 +41,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.MovableChainedTrailingValueFilter;
 
 /**
@@ -52,8 +50,6 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
 
     private ValueRangeDescriptor<Solution_> valueRangeDescriptor;
     private SelectionFilter<Solution_, Object> movableChainedTrailingValueFilter;
-    private SelectionFilter<Solution_, Object> reinitializeVariableEntityFilter =
-            new NullValueReinitializeVariableEntityFilter<>(this);
     private SelectionSorter<Solution_, Object> increasingStrengthSorter;
     private SelectionSorter<Solution_, Object> decreasingStrengthSorter;
 
@@ -213,8 +209,14 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         return !isInitialized(entity);
     }
 
-    public boolean isReinitializable(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        return reinitializeVariableEntityFilter.accept(scoreDirector, entity);
+    /**
+     * Decides whether an entity is eligible for initialization. This is not an opposite of {@code isInitialized()} because
+     * even a {@link PlanningVariable#nullable()} variable, which is always considered initialized, is reinitializable
+     * if its value is {@code null}.
+     */
+    public boolean isReinitializable(Object entity) {
+        Object value = getValue(entity);
+        return value == null;
     }
 
     public SelectionSorter<Solution_, Object> getIncreasingStrengthSorter() {

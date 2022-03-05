@@ -19,17 +19,15 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 /**
  * Prevents reassigning of already initialized variables during Construction Heuristics and Exhaustive Search.
  * <p>
- * Returns no values for an entity's variable if the variable is already initialized.
+ * Returns no values for an entity's variable if the variable is not reinitializable.
  * <p>
  * Does not implement {@link EntityIndependentValueSelector} because if used like that,
  * it shouldn't be added during configuration in the first place.
@@ -37,8 +35,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
     protected final ValueSelector<Solution_> childValueSelector;
-
-    protected ScoreDirector<Solution_> scoreDirector = null;
 
     public ReinitializeVariableValueSelector(ValueSelector<Solution_> childValueSelector) {
         this.childValueSelector = childValueSelector;
@@ -48,18 +44,6 @@ public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueS
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        super.phaseStarted(phaseScope);
-        scoreDirector = phaseScope.getScoreDirector();
-    }
-
-    @Override
-    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
-        super.phaseEnded(phaseScope);
-        scoreDirector = null;
-    }
 
     @Override
     public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
@@ -101,7 +85,7 @@ public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueS
     }
 
     private boolean isReinitializable(Object entity) {
-        return childValueSelector.getVariableDescriptor().isReinitializable(scoreDirector, entity);
+        return childValueSelector.getVariableDescriptor().isReinitializable(entity);
     }
 
     @Override
