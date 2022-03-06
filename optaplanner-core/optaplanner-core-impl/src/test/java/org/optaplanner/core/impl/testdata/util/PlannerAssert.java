@@ -20,7 +20,7 @@ package org.optaplanner.core.impl.testdata.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import org.assertj.core.util.Streams;
@@ -35,6 +36,7 @@ import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
+import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -253,12 +255,35 @@ public final class PlannerAssert {
         assertThat(iterator).isExhausted();
     }
 
+    public static <O> void assertReverseCodesOfListIterator(ListIterator<O> listIterator, String... codes) {
+        assertThat(listIterator).isNotNull();
+        for (int i = codes.length - 1; i >= 0; i--) {
+            assertCode(codes[i], listIterator.previous());
+        }
+    }
+
+    public static <O> void assertAllReverseCodesOfIterator(ListIterator<O> listIterator, String... codes) {
+        assertReverseCodesOfListIterator(listIterator, codes);
+        assertThat(listIterator.hasPrevious()).isFalse();
+    }
+
     public static void assertAllCodesOfCollection(Collection<?> collection, String... codes) {
         assertAllCodesOfIterator(collection.iterator(), codes);
     }
 
     public static void assertAllCodesOfIterableSelector(IterableSelector<?, ?> selector, long size, String... codes) {
         assertAllCodesOfIterator(selector.iterator(), codes);
+        assertThat(selector.isCountable()).isTrue();
+        assertThat(selector.isNeverEnding()).isFalse();
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertThat(selector.getSize()).isEqualTo(size);
+        }
+    }
+
+    public static void assertAllCodesOfListIterableSelector(ListIterableSelector<?, ?> selector, long size, String... codes) {
+        ListIterator<?> listIterator = selector.listIterator();
+        assertAllCodesOfIterator(listIterator, codes);
+        assertAllReverseCodesOfIterator(listIterator, codes);
         assertThat(selector.isCountable()).isTrue();
         assertThat(selector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
@@ -324,6 +349,21 @@ public final class PlannerAssert {
 
     public static void assertCodesOfNeverEndingOfEntitySelector(EntitySelector<?> entitySelector, long size, String... codes) {
         assertCodesOfNeverEndingIterableSelector(entitySelector, size, codes);
+    }
+
+    public static void assertAllCodesOfOrderedEntitySelector(EntitySelector<?> entitySelector, String... codes) {
+        assertAllCodesOfOrderedEntitySelector(entitySelector, codes.length, codes);
+    }
+
+    public static void assertAllCodesOfOrderedEntitySelector(EntitySelector<?> entitySelector, long size, String... codes) {
+        ListIterator<?> listIterator = entitySelector.listIterator();
+        assertAllCodesOfIterator(listIterator, codes);
+        assertAllReverseCodesOfIterator(listIterator, codes);
+        assertThat(entitySelector.isCountable()).isTrue();
+        assertThat(entitySelector.isNeverEnding()).isFalse();
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertThat(entitySelector.getSize()).isEqualTo(size);
+        }
     }
 
     // ---- Pillar

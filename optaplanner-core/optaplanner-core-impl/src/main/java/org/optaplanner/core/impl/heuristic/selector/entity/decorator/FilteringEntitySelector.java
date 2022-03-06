@@ -24,6 +24,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionListIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -119,16 +120,51 @@ public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<S
 
     }
 
+    protected class JustInTimeFilteringEntityListIterator extends UpcomingSelectionListIterator<Object> {
+        private final ListIterator<Object> childEntityListIterator;
+
+        public JustInTimeFilteringEntityListIterator(ListIterator<Object> childEntityListIterator) {
+            this.childEntityListIterator = childEntityListIterator;
+        }
+
+        @Override
+        protected Object createUpcomingSelection() {
+            Object next;
+            do {
+                if (!childEntityListIterator.hasNext()) {
+                    return noUpcomingSelection();
+                }
+                next = childEntityListIterator.next();
+            } while (!accept(scoreDirector, next));
+            return next;
+        }
+
+        @Override
+        protected Object createPreviousSelection() {
+            Object previous;
+            do {
+                if (!childEntityListIterator.hasPrevious()) {
+                    return noPreviousSelection();
+                }
+                previous = childEntityListIterator.previous();
+            } while (!accept(scoreDirector, previous));
+            return previous;
+        }
+    }
+
     @Override
     public ListIterator<Object> listIterator() {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
+        return new JustInTimeFilteringEntityListIterator(childEntitySelector.listIterator());
     }
 
     @Override
     public ListIterator<Object> listIterator(int index) {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
+        JustInTimeFilteringEntityListIterator listIterator =
+                new JustInTimeFilteringEntityListIterator(childEntitySelector.listIterator());
+        for (int i = 0; i < index; i++) {
+            listIterator.next();
+        }
+        return listIterator;
     }
 
     @Override

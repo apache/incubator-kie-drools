@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfEntitySelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfOrderedEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import java.util.Arrays;
@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -38,29 +39,52 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-class FilteringEntitySelectorTest {
+public class FilteringEntitySelectorTest {
 
     @Test
-    void filterCacheTypeSolver() {
-        filter(SelectionCacheType.SOLVER, 1);
+    public void filterCacheTypeSolver() {
+        filter(SelectionCacheType.SOLVER, 1, SelectionOrder.RANDOM);
     }
 
     @Test
-    void filterCacheTypePhase() {
-        filter(SelectionCacheType.PHASE, 2);
+    public void filterCacheTypePhase() {
+        filter(SelectionCacheType.PHASE, 2, SelectionOrder.RANDOM);
     }
 
     @Test
-    void filterCacheTypeStep() {
-        filter(SelectionCacheType.STEP, 5);
+    public void filterCacheTypeStep() {
+        filter(SelectionCacheType.STEP, 5, SelectionOrder.RANDOM);
     }
 
     @Test
-    void filterCacheTypeJustInTime() {
-        filter(SelectionCacheType.JUST_IN_TIME, 5);
+    public void filterCacheTypeJustInTime() {
+        filter(SelectionCacheType.JUST_IN_TIME, 5, SelectionOrder.RANDOM);
     }
 
-    public void filter(SelectionCacheType cacheType, int timesCalled) {
+    @Test
+    public void filterOrderedCacheTypeSolver() {
+        filter(SelectionCacheType.JUST_IN_TIME, 5, SelectionOrder.ORIGINAL);
+    }
+
+    @FunctionalInterface
+    private interface PlannerAssertFunc {
+        public void apply(EntitySelector entitySelector, long size, String... codes);
+    }
+
+    private void verifyStep(EntitySelector entitySelector, SelectionCacheType cacheType,
+            AbstractPhaseScope phaseScope, AbstractStepScope stepScope, SelectionOrder selectionOrder) {
+        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        entitySelector.stepStarted(stepScope);
+        if (selectionOrder == SelectionOrder.RANDOM) {
+            assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        }
+        if (selectionOrder == SelectionOrder.ORIGINAL) {
+            assertAllCodesOfOrderedEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        }
+        entitySelector.stepEnded(stepScope);
+    }
+
+    private void filter(SelectionCacheType cacheType, int timesCalled, SelectionOrder selectionOrder) {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
 
@@ -79,16 +103,10 @@ class FilteringEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        entitySelector.stepStarted(stepScopeA1);
-        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
-        entitySelector.stepEnded(stepScopeA1);
+        verifyStep(entitySelector, cacheType, phaseScopeA, stepScopeA1, selectionOrder);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        entitySelector.stepStarted(stepScopeA2);
-        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
-        entitySelector.stepEnded(stepScopeA2);
+        verifyStep(entitySelector, cacheType, phaseScopeA, stepScopeA2, selectionOrder);
 
         entitySelector.phaseEnded(phaseScopeA);
 
@@ -97,44 +115,27 @@ class FilteringEntitySelectorTest {
         entitySelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB1);
-        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
-        entitySelector.stepEnded(stepScopeB1);
+        verifyStep(entitySelector, cacheType, phaseScopeB, stepScopeB1, selectionOrder);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB2);
-        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
-        entitySelector.stepEnded(stepScopeB2);
+        verifyStep(entitySelector, cacheType, phaseScopeB, stepScopeB2, selectionOrder);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
-        entitySelector.stepStarted(stepScopeB3);
-        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
-        entitySelector.stepEnded(stepScopeB3);
+        verifyStep(entitySelector, cacheType, phaseScopeB, stepScopeB3, selectionOrder);
 
         entitySelector.phaseEnded(phaseScopeB);
 
         entitySelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(childEntitySelector, 1, 2, 5);
-        verify(childEntitySelector, times(timesCalled)).iterator();
-        verify(childEntitySelector, times(timesCalled)).getSize();
-    }
-
-    @Test
-    void listIteratorWithRandomSelection() {
-        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(entitySelector::listIterator);
-    }
-
-    @Test
-    void indexedListIteratorWithRandomSelection() {
-        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> entitySelector.listIterator(0));
+        if (selectionOrder == SelectionOrder.RANDOM) {
+            verify(childEntitySelector, times(timesCalled)).iterator();
+            verify(childEntitySelector, times(timesCalled)).getSize();
+        }
+        if (selectionOrder == SelectionOrder.ORIGINAL) {
+            verify(childEntitySelector, times(timesCalled)).listIterator();
+            verify(childEntitySelector, times(timesCalled)).getSize();
+        }
     }
 
 }
