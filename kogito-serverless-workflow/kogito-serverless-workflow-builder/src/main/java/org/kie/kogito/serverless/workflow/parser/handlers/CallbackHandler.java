@@ -52,9 +52,9 @@ public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> 
         String eventTimeout = resolveEventTimeout(state, workflow);
         if (eventTimeout != null) {
             // Create the event based exclusive split node.
-            SplitFactory<?> splitNode = eventBasedExclusiveSplitNode(embeddedSubProcess, parserContext.newId());
+            SplitFactory<?> splitNode = eventBasedExclusiveSplitNode(embeddedSubProcess.splitNode(parserContext.newId()));
             // Create the join node for joining the event fired and the timer fired branches.
-            JoinFactory<?> joinNode = joinExclusiveNode(embeddedSubProcess, parserContext.newId());
+            JoinFactory<?> joinNode = joinExclusiveNode(embeddedSubProcess.joinNode(parserContext.newId()));
             // Connect the currentNode with the split
             connect(currentNode, splitNode);
             // Create the event fired branch, normal path if the event arrives in time.
@@ -63,7 +63,7 @@ public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> 
             // Connect the event fired branch last node with the join node.
             connect(eventFiredBranchLastNode, joinNode);
             // Create the timer fired branch
-            TimerNodeFactory<?> eventTimeoutTimerNode = timerNode(embeddedSubProcess, parserContext.newId(), eventTimeout);
+            TimerNodeFactory<?> eventTimeoutTimerNode = timerNode(embeddedSubProcess.timerNode(parserContext.newId()), eventTimeout);
             connect(splitNode, eventTimeoutTimerNode);
             // Connect the timer fired branch last node with the join node
             currentNode = connect(eventTimeoutTimerNode, joinNode);

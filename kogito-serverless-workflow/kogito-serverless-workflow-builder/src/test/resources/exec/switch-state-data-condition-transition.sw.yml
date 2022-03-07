@@ -1,27 +1,22 @@
-id: switchworkflow
-name: switch-wf
+id: switch_state_data_condition_transition
+name: Switch State Data Condition Transition Test
+expressionLang: jsonpath
 version: '1.0'
-start: AddInfo
+start: ChooseOnAge
 states:
-  - name: AddInfo
-    type: inject
-    data:
-      name: john
-      age: '20'
-    transition: ChooseOnAge
   - name: ChooseOnAge
     type: switch
     dataConditions:
       - condition: "{{ $.[?(@.age  >= 18)] }}"
         transition: Approve
-      - condition: "{{ $.[?(@.age  < 18)] }}"
+      - condition: "{{ $.[?((@.age  >= 0) && (@.age  < 18))] }}"
         transition: Deny
     defaultCondition:
-      transition: Approve
+      transition: Deny
   - name: Approve
     type: inject
     data:
-      decision: Approve
+      decision: Approved
     end: true
   - name: Deny
     type: inject

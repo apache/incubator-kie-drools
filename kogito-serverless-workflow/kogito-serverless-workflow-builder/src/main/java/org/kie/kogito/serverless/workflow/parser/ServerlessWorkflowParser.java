@@ -182,27 +182,30 @@ public class ServerlessWorkflowParser {
         return result;
     }
 
-    public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> eventBasedExclusiveSplitNode(T nodeFactory, long nodeId) {
-        return nodeFactory.splitNode(nodeId)
-                .name("ExclusiveSplit_" + nodeId)
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> eventBasedExclusiveSplitNode(SplitFactory<T> nodeFactory) {
+        return nodeFactory.name("ExclusiveSplit_" + nodeFactory.getNode().getId())
                 .type(Split.TYPE_XAND)
-                .metaData(UNIQUE_ID, Long.toString(nodeId))
+                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()))
                 .metaData("EventBased", "true");
     }
 
-    public static <T extends RuleFlowNodeContainerFactory<T, ?>> JoinFactory<T> joinExclusiveNode(T nodeFactory, long nodeId) {
-        return nodeFactory.joinNode(nodeId)
-                .name("ExclusiveJoin_" + nodeId)
-                .type(Join.TYPE_XOR)
-                .metaData(UNIQUE_ID, Long.toString(nodeId));
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> exclusiveSplitNode(SplitFactory<T> nodeFactory) {
+        return nodeFactory.name("ExclusiveSplit_" + nodeFactory.getNode().getId())
+                .type(Split.TYPE_XOR)
+                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()));
     }
 
-    public static <T extends RuleFlowNodeContainerFactory<T, ?>> TimerNodeFactory<T> timerNode(T nodeFactory, long nodeId, String duration) {
-        return nodeFactory.timerNode(nodeId)
-                .name("TimerNode_" + nodeId)
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> JoinFactory<T> joinExclusiveNode(JoinFactory<T> nodeFactory) {
+        return nodeFactory.name("ExclusiveJoin_" + nodeFactory.getNode().getId())
+                .type(Join.TYPE_XOR)
+                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()));
+    }
+
+    public static <T extends RuleFlowNodeContainerFactory<T, ?>> TimerNodeFactory<T> timerNode(TimerNodeFactory<T> nodeFactory, String duration) {
+        return nodeFactory.name("TimerNode_" + nodeFactory.getNode().getId())
                 .type(TIME_DURATION)
                 .delay(duration)
-                .metaData(UNIQUE_ID, Long.toString(nodeId))
+                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()))
                 .metaData("EventType", "Timer");
     }
 }

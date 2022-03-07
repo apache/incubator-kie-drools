@@ -24,11 +24,12 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
-import org.jbpm.workflow.core.node.Split;
+import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.defaultdef.DefaultConditionDefinition;
 import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.states.SwitchState;
 import io.serverlessworkflow.api.switchconditions.DataCondition;
@@ -36,6 +37,12 @@ import io.serverlessworkflow.api.switchconditions.EventCondition;
 import io.serverlessworkflow.api.transitions.Transition;
 
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.eventBasedExclusiveSplitNode;
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.exclusiveSplitNode;
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.timerNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.validation.SwitchValidator.validateConditions;
+import static org.kie.kogito.serverless.workflow.parser.handlers.validation.SwitchValidator.validateDefaultCondition;
+import static org.kie.kogito.serverless.workflow.utils.TimeoutsConfigResolver.resolveEventTimeout;
 
 public class SwitchHandler extends StateHandler<SwitchState> {
 
@@ -54,15 +61,12 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
     @Override
     public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        long id = parserContext.newId();
-        SplitFactory<?> splitFactory = factory.splitNode(id).name(state.getName());
-        // check if data-based or event-based switch state
-        if (!state.getDataConditions().isEmpty()) {
-            splitFactory.type(Split.TYPE_XOR);
+        SplitFactory<?> splitFactory;
+        validateConditions(state, workflow);
+        if (isDataBased()) {
+            splitFactory = exclusiveSplitNode(factory.splitNode(parserContext.newId())).name(state.getName());
         } else {
-            splitFactory.type(Split.TYPE_XAND);
-            splitFactory.metaData("UniqueId", Long.toString(id));
-            splitFactory.metaData("EventBased", "true");
+            splitFactory = eventBasedExclusiveSplitNode(factory.splitNode(parserContext.newId())).name(state.getName());
         }
         return new MakeNodeResult(splitFactory);
     }
@@ -72,20 +76,46 @@ public class SwitchHandler extends StateHandler<SwitchState> {
             Transition transition,
             long sourceId) {
         super.handleTransitions(factory, transition, sourceId);
-        if (!state.getDataConditions().isEmpty()) {
+        if (isDataBased()) {
             finalizeDataBasedSwitchState(factory);
         } else {
             finalizeEventBasedSwitchState(factory);
         }
     }
 
+    private boolean isDataBased() {
+        return !state.getDataConditions().isEmpty();
+    }
+
     private void finalizeEventBasedSwitchState(RuleFlowNodeContainerFactory<?, ?> factory) {
+        NodeFactory<?, ?> splitNode = getNode();
         List<EventCondition> conditions = state.getEventConditions();
+        DefaultConditionDefinition defaultCondition = state.getDefaultCondition();
+        if (defaultCondition != null) {
+            validateDefaultCondition(defaultCondition, state, workflow, parserContext);
+            String eventTimeout = resolveEventTimeout(state, workflow);
+            // Create the timer for controlling the eventTimeout and connect it with the exclusive split.
+            TimerNodeFactory<?> eventTimeoutTimerNode = timerNode(factory.timerNode(parserContext.newId()), eventTimeout);
+            connect(splitNode, eventTimeoutTimerNode);
+            Transition transition = defaultCondition.getTransition();
+            if (transition != null) {
+                StateHandler<?> targetState = parserContext.getStateHandler(transition);
+                // Connect the timer with the target state.
+                targetState.connect(factory, eventTimeoutTimerNode.getNode().getId());
+            } else {
+                // Connect the timer with a process finalization sequence that might produce events.
+                endIt(eventTimeoutTimerNode.getNode().getId(), factory, defaultCondition.getEnd().getProduceEvents());
+            }
+        }
+        // Process the event conditions.
         for (EventCondition eventCondition : conditions) {
             StateHandler<?> targetState = parserContext.getStateHandler(eventCondition.getTransition());
+            // Create the event reception and later processing sequence.
             MakeNodeResult eventNode =
                     filterAndMergeNode(factory, eventCondition.getEventDataFilter(), (f, inputVar, outputVar) -> consumeEventNode(f, eventCondition.getEventRef(), inputVar, outputVar));
-            factory.connection(getNode().getNode().getId(), eventNode.getIncomingNode().getNode().getId());
+            // Connect it with the split node
+            factory.connection(splitNode.getNode().getId(), eventNode.getIncomingNode().getNode().getId());
+            // Connect the last node of the sequence with the target state.
             targetState.connect(factory, eventNode.getOutgoingNode().getNode().getId());
         }
     }
@@ -93,14 +123,16 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     private void finalizeDataBasedSwitchState(RuleFlowNodeContainerFactory<?, ?> factory) {
         final NodeFactory<?, ?> startNode = getNode();
         final long splitId = startNode.getNode().getId();
+        DefaultConditionDefinition defaultCondition = state.getDefaultCondition();
         // set default connection
-        if (state.getDefaultCondition() != null) {
-            Transition transition = state.getDefaultCondition().getTransition();
-            StateHandler<?> stateHandler = parserContext.getStateHandler(transition);
-            if (stateHandler != null) {
+        if (defaultCondition != null) {
+            validateDefaultCondition(defaultCondition, state, workflow, parserContext);
+            Transition transition = defaultCondition.getTransition();
+            if (transition != null) {
+                StateHandler<?> stateHandler = parserContext.getStateHandler(transition);
                 startNode.metaData(XORSPLITDEFAULT, concatId(splitId, stateHandler.getNode().getNode().getId()));
-            } else if (state.getDefaultCondition().getEnd() != null) {
-                EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, state.getDefaultCondition().getEnd().getProduceEvents());
+            } else {
+                EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, defaultCondition.getEnd().getProduceEvents());
                 startNode.metaData(XORSPLITDEFAULT, concatId(splitId, endNodeFactory.getNode().getId()));
             }
         }

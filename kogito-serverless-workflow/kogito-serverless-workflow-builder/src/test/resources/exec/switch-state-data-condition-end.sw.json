@@ -1,6 +1,6 @@
 {
-  "id": "switchworkflow",
-  "name": "switch-wf",
+  "id": "switch_state_data_condition_end",
+  "name": "Switch State Data Condition End Test",
   "expressionLang": "jsonpath",
   "version": "1.0",
   "start": "AddInfo",
@@ -9,8 +9,7 @@
       "name": "AddInfo",
       "type": "inject",
       "data": {
-        "name": "john",
-        "age": "20"
+        "decision": "EndDecision"
       },
       "transition": "ChooseOnAge"
     },
@@ -23,7 +22,7 @@
           "end": true
         },
         {
-          "condition": "{{ $.[?(@.age  < 18)] }}",
+          "condition": "{{ $.[?((@.age  >= 0) && (@.age  < 18))] }}",
           "end": true
         }
       ],

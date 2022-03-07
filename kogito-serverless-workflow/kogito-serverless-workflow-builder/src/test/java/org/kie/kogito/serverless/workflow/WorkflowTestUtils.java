@@ -24,10 +24,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.Split;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 
@@ -93,6 +96,12 @@ public class WorkflowTestUtils {
                 .isEqualTo(expectedName);
     }
 
+    public static void assertExclusiveSplit(Split splitNode, String name, int constrainsSize) {
+        assertHasName(splitNode, name);
+        assertThat(splitNode.getConstraints()).hasSize(constrainsSize);
+        assertThat(splitNode.getType()).isEqualTo(Split.TYPE_XOR);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T extends Node> T assertClassAndGetNode(NodeContainer nodeContainer, int nodeIndex, Class<T> expectedNodeClass) {
         Node node = nodeContainer.getNodes()[nodeIndex];
@@ -134,5 +143,18 @@ public class WorkflowTestUtils {
                 .withFailMessage("Process: (%s, %s), is expected to have %s nodes, but has %s.",
                         process.getId(), process.getName(), expectedSize, process.getNodes().length)
                 .hasSize(expectedSize);
+    }
+
+    public static void assertConstraintIsDefault(Split splitNode, String constraintName) {
+        Constraint constraint = splitNode.getConstraints().values().stream()
+                .filter(c -> constraintName.equals(c.getName()))
+                .findFirst().orElse(null);
+        assertThat(constraint)
+                .withFailMessage("No constraint with name: %s was found for the splitNode: %s",
+                        constraintName, splitNode.getId())
+                .isNotNull();
+        assertThat(Objects.requireNonNull(constraint).isDefault())
+                .withFailMessage("Constraint with name: %s is not marked as default", constraintName)
+                .isTrue();
     }
 }
