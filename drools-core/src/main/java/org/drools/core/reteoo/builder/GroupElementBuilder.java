@@ -129,7 +129,7 @@ public class GroupElementBuilder
             boolean hasTimer = context.getRule().getTimer() != null;
             RuleBaseConfiguration conf = context.getRuleBase().getConfiguration();
             boolean lockOnActive = context.getRule().isLockOnActive();
-            boolean eager = context.getRule().getMetaData( Propagation.class.getName() ) != null;
+            boolean eager = context.getRule().getMetaData(Propagation.class.getName()) != null || context.getRule().getMetaData(Propagation.class.getSimpleName()) != null;
             return !isInitialFact && !hasTimer && !lockOnActive && !eager &&
                     !conf.isMultithreadEvaluation() && !conf.isSequential() && !conf.isDeclarativeAgenda();
         }
