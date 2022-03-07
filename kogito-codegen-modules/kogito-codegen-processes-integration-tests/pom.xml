@@ -8,8 +8,8 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>kogito-codegen-integration-tests</artifactId>
-    <name>Kogito :: Codegen Integration Tests</name>
+    <artifactId>kogito-codegen-processes-integration-tests</artifactId>
+    <name>Kogito :: Codegen Processes Integration Tests</name>
 
     <properties>
         <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5808 -->
@@ -46,7 +46,7 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-codegen-predictions</artifactId>
+            <artifactId>kogito-codegen-processes</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -73,6 +73,44 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- OpenApi Required Libraries for Codegen Test -->
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-jsonpath-expression</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-jq-expression</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

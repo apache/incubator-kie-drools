@@ -145,6 +145,7 @@ public class BusinessRuleTaskIT extends AbstractCodegenIT {
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("decision/models/dmnprocess.bpmn2"));
         resourcesTypeMap.put(TYPE.DECISION, Collections.singletonList("decision/models/vacationDaysAlt/vacationDaysAlt.dmn"));
         Application app = generateCode(resourcesTypeMap);
+        assertThat(app).isNotNull();
         Process<? extends Model> p =
                 app.get(Processes.class)
                         .processById("DmnProcess");

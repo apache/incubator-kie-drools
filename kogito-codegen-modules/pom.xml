@@ -46,6 +46,7 @@
       </activation>
       <modules>
         <module>kogito-codegen-integration-tests</module>
+        <module>kogito-codegen-processes-integration-tests</module>
       </modules>
     </profile>
   </profiles>
