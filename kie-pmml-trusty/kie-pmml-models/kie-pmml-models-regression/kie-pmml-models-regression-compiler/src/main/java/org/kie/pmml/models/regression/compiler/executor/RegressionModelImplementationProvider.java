@@ -83,11 +83,6 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    @Override
-    public boolean isInterpreted() {
-        return true;
-    }
-
     protected void validate(final List<Field<?>> fields, final RegressionModel toValidate) {
         if (toValidate.getRegressionTables() == null || toValidate.getRegressionTables().isEmpty()) {
             throw new KiePMMLException("At least one RegressionTable required");
