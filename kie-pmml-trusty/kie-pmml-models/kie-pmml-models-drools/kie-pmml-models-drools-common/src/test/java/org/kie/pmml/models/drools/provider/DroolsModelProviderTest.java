@@ -77,7 +77,7 @@ public class DroolsModelProviderTest {
         droolsModelProvider = new DroolsModelProvider<Scorecard, KiePMMLDroolsModel>() {
 
             @Override
-            public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+            public Class<KiePMMLDroolsModel> getKiePMMLModelClass() {
                 return KiePMMLDroolsModel.class;
             }
 

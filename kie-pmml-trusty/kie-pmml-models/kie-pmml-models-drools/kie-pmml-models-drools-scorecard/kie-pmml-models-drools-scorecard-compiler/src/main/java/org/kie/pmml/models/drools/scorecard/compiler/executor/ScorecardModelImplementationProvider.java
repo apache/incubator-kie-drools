@@ -44,7 +44,7 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+    public Class<KiePMMLScorecardModel> getKiePMMLModelClass() {
         return KiePMMLScorecardModel.class;
     }
 

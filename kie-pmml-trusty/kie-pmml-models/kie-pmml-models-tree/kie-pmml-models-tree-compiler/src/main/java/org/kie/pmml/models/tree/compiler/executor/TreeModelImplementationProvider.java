@@ -43,7 +43,7 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
     }
 
     @Override
-    public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+    public Class<KiePMMLTreeModel> getKiePMMLModelClass() {
         return KiePMMLTreeModel.class;
     }
 

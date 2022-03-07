@@ -47,7 +47,7 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     }
 
     @Override
-    public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+    public Class<KiePMMLMiningModel> getKiePMMLModelClass() {
         return KiePMMLMiningModel.class;
     }
 

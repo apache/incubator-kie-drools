@@ -55,7 +55,7 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     }
 
     @Override
-    public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+    public Class<KiePMMLTestingModel> getKiePMMLModelClass() {
         return KiePMMLTestingModel.class;
     }
 

@@ -58,7 +58,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+    public Class<KiePMMLRegressionModel> getKiePMMLModelClass() {
         return KiePMMLRegressionModel.class;
     }
 

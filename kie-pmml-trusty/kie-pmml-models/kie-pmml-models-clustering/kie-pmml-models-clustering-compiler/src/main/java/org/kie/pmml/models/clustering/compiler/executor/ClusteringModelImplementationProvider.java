@@ -44,7 +44,7 @@ private static final Logger logger = LoggerFactory.getLogger(ClusteringModelImpl
     }
 
     @Override
-    public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+    public Class<KiePMMLClusteringModel> getKiePMMLModelClass() {
         return KiePMMLClusteringModel.class;
     }
 
