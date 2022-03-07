@@ -27,8 +27,8 @@ public class KiePMMLCluster {
     private final Optional<String> id;
     private final Optional<String> name;
 
-    public KiePMMLCluster(String id, String name, Double... values) {
-        this.values = Collections.unmodifiableList(Stream.of(values).collect(Collectors.toList()));
+    public KiePMMLCluster(String id, String name, List<Double> values) {
+        this.values = Collections.unmodifiableList(values);
         this.id = Optional.ofNullable(id);
         this.name = Optional.ofNullable(name);
     }

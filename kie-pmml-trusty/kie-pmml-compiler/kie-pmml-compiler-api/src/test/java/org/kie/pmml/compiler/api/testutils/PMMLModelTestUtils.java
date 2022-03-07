@@ -26,6 +26,8 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
+import org.dmg.pmml.CompareFunction;
+import org.dmg.pmml.ComparisonMeasure;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
@@ -35,6 +37,7 @@ import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.DiscretizeBin;
+import org.dmg.pmml.Euclidean;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldColumnPair;
 import org.dmg.pmml.FieldName;
@@ -45,6 +48,7 @@ import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.dmg.pmml.LinearNorm;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.MapValues;
+import org.dmg.pmml.Measure;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
@@ -69,6 +73,13 @@ import org.dmg.pmml.TextIndex;
 import org.dmg.pmml.TextIndexNormalization;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.Value;
+import org.dmg.pmml.Visitor;
+import org.dmg.pmml.VisitorAction;
+import org.dmg.pmml.clustering.Cluster;
+import org.dmg.pmml.clustering.ClusteringField;
+import org.dmg.pmml.clustering.ClusteringModel;
+import org.dmg.pmml.clustering.Comparisons;
+import org.dmg.pmml.clustering.MissingValueWeights;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
@@ -292,6 +303,23 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
+    public static ClusteringModel getClusteringModel(String modelName, MiningFunction miningFunction,
+                                                     MiningSchema miningSchema,
+                                                     List<ClusteringField> clusteringFields,
+                                                     List<Cluster> clusters) {
+        ClusteringModel toReturn = new ClusteringModel();
+        toReturn.setModelName(modelName);
+        toReturn.setMiningFunction(miningFunction);
+        toReturn.setMiningSchema(miningSchema);
+        toReturn.addClusteringFields(clusteringFields.toArray(new ClusteringField[0]));
+        toReturn.addClusters(clusters.toArray(new Cluster[0]));
+        toReturn.setModelClass(getRandomModelClass());
+        toReturn.setComparisonMeasure(getRandomComparisonMeasure());
+        toReturn.setMissingValueWeights(getRandomMissingValueWeights());
+        return toReturn;
+    }
+
+
     public static DataField getDataField(String fieldName, OpType opType) {
         DataField toReturn = new DataField();
         toReturn.setName(FieldName.create(fieldName));
@@ -341,6 +369,18 @@ public class PMMLModelTestUtils {
         toReturn.setExpression(expression);
         toReturn.setDisplayName("Display-" + fieldName);
         return toReturn;
+    }
+
+    public static ComparisonMeasure getRandomComparisonMeasure() {
+        ComparisonMeasure toReturn = new ComparisonMeasure();
+        toReturn.setCompareFunction(getRandomCompareFunction());
+        toReturn.setKind(getRandomKind());
+        toReturn.setMeasure(getRandomMeasure());
+        return toReturn;
+    }
+
+    public static Measure getRandomMeasure() {
+        return new Euclidean();
     }
 
     public static DataField getRandomDataField() {
@@ -440,6 +480,31 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
+    public static Cluster getRandomCluster() {
+        Random random = new Random();
+        Cluster toReturn = new Cluster();
+        toReturn.setName(RandomStringUtils.random(6, true, false));
+        toReturn.setId(String.valueOf(random.nextInt()));
+        return toReturn;
+    }
+
+    public static ClusteringField getRandomClusteringField() {
+        Random random = new Random();
+        ClusteringField toReturn = new ClusteringField();
+        toReturn.setCenterField(getRandomClusteringFieldCenterField());
+        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setCompareFunction(getRandomCompareFunction());
+        toReturn.setFieldWeight(random.nextDouble());
+        toReturn.setComparisons(getRandomComparisons());
+        toReturn.setSimilarityScale(random.nextDouble());
+        return toReturn;
+    }
+
+    public static Comparisons getRandomComparisons() {
+        Comparisons toReturn = new Comparisons();
+        return toReturn;
+    }
+
     // Expressions
 
     public static Apply getRandomApply() {
@@ -486,6 +551,11 @@ public class PMMLModelTestUtils {
         toReturn.setOutputColumn(RandomStringUtils.random(6, true, false));
         toReturn.setInlineTable(getRandomInlineTableWithCells());
         toReturn.setTableLocator(getRandomTableLocator());
+        return toReturn;
+    }
+
+    public static MissingValueWeights getRandomMissingValueWeights() {
+        MissingValueWeights toReturn = new MissingValueWeights();
         return toReturn;
     }
 
@@ -724,17 +794,29 @@ public class PMMLModelTestUtils {
         return getRandomEnum(Target.CastInteger.values());
     }
 
-    public static DataType getRandomDataType() {
-        List<DataType> dataTypes = getDataTypes();
-        return getRandomEnum(dataTypes.toArray(new DataType[0]));
+    public static ClusteringField.CenterField getRandomClusteringFieldCenterField() {
+        return getRandomEnum(ClusteringField.CenterField.values());
+    }
+
+    public static CompareFunction getRandomCompareFunction() {
+        return getRandomEnum(CompareFunction.values());
     }
 
     public static Interval.Closure getRandomClosure() {
         return getRandomEnum(Interval.Closure.values());
     }
 
+    public static DataType getRandomDataType() {
+        List<DataType> dataTypes = getDataTypes();
+        return getRandomEnum(dataTypes.toArray(new DataType[0]));
+    }
+
     public static InvalidValueTreatmentMethod getRandomInvalidValueTreatmentMethod() {
         return getRandomEnum(InvalidValueTreatmentMethod.values());
+    }
+
+    public static  ComparisonMeasure.Kind getRandomKind(){
+        return getRandomEnum(ComparisonMeasure.Kind.values());
     }
 
     public static TextIndex.LocalTermWeights getRandomLocalTermWeights() {
@@ -747,6 +829,10 @@ public class PMMLModelTestUtils {
 
     public static MissingValueTreatmentMethod getRandomMissingValueTreatmentMethod() {
         return getRandomEnum(MissingValueTreatmentMethod.values());
+    }
+
+    public static ClusteringModel.ModelClass getRandomModelClass() {
+        return getRandomEnum(ClusteringModel.ModelClass.values());
     }
 
     public static OpType getRandomOpType() {
@@ -872,6 +958,15 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
+    public static <T extends Named, E extends Enum<E>> List<E> getEnumList(T[] source, Class<E> enumClass) {
+        return Arrays.stream(source).map(namedEnum -> Enum.valueOf(enumClass, namedEnum.toString())).collect(Collectors.toList());
+    }
+
+    public static <T extends Enum<?>> T getRandomEnum(T[] source) {
+        Random random = new Random();
+        return source[random.nextInt(source.length)];
+    }
+
     private static List<SimplePredicate> getRandomSimplePredicates(final List<SimplePredicate> simplePredicates) {
         int firstIndex = new Random().nextInt(simplePredicates.size());
         int secondIndex = -1;
@@ -883,14 +978,5 @@ public class PMMLModelTestUtils {
 
     private static CompoundPredicate.BooleanOperator getRandomCompoundPredicateAndOrOperator(int counter) {
         return counter % 2 == 0 ? CompoundPredicate.BooleanOperator.AND : CompoundPredicate.BooleanOperator.OR;
-    }
-
-    private static <T extends Named, E extends Enum<E>> List<E> getEnumList(T[] source, Class<E> enumClass) {
-        return Arrays.stream(source).map(namedEnum -> Enum.valueOf(enumClass, namedEnum.toString())).collect(Collectors.toList());
-    }
-
-    private static <T extends Enum<?>> T getRandomEnum(T[] source) {
-        Random random = new Random();
-        return source[random.nextInt(source.length)];
     }
 }
