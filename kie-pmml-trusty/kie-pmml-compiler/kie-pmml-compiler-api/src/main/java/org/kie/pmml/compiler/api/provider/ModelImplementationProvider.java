@@ -15,8 +15,6 @@
  */
 package org.kie.pmml.compiler.api.provider;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.dmg.pmml.Model;
@@ -36,6 +34,8 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
 
     PMML_MODEL getPMMLModelType();
 
+    Class<? extends KiePMMLModel> getKiePMMLModelClass();
+
     /**
      * Method to be called for a <b>runtime</b> compilation
      * @param compilationDTO
@@ -52,25 +52,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      */
     default KiePMMLModelWithSources getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO) {
         final Map<String, String> sourcesMap = getSourcesMap(compilationDTO);
-        Type[] types = this.getClass().getGenericInterfaces();
-        Type providerType = types[0];
-        boolean isInterpreted = false;
-        try {
-            Type[] providerSubtypes = ((ParameterizedType) providerType).getActualTypeArguments();
-            Type kiePMMLType = providerSubtypes[1]; // The first Parameter is the jpmml model, the second is the KiePMML
-            // one
-            Type[] kiePMMLSubtypes = ((Class<?>) kiePMMLType).getGenericInterfaces();
-            if (kiePMMLSubtypes.length > 0) {
-                for (Type tp : kiePMMLSubtypes) {
-                    isInterpreted = tp.equals(IsInterpreted.class);
-                    if (isInterpreted) {
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new KiePMMLException("Failed to detect `IsInterpreted` status for " + this.getClass().getName(), e);
-        }
+        boolean isInterpreted = IsInterpreted.class.isAssignableFrom(getKiePMMLModelClass());
         return new KiePMMLModelWithSources(compilationDTO.getModelName(),
                                            compilationDTO.getPackageName(),
                                            compilationDTO.getKieMiningFields(),

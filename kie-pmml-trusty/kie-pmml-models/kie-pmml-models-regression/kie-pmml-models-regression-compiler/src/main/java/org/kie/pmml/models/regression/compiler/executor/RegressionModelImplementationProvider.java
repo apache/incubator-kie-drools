@@ -29,6 +29,7 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -54,6 +55,11 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     public PMML_MODEL getPMMLModelType() {
         logger.trace("getPMMLModelType");
         return PMML_MODEL.REGRESSION_MODEL;
+    }
+
+    @Override
+    public Class<? extends KiePMMLModel> getKiePMMLModelClass() {
+        return KiePMMLRegressionModel.class;
     }
 
     @Override

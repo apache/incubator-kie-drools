@@ -1,0 +1,14 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant Compiletime
+participant Assembler
+participant Compiler
+
+Compiletime -> Assembler: search model
+Assembler -> Compiler: codegen
+Compiler -> Assembler: sources
+Assembler -> Compiletime: kjar
+
+@enduml

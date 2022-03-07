@@ -1,0 +1,97 @@
+@startuml
+'default
+top to bottom direction
+
+package "Global view" {
+
+package "General API" {
+
+    component runtime_api [
+        General Runtime API
+        This component defines Runtime APIs commons to all containers
+        ]
+
+    component compile_api [
+        General Compile API
+        This component defines Compile APIs commons to all containers
+        ]
+}
+
+package {
+  package "KOGITO" {
+    component kogito_runtime_api [
+            Kogito-specific Runtime API
+            This component defines Runtime APIs specific to Kogito
+     ]
+
+    component kogito_compile_api [
+            Kogito-specific Compile API
+            This component defines Compile APIs specific to Kogito
+    ]
+
+    component kogito_model_runtime [
+            Kogito Model-specific Runtime adapter
+            This component defines Model-specific Runtime adapter for Kogito
+    ]
+
+    component kogito_model_compile [
+             Kogito Model-specific Compile adapter
+             This component defines Model-specific Compile adapter for Kogito
+    ]
+  }
+
+  package "MODELS" {
+        component model_runtime [
+             Model-specific Runtime
+             This component defines Model-specific Runtime implementation
+        ]
+
+        component model_compile [
+             Model-specific Compile
+             This component defines Model-specific Compile implementation
+        ]
+  }
+
+  package "DROOLS" {
+      component drools_runtime_api [
+              Drools-specific Runtime API
+              This component defines Runtime APIs specific to Drools
+      ]
+
+      component drools_compile_api [
+               Drools-specific Compile API
+               This component defines Compile APIs specific to Drools
+      ]
+
+      component drools_model_runtime [
+               Drools Model-specific Runtime adapter
+               This component defines Model-specific Runtime adapter for Drools
+      ]
+
+      component drools_model_compile [
+              Drools Model-specific Compile adapter
+              This component defines Model-specific Compile adapter for Drools
+      ]
+
+  }
+
+}
+
+model_runtime -> runtime_api : implements
+model_compile -> compile_api : implements
+kogito_runtime_api .> runtime_api : inherit
+kogito_model_runtime -> kogito_runtime_api : implements
+kogito_model_runtime .> model_runtime : use
+kogito_compile_api .> compile_api : inherit
+kogito_model_compile -> kogito_compile_api : implements
+kogito_model_compile .> model_compile : use
+drools_runtime_api .> runtime_api : inherit
+drools_model_runtime -> drools_runtime_api : implements
+drools_model_runtime .> model_runtime : use
+drools_compile_api .> compile_api : inherit
+drools_model_compile -> drools_compile_api : implements
+drools_model_compile .> model_compile : use
+
+}
+
+@enduml
