@@ -34,7 +34,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
 
     PMML_MODEL getPMMLModelType();
 
-    Class<? extends KiePMMLModel> getKiePMMLModelClass();
+    Class<E> getKiePMMLModelClass();
 
     /**
      * Method to be called for a <b>runtime</b> compilation
