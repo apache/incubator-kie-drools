@@ -42,6 +42,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarFireUntilHaltTest {
@@ -132,7 +133,10 @@ public class TimerAndCalendarFireUntilHaltTest {
         stopEngine();
 
         advanceTimerOneSecond();
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        
+        checkForASecondThat(ruleHasFired("TimerRule", 1));
+
+//        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
     }
     
     @Test(timeout = 10000)
@@ -155,10 +159,37 @@ public class TimerAndCalendarFireUntilHaltTest {
         startEngine();
 
         advanceTimerOneSecond();
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
+        
+        checkForASecondThat(ruleHasFired("TimerRule", 2));
+        
+        
+        //await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
     }
 
-    @Test(timeout = 10000)
+    private void checkForASecondThat(Callable<Boolean> predicate) throws Exception {
+
+    	for (int i=0; i < 100; i++) {
+    		if (predicate.call().booleanValue()) {
+    			System.out.println(listener.timesRulesHasFired("TimerRule"));
+    			break;
+    		}
+    		Thread.sleep(10);
+    		System.out.println(listener.timesRulesHasFired("TimerRule"));
+			System.out.println("Still not true");
+
+    	}
+
+    	for (int i=0; i < 100; i++) {
+    		if (!predicate.call().booleanValue()) {
+    			System.out.println("False again");
+    			fail();
+    		}
+    		Thread.sleep(10);
+			System.out.println("Still true");
+    	}
+	}
+
+	@Test(timeout = 10000)
     public void testTimerRuleDoesRestartsIfNoLongerHolds() throws Exception {
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
@@ -181,7 +212,8 @@ public class TimerAndCalendarFireUntilHaltTest {
 
         advanceTimerOneSecond();
 
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        checkForASecondThat(ruleHasFired("TimerRule", 1));
+//        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
     }
 
  
