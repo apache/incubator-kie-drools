@@ -20,6 +20,7 @@ import java.util.Map;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
@@ -40,6 +41,11 @@ public class ScorecardModelImplementationProvider implements ModelImplementation
     public PMML_MODEL getPMMLModelType() {
         logger.trace("getPMMLModelType");
         return PMML_MODEL.SCORECARD_MODEL;
+    }
+
+    @Override
+    public Class<KiePMMLScorecardModel> getKiePMMLModelClass() {
+        return KiePMMLScorecardModel.class;
     }
 
     @Override

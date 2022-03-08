@@ -26,6 +26,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.mocks.TestModel;
@@ -51,6 +52,11 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     @Override
     public PMML_MODEL getPMMLModelType() {
         return PMML_MODEL_TYPE;
+    }
+
+    @Override
+    public Class<KiePMMLTestingModel> getKiePMMLModelClass() {
+        return KiePMMLTestingModel.class;
     }
 
     @Override

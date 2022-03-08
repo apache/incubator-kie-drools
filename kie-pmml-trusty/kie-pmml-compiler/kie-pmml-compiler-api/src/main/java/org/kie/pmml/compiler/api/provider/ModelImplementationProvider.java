@@ -22,6 +22,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
@@ -32,6 +33,8 @@ import org.kie.pmml.compiler.api.dto.CompilationDTO;
 public interface ModelImplementationProvider<T extends Model, E extends KiePMMLModel> {
 
     PMML_MODEL getPMMLModelType();
+
+    Class<E> getKiePMMLModelClass();
 
     /**
      * Method to be called for a <b>runtime</b> compilation
@@ -49,13 +52,14 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      */
     default KiePMMLModelWithSources getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO) {
         final Map<String, String> sourcesMap = getSourcesMap(compilationDTO);
+        boolean isInterpreted = IsInterpreted.class.isAssignableFrom(getKiePMMLModelClass());
         return new KiePMMLModelWithSources(compilationDTO.getModelName(),
                                            compilationDTO.getPackageName(),
                                            compilationDTO.getKieMiningFields(),
                                            compilationDTO.getKieOutputFields(),
                                            compilationDTO.getKieTargetFields(),
                                            sourcesMap,
-                                           this.isInterpreted());
+                                           isInterpreted);
     }
 
     Map<String, String> getSourcesMap(final CompilationDTO<T> compilationDTO);
@@ -78,7 +82,4 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
         return toReturn;
     }
 
-    default boolean isInterpreted() {
-        return false;
-    }
 }
