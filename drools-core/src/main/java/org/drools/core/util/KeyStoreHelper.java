@@ -223,7 +223,9 @@ public class KeyStoreHelper {
         try {
             passwordKey = (SecretKey) pwdKeyStore.getKey(pwdKeyAlias, pwdKeyPassword);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load a key from Key Store. Source " + e.getCause());
+            e.printStackTrace();
+            System.out.println("Exception while getting password from key store: " + e.getMessage());
+            throw new RuntimeException("Unable to load a key from Key Store. Source " + e.getMessage());
         }
         return new String(passwordKey.getEncoded());
     }
