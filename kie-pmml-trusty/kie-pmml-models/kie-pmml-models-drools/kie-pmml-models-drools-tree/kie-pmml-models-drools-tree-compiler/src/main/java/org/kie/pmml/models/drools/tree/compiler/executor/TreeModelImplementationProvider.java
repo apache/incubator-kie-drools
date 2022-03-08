@@ -22,6 +22,7 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
@@ -40,6 +41,11 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     @Override
     public PMML_MODEL getPMMLModelType() {
         return PMML_MODEL_TYPE;
+    }
+
+    @Override
+    public Class<KiePMMLTreeModel> getKiePMMLModelClass() {
+        return KiePMMLTreeModel.class;
     }
 
     @Override

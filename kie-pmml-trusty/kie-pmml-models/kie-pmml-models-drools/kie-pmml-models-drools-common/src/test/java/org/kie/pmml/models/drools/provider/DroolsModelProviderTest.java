@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
@@ -74,6 +75,12 @@ public class DroolsModelProviderTest {
         scorecard = (Scorecard) pmml.getModels().get(0);
         assertNotNull(scorecard);
         droolsModelProvider = new DroolsModelProvider<Scorecard, KiePMMLDroolsModel>() {
+
+            @Override
+            public Class<KiePMMLDroolsModel> getKiePMMLModelClass() {
+                return KiePMMLDroolsModel.class;
+            }
+
             @Override
             public KiePMMLDroolsModel getKiePMMLDroolsModel(final DroolsCompilationDTO<Scorecard> compilationDTO) {
                 //  Needed to avoid Mockito usage

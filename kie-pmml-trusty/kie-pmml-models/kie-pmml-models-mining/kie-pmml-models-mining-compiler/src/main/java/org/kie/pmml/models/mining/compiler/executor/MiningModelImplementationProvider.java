@@ -47,6 +47,11 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     }
 
     @Override
+    public Class<KiePMMLMiningModel> getKiePMMLModelClass() {
+        return KiePMMLMiningModel.class;
+    }
+
+    @Override
     public KiePMMLMiningModel getKiePMMLModel(final CompilationDTO<MiningModel> compilationDTO) {
         if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,

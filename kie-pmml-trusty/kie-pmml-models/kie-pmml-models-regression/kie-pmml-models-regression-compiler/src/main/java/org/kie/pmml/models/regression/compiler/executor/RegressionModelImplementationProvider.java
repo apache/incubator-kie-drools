@@ -29,6 +29,7 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -57,6 +58,11 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
+    public Class<KiePMMLRegressionModel> getKiePMMLModelClass() {
+        return KiePMMLRegressionModel.class;
+    }
+
+    @Override
     public KiePMMLRegressionModel getKiePMMLModel(final CompilationDTO<RegressionModel> compilationDTO) {
         logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),
@@ -81,11 +87,6 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         } catch (IOException e) {
             throw new KiePMMLException(e);
         }
-    }
-
-    @Override
-    public boolean isInterpreted() {
-        return true;
     }
 
     protected void validate(final List<Field<?>> fields, final RegressionModel toValidate) {
