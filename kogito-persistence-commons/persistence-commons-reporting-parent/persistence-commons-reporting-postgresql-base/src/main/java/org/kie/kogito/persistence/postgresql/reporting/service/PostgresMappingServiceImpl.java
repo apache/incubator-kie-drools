@@ -28,13 +28,14 @@ import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.postgresql.PostgresStorageService;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.reporting.service.MappingService;
 
 @ApplicationScoped
-public class PostgresMappingServiceImpl implements MappingService<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresMappingDefinition> {
+public class PostgresMappingServiceImpl implements MappingService<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresMappingDefinition> {
 
     static final String CACHE_NAME = "MappingDefinitions";
 

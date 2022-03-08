@@ -16,6 +16,7 @@
 package org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.EntityManager;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresDatabaseManagerImpl;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
@@ -40,22 +42,20 @@ abstract class BaseSqlBuilderImplTest {
     protected static final PostgresMappingDefinition DEFINITION = new PostgresMappingDefinition("mappingId",
             "sourceTableName",
             "sourceTableJsonFieldName",
-            List.of(new PostgresField("id", JsonType.STRING),
-                    new PostgresField("key", JsonType.STRING)),
-            List.of(new PostgresPartitionField("partition", JsonType.STRING, "chunk"),
-                    new PostgresPartitionField("partition2", JsonType.STRING, "chunk2")),
+            List.of(new PostgresField("id"), new PostgresField("key")),
+            List.of(new PostgresPartitionField("partition", "chunk"), new PostgresPartitionField("partition2", "chunk2")),
             "targetTableName",
             List.of(new PostgresMapping("root",
-                    new PostgresField("field1",
+                    new PostgresJsonField("field1",
                             JsonType.STRING)),
                     new PostgresMapping("root.child",
-                            new PostgresField("field2",
+                            new PostgresJsonField("field2",
                                     JsonType.STRING)),
                     new PostgresMapping("root.child.collection[].child",
-                            new PostgresField("field3",
+                            new PostgresJsonField("field3",
                                     JsonType.STRING)),
                     new PostgresMapping("root.child.sibling",
-                            new PostgresField("field4",
+                            new PostgresJsonField("field4",
                                     JsonType.STRING))));
 
     @Mock
@@ -88,6 +88,11 @@ abstract class BaseSqlBuilderImplTest {
             @Override
             protected EntityManager getEntityManager(final String sourceTableName) {
                 return entityManager;
+            }
+
+            @Override
+            protected Map<String, String> getSourceTableFieldTypes(String sourceTableName) {
+                return Map.of("id", "text", "partition", "text");
             }
         };
     }

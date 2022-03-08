@@ -16,10 +16,12 @@
 package org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.reporting.model.paths.PathSegment;
@@ -30,16 +32,12 @@ class PostgresContextTest {
 
     @Test
     void testPostgresContext() {
-        final PostgresField field = new PostgresField("field1",
-                JsonType.STRING);
-        final PostgresPartitionField partitionField = new PostgresPartitionField("partitionField1",
-                JsonType.STRING,
-                "value");
+        final PostgresField field = new PostgresField("field1");
+        final PostgresPartitionField partitionField = new PostgresPartitionField("partitionField1", "value");
         final PostgresMapping mapping = new PostgresMapping("sourceJsonPath",
-                new PostgresField("targetField1",
-                        JsonType.STRING));
-        final PathSegment pathSegment = new PathSegment("segment",
-                null);
+                new PostgresJsonField("targetField1", JsonType.STRING));
+        final PathSegment pathSegment = new PathSegment("segment", null);
+        final Map<String, String> sourceTableFieldTypes = Map.of("field1", "text");
 
         final PostgresContext context = new PostgresContext("mappingId",
                 "sourceTableName",
@@ -48,7 +46,8 @@ class PostgresContextTest {
                 List.of(partitionField),
                 "targetTableName",
                 List.of(mapping),
-                List.of(pathSegment));
+                List.of(pathSegment),
+                sourceTableFieldTypes);
 
         assertEquals("mappingId",
                 context.getMappingId());
@@ -66,5 +65,7 @@ class PostgresContextTest {
                 context.getFieldMappings());
         assertEquals(List.of(pathSegment),
                 context.getMappingPaths());
+        assertEquals(sourceTableFieldTypes,
+                context.getSourceTableFieldTypes());
     }
 }

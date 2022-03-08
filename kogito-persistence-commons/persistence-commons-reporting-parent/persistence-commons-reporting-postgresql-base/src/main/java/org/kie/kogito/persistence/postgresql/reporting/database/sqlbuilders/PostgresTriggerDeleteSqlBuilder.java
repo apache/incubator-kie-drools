@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TriggerDeleteSqlBuilder;
@@ -30,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresContext> {
+public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresContext> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresTriggerDeleteSqlBuilder.class);
 
@@ -80,7 +81,7 @@ public class PostgresTriggerDeleteSqlBuilder implements TriggerDeleteSqlBuilder<
         simpleMappings.addAll(context
                 .getSourceTablePartitionFields()
                 .stream()
-                .map(pf -> new PostgresField(pf.getFieldName(), pf.getFieldType()))
+                .map(pf -> new PostgresField(pf.getFieldName()))
                 .collect(Collectors.toList()));
 
         final StringBuilder sql = new StringBuilder();

@@ -17,6 +17,7 @@ package org.kie.kogito.persistence.reporting.database;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -27,18 +28,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.persistence.reporting.model.paths.JoinPathSegment;
 import org.kie.kogito.persistence.reporting.model.paths.PathSegment;
 import org.kie.kogito.persistence.reporting.model.paths.TerminalPathSegment;
-import org.kie.kogito.persistence.reporting.test.TestTypes;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestContext;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestField;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestIndexesSqlBuilder;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestJsonField;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestMapping;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestMappingDefinition;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestPartitionField;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestTableSqlBuilder;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestTriggerDeleteSqlBuilder;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestTriggerInsertSqlBuilder;
 import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestContextImpl;
 import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestFieldImpl;
+import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestJsonFieldImpl;
 import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestMappingDefinitionImpl;
 import org.kie.kogito.persistence.reporting.test.TestTypesImpl.TestMappingImpl;
 import org.mockito.ArgumentCaptor;
@@ -60,11 +63,11 @@ class BaseDatabaseManagerImplTest {
     private static final TestMappingDefinition DEFINITION = new TestMappingDefinitionImpl("mappingId",
             "sourceTableName",
             "sourceTableJsonFieldName",
-            List.of(new TestFieldImpl("id", String.class)),
+            List.of(new TestFieldImpl("id")),
             Collections.emptyList(),
             "targetTableName",
             List.of(new TestMappingImpl("sourceJsonPath",
-                    new TestFieldImpl("field1",
+                    new TestJsonFieldImpl("field1",
                             String.class))));
 
     @Mock
@@ -91,7 +94,7 @@ class BaseDatabaseManagerImplTest {
     @Captor
     private ArgumentCaptor<TestContextImpl> contextArgumentCaptor;
 
-    private class TestBasePostgresDatabaseManagerImpl extends BaseDatabaseManagerImpl<Object, TestField, TestTypes.TestPartitionField, TestMapping, TestMappingDefinition, TestContext> {
+    private class TestBasePostgresDatabaseManagerImpl extends BaseDatabaseManagerImpl<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestMappingDefinition, TestContext> {
 
         TestBasePostgresDatabaseManagerImpl(final TestIndexesSqlBuilder indexesSqlBuilder,
                 final TestTableSqlBuilder tableSqlBuilder,
@@ -111,7 +114,7 @@ class BaseDatabaseManagerImplTest {
         }
 
         @Override
-        protected TerminalPathSegment<Object, TestField, TestMapping> buildTerminalPathSegment(final String segment,
+        protected TerminalPathSegment<Object, TestJsonField, TestMapping> buildTerminalPathSegment(final String segment,
                 final PathSegment parent,
                 final TestMapping mapping) {
             return new TerminalPathSegment<>(segment,
@@ -128,7 +131,13 @@ class BaseDatabaseManagerImplTest {
                     definition.getSourceTablePartitionFields(),
                     definition.getTargetTableName(),
                     definition.getFieldMappings(),
-                    parsePathSegments(definition.getFieldMappings()));
+                    parsePathSegments(definition.getFieldMappings()),
+                    getSourceTableFieldTypes(definition.getSourceTableName()));
+        }
+
+        @Override
+        protected Map<String, String> getSourceTableFieldTypes(String sourceTableName) {
+            return Collections.emptyMap();
         }
     }
 
@@ -288,7 +297,7 @@ class BaseDatabaseManagerImplTest {
     void testParsePathSegments_OneMapping_OneSegment() {
         // $ ---> field1[1a]
         final TestMapping mapping = new TestMappingImpl("field1",
-                new TestFieldImpl("targetFieldName",
+                new TestJsonFieldImpl("targetFieldName",
                         String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping));
@@ -309,7 +318,7 @@ class BaseDatabaseManagerImplTest {
     void testParsePathSegments_OneMapping_TwoSegments() {
         // $ ---> field1[1a] ---> field2[1b]
         final TestMapping mapping = new TestMappingImpl("field1.field2",
-                new TestFieldImpl("targetFieldName",
+                new TestJsonFieldImpl("targetFieldName",
                         String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping));
@@ -337,10 +346,10 @@ class BaseDatabaseManagerImplTest {
         //   \
         //    +-> field3[2a]
         final TestMapping mapping1 = new TestMappingImpl("field1.field2",
-                new TestFieldImpl("targetFieldName1",
+                new TestJsonFieldImpl("targetFieldName1",
                         String.class));
         final TestMapping mapping2 = new TestMappingImpl("field3",
-                new TestFieldImpl("targetFieldName2",
+                new TestJsonFieldImpl("targetFieldName2",
                         String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping1, mapping2));
@@ -377,10 +386,10 @@ class BaseDatabaseManagerImplTest {
         //                   \
         //                    +-> field3[2b]
         final TestMapping mapping1 = new TestMappingImpl("field1.field2",
-                new TestFieldImpl("targetFieldName1",
+                new TestJsonFieldImpl("targetFieldName1",
                         String.class));
         final TestMapping mapping2 = new TestMappingImpl("field1.field3",
-                new TestFieldImpl("targetFieldName2",
+                new TestJsonFieldImpl("targetFieldName2",
                         String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping1, mapping2));
@@ -417,10 +426,10 @@ class BaseDatabaseManagerImplTest {
         //                   \
         //                    +-> field3[2b] ---> field4[2c]
         final TestMapping mapping1 = new TestMappingImpl("field1.field2",
-                new TestFieldImpl("targetFieldName1",
+                new TestJsonFieldImpl("targetFieldName1",
                         String.class));
         final TestMapping mapping2 = new TestMappingImpl("field1.field3.field4",
-                new TestFieldImpl("targetFieldName2",
+                new TestJsonFieldImpl("targetFieldName2",
                         String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping1, mapping2));
@@ -460,7 +469,7 @@ class BaseDatabaseManagerImplTest {
     void testParsePathSegments_OneMapping_OneSegment_WithJoin() {
         // $ ---> field1[1a] ---> field2[1b]
         final TestMapping mapping = new TestMappingImpl("field1[].field2",
-                new TestFieldImpl("targetFieldName",
+                new TestJsonFieldImpl("targetFieldName",
                         String.class));
 
         final List<PathSegment> segments = manager.parsePathSegments(List.of(mapping));

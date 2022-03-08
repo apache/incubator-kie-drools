@@ -20,9 +20,9 @@ import java.util.List;
 
 public class PathSegment {
 
-    private String segment;
-    private PathSegment parent;
-    private List<PathSegment> children;
+    private final String segment;
+    private final PathSegment parent;
+    private final List<PathSegment> children;
 
     public PathSegment(final String segment,
             final PathSegment parent) {

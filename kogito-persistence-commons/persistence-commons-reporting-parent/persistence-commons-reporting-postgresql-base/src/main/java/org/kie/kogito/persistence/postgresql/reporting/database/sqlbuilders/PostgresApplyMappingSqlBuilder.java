@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.ApplyMappingSqlBuilder;
@@ -29,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class PostgresApplyMappingSqlBuilder implements ApplyMappingSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresContext> {
+public class PostgresApplyMappingSqlBuilder implements ApplyMappingSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresContext> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresApplyMappingSqlBuilder.class);
 

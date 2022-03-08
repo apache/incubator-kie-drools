@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 import org.kie.kogito.persistence.reporting.model.PartitionField;
 
@@ -58,7 +59,7 @@ public class Validations {
         return sourceTableJsonFieldName;
     }
 
-    public static <T, F extends Field<T>> List<F> validateSourceTableIdentityFields(final List<F> sourceTableIdentityFields) {
+    public static <F extends Field> List<F> validateSourceTableIdentityFields(final List<F> sourceTableIdentityFields) {
         if (Objects.isNull(sourceTableIdentityFields)) {
             throw new IllegalArgumentException("sourceTableIdentityFields cannot be null.");
         }
@@ -72,14 +73,11 @@ public class Validations {
             if (sourceTableIdentityField.getFieldName().isBlank()) {
                 throw new IllegalArgumentException("sourceTableIdentityField.fieldName cannot be blank.");
             }
-            if (Objects.isNull(sourceTableIdentityField.getFieldType())) {
-                throw new IllegalArgumentException("sourceTableIdentityField.fieldType cannot be null.");
-            }
         });
         return sourceTableIdentityFields;
     }
 
-    public static <T, P extends PartitionField<T>> List<P> validateSourceTablePartitionFields(final List<P> sourceTablePartitionFields) {
+    public static <P extends PartitionField> List<P> validateSourceTablePartitionFields(final List<P> sourceTablePartitionFields) {
         if (Objects.isNull(sourceTablePartitionFields)) {
             throw new IllegalArgumentException("sourceTablePartitionFields cannot be null.");
         }
@@ -89,9 +87,6 @@ public class Validations {
             }
             if (sourceTablePartitionField.getFieldName().isBlank()) {
                 throw new IllegalArgumentException("sourceTablePartitionField.fieldName cannot be blank.");
-            }
-            if (Objects.isNull(sourceTablePartitionField.getFieldType())) {
-                throw new IllegalArgumentException("sourceTablePartitionField.fieldType cannot be null.");
             }
             if (Objects.isNull(sourceTablePartitionField.getFieldValue())) {
                 throw new IllegalArgumentException("sourceTablePartitionField.fieldValue cannot be null.");
@@ -113,7 +108,7 @@ public class Validations {
         return targetTableName;
     }
 
-    public static <T, F extends Field<T>, M extends Mapping<T, F>> List<M> validateFieldMappings(final List<M> fieldMappings) {
+    public static <T, J extends JsonField<T>, M extends Mapping<T, J>> List<M> validateFieldMappings(final List<M> fieldMappings) {
         if (Objects.isNull(fieldMappings)) {
             throw new IllegalArgumentException("fieldMappings cannot be null.");
         }
@@ -127,7 +122,7 @@ public class Validations {
             if (Objects.isNull(fieldMapping.getTargetField())) {
                 throw new IllegalArgumentException("Mapping.targetField cannot be blank.");
             }
-            final Field<T> field = fieldMapping.getTargetField();
+            final JsonField<T> field = fieldMapping.getTargetField();
             if (Objects.isNull(field.getFieldName())) {
                 throw new IllegalArgumentException("Mapping.targetField.fieldName cannot be null.");
             }

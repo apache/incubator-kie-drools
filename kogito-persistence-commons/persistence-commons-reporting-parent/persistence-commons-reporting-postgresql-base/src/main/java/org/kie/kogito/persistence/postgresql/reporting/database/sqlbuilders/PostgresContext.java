@@ -16,15 +16,17 @@
 package org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders;
 
 import java.util.List;
+import java.util.Map;
 
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.BaseContext;
 import org.kie.kogito.persistence.reporting.model.paths.PathSegment;
 
-public class PostgresContext extends BaseContext<JsonType, PostgresField, PostgresPartitionField, PostgresMapping> {
+public class PostgresContext extends BaseContext<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping> {
 
     public PostgresContext(final String mappingId,
             final String sourceTableName,
@@ -33,7 +35,8 @@ public class PostgresContext extends BaseContext<JsonType, PostgresField, Postgr
             final List<PostgresPartitionField> sourceTablePartitionFields,
             final String targetTableName,
             final List<PostgresMapping> mappings,
-            final List<PathSegment> mappingPaths) {
+            final List<PathSegment> mappingPaths,
+            final Map<String, String> sourceTableFieldTypes) {
         super(mappingId,
                 sourceTableName,
                 sourceTableJsonFieldName,
@@ -41,6 +44,7 @@ public class PostgresContext extends BaseContext<JsonType, PostgresField, Postgr
                 sourceTablePartitionFields,
                 targetTableName,
                 mappings,
-                mappingPaths);
+                mappingPaths,
+                sourceTableFieldTypes);
     }
 }

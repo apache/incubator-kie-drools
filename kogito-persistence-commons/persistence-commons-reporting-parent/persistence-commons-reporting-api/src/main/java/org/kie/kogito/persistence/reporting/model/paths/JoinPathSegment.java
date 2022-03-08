@@ -17,7 +17,7 @@ package org.kie.kogito.persistence.reporting.model.paths;
 
 public class JoinPathSegment extends PathSegment {
 
-    private String groupName;
+    private final String groupName;
 
     public JoinPathSegment(final String segment,
             final PathSegment parent,

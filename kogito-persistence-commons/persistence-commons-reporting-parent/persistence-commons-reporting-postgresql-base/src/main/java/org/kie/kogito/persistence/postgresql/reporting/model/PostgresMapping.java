@@ -20,14 +20,13 @@ import org.kie.kogito.persistence.reporting.model.BaseMapping;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PostgresMapping extends BaseMapping<JsonType, PostgresField> {
+public class PostgresMapping extends BaseMapping<JsonType, PostgresJsonField> {
 
     PostgresMapping() {
     }
 
     public PostgresMapping(final String sourceJsonPath,
-            final PostgresField targetField) {
-        super(sourceJsonPath,
-                targetField);
+            final PostgresJsonField targetField) {
+        super(sourceJsonPath, targetField);
     }
 }

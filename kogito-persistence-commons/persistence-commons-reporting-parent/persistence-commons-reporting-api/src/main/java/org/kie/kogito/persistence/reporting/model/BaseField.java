@@ -21,34 +21,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class BaseField<T> implements Field<T> {
+public abstract class BaseField implements Field {
 
     public static final String FIELD_NAME_FIELD = "fieldName";
-    public static final String FIELD_TYPE_FIELD = "fieldType";
 
     @JsonProperty(FIELD_NAME_FIELD)
     String fieldName;
 
-    @JsonProperty(FIELD_TYPE_FIELD)
-    T fieldType;
-
     protected BaseField() {
     }
 
-    protected BaseField(final String fieldName,
-            final T fieldType) {
+    protected BaseField(final String fieldName) {
         this.fieldName = Objects.requireNonNull(fieldName);
-        this.fieldType = Objects.requireNonNull(fieldType);
     }
 
     @Override
     public String getFieldName() {
         return fieldName;
-    }
-
-    @Override
-    public T getFieldType() {
-        return fieldType;
     }
 
     @Override
@@ -59,13 +48,12 @@ public abstract class BaseField<T> implements Field<T> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        BaseField<?> mapping = (BaseField<?>) o;
-        return fieldName.equals(mapping.fieldName)
-                && fieldType.equals(mapping.fieldType);
+        BaseField mapping = (BaseField) o;
+        return fieldName.equals(mapping.fieldName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fieldName, fieldType);
+        return Objects.hash(fieldName);
     }
 }

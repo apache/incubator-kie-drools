@@ -6,14 +6,12 @@
       "sourceTableJsonFieldName": "variables",
       "sourceTableIdentityFields": [
         {
-          "fieldName": "id",
-          "fieldType": "STRING"
+          "fieldName": "id"
         }
       ],
       "sourceTablePartitionFields": [
         {
           "fieldName": "process_id",
-          "fieldType": "STRING",
           "fieldValue": "process0"
         }
       ],

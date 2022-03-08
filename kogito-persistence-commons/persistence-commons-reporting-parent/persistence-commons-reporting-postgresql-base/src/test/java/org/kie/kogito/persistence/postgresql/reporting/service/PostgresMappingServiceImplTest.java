@@ -25,6 +25,7 @@ import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.postgresql.PostgresStorageService;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
@@ -60,11 +61,11 @@ class PostgresMappingServiceImplTest {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
         when(storage.entries()).thenReturn(Map.of("mappingId", definition));
 
@@ -78,11 +79,11 @@ class PostgresMappingServiceImplTest {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
         when(storage.containsKey(anyString())).thenReturn(true);
         when(storage.get(anyString())).thenReturn(definition);
@@ -104,11 +105,11 @@ class PostgresMappingServiceImplTest {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
 
         when(storage.containsKey(anyString())).thenThrow(new IllegalArgumentException());
@@ -121,11 +122,11 @@ class PostgresMappingServiceImplTest {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
 
         when(storage.containsKey(anyString())).thenReturn(false);
@@ -140,11 +141,11 @@ class PostgresMappingServiceImplTest {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
 
         when(storage.containsKey(anyString())).thenReturn(true);

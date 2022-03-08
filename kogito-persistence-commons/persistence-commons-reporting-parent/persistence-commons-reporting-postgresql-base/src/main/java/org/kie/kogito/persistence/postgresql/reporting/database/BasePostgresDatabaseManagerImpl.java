@@ -16,7 +16,17 @@
 package org.kie.kogito.persistence.postgresql.reporting.database;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityResult;
+import javax.persistence.FieldResult;
+import javax.persistence.Id;
+import javax.persistence.Query;
+import javax.persistence.SqlResultSetMapping;
 import javax.transaction.Transactional;
 
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
@@ -27,6 +37,7 @@ import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.Post
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerInsertSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
@@ -43,7 +54,10 @@ import static org.kie.kogito.persistence.reporting.database.Validations.validate
 import static org.kie.kogito.persistence.reporting.database.Validations.validateSourceTablePartitionFields;
 import static org.kie.kogito.persistence.reporting.database.Validations.validateTargetTableName;
 
-public abstract class BasePostgresDatabaseManagerImpl extends BaseDatabaseManagerImpl<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresMappingDefinition, PostgresContext> {
+public abstract class BasePostgresDatabaseManagerImpl
+        extends BaseDatabaseManagerImpl<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresMappingDefinition, PostgresContext> {
+
+    private static final String COLUMN_INFO = "SELECT column_name, udt_name FROM information_schema.columns WHERE table_name = '%s';";
 
     protected BasePostgresDatabaseManagerImpl() {
         //CDI proxy
@@ -62,7 +76,7 @@ public abstract class BasePostgresDatabaseManagerImpl extends BaseDatabaseManage
     }
 
     @Override
-    protected TerminalPathSegment<JsonType, PostgresField, PostgresMapping> buildTerminalPathSegment(final String segment,
+    protected TerminalPathSegment<JsonType, PostgresJsonField, PostgresMapping> buildTerminalPathSegment(final String segment,
             final PathSegment parent,
             final PostgresMapping mapping) {
         return new PostgresTerminalPathSegment(segment, parent, mapping);
@@ -78,6 +92,7 @@ public abstract class BasePostgresDatabaseManagerImpl extends BaseDatabaseManage
         final String targetTableName = validateTargetTableName(mappingDefinition.getTargetTableName());
         final List<PostgresMapping> mappings = validateFieldMappings(mappingDefinition.getFieldMappings());
         final List<PathSegment> pathSegments = parsePathSegments(mappings);
+        final Map<String, String> sourceTableFieldTypes = getSourceTableFieldTypes(sourceTableName);
 
         return new PostgresContext(mappingId,
                 sourceTableName,
@@ -86,7 +101,17 @@ public abstract class BasePostgresDatabaseManagerImpl extends BaseDatabaseManage
                 sourceTablePartitionFields,
                 targetTableName,
                 mappings,
-                pathSegments);
+                pathSegments,
+                sourceTableFieldTypes);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Map<String, String> getSourceTableFieldTypes(final String sourceTableName) {
+        final EntityManager em = getEntityManager(sourceTableName);
+        final Query query = em.createNativeQuery(String.format(COLUMN_INFO, sourceTableName), "ColumnInformationMapping");
+        final List<ColumnInformationRow> results = query.getResultList();
+        return results.stream().collect(Collectors.toMap(i -> i.name, i -> i.type));
     }
 
     @Override
@@ -99,5 +124,26 @@ public abstract class BasePostgresDatabaseManagerImpl extends BaseDatabaseManage
     @Transactional
     public void destroyArtifacts(final PostgresMappingDefinition mappingDefinition) {
         super.destroyArtifacts(mappingDefinition);
+    }
+
+    @Entity
+    @SqlResultSetMapping(
+            name = "ColumnInformationMapping",
+            entities = {
+                    @EntityResult(
+                            entityClass = ColumnInformationRow.class,
+                            fields = { @FieldResult(name = "name", column = "column_name"),
+                                    @FieldResult(name = "type", column = "udt_name") })
+            })
+    public static class ColumnInformationRow {
+
+        @Id
+        @Column(nullable = false)
+        @SuppressWarnings("unused")
+        private String name;
+
+        @Column
+        private String type;
+
     }
 }

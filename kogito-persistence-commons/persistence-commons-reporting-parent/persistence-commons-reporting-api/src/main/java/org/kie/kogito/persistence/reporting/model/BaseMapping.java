@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class BaseMapping<T, F extends Field<T>> implements Mapping<T, F> {
+public abstract class BaseMapping<T, J extends JsonField<T>> implements Mapping<T, J> {
 
     public static final String SOURCE_JSON_PATH_FIELD = "sourceJsonPath";
     public static final String TARGET_FIELD_FIELD = "targetField";
@@ -30,13 +30,13 @@ public abstract class BaseMapping<T, F extends Field<T>> implements Mapping<T, F
     private String sourceJsonPath;
 
     @JsonProperty(TARGET_FIELD_FIELD)
-    private F targetField;
+    private J targetField;
 
     protected BaseMapping() {
     }
 
     protected BaseMapping(final String sourceJsonPath,
-            final F targetField) {
+            final J targetField) {
         this.sourceJsonPath = Objects.requireNonNull(sourceJsonPath);
         this.targetField = Objects.requireNonNull(targetField);
     }
@@ -47,7 +47,7 @@ public abstract class BaseMapping<T, F extends Field<T>> implements Mapping<T, F
     }
 
     @Override
-    public F getTargetField() {
+    public J getTargetField() {
         return targetField;
     }
 

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class PostgresPartitionFieldTest {
 
-    static final PostgresPartitionField PARTITION_FIELD = new PostgresPartitionField("field1", JsonType.STRING, "value1");
+    static final PostgresPartitionField PARTITION_FIELD = new PostgresPartitionField("field1", "value1");
     static final int PARTITION_FIELD_HASHCODE = PARTITION_FIELD.hashCode();
 
     @Test
@@ -30,11 +30,9 @@ class PostgresPartitionFieldTest {
         assertEquals(PARTITION_FIELD,
                 PARTITION_FIELD);
         assertNotEquals(PARTITION_FIELD,
-                new PostgresPartitionField("different", JsonType.STRING, "value1"));
+                new PostgresPartitionField("different", "value1"));
         assertNotEquals(PARTITION_FIELD,
-                new PostgresPartitionField("field1", JsonType.NUMBER, "value1"));
-        assertNotEquals(PARTITION_FIELD,
-                new PostgresPartitionField("field1", JsonType.STRING, "different"));
+                new PostgresPartitionField("field1", "different"));
     }
 
     @Test
@@ -42,10 +40,8 @@ class PostgresPartitionFieldTest {
         assertEquals(PARTITION_FIELD_HASHCODE,
                 PARTITION_FIELD.hashCode());
         assertNotEquals(PARTITION_FIELD_HASHCODE,
-                new PostgresPartitionField("different", JsonType.STRING, "value1").hashCode());
+                new PostgresPartitionField("different", "value1").hashCode());
         assertNotEquals(PARTITION_FIELD_HASHCODE,
-                new PostgresPartitionField("field1", JsonType.NUMBER, "value1").hashCode());
-        assertNotEquals(PARTITION_FIELD_HASHCODE,
-                new PostgresPartitionField("field1", JsonType.STRING, "different").hashCode());
+                new PostgresPartitionField("field1", "different").hashCode());
     }
 }

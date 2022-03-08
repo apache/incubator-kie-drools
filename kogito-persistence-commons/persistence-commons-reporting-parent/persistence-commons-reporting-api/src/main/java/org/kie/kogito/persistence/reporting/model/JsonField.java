@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.persistence.reporting.database.sqlbuilders;
+package org.kie.kogito.persistence.reporting.model;
 
-import org.kie.kogito.persistence.reporting.model.Field;
-import org.kie.kogito.persistence.reporting.model.JsonField;
-import org.kie.kogito.persistence.reporting.model.Mapping;
-import org.kie.kogito.persistence.reporting.model.PartitionField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public interface ApplyMappingSqlBuilder<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, C extends Context<T, F, P, J, M>> {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public interface JsonField<T> {
 
-    String apply(final C context);
+    String getFieldName();
+
+    T getFieldType();
 }

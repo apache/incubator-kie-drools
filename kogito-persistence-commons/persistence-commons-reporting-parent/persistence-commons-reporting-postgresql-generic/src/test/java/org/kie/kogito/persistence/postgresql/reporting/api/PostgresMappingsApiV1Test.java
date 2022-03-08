@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.persistence.postgresql.reporting.database.GenericPostgresDatabaseManagerImpl;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinitions;
@@ -62,11 +63,11 @@ class PostgresMappingsApiV1Test {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
         when(mappingService.getAllMappingDefinitions()).thenReturn(List.of(definition));
 
@@ -89,11 +90,11 @@ class PostgresMappingsApiV1Test {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
         when(mappingService.getMappingDefinitionById(anyString())).thenReturn(definition);
 
@@ -130,11 +131,11 @@ class PostgresMappingsApiV1Test {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
 
         final Response response = service.createMappingDefinition(definition);
@@ -150,11 +151,11 @@ class PostgresMappingsApiV1Test {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("mappingId",
                 "sourceTableName",
                 "sourceTableJsonFieldName",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", JsonType.STRING, "sourceTablePartitionName")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("sourceTablePartitionFieldName", "sourceTablePartitionName")),
                 "targetTableName",
                 List.of(new PostgresMapping("sourceJsonPath",
-                        new PostgresField("targetFieldName",
+                        new PostgresJsonField("targetFieldName",
                                 JsonType.STRING))));
 
         when(mappingService.deleteMappingDefinitionById("mappingId")).thenReturn(definition);

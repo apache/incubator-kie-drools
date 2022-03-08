@@ -26,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.postgresql.reporting.model.paths.PostgresTerminalPathSegment;
@@ -36,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class PostgresTriggerInsertSqlBuilder implements TriggerInsertSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresContext> {
+public class PostgresTriggerInsertSqlBuilder implements TriggerInsertSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresContext> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresTriggerInsertSqlBuilder.class);
 
@@ -92,7 +93,7 @@ public class PostgresTriggerInsertSqlBuilder implements TriggerInsertSqlBuilder<
         simpleMappings.addAll(context
                 .getSourceTablePartitionFields()
                 .stream()
-                .map(pf -> new PostgresField(pf.getFieldName(), pf.getFieldType()))
+                .map(pf -> new PostgresField(pf.getFieldName()))
                 .collect(Collectors.toList()));
 
         final List<PostgresTerminalPathSegment> fields = new ArrayList<>();

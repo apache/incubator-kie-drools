@@ -20,15 +20,14 @@ import org.kie.kogito.persistence.reporting.model.BasePartitionField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PostgresPartitionField extends BasePartitionField<JsonType> {
+public class PostgresPartitionField extends BasePartitionField {
 
     PostgresPartitionField() {
     }
 
     public PostgresPartitionField(final String fieldName,
-            final JsonType fieldType,
             final String value) {
-        super(fieldName, fieldType, value);
+        super(fieldName, value);
     }
 
 }

@@ -24,23 +24,24 @@ import javax.ws.rs.core.Response;
 import org.kie.kogito.persistence.reporting.database.DatabaseManager;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.Context;
 import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 import org.kie.kogito.persistence.reporting.model.MappingDefinition;
 import org.kie.kogito.persistence.reporting.model.MappingDefinitions;
 import org.kie.kogito.persistence.reporting.model.PartitionField;
 import org.kie.kogito.persistence.reporting.service.MappingService;
 
-public abstract class BaseMappingsApiV1<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>, D extends MappingDefinition<T, F, P, M>, S extends MappingDefinitions<T, F, P, M, D>, C extends Context<T, F, P, M>> {
+public abstract class BaseMappingsApiV1<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, D extends MappingDefinition<T, F, P, J, M>, S extends MappingDefinitions<T, F, P, J, M, D>, C extends Context<T, F, P, J, M>> {
 
-    private MappingService<T, F, P, M, D> mappingService;
-    private DatabaseManager<T, F, P, M, D, C> databaseManager;
+    private MappingService<T, F, P, J, M, D> mappingService;
+    private DatabaseManager<T, F, P, J, M, D, C> databaseManager;
 
     protected BaseMappingsApiV1() {
         //CDI proxies
     }
 
-    protected BaseMappingsApiV1(final MappingService<T, F, P, M, D> mappingService,
-            final DatabaseManager<T, F, P, M, D, C> databaseManager) {
+    protected BaseMappingsApiV1(final MappingService<T, F, P, J, M, D> mappingService,
+            final DatabaseManager<T, F, P, J, M, D, C> databaseManager) {
         this.mappingService = Objects.requireNonNull(mappingService);
         this.databaseManager = Objects.requireNonNull(databaseManager);
     }

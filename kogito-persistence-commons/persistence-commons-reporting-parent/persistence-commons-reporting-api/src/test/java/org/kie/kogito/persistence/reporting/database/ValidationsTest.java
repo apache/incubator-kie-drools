@@ -19,10 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.persistence.reporting.model.BaseField;
-import org.kie.kogito.persistence.reporting.model.BaseMapping;
 import org.kie.kogito.persistence.reporting.model.Field;
 import org.kie.kogito.persistence.reporting.model.PartitionField;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestMapping;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -91,7 +90,7 @@ class ValidationsTest {
 
     @Test
     void testValidateSourceTableIdentityFieldsEmpty() {
-        final List<Field<Object>> fields = Collections.emptyList();
+        final List<Field> fields = Collections.emptyList();
         assertThrows(IllegalArgumentException.class,
                 () -> Validations.validateSourceTableIdentityFields(fields));
     }
@@ -104,7 +103,7 @@ class ValidationsTest {
 
     @Test
     void testValidateSourceTablePartitionFieldsEmpty() {
-        final List<PartitionField<Object>> partitionFields = Collections.emptyList();
+        final List<PartitionField> partitionFields = Collections.emptyList();
         assertEquals(Collections.emptyList(),
                 Validations.validateSourceTablePartitionFields(partitionFields));
     }
@@ -135,7 +134,7 @@ class ValidationsTest {
 
     @Test
     void testValidateTargetTableFieldsEmpty() {
-        final List<BaseMapping<Object, BaseField<Object>>> mappings = Collections.emptyList();
+        final List<TestMapping> mappings = Collections.emptyList();
         assertThrows(IllegalArgumentException.class,
                 () -> Validations.validateFieldMappings(mappings));
     }

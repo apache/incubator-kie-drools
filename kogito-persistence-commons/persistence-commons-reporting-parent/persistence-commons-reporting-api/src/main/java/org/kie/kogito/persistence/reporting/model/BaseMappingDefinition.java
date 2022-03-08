@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class BaseMappingDefinition<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>> implements MappingDefinition<T, F, P, M> {
+public abstract class BaseMappingDefinition<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>> implements MappingDefinition<T, F, P, J, M> {
 
     public static final String MAPPING_ID_FIELD = "mappingId";
     public static final String SOURCE_TABLE_NAME_FIELD = "sourceTableName";
@@ -115,7 +115,7 @@ public abstract class BaseMappingDefinition<T, F extends Field<T>, P extends Par
         if (!(o instanceof BaseMappingDefinition)) {
             return false;
         }
-        BaseMappingDefinition<?, ?, ?, ?> that = (BaseMappingDefinition<?, ?, ?, ?>) o;
+        BaseMappingDefinition<?, ?, ?, ?, ?> that = (BaseMappingDefinition<?, ?, ?, ?, ?>) o;
         return getMappingId().equals(that.getMappingId())
                 && getSourceTableName().equals(that.getSourceTableName())
                 && getSourceTableJsonFieldName().equals(that.getSourceTableJsonFieldName())

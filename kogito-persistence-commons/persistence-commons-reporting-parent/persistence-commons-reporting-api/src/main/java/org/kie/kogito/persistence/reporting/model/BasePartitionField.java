@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class BasePartitionField<T> extends BaseField<T> implements PartitionField<T> {
+public abstract class BasePartitionField extends BaseField implements PartitionField {
 
     public static final String FIELD_VALUE_FIELD = "fieldValue";
 
@@ -32,9 +32,8 @@ public abstract class BasePartitionField<T> extends BaseField<T> implements Part
     }
 
     protected BasePartitionField(final String fieldName,
-            final T fieldType,
             final String fieldValue) {
-        super(fieldName, fieldType);
+        super(fieldName);
         this.fieldValue = Objects.requireNonNull(fieldValue);
     }
 
@@ -54,7 +53,7 @@ public abstract class BasePartitionField<T> extends BaseField<T> implements Part
         if (!super.equals(o)) {
             return false;
         }
-        BasePartitionField<?> that = (BasePartitionField<?>) o;
+        BasePartitionField that = (BasePartitionField) o;
         return getFieldValue().equals(that.getFieldValue());
     }
 

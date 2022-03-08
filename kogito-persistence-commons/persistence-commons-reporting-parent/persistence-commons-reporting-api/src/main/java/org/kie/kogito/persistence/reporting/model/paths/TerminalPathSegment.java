@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.persistence.reporting.model.paths;
 
-import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 
-public class TerminalPathSegment<T, F extends Field<T>, M extends Mapping<T, F>> extends PathSegment {
+public class TerminalPathSegment<T, J extends JsonField<T>, M extends Mapping<T, J>> extends PathSegment {
 
     private final M mapping;
 

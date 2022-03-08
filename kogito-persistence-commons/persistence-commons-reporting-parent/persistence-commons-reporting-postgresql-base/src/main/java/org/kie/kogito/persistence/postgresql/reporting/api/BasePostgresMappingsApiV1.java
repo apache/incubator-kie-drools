@@ -21,6 +21,7 @@ import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresData
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresContext;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinitions;
@@ -29,7 +30,7 @@ import org.kie.kogito.persistence.postgresql.reporting.service.PostgresMappingSe
 import org.kie.kogito.persistence.reporting.api.BaseMappingsApiV1;
 
 public abstract class BasePostgresMappingsApiV1
-        extends BaseMappingsApiV1<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresMappingDefinition, PostgresMappingDefinitions, PostgresContext> {
+        extends BaseMappingsApiV1<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresMappingDefinition, PostgresMappingDefinitions, PostgresContext> {
 
     public BasePostgresMappingsApiV1() {
         //CDI proxies

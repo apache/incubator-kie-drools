@@ -24,6 +24,7 @@ import org.kie.kogito.persistence.reporting.database.sqlbuilders.TableSqlBuilder
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TriggerDeleteSqlBuilder;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TriggerInsertSqlBuilder;
 import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 import org.kie.kogito.persistence.reporting.model.MappingDefinition;
 import org.kie.kogito.persistence.reporting.model.MappingDefinitions;
@@ -35,45 +36,48 @@ import org.kie.kogito.persistence.reporting.service.MappingService;
  */
 public interface TestTypes {
 
-    interface TestField extends Field<Object> {
+    interface TestField extends Field {
     }
 
-    interface TestPartitionField extends PartitionField<Object> {
+    interface TestJsonField extends JsonField<Object> {
     }
 
-    interface TestMapping extends Mapping<Object, TestField> {
+    interface TestPartitionField extends PartitionField {
     }
 
-    interface TestMappingDefinition extends MappingDefinition<Object, TestField, TestPartitionField, TestMapping> {
+    interface TestMapping extends Mapping<Object, TestJsonField> {
     }
 
-    interface TestMappingDefinitions extends MappingDefinitions<Object, TestField, TestPartitionField, TestMapping, TestMappingDefinition> {
+    interface TestMappingDefinition extends MappingDefinition<Object, TestField, TestPartitionField, TestJsonField, TestMapping> {
     }
 
-    interface TestContext extends Context<Object, TestField, TestPartitionField, TestMapping> {
+    interface TestMappingDefinitions extends MappingDefinitions<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestMappingDefinition> {
     }
 
-    interface TestBootstrapLoader extends BootstrapLoader<Object, TestField, TestPartitionField, TestMapping, TestMappingDefinition, TestMappingDefinitions> {
+    interface TestContext extends Context<Object, TestField, TestPartitionField, TestJsonField, TestMapping> {
     }
 
-    interface TestDatabaseManager extends DatabaseManager<Object, TestField, TestPartitionField, TestMapping, TestMappingDefinition, TestContext> {
+    interface TestBootstrapLoader extends BootstrapLoader<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestMappingDefinition, TestMappingDefinitions> {
     }
 
-    interface TestMappingService extends MappingService<Object, TestField, TestPartitionField, TestMapping, TestMappingDefinition> {
+    interface TestDatabaseManager extends DatabaseManager<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestMappingDefinition, TestContext> {
     }
 
-    interface TestIndexesSqlBuilder extends IndexesSqlBuilder<Object, TestField, TestPartitionField, TestMapping, TestContext> {
+    interface TestMappingService extends MappingService<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestMappingDefinition> {
     }
 
-    interface TestTableSqlBuilder extends TableSqlBuilder<Object, TestField, TestPartitionField, TestMapping, TestContext> {
+    interface TestIndexesSqlBuilder extends IndexesSqlBuilder<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestContext> {
     }
 
-    interface TestTriggerDeleteSqlBuilder extends TriggerDeleteSqlBuilder<Object, TestField, TestPartitionField, TestMapping, TestContext> {
+    interface TestTableSqlBuilder extends TableSqlBuilder<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestContext> {
     }
 
-    interface TestTriggerInsertSqlBuilder extends TriggerInsertSqlBuilder<Object, TestField, TestPartitionField, TestMapping, TestContext> {
+    interface TestTriggerDeleteSqlBuilder extends TriggerDeleteSqlBuilder<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestContext> {
     }
 
-    interface TestApplyMappingSqlBuilder extends ApplyMappingSqlBuilder<Object, TestField, TestPartitionField, TestMapping, TestContext> {
+    interface TestTriggerInsertSqlBuilder extends TriggerInsertSqlBuilder<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestContext> {
+    }
+
+    interface TestApplyMappingSqlBuilder extends ApplyMappingSqlBuilder<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestContext> {
     }
 }

@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 import org.kie.kogito.persistence.reporting.model.MappingDefinition;
 import org.kie.kogito.persistence.reporting.model.MappingDefinitions;
@@ -29,8 +30,8 @@ import org.kie.kogito.persistence.reporting.model.PartitionField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class BaseBootstrapLoaderImpl<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>, D extends MappingDefinition<T, F, P, M>, S extends MappingDefinitions<T, F, P, M, D>>
-        implements BootstrapLoader<T, F, P, M, D, S> {
+public abstract class BaseBootstrapLoaderImpl<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, D extends MappingDefinition<T, F, P, J, M>, S extends MappingDefinitions<T, F, P, J, M, D>>
+        implements BootstrapLoader<T, F, P, J, M, D, S> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseBootstrapLoaderImpl.class);
 

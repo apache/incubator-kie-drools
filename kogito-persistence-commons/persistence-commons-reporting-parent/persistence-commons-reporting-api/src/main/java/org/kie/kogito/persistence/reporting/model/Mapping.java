@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.persistence.reporting.model;
 
-public interface Mapping<T, F extends Field<T>> {
+public interface Mapping<T, J extends JsonField<T>> {
 
     String getSourceJsonPath();
 
-    F getTargetField();
+    J getTargetField();
 
 }

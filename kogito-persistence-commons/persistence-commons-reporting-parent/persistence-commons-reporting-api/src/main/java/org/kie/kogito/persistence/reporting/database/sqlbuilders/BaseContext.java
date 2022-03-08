@@ -16,17 +16,21 @@
 package org.kie.kogito.persistence.reporting.database.sqlbuilders;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.kie.kogito.persistence.reporting.model.BaseMappingDefinition;
 import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 import org.kie.kogito.persistence.reporting.model.PartitionField;
 import org.kie.kogito.persistence.reporting.model.paths.PathSegment;
 
-public abstract class BaseContext<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>> extends BaseMappingDefinition<T, F, P, M> implements Context<T, F, P, M> {
+public abstract class BaseContext<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>> extends BaseMappingDefinition<T, F, P, J, M>
+        implements Context<T, F, P, J, M> {
 
     private final List<PathSegment> mappingPaths;
+    private final Map<String, String> sourceTableFieldTypes;
 
     protected BaseContext(final String mappingId,
             final String sourceTableName,
@@ -35,7 +39,8 @@ public abstract class BaseContext<T, F extends Field<T>, P extends PartitionFiel
             final List<P> sourceTablePartitionFields,
             final String targetTableName,
             final List<M> mappings,
-            final List<PathSegment> mappingPaths) {
+            final List<PathSegment> mappingPaths,
+            final Map<String, String> sourceTableFieldTypes) {
         super(mappingId,
                 sourceTableName,
                 sourceTableJsonFieldName,
@@ -44,11 +49,17 @@ public abstract class BaseContext<T, F extends Field<T>, P extends PartitionFiel
                 targetTableName,
                 mappings);
         this.mappingPaths = Objects.requireNonNull(mappingPaths);
+        this.sourceTableFieldTypes = Objects.requireNonNull(sourceTableFieldTypes);
     }
 
     @Override
     public List<PathSegment> getMappingPaths() {
         return mappingPaths;
+    }
+
+    @Override
+    public Map<String, String> getSourceTableFieldTypes() {
+        return sourceTableFieldTypes;
     }
 
     @Override
@@ -62,12 +73,15 @@ public abstract class BaseContext<T, F extends Field<T>, P extends PartitionFiel
         if (!super.equals(o)) {
             return false;
         }
-        BaseContext<?, ?, ?, ?> that = (BaseContext<?, ?, ?, ?>) o;
-        return getMappingPaths().equals(that.getMappingPaths());
+        BaseContext<?, ?, ?, ?, ?> that = (BaseContext<?, ?, ?, ?, ?>) o;
+        return getMappingPaths().equals(that.getMappingPaths())
+                && getSourceTableFieldTypes().equals(that.getSourceTableFieldTypes());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getMappingPaths());
+        return Objects.hash(super.hashCode(),
+                getMappingPaths(),
+                getSourceTableFieldTypes());
     }
 }

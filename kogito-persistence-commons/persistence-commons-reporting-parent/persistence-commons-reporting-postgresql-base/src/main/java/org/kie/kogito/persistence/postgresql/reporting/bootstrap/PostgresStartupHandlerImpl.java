@@ -24,6 +24,7 @@ import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresData
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresContext;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinitions;
@@ -36,7 +37,7 @@ import io.quarkus.runtime.StartupEvent;
 
 @ApplicationScoped
 public class PostgresStartupHandlerImpl
-        extends BaseStartupHandler<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresMappingDefinition, PostgresMappingDefinitions, PostgresContext> {
+        extends BaseStartupHandler<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresMappingDefinition, PostgresMappingDefinitions, PostgresContext> {
 
     protected PostgresStartupHandlerImpl() {
         //CDI proxy

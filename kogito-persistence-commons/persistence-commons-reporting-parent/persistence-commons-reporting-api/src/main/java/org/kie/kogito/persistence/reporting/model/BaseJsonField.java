@@ -15,31 +15,40 @@
  */
 package org.kie.kogito.persistence.reporting.model;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class BaseMappingDefinitions<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, D extends MappingDefinition<T, F, P, J, M>>
-        implements MappingDefinitions<T, F, P, J, M, D> {
+public abstract class BaseJsonField<T> implements JsonField<T> {
 
-    public static final String MAPPING_DEFINITIONS_FIELD = "mappingDefinitions";
+    public static final String FIELD_NAME_FIELD = "fieldName";
+    public static final String FIELD_TYPE_FIELD = "fieldType";
 
-    @JsonProperty(MAPPING_DEFINITIONS_FIELD)
-    private Collection<D> mappingDefinitions;
+    @JsonProperty(FIELD_NAME_FIELD)
+    String fieldName;
 
-    protected BaseMappingDefinitions() {
+    @JsonProperty(FIELD_TYPE_FIELD)
+    T fieldType;
+
+    protected BaseJsonField() {
     }
 
-    protected BaseMappingDefinitions(final Collection<D> mappingDefinitions) {
-        this.mappingDefinitions = Objects.requireNonNull(mappingDefinitions);
+    protected BaseJsonField(final String fieldName,
+            final T fieldType) {
+        this.fieldName = Objects.requireNonNull(fieldName);
+        this.fieldType = Objects.requireNonNull(fieldType);
     }
 
     @Override
-    public Collection<D> getMappingDefinitions() {
-        return mappingDefinitions;
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    @Override
+    public T getFieldType() {
+        return fieldType;
     }
 
     @Override
@@ -50,12 +59,13 @@ public abstract class BaseMappingDefinitions<T, F extends Field, P extends Parti
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MappingDefinitions<?, ?, ?, ?, ?, ?> that = (MappingDefinitions<?, ?, ?, ?, ?, ?>) o;
-        return getMappingDefinitions().equals(that.getMappingDefinitions());
+        BaseJsonField<?> mapping = (BaseJsonField<?>) o;
+        return fieldName.equals(mapping.fieldName)
+                && fieldType.equals(mapping.fieldType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMappingDefinitions());
+        return Objects.hash(fieldName, fieldType);
     }
 }

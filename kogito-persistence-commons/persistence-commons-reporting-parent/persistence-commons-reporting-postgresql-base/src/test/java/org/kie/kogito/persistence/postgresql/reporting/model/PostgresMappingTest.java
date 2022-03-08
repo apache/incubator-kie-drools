@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class PostgresMappingTest {
 
-    static final PostgresMapping MAPPING = new PostgresMapping("sourceJsonPath", PostgresFieldTest.FIELD);
+    static final PostgresMapping MAPPING = new PostgresMapping("sourceJsonPath", PostgresJsonFieldTest.FIELD);
     static final int MAPPING_HASHCODE = MAPPING.hashCode();
 
     @Test
@@ -31,13 +31,13 @@ class PostgresMappingTest {
                 MAPPING);
         assertNotEquals(MAPPING,
                 new PostgresMapping("different",
-                        new PostgresField("field1", JsonType.STRING)));
+                        new PostgresJsonField("field1", JsonType.STRING)));
         assertNotEquals(MAPPING,
                 new PostgresMapping("sourceJsonPath",
-                        new PostgresField("field1", JsonType.NUMBER)));
+                        new PostgresJsonField("field1", JsonType.NUMBER)));
         assertNotEquals(MAPPING,
                 new PostgresMapping("sourceJsonPath",
-                        new PostgresField("field2", JsonType.STRING)));
+                        new PostgresJsonField("field2", JsonType.STRING)));
     }
 
     @Test
@@ -46,12 +46,12 @@ class PostgresMappingTest {
                 MAPPING.hashCode());
         assertNotEquals(MAPPING_HASHCODE,
                 new PostgresMapping("different",
-                        new PostgresField("field1", JsonType.STRING)).hashCode());
+                        new PostgresJsonField("field1", JsonType.STRING)).hashCode());
         assertNotEquals(MAPPING_HASHCODE,
                 new PostgresMapping("sourceJsonPath",
-                        new PostgresField("field1", JsonType.NUMBER)).hashCode());
+                        new PostgresJsonField("field1", JsonType.NUMBER)).hashCode());
         assertNotEquals(MAPPING_HASHCODE,
                 new PostgresMapping("sourceJsonPath",
-                        new PostgresField("field2", JsonType.STRING)).hashCode());
+                        new PostgresJsonField("field2", JsonType.STRING)).hashCode());
     }
 }

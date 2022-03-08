@@ -16,10 +16,11 @@
 package org.kie.kogito.persistence.reporting.database.sqlbuilders;
 
 import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 import org.kie.kogito.persistence.reporting.model.PartitionField;
 
-public interface TriggerInsertSqlBuilder<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>, C extends Context<T, F, P, M>> {
+public interface TriggerInsertSqlBuilder<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, C extends Context<T, F, P, J, M>> {
 
     String createInsertTriggerFunctionSql(final C context);
 

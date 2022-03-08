@@ -27,6 +27,7 @@ import org.kie.kogito.persistence.reporting.test.TestTypes.TestBootstrapLoader;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestContext;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestDatabaseManager;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestField;
+import org.kie.kogito.persistence.reporting.test.TestTypes.TestJsonField;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestMapping;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestMappingDefinition;
 import org.kie.kogito.persistence.reporting.test.TestTypes.TestMappingDefinitions;
@@ -47,11 +48,11 @@ class BaseStartupHandlerTest {
     private static final TestMappingDefinition DEFINITION = new TestTypesImpl.TestMappingDefinitionImpl("mappingId",
             "sourceTableName",
             "sourceTableJsonFieldName",
-            List.of(new TestTypesImpl.TestFieldImpl("id", String.class)),
+            List.of(new TestTypesImpl.TestFieldImpl("id")),
             Collections.emptyList(),
             "targetTableName",
             List.of(new TestTypesImpl.TestMappingImpl("sourceJsonPath",
-                    new TestTypesImpl.TestFieldImpl("field1",
+                    new TestTypesImpl.TestJsonFieldImpl("field1",
                             String.class))));
 
     @Mock
@@ -63,7 +64,8 @@ class BaseStartupHandlerTest {
     @Mock
     private TestMappingService mappingService;
 
-    private static class TestBaseStartupHandler extends BaseStartupHandler<Object, TestField, TestPartitionField, TestMapping, TestMappingDefinition, TestMappingDefinitions, TestContext> {
+    private static class TestBaseStartupHandler
+            extends BaseStartupHandler<Object, TestField, TestPartitionField, TestJsonField, TestMapping, TestMappingDefinition, TestMappingDefinitions, TestContext> {
 
         TestBaseStartupHandler(final TestBootstrapLoader loader,
                 final TestDatabaseManager databaseManager,

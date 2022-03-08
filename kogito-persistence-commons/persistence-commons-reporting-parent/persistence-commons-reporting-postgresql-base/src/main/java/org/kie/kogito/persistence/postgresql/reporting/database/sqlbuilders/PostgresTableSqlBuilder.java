@@ -17,12 +17,14 @@ package org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TableSqlBuilder;
@@ -30,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class PostgresTableSqlBuilder implements TableSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresMapping, PostgresContext> {
+public class PostgresTableSqlBuilder implements TableSqlBuilder<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresContext> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresTableSqlBuilder.class);
 
@@ -46,19 +48,21 @@ public class PostgresTableSqlBuilder implements TableSqlBuilder<JsonType, Postgr
     public String createTableSql(final PostgresContext context) {
         final String targetTableName = context.getTargetTableName();
         final List<PostgresMapping> getFieldMappings = context.getFieldMappings();
+        final Map<String, String> sourceTableFieldTypes = context.getSourceTableFieldTypes();
+
         final List<PostgresField> simpleMappings = new ArrayList<>();
         simpleMappings.addAll(context.getSourceTableIdentityFields());
         simpleMappings.addAll(context
                 .getSourceTablePartitionFields()
                 .stream()
-                .map(pf -> new PostgresField(pf.getFieldName(), pf.getFieldType()))
+                .map(pf -> new PostgresField(pf.getFieldName()))
                 .collect(Collectors.toList()));
 
         final String sql = String.format(CREATE_TABLE_TEMPLATE,
                 targetTableName,
                 simpleMappings
                         .stream()
-                        .map(PostgresTableSqlBuilder::buildTargetIdentityFieldSql)
+                        .map(m -> buildTargetIdentityFieldSql(m.getFieldName(), sourceTableFieldTypes.get(m.getFieldName())))
                         .collect(Collectors.joining(", " + String.format("%n"))),
                 getFieldMappings
                         .stream()
@@ -81,10 +85,9 @@ public class PostgresTableSqlBuilder implements TableSqlBuilder<JsonType, Postgr
         return sql;
     }
 
-    private static String buildTargetIdentityFieldSql(final PostgresField sourceIdentifyField) {
-        return String.format("  %s %s",
-                sourceIdentifyField.getFieldName(),
-                sourceIdentifyField.getFieldType().getPostgresType());
+    private static String buildTargetIdentityFieldSql(final String fieldName,
+            final String fieldType) {
+        return String.format("  %s %s", fieldName, fieldType);
     }
 
     private static String buildTargetFieldSql(final PostgresMapping targetField) {

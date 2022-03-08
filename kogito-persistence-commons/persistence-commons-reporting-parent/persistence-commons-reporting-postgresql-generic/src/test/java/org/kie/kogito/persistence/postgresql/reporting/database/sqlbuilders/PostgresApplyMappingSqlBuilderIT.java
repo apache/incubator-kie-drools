@@ -34,6 +34,7 @@ import org.kie.kogito.persistence.postgresql.model.CacheEntityRepository;
 import org.kie.kogito.persistence.postgresql.reporting.database.GenericPostgresDatabaseManagerImpl;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
@@ -85,13 +86,13 @@ class PostgresApplyMappingSqlBuilderIT {
         databaseManager.createArtifacts(new PostgresMappingDefinition("dynamicMappingId",
                 "kogito_data_cache",
                 "json_value",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("name", JsonType.STRING, CACHE_NAME)),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("name", CACHE_NAME)),
                 "DynamicTypeExtract",
                 List.of(new PostgresMapping("field1",
-                        new PostgresField("field1MappedField", JsonType.STRING)),
+                        new PostgresJsonField("field1MappedField", JsonType.STRING)),
                         new PostgresMapping("field2",
-                                new PostgresField("field2MappedField", JsonType.NUMBER)))));
+                                new PostgresJsonField("field2MappedField", JsonType.NUMBER)))));
         // We should now have two records in the extract table
         assertResultSize(2);
 

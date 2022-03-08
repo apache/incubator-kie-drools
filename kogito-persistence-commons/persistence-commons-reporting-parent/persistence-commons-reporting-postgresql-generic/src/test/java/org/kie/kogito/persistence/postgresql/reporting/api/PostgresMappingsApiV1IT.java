@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.kie.kogito.persistence.postgresql.reporting.model.JsonType;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresField;
+import org.kie.kogito.persistence.postgresql.reporting.model.PostgresJsonField;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMapping;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinition;
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefinitions;
@@ -68,11 +69,11 @@ class PostgresMappingsApiV1IT {
         final PostgresMappingDefinition definition = new PostgresMappingDefinition("ExampleMappingId",
                 "kogito_data_cache",
                 "json_value",
-                List.of(new PostgresField("key", JsonType.STRING)),
-                List.of(new PostgresPartitionField("name", JsonType.STRING, "Example")),
+                List.of(new PostgresField("key")),
+                List.of(new PostgresPartitionField("name", "Example")),
                 "Example",
                 List.of(new PostgresMapping("field1",
-                        new PostgresField("field1", JsonType.STRING))));
+                        new PostgresJsonField("field1", JsonType.STRING))));
 
         Response response = given().contentType(ContentType.JSON).body(definition).when().post("/mappings").prettyPeek();
         assertNotNull(response);

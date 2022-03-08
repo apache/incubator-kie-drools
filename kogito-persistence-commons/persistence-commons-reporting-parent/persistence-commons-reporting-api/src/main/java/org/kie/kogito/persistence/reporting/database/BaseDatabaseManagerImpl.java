@@ -17,6 +17,7 @@ package org.kie.kogito.persistence.reporting.database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ import org.kie.kogito.persistence.reporting.database.sqlbuilders.TableSqlBuilder
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TriggerDeleteSqlBuilder;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.TriggerInsertSqlBuilder;
 import org.kie.kogito.persistence.reporting.model.Field;
+import org.kie.kogito.persistence.reporting.model.JsonField;
 import org.kie.kogito.persistence.reporting.model.Mapping;
 import org.kie.kogito.persistence.reporting.model.MappingDefinition;
 import org.kie.kogito.persistence.reporting.model.PartitionField;
@@ -42,26 +44,26 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-public abstract class BaseDatabaseManagerImpl<T, F extends Field<T>, P extends PartitionField<T>, M extends Mapping<T, F>, D extends MappingDefinition<T, F, P, M>, C extends Context<T, F, P, M>>
-        implements DatabaseManager<T, F, P, M, D, C> {
+public abstract class BaseDatabaseManagerImpl<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, D extends MappingDefinition<T, F, P, J, M>, C extends Context<T, F, P, J, M>>
+        implements DatabaseManager<T, F, P, J, M, D, C> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseDatabaseManagerImpl.class);
 
-    private IndexesSqlBuilder<T, F, P, M, C> indexesSqlBuilder;
-    private TableSqlBuilder<T, F, P, M, C> tableSqlBuilder;
-    private TriggerDeleteSqlBuilder<T, F, P, M, C> triggerDeleteSqlBuilder;
-    private TriggerInsertSqlBuilder<T, F, P, M, C> triggerInsertSqlBuilder;
-    private ApplyMappingSqlBuilder<T, F, P, M, C> applyMappingSqlBuilder;
+    private IndexesSqlBuilder<T, F, P, J, M, C> indexesSqlBuilder;
+    private TableSqlBuilder<T, F, P, J, M, C> tableSqlBuilder;
+    private TriggerDeleteSqlBuilder<T, F, P, J, M, C> triggerDeleteSqlBuilder;
+    private TriggerInsertSqlBuilder<T, F, P, J, M, C> triggerInsertSqlBuilder;
+    private ApplyMappingSqlBuilder<T, F, P, J, M, C> applyMappingSqlBuilder;
 
     protected BaseDatabaseManagerImpl() {
         //CDI proxy
     }
 
-    protected BaseDatabaseManagerImpl(final IndexesSqlBuilder<T, F, P, M, C> indexesSqlBuilder,
-            final TableSqlBuilder<T, F, P, M, C> tableSqlBuilder,
-            final TriggerDeleteSqlBuilder<T, F, P, M, C> triggerDeleteSqlBuilder,
-            final TriggerInsertSqlBuilder<T, F, P, M, C> triggerInsertSqlBuilder,
-            final ApplyMappingSqlBuilder<T, F, P, M, C> applyMappingSqlBuilder) {
+    protected BaseDatabaseManagerImpl(final IndexesSqlBuilder<T, F, P, J, M, C> indexesSqlBuilder,
+            final TableSqlBuilder<T, F, P, J, M, C> tableSqlBuilder,
+            final TriggerDeleteSqlBuilder<T, F, P, J, M, C> triggerDeleteSqlBuilder,
+            final TriggerInsertSqlBuilder<T, F, P, J, M, C> triggerInsertSqlBuilder,
+            final ApplyMappingSqlBuilder<T, F, P, J, M, C> applyMappingSqlBuilder) {
         this.indexesSqlBuilder = Objects.requireNonNull(indexesSqlBuilder);
         this.tableSqlBuilder = Objects.requireNonNull(tableSqlBuilder);
         this.triggerDeleteSqlBuilder = Objects.requireNonNull(triggerDeleteSqlBuilder);
@@ -71,7 +73,7 @@ public abstract class BaseDatabaseManagerImpl<T, F extends Field<T>, P extends P
 
     protected abstract EntityManager getEntityManager(final String sourceTableName);
 
-    protected abstract TerminalPathSegment<T, F, M> buildTerminalPathSegment(final String segment,
+    protected abstract TerminalPathSegment<T, J, M> buildTerminalPathSegment(final String segment,
             final PathSegment parent,
             final M mapping);
 
@@ -195,4 +197,6 @@ public abstract class BaseDatabaseManagerImpl<T, F extends Field<T>, P extends P
         });
         return mappingPaths;
     }
+
+    protected abstract Map<String, String> getSourceTableFieldTypes(final String sourceTableName);
 }
