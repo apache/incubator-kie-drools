@@ -72,6 +72,12 @@ public interface SolverJob<Solution_, ProblemId_> {
     void terminateEarly();
 
     /**
+     * @return true if {@link SolverJob#terminateEarly} has been called since the underlying {@link Solver}
+     *         started solving.
+     */
+    boolean isTerminatedEarly();
+
+    /**
      * Waits if necessary for the solver to complete and then returns the final best {@link PlanningSolution}.
      *
      * @return never null, but it could be the original uninitialized problem

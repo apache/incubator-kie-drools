@@ -631,4 +631,55 @@ class SolverManagerTest {
         solutionWithProblemChangeReceived.await();
         assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
+
+    @Test
+    @Timeout(60)
+    void terminateSolverJobEarly_stillReturnsBestSolution() throws ExecutionException, InterruptedException {
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+        CountDownLatch solvingStartedLatch = new CountDownLatch(1);
+        PhaseConfig<?> pausedPhaseConfig = new CustomPhaseConfig().withCustomPhaseCommands(
+                scoreDirector -> solvingStartedLatch.countDown());
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(pausedPhaseConfig, new ConstructionHeuristicPhaseConfig());
+        solverManager = SolverManager.create(solverConfig, solverManagerConfig);
+
+        SolverJob<TestdataSolution, Long> solverJob =
+                solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1"));
+        solvingStartedLatch.await();
+        solverJob.terminateEarly();
+        TestdataSolution result = solverJob.getFinalBestSolution();
+        assertThat(result).isNotNull();
+        assertThat(solverJob.isTerminatedEarly()).isTrue();
+    }
+
+    @Test
+    @Timeout(60)
+    void terminateScheduledSolverJobEarly_returnsInputProblem() throws ExecutionException, InterruptedException {
+        CountDownLatch solvingPausedLatch = new CountDownLatch(1);
+        PhaseConfig<?> pausedPhaseConfig = new CustomPhaseConfig().withCustomPhaseCommands(
+                scoreDirector -> {
+                    try {
+                        solvingPausedLatch.await();
+                    } catch (InterruptedException e) {
+                        fail("CountDownLatch failed.");
+                    }
+                });
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
+                .withPhases(pausedPhaseConfig, new ConstructionHeuristicPhaseConfig());
+        // Allow only a single active solver.
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig().withParallelSolverCount("1");
+        solverManager = SolverManager.create(solverConfig, solverManagerConfig);
+
+        // The first solver waits.
+        solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1", 4));
+        TestdataSolution inputProblem = PlannerTestUtils.generateTestdataSolution("s2", 4);
+        SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(2L, inputProblem);
+
+        solverJob.terminateEarly();
+        TestdataSolution result = solverJob.getFinalBestSolution();
+        assertThat(result).isSameAs(inputProblem);
+        assertThat(solverJob.isTerminatedEarly()).isTrue();
+    }
 }
