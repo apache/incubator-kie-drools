@@ -20,15 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
-import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +117,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     @Override
     public void afterProcessStarted(ProcessStartedEvent event) {
         LOGGER.debug("After process started event: {}", event);
-        final WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) event.getProcessInstance();
+        final ProcessInstance processInstance = event.getProcessInstance();
         getNumberOfProcessInstancesStartedCounter(identifier, processInstance.getProcessId()).increment();
         recordRunningProcessInstance(identifier, processInstance.getProcessId());
     }
@@ -124,7 +125,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
         LOGGER.debug("After process completed event: {}", event);
-        final WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) event.getProcessInstance();
+        final KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) event.getProcessInstance();
         getRunningProcessInstancesGauge(identifier, processInstance.getProcessId()).decrementAndGet();
 
         getNumberOfProcessInstancesCompletedCounter(identifier, processInstance.getProcessId(), String.valueOf(processInstance.getState())).increment();
@@ -139,9 +140,9 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     @Override
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
         LOGGER.debug("Before Node left event: {}", event);
-        final NodeInstance nodeInstance = event.getNodeInstance();
-        if (nodeInstance instanceof WorkItemNodeInstance) {
-            WorkItemNodeInstance wi = (WorkItemNodeInstance) nodeInstance;
+        final KogitoNodeInstance nodeInstance = (KogitoNodeInstance) event.getNodeInstance();
+        if (nodeInstance instanceof KogitoWorkItemNodeInstance) {
+            KogitoWorkItemNodeInstance wi = (KogitoWorkItemNodeInstance) nodeInstance;
             if (wi.getTriggerTime() != null) {
                 final String name = (String) wi.getWorkItem().getParameters().getOrDefault("TaskName", wi.getWorkItem().getName());
                 final double duration = millisToSeconds(wi.getLeaveTime().getTime() - wi.getTriggerTime().getTime());
@@ -154,7 +155,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     @Override
     public void afterSLAViolated(SLAViolatedEvent event) {
         LOGGER.debug("After SLA violated event: {}", event);
-        final WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) event.getProcessInstance();
+        final ProcessInstance processInstance = event.getProcessInstance();
         if (processInstance != null && event.getNodeInstance() != null) {
             getNumberOfSLAsViolatedCounter(identifier, processInstance.getProcessId(), event.getNodeInstance().getNodeName()).increment();
         }

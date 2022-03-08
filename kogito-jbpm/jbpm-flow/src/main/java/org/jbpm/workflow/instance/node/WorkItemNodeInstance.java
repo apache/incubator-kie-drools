@@ -56,6 +56,7 @@ import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.GroupedNamedDataType;
 import org.kie.kogito.process.IOEventDescription;
@@ -79,7 +80,7 @@ import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STAT
  * Runtime counterpart of a work item node.
  *
  */
-public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
+public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer, KogitoWorkItemNodeInstance {
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(WorkItemNodeInstance.class);

@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.monitoring.core.common.process;
 
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -42,7 +42,7 @@ public class MetricsProcessEventListenerTest {
     public void testGaugeRunningProcesses() {
         // Arrange
         MetricsProcessEventListener eventListener = new MetricsProcessEventListener("myId", KogitoGAV.EMPTY_GAV, registry);
-        ProcessInstance processInstanceMock = mock(WorkflowProcessInstanceImpl.class);
+        ProcessInstance processInstanceMock = mock(KogitoWorkflowProcessInstance.class);
         when(processInstanceMock.getProcessId()).thenReturn("myProcessId");
 
         ProcessStartedEvent processStartedEvent = mock(ProcessStartedEvent.class);

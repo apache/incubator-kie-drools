@@ -32,9 +32,9 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow</artifactId>
-    </dependency>   
-    
-    
+    </dependency>
+
+
     <!-- test dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

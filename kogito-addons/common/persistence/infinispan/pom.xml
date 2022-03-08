@@ -28,10 +28,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-serialization-protobuf</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.infinispan</groupId>
