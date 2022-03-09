@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 import org.drools.core.phreak.SegmentUtilities;
 
+import static org.drools.core.phreak.SegmentUtilities.nextNodePosMask;
+
 public interface PathEndNode extends LeftTupleSinkNode {
     LeftTupleNode[] getPathNodes();
     boolean hasPathNode(LeftTupleNode node);
@@ -84,7 +86,7 @@ public interface PathEndNode extends LeftTupleSinkNode {
             tupleSource = tupleSource.getLeftTupleSource();
             if ( SegmentUtilities.isNonTerminalTipNode( tupleSource, removingTN ) ) {
                 updateBitInNewSegment = true; // allow bit to be set for segment
-                allLinkedTestMask = allLinkedTestMask << 1;
+                allLinkedTestMask = nextNodePosMask(allLinkedTestMask);
                 counter++;
             }
 

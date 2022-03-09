@@ -79,6 +79,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.SegmentUtilities.isRootNode;
+import static org.drools.core.phreak.SegmentUtilities.nextNodePosMask;
 
 public class AddRemoveRule {
 
@@ -1324,8 +1325,8 @@ public class AddRemoveRule {
         LinkedList<Memory> smNodeMemories1 = sm1.getNodeMemories();
         LinkedList<Memory> smNodeMemories2 = sm2.getNodeMemories();
 
-        Memory mem         = smNodeMemories1.getFirst();
-        int    nodePosMask = 1;
+        Memory mem = smNodeMemories1.getFirst();
+        long nodePosMask = 1;
         for (int i = 0, length = smNodeMemories1.size(); i < length; i++) {
             Memory next = mem.getNext();
             if (i > pos) {
@@ -1337,7 +1338,7 @@ public class AddRemoveRule {
                 if (mem instanceof SegmentNodeMemory) {
                     ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
                 }
-                nodePosMask = nodePosMask << 1;
+                nodePosMask = nextNodePosMask(nodePosMask);
             }
             mem = next;
         }
