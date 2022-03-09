@@ -48,6 +48,7 @@ import org.kie.kogito.rules.RuleUnitInstance;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static org.drools.ruleunits.codegen.RuleCodegen.RULE_TYPE;
 import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
 import static org.kie.kogito.codegen.rules.RuleUnitGenerator.useLegacySession;
 

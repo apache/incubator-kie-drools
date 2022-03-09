@@ -31,6 +31,10 @@ import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.api.conf.ClockType;
 import org.drools.ruleunits.api.conf.EventProcessingType;
+import org.drools.ruleunits.codegen.template.InvalidTemplateException;
+import org.drools.ruleunits.codegen.template.TemplatedGenerator;
+import org.drools.ruleunits.codegen.context.KogitoBuildContext;
+import org.drools.ruleunits.codegen.context.impl.JavaKogitoBuildContext;
 import org.drools.ruleunits.impl.AbstractRuleUnitDescription;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitDescription;
@@ -49,6 +53,8 @@ import java.util.stream.Collectors;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toList;
+import static org.drools.ruleunits.codegen.RuleCodegen.RULE_TYPE;
+import static org.drools.ruleunits.codegen.RuleCodegen.TEMPLATE_RULE_FOLDER;
 import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
 import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
 
@@ -119,7 +125,7 @@ public class RuleUnitGenerator implements RuleFileGenerator {
 
     @Override
     public GeneratedFile generate() {
-        return new org.drools.modelcompiler.builder.GeneratedFile(RULE_TYPE,
+        return new GeneratedFile(RULE_TYPE,
                 generatedFilePath(),
                 compilationUnit().toString());
     }

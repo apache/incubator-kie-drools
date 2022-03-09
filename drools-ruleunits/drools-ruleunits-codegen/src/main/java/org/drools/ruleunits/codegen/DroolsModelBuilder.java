@@ -17,6 +17,8 @@ package org.drools.ruleunits.codegen;
 
 import org.drools.drl.parser.DroolsError;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
+import org.drools.ruleunits.api.RuleUnitConfig;
+import org.drools.ruleunits.codegen.context.KogitoBuildContext;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;

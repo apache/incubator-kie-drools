@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.ruleunits.codegen.context.KogitoBuildContext;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.ApplicationSection;
@@ -52,14 +53,14 @@ public class RuleCodegen {
     private final ConfigGenerator configGenerator;
     private final KogitoBuildContext context;
     private final String name;
-
-    public static RuleCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
-        List<Resource> generatedRules = resources.stream()
-                .map(CollectedResource::resource)
-                .filter(r -> isRuleFile(r) || r.getResourceType() == ResourceType.PROPERTIES)
-                .collect(toList());
-        return ofResources(context, generatedRules);
-    }
+//
+//    public static RuleCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
+//        List<Resource> generatedRules = resources.stream()
+//                .map(CollectedResource::resource)
+//                .filter(r -> isRuleFile(r) || r.getResourceType() == ResourceType.PROPERTIES)
+//                .collect(toList());
+//        return ofResources(context, generatedRules);
+//    }
 
     public static RuleCodegen ofJavaResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         List<Resource> generatedRules =
