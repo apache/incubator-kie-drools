@@ -431,7 +431,7 @@ public class LinkingTest {
         JoinNode eNode = ( JoinNode ) exists1n.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode ) eNode.getSinkPropagator().getSinks()[0];
 
-        SegmentUtilities.createSegmentMemory( exists1n, wm );
+        SegmentUtilities.getOrCreateSegmentMemory( exists1n, wm );
         BetaMemory existsBm = ( BetaMemory ) wm.getNodeMemory( exists1n );
 
         assertEquals( 0, existsBm.getSegmentMemory().getLinkedNodeMask() );
@@ -1039,7 +1039,7 @@ public class LinkingTest {
         NotNode bNode = ( NotNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
-        SegmentUtilities.createSegmentMemory( cNode, wm );
+        SegmentUtilities.getOrCreateSegmentMemory( cNode, wm );
         LiaNodeMemory amem = ( LiaNodeMemory ) wm.getNodeMemory( aNode );  
         
         // Only NotNode is linked in
@@ -1115,7 +1115,7 @@ public class LinkingTest {
         NotNode bNode = ( NotNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
-        SegmentUtilities.createSegmentMemory( cNode, wm );
+        SegmentUtilities.getOrCreateSegmentMemory( cNode, wm );
         LiaNodeMemory amem = ( LiaNodeMemory ) wm.getNodeMemory( aNode );  
         
         // Only NotNode is linked in
