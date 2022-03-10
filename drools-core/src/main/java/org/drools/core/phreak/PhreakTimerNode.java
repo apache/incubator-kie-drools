@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+import static org.drools.core.phreak.SegmentUtilities.nextNodePosMask;
 
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
@@ -444,7 +445,7 @@ public class PhreakTimerNode {
         long bit = 1;
         for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink() ) {
             //update the bit to the correct node position.
-            bit = bit << 1;
+            bit = nextNodePosMask(bit);
         }
 
         RuleNetworkEvaluator.INSTANCE.outerEval(pmem, sink, bit, tm,

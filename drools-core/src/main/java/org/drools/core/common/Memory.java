@@ -32,7 +32,7 @@ public interface Memory extends LinkedListNode<Memory> {
     default SegmentMemory getOrCreateSegmentMemory( LeftTupleSource tupleSource, ReteEvaluator reteEvaluator ) {
         SegmentMemory smem = getSegmentMemory();
         if (smem == null) {
-            smem = SegmentUtilities.createSegmentMemory( tupleSource, this, reteEvaluator );
+            smem = SegmentUtilities.getOrCreateSegmentMemory( tupleSource, reteEvaluator );
         }
         return smem;
     }

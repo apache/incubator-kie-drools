@@ -60,15 +60,12 @@ public class SegmentUtilities {
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static void createSegmentMemory(LeftTupleSource tupleSource, ReteEvaluator reteEvaluator) {
-        Memory mem = reteEvaluator.getNodeMemory((MemoryFactory) tupleSource);
-        SegmentMemory smem = mem.getSegmentMemory();
-        if ( smem == null ) {
-            createSegmentMemory(tupleSource, mem, reteEvaluator);
+    public static SegmentMemory getOrCreateSegmentMemory(LeftTupleSource tupleSource, ReteEvaluator reteEvaluator) {
+        SegmentMemory smem = reteEvaluator.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
+        if ( smem != null ) {
+            return smem;
         }
-    }
 
-    public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource, Memory mem, ReteEvaluator reteEvaluator) {
         // find segment root
         while (!SegmentUtilities.isRootNode(tupleSource, null)) {
             tupleSource = tupleSource.getLeftTupleSource();
@@ -77,7 +74,7 @@ public class SegmentUtilities {
         LeftTupleSource segmentRoot = tupleSource;
         int nodeTypesInSegment = 0;
 
-        SegmentMemory smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot, nodeTypesInSegment);
+        smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot, nodeTypesInSegment);
         if ( smem != null ) {
             if (NodeTypeEnums.isBetaNode(segmentRoot) && ( (BetaNode) segmentRoot ).isRightInputIsRiaNode()) {
                 createRiaSegmentMemory( (BetaNode) segmentRoot, reteEvaluator );
@@ -128,7 +125,8 @@ public class SegmentUtilities {
                         break;
                 }
             }
-            nodePosMask = nodePosMask << 1;
+
+            nodePosMask = nextNodePosMask(nodePosMask);
 
             if (tupleSource.getSinkPropagator().size() == 1) {
                 LeftTupleSinkNode sink = tupleSource.getSinkPropagator().getFirstLeftTupleSink();
@@ -147,7 +145,7 @@ public class SegmentUtilities {
                         ObjectSink[] nodes = rian.getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                createSegmentMemory( (LeftTupleSource) node, reteEvaluator );
+                                getOrCreateSegmentMemory( (LeftTupleSource) node, reteEvaluator );
                             }
                         }
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
@@ -181,17 +179,25 @@ public class SegmentUtilities {
         smem.setSegmentPosMaskBit(ruleSegmentPosMask);
         smem.setPos(counter);
 
-        nodeTypesInSegment = updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, reteEvaluator, false, nodeTypesInSegment);
+        updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, reteEvaluator, false, nodeTypesInSegment);
 
         reteEvaluator.getKnowledgeBase().registerSegmentPrototype(segmentRoot, smem);
 
         return smem;
     }
 
+    public static long nextNodePosMask(long nodePosMask) {
+        // prevent overflow of segment and path memories masks when a segment has 64 or more nodes or a path has 64 or more segments
+        // in this extreme case all the items after the 64th will be all mapped by the same bit and then the linking of one of them
+        // will be enough to consider all those item linked
+        long nextNodePosMask = nodePosMask << 1;
+        return nextNodePosMask > 0 ? nextNodePosMask : nodePosMask;
+    }
+
     private static SegmentMemory restoreSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
         SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, segmentRoot);
         if ( smem != null ) {
-            nodeTypesInSegment = updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, reteEvaluator, true, nodeTypesInSegment);
+            updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, reteEvaluator, true, nodeTypesInSegment);
         }
         return smem;
     }
@@ -211,7 +217,7 @@ public class SegmentUtilities {
         LiaNodeMemory liam = reteEvaluator.getNodeMemory(liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
-            querySmem = createSegmentMemory(liaNode, liam, reteEvaluator);
+            querySmem = getOrCreateSegmentMemory(liaNode, reteEvaluator);
         }
         return querySmem;
     }
@@ -304,7 +310,7 @@ public class SegmentUtilities {
         SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
         if (subNetworkSegmentMemory == null) {
             // we need to stop recursion here
-            createSegmentMemory(subnetworkLts, rootSubNetwokrMem, reteEvaluator);
+            getOrCreateSegmentMemory(subnetworkLts, reteEvaluator);
         }
         return riaNode;
     }
@@ -333,7 +339,7 @@ public class SegmentUtilities {
                 // RTNS and RiaNode's have their own segment, if they are the child of a split.
                 createChildSegmentForTerminalNode( node, memory );
             } else {
-                createSegmentMemory((LeftTupleSource) node, memory, reteEvaluator);
+                getOrCreateSegmentMemory((LeftTupleSource) node, reteEvaluator);
             }
         }
         return memory.getSegmentMemory();
@@ -412,7 +418,7 @@ public class SegmentUtilities {
                         ObjectSink[] nodes = ((RightInputAdapterNode) sink).getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                createSegmentMemory( (LeftTupleSource) node, reteEvaluator );
+                                getOrCreateSegmentMemory( (LeftTupleSource) node, reteEvaluator );
                             }
                         }
                     }
@@ -450,7 +456,7 @@ public class SegmentUtilities {
         if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
              !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
              !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
-            createSegmentMemory(lt, reteEvaluator);
+            getOrCreateSegmentMemory(lt, reteEvaluator);
         }
     }
 
