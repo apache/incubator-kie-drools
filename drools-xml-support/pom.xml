@@ -122,4 +122,24 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <!-- prepare for JDK17 -->
+      <id>add-jdk17plus-dependencies</id>
+      <activation>
+        <jdk>[17,)</jdk>
+      </activation>
+      <dependencyManagement>
+        <dependencies>
+          <!-- JDK17 compatibility: -->
+          <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.1</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+  </profiles>
 </project>

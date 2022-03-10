@@ -29,20 +29,19 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import javax.xml.bind.JAXBContext;
 
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.DomainObject;
@@ -55,7 +54,6 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.drools.xml.support.JAXBContextProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -84,10 +82,6 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class QueryTest {
-
-    static {
-        System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
-    }
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
@@ -179,7 +173,7 @@ public class QueryTest {
         jaxbClassList.add(InsertedObject.class);
         jaxbClassList.add(Person.class);
         Class<?>[] jaxbClasses = jaxbClassList.toArray(new Class[jaxbClassList.size()]);
-        return JAXBContextProvider.newInstance(jaxbClasses);
+        return JAXBContext.newInstance(jaxbClasses);
     }
 
     @Test

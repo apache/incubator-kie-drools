@@ -34,6 +34,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
@@ -238,9 +239,7 @@ public class DMNScenarioRunnerHelperTest {
                                       expressionEvaluatorFactoryMock,
                                       requestContextMock);
 
-        // TODO: this assertion fails on java 17. There the NPE has an error message (also reporting which variable caused the internal NPE)
-        // and then the status becomes FAILED_WITH_EXCEPTION instead of the more generic FAILED_WITH_ERROR
-        // assertEquals(FactMappingValueStatus.FAILED_WITH_ERROR, scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus());
+        assertNotEquals(FactMappingValueStatus.SUCCESS, scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus());
     }
 
     @SuppressWarnings("unchecked")
