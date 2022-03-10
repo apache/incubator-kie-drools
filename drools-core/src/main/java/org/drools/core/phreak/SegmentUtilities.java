@@ -61,15 +61,13 @@ public class SegmentUtilities {
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static void createSegmentMemory(LeftTupleSource tupleSource, InternalWorkingMemory wm) {
+    public static SegmentMemory getOrCreateSegmentMemory(LeftTupleSource tupleSource, InternalWorkingMemory wm) {
         Memory mem = wm.getNodeMemory((MemoryFactory) tupleSource);
         SegmentMemory smem = mem.getSegmentMemory();
-        if ( smem == null ) {
-            createSegmentMemory(tupleSource, mem, wm);
+        if ( smem != null ) {
+            return smem;
         }
-    }
 
-    public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource, Memory mem, InternalWorkingMemory wm) {
         // find segment root
         while (!SegmentUtilities.isRootNode(tupleSource, null)) {
             tupleSource = tupleSource.getLeftTupleSource();
@@ -78,7 +76,8 @@ public class SegmentUtilities {
         LeftTupleSource segmentRoot = tupleSource;
         int nodeTypesInSegment = 0;
 
-        SegmentMemory smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
+        smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
+
         if ( smem != null ) {
             if (NodeTypeEnums.isBetaNode(segmentRoot) && ( (BetaNode) segmentRoot ).isRightInputIsRiaNode()) {
                 createRiaSegmentMemory( (BetaNode) segmentRoot, wm );
@@ -129,7 +128,8 @@ public class SegmentUtilities {
                         break;
                 }
             }
-            nodePosMask = nodePosMask << 1;
+
+            nodePosMask = nextNodePosMask(nodePosMask);
 
             if (tupleSource.getSinkPropagator().size() == 1) {
                 LeftTupleSinkNode sink = tupleSource.getSinkPropagator().getFirstLeftTupleSink();
@@ -148,7 +148,7 @@ public class SegmentUtilities {
                         ObjectSink[] nodes = rian.getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                createSegmentMemory( (LeftTupleSource) node, wm );
+                                getOrCreateSegmentMemory( (LeftTupleSource) node, wm );
                             }
                         }
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
@@ -189,6 +189,14 @@ public class SegmentUtilities {
         return smem;
     }
 
+    public static long nextNodePosMask(long nodePosMask) {
+        // prevent overflow of segment and path memories masks when a segment has 64 or more nodes or a path has 64 or more segments
+        // in this extreme case all the items after the 64th will be all mapped by the same bit and then the linking of one of them
+        // will be enough to consider all those item linked
+        long nextNodePosMask = nodePosMask << 1;
+        return nextNodePosMask > 0 ? nextNodePosMask : nodePosMask;
+    }
+
     private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
         SegmentMemory smem = wm.getKnowledgeBase().createSegmentFromPrototype(wm, segmentRoot);
         if ( smem != null ) {
@@ -212,7 +220,7 @@ public class SegmentUtilities {
         LiaNodeMemory liam = wm.getNodeMemory(liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
-            querySmem = createSegmentMemory(liaNode, liam, wm);
+            querySmem = getOrCreateSegmentMemory(liaNode, wm);
         }
         return querySmem;
     }
@@ -305,7 +313,7 @@ public class SegmentUtilities {
         SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
         if (subNetworkSegmentMemory == null) {
             // we need to stop recursion here
-            createSegmentMemory(subnetworkLts, rootSubNetwokrMem, wm);
+            getOrCreateSegmentMemory(subnetworkLts, wm);
         }
         return riaNode;
     }
@@ -336,7 +344,7 @@ public class SegmentUtilities {
                 // RTNS and RiaNode's have their own segment, if they are the child of a split.
                 createChildSegmentForTerminalNode( node, memory );
             } else {
-                createSegmentMemory((LeftTupleSource) node, memory, wm);
+                getOrCreateSegmentMemory((LeftTupleSource) node, wm);
             }
         }
         return memory.getSegmentMemory();
@@ -415,7 +423,7 @@ public class SegmentUtilities {
                         ObjectSink[] nodes = ((RightInputAdapterNode) sink).getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                createSegmentMemory( (LeftTupleSource) node, wm );
+                                getOrCreateSegmentMemory( (LeftTupleSource) node, wm );
                             }
                         }
                     }
@@ -453,7 +461,7 @@ public class SegmentUtilities {
         if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
              !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
              !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
-            createSegmentMemory(lt, wm);
+            getOrCreateSegmentMemory(lt, wm);
         }
     }
 

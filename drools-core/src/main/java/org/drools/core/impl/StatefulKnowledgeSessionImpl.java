@@ -48,7 +48,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.DefaultFactHandle;
@@ -150,7 +149,6 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -926,7 +924,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
             if ( lmem.getSegmentMemory() == null ) {
-                SegmentUtilities.createSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
+                SegmentUtilities.getOrCreateSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
             }
 
             LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, StatefulKnowledgeSessionImpl.this, lmem, false, queryObject.isOpen() );
