@@ -166,7 +166,6 @@
     <module>drools-beliefs</module>
     <module>drools-serialization-protobuf</module>
     <module>drools-traits</module>
-    <module>drools-cdi</module>
     <module>drools-verifier</module>
     <module>drools-persistence</module>
     <module>drools-templates</module>
@@ -177,7 +176,6 @@
     <module>kie-dmn</module>
     <module>kie-pmml-trusty</module>
     <module>drools-examples-api</module>
-    <module>drools-examples-cdi</module>
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>
     <module>drools-metric</module>

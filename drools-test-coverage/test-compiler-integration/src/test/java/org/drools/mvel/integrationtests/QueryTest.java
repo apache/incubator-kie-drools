@@ -55,6 +55,7 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.xml.support.JAXBContextProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -83,6 +84,10 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class QueryTest {
+
+    static {
+        System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
+    }
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
@@ -174,7 +179,7 @@ public class QueryTest {
         jaxbClassList.add(InsertedObject.class);
         jaxbClassList.add(Person.class);
         Class<?>[] jaxbClasses = jaxbClassList.toArray(new Class[jaxbClassList.size()]);
-        return JAXBContext.newInstance(jaxbClasses);
+        return JAXBContextProvider.newInstance(jaxbClasses);
     }
 
     @Test

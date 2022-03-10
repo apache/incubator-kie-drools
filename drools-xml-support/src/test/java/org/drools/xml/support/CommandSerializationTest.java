@@ -118,7 +118,7 @@ public class CommandSerializationTest {
         jaxbClassList.addAll(Arrays.asList(classes));
         jaxbClassList.addAll(Arrays.asList(annotatedJaxbClasses));
         Class<?>[] jaxbClasses = jaxbClassList.toArray(new Class[jaxbClassList.size()]);
-        return JAXBContext.newInstance(jaxbClasses);
+        return JAXBContextProvider.newInstance(jaxbClasses);
     }
 
     // TESTS ----------------------------------------------------------------------------------------------------------------------
