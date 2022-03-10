@@ -53,7 +53,7 @@
         <!-- DROOLS-6678: only used by drools-examples -->
         <version.com.miglayout>3.7.4</version.com.miglayout>
         <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
-        <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
+        <version.com.sun.xml.bind>3.0.2</version.com.sun.xml.bind>
         <version.com.thoughtworks.xstream>1.4.18</version.com.thoughtworks.xstream>
         <version.guru.nidi>0.18.0</version.guru.nidi>
         <version.info.picocli>4.6.1</version.info.picocli>
@@ -77,7 +77,7 @@
         <version.org.apache.maven.wagon>3.0.0</version.org.apache.maven.wagon>
         <version.org.apache.poi>5.1.0</version.org.apache.poi>
         <!-- DROOLS-6678: only used by kie-test-util -->
-        <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
+        <version.org.apache.tomcat.tomcat-dbcp>10.0.17</version.org.apache.tomcat.tomcat-dbcp>
         <version.org.assertj>3.20.2</version.org.assertj>
         <!-- DROOLS-6678: only used by kie-util-maven-support and kie-util-maven-integration -->
         <version.org.codehaus.plexus.plexus-classworlds>2.6.0</version.org.codehaus.plexus.plexus-classworlds>
@@ -89,30 +89,30 @@
         <!-- DROOLS-6678: only used by kie-ci, kie-util-maven-support and kie-util-maven-integration -->
         <version.org.eclipse.sisu>0.3.4</version.org.eclipse.sisu>
         <version.org.glassfish.jaxb>2.3.3-b02</version.org.glassfish.jaxb>
-        <version.org.hibernate>5.6.0.Final</version.org.hibernate>
+        <version.org.hibernate>6.0.0.CR2</version.org.hibernate>
         <!--This needs to be in sync with JUnit-->
         <version.org.hamcrest>1.3</version.org.hamcrest>
         <version.org.javassist>3.26.0-GA</version.org.javassist>
-        <version.org.jboss.narayana.tomcat>5.12.0.Final</version.org.jboss.narayana.tomcat>
+        <version.org.jboss.narayana.tomcat>5.11.4.Final</version.org.jboss.narayana.tomcat>
         <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
         <!-- DROOLS-6678: make sure weld is used only for test -->
         <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
         <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
-        <version.jakarta.activation-api>1.2.2</version.jakarta.activation-api>
+        <version.jakarta.activation-api>2.1.0</version.jakarta.activation-api>
         <version.jakarta.inject-api>1.0.3</version.jakarta.inject-api>
         <version.jakarta.annotation-api>1.3.5</version.jakarta.annotation-api>
         <version.jakarta.ejb-api>3.2.6</version.jakarta.ejb-api>
         <version.jakarta.security.jacc-api>1.6.1</version.jakarta.security.jacc-api>
         <version.jakarta.servlet.jsp-api>2.3.6</version.jakarta.servlet.jsp-api>
         <version.jakarta.servlet.jsp.jstl-api>2.0.0</version.jakarta.servlet.jsp.jstl-api>
-        <version.jakarta.transaction-api>1.3.3</version.jakarta.transaction-api>
+        <version.jakarta.transaction-api>2.0.0</version.jakarta.transaction-api>
         <version.jakarta.ws.rs-api>2.1.6</version.jakarta.ws.rs-api>
         <version.jakarta.xml.ws-api>2.3.3</version.jakarta.xml.ws-api>
         <version.jakarta.xml.soap-api>1.4.2</version.jakarta.xml.soap-api>
         <version.jakarta.websocket-api>1.1.2</version.jakarta.websocket-api>
-        <version.jakarta.persistence-api>2.2.3</version.jakarta.persistence-api>
+        <version.jakarta.persistence-api>3.0.0</version.jakarta.persistence-api>
         <version.jakarta.servlet-api>4.0.3</version.jakarta.servlet-api>
-        <version.jakarta.xml.bind-api>2.3.3</version.jakarta.xml.bind-api>
+        <version.jakarta.xml.bind-api>3.0.1</version.jakarta.xml.bind-api>
         <version.jakarta.json.bind-api>1.0.2</version.jakarta.json.bind-api>
         <version.jakarta.jws-api>2.1.0</version.jakarta.jws-api>
         <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
@@ -507,11 +507,6 @@
                 <version>${version.jakarta.json-api}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.sun.activation</groupId>
-                <artifactId>jakarta.activation</artifactId>
-                <version>${version.jakarta.activation-api}</version>
-            </dependency>
             <dependency>
                 <groupId>jakarta.activation</groupId>
                 <artifactId>jakarta.activation-api</artifactId>
@@ -1536,7 +1531,7 @@
 
             <dependency>
                 <groupId>org.jboss.narayana.jta</groupId>
-                <artifactId>narayana-jta</artifactId>
+                <artifactId>narayana-jta-jakarta</artifactId>
                 <version>${version.org.jboss.narayana.tomcat}</version>
                 <exclusions>
                     <exclusion>
@@ -1619,21 +1614,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${version.org.hibernate}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.persistence</groupId>
-                        <artifactId>javax.persistence-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jboss.spec.javax.transaction</groupId>
-                        <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+
             <!-- Required for Errai Dynamic Bean validation  -->
             <dependency>
                 <groupId>javax.validation</groupId>

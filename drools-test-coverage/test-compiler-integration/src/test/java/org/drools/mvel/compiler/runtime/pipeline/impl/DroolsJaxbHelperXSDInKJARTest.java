@@ -23,6 +23,7 @@ import com.sun.tools.xjc.Options;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.glassfish.jaxb.core.v2.util.XmlFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -68,7 +69,7 @@ public class DroolsJaxbHelperXSDInKJARTest {
         System.getProperties().entrySet().forEach(e -> LOG.debug("{}", e));
         LOG.info("{}", javax.xml.parsers.SAXParserFactory.newInstance().getClass());
         LOG.info("{}", javax.xml.validation.SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI).getClass());
-        LOG.info("{}", com.sun.xml.bind.v2.util.XmlFactory.createSchemaFactory(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI, false).getClass());
+        LOG.info("{}", XmlFactory.createSchemaFactory(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI, false).getClass());
     }
 
     @Test

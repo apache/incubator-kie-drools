@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;

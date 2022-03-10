@@ -18,7 +18,7 @@ package org.drools.core.runtime.rule.impl;
 
 import org.drools.core.QueryResultsImpl;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 
 public class QueryResultsJaxbAdapter extends XmlAdapter<QueryResultsImpl, FlatQueryResults>{

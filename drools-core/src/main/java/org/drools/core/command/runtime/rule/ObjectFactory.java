@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import javax.xml.bind.annotation.XmlRegistry;
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
 

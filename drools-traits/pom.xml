@@ -121,7 +121,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.jta</groupId>
-      <artifactId>narayana-jta</artifactId>
+      <artifactId>narayana-jta-jakarta</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -141,11 +141,6 @@
           <artifactId>jaxb-runtime</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

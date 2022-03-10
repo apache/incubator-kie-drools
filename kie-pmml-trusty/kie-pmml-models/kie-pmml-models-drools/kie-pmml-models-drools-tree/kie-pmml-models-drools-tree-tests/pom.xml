@@ -12,6 +12,16 @@
   <name>KIE :: PMML :: Models :: Drools :: Tree :: Tests</name>
   <description>PMML Tree Tests</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>2.3.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- TEST -->
     <!-- PMML -->

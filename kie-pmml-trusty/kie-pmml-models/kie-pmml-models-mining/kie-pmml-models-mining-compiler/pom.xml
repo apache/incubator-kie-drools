@@ -12,6 +12,17 @@
   <name>KIE :: PMML :: Models :: Mining :: Compiler</name>
   <description>PMML Mining Compiler</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>2.3.2</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

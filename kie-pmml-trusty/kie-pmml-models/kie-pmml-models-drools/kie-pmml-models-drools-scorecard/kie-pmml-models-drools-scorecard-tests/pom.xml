@@ -12,6 +12,16 @@
   <name>KIE :: PMML :: Models :: Drools :: Scorecard :: Tests</name>
   <description>PMML Scorecard Tests</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>2.3.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- TEST -->
     <!-- PMML -->

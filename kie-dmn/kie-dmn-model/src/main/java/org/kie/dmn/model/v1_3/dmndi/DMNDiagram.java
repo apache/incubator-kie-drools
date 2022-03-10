@@ -19,7 +19,7 @@ package org.kie.dmn.model.v1_3.dmndi;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.DMNDiagram {
 

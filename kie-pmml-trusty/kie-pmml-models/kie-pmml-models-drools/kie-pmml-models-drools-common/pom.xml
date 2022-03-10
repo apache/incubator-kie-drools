@@ -14,6 +14,16 @@
   <name>KIE :: PMML :: Models :: Drools :: Common</name>
   <description>Common code for PMML Models with Drools Implementations</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>2.3.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

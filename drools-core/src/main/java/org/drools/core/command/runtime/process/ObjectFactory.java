@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.process;
 
 
-import javax.xml.bind.annotation.XmlRegistry;
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 
 @XmlRegistry

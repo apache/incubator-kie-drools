@@ -15,17 +15,16 @@
 
 package org.drools.persistence.util;
 
-import static org.kie.api.runtime.EnvironmentName.GLOBALS;
-import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
-
 import java.util.Map;
-import javax.transaction.UserTransaction;
+
+import jakarta.transaction.UserTransaction;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.impl.EnvironmentFactory;
 import org.kie.api.runtime.Environment;
 import org.kie.test.util.db.PersistenceUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.kie.api.runtime.EnvironmentName.GLOBALS;
+import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
 
 public class DroolsPersistenceUtil extends PersistenceUtil {
 

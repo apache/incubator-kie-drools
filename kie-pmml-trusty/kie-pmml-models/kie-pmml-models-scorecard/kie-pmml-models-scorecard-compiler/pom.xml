@@ -65,6 +65,11 @@
         <artifactId>kie-pmml-models-scorecard-model</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>2.3.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
