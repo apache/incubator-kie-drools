@@ -124,8 +124,8 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
     }
 
     public SolutionBusiness<Solution_, ?> createSolutionBusiness() {
-        SolutionBusiness<Solution_, ?> solutionBusiness = new SolutionBusiness<>(this);
-        solutionBusiness.setSolver(SolverFactory.createFromXmlResource(solverConfigResource));
+        SolutionBusiness<Solution_, ?> solutionBusiness = new SolutionBusiness<>(this,
+                SolverFactory.createFromXmlResource(solverConfigResource));
         solutionBusiness.setDataDir(determineDataDir(dataDirName));
         solutionBusiness.setSolutionFileIO(createSolutionFileIO());
         solutionBusiness.setImporters(createSolutionImporters());

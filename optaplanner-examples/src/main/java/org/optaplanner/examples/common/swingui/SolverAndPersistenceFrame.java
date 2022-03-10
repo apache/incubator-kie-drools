@@ -70,7 +70,7 @@ import org.optaplanner.swing.impl.TangoColorFactory;
  */
 public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
-    public static final ImageIcon OPTA_PLANNER_ICON = new ImageIcon(
+    public static final ImageIcon OPTAPLANNER_ICON = new ImageIcon(
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
 
     private final SolutionBusiness<Solution_, ?> solutionBusiness;
@@ -105,7 +105,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         super(solutionBusiness.getAppName() + " OptaPlanner example");
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
-        setIconImage(OPTA_PLANNER_ICON.getImage());
+        setIconImage(OPTAPLANNER_ICON.getImage());
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setSolverAndPersistenceFrame(this);
         this.extraActions = new Action[extraActions.length];
@@ -129,18 +129,16 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     }
 
     private void registerListeners() {
-        solutionBusiness.registerForBestSolutionChanges(this);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 // This async, so it doesn't stop the solving immediately
-                solutionBusiness.terminateSolvingEarly();
+                solutionBusiness.close();
             }
         });
     }
 
-    public void bestSolutionChanged() {
-        Solution_ solution = solutionBusiness.getSolution();
+    private void bestSolutionChanged(Solution_ solution) {
         Score score = solutionBusiness.getScore();
         if (refreshScreenDuringSolvingToggleButton.isSelected()) {
             solutionPanel.updatePanel(solution);
@@ -364,7 +362,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
         @Override
         protected Solution_ doInBackground() {
-            return solutionBusiness.solve(problem);
+            return solutionBusiness.solve(problem, SolverAndPersistenceFrame.this::bestSolutionChanged);
         }
 
         @Override

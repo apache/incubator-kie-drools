@@ -89,7 +89,7 @@ public class OptaPlannerExamplesApp extends JFrame {
 
     public OptaPlannerExamplesApp() {
         super("OptaPlanner examples " + determineOptaPlannerExamplesVersion());
-        setIconImage(SolverAndPersistenceFrame.OPTA_PLANNER_ICON.getImage());
+        setIconImage(SolverAndPersistenceFrame.OPTAPLANNER_ICON.getImage());
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

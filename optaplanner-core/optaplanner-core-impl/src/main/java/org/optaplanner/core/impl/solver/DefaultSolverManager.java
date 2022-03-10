@@ -171,10 +171,10 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     @Override
     public void close() {
         solverThreadPool.shutdownNow();
-        problemIdToSolverJobMap.values().forEach(solverJob -> solverJob.close());
+        problemIdToSolverJobMap.values().forEach(DefaultSolverJob::close);
     }
 
-    protected void unregisterSolverJob(ProblemId_ problemId) {
+    void unregisterSolverJob(ProblemId_ problemId) {
         problemIdToSolverJobMap.remove(getProblemIdOrThrow(problemId));
     }
 
