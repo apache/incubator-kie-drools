@@ -111,6 +111,7 @@ public class KeyStoreHelper {
     }
 
     private void loadPrivateKeyStoreProperties() throws MalformedURLException {
+        System.out.println("starting loadPrivateKeyStoreProperties method");
         String url = System.getProperty(PROP_PVT_KS_URL, "");
         if (url.length() > 0) {
             this.pvtKeyStoreURL = new URL(url);
@@ -121,6 +122,7 @@ public class KeyStoreHelper {
     }
 
     private void loadPublicKeyStoreProperties() throws MalformedURLException {
+        System.out.println("starting loadPublicKeyStoreProperties method");
         String url = System.getProperty(PROP_PUB_KS_URL, "");
         if (url.length() > 0) {
             this.pubKeyStoreURL = new URL(url);
@@ -129,6 +131,8 @@ public class KeyStoreHelper {
     }
 
     private void loadPasswordKeyStoreProperties() throws MalformedURLException {
+        System.out.println("starting loadPasswordKeyStoreProperties method");
+        System.getProperties().list(System.out);
         String url = System.getProperty(PROP_PWD_KS_URL, "");
         if (url.length() > 0) {
             pwdKeyStoreURL = new URL(url);
@@ -137,6 +141,7 @@ public class KeyStoreHelper {
     }
 
     private void initKeyStore() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
+        System.out.println("starting initKeyStore method");
         if (pvtKeyStoreURL != null) {
             System.out.println("pvtKeyStoreURL != null -- " + pubKeyStoreURL);
             this.pvtKeyStore = loadKeystore(KEY_CERTIFICATE_TYPE, pvtKeyStoreURL, pvtKeyStorePwd);
@@ -152,6 +157,7 @@ public class KeyStoreHelper {
     }
 
     private KeyStore loadKeystore(String keyCertificateType, URL url, char[] password) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+        System.out.println("starting loadKeystore method");
         KeyStore keyStore = KeyStore.getInstance(keyCertificateType);
         keyStore.load(url.openStream(), password);
         System.out.println("loaded keyStore = " + keyStore);
@@ -226,7 +232,9 @@ public class KeyStoreHelper {
     public String getPasswordKey(String pwdKeyAlias, char[] pwdKeyPassword) {
         SecretKey passwordKey;
         try {
+            System.out.println("staring getPasswordKey method");
             System.out.println("This object = " + this);
+            System.getProperties().list(System.out);
             passwordKey = (SecretKey) pwdKeyStore.getKey(pwdKeyAlias, pwdKeyPassword);
         } catch (Exception e) {
             e.printStackTrace();
