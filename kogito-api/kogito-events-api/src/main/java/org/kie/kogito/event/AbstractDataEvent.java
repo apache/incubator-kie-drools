@@ -152,7 +152,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         if (this.type == null || this.type.isEmpty()) {
             this.type = TYPE_PREFIX;
         }
-        if (this.source == null) {
+        if (this.source == null || this.source.toString().isEmpty()) {
             this.source = URI.create(String.format(SOURCE_FORMAT, kogitoProcessId));
         }
     }

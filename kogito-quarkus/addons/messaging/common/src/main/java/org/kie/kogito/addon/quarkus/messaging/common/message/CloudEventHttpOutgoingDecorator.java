@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.addon.quarkus.messaging.common.message;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.eclipse.microprofile.reactive.messaging.Metadata;
 
 import io.quarkus.arc.properties.IfBuildProperty;
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
@@ -27,6 +27,7 @@ import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
  * Decorators for Http CloudEvents outgoing messages
  */
 @IfBuildProperty(name = "kogito.messaging.as-cloudevents", stringValue = "true")
+@ApplicationScoped
 public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
 
     // Note: this constant is also declared in cloudevents-json-jackson.
@@ -36,13 +37,13 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
     /**
      * Metadata to include content-type for structured CloudEvents messages
      */
-    static final Metadata HTTP_RESPONSE_METADATA =
-            Metadata.of(new OutgoingHttpMetadata.Builder().addHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build());
+    static final OutgoingHttpMetadata HTTP_RESPONSE_METADATA =
+            new OutgoingHttpMetadata.Builder().addHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build();
 
     /**
      * Decorates a given payload with custom metadata needed by Http Outgoing processing
      *
-     * @param payload of the given message
+     * @param message of the given message
      * @param <T> Payload type
      */
     @Override
