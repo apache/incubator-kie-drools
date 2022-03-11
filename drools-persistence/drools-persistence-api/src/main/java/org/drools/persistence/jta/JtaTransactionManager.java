@@ -18,8 +18,10 @@ package org.drools.persistence.jta;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -210,11 +212,16 @@ public class JtaTransactionManager
             rollback(true);
             status = getStatus();
         }
-        if ( status == TransactionManager.STATUS_NO_TRANSACTION ) {
+        else {
             try {
                 getUt().begin();
                 return true;
-            } catch ( Exception e ) {
+            } 
+            catch (NotSupportedException e) {
+                logger.warn("Unable to begin transaction new transaction. Probably transaction manager does not support nested transactions",  e );
+                return false;
+            }
+            catch ( Exception e ) {
                 // special WAS handling for cached UserTrnsactions
                 if (e.getClass().getName().equals("javax.ejb.EJBException")) {
                     // reinitialize all fields
