@@ -1,5 +1,5 @@
 {
-  "id": "greet",
+  "id": "greetUnknown",
   "version": "1.0",
   "name": "Greeting workflow",
   "expressionLang": "jsonpath",
@@ -32,7 +32,7 @@
         }
       ],
       "defaultCondition": {
-        "transition": "GreetInEnglish"
+        "transition": "NoGreet"
       }
     },
     {
@@ -48,6 +48,14 @@
       "type": "inject",
       "data": {
         "greeting": "Saludos desde JSON Workflow,"
+      },
+      "transition": "GreetPerson"
+    },
+    {
+      "name": "NoGreet",
+      "type": "inject",
+      "data": {
+        "greeting": "I'm not familiar with your language,"
       },
       "transition": "GreetPerson"
     },

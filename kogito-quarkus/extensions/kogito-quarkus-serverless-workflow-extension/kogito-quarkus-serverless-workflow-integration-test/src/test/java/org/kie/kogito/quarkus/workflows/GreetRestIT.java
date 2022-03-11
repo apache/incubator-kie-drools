@@ -21,38 +21,47 @@ import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusIntegrationTest
 class GreetRestIT {
 
     @Test
     void testGreetRest() {
+        assertIt("greet", "Hello from JSON Workflow,");
+    }
+
+    @Test
+    void testGreetUnknownRest() {
+        assertIt("greetUnknown", "I'm not familiar with your language,");
+    }
+
+    private void assertIt(String flowName, String unknownMessage) {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"workflowdata\" : {\"name\" : \"John\", \"language\":\"English\"}}").when()
-                .post("/greet")
+                .post("/" + flowName)
                 .then()
                 .statusCode(201)
-                .body("workflowdata.greeting", containsString("Hello"));
-
-        given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .body("{\"workflowdata\" : {\"name\" : \"John\", \"language\":\"Unknown\"}}").when()
-                .post("/greet")
-                .then()
-                .statusCode(201)
-                .body("workflowdata.greeting", containsString("Hello"));
+                .body("workflowdata.greeting", is("Hello from JSON Workflow,"));
 
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"workflowdata\" : {\"name\" : \"Javierito\", \"language\":\"Spanish\"}}").when()
-                .post("/greet")
+                .post("/" + flowName)
                 .then()
                 .statusCode(201)
-                .body("workflowdata.greeting", containsString("Saludos"));
+                .body("workflowdata.greeting", is("Saludos desde JSON Workflow,"));
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"workflowdata\" : {\"name\" : \"John\", \"language\":\"Unknown\"}}").when()
+                .post("/" + flowName)
+                .then()
+                .statusCode(201)
+                .body("workflowdata.greeting", is(unknownMessage));
     }
 }

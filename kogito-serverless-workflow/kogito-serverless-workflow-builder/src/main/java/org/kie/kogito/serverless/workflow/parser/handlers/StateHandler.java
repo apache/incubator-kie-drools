@@ -16,7 +16,8 @@
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -78,7 +79,7 @@ public abstract class StateHandler<S extends State> {
     protected final boolean isStartState;
 
     private JoinFactory<?> join;
-    private List<Long> incomingConnections = new ArrayList<>();
+    private Collection<Long> incomingConnections = new LinkedHashSet<>();
 
     protected StateHandler(S state, Workflow workflow, ParserContext parserContext) {
         this.workflow = workflow;
@@ -467,10 +468,13 @@ public abstract class StateHandler<S extends State> {
     }
 
     protected interface HandleTransitionCallBack {
-        void onStateTarget(StateHandler<?> targetState);
+        default void onStateTarget(StateHandler<?> targetState) {
+        }
 
-        void onIdTarget(long targetId);
+        default void onIdTarget(long targetId) {
+        }
 
-        void onEmptyTarget();
+        default void onEmptyTarget() {
+        }
     }
 }

@@ -559,7 +559,32 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
-        assertEquals(15, process.getNodes().length);
+        assertEquals(16, process.getNodes().length);
+
+        Split split = (Split) process.getNodes()[4];
+        assertEquals("ChooseOnAge", split.getName());
+        assertEquals(2, split.getType());
+        assertEquals(2, split.getConstraints().size());
+
+        boolean haveDefaultConstraint = false;
+        for (Constraint constraint : split.getConstraints().values()) {
+            haveDefaultConstraint = haveDefaultConstraint || constraint.isDefault();
+        }
+
+        assertTrue(haveDefaultConstraint);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = "/exec/switch-state-produce-events-default.sw.json")
+    public void testSwitchProduceEventsDefaultOnTransitionWorkflow(String workflowLocation) throws Exception {
+        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
+        assertEquals("switchworkflow", process.getId());
+        assertEquals("switch-wf", process.getName());
+        assertEquals("1.0", process.getVersion());
+        assertEquals("org.kie.kogito.serverless", process.getPackageName());
+        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+
+        assertEquals(17, process.getNodes().length);
 
         Split split = (Split) process.getNodes()[4];
         assertEquals("ChooseOnAge", split.getName());
