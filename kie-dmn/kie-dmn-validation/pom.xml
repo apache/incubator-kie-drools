@@ -203,6 +203,18 @@
           <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
+            <scope>provided</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>kie-pmml</artifactId>
+            <scope>test</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+              </exclusion>
+            </exclusions>
           </dependency>
       </dependencies>
     </profile>
