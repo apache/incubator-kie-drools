@@ -33,7 +33,6 @@ def startersToArtifactIds(String starters) {
             [id: "processes", starter: "kogito-processes-spring-boot-starter"],
             [id: "rules", starter: "kogito-rules-spring-boot-starter"],
             [id: "decisions", starter: "kogito-decisions-spring-boot-starter"],
-            [id: "serverless-workflows", starter: "kogito-serverless-workflows-spring-boot-starter"],
             [id: "predictions", starter: "kogito-predictions-spring-boot-starter"]
     ]
     def startersList = starters.split(",")

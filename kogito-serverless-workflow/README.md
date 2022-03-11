@@ -43,6 +43,8 @@ The sections below describe in detail the current status of the supported featur
 | ForEach       | :first_quarter_moon: |
 | Callback      | :full_moon: |
 
+> ⚠️ Quarkus is the only supported runtime for Kogito Serverless Workflow.
+
 #### Examples
 
 1. [Event Example](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-events-quarkus)

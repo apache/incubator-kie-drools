@@ -37,8 +37,7 @@ The list of valid Kogito Spring Boot Starters are:
 1. [`decisions`](../starters/kogito-decisions-spring-boot-starter)
 2. [`processes`](../starters/kogito-processes-spring-boot-starter)
 3. [`rules`](../starters/kogito-rules-spring-boot-starter)
-4. [`serverless-workflows`](../starters/kogito-serverless-workflow-spring-boot-starter)
-5. [`predictions`](../starters/kogito-predictions-spring-boot-starter)
+4. [`predictions`](../starters/kogito-predictions-spring-boot-starter)
 
 ## Adding Kogito Add-Ons
 

@@ -32,8 +32,7 @@
       <modules>
         <module>kogito-springboot-starter</module><!-- deprecated -->
         <module>kogito-spring-boot-starter</module>
-        <module>kogito-processes-spring-boot-starter</module>
-        <module>kogito-serverless-workflow-spring-boot-starter</module>
+        <module>kogito-processes-spring-boot-starter</module>        
       </modules>
     </profile>
   </profiles>
