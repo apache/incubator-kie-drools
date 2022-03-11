@@ -64,6 +64,11 @@ public class FactImpl implements Fact, Externalizable {
     }
 
     @Override
+    public Map<String, Object> asMap() {
+        return values;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

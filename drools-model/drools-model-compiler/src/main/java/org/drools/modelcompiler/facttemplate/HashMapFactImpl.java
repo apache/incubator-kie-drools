@@ -47,4 +47,17 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
     public void set( String name, Object value ) {
         valuesMap.put(name, value);
     }
+
+    @Override
+    public Map<String, Object> asMap() {
+        return valuesMap;
+    }
+
+    @Override
+    public String toString() {
+        return "HashMapFactImpl{" +
+                "factTemplate=" + factTemplate +
+                ", valuesMap=" + valuesMap +
+                '}';
+    }
 }
