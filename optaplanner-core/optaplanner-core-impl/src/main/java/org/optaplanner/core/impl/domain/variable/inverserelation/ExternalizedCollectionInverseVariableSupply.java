@@ -19,12 +19,12 @@ package org.optaplanner.core.impl.domain.variable.inverserelation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
@@ -50,11 +50,9 @@ public class ExternalizedCollectionInverseVariableSupply<Solution_>
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         EntityDescriptor<Solution_> entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
-        List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        inverseEntitySetMap = new IdentityHashMap<>(entityList.size());
-        for (Object entity : entityList) {
-            insert(scoreDirector, entity);
-        }
+        SolutionDescriptor<Solution_> solutionDescriptor = entityDescriptor.getSolutionDescriptor();
+        inverseEntitySetMap = new IdentityHashMap<>();
+        solutionDescriptor.visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
     @Override
@@ -69,22 +67,22 @@ public class ExternalizedCollectionInverseVariableSupply<Solution_>
 
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert(entity);
     }
 
     @Override
     public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract(scoreDirector, entity);
+        retract(entity);
     }
 
     @Override
     public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert(entity);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract(scoreDirector, entity);
+        retract(entity);
     }
 
     @Override
@@ -92,7 +90,7 @@ public class ExternalizedCollectionInverseVariableSupply<Solution_>
         // Do nothing
     }
 
-    protected void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    protected void insert(Object entity) {
         Object value = sourceVariableDescriptor.getValue(entity);
         if (value == null) {
             return;
@@ -108,7 +106,7 @@ public class ExternalizedCollectionInverseVariableSupply<Solution_>
         }
     }
 
-    protected void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    protected void retract(Object entity) {
         Object value = sourceVariableDescriptor.getValue(entity);
         if (value == null) {
             return;

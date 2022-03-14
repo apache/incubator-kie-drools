@@ -17,11 +17,11 @@
 package org.optaplanner.core.impl.domain.variable.anchor;
 
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -51,11 +51,9 @@ public class ExternalizedAnchorVariableSupply<Solution_> implements SourcedVaria
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         EntityDescriptor<Solution_> entityDescriptor = previousVariableDescriptor.getEntityDescriptor();
-        List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        anchorMap = new IdentityHashMap<>(entityList.size());
-        for (Object entity : entityList) {
-            insert(scoreDirector, entity);
-        }
+        SolutionDescriptor<Solution_> solutionDescriptor = entityDescriptor.getSolutionDescriptor();
+        anchorMap = new IdentityHashMap<>();
+        solutionDescriptor.visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class ExternalizedAnchorVariableSupply<Solution_> implements SourcedVaria
 
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert(entity);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class ExternalizedAnchorVariableSupply<Solution_> implements SourcedVaria
 
     @Override
     public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert(entity);
     }
 
     @Override
@@ -100,7 +98,7 @@ public class ExternalizedAnchorVariableSupply<Solution_> implements SourcedVaria
         // Do nothing
     }
 
-    protected void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    protected void insert(Object entity) {
         Object previousEntity = previousVariableDescriptor.getValue(entity);
         Object anchor;
         if (previousEntity == null) {

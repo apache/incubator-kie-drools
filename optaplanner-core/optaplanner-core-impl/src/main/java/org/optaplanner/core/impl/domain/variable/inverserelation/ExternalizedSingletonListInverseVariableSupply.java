@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -48,11 +49,9 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         EntityDescriptor<Solution_> entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
-        List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        inverseEntityMap = new IdentityHashMap<>(entityList.size());
-        for (Object entity : entityList) {
-            insert(scoreDirector, entity);
-        }
+        SolutionDescriptor<Solution_> solutionDescriptor = entityDescriptor.getSolutionDescriptor();
+        inverseEntityMap = new IdentityHashMap<>();
+        solutionDescriptor.visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
     @Override
@@ -74,23 +73,23 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
 
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert(entity);
     }
 
     @Override
     public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract(scoreDirector, entity);
+        retract(entity);
     }
 
     @Override
     public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert(entity);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // When the entity is removed, its values become unassigned. An unassigned value has no inverse entity and no index.
-        retract(scoreDirector, entity);
+        retract(entity);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
         // Do nothing
     }
 
-    protected void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    protected void insert(Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         for (Object value : listVariable) {
             Object oldInverseEntity = inverseEntityMap.put(value, entity);
@@ -112,7 +111,7 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_>
         }
     }
 
-    protected void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    protected void retract(Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         for (Object value : listVariable) {
             Object oldInverseEntity = inverseEntityMap.remove(value);
