@@ -113,6 +113,7 @@ import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -791,7 +792,14 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     void addPackageFromXSD(Resource resource, ResourceConfiguration configuration) throws IOException {
         if (configuration != null) {
             ComponentsFactory.addPackageFromXSD( this, resource, configuration );
+            if (configuration instanceof JaxbConfigurationImpl) {
+                this.addXsdGeneratedClassNames(((JaxbConfigurationImpl)configuration).getClasses());
+            }
         }
+    }
+
+    protected void addXsdGeneratedClassNames(List<String> classes) {
+        // no-op for non-exec-model
     }
 
     void addPackageFromChangeSet(Resource resource) throws SAXException,

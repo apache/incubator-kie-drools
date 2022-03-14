@@ -303,4 +303,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected BuildContext createBuildContext() {
         return new CanonicalModelBuildContext();
     }
+
+    @Override
+    protected void addXsdGeneratedClassNames(List<String> classNames) {
+        ((CanonicalModelBuildContext) getBuildContext()).addXsdGeneratedClassNames(classNames);
+    }
 }

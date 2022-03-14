@@ -15,10 +15,12 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +34,8 @@ public class CanonicalModelBuildContext extends BuildContext {
 
     private final Collection<GeneratedClassWithPackage> allGeneratedPojos = new HashSet<>();
     private final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
+
+    private final List <String> xsdGeneratedClassNames = new ArrayList<>();
 
     public CanonicalModelBuildContext() { }
 
@@ -61,7 +65,7 @@ public class CanonicalModelBuildContext extends BuildContext {
         return allCompiledClasses;
     }
 
-    public Collection<String> getNotOwnedModelFiles(Map<String, ModelBuilderImpl> modelBuilders, String kBaseName) {
+    public Collection<String> getNotOwnedModelFiles(Map<String, ModelBuilderImpl<PackageSources>> modelBuilders, String kBaseName) {
         Collection<String> notOwned = notOwnedResources.get(kBaseName);
         if (notOwned == null) {
             return Collections.emptyList();
@@ -80,5 +84,13 @@ public class CanonicalModelBuildContext extends BuildContext {
     private String resource2Package(String resource) {
         int pathEndPos = resource.lastIndexOf('/');
         return pathEndPos <= 0 ? "" :resource.substring(0, pathEndPos).replace('/', '.');
+    }
+
+    public void addXsdGeneratedClassNames(List<String> classNames) {
+        xsdGeneratedClassNames.addAll(classNames);
+    }
+
+    public List<String> getXsdGeneratedClassNames() {
+        return xsdGeneratedClassNames;
     }
 }

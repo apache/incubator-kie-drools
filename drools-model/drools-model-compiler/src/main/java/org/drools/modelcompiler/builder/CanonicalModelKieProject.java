@@ -28,11 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.kie.builder.impl.BuildContext;
-import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
@@ -55,7 +54,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         return (internalKieModule, classLoader) -> new CanonicalModelKieProject(internalKieModule, classLoader);
     }
 
-    protected Map<String, ModelBuilderImpl> modelBuilders = new HashMap<>();
+    protected Map<String, ModelBuilderImpl<PackageSources>> modelBuilders = new HashMap<>();
 
     public CanonicalModelKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule instanceof CanonicalKieModule ? kieModule : new CanonicalKieModule( kieModule ), classLoader);
@@ -84,8 +83,9 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         Collection<String> sourceFiles = new HashSet<>();
 
         Map<String, List<String>> modelsByKBase = new HashMap<>();
-        for (Map.Entry<String, ModelBuilderImpl> modelBuilder : modelBuilders.entrySet()) {
-            ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilder.getValue().getPackageSources() );
+        for (Map.Entry<String, ModelBuilderImpl<PackageSources>> modelBuilder : modelBuilders.entrySet()) {
+            ModelBuilderImpl<PackageSources> modelBuilderImpl = modelBuilder.getValue();
+            ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilderImpl.getPackageSources() );
             modelFiles.addAll( result.getModelFiles() );
             sourceFiles.addAll( result.getSourceFiles() );
 
@@ -93,6 +93,8 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             modelFilesForKieBase.addAll( result.getModelFiles() );
             modelFilesForKieBase.addAll( ((CanonicalModelBuildContext) buildContext).getNotOwnedModelFiles(modelBuilders, modelBuilder.getKey()) );
             modelsByKBase.put( modelBuilder.getKey(), modelFilesForKieBase );
+
+            mergeXsdGeneratedClasses(modelBuilderImpl, trgMfs, buildContext);
         }
 
         InternalKieModule kieModule = getInternalKieModule();
@@ -130,6 +132,20 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         }
 
         modelWriter.writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
+    }
+
+    private void mergeXsdGeneratedClasses(ModelBuilderImpl<PackageSources> modelBuilderImpl, MemoryFileSystem trgMfs, BuildContext buildContext) {
+        List<String> xsdGeneratedClassNames = ((CanonicalModelBuildContext) buildContext).getXsdGeneratedClassNames();
+        ClassLoader rootClassLoader = modelBuilderImpl.getRootClassLoader();
+        if (!xsdGeneratedClassNames.isEmpty() && rootClassLoader instanceof ProjectClassLoader) {
+            ProjectClassLoader pcl = (ProjectClassLoader) rootClassLoader;
+            Map<String, byte[]> definedTypes = pcl.getDefinedTypesByteCodeMap();
+            definedTypes.forEach((className, byteCode) -> {
+                if (xsdGeneratedClassNames.contains(className)) {
+                    trgMfs.write(className.toString().replace('.', '/') + ".class", byteCode);
+                }
+            });
+        }
     }
 
     @Override

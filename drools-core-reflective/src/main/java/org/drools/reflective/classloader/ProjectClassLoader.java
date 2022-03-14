@@ -226,6 +226,16 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return clazz;
     }
 
+    public Map<String, byte[]> getDefinedTypesByteCodeMap() {
+        Map<String, byte[]> definedTypesByteCodeMap = new HashMap<>();
+        if (definedTypes != null) {
+            definedTypes.forEach((className, classBytecode) -> {
+                definedTypesByteCodeMap.put(className, classBytecode.bytes);
+            });
+        }
+        return definedTypesByteCodeMap;
+    }
+
     @Override
     public Class<?> writeClass( String name, byte[] bytecode ) {
         return defineClass( name, bytecode, 0, bytecode.length );
