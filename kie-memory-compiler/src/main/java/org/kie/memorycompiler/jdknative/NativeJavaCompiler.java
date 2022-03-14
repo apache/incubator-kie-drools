@@ -61,18 +61,28 @@ import org.kie.memorycompiler.resources.ResourceStore;
 
 public class NativeJavaCompiler extends AbstractJavaCompiler {
 
-    public JavaCompilerSettings createDefaultSettings() {
+    private JavaCompilerFinder javaCompilerFinder;
+
+	public JavaCompilerSettings createDefaultSettings() {
         return new JavaCompilerSettings();
     }
+    
+    public NativeJavaCompiler() {
+    	this(new NativeJavaCompilerFinder());
+    }
 
-    @Override
+    NativeJavaCompiler(JavaCompilerFinder javaCompilerFinder) {
+		this.javaCompilerFinder = javaCompilerFinder;
+	}
+
+	@Override
     public CompilationResult compile( String[] pResourcePaths,
                                       ResourceReader pReader,
                                       ResourceStore pStore,
                                       ClassLoader pClassLoader,
                                       JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        JavaCompiler compiler = NativeJavaCompiler.getJavaCompiler();
+        JavaCompiler compiler = getJavaCompiler();
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             try {
@@ -110,11 +120,11 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         }
     }
 
-    private static JavaCompiler getJavaCompiler() {
+    private JavaCompiler getJavaCompiler() {
         JavaCompiler compiler = null;
         Throwable cause = null;
         try {
-            compiler = ToolProvider.getSystemJavaCompiler();
+            compiler = javaCompilerFinder.getJavaCompiler();
         } catch (Throwable ex) {
             cause = ex;
         }
