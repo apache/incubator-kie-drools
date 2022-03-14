@@ -54,7 +54,7 @@
         <version.com.miglayout>3.7.4</version.com.miglayout>
         <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
         <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
-        <version.com.thoughtworks.xstream>1.4.18</version.com.thoughtworks.xstream>
+        <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
         <version.guru.nidi>0.18.0</version.guru.nidi>
         <version.info.picocli>4.6.1</version.info.picocli>
         <version.io.micrometer>1.7.4</version.io.micrometer>
