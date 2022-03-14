@@ -18,8 +18,8 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -83,7 +83,6 @@ import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.kie.dmn.api.core.DMNMessage.Severity.ERROR;
 import static org.kie.dmn.api.core.DMNMessage.Severity.WARN;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -239,7 +238,8 @@ public class DMNScenarioRunnerHelperTest {
                                       scenarioRunnerData3,
                                       expressionEvaluatorFactoryMock,
                                       requestContextMock);
-        assertEquals(FactMappingValueStatus.FAILED_WITH_ERROR, scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus());
+
+        assertNotEquals(FactMappingValueStatus.SUCCESS, scenarioRunnerData3.getResults().get(0).getFactMappingValue().getStatus());
     }
 
     @SuppressWarnings("unchecked")
