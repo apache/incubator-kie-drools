@@ -200,6 +200,7 @@ void sendNotification() {
 
 void saveReports() {
     junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+    archiveArtifacts artifacts: '**/*.log,**/cypress/screenshots/**,**/cypress/videos/**', allowEmptyArchive: true
 }
 
 void checkoutRepo() {
