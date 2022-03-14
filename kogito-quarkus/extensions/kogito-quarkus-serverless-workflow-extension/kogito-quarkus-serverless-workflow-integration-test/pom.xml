@@ -137,6 +137,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>${skipTests}</skip>
               <outputDirectory>${project.basedir}/src/main/resources/shared</outputDirectory>
               <resources>
                 <resource>
