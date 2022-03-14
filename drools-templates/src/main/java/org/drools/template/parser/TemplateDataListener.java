@@ -160,12 +160,8 @@ public class TemplateDataListener
         session.dispose();
     }
 
-    public void newCell( int row,
-                         int column,
-                         String value,
-                         int mergedColStart ) {
-        if ( currentRow != null && column >= startCol && value != null && value.trim().length() > 0 ) {
-
+    public void newCell( int row, int column, String value, int mergedColStart ) {
+        if ( currentRow != null && column >= startCol && value != null ) {
             int columnIndex = column - startCol;
             if ( columnIndex < columns.length ) {
                 Cell cell = currentRow.getCell( columnIndex );
