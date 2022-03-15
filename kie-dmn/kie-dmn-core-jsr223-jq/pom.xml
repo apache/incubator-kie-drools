@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn</artifactId>
+        <version>8.19.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>kie-dmn-core-jsr223-jq</artifactId>
+    <description>An opinionated JSR-223 binding for jq, for use in Drools DMN Engine. May change location in the future.</description>
+    <properties>
+        <java.module.name>org.kie.dmn.core.jsr223.jq</java.module.name>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- TODO conversely than other test-scope dependency, this one could be placed in parent poms -->
+                <groupId>net.thisptr</groupId>
+                <artifactId>jackson-jq</artifactId>
+                <version>1.0.0-preview.20210928</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>net.thisptr</groupId>
+            <artifactId>jackson-jq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+    </dependencies>
+</project>

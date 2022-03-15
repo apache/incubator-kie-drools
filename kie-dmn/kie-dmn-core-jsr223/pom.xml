@@ -33,6 +33,11 @@
           <artifactId>js-scriptengine</artifactId>
           <version>${graalvm.version}</version>
       </dependency>
+        <dependency>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-dmn-core-jsr223-jq</artifactId>
+          <version>${project.version}</version>
+        </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -71,6 +76,11 @@
     <dependency>
       <groupId>org.graalvm.js</groupId>
       <artifactId>js-scriptengine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core-jsr223-jq</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
