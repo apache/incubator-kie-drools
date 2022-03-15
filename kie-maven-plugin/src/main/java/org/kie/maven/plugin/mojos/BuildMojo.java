@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.resolver.filter.CumulativeScopeArtifactFilter;
@@ -56,8 +57,14 @@ import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
+import org.kie.maven.plugin.DiskResourceStore;
+import org.kie.maven.plugin.ProjectPomModel;
+import org.kie.maven.plugin.helpers.CompilerHelper;
+import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
 import static org.kie.maven.plugin.ExecModelMode.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
 
 /**
  * This goal builds the Drools files belonging to the kproject.
@@ -66,7 +73,7 @@ import static org.kie.maven.plugin.ExecModelMode.isModelCompilerInClassPath;
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresProject = true,
         defaultPhase = LifecyclePhase.COMPILE)
-public class BuildMojo extends AbstractDMNValidationAwareMojo {
+public class BuildMojo extends AbstractKieMojo {
 
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     private MavenSession mavenSession;
@@ -162,11 +169,11 @@ public class BuildMojo extends AbstractDMNValidationAwareMojo {
                 }
                 throw new MojoFailureException("Build failed!");
             } else {
-                writeClassFiles( kModule );
+                writeClassFiles(kModule);
             }
 
-            if (shallPerformDMNDTAnalysis()) {
-                performDMNDTAnalysis(kModule);
+            if (shallPerformDMNDTAnalysis(getValidateDMN(), getLog())) {
+                performDMNDTAnalysis(kModule, resources, getLog());
             }
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,19 +57,23 @@ import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.maven.plugin.ExecModelMode;
+import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 
 import static org.kie.maven.plugin.ExecModelMode.isModelCompilerInClassPath;
-import static org.kie.maven.plugin.GenerateCodeUtil.compileAndWriteClasses;
-import static org.kie.maven.plugin.GenerateCodeUtil.createJavaCompilerSettings;
-import static org.kie.maven.plugin.GenerateCodeUtil.getProjectClassLoader;
-import static org.kie.maven.plugin.GenerateCodeUtil.toClassName;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
 
 @Mojo(name = "generateModel",
         requiresDependencyResolution = ResolutionScope.NONE,
         requiresProject = true,
         defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateModelMojo extends AbstractDMNValidationAwareMojo {
+public class GenerateModelMojo extends AbstractKieMojo {
 
     public static PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
@@ -167,8 +171,8 @@ public class GenerateModelMojo extends AbstractDMNValidationAwareMojo {
                 throw new MojoExecutionException("Unable to write file", e);
             }
 
-            if (shallPerformDMNDTAnalysis()) {
-                performDMNDTAnalysis(kieModule);
+            if (shallPerformDMNDTAnalysis(getValidateDMN(), getLog())) {
+                performDMNDTAnalysis(kieModule, resources, getLog());
             }
 
             if (ExecModelMode.shouldDeleteFile(getGenerateModelOption())) {

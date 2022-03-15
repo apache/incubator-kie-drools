@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,15 +43,15 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.kie.maven.plugin.ExecModelMode.ancEnabled;
 import static org.kie.maven.plugin.ExecModelMode.isModelCompilerInClassPath;
-import static org.kie.maven.plugin.GenerateCodeUtil.compileAndWriteClasses;
-import static org.kie.maven.plugin.GenerateCodeUtil.createJavaCompilerSettings;
-import static org.kie.maven.plugin.GenerateCodeUtil.getProjectClassLoader;
-import static org.kie.maven.plugin.GenerateCodeUtil.toClassName;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
 
 @Mojo(name = "generateANC",
         requiresDependencyResolution = ResolutionScope.NONE,
         defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateANCMojo extends AbstractDMNValidationAwareMojo {
+public class GenerateANCMojo extends AbstractKieMojo {
 
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     private MavenSession mavenSession;

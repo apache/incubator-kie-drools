@@ -25,7 +25,6 @@
     <common.compress.version>1.21</common.compress.version>
     <common.exec.version>1.3</common.exec.version>
     <plexus.version>1.6</plexus.version>
-
   </properties>
 
   <build>

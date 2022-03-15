@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.helpers;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -54,47 +55,39 @@ import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyserFactory;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.utils.ChainedProperties;
+import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
-import static org.kie.maven.plugin.ExecModelMode.modelParameterEnabled;
+public class DMNValidationHelper {
 
-public abstract class AbstractDMNValidationAwareMojo extends AbstractKieMojo {
-
-    @Parameter(required = true, defaultValue = "${project.build.resources}")
-    private List<Resource> resources;
-
-    @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
-    private String validateDMN;
-
-    @Parameter(property = "generateModel", defaultValue = "YES_WITHDRL") // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
-    private String generateModel;
-
-    protected String getValidateDMN() {
-        return validateDMN;
+    private DMNValidationHelper() {
     }
 
-    public String getGenerateModelOption() {
-        return generateModel;
-    }
+    //    @Parameter(required = true, defaultValue = "${project.build.resources}")
+//    private List<Resource> resources;
+//
+//    @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
+//    private String validateDMN;
+//
+//    protected String getValidateDMN() {
+//        return validateDMN;
+//    }
 
-    protected boolean isModelParameterEnabled() {
-        return modelParameterEnabled(generateModel);
-    }
-
-    protected void logValidationMessages(List<DMNMessage> validation,
+    public static void logValidationMessages(List<DMNMessage> validation,
                                          Function<DMNMessage, String> prefixer,
-                                         Function<DMNMessage, String> computeMessage) {
+                                         Function<DMNMessage, String> computeMessage,
+                                             Log log) {
         for (DMNMessage msg : validation) {
             Consumer<CharSequence> logFn = null;
             switch (msg.getLevel()) {
                 case ERROR:
-                    logFn = getLog()::error;
+                    logFn = log::error;
                     break;
                 case WARNING:
-                    logFn = getLog()::warn;
+                    logFn = log::warn;
                     break;
                 case INFO:
                 default:
-                    logFn = getLog()::info;
+                    logFn = log::info;
                     break;
             }
             StringBuilder sb = new StringBuilder();
@@ -104,14 +97,15 @@ public abstract class AbstractDMNValidationAwareMojo extends AbstractKieMojo {
         }
     }
 
-    public List<Validation> computeFlagsFromCSVString(String csvString) {
+    public static List<Validation> computeFlagsFromCSVString(String csvString,
+                                                             Log log) {
         List<Validation> flags = new ArrayList<>();
         boolean resetFlag = false;
         for (String p : csvString.split(",")) {
             try {
                 flags.add(Validation.valueOf(p));
             } catch (IllegalArgumentException e) {
-                getLog().info("validateDMN configured with flag: '" + p + "' determines this Mojo will not be executed (reset all flags).");
+                log.info("validateDMN configured with flag: '" + p + "' determines this Mojo will not be executed (reset all flags).");
                 resetFlag = true;
             }
         }
@@ -121,25 +115,27 @@ public abstract class AbstractDMNValidationAwareMojo extends AbstractKieMojo {
         return flags;
     }
 
-    protected boolean shallPerformDMNDTAnalysis() {
-        return computeFlagsFromCSVString(getValidateDMN()).contains(Validation.ANALYZE_DECISION_TABLE);
+    public static boolean shallPerformDMNDTAnalysis(String validateDMN, Log log) {
+        return computeFlagsFromCSVString(validateDMN, log).contains(Validation.ANALYZE_DECISION_TABLE);
     }
 
-    public void performDMNDTAnalysis(InternalKieModule kieModule) throws MojoExecutionException, MojoFailureException {
+    public static void performDMNDTAnalysis(InternalKieModule kieModule,
+                                            List<Resource> resources,
+                                            Log log) throws MojoExecutionException, MojoFailureException {
         Collection<DMNModel> dmnModels = extractDMNModelsFromKieModule(kieModule);
-        getLog().info("Initializing DMN DT Validator...");
-        InternalDMNDTAnalyser analyser = InternalDMNDTAnalyserFactory.newDMNDTAnalyser(computeDMNProfiles());
-        getLog().info("DMN DT Validator initialized.");
+        log.info("Initializing DMN DT Validator...");
+        InternalDMNDTAnalyser analyser = InternalDMNDTAnalyserFactory.newDMNDTAnalyser(computeDMNProfiles(resources, log));
+        log.info("DMN DT Validator initialized.");
         for (DMNModel model : dmnModels) {
-            getLog().info("Analysing decision tables in DMN Model '" + model.getName() + "' ...");
+            log.info("Analysing decision tables in DMN Model '" + model.getName() + "' ...");
             List<DTAnalysis> results = analyser.analyse(model, new HashSet<>(Arrays.asList(Validation.ANALYZE_DECISION_TABLE)));
             if (results.isEmpty()) {
-                getLog().info(" no decision tables found.");
+                log.info(" no decision tables found.");
             } else {
                 for (DTAnalysis r : results) {
-                    getLog().info(" analysis for decision table '" + r.nameOrIDOfTable() + "':");
+                    log.info(" analysis for decision table '" + r.nameOrIDOfTable() + "':");
                     List<DMNMessage> messages = r.asDMNMessages();
-                    logValidationMessages(messages, (u) -> "  ", DMNMessage::getMessage);
+                    logValidationMessages(messages, (u) -> "  ", DMNMessage::getMessage ,log);
                     if (messages.stream().anyMatch(m -> m.getLevel() == Level.ERROR)) {
                         throw new MojoFailureException("There are DMN Validation Error(s).");
                     }
@@ -148,7 +144,15 @@ public abstract class AbstractDMNValidationAwareMojo extends AbstractKieMojo {
         }
     }
 
-    private Collection<DMNModel> extractDMNModelsFromKieModule(InternalKieModule kieModule) {
+    public static List<Path> resourcesPaths(List<Resource> resources, Log log) {
+        List<Path> resourcesPaths = resources.stream().map(r -> new File(r.getDirectory()).toPath()).collect(Collectors.toList());
+        if (log.isDebugEnabled()) {
+            log.debug("resourcesPaths: " + resourcesPaths.stream().map(Path::toString).collect(Collectors.joining(",\n")));
+        }
+        return resourcesPaths;
+    }
+
+    private static Collection<DMNModel> extractDMNModelsFromKieModule(InternalKieModule kieModule) {
         Collection<KiePackage> kpkgs = kieModule.getKieModuleModel().getKieBaseModels().keySet().stream()
                                                 .flatMap(name -> kieModule.getKnowledgePackagesForKieBase(name).stream())
                                                 .collect(Collectors.toList());
@@ -170,19 +174,11 @@ public abstract class AbstractDMNValidationAwareMojo extends AbstractKieMojo {
         return removeDups.values();
     }
 
-    protected List<Path> resourcesPaths() {
-        List<Path> resourcesPaths = resources.stream().map(r -> new File(r.getDirectory()).toPath()).collect(Collectors.toList());
-        if (getLog().isDebugEnabled()) {
-            getLog().debug("resourcesPaths: " + resourcesPaths.stream().map(Path::toString).collect(Collectors.joining(",\n")));
-        }
-        return resourcesPaths;
-    }
-
-    protected List<DMNProfile> computeDMNProfiles() throws MojoExecutionException {
+    public static List<DMNProfile> computeDMNProfiles(List<Resource> resources, Log log) throws MojoExecutionException {
         ClassLoader classLoader = ClassLoaderUtil.findDefaultClassLoader();
         ChainedProperties chainedProperties = ChainedProperties.getChainedProperties(classLoader);
         List<KieModuleModel> kieModules = new ArrayList<>();
-        for (Path p : resourcesPaths()) {
+        for (Path p : resourcesPaths(resources, log)) {
             try (Stream<Path> walk = Files.walk(p)) {
                 List<Path> collect = walk.filter(f -> f.toString().endsWith("kmodule.xml")).collect(Collectors.toList());
                 for (Path k : collect) {

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.helpers;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -25,7 +25,7 @@ import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 
-class CompilerHelper {
+public class CompilerHelper {
 
     public void share(Map<String, Object> kieMap, InternalKieModule kModule, Log log) {
         String compilationID = getCompilationID(kieMap, log);

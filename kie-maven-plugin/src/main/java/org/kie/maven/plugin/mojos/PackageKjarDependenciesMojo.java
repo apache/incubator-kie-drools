@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +63,8 @@ import org.apache.maven.shared.utils.WriterFactory;
 import org.apache.maven.shared.utils.io.IOUtil;
 
 import com.google.common.io.Files;
+import org.kie.maven.plugin.ArtifactItem;
+import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
 @Mojo(name = "package-dependencies-kjar",
       defaultPhase = LifecyclePhase.PREPARE_PACKAGE,

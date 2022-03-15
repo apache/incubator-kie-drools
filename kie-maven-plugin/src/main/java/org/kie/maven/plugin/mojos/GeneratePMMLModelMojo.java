@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +44,8 @@ import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
+import org.kie.maven.plugin.PMMLResource;
+import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
@@ -52,10 +54,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.maven.plugin.ExecModelMode.isModelCompilerInClassPath;
-import static org.kie.maven.plugin.GenerateCodeUtil.compileAndWriteClasses;
-import static org.kie.maven.plugin.GenerateCodeUtil.createJavaCompilerSettings;
-import static org.kie.maven.plugin.GenerateCodeUtil.getProjectClassLoader;
-import static org.kie.maven.plugin.GenerateCodeUtil.toClassName;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
 @Mojo(name = "generatePMMLModel",

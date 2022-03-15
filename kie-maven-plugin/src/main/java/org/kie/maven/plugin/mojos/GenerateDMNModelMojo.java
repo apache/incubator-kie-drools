@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,11 +47,12 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
+import org.kie.maven.plugin.DMNModelMode;
 import org.kie.memorycompiler.JavaCompilerSettings;
 
 import static org.kie.maven.plugin.ExecModelMode.isModelCompilerInClassPath;
-import static org.kie.maven.plugin.GenerateCodeUtil.compileAndWriteClasses;
-import static org.kie.maven.plugin.GenerateCodeUtil.createJavaCompilerSettings;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 
 @Mojo(name = "generateDMNModel",
         requiresDependencyResolution = ResolutionScope.NONE,

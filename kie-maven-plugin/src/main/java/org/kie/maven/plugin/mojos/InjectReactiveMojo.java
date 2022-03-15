@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -34,7 +34,6 @@ import java.util.Set;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -44,6 +43,8 @@ import org.drools.core.phreak.ReactiveObject;
 
 import javassist.ClassPool;
 import javassist.CtClass;
+import org.kie.maven.plugin.BytecodeInjectReactive;
+import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
 @Mojo(name = "injectreactive",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -41,11 +41,16 @@ import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.DMNValidatorFactory;
 
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.computeDMNProfiles;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.computeFlagsFromCSVString;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.logValidationMessages;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.resourcesPaths;
+
 @Mojo(name = "validateDMN",
-      requiresDependencyResolution = ResolutionScope.NONE,
-      requiresProject = true,
-      defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
-public class ValidateDMNMojo extends AbstractDMNValidationAwareMojo {
+        requiresDependencyResolution = ResolutionScope.NONE,
+        requiresProject = true,
+        defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+public class ValidateDMNMojo extends AbstractKieMojo {
 
     @Parameter
     private Map<String, String> properties;
@@ -59,7 +64,7 @@ public class ValidateDMNMojo extends AbstractDMNValidationAwareMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        actualFlags.addAll(computeFlagsFromCSVString(getValidateDMN()));
+        actualFlags.addAll(computeFlagsFromCSVString(getValidateDMN(), getLog()));
         // for this phase, keep only the following flags (the rest requires the BuildMojo).
         actualFlags.retainAll(Arrays.asList(Validation.VALIDATE_SCHEMA, Validation.VALIDATE_MODEL));
         if (actualFlags.isEmpty()) {
@@ -80,7 +85,7 @@ public class ValidateDMNMojo extends AbstractDMNValidationAwareMojo {
         dmnModelPaths.forEach(x -> getLog().info("Will validate DMN model: " + x.toString()));
         List<DMNMessage> validation = validator.validateUsing(actualFlags.toArray(new Validation[]{}))
                                                .theseModels(dmnModelPaths.stream().map(Path::toFile).collect(Collectors.toList()).toArray(new File[]{}));
-        logValidationMessages(validation, this::validateMsgPrefixer, DMNMessage::getText);
+        logValidationMessages(validation, this::validateMsgPrefixer, DMNMessage::getText, getLog());
         if (validation.stream().anyMatch(m -> m.getLevel() == Level.ERROR)) {
             throw new MojoFailureException("There are DMN Validation Error(s).");
         }
@@ -101,11 +106,11 @@ public class ValidateDMNMojo extends AbstractDMNValidationAwareMojo {
 
     private List<Path> computeDmnModelPaths() throws MojoExecutionException {
         List<Path> dmnModelPaths = new ArrayList<>();
-        for (Path p : resourcesPaths()) {
+        for (Path p : resourcesPaths(resources, getLog())) {
             getLog().info("Looking for DMN models in path: " + p);
             try (Stream<Path> walk = Files.walk(p)) {
                 walk.filter(f -> f.toString().endsWith(".dmn"))
-                    .forEach(dmnModelPaths::add);
+                        .forEach(dmnModelPaths::add);
             } catch (Exception e) {
                 throw new MojoExecutionException("Failed executing ValidateDMNMojo", e);
             }
@@ -114,7 +119,7 @@ public class ValidateDMNMojo extends AbstractDMNValidationAwareMojo {
     }
 
     private void initializeDMNValidator() throws MojoExecutionException {
-        List<DMNProfile> dmnProfiles = computeDMNProfiles();
+        List<DMNProfile> dmnProfiles = computeDMNProfiles(resources, getLog());
         validator = DMNValidatorFactory.newValidator(dmnProfiles);
     }
 }

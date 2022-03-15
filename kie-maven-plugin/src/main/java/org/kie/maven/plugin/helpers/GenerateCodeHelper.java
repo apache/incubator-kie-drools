@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.helpers;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +40,10 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.kie.memorycompiler.JavaConfiguration.findJavaVersion;
 
-public class GenerateCodeUtil {
+public class GenerateCodeHelper {
+
+    private GenerateCodeHelper() {
+    }
 
     public static URLClassLoader getProjectClassLoader(MavenProject project, File outputDirectory, JavaCompilerSettings javaCompilerSettings) {
         try {
@@ -61,7 +64,7 @@ public class GenerateCodeUtil {
             }
             urls.add(outputDirectory.toURI().toURL());
 
-            return URLClassLoader.newInstance(urls.toArray(new URL[0]), GenerateCodeUtil.class.getClassLoader());
+            return URLClassLoader.newInstance(urls.toArray(new URL[0]), GenerateCodeHelper.class.getClassLoader());
 
         } catch (DependencyResolutionRequiredException | MalformedURLException e) {
             throw new RuntimeException(e);

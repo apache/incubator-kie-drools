@@ -13,8 +13,9 @@
  * limitations under the License.
 */
 
-package org.kie.maven.plugin;
+package org.kie.maven.plugin.mojos;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -24,13 +25,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.kie.maven.plugin.ExecModelMode.modelParameterEnabled;
+
 public abstract class AbstractKieMojo extends AbstractMojo {
 
     @Parameter(property = "dumpKieSourcesFolder", defaultValue = "")
     protected String dumpKieSourcesFolder;
 
+    @Parameter(property = "generateModel", defaultValue = "YES_WITHDRL") // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
+    private String generateModel;
+
+
     @Parameter(property = "javaCompiler", defaultValue = "ecj")
     private String javaCompiler;
+
+    @Parameter(required = true, defaultValue = "${project.build.resources}")
+    protected List<Resource> resources;
+
+    @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
+    private String validateDMN;
+
+    public String getValidateDMN() {
+        return validateDMN;
+    }
+
+    public String getGenerateModelOption() {
+        return generateModel;
+    }
+
+    protected boolean isModelParameterEnabled() {
+        return modelParameterEnabled(generateModel);
+    }
 
     protected JavaConfiguration.CompilerType getCompilerType() {
         return javaCompiler.equalsIgnoreCase("native") ? JavaConfiguration.CompilerType.NATIVE : JavaConfiguration.CompilerType.ECLIPSE;
