@@ -1,0 +1,4 @@
+package org.kie.modB
+
+declare FactB
+end

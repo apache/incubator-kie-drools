@@ -1,0 +1,4 @@
+package org.kie.modA
+
+declare FactA
+end

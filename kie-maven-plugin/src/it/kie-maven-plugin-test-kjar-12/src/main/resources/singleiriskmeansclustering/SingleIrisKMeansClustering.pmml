@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.1" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="KNIME">
+    <Application name="KNIME" version="2.8.0"/>
+  </Header>
+  <DataDictionary numberOfFields="5">
+    <DataField name="sepal_length" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="4.3" rightMargin="7.9"/>
+    </DataField>
+    <DataField name="sepal_width" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="2.0" rightMargin="4.4"/>
+    </DataField>
+    <DataField name="petal_length" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="1.0" rightMargin="6.9"/>
+    </DataField>
+    <DataField name="petal_width" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.1" rightMargin="2.5"/>
+    </DataField>
+    <DataField name="class" optype="continuous" dataType="string"/>
+  </DataDictionary>
+  <ClusteringModel modelName="SingleIrisKMeansClustering" functionName="clustering" modelClass="centerBased" numberOfClusters="4">
+    <MiningSchema>
+      <MiningField name="sepal_length" invalidValueTreatment="asIs"/>
+      <MiningField name="sepal_width" invalidValueTreatment="asIs"/>
+      <MiningField name="petal_length" invalidValueTreatment="asIs"/>
+      <MiningField name="petal_width" invalidValueTreatment="asIs"/>
+      <MiningField name="class" usageType="predicted"/>
+    </MiningSchema>
+    <ComparisonMeasure kind="distance">
+      <squaredEuclidean/>
+    </ComparisonMeasure>
+    <ClusteringField field="sepal_length" compareFunction="absDiff"/>
+    <ClusteringField field="sepal_width" compareFunction="absDiff"/>
+    <ClusteringField field="petal_length" compareFunction="absDiff"/>
+    <ClusteringField field="petal_width" compareFunction="absDiff"/>
+    <Cluster name="cluster_1" size="32">
+      <Array n="4" type="real">6.9125000000000005 3.099999999999999 5.846874999999999 2.1312499999999996</Array>
+    </Cluster>
+    <Cluster name="cluster_2" size="41">
+      <Array n="4" type="real">6.23658536585366 2.8585365853658535 4.807317073170731 1.6219512195121943</Array>
+    </Cluster>
+    <Cluster name="cluster_3" size="50">
+      <Array n="4" type="real">5.005999999999999 3.4180000000000006 1.464 0.2439999999999999</Array>
+    </Cluster>
+    <Cluster name="cluster_4" size="27">
+      <Array n="4" type="real">5.529629629629629 2.6222222222222222 3.940740740740741 1.2185185185185188</Array>
+    </Cluster>
+  </ClusteringModel>
+</PMML>
