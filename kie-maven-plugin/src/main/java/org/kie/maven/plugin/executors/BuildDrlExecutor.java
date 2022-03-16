@@ -62,7 +62,10 @@ import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
  */
 public class BuildDrlExecutor {
 
-    public static void buildDrl(final MavenProject project, 
+    private BuildDrlExecutor() {
+    }
+
+    public static void buildDrl(final MavenProject project,
                                 final File outputDirectory,
                                 final Map<String, String> properties,
                                 final MavenSession mavenSession,
