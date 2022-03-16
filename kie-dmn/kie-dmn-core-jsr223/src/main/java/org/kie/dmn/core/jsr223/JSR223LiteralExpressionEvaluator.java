@@ -29,5 +29,9 @@ public class JSR223LiteralExpressionEvaluator implements DMNExpressionEvaluator 
         }
         return new EvaluatorResultImpl(evaluatorResult, resultType);
     }
+    
+    public JSR223ScriptEngineEvaluator getEval() {
+        return eval;
+    }
 
 }

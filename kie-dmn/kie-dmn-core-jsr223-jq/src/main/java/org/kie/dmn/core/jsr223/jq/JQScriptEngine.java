@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import javax.script.AbstractScriptEngine;
@@ -24,6 +25,9 @@ import net.thisptr.jackson.jq.Versions;
 
 public class JQScriptEngine extends AbstractScriptEngine { // TODO evaluate implementing Compilable
     
+    public static final String DMN_UNARYTEST_SYMBOL = "DMN_UNARYTEST_SYMBOL";
+    public static final String DMN_UNARYTEST_SYMBOL_VALUE = ".";
+    
     private final ScriptEngineFactory factory;
     
     private final ObjectMapper MAPPER = JsonMapper.builder()
@@ -43,9 +47,18 @@ public class JQScriptEngine extends AbstractScriptEngine { // TODO evaluate impl
             Scope rootScope = Scope.newEmptyScope();
             BuiltinFunctionLoader.getInstance().loadFunctions(Versions.JQ_1_6, rootScope);
             Scope childScope = Scope.newChildScope(rootScope);
-            JsonQuery q = JsonQuery.compile(script, Versions.JQ_1_6); // TODO see above, this should be Compilable
-            JsonNode in = MAPPER.valueToTree(bindings);
-            // TODO try : if UnaryTest, move bindings into childScope, and in becomes the "column"
+            JsonNode in;
+            if (bindings.containsKey(DMN_UNARYTEST_SYMBOL_VALUE)) { // TODO or check if there is a way to pass multiple inputs to JQ, without resorting to fixed childScopes
+                for (Entry<String, Object> kv : bindings.entrySet()) {
+                    if (!kv.getKey().equals(DMN_UNARYTEST_SYMBOL_VALUE)) {
+                        childScope.setValue(kv.getKey(),  MAPPER.valueToTree(kv.getValue()));
+                    }
+                }
+                in = MAPPER.valueToTree(bindings.get(DMN_UNARYTEST_SYMBOL_VALUE));
+            } else {
+                in = MAPPER.valueToTree(bindings);
+            }
+            JsonQuery q = JsonQuery.compile(script, Versions.JQ_1_6);
             final List<JsonNode> out = new ArrayList<>();
             q.apply(childScope, in, out::add);
             JsonNode outNode = out.get(0);
