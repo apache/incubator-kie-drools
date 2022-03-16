@@ -15,16 +15,15 @@
  */
 package org.kie.maven.plugin.mojos;
 
+import java.util.List;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
-import java.io.File;
-import java.util.List;
+import static org.kie.maven.plugin.executors.TouchResourcesExecutor.touchResources;
 
 /**
  * Compiles and serializes knowledge packages.
@@ -54,17 +53,6 @@ public class TouchResourcesMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        try {
-            File outputFolder = new File(resDirectory);
-            outputFolder.mkdirs();
-
-            for(String kbase : kiebases) {
-                getLog().info("Touching KBase: " + kbase);
-                File file = new File(outputFolder, kbase.replace('.', '_').toLowerCase());
-                file.createNewFile();
-            }
-        } catch (Exception e) {
-            throw new MojoExecutionException("error", e);
-        }
+        touchResources(resDirectory, kiebases, getLog());
     }
 }
