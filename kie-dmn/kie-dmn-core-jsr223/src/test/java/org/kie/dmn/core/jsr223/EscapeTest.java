@@ -3,7 +3,7 @@ package org.kie.dmn.core.jsr223;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.core.jsr223.JSR223EvaluatorCompiler.escapeIdentifierForBinding;
+import static org.kie.dmn.core.jsr223.JSR223Utils.escapeIdentifierForBinding;
 
 public class EscapeTest {
 
