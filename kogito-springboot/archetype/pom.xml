@@ -132,29 +132,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-help-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-settings-xml</id>
-            <phase>package</phase>
-            <goals>
-              <goal>effective-settings</goal>
-            </goals>
-            <configuration>
-              <!-- Dump current Maven settings to a file so it can be passed to maven-archetype-plugin -->
-              <output>${project.build.directory}/archetype-settings.xml</output>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-archetype-plugin</artifactId>
-        <configuration>
-          <settingsFile>${project.build.directory}/archetype-settings.xml</settingsFile>
-        </configuration>
-      </plugin>
     </plugins>
     <resources>
       <resource>
