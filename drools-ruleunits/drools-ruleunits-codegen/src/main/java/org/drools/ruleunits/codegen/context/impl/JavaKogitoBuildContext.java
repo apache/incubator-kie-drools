@@ -20,7 +20,7 @@ public class JavaKogitoBuildContext extends AbstractKogitoBuildContext {
     public static final String CONTEXT_NAME = "Java";
 
     protected JavaKogitoBuildContext(JavaKogitoBuildContextBuilder builder) {
-        super(builder, null, null, CONTEXT_NAME);
+        super(builder, CONTEXT_NAME);
     }
 
     public static Builder builder() {

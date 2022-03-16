@@ -15,7 +15,16 @@
  */
 package org.drools.ruleunits.codegen;
 
-import java.io.File;
+import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.ruleunits.api.RuleUnitConfig;
+import org.drools.ruleunits.codegen.config.NamedRuleUnitConfig;
+import org.drools.ruleunits.codegen.config.RuleConfigGenerator;
+import org.drools.ruleunits.codegen.context.KogitoBuildContext;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,32 +34,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.drools.drl.extensions.DecisionTableFactory;
-import org.drools.ruleunits.codegen.context.KogitoBuildContext;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-import org.kie.kogito.codegen.api.ApplicationSection;
-import org.kie.kogito.codegen.api.ConfigGenerator;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.kie.kogito.codegen.api.Generator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.io.CollectedResource;
-import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
-import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
-import org.kie.kogito.rules.RuleUnitConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static java.util.stream.Collectors.toList;
-
 public class RuleCodegen {
 
     public static final GeneratedFileType RULE_TYPE = GeneratedFileType.of("RULE", GeneratedFileType.Category.SOURCE);
     public static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
     public static final String GENERATOR_NAME = "rules";
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleCodegen.class);
-    private final ConfigGenerator configGenerator;
+    private final RuleConfigGenerator configGenerator;
     private final KogitoBuildContext context;
     private final String name;
 //
@@ -61,17 +51,17 @@ public class RuleCodegen {
 //                .collect(toList());
 //        return ofResources(context, generatedRules);
 //    }
-
-    public static RuleCodegen ofJavaResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
-        List<Resource> generatedRules =
-                AnnotatedClassPostProcessor.scan(
-                        resources.stream()
-                                .filter(r -> r.resource().getResourceType() == ResourceType.JAVA)
-                                .map(r -> new File(r.resource().getSourcePath()))
-                                .map(File::toPath))
-                        .generate();
-        return ofResources(context, generatedRules);
-    }
+//
+//    public static RuleCodegen ofJavaResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
+//        List<Resource> generatedRules =
+//                AnnotatedClassPostProcessor.scan(
+//                        resources.stream()
+//                                .filter(r -> r.resource().getResourceType() == ResourceType.JAVA)
+//                                .map(r -> new File(r.resource().getSourcePath()))
+//                                .map(File::toPath))
+//                        .generate();
+//        return ofResources(context, generatedRules);
+//    }
 
     public static RuleCodegen ofResources(KogitoBuildContext context, Collection<Resource> resources) {
         return new RuleCodegen(context, resources);
@@ -97,14 +87,12 @@ public class RuleCodegen {
         }
     }
 
-    @Override
-    public Optional<ApplicationSection> section() {
+    public Optional<RuleUnitContainerGenerator> section() {
         RuleUnitContainerGenerator moduleGenerator = new RuleUnitContainerGenerator(context());
         ruleUnitGenerators.forEach(moduleGenerator::addRuleUnit);
         return Optional.of(moduleGenerator);
     }
 
-    @Override
     public boolean isEmpty() {
         return resources.isEmpty();
     }
@@ -133,16 +121,16 @@ public class RuleCodegen {
             RuleUnitMainCodegen ruleUnitCodegen = new RuleUnitMainCodegen(context(), ruleUnitGenerators, hotReloadMode);
             generatedFiles.addAll(ruleUnitCodegen.generate());
 
-            // dashboard for rule unit
-            RuleUnitDashboardCodegen dashboardCodegen = new RuleUnitDashboardCodegen(context(), ruleUnitGenerators);
-            generatedFiles.addAll(dashboardCodegen.generate());
+//            // dashboard for rule unit
+//            RuleUnitDashboardCodegen dashboardCodegen = new RuleUnitDashboardCodegen(context(), ruleUnitGenerators);
+//            generatedFiles.addAll(dashboardCodegen.generate());
 
-            // "extended" procedure: REST + Event handlers + query dashboards
-            if (context().hasRESTForGenerator(this)) {
-                Collection<QueryGenerator> validQueries = ruleUnitCodegen.validQueries();
-                RuleUnitExtendedCodegen ruleUnitExtendedCodegen = new RuleUnitExtendedCodegen(context(), validQueries);
-                generatedFiles.addAll(ruleUnitExtendedCodegen.generate());
-            }
+//            // "extended" procedure: REST + Event handlers + query dashboards
+//            if (context().hasRESTForGenerator(this)) {
+//                Collection<QueryGenerator> validQueries = ruleUnitCodegen.validQueries();
+//                RuleUnitExtendedCodegen ruleUnitExtendedCodegen = new RuleUnitExtendedCodegen(context(), validQueries);
+//                generatedFiles.addAll(ruleUnitExtendedCodegen.generate());
+//            }
 
             if (!ruleUnitCodegen.errors().isEmpty()) {
                 throw new RuleCodegenError(ruleUnitCodegen.errors());
@@ -172,17 +160,14 @@ public class RuleCodegen {
         return resource.getResourceType() == ResourceType.DRL || resource.getResourceType() == ResourceType.DTABLE;
     }
 
-    @Override
     public int priority() {
         return 20;
     }
 
-    @Override
     public KogitoBuildContext context() {
         return this.context;
     }
 
-    @Override
     public String name() {
         return name;
     }
@@ -191,12 +176,10 @@ public class RuleCodegen {
         return context.getPackageName() + ".Application";
     }
 
-    @Override
-    public Optional<ConfigGenerator> configGenerator() {
+    public Optional<RuleConfigGenerator> configGenerator() {
         return Optional.ofNullable(configGenerator);
     }
 
-    @Override
     public final Collection<GeneratedFile> generate() {
         if (isEmpty()) {
             return Collections.emptySet();

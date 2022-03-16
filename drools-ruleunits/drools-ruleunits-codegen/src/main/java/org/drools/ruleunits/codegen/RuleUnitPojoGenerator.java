@@ -21,14 +21,15 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitData;
 
 import java.util.Collections;
 
-import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
+import static org.drools.ruleunits.codegen.RuleCodegen.RULE_TYPE;
+
 
 public class RuleUnitPojoGenerator implements RuleFileGenerator {
 

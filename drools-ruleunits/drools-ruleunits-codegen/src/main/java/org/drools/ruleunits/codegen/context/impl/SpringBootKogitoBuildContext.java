@@ -15,9 +15,6 @@
  */
 package org.drools.ruleunits.codegen.context.impl;
 
-import org.kie.kogito.codegen.api.di.impl.SpringDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.rest.impl.SpringRestAnnotator;
-
 public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
 
     public static final String CONTEXT_NAME = "Spring";
@@ -25,7 +22,7 @@ public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
     public static final String SPRING_DI = "org.springframework.beans.factory.annotation.Autowired";
 
     protected SpringBootKogitoBuildContext(SpringBootKogitoBuildContextBuilder builder) {
-        super(builder, new SpringDependencyInjectionAnnotator(), new SpringRestAnnotator(), CONTEXT_NAME);
+        super(builder, /* new SpringDependencyInjectionAnnotator(), new SpringRestAnnotator(),*/ CONTEXT_NAME);
     }
 
     public static Builder builder() {

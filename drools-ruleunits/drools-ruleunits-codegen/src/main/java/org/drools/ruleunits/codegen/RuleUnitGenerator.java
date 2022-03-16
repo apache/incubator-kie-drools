@@ -28,22 +28,18 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.QueryModel;
+import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.api.conf.ClockType;
 import org.drools.ruleunits.api.conf.EventProcessingType;
-import org.drools.ruleunits.codegen.template.InvalidTemplateException;
-import org.drools.ruleunits.codegen.template.TemplatedGenerator;
 import org.drools.ruleunits.codegen.context.KogitoBuildContext;
 import org.drools.ruleunits.codegen.context.impl.JavaKogitoBuildContext;
+import org.drools.ruleunits.codegen.template.InvalidTemplateException;
+import org.drools.ruleunits.codegen.template.TemplatedGenerator;
 import org.drools.ruleunits.impl.AbstractRuleUnitDescription;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
+import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.api.template.InvalidTemplateException;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.drools.core.unit.AbstractRuleUnit;
-import org.kie.kogito.rules.RuleUnit;
 
 import java.util.Collection;
 import java.util.List;
@@ -55,8 +51,6 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toList;
 import static org.drools.ruleunits.codegen.RuleCodegen.RULE_TYPE;
 import static org.drools.ruleunits.codegen.RuleCodegen.TEMPLATE_RULE_FOLDER;
-import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
-import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
 
 public class RuleUnitGenerator implements RuleFileGenerator {
 
@@ -103,7 +97,7 @@ public class RuleUnitGenerator implements RuleFileGenerator {
     }
 
     public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper) {
-        return new RuleUnitInstanceGenerator(context, ruleUnit, ruleUnitHelper, queries().stream().map(QueryGenerator::className).collect(Collectors.toUnmodifiableList()));
+        return new RuleUnitInstanceGenerator(context, ruleUnit, ruleUnitHelper, queries().stream().map(QueryGenerator::className).collect(Collectors.toList()));
     }
 
     public Collection<QueryGenerator> queries() {
@@ -165,9 +159,10 @@ public class RuleUnitGenerator implements RuleFileGenerator {
                 .getExtendedTypes().get(0).setTypeArguments(nodeList(new ClassOrInterfaceType(null, typeName)));
 
         if (context.hasDI()) {
-            context.getDependencyInjectionAnnotator().withSingletonComponent(cls);
-            cls.findFirst(ConstructorDeclaration.class, c -> !c.getParameters().isEmpty()) // non-empty constructor
-                    .ifPresent(context.getDependencyInjectionAnnotator()::withInjection);
+
+//            context.getDependencyInjectionAnnotator().withSingletonComponent(cls);
+//            cls.findFirst(ConstructorDeclaration.class, c -> !c.getParameters().isEmpty()) // non-empty constructor
+//                    .ifPresent(context.getDependencyInjectionAnnotator()::withInjection);
         }
 
         String ruleUnitInstanceFQCN = RuleUnitInstanceGenerator.qualifiedName(ruleUnitPackageName, typeName);

@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class GeneratedFile {
@@ -27,7 +28,7 @@ public class GeneratedFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedFile.class);
 
     public static final String META_INF_RESOURCES = "META-INF/resources/";
-    public static final Path META_INF_RESOURCES_PATH = Path.of(META_INF_RESOURCES);
+    public static final Path META_INF_RESOURCES_PATH = Paths.get(META_INF_RESOURCES);
 
     private final Path path;
     private final String pathAsString;
@@ -47,7 +48,7 @@ public class GeneratedFile {
     }
 
     public GeneratedFile(GeneratedFileType type, String relativePath, byte[] contents) {
-        this(type, Path.of(relativePath), relativePath, contents);
+        this(type, Paths.get(relativePath), relativePath, contents);
     }
 
     private GeneratedFile(GeneratedFileType type, Path path, String pathAsString, byte[] contents) {

@@ -15,15 +15,9 @@
  */
 package org.drools.ruleunits.codegen.context.impl;
 
-import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.codegen.api.AddonsConfig;
-import org.kie.kogito.codegen.api.ApplicationSection;
-import org.kie.kogito.codegen.api.context.KogitoApplicationPropertyProvider;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.rest.RestAnnotator;
-import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
-import org.kie.kogito.codegen.api.utils.AppPaths;
+import org.drools.ruleunits.codegen.context.AppPaths;
+import org.drools.ruleunits.codegen.context.KogitoApplicationPropertyProvider;
+import org.drools.ruleunits.codegen.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,17 +25,15 @@ import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
@@ -52,33 +44,21 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected final Predicate<String> classAvailabilityResolver;
     protected final KogitoApplicationPropertyProvider applicationProperties;
     protected final String packageName;
-    protected final AddonsConfig addonsConfig;
     protected final ClassLoader classLoader;
     protected final AppPaths appPaths;
     protected final String contextName;
     protected final Map<String, Object> contextAttributes;
-    protected final KogitoGAV gav;
-    protected Set<ApplicationSection> applicationSections;
 
-    protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
-    protected RestAnnotator restAnnotator;
 
     protected AbstractKogitoBuildContext(AbstractBuilder builder,
-            DependencyInjectionAnnotator dependencyInjectionAnnotator,
-            RestAnnotator restAnnotator,
             String contextName) {
         this.packageName = builder.packageName;
         this.classAvailabilityResolver = builder.classAvailabilityResolver;
-        this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
-        this.restAnnotator = restAnnotator;
         this.applicationProperties = builder.applicationProperties;
-        this.addonsConfig = builder.addonsConfig != null ? builder.addonsConfig : AddonsConfigDiscovery.discover(this);
         this.classLoader = builder.classLoader;
         this.appPaths = builder.appPaths;
-        this.gav = builder.gav;
         this.contextName = contextName;
         this.contextAttributes = new HashMap<>();
-        this.applicationSections = new HashSet<>();
     }
 
     protected static Properties load(File... resourcePaths) {
@@ -95,30 +75,29 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         return applicationProperties;
     }
 
-    @Override
     public boolean hasClassAvailable(String fqcn) {
         return classAvailabilityResolver.test(fqcn);
     }
 
-    @Override
-    public DependencyInjectionAnnotator getDependencyInjectionAnnotator() {
-        return dependencyInjectionAnnotator;
-    }
-
-    @Override
-    public void setDependencyInjectionAnnotator(DependencyInjectionAnnotator dependencyInjectionAnnotator) {
-        this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
-    }
-
-    @Override
-    public RestAnnotator getRestAnnotator() {
-        return restAnnotator;
-    }
-
-    @Override
-    public void setRestAnnotator(RestAnnotator restAnnotator) {
-        this.restAnnotator = restAnnotator;
-    }
+//    @Override
+//    public DependencyInjectionAnnotator getDependencyInjectionAnnotator() {
+//        return dependencyInjectionAnnotator;
+//    }
+//
+//    @Override
+//    public void setDependencyInjectionAnnotator(DependencyInjectionAnnotator dependencyInjectionAnnotator) {
+//        this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
+//    }
+//
+//    @Override
+//    public RestAnnotator getRestAnnotator() {
+//        return restAnnotator;
+//    }
+//
+//    @Override
+//    public void setRestAnnotator(RestAnnotator restAnnotator) {
+//        this.restAnnotator = restAnnotator;
+//    }
 
     @Override
     public Optional<String> getApplicationProperty(String property) {
@@ -140,10 +119,9 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         return packageName;
     }
 
-    @Override
-    public AddonsConfig getAddonsConfig() {
-        return addonsConfig;
-    }
+//    public AddonsConfig getAddonsConfig() {
+//        return addonsConfig;
+//    }
 
     @Override
     public String name() {
@@ -160,10 +138,9 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         return appPaths;
     }
 
-    @Override
-    public Optional<KogitoGAV> getGAV() {
-        return Optional.ofNullable(gav);
-    }
+//    public Optional<KogitoGAV> getGAV() {
+//        return Optional.ofNullable(gav);
+//    }
 
     @Override
     public Map<String, Object> getContextAttributes() {
@@ -187,20 +164,17 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         this.contextAttributes.put(key, value);
     }
 
-    @Override
-    public Set<ApplicationSection> getApplicationSections() {
-        return Collections.unmodifiableSet(applicationSections);
-    }
-
-    @Override
-    public void addAllApplicationSections(Set<ApplicationSection> applicationSections) {
-        this.applicationSections.addAll(applicationSections);
-    }
-
-    @Override
-    public void addApplicationSection(ApplicationSection applicationSection) {
-        this.applicationSections.add(applicationSection);
-    }
+//    public Set<ApplicationSection> getApplicationSections() {
+//        return Collections.unmodifiableSet(applicationSections);
+//    }
+//
+//    public void addAllApplicationSections(Set<ApplicationSection> applicationSections) {
+//        this.applicationSections.addAll(applicationSections);
+//    }
+//
+//    public void addApplicationSection(ApplicationSection applicationSection) {
+//        this.applicationSections.add(applicationSection);
+//    }
 
     @Override
     public String toString() {
@@ -208,7 +182,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
                 "contextName='" + contextName + '\'' +
                 ", applicationProperties=" + applicationProperties +
                 ", packageName='" + packageName + '\'' +
-                ", addonsConfig=" + addonsConfig +
                 '}';
     }
 
@@ -216,12 +189,11 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
 
         protected String packageName = DEFAULT_PACKAGE_NAME;
         protected KogitoApplicationPropertyProvider applicationProperties = KogitoApplicationPropertyProvider.of(new Properties());
-        protected AddonsConfig addonsConfig;
+//        protected AddonsConfig addonsConfig;
         protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         protected Predicate<String> classAvailabilityResolver = this::hasClass;
         // default fallback value (usually overridden)
-        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath(), Path.of(".", AppPaths.TARGET_DIR));
-        protected KogitoGAV gav;
+        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath(), Paths.get(".", AppPaths.TARGET_DIR));
 
         protected AbstractBuilder() {
         }
@@ -264,11 +236,11 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
             return this;
         }
 
-        @Override
-        public Builder withAddonsConfig(AddonsConfig addonsConfig) {
-            this.addonsConfig = addonsConfig;
-            return this;
-        }
+//        @Override
+//        public Builder withAddonsConfig(AddonsConfig addonsConfig) {
+//            this.addonsConfig = addonsConfig;
+//            return this;
+//        }
 
         @Override
         public Builder withClassAvailabilityResolver(Predicate<String> classAvailabilityResolver) {
@@ -291,12 +263,12 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
             return this;
         }
 
-        @Override
-        public Builder withGAV(KogitoGAV gav) {
-            Objects.requireNonNull(gav, "gav cannot be null");
-            this.gav = gav;
-            return this;
-        }
+//        @Override
+//        public Builder withGAV(KogitoGAV gav) {
+//            Objects.requireNonNull(gav, "gav cannot be null");
+//            this.gav = gav;
+//            return this;
+//        }
 
         private boolean hasClass(String className) {
             try {

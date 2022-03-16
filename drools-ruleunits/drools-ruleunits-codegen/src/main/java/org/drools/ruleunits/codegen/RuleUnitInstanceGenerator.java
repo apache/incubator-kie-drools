@@ -32,25 +32,23 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.conf.DefaultEntryPoint;
 import org.drools.ruleunits.api.conf.EntryPoint;
+import org.drools.ruleunits.codegen.context.KogitoBuildContext;
 import org.drools.ruleunits.impl.EntryPointDataProcessor;
 import org.drools.ruleunits.impl.KieSessionBasedRuleUnitInstance;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.RuleUnitInstance;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.drools.ruleunits.codegen.RuleCodegen.RULE_TYPE;
-import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
-import static org.kie.kogito.codegen.rules.RuleUnitGenerator.useLegacySession;
+import static org.drools.ruleunits.codegen.RuleUnitGenerator.useLegacySession;
 
 public class RuleUnitInstanceGenerator implements RuleFileGenerator {
 

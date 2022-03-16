@@ -15,9 +15,6 @@
  */
 package org.drools.ruleunits.codegen.context.impl;
 
-import org.kie.kogito.codegen.api.di.impl.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.rest.impl.CDIRestAnnotator;
-
 public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
 
     public static final String CONTEXT_NAME = "Quarkus";
@@ -25,7 +22,7 @@ public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
     public static final String QUARKUS_DI = "javax.inject.Inject";
 
     protected QuarkusKogitoBuildContext(QuarkusKogitoBuildContextBuilder builder) {
-        super(builder, new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(), CONTEXT_NAME);
+        super(builder, /*new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(),  */ CONTEXT_NAME);
     }
 
     public static Builder builder() {

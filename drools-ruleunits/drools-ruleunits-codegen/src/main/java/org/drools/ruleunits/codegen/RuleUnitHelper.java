@@ -16,13 +16,13 @@
 package org.drools.ruleunits.codegen;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.SingletonStore;
 import org.drools.ruleunits.impl.AssignableChecker;
 import org.drools.ruleunits.impl.ReflectiveRuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.SingletonStore;
 
 public class RuleUnitHelper {
     private AssignableChecker defaultChecker;
