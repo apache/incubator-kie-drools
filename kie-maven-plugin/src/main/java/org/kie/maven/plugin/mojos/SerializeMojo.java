@@ -15,26 +15,16 @@
  */
 package org.kie.maven.plugin.mojos;
 
+import java.util.List;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.drools.core.util.DroolsStreamUtils;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
-import org.kie.api.runtime.KieContainer;
-import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Map;
-
-import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
+import static org.kie.maven.plugin.executors.SerializeExecutor.serialize;
 
 /**
  * Compiles and serializes knowledge bases.
@@ -60,38 +50,9 @@ public class SerializeMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        try {
-            File outputFolder = new File(resDirectory);
-            outputFolder.mkdirs();
-
-            setSystemProperties(properties, getLog());
-
-            KieServices ks = KieServices.Factory.get();
-            KieContainer kc = ks.newKieClasspathContainer();
-            Results messages = kc.verify();
-
-            List<Message> warnings = messages.getMessages(Message.Level.WARNING);
-            for (Message warning : warnings) {
-                getLog().warn(warning.toString());
-            }
-            List<Message> errors = messages.getMessages(Message.Level.ERROR);
-            if (!errors.isEmpty()) {
-                for (Message error : errors) {
-                    getLog().error(error.toString());
-                }
-                throw new MojoFailureException("Build failed!");
-            }
-
-            for (String kbase : kiebases) {
-                KieBase kb = kc.getKieBase(kbase);
-                getLog().info("Writing KBase: " + kbase);
-                File file = new File(outputFolder, kbase.replace('.', '_').toLowerCase());
-                try (FileOutputStream out = new FileOutputStream(file)) {
-                    DroolsStreamUtils.streamOut(out, kb.getKiePackages());
-                }
-            }
-        } catch (Exception e) {
-            throw new MojoExecutionException("error", e);
-        }
+        serialize(properties,
+                  resDirectory,
+                  kiebases,
+                  getLog());
     }
 }
