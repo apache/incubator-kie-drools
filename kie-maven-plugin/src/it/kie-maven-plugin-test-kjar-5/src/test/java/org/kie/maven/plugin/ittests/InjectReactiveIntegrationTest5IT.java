@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import org.drools.core.phreak.ReactiveObject;
 import org.junit.Test;
-import org.kie.maven.plugin.BytecodeInjectReactive;
+import org.kie.maven.plugin.helpers.BytecodeInjectReactive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
 
 package org.kie.maven.plugin.mojos;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.memorycompiler.JavaConfiguration;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.kie.maven.plugin.ExecModelMode.modelParameterEnabled;
+import static org.kie.maven.plugin.enums.ExecModelMode.modelParameterEnabled;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,9 +60,8 @@ import org.kie.api.builder.Message;
 import org.kie.maven.plugin.DiskResourceStore;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.maven.plugin.helpers.CompilerHelper;
-import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
-import static org.kie.maven.plugin.ExecModelMode.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.enums.ExecModelMode.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
 

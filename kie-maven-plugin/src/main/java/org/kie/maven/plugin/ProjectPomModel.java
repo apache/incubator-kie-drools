@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,14 +48,17 @@ public class ProjectPomModel implements PomModel {
         this.dependenciesByScope = getDirectDependenciesFromMavenSession(mavenSession);
     }
 
+    @Override
     public ReleaseId getReleaseId() {
         return releaseId;
     }
 
+    @Override
     public ReleaseId getParentReleaseId() {
         return parentReleaseId;
     }
 
+    @Override
     public Collection<ReleaseId> getDependencies() {
         return dependenciesByScope.values()
                 .stream()
@@ -63,6 +66,7 @@ public class ProjectPomModel implements PomModel {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Collection<ReleaseId> getDependencies(final DependencyFilter filter) {
         final Set<ReleaseId> filteredDependencies = new HashSet<>();
         for (Map.Entry<String, Set<ReleaseId>> entry : dependenciesByScope.entrySet()) {

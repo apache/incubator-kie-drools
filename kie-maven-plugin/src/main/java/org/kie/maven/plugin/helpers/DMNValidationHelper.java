@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -55,22 +54,11 @@ import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyserFactory;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.utils.ChainedProperties;
-import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
 public class DMNValidationHelper {
 
     private DMNValidationHelper() {
     }
-
-    //    @Parameter(required = true, defaultValue = "${project.build.resources}")
-//    private List<Resource> resources;
-//
-//    @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
-//    private String validateDMN;
-//
-//    protected String getValidateDMN() {
-//        return validateDMN;
-//    }
 
     public static void logValidationMessages(List<DMNMessage> validation,
                                          Function<DMNMessage, String> prefixer,

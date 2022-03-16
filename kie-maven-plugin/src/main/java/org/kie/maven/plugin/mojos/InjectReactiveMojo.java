@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,7 @@ import org.drools.core.phreak.ReactiveObject;
 
 import javassist.ClassPool;
 import javassist.CtClass;
-import org.kie.maven.plugin.BytecodeInjectReactive;
-import org.kie.maven.plugin.mojos.AbstractKieMojo;
+import org.kie.maven.plugin.helpers.BytecodeInjectReactive;
 
 @Mojo(name = "injectreactive",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
@@ -99,9 +98,7 @@ public class InjectReactiveMojo extends AbstractKieMojo {
         }
 
         getLog().info( "Starting InjectReactive enhancement for classes on " + outputDirectory );
-        final ClassLoader classLoader = toClassLoader( Collections.singletonList( root ) );
-        
-        
+
         final ClassPool classPool = new ClassPool( true ); // 'true' will append classpath for Object.class.
         // Need to append classpath for the project itself output directory for dependencies betweek Pojos of the project itself.
         try {
@@ -157,9 +154,7 @@ public class InjectReactiveMojo extends AbstractKieMojo {
                 }
             }
         }
-        
-        final BytecodeInjectReactive enhancer = BytecodeInjectReactive.newInstance(classPool);
-        
+
         for ( File file : sourceSet ) {
             final CtClass ctClass = toCtClass( file, classPool );
             if ( ctClass == null ) {
@@ -175,7 +170,7 @@ public class InjectReactiveMojo extends AbstractKieMojo {
 
             byte[] enhancedBytecode;
             try {
-                enhancedBytecode = enhancer.injectReactive(ctClass.getName());
+                enhancedBytecode = BytecodeInjectReactive.injectReactive(classPool, ctClass.getName());
                 
                 writeOutEnhancedClass( enhancedBytecode, ctClass, file );
 
