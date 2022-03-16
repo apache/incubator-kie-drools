@@ -16,24 +16,8 @@
 package org.kie.maven.plugin.mojos;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.artifact.resolver.filter.CumulativeScopeArtifactFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -42,21 +26,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.drools.compiler.compiler.io.memory.MemoryFile;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.CompilationCacheProvider;
-import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.compiler.kie.builder.impl.MemoryKieModule;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.kie.api.KieServices;
-import org.kie.api.builder.Message;
-import org.kie.maven.plugin.DiskResourceStore;
-import org.kie.maven.plugin.ProjectPomModel;
 
-import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
-import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
+import static org.kie.maven.plugin.executors.BuildDrlExecutor.buildDrl;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 
 /**
@@ -95,97 +66,17 @@ public class BuildMojo extends AbstractKieMojo {
         boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
 
         if (!(modelParameterEnabled && modelCompilerInClassPath)) {
-            buildDrl();
+            buildDrl(project,
+            outputDirectory,
+            properties,
+            mavenSession,
+            resourceFolder,
+            resources,
+            getValidateDMN(),
+            getLog());
         }
     }
 
-    private void buildDrl() throws MojoFailureException, MojoExecutionException {
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Set<URL> urls = new HashSet<>();
-            for (String element : project.getCompileClasspathElements()) {
-                urls.add(new File(element).toURI().toURL());
-            }
 
-            project.setArtifactFilter(new CumulativeScopeArtifactFilter(Arrays.asList("compile",
-                                                                                      "runtime")));
-            for (Artifact artifact : project.getArtifacts()) {
-                File file = artifact.getFile();
-                if (file != null) {
-                    urls.add(file.toURI().toURL());
-                }
-            }
-            urls.add(outputDirectory.toURI().toURL());
-
-            ClassLoader projectClassLoader = URLClassLoader.newInstance(urls.toArray(new URL[0]),
-                                                                        getClass().getClassLoader());
-
-            Thread.currentThread().setContextClassLoader(projectClassLoader);
-        } catch (DependencyResolutionRequiredException | MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            setSystemProperties(properties);
-
-            KieServices ks = KieServices.Factory.get();
-            KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(project.getBasedir());
-            kieBuilder.setPomModel(new ProjectPomModel(mavenSession));
-            kieBuilder.buildAll(DrlProject.SUPPLIER, s -> s.contains(resourceFolder.getAbsolutePath()) || s.endsWith(
-                    "pom.xml"));
-            InternalKieModule kModule = (InternalKieModule) kieBuilder.getKieModule();
-            ResultsImpl messages = (ResultsImpl)kieBuilder.getResults();
-
-            List<Message> errors = messages != null ? messages.filterMessages( Message.Level.ERROR): Collections.emptyList();
-
-            CompilationCacheProvider.get().writeKieModuleMetaInfo(kModule, new DiskResourceStore(outputDirectory));
-
-            if (!errors.isEmpty()) {
-                for (Message error : errors) {
-                    getLog().error(error.toString());
-                }
-                throw new MojoFailureException("Build failed!");
-            } else {
-                writeClassFiles(kModule);
-            }
-
-            if (shallPerformDMNDTAnalysis(getValidateDMN(), getLog())) {
-                performDMNDTAnalysis(kModule, resources, getLog());
-            }
-        } finally {
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
-        }
-        getLog().info("KieModule successfully built!");
-    }
-
-    private void writeClassFiles( InternalKieModule kModule ) throws MojoFailureException {
-        MemoryFileSystem mfs = ((MemoryKieModule )kModule).getMemoryFileSystem();
-        kModule.getFileNames()
-                .stream()
-                .filter(name -> name.endsWith(".class")
-                        && !name.contains("target/classes") && !name.contains("target\\classes")
-                        && !name.contains("target/test-classes") && !name.contains("target\\test-classes"))
-                .forEach( fileName -> {
-                    try {
-                        saveFile( mfs, fileName );
-                    } catch (MojoFailureException e) {
-                        throw new RuntimeException( e );
-                    }
-                } );
-    }
-
-    private void saveFile(MemoryFileSystem mfs, String fileName) throws MojoFailureException {
-        MemoryFile memFile = (MemoryFile)mfs.getFile(fileName);
-        final Path path = Paths.get(outputDirectory.getPath(), memFile.getPath().asString());
-
-        try {
-            Files.deleteIfExists(path);
-            Files.createDirectories(path);
-            Files.copy(memFile.getContents(), path, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException iox) {
-            iox.printStackTrace();
-            throw new MojoFailureException("Unable to write file", iox);
-        }
-    }
 
 }

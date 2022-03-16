@@ -51,6 +51,8 @@ import org.kie.maven.plugin.helpers.DMNModelModeHelper;
 import org.kie.memorycompiler.JavaCompilerSettings;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.getFilesByType;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 
@@ -94,7 +96,7 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
         KieServices ks = KieServices.Factory.get();
 
         try {
-            setSystemProperties(properties);
+            setSystemProperties(properties, getLog());
 
             final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(projectDir);
 

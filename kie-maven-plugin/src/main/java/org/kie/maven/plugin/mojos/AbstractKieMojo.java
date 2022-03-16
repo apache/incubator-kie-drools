@@ -61,22 +61,22 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         return javaCompiler.equalsIgnoreCase("native") ? JavaConfiguration.CompilerType.NATIVE : JavaConfiguration.CompilerType.ECLIPSE;
     }
 
-    protected void setSystemProperties(Map<String, String> properties) {
-
-        if (properties != null) {
-            getLog().debug("Additional system properties: " + properties);
-            for (Map.Entry<String, String> property : properties.entrySet()) {
-                System.setProperty(property.getKey(), property.getValue());
-            }
-            getLog().debug("Configured system properties were successfully set.");
-        }
-    }
-
-    protected List<String> getFilesByType(InternalKieModule kieModule, String fileType) {
-        return kieModule.getFileNames()
-                .stream()
-                .filter(f -> f.endsWith(fileType))
-                .collect(Collectors.toList());
-    }
+//    protected void setSystemProperties(Map<String, String> properties) {
+//
+//        if (properties != null) {
+//            getLog().debug("Additional system properties: " + properties);
+//            for (Map.Entry<String, String> property : properties.entrySet()) {
+//                System.setProperty(property.getKey(), property.getValue());
+//            }
+//            getLog().debug("Configured system properties were successfully set.");
+//        }
+//    }
+//
+//    protected List<String> getFilesByType(InternalKieModule kieModule, String fileType) {
+//        return kieModule.getFileNames()
+//                .stream()
+//                .filter(f -> f.endsWith(fileType))
+//                .collect(Collectors.toList());
+//    }
 
 }

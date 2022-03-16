@@ -64,6 +64,7 @@ import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnaly
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.shouldDeleteFile;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
@@ -121,7 +122,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         try {
-            setSystemProperties(properties);
+            setSystemProperties(properties, getLog());
 
             KieServices ks = KieServices.Factory.get();
             final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(projectDir);

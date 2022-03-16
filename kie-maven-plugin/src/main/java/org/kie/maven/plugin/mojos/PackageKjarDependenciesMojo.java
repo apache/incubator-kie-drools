@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.io.Files;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
@@ -61,10 +62,7 @@ import org.apache.maven.shared.dependencies.resolve.DependencyResolverException;
 import org.apache.maven.shared.utils.StringUtils;
 import org.apache.maven.shared.utils.WriterFactory;
 import org.apache.maven.shared.utils.io.IOUtil;
-
-import com.google.common.io.Files;
 import org.kie.maven.plugin.ArtifactItem;
-import org.kie.maven.plugin.mojos.AbstractKieMojo;
 
 @Mojo(name = "package-dependencies-kjar",
       defaultPhase = LifecyclePhase.PREPARE_PACKAGE,

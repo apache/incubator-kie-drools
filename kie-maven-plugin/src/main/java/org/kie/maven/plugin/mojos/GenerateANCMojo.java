@@ -43,6 +43,7 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
@@ -95,7 +96,7 @@ public class GenerateANCMojo extends AbstractKieMojo {
         Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         try {
-            setSystemProperties(properties);
+            setSystemProperties(properties, getLog());
 
             KieServices ks = KieServices.Factory.get();
 

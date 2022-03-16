@@ -34,6 +34,8 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 
+import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
+
 /**
  * Compiles and serializes knowledge bases.
  */
@@ -65,7 +67,7 @@ public class SerializeMojo extends AbstractKieMojo {
             File outputFolder = new File(resDirectory);
             outputFolder.mkdirs();
 
-            setSystemProperties(properties);
+            setSystemProperties(properties, getLog());
 
             KieServices ks = KieServices.Factory.get();
             KieContainer kc = ks.newKieClasspathContainer();
