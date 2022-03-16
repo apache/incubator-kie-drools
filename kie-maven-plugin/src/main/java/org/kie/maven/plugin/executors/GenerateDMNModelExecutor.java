@@ -57,8 +57,7 @@ public class GenerateDMNModelExecutor {
     private GenerateDMNModelExecutor() {
     }
 
-    public static void generateDMN(
-            final File projectDir,
+    public static void generateDMN(final File projectDir,
             final Map<String, String> properties,
             final File targetDirectory,
             final String dumpKieSourcesFolder,

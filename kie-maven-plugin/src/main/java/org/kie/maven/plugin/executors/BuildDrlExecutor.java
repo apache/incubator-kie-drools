@@ -66,9 +66,9 @@ public class BuildDrlExecutor {
     }
 
     public static void buildDrl(final MavenProject project,
+                                final MavenSession mavenSession,
                                 final File outputDirectory,
                                 final Map<String, String> properties,
-                                final MavenSession mavenSession,
                                 final File resourceFolder,
                                 final List<Resource> resources,
                                 final String validateDMN,

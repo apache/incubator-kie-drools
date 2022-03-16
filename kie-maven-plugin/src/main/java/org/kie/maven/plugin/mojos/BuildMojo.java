@@ -15,17 +15,11 @@
 
 package org.kie.maven.plugin.mojos;
 
-import java.io.File;
-import java.util.Map;
-
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 
 import static org.kie.maven.plugin.executors.BuildDrlExecutor.buildDrl;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
@@ -45,14 +39,8 @@ public class BuildMojo extends AbstractKieMojo {
         boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
 
         if (!(modelParameterEnabled && modelCompilerInClassPath)) {
-            buildDrl(project,
-            outputDirectory,
-            properties,
-            mavenSession,
-            resourceFolder,
-            resources,
-            validateDMN,
-            getLog());
+            buildDrl(project, mavenSession, outputDirectory, properties, resourceFolder, resources, validateDMN,
+                     getLog());
         }
     }
 
