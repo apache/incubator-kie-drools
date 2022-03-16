@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MyTest {
-    private static final Logger LOG = LoggerFactory.getLogger( MyTest.class );
+public class BasicTest {
+    private static final Logger LOG = LoggerFactory.getLogger( BasicTest.class );
 
     private static final ScriptEngineManager SEMANAGER = new ScriptEngineManager();
     
@@ -39,15 +39,15 @@ public class MyTest {
     
     @Test
     public void testTest() throws ScriptException {
-        evalToStringEquals(testCtx(1), " . > 10 ", "false");
-        evalToStringEquals(testCtx(47), " . > 10 ", "true");
-        evalToStringEquals(testCtx(47), " . > $a ", "true");
+        evalToStringEquals(testCtx(1), " . > 10 ", false);
+        evalToStringEquals(testCtx(47), " . > 10 ", true);
+        evalToStringEquals(testCtx(47), " . > $a ", true);
     }
 
-    private void evalToStringEquals(Map<String, Object> ctx, String testScript, String resultAsString) throws ScriptException {
-        Object result = engine.eval(testScript, new SimpleBindings( ctx ));
-        LOG.info("{}", result);
-        assertThat(result).asString().isEqualTo(resultAsString);
+    private void evalToStringEquals(Map<String, Object> ctx, String testScript, Object expected) throws ScriptException {
+        Object evalResult = engine.eval(testScript, new SimpleBindings( ctx ));
+        LOG.info("{}", evalResult);
+        assertThat(evalResult).isEqualTo(expected);
     }
 
     private Map<String, Object> testCtx(Object dotValue) {

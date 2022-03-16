@@ -15,7 +15,7 @@ public class JQTest {
     private static final Logger LOG = LoggerFactory.getLogger( JQTest.class );
 
     @Test
-    public void testNashorn() {
+    public void testJQ_BMI() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
@@ -29,5 +29,37 @@ public class JQTest {
         LOG.info("{}", evaluateAll.getContext());
         LOG.info("{}", evaluateAll.getMessages());
         assertThat(evaluateAll.getDecisionResultByName("BMI value classification").getResult()).isEqualTo("Normal range");
+    }
+    
+    @Test
+    public void testJQ_isAdult() {
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+            .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
+            .buildConfiguration()
+            .fromClasspathResource("/jq/isAdult.dmn", this.getClass())
+            .getOrElseThrow(e -> new RuntimeException(e));
+        DMNModel model = dmnRuntime.getModels().get(0);
+        DMNContext dmnContext = dmnRuntime.newContext();
+        dmnContext.set("Age", 47);
+        DMNResult evaluateAll = dmnRuntime.evaluateAll(model, dmnContext);
+        LOG.info("{}", evaluateAll.getContext());
+        LOG.info("{}", evaluateAll.getMessages());
+        assertThat(evaluateAll.getDecisionResultByName("Is Adult?").getResult()).isEqualTo(true);
+    }
+    
+    @Test
+    public void testJQ_isAdult2() {
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+            .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
+            .buildConfiguration()
+            .fromClasspathResource("/jq/isAdult.dmn", this.getClass())
+            .getOrElseThrow(e -> new RuntimeException(e));
+        DMNModel model = dmnRuntime.getModels().get(0);
+        DMNContext dmnContext = dmnRuntime.newContext();
+        dmnContext.set("Age", 17);
+        DMNResult evaluateAll = dmnRuntime.evaluateAll(model, dmnContext);
+        LOG.info("{}", evaluateAll.getContext());
+        LOG.info("{}", evaluateAll.getMessages());
+        assertThat(evaluateAll.getDecisionResultByName("Is Adult?").getResult()).isEqualTo(false);
     }
 }

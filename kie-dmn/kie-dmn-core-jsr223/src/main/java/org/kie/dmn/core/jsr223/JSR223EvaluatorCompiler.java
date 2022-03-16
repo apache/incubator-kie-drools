@@ -41,7 +41,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
     public JSR223EvaluatorCompiler(DMNCompilerImpl compiler) { // TODO for composition, need DMNEvaluatorCompiler not to rely on self-def methods but go again via compilerConfig defined compiler.
         super(compiler);
         SEMANAGER = new ScriptEngineManager();
-        LOG.info("ScriptEngineFactories:");
+        LOG.debug("ScriptEngineFactories:");
         for (ScriptEngineFactory factory : SEMANAGER.getEngineFactories()) {
             printScriptEngineFactoryInfo(factory);
         }
@@ -145,10 +145,10 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         String engVersion = factory.getEngineVersion();
         String langName = factory.getLanguageName();
         String langVersion = factory.getLanguageVersion();
-        LOG.info("Script Engine: {} {} {} {}", engName, engVersion, langName, langVersion);
+        LOG.debug("Script Engine: {} {} {} {}", engName, engVersion, langName, langVersion);
         List<String> engNames = factory.getNames();
         for(String name : engNames) {
-            LOG.info("\tEngine Alias: {}", name);
+            LOG.debug("\tEngine Alias: {}", name);
         }
     }
 }

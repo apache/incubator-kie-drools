@@ -137,7 +137,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
 
         @Override
         public List<? extends OutputClause> getOutputs() {
-            throw new UnsupportedOperationException("not implemented for this impl.");
+            return Collections.emptyList();
         }
         
     }
