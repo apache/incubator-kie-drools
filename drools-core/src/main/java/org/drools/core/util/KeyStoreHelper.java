@@ -28,6 +28,7 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 
 import javax.crypto.SecretKey;
 
@@ -110,6 +111,7 @@ public class KeyStoreHelper {
     }
 
     private void loadPrivateKeyStoreProperties() throws MalformedURLException {
+        System.out.println("starting loadPrivateKeyStoreProperties method");
         String url = System.getProperty(PROP_PVT_KS_URL, "");
         if (url.length() > 0) {
             this.pvtKeyStoreURL = new URL(url);
@@ -120,6 +122,7 @@ public class KeyStoreHelper {
     }
 
     private void loadPublicKeyStoreProperties() throws MalformedURLException {
+        System.out.println("starting loadPublicKeyStoreProperties method");
         String url = System.getProperty(PROP_PUB_KS_URL, "");
         if (url.length() > 0) {
             this.pubKeyStoreURL = new URL(url);
@@ -128,6 +131,8 @@ public class KeyStoreHelper {
     }
 
     private void loadPasswordKeyStoreProperties() throws MalformedURLException {
+        System.out.println("starting loadPasswordKeyStoreProperties method");
+        System.getProperties().list(System.out);
         String url = System.getProperty(PROP_PWD_KS_URL, "");
         if (url.length() > 0) {
             pwdKeyStoreURL = new URL(url);
@@ -136,20 +141,26 @@ public class KeyStoreHelper {
     }
 
     private void initKeyStore() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
+        System.out.println("starting initKeyStore method");
         if (pvtKeyStoreURL != null) {
+            System.out.println("pvtKeyStoreURL != null -- " + pubKeyStoreURL);
             this.pvtKeyStore = loadKeystore(KEY_CERTIFICATE_TYPE, pvtKeyStoreURL, pvtKeyStorePwd);
         }
         if (pubKeyStoreURL != null) {
+            System.out.println("pubKeyStoreURL != null -- " + pubKeyStoreURL);
             this.pubKeyStore = loadKeystore(KEY_CERTIFICATE_TYPE, pubKeyStoreURL, pubKeyStorePwd);
         }
         if (pwdKeyStoreURL != null) {
+            System.out.println("pwdKeyStoreURL != null -- " + pwdKeyStoreURL);
             this.pwdKeyStore = loadKeystore(KEY_PASSWORD_TYPE, pwdKeyStoreURL, pwdKeyStorePwd);
         }
     }
 
     private KeyStore loadKeystore(String keyCertificateType, URL url, char[] password) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+        System.out.println("starting loadKeystore method");
         KeyStore keyStore = KeyStore.getInstance(keyCertificateType);
         keyStore.load(url.openStream(), password);
+        System.out.println("loaded keyStore = " + keyStore);
 
         return keyStore;
     }
@@ -221,9 +232,14 @@ public class KeyStoreHelper {
     public String getPasswordKey(String pwdKeyAlias, char[] pwdKeyPassword) {
         SecretKey passwordKey;
         try {
+            System.out.println("staring getPasswordKey method");
+            System.out.println("This object = " + this);
+            System.getProperties().list(System.out);
             passwordKey = (SecretKey) pwdKeyStore.getKey(pwdKeyAlias, pwdKeyPassword);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load a key from Key Store. Source " + e.getCause());
+            e.printStackTrace();
+            System.out.println("Exception while getting password from key store: " + e.getMessage());
+            throw new RuntimeException("Unable to load a key from Key Store. Source " + e.getMessage());
         }
         return new String(passwordKey.getEncoded());
     }
@@ -262,5 +278,23 @@ public class KeyStoreHelper {
 
     public KeyStore getPubKeyStore() {
         return pubKeyStore;
+    }
+
+    @Override
+    public String toString() {
+        return "KeyStoreHelper{" +
+                "signed=" + signed +
+                ", pvtKeyStoreURL=" + pvtKeyStoreURL +
+                ", pvtKeyStorePwd=" + Arrays.toString(pvtKeyStorePwd) +
+                ", pvtKeyAlias='" + pvtKeyAlias + '\'' +
+                ", pvtKeyPassword=" + Arrays.toString(pvtKeyPassword) +
+                ", pubKeyStoreURL=" + pubKeyStoreURL +
+                ", pubKeyStorePwd=" + Arrays.toString(pubKeyStorePwd) +
+                ", pwdKeyStoreURL=" + pwdKeyStoreURL +
+                ", pwdKeyStorePwd=" + Arrays.toString(pwdKeyStorePwd) +
+                ", pvtKeyStore=" + pvtKeyStore +
+                ", pubKeyStore=" + pubKeyStore +
+                ", pwdKeyStore=" + pwdKeyStore +
+                '}';
     }
 }
