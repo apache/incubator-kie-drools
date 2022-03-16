@@ -11,14 +11,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package org.kie.maven.plugin.enums;
+package org.kie.maven.plugin.helpers;
 
-public enum DMNModelMode {
+import org.kie.maven.plugin.enums.DMNModelMode;
 
-    YES,
-    NO;
+import static java.util.Arrays.asList;
+import static org.kie.maven.plugin.enums.DMNModelMode.YES;
 
+public class DMNModelModeHelper {
+
+    public static boolean dmnModelParameterEnabled(String s) {
+        return asList(YES).contains(DMNModelMode.valueOf(s.toUpperCase()));
+    }
 }
 

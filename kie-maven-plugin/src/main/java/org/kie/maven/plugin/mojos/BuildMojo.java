@@ -61,7 +61,7 @@ import org.kie.maven.plugin.DiskResourceStore;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.maven.plugin.helpers.CompilerHelper;
 
-import static org.kie.maven.plugin.enums.ExecModelMode.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
 

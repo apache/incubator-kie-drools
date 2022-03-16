@@ -41,8 +41,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
-import static org.kie.maven.plugin.enums.ExecModelMode.ancEnabled;
-import static org.kie.maven.plugin.enums.ExecModelMode.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;

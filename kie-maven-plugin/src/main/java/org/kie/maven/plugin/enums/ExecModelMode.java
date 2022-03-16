@@ -15,12 +15,6 @@
 
 package org.kie.maven.plugin.enums;
 
-import java.util.List;
-
-import org.apache.maven.model.Dependency;
-
-import static java.util.Arrays.asList;
-
 public enum ExecModelMode {
 
     YES,
@@ -29,27 +23,5 @@ public enum ExecModelMode {
     WITHMVEL,
     WITHDRL_MVEL,
     WITHANC;
-
-    public static boolean modelParameterEnabled(String s) {
-        return asList(YES, YES_WITHDRL, WITHMVEL, WITHDRL_MVEL, WITHANC).contains(valueOf(s.toUpperCase()));
-    }
-
-    public static boolean ancEnabled(String s) {
-        return asList(WITHANC).contains(valueOf(s.toUpperCase()));
-    }
-
-    public static boolean isModelCompilerInClassPath(List<Dependency> dependencies) {
-        return dependencies.stream().anyMatch(
-                    d -> d.getArtifactId().equals("drools-model-compiler") &&
-                            d.getGroupId().equals("org.drools"));
-    }
-
-    public static boolean shouldValidateMVEL(String s) {
-        return asList(WITHMVEL, WITHDRL_MVEL).contains(valueOf(s.toUpperCase()));
-    }
-
-    public static boolean shouldDeleteFile(String s) {
-        return asList(YES, WITHMVEL).contains(valueOf(s.toUpperCase()));
-    }
 }
 

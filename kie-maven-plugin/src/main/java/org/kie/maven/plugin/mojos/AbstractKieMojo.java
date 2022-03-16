@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.memorycompiler.JavaConfiguration;
 
-import static org.kie.maven.plugin.enums.ExecModelMode.modelParameterEnabled;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParameterEnabled;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 
@@ -54,7 +54,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     }
 
     protected boolean isModelParameterEnabled() {
-        return modelParameterEnabled(generateModel);
+        return execModelParameterEnabled(generateModel);
     }
 
     protected JavaConfiguration.CompilerType getCompilerType() {

@@ -47,10 +47,10 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-import org.kie.maven.plugin.enums.DMNModelMode;
+import org.kie.maven.plugin.helpers.DMNModelModeHelper;
 import org.kie.memorycompiler.JavaCompilerSettings;
 
-import static org.kie.maven.plugin.enums.ExecModelMode.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 
@@ -60,7 +60,7 @@ import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompiler
         defaultPhase = LifecyclePhase.COMPILE)
 public class GenerateDMNModelMojo extends AbstractKieMojo {
 
-    public final static String RULE_CLASS_FILE_NAME = "META-INF/kie/dmn";
+    public static final String RULE_CLASS_FILE_NAME = "META-INF/kie/dmn";
 
     @Parameter(required = true, defaultValue = "${project.build.directory}")
     private File targetDirectory;
@@ -79,7 +79,7 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        boolean DMNmodelParameterEnabled = DMNModelMode.modelParameterEnabled(generateDMNModel);
+        boolean DMNmodelParameterEnabled = DMNModelModeHelper.dmnModelParameterEnabled(generateDMNModel);
         boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
 
         if (DMNmodelParameterEnabled && modelCompilerInClassPath) {

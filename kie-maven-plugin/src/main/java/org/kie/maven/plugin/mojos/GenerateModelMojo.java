@@ -57,17 +57,17 @@ import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.maven.plugin.enums.ExecModelMode;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 
-import static org.kie.maven.plugin.enums.ExecModelMode.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
+import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.shouldDeleteFile;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
-import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
-import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
 
 @Mojo(name = "generateModel",
         requiresDependencyResolution = ResolutionScope.NONE,
@@ -175,7 +175,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                 performDMNDTAnalysis(kieModule, resources, getLog());
             }
 
-            if (ExecModelMode.shouldDeleteFile(getGenerateModelOption())) {
+            if (shouldDeleteFile(getGenerateModelOption())) {
                 Set<String> drlFiles = kieModule.getFileNames()
                         .stream()
                         .filter(f -> f.endsWith("drl"))

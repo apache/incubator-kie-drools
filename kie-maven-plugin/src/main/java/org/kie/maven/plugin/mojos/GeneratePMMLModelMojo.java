@@ -53,7 +53,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.maven.plugin.enums.ExecModelMode.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
