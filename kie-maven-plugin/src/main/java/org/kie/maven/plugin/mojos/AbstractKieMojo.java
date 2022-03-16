@@ -43,11 +43,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     protected List<Resource> resources;
 
     @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
-    private String validateDMN;
-
-    public String getValidateDMN() {
-        return validateDMN;
-    }
+    protected String validateDMN;
 
     public String getGenerateModelOption() {
         return generateModel;

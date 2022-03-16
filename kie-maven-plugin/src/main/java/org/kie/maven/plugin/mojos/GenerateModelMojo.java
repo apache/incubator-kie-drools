@@ -172,7 +172,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                 throw new MojoExecutionException("Unable to write file", e);
             }
 
-            if (shallPerformDMNDTAnalysis(getValidateDMN(), getLog())) {
+            if (shallPerformDMNDTAnalysis(validateDMN, getLog())) {
                 performDMNDTAnalysis(kieModule, resources, getLog());
             }
 

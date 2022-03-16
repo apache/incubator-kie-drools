@@ -72,11 +72,9 @@ public class BuildMojo extends AbstractKieMojo {
             mavenSession,
             resourceFolder,
             resources,
-            getValidateDMN(),
+            validateDMN,
             getLog());
         }
     }
-
-
 
 }

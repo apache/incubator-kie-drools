@@ -64,7 +64,7 @@ public class ValidateDMNMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        actualFlags.addAll(computeFlagsFromCSVString(getValidateDMN(), getLog()));
+        actualFlags.addAll(computeFlagsFromCSVString(validateDMN, getLog()));
         // for this phase, keep only the following flags (the rest requires the BuildMojo).
         actualFlags.retainAll(Arrays.asList(Validation.VALIDATE_SCHEMA, Validation.VALIDATE_MODEL));
         if (actualFlags.isEmpty()) {
