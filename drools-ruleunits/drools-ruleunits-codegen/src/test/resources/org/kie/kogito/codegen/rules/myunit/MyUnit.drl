@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.codegen.context;
+package org.kie.kogito.codegen.rules.myunit
 
-public final class ContextAttributesConstants {
-
-    /**
-     * OpenAPI Generator Descriptors with information of every REST client generated indexed by the spec resource file.
-     */
-    public static final String OPENAPI_DESCRIPTORS = "openApiDescriptor";
-
-    public static final String PROCESS_AUTO_SVG_MAPPING = "processAutoSVGMapping";
-
-    private ContextAttributesConstants() {
-    }
-}
+rule IAmAInAUnitAMA when
+then  end

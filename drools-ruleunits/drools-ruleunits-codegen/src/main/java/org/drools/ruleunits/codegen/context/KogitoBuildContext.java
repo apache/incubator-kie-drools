@@ -29,22 +29,6 @@ public interface KogitoBuildContext {
     String KOGITO_GENERATE_REST = "kogito.generate.rest";
     String KOGITO_GENERATE_DI = "kogito.generate.di";
 
-    static String generateRESTConfigurationKeyForResource(String generatorType) {
-        return String.format("%s.%s", KOGITO_GENERATE_REST, generatorType);
-    }
-
-    boolean hasClassAvailable(String fqcn);
-
-    //    /**
-//     * Return DependencyInjectionAnnotator if available or null
-//     */
-//    DependencyInjectionAnnotator getDependencyInjectionAnnotator();
-//
-//    /**
-//     * Method to override default dependency injection annotator
-//     */
-//    void setDependencyInjectionAnnotator(DependencyInjectionAnnotator dependencyInjectionAnnotator);
-
     /**
      * Method to check if dependency injection is available and enabled.
      * This is platform/classpath specific (e.g. Quarkus) but it can also be explicitly disabled using
@@ -65,29 +49,6 @@ public interface KogitoBuildContext {
     ClassLoader getClassLoader();
 
     AppPaths getAppPaths();
-
-    /**
-     * <strong>Note: This method is on experimental phase. Can disappear in future releases.</strong>
-     * <p>
-     * Attributes shared among generators and client code.
-     * Any generator can write or read from this context.
-     * </p>
-     *
-     * @return An unmodifiable map with all attributes. If you need to write to the context, use {@link #addContextAttribute(String, Object)}
-     * @see ContextAttributesConstants for a list of possible attributes
-     */
-    Map<String, Object> getContextAttributes();
-
-    void addContextAttribute(String key, Object value);
-
-    /**
-     * Get an attribute by a given key
-     *
-     * @param key the named key to retrieve from the context
-     * @return The value in the context or null if it does not exist
-     * @see ContextAttributesConstants for a list of possible attributes
-     */
-    <T> T getContextAttribute(String key, Class<T> asClass);
 
     /**
      * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions

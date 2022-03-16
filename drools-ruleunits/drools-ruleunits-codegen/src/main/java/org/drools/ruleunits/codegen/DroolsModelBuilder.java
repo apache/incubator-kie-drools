@@ -17,14 +17,12 @@ package org.drools.ruleunits.codegen;
 
 import org.drools.drl.parser.DroolsError;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
-import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.codegen.context.KogitoBuildContext;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableToCompiler;
@@ -97,24 +94,6 @@ public class DroolsModelBuilder {
 
     Collection<KogitoPackageSources> packageSources() {
         return modelBuilder.getPackageSources();
-    }
-
-    Collection<RuleUnitGenerator> createRuleUnitGenerators(Map<String, RuleUnitConfig> configs) {
-        List<RuleUnitGenerator> ruleUnitGenerators = new ArrayList<>();
-        for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
-
-            Collection<RuleUnitDescription> ruleUnits = pkgSources.getRuleUnits();
-            for (RuleUnitDescription ruleUnit : ruleUnits) {
-                String canonicalName = ruleUnit.getCanonicalName();
-
-                ruleUnitGenerators.add(
-                        new RuleUnitGenerator(context, ruleUnit, pkgSources.getRulesFileName())
-                                .withQueries(pkgSources.getQueriesInRuleUnit(canonicalName))
-                                .mergeConfig(configs.get(canonicalName)));
-
-            }
-        }
-        return ruleUnitGenerators;
     }
 
     private ModelBuilderImpl<KogitoPackageSources> makeModelBuilder() {

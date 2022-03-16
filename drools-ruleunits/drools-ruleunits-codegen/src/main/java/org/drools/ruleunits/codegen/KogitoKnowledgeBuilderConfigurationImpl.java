@@ -30,7 +30,6 @@ public class KogitoKnowledgeBuilderConfigurationImpl extends KnowledgeBuilderCon
             }
         }
         return conf;
-
     }
 
     public KogitoKnowledgeBuilderConfigurationImpl() {

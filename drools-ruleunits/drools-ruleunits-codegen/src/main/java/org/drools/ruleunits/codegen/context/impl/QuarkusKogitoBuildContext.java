@@ -25,6 +25,11 @@ public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
         super(builder, /*new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(),  */ CONTEXT_NAME);
     }
 
+    @Override
+    public boolean hasDI() {
+        return true;
+    }
+
     public static Builder builder() {
         return new QuarkusKogitoBuildContextBuilder();
     }

@@ -16,17 +16,8 @@
 package org.drools.ruleunits.codegen;
 
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.ruleunits.api.RuleUnitConfig;
-import org.drools.ruleunits.api.conf.ClockType;
-import org.drools.ruleunits.api.conf.EventProcessingType;
-import org.drools.ruleunits.impl.AbstractRuleUnitDescription;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.conf.SessionsPoolOption;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,7 +25,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.OptionalInt;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 
@@ -73,41 +63,5 @@ public class KieModuleModelWrapper {
         return kieModuleModel.getKieBaseModels();
     }
 
-    void addRuleUnitConfig(RuleUnitDescription ruleUnitDescription, RuleUnitConfig overridingConfig) {
-        // merge config from the descriptor with configs from application.conf
-        // application.conf overrides any other config
-        org.drools.ruleunits.api.RuleUnitConfig config =
-                ((AbstractRuleUnitDescription) ruleUnitDescription).getConfig()
-                        .merged(overridingConfig);
-
-        // only Class<?> has config for now
-        KieBaseModel unitKieBaseModel = kieModuleModel.newKieBaseModel(ruleUnit2KieBaseName(ruleUnitDescription.getCanonicalName()));
-        unitKieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
-        unitKieBaseModel.addPackage(ruleUnitDescription.getPackageName());
-
-        OptionalInt sessionsPool = config.getSessionPool();
-        if (sessionsPool.isPresent()) {
-            unitKieBaseModel.setSessionsPool(SessionsPoolOption.get(sessionsPool.getAsInt()));
-        }
-        EventProcessingType eventProcessingType = config.getDefaultedEventProcessingType();
-        if (eventProcessingType == EventProcessingType.STREAM) {
-            unitKieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
-        }
-
-        KieSessionModel unitKieSessionModel = unitKieBaseModel.newKieSessionModel(ruleUnit2KieSessionName(ruleUnitDescription.getCanonicalName()));
-        unitKieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
-        ClockType clockType = config.getDefaultedClockType();
-        if (clockType == ClockType.PSEUDO) {
-            unitKieSessionModel.setClockType(ClockTypeOption.PSEUDO);
-        }
-    }
-
-    private String ruleUnit2KieBaseName(String ruleUnit) {
-        return ruleUnit.replace('.', '$') + "KieBase";
-    }
-
-    private String ruleUnit2KieSessionName(String ruleUnit) {
-        return ruleUnit.replace('.', '$') + "KieSession";
-    }
 
 }

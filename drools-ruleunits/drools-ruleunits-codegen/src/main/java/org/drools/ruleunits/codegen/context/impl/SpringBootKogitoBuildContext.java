@@ -25,6 +25,11 @@ public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
         super(builder, /* new SpringDependencyInjectionAnnotator(), new SpringRestAnnotator(),*/ CONTEXT_NAME);
     }
 
+    @Override
+    public boolean hasDI() {
+        return true;
+    }
+
     public static Builder builder() {
         return new SpringBootKogitoBuildContextBuilder();
     }

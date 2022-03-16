@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -79,26 +78,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         return classAvailabilityResolver.test(fqcn);
     }
 
-//    @Override
-//    public DependencyInjectionAnnotator getDependencyInjectionAnnotator() {
-//        return dependencyInjectionAnnotator;
-//    }
-//
-//    @Override
-//    public void setDependencyInjectionAnnotator(DependencyInjectionAnnotator dependencyInjectionAnnotator) {
-//        this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
-//    }
-//
-//    @Override
-//    public RestAnnotator getRestAnnotator() {
-//        return restAnnotator;
-//    }
-//
-//    @Override
-//    public void setRestAnnotator(RestAnnotator restAnnotator) {
-//        this.restAnnotator = restAnnotator;
-//    }
-
     @Override
     public Optional<String> getApplicationProperty(String property) {
         return applicationProperties.getApplicationProperty(property);
@@ -119,9 +98,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         return packageName;
     }
 
-//    public AddonsConfig getAddonsConfig() {
-//        return addonsConfig;
-//    }
 
     @Override
     public String name() {
@@ -137,44 +113,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     public AppPaths getAppPaths() {
         return appPaths;
     }
-
-//    public Optional<KogitoGAV> getGAV() {
-//        return Optional.ofNullable(gav);
-//    }
-
-    @Override
-    public Map<String, Object> getContextAttributes() {
-        return Collections.unmodifiableMap(contextAttributes);
-    }
-
-    @Override
-    public <T> T getContextAttribute(String key, Class<T> asClass) {
-        final Object output = this.contextAttributes.get(key);
-        if (output == null) {
-            return null;
-        }
-        if (asClass.isAssignableFrom(output.getClass())) {
-            return asClass.cast(output);
-        }
-        throw new AssertionError("Impossible to cast '" + key + "' key value as " + asClass.getName() + ", found " + output.getClass().getCanonicalName());
-    }
-
-    @Override
-    public void addContextAttribute(String key, Object value) {
-        this.contextAttributes.put(key, value);
-    }
-
-//    public Set<ApplicationSection> getApplicationSections() {
-//        return Collections.unmodifiableSet(applicationSections);
-//    }
-//
-//    public void addAllApplicationSections(Set<ApplicationSection> applicationSections) {
-//        this.applicationSections.addAll(applicationSections);
-//    }
-//
-//    public void addApplicationSection(ApplicationSection applicationSection) {
-//        this.applicationSections.add(applicationSection);
-//    }
 
     @Override
     public String toString() {
@@ -236,12 +174,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
             return this;
         }
 
-//        @Override
-//        public Builder withAddonsConfig(AddonsConfig addonsConfig) {
-//            this.addonsConfig = addonsConfig;
-//            return this;
-//        }
-
         @Override
         public Builder withClassAvailabilityResolver(Predicate<String> classAvailabilityResolver) {
             Objects.requireNonNull(classAvailabilityResolver, "classAvailabilityResolver cannot be null");
@@ -262,13 +194,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
             this.appPaths = appPaths;
             return this;
         }
-
-//        @Override
-//        public Builder withGAV(KogitoGAV gav) {
-//            Objects.requireNonNull(gav, "gav cannot be null");
-//            this.gav = gav;
-//            return this;
-//        }
 
         private boolean hasClass(String className) {
             try {

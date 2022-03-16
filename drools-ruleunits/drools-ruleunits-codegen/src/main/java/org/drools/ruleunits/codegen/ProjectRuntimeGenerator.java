@@ -62,6 +62,8 @@ public class ProjectRuntimeGenerator {
 
         if (context.hasDI()) {
 //            context.getDependencyInjectionAnnotator().withApplicationComponent(clazz);
+//            clazz.addAnnotation("javax.enterprise.context.ApplicationScoped");
+//            clazz.addAnnotation("org.springframework.stereotype.Component");
         }
 
         writeInitKieBasesMethod(clazz);
