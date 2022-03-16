@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+  <kbase name="AllResourceTypes" packages="AllResourceTypes">
+    <ruleTemplate dtable="AllResourceTypes/simple-dtable-template.txls"
+                  template="AllResourceTypes/simple-template.drt"
+                  row="2" col="2"/>
+    <ksession name="AllResourceTypes.session" type="stateful"/>
+  </kbase>
+</kmodule>

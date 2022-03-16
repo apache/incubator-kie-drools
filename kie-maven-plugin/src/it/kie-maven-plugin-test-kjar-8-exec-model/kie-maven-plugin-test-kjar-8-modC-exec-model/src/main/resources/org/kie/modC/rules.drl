@@ -1,0 +1,4 @@
+package org.kie.modC
+
+declare FactC
+end
