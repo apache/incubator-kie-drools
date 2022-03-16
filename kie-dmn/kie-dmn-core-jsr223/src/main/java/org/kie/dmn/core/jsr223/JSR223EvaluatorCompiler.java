@@ -29,9 +29,16 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         .build()
         //.configure(JsonWriteFeature.QUOTE_FIELD_NAMES.mappedFeature(), true)
         ;
+
+    private final ScriptEngineManager SEMANAGER;
     
     public JSR223EvaluatorCompiler(DMNCompilerImpl compiler) { // TODO for composition, need DMNEvaluatorCompiler not to rely on self-def methods but go again via compilerConfig defined compiler.
         super(compiler);
+        SEMANAGER = new ScriptEngineManager();
+        LOG.info("ScriptEngineFactories:");
+        for (ScriptEngineFactory factory : SEMANAGER.getEngineFactories()) {
+            printScriptEngineFactoryInfo(factory);
+        }
     }
 
     @Override
@@ -44,13 +51,10 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
     }
 
     private DMNExpressionEvaluator compileLiteralExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
-        String exprLanguage = Optional.ofNullable(expression.getExpressionLanguage()).orElse(""); // TODO check also default expression language in root <definitions>.
-        LOG.info("exprLanguage {}", exprLanguage);
-        if (exprLanguage.equals("")) {
-            return super.compileExpression(ctx, model, node, exprName, expression);
-        }
-        if (!exprLanguage.contains("FEEL")) { // TODO use proper FEEL namespace checks
-            final ScriptEngine efEngine = locateScriptEngine(exprLanguage);
+        String exprLanguage = Optional.ofNullable(expression.getExpressionLanguage()).orElse(model.getDefinitions().getExpressionLanguage());
+        if (!exprLanguage.equals(model.getDefinitions().getURIFEEL())) {
+            LOG.info("exprLanguage {}", exprLanguage);
+            final ScriptEngine efEngine = getScriptEngine(exprLanguage);
             // TODO ensure pick only from explicit Requirements?
             final JSR223ScriptEngineEvaluator eval = new JSR223ScriptEngineEvaluator(efEngine, expression.getText());
             return new JSR223LiteralExpressionEvaluator(eval);
@@ -59,13 +63,8 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         }
     }
     
-    private ScriptEngine locateScriptEngine(String exprLanguage) {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        LOG.info("ScriptEngineFactories:");
-        for (ScriptEngineFactory factory : manager.getEngineFactories()) {
-            printScriptEngineFactoryInfo(factory);
-        }
-        ScriptEngine engine = manager.getEngineByName(exprLanguage);
+    private ScriptEngine getScriptEngine(String exprLanguage) {
+        ScriptEngine engine = SEMANAGER.getEngineByName(exprLanguage);
         // if (expression.getExpressionLanguage().equalsIgnoreCase("javascript")) { // TODO force ES6?
         //     NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
         //     engine = factory.getScriptEngine("--language=es6");
@@ -73,8 +72,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         if (engine == null) {
             throw new IllegalStateException("was unable to locate scripting engine: "+exprLanguage);
         }
-        LOG.info("Selected ScriptEngine: ");
-        printScriptEngineFactoryInfo(engine.getFactory());
+        LOG.info("Selected ScriptEngine: {}", engine.getFactory().getEngineName());
         return engine;
     }
 
