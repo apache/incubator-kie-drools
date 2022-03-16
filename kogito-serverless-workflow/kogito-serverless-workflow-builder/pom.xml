@@ -15,6 +15,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow-builder</artifactId>
     </dependency>

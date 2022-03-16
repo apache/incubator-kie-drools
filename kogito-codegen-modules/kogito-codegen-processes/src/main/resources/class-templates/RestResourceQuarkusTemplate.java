@@ -43,6 +43,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;

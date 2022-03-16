@@ -16,8 +16,10 @@
 package org.kie.kogito.serverless.workflow;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
 
+import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
@@ -44,6 +46,7 @@ import io.serverlessworkflow.api.start.Start;
 import io.serverlessworkflow.api.states.DefaultState.Type;
 import io.serverlessworkflow.api.states.SleepState;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -635,6 +638,16 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
 
     @Test
     public void testMinimumWorkflow() {
+        Workflow workflow = createMinimumWorkflow();
+        ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
+        Process process = parser.getProcessInfo().info();
+        assertSame(process, parser.getProcessInfo().info());
+        assertEquals(ServerlessWorkflowParser.DEFAULT_NAME, process.getName());
+        assertEquals(ServerlessWorkflowParser.DEFAULT_VERSION, process.getVersion());
+        assertEquals(ServerlessWorkflowParser.DEFAULT_PACKAGE, process.getPackageName());
+    }
+
+    private static Workflow createMinimumWorkflow() {
         Workflow workflow = new Workflow();
         workflow.setId("javierito");
         Start start = new Start();
@@ -646,13 +659,65 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         startState.setDuration("1s");
         startState.setName("javierito");
         startState.setEnd(end);
-        workflow.setStates(Collections.singletonList(startState));
+        workflow.setStates(List.of(startState));
         workflow.setStart(start);
+
+        return workflow;
+    }
+
+    @Test
+    void testWorkflowWithAnnotations() {
+        List<String> annotations = List.of("machine learning", "monitoring", "networking");
+
+        Workflow workflow = createMinimumWorkflow().withAnnotations(annotations);
+
         ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
         Process process = parser.getProcessInfo().info();
-        assertSame(process, parser.getProcessInfo().info());
-        assertEquals(ServerlessWorkflowParser.DEFAULT_NAME, process.getName());
-        assertEquals(ServerlessWorkflowParser.DEFAULT_VERSION, process.getVersion());
-        assertEquals(ServerlessWorkflowParser.DEFAULT_PACKAGE, process.getPackageName());
+
+        // Simplify the following assertions when https://github.com/smallrye/smallrye-open-api/pull/1093 is merged and released
+
+        assertThat(process.getMetaData())
+                .containsKey(Metadata.TAGS)
+                .hasEntrySatisfying(Metadata.TAGS, tags -> assertThat(tags).isInstanceOf(Collection.class));
+
+        @SuppressWarnings("unchecked")
+        Collection<Tag> tags = (Collection<Tag>) process.getMetaData().get(Metadata.TAGS);
+
+        annotations.forEach(annotation -> assertThat(tags).anyMatch(tag -> tag.getName().equals(annotation)));
+    }
+
+    @Test
+    void workflowWithoutAnnotationsShouldResultInProcessWithoutTags() {
+        Workflow workflow = createMinimumWorkflow();
+
+        ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
+        Process process = parser.getProcessInfo().info();
+
+        assertThat(process.getMetaData()).doesNotContainKey(Metadata.TAGS);
+    }
+
+    @Test
+    void testWorkflowWithDescription() {
+        String description = "This is a description";
+
+        String workflowId = "my-workflow";
+
+        Workflow workflow = createMinimumWorkflow()
+                .withId(workflowId)
+                .withDescription(description);
+
+        ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
+        Process process = parser.getProcessInfo().info();
+
+        // Simplify the following assertions when https://github.com/smallrye/smallrye-open-api/pull/1093 is merged and released
+
+        assertThat(process.getMetaData())
+                .containsKey(Metadata.TAGS)
+                .hasEntrySatisfying(Metadata.TAGS, tags -> assertThat(tags).isInstanceOf(Collection.class));
+
+        @SuppressWarnings("unchecked")
+        Collection<Tag> tags = (Collection<Tag>) process.getMetaData().get(Metadata.TAGS);
+
+        assertThat(tags).anyMatch(tag -> workflowId.equals(tag.getName()) && description.equals(tag.getDescription()));
     }
 }
