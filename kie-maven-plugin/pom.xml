@@ -25,20 +25,18 @@
     <common.compress.version>1.21</common.compress.version>
     <common.exec.version>1.3</common.exec.version>
     <plexus.version>1.6</plexus.version>
+    <sisu.inject.bean.version>1.4.2</sisu.inject.bean.version>
   </properties>
 
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <configuration>
-          <goalPrefix>kie</goalPrefix>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${maven.plugin.plugin.version}</version>
+        <configuration>
+          <goalPrefix>kie</goalPrefix>
+        </configuration>
       </plugin>
        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -122,6 +120,11 @@
         <artifactId>plexus-container-default</artifactId>
         <version>${plexus.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-inject-bean</artifactId>
+        <version>${sisu.inject.bean.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -139,8 +142,8 @@
           <artifactId>sisu-guice</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
+          <groupId>org.sonatype.sisu</groupId>
+          <artifactId>sisu-inject-plexus</artifactId>
         </exclusion>
         <exclusion>
           <groupId>aopalliance</groupId>
@@ -162,16 +165,20 @@
           <artifactId>org.eclipse.sisu.inject</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>org.eclipse.aether</groupId>
+          <artifactId>aether-util</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.eclipse.sisu</groupId>
           <artifactId>org.eclipse.sisu.plexus</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>aopalliance</groupId>
           <artifactId>aopalliance</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -216,6 +223,10 @@
           <artifactId>google-collections</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-bean</artifactId>
     </dependency>
     <!-- Replacement for above excluded 'commons-logging:commons-logging' -->
     <dependency>
