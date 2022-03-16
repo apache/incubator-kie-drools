@@ -29,10 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-
-import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -45,8 +42,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.CompilationCacheProvider;
@@ -59,11 +54,10 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.maven.plugin.DiskResourceStore;
 import org.kie.maven.plugin.ProjectPomModel;
-import org.kie.maven.plugin.helpers.CompilerHelper;
 
-import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 
 /**
  * This goal builds the Drools files belonging to the kproject.
@@ -87,23 +81,13 @@ public class BuildMojo extends AbstractKieMojo {
      * Project resources folder.
      */
     @Parameter(required = true, defaultValue = "src/main/resources")
-    private File sourceFolder;
+    private File resourceFolder;
 
     @Parameter(required = true, defaultValue = "${project}")
     private MavenProject project;
 
     @Parameter
     private Map<String, String> properties;
-
-    @Parameter(required = false, defaultValue = "no")
-    private String usesPMML;
-
-    /**
-     * This container is the same accessed in the KieMavenCli in the kie-wb-common
-     */
-    @Inject
-    private PlexusContainer container;
-
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         // BuildMojo is executed when GenerateModelMojo isn't and vice-versa
@@ -147,20 +131,14 @@ public class BuildMojo extends AbstractKieMojo {
             KieServices ks = KieServices.Factory.get();
             KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(project.getBasedir());
             kieBuilder.setPomModel(new ProjectPomModel(mavenSession));
-            kieBuilder.buildAll(DrlProject.SUPPLIER,
-                                s -> s.contains(sourceFolder.getAbsolutePath()) || s.endsWith("pom.xml"));
+            kieBuilder.buildAll(DrlProject.SUPPLIER, s -> s.contains(resourceFolder.getAbsolutePath()) || s.endsWith(
+                    "pom.xml"));
             InternalKieModule kModule = (InternalKieModule) kieBuilder.getKieModule();
             ResultsImpl messages = (ResultsImpl)kieBuilder.getResults();
 
             List<Message> errors = messages != null ? messages.filterMessages( Message.Level.ERROR): Collections.emptyList();
 
-            Map<String, Object> kieMap = getKieMap();
-            if (container != null && !kieMap.isEmpty()) {
-                CompilerHelper helper = new CompilerHelper();
-                helper.share(kieMap, kModule, getLog());
-            } else {
-                CompilationCacheProvider.get().writeKieModuleMetaInfo(kModule, new DiskResourceStore(outputDirectory));
-            }
+            CompilationCacheProvider.get().writeKieModuleMetaInfo(kModule, new DiskResourceStore(outputDirectory));
 
             if (!errors.isEmpty()) {
                 for (Message error : errors) {
@@ -204,24 +182,10 @@ public class BuildMojo extends AbstractKieMojo {
             Files.deleteIfExists(path);
             Files.createDirectories(path);
             Files.copy(memFile.getContents(), path, StandardCopyOption.REPLACE_EXISTING);
-        } catch(IOException iox) {
+        } catch (IOException iox) {
             iox.printStackTrace();
             throw new MojoFailureException("Unable to write file", iox);
         }
     }
 
-    private Map<String, Object> getKieMap() {
-        try {
-            /**
-             * Retrieve the map passed into the Plexus container by the MavenEmbedder from the MavenIncrementalCompiler in the kie-wb-common
-             */
-            Map<String, Object> kieMap = (Map) container.lookup(Map.class,
-                                                                "java.util.HashMap",
-                                                                "kieMap");
-            return Optional.ofNullable(kieMap).orElse(Collections.emptyMap());
-        } catch (ComponentLookupException cle) {
-            getLog().info("kieMap not present");
-            return Collections.emptyMap();
-        }
-    }
 }
