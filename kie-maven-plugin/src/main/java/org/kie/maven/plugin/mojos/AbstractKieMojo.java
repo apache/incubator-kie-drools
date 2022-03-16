@@ -15,11 +15,15 @@
 
 package org.kie.maven.plugin.mojos;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParameterEnabled;
@@ -30,11 +34,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     protected String dumpKieSourcesFolder;
 
     @Parameter(property = "generateModel", defaultValue = "YES_WITHDRL") // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
-    private String generateModel;
-
-
-    @Parameter(property = "javaCompiler", defaultValue = "ecj")
-    private String javaCompiler;
+    protected String generateModel;
 
     @Parameter(required = true, defaultValue = "${project.build.resources}")
     protected List<Resource> resources;
@@ -42,9 +42,41 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
     protected String validateDMN;
 
-    public String getGenerateModelOption() {
-        return generateModel;
-    }
+    @Parameter(required = true, defaultValue = "${project.basedir}")
+    protected File projectDir;
+
+    @Parameter(required = true, defaultValue = "${project.build.directory}")
+    protected File targetDirectory;
+
+    @Parameter
+    protected Map<String, String> properties;
+
+    @Parameter(required = true, defaultValue = "${project}")
+    protected MavenProject project;
+
+    @Parameter(defaultValue = "${session}", required = true, readonly = true)
+    protected MavenSession mavenSession;
+
+    @Parameter(defaultValue = "${project.resources}", required = true, readonly = true)
+    protected List<org.apache.maven.model.Resource> resourcesDirectories;
+
+    /**
+     * Directory containing the generated JAR.
+     */
+    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
+    protected File outputDirectory;
+
+    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
+    protected File testDir;
+
+    /**
+     * Project resources folder.
+     */
+    @Parameter(required = true, defaultValue = "src/main/resources")
+    protected File resourceFolder;
+
+    @Parameter(property = "javaCompiler", defaultValue = "ecj")
+    private String javaCompiler;
 
     protected boolean isModelParameterEnabled() {
         return execModelParameterEnabled(generateModel);

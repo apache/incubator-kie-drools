@@ -69,22 +69,6 @@ public class GeneratePMMLModelMojo extends AbstractKieMojo {
     private static final Logger logger = LoggerFactory.getLogger(GeneratePMMLModelMojo.class);
 
     private static final String PMML = "pmml";
-    @Parameter(defaultValue = "${session}", required = true, readonly = true)
-    private MavenSession mavenSession;
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    private File projectDir;
-    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
-    private File testDir;
-    @Parameter
-    private Map<String, String> properties;
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    private File outputDirectory;
-    @Parameter(defaultValue = "${project.resources}", required = true, readonly = true)
-    private List<org.apache.maven.model.Resource> resourcesDirectories;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

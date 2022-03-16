@@ -34,7 +34,6 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.MavenArtifactRepository;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -72,17 +71,8 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
 
     private static final Pattern ALT_REPO_SYNTAX_PATTERN = Pattern.compile("(.+)::(.*)::(.+)");
 
-    @Parameter(defaultValue = "${project.build.outputDirectory}", required = true, readonly = true)
-    private String outputDirectory;
-
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    private MavenProject project;
-
     @Parameter
     private String classifier;
-
-    @Parameter(defaultValue = "${session}", readonly = true, required = true)
-    private MavenSession session;
 
     @Component
     private ProjectBuilder projectBuilder;
@@ -159,7 +149,7 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
 
             for(Artifact artifact : artifacts) {
                 getLog().info("Copying artifact and creating effective pom: " + artifact);
-                writeEffectivePom(projectBuilder.build(artifact, session.getProjectBuildingRequest()).getProject(), new File(outputFolder, toFile(artifact)));
+                writeEffectivePom(projectBuilder.build(artifact, mavenSession.getProjectBuildingRequest()).getProject(), new File(outputFolder, toFile(artifact)));
                 File local = artifact.getFile();
                 Files.copy(local, new File(outputFolder, local.getName()));
             }
@@ -199,8 +189,8 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
 
 
     private ProjectBuildingRequest buildMavenRequest(List<ArtifactRepository> repoList) {
-        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
-        Settings settings = session.getSettings();
+        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(mavenSession.getProjectBuildingRequest());
+        Settings settings = mavenSession.getSettings();
         repositorySystem.injectMirror(repoList, settings.getMirrors());
         repositorySystem.injectProxy(repoList, settings.getProxies());
         repositorySystem.injectAuthentication(repoList, settings.getServers());

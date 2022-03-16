@@ -15,7 +15,6 @@
 
 package org.kie.maven.plugin.mojos;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
@@ -34,14 +33,11 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -77,27 +73,6 @@ import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
 public class GenerateModelMojo extends AbstractKieMojo {
 
     public static PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
-
-    @Parameter(defaultValue = "${session}", required = true, readonly = true)
-    private MavenSession mavenSession;
-
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    private File projectDir;
-
-    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
-    private File testDir;
-
-    @Parameter
-    private Map<String, String> properties;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    private File outputDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -176,7 +151,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                 performDMNDTAnalysis(kieModule, resources, getLog());
             }
 
-            if (shouldDeleteFile(getGenerateModelOption())) {
+            if (shouldDeleteFile(generateModel)) {
                 Set<String> drlFiles = kieModule.getFileNames()
                         .stream()
                         .filter(f -> f.endsWith("drl"))

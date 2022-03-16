@@ -39,27 +39,6 @@ import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerIn
         defaultPhase = LifecyclePhase.COMPILE)
 public class BuildMojo extends AbstractKieMojo {
 
-    @Parameter(defaultValue = "${session}", required = true, readonly = true)
-    private MavenSession mavenSession;
-
-    /**
-     * Directory containing the generated JAR.
-     */
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    private File outputDirectory;
-
-    /**
-     * Project resources folder.
-     */
-    @Parameter(required = true, defaultValue = "src/main/resources")
-    private File resourceFolder;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter
-    private Map<String, String> properties;
-
     public void execute() throws MojoExecutionException, MojoFailureException {
         // BuildMojo is executed when GenerateModelMojo isn't and vice-versa
         boolean modelParameterEnabled = isModelParameterEnabled();

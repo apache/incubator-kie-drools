@@ -52,9 +52,6 @@ public class TouchResourcesMojo extends AbstractKieMojo {
     @Parameter(property = "kie.resDirectory", defaultValue = "${project.basedir}/res/raw" )
     private String resDirectory;
 
-    @Parameter(defaultValue = "${project}", required = true, readonly = true)
-    private MavenProject project;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {

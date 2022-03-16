@@ -58,9 +58,6 @@ public class SerializeMojo extends AbstractKieMojo {
     @Parameter(property = "kie.resDirectory", defaultValue = "${project.basedir}/src/main/res/raw")
     private String resDirectory;
 
-    @Parameter
-    private Map<String, String> properties;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {

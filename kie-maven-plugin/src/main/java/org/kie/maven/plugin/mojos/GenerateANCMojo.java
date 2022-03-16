@@ -15,16 +15,10 @@
 
 package org.kie.maven.plugin.mojos;
 
-import java.io.File;
-import java.util.Map;
-
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 
 import static org.kie.maven.plugin.executors.GenerateANCExecutor.generateANC;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
@@ -35,31 +29,10 @@ import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerIn
         defaultPhase = LifecyclePhase.COMPILE)
 public class GenerateANCMojo extends AbstractKieMojo {
 
-    @Parameter(defaultValue = "${session}", required = true, readonly = true)
-    private MavenSession mavenSession;
-
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    private File projectDir;
-
-    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
-    private File testDir;
-
-    @Parameter
-    private Map<String, String> properties;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    private File outputDirectory;
-
     @Override
     public void execute() throws MojoExecutionException {
         // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
-        boolean ancParameterEnabled = ancEnabled(getGenerateModelOption());
+        boolean ancParameterEnabled = ancEnabled(generateModel);
         boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
         if (ancParameterEnabled && modelCompilerInClassPath) {
             generateANC(project,
