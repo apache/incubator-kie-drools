@@ -28,6 +28,7 @@ import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedCu
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedDoubleEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedDurationEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedIntegerEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedLongEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedObjectEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTextEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.fixed.FixedTimeEntity;
@@ -61,15 +62,23 @@ public class CounterfactualEntityFactory {
         final Type type = feature.getType();
         final FeatureDomain featureDomain = feature.getDomain();
         final boolean isConstrained = feature.isConstrained();
+        final Object valueObject = feature.getValue().getUnderlyingObject();
         if (type == Type.NUMBER) {
-            if (feature.getValue().getUnderlyingObject() instanceof Double) {
+            if (valueObject instanceof Double) {
                 if (isConstrained) {
                     entity = FixedDoubleEntity.from(feature);
                 } else {
                     entity = DoubleEntity.from(feature, featureDomain.getLowerBound(), featureDomain.getUpperBound(),
                             featureDistribution, isConstrained);
                 }
-            } else if (feature.getValue().getUnderlyingObject() instanceof Integer) {
+            } else if (valueObject instanceof Long) {
+                if (isConstrained) {
+                    entity = FixedLongEntity.from(feature);
+                } else {
+                    entity = LongEntity.from(feature, featureDomain.getLowerBound().intValue(),
+                            featureDomain.getUpperBound().intValue(), featureDistribution, isConstrained);
+                }
+            } else if (valueObject instanceof Integer) {
                 if (isConstrained) {
                     entity = FixedIntegerEntity.from(feature);
                 } else {

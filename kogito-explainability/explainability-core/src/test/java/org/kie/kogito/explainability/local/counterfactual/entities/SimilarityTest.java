@@ -92,6 +92,21 @@ class SimilarityTest {
         assertTrue(similarity1 > 0.9);
     }
 
+    @Test
+    void longSimpleSimilarity() {
+        final long value = 20;
+        final LongEntity x = LongEntity.from(FeatureFactory.newNumericalFeature("x", value), 0, 100);
+
+        x.setProposedValue(value + 9);
+        final double similarity1 = x.similarity();
+
+        x.setProposedValue(value - 9);
+        final double similarity2 = x.similarity();
+
+        assertEquals(similarity1, similarity2);
+        assertTrue(similarity1 > 0.9);
+    }
+
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void booleanSimpleSimilarity(int seed) {
@@ -493,6 +508,48 @@ class SimilarityTest {
 
         final DoubleEntity y =
                 DoubleEntity.from(FeatureFactory.newNumericalFeature("y", values[0]), lowerBound, upperBound);
+        // similarity to point #2 with new range
+        y.setProposedValue(values[1]);
+        final double y_similarity1 = y.similarity();
+        // similarity to point #3 with new range
+        y.setProposedValue(values[2]);
+        final double y_similarity2 = y.similarity();
+
+        // relative similarities must stay the same
+        assertTrue(x_similarity1 > x_similarity2);
+        assertTrue(y_similarity1 > y_similarity2);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void constantRelativeSimilarityLongEntity(int seed) {
+        final Random random = new Random(seed);
+        final int MAX_UPPER_BOUND_RANGE = 10_000;
+        // generate 3 random points
+        long[] values = new long[3];
+        values[0] = random.nextInt(1000);
+        values[1] = values[0] + random.nextInt(100);
+        values[2] = values[1] + random.nextInt(100);
+
+        // create non-overlapping bounds
+        long lowerBound = random.nextInt((int) values[0] - 1);
+        long upperBound = values[2] + random.nextInt(MAX_UPPER_BOUND_RANGE) + 1;
+        final LongEntity x =
+                LongEntity.from(FeatureFactory.newNumericalFeature("x", values[0]), lowerBound, upperBound);
+
+        // similarity to point #2
+        x.setProposedValue(values[1]);
+        final double x_similarity1 = x.similarity();
+        // similarity to point #3
+        x.setProposedValue(values[2]);
+        final double x_similarity2 = x.similarity();
+
+        // change bounds
+        lowerBound = random.nextInt((int) values[0] - 1);
+        upperBound = values[2] + random.nextInt(MAX_UPPER_BOUND_RANGE) + 1;
+
+        final LongEntity y =
+                LongEntity.from(FeatureFactory.newNumericalFeature("y", values[0]), lowerBound, upperBound);
         // similarity to point #2 with new range
         y.setProposedValue(values[1]);
         final double y_similarity1 = y.similarity();

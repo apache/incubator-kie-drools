@@ -22,6 +22,7 @@ import org.kie.kogito.explainability.local.counterfactual.entities.BooleanEntity
 import org.kie.kogito.explainability.local.counterfactual.entities.CategoricalEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.DoubleEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.IntegerEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.LongEntity;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
@@ -55,7 +56,7 @@ public class SolverConfigBuilder {
         public SolverConfig build() {
             SolverConfig solverConfig = new SolverConfig();
 
-            solverConfig.withEntityClasses(IntegerEntity.class, DoubleEntity.class, BooleanEntity.class,
+            solverConfig.withEntityClasses(LongEntity.class, IntegerEntity.class, DoubleEntity.class, BooleanEntity.class,
                     CategoricalEntity.class);
             solverConfig.setSolutionClass(CounterfactualSolution.class);
 
