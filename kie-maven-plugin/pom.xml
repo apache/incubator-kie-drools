@@ -122,11 +122,6 @@
         <artifactId>plexus-container-default</artifactId>
         <version>${plexus.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -334,11 +329,6 @@
       <artifactId>drools-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
