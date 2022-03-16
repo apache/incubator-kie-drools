@@ -20,8 +20,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -29,8 +27,8 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
 /**
  * Alternative to {@link AnchorVariableListener}.
  */
-public class ExternalizedAnchorVariableSupply<Solution_> implements SourcedVariableListener<Solution_, Object>,
-        AnchorVariableSupply {
+public class ExternalizedAnchorVariableSupply<Solution_>
+        implements SourcedVariableListener<Solution_, Object>, AnchorVariableSupply {
 
     protected final VariableDescriptor<Solution_> previousVariableDescriptor;
     protected final SingletonInverseVariableSupply nextVariableSupply;
@@ -50,10 +48,9 @@ public class ExternalizedAnchorVariableSupply<Solution_> implements SourcedVaria
 
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
-        EntityDescriptor<Solution_> entityDescriptor = previousVariableDescriptor.getEntityDescriptor();
-        SolutionDescriptor<Solution_> solutionDescriptor = entityDescriptor.getSolutionDescriptor();
         anchorMap = new IdentityHashMap<>();
-        solutionDescriptor.visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
+        previousVariableDescriptor.getEntityDescriptor().getSolutionDescriptor()
+                .visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
     @Override

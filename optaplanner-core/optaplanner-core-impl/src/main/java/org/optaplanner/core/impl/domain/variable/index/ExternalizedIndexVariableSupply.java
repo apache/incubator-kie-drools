@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -49,10 +47,9 @@ public class ExternalizedIndexVariableSupply<Solution_>
 
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
-        EntityDescriptor<Solution_> entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
-        SolutionDescriptor<Solution_> solutionDescriptor = entityDescriptor.getSolutionDescriptor();
         indexMap = new IdentityHashMap<>();
-        solutionDescriptor.visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
+        sourceVariableDescriptor.getEntityDescriptor().getSolutionDescriptor()
+                .visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
     @Override
