@@ -3,14 +3,14 @@ set -e
 
 # update Quarkus dependencies
 mvn versions:compare-dependencies \
-    -pl :kogito-build-parent \
+    -pl :kogito-dependencies-bom \
     -DremotePom=io.quarkus:quarkus-bom:${QUARKUS_VERSION} \
     -DupdatePropertyVersions=true \
     -DupdateDependencies=true \
     -DgenerateBackupPoms=false
 
 # update Quarkus version
-mvn versions:set-property -pl :kogito-build-parent -Dproperty=version.io.quarkus -DnewVersion=${QUARKUS_VERSION} -DgenerateBackupPoms=false
+mvn versions:set-property -pl :kogito-dependencies-bom -Dproperty=version.io.quarkus -DnewVersion=${QUARKUS_VERSION} -DgenerateBackupPoms=false
 
 # run the tests
 mvn --settings .github/quarkus-ecosystem-maven-settings.xml -B --fail-at-end clean install -Dnative -Dquarkus.native.container-build=true -Dquarkus.bootstrap.effective-model-builder=true
