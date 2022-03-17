@@ -25,10 +25,13 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.kie.memorycompiler.JavaConfiguration;
 
+import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
+
 public class PluginDTO {
 
     private final String dumpKieSourcesFolder;
     private final String generateModel;
+    private final String generateDMNModel;
     private final List<Resource> resources;
     private final String validateDMN;
     private final File projectDir;
@@ -41,16 +44,20 @@ public class PluginDTO {
     private final File testDir;
     private final File resourceFolder;
     private final boolean isModelParameterEnabled;
+    private final boolean isModelCompilerInClass;
     private final JavaConfiguration.CompilerType compilerType;
     private final Log log;
 
-    public PluginDTO(String dumpKieSourcesFolder, String generateModel, List<Resource> resources, String validateDMN,
+    public PluginDTO(String dumpKieSourcesFolder, String generateModel,
+                     String generateDMNModel,
+                     List<Resource> resources, String validateDMN,
                      File projectDir, File targetDirectory, Map<String, String> properties, MavenProject project,
                      MavenSession mavenSession, List<Resource> resourcesDirectories, File outputDirectory,
                      File testDir, File resourceFolder, boolean isModelParameterEnabled,
                      JavaConfiguration.CompilerType compilerType, Log log) {
         this.dumpKieSourcesFolder = dumpKieSourcesFolder;
         this.generateModel = generateModel;
+        this.generateDMNModel = generateDMNModel;
         this.resources = resources;
         this.validateDMN = validateDMN;
         this.projectDir = projectDir;
@@ -63,6 +70,7 @@ public class PluginDTO {
         this.testDir = testDir;
         this.resourceFolder = resourceFolder;
         this.isModelParameterEnabled = isModelParameterEnabled;
+        this.isModelCompilerInClass = isModelCompilerInClassPath(project.getDependencies());
         this.compilerType = compilerType;
         this.log = log;
     }
@@ -73,6 +81,10 @@ public class PluginDTO {
 
     public String getGenerateModel() {
         return generateModel;
+    }
+
+    public String getGenerateDMNModel() {
+        return generateDMNModel;
     }
 
     public List<Resource> getResources() {
@@ -121,6 +133,10 @@ public class PluginDTO {
 
     public boolean isModelParameterEnabled() {
         return isModelParameterEnabled;
+    }
+
+    public boolean isModelCompilerInClass() {
+        return isModelCompilerInClass;
     }
 
     public JavaConfiguration.CompilerType getCompilerType() {

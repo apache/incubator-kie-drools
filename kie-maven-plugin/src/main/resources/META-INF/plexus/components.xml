@@ -11,10 +11,6 @@
                     <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources,org.kie:kie-maven-plugin:validateDMN</process-resources>
                     <compile>
                         org.apache.maven.plugins:maven-compiler-plugin:compile,
-                        org.kie:kie-maven-plugin:generateModel,
-                        org.kie:kie-maven-plugin:generateDMNModel,
-                        org.kie:kie-maven-plugin:generatePMMLModel,
-                        org.kie:kie-maven-plugin:generateANC,
                         org.kie:kie-maven-plugin:build
                     </compile>
                     <process-test-resources>org.apache.maven.plugins:maven-resources-plugin:testResources</process-test-resources>

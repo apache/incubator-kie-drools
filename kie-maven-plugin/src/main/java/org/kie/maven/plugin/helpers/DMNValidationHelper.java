@@ -123,7 +123,7 @@ public class DMNValidationHelper {
                 for (DTAnalysis r : results) {
                     log.info(" analysis for decision table '" + r.nameOrIDOfTable() + "':");
                     List<DMNMessage> messages = r.asDMNMessages();
-                    logValidationMessages(messages, (u) -> "  ", DMNMessage::getMessage ,log);
+                    logValidationMessages(messages, (u) -> "  ", DMNMessage::getText, log);
                     if (messages.stream().anyMatch(m -> m.getLevel() == Level.ERROR)) {
                         throw new MojoFailureException("There are DMN Validation Error(s).");
                     }

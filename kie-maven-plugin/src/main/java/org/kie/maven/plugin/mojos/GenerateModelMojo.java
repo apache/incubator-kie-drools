@@ -15,38 +15,28 @@
 
 package org.kie.maven.plugin.mojos;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.kie.maven.plugin.PluginDTO;
-
-import static org.kie.maven.plugin.executors.GenerateModelExecutor.generateModel;
-import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
-
-@Mojo(name = "generateModel",
+/*@Mojo(name = "generateModel",
         requiresDependencyResolution = ResolutionScope.NONE,
         requiresProject = true,
-        defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateModelMojo extends AbstractKieMojo {
+        defaultPhase = LifecyclePhase.COMPILE)*/
+public class GenerateModelMojo /*extends AbstractKieMojo */ {
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        final PluginDTO pluginDTO = getPluginDTO();
-        // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
-        boolean modelParameterEnabled = pluginDTO.isModelParameterEnabled();
-        MavenProject project = pluginDTO.getProject();
-        boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
-        if (modelParameterEnabled && modelCompilerInClassPath) {
-            generateModel(pluginDTO);
-        } else if (modelParameterEnabled) { // !modelCompilerInClassPath
-            getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you did" +
-                                  " not provide the required dependency on the project classpath.\n" +
-                                  "To enable executable rule models for your project, add the `drools-model-compiler`" +
-                                  " dependency in the `pom.xml` file of your project.\n");
-        }
-    }
-
+//    @Override
+//    public void execute() throws MojoExecutionException, MojoFailureException {
+//        final PluginDTO pluginDTO = getPluginDTO();
+//        // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
+//        boolean modelParameterEnabled = pluginDTO.isModelParameterEnabled();
+//        MavenProject project = pluginDTO.getProject();
+//        boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
+//        if (modelParameterEnabled && modelCompilerInClassPath) {
+//            generateModel(pluginDTO);
+//        } else if (modelParameterEnabled) { // !modelCompilerInClassPath
+//            getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you
+//            did" +
+//                                  " not provide the required dependency on the project classpath.\n" +
+//                                  "To enable executable rule models for your project, add the
+//                                  `drools-model-compiler`" +
+//                                  " dependency in the `pom.xml` file of your project.\n");
+//        }
+//    }
 }

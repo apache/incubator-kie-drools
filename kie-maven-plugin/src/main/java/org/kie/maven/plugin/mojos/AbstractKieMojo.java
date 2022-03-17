@@ -38,6 +38,9 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
     private String generateModel;
 
+    @Parameter(property = "generateDMNModel", defaultValue = "no")
+    private String generateDMNModel;
+
     @Parameter(required = true, defaultValue = "${project.build.resources}")
     private List<Resource> resources;
 
@@ -83,6 +86,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     protected PluginDTO getPluginDTO() {
         return new PluginDTO(dumpKieSourcesFolder,
                              generateModel,
+                             generateDMNModel,
                              resources,
                              validateDMN,
                              projectDir,

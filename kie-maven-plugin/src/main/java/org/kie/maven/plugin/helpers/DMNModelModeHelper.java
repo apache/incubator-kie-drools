@@ -22,6 +22,9 @@ import static org.kie.maven.plugin.enums.DMNModelMode.YES;
 
 public class DMNModelModeHelper {
 
+    private DMNModelModeHelper() {
+    }
+
     public static boolean dmnModelParameterEnabled(String s) {
         return asList(YES).contains(DMNModelMode.valueOf(s.toUpperCase()));
     }

@@ -15,38 +15,21 @@
 
 package org.kie.maven.plugin.mojos;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.kie.maven.plugin.PluginDTO;
-import org.kie.maven.plugin.helpers.DMNModelModeHelper;
+//@Mojo(name = "generateDMNModel",
+//        requiresDependencyResolution = ResolutionScope.NONE,
+//        requiresProject = true,
+//        defaultPhase = LifecyclePhase.COMPILE)
+public class GenerateDMNModelMojo /*extends AbstractKieMojo */ {
 
-import static org.kie.maven.plugin.executors.GenerateDMNModelExecutor.generateDMN;
-import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
-
-@Mojo(name = "generateDMNModel",
-        requiresDependencyResolution = ResolutionScope.NONE,
-        requiresProject = true,
-        defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateDMNModelMojo extends AbstractKieMojo {
-
-    @Parameter(property = "generateDMNModel", defaultValue = "no")
-    private String generateDMNModel;
-
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        boolean dmnModelParameterEnabled = DMNModelModeHelper.dmnModelParameterEnabled(generateDMNModel);
-        final PluginDTO pluginDTO = getPluginDTO();
-        final MavenProject project = pluginDTO.getProject();
-        boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
-        if (dmnModelParameterEnabled && modelCompilerInClassPath) {
-            generateDMN(pluginDTO);
-        }
-    }
-
+//    @Override
+//    public void execute() throws MojoExecutionException, MojoFailureException {
+//        boolean dmnModelParameterEnabled = DMNModelModeHelper.dmnModelParameterEnabled(generateDMNModel);
+//        final PluginDTO pluginDTO = getPluginDTO();
+//        final MavenProject project = pluginDTO.getProject();
+//        boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
+//        if (dmnModelParameterEnabled && modelCompilerInClassPath) {
+//            generateDMN(pluginDTO);
+//        }
+//    }
 }
 
