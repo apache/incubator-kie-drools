@@ -43,7 +43,7 @@
         <google.guava.version>20.0</google.guava.version>
 
         <jenkins-spock.version>2.0.0</jenkins-spock.version>
-        <jenkins.version>2.150.2</jenkins.version>
+        <jenkins.version>2.319.2</jenkins.version>
         <jenkins.servlet.version>3.1.0</jenkins.servlet.version>
         <jenkins.workflow.cps.version>2.36</jenkins.workflow.cps.version>
         <jenkins.workflow.basic.steps.version>2.6</jenkins.workflow.basic.steps.version>
