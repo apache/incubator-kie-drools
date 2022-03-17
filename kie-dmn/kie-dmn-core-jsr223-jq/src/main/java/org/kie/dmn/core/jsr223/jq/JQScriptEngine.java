@@ -27,6 +27,7 @@ public class JQScriptEngine extends AbstractScriptEngine { // TODO evaluate impl
     
     public static final String DMN_UNARYTEST_SYMBOL = "DMN_UNARYTEST_SYMBOL";
     public static final String DMN_UNARYTEST_SYMBOL_VALUE = ".";
+    public static final String DMN_SYMBOL_ESCAPE_BOOL = "DMN_SYMBOL_ESCAPE_BOOL";
     
     private final ScriptEngineFactory factory;
     

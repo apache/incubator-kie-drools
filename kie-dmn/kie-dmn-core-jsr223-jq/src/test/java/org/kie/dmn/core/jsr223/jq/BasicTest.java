@@ -38,6 +38,16 @@ public class BasicTest {
     }
     
     @Test
+    public void testEvalJSONKey() throws ScriptException {
+        Map<String, Object> ctx = new HashMap<>();
+        ctx.put("Age", 1);
+        ctx.put("Previous incidents?", false);
+        Object result = engine.eval(" .\"Previous incidents?\" ", new SimpleBindings( ctx ));
+        LOG.info("{}", result);
+        assertThat(result).isEqualTo(false);
+    }
+    
+    @Test
     public void testTest() throws ScriptException {
         evalToStringEquals(testCtx(1), " . > 10 ", false);
         evalToStringEquals(testCtx(47), " . > 10 ", true);

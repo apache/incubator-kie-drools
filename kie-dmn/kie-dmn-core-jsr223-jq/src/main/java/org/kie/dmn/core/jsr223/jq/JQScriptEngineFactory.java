@@ -58,6 +58,8 @@ public class JQScriptEngineFactory implements ScriptEngineFactory {
             return getLanguageVersion();
         } else if (key.equals(JQScriptEngine.DMN_UNARYTEST_SYMBOL)) {
             return JQScriptEngine.DMN_UNARYTEST_SYMBOL_VALUE;
+        } else if (key.equals(JQScriptEngine.DMN_SYMBOL_ESCAPE_BOOL)) {
+            return Boolean.FALSE;
         } else {
             return null;
         }

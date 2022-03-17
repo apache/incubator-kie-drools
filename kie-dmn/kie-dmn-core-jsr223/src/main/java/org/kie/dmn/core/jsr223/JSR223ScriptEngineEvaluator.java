@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -18,13 +19,22 @@ import org.slf4j.LoggerFactory;
 public class JSR223ScriptEngineEvaluator {
     
     public static final String DMN_UNARYTEST_SYMBOL = "DMN_UNARYTEST_SYMBOL";
+    public static final String DMN_SYMBOL_ESCAPE_BOOL = "DMN_SYMBOL_ESCAPE_BOOL";
     private static final Logger LOG = LoggerFactory.getLogger( JSR223ScriptEngineEvaluator.class );
     private final ScriptEngine scriptEngine;
     private final String expression;
     
+    private final Function<String, String> keyEscapeFn;
+    
     public JSR223ScriptEngineEvaluator(ScriptEngine scriptEngine, String expression) {
         this.scriptEngine = scriptEngine;
         this.expression = expression;
+        boolean shouldEscape = Boolean.valueOf(Optional.ofNullable(this.scriptEngine.getFactory().getParameter(DMN_SYMBOL_ESCAPE_BOOL)).map(Object::toString).orElse("true"));
+        if (shouldEscape) {
+            keyEscapeFn = JSR223Utils::escapeIdentifierForBinding;
+        } else {
+            keyEscapeFn = Function.identity();
+        }
     }
     
     /**
@@ -33,7 +43,7 @@ public class JSR223ScriptEngineEvaluator {
     public Object eval(Map<String, Object> ins) throws ScriptException {
         Bindings engineScope = createBindings(ins);
         Object result = scriptEngine.eval(expression, engineScope);
-        LOG.info("Script result: {}", result);
+        LOG.info("Script '{}' result: {}", expression, result);
         return EvalHelper.coerceNumber(result);
     }
     
@@ -45,7 +55,7 @@ public class JSR223ScriptEngineEvaluator {
         String keyForUnaryTest = Optional.ofNullable(scriptEngine.getFactory().getParameter(DMN_UNARYTEST_SYMBOL).toString()).orElse("_");
         engineScope.put(keyForUnaryTest, in);
         Object result = scriptEngine.eval(expression, engineScope);
-        LOG.info("Script result: {}", result);
+        LOG.info("Script '{}' result: {}", expression, result);
         return result == Boolean.TRUE ? true : false;
     }
 
@@ -54,7 +64,7 @@ public class JSR223ScriptEngineEvaluator {
         Map<String, Object> _context = new HashMap<>();
         engineScope.put("_context", _context ); // an opinionated DMN choice.
         for (Entry<String, Object> kv : ins.entrySet()) { 
-            String key = JSR223Utils.escapeIdentifierForBinding(kv.getKey());
+            String key = keyEscapeFn.apply(kv.getKey());
             Object value = kv.getValue();
             // TODO should this be substituted with Jackson here?
             if (value instanceof BigDecimal) {
