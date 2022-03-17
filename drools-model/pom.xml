@@ -18,6 +18,7 @@
   <modules>
     <module>drools-canonical-model</module>
     <module>drools-model-compiler</module>
+    <module>drools-model-project-codegen</module>
     <module>drools-mvel-parser</module>
     <module>drools-mvel-compiler</module>
   </modules>
