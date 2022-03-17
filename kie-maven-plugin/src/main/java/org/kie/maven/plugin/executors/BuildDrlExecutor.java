@@ -159,7 +159,6 @@ public class BuildDrlExecutor {
             Files.createDirectories(path);
             Files.copy(memFile.getContents(), path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException iox) {
-            iox.printStackTrace();
             throw new MojoFailureException("Unable to write file", iox);
         }
     }

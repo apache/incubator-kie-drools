@@ -111,7 +111,6 @@ public class GenerateANCExecutor {
                 Files.createFile(ancFilePath);
                 log.info("Written ANC File: " + ancFilePath.toAbsolutePath());
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new MojoExecutionException("Unable to write file: ", e);
             }
         } finally {

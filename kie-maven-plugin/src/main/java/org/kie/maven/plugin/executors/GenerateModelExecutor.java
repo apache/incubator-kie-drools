@@ -143,7 +143,6 @@ public class GenerateModelExecutor {
                 Files.copy(packagesMemoryFile.getContents(), packagesDestinationPath,
                            StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new MojoExecutionException("Unable to write file", e);
             }
 
@@ -188,7 +187,6 @@ public class GenerateModelExecutor {
                     Files.delete(p);
                     deletedFiles.add(p.toString());
                 } catch (IOException e) {
-                    e.printStackTrace();
                     throw new RuntimeException("Unable to delete file " + p);
                 }
             });
@@ -199,7 +197,6 @@ public class GenerateModelExecutor {
                 log.warn("Files not deleted: " + actualDrlFiles1);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw new MojoExecutionException("Unable to find .drl files");
         }
     }
