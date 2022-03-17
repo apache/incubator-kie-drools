@@ -20,7 +20,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.kie.maven.plugin.PluginDTO;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.maven.plugin.helpers.DMNModelModeHelper;
 
 import static org.kie.maven.plugin.executors.BuildDrlExecutor.buildDrl;
@@ -40,21 +40,21 @@ import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
 public class BuildMojo extends AbstractKieMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final PluginDTO pluginDTO = getPluginDTO();
-        executeGenerateModel(pluginDTO);
-        executeGenerateDMNModel(pluginDTO);
-        executeGeneratePMMLModel(pluginDTO);
-        executeGenerateANC(pluginDTO);
-        executeBuildDRL(pluginDTO);
+        final KieMavenPluginContext kieMavenPluginContext = getKieMavenPluginContext();
+        executeGenerateModel(kieMavenPluginContext);
+        executeGenerateDMNModel(kieMavenPluginContext);
+        executeGeneratePMMLModel(kieMavenPluginContext);
+        executeGenerateANC(kieMavenPluginContext);
+        executeBuildDRL(kieMavenPluginContext);
     }
 
-    private void executeGenerateModel(final PluginDTO pluginDTO) throws MojoExecutionException, MojoFailureException {
-        pluginDTO.getLog().info("GenerateModel");
+    private void executeGenerateModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException, MojoFailureException {
+        getLog().info("GenerateModel");
         // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
-        boolean modelParameterEnabled = pluginDTO.isModelParameterEnabled();
-        boolean modelCompilerInClassPath = pluginDTO.isModelCompilerInClass();
+        boolean modelParameterEnabled = kieMavenPluginContext.isModelParameterEnabled();
+        boolean modelCompilerInClassPath = kieMavenPluginContext.isModelCompilerInClass();
         if (modelParameterEnabled && modelCompilerInClassPath) {
-            generateModel(pluginDTO);
+            generateModel(kieMavenPluginContext);
         } else if (modelParameterEnabled) { // !modelCompilerInClassPath
             getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you did" +
                                   " not provide the required dependency on the project classpath.\n" +
@@ -63,39 +63,39 @@ public class BuildMojo extends AbstractKieMojo {
         }
     }
 
-    private void executeGenerateDMNModel(final PluginDTO pluginDTO) throws MojoExecutionException,
+    private void executeGenerateDMNModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException,
             MojoFailureException {
-        pluginDTO.getLog().info("GenerateDMNModel");
-        boolean dmnModelParameterEnabled = DMNModelModeHelper.dmnModelParameterEnabled(pluginDTO.getGenerateDMNModel());
-        boolean modelCompilerInClassPath = pluginDTO.isModelCompilerInClass();
+        getLog().info("GenerateDMNModel");
+        boolean dmnModelParameterEnabled = DMNModelModeHelper.dmnModelParameterEnabled(kieMavenPluginContext.getGenerateDMNModel());
+        boolean modelCompilerInClassPath = kieMavenPluginContext.isModelCompilerInClass();
         if (dmnModelParameterEnabled && modelCompilerInClassPath) {
-            generateDMN(pluginDTO);
+            generateDMN(kieMavenPluginContext);
         }
     }
 
-    private void executeGeneratePMMLModel(final PluginDTO pluginDTO) throws MojoExecutionException,
+    private void executeGeneratePMMLModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException,
             MojoFailureException {
-        pluginDTO.getLog().info("GeneratePMMLModel");
-        boolean modelCompilerInClassPath = pluginDTO.isModelCompilerInClass();
+        getLog().info("GeneratePMMLModel");
+        boolean modelCompilerInClassPath = kieMavenPluginContext.isModelCompilerInClass();
         if (!modelCompilerInClassPath) {
             getLog().warn("Skipping `generatePMMLModel` because you did" +
                                   " not provide the required dependency on the project classpath.\n" +
                                   "To enable it for your project, add the `drools-model-compiler`" +
                                   " dependency in the `pom.xml` file of your project.\n");
         } else {
-            generatePMMLModel(pluginDTO);
+            generatePMMLModel(kieMavenPluginContext);
         }
     }
 
-    private void executeGenerateANC(final PluginDTO pluginDTO) throws MojoExecutionException, MojoFailureException {
-        pluginDTO.getLog().info("GenerateANC");
-        final String generateModel = pluginDTO.getGenerateModel();
+    private void executeGenerateANC(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException, MojoFailureException {
+        getLog().info("GenerateANC");
+        final String generateModel = kieMavenPluginContext.getGenerateModel();
 
         // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
         boolean ancParameterEnabled = ancEnabled(generateModel);
-        boolean modelCompilerInClassPath = pluginDTO.isModelCompilerInClass();
+        boolean modelCompilerInClassPath = kieMavenPluginContext.isModelCompilerInClass();
         if (ancParameterEnabled && modelCompilerInClassPath) {
-            generateANC(pluginDTO);
+            generateANC(kieMavenPluginContext);
         } else if (ancParameterEnabled) { // !modelCompilerInClassPath
             getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you did" +
                                   " not provide the required dependency on the project classpath.\n" +
@@ -104,13 +104,13 @@ public class BuildMojo extends AbstractKieMojo {
         }
     }
 
-    private void executeBuildDRL(final PluginDTO pluginDTO) throws MojoExecutionException, MojoFailureException {
-        pluginDTO.getLog().info("BuildDRL");
+    private void executeBuildDRL(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException, MojoFailureException {
+        getLog().info("BuildDRL");
         // BuildMojo is executed when GenerateModelMojo isn't and vice-versa
-        boolean modelParameterEnabled = pluginDTO.isModelParameterEnabled();
-        boolean modelCompilerInClassPath = pluginDTO.isModelCompilerInClass();
+        boolean modelParameterEnabled = kieMavenPluginContext.isModelParameterEnabled();
+        boolean modelCompilerInClassPath = kieMavenPluginContext.isModelCompilerInClass();
         if (!(modelParameterEnabled && modelCompilerInClassPath)) {
-            buildDrl(pluginDTO);
+            buildDrl(kieMavenPluginContext);
         }
     }
 }

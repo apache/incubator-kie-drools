@@ -27,7 +27,7 @@ import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 
-public class PluginDTO {
+public class KieMavenPluginContext {
 
     private final String dumpKieSourcesFolder;
     private final String generateModel;
@@ -48,13 +48,13 @@ public class PluginDTO {
     private final JavaConfiguration.CompilerType compilerType;
     private final Log log;
 
-    public PluginDTO(String dumpKieSourcesFolder, String generateModel,
-                     String generateDMNModel,
-                     List<Resource> resources, String validateDMN,
-                     File projectDir, File targetDirectory, Map<String, String> properties, MavenProject project,
-                     MavenSession mavenSession, List<Resource> resourcesDirectories, File outputDirectory,
-                     File testDir, File resourceFolder, boolean isModelParameterEnabled,
-                     JavaConfiguration.CompilerType compilerType, Log log) {
+    public KieMavenPluginContext(String dumpKieSourcesFolder, String generateModel,
+                                 String generateDMNModel,
+                                 List<Resource> resources, String validateDMN,
+                                 File projectDir, File targetDirectory, Map<String, String> properties, MavenProject project,
+                                 MavenSession mavenSession, List<Resource> resourcesDirectories, File outputDirectory,
+                                 File testDir, File resourceFolder, boolean isModelParameterEnabled,
+                                 JavaConfiguration.CompilerType compilerType, Log log) {
         this.dumpKieSourcesFolder = dumpKieSourcesFolder;
         this.generateModel = generateModel;
         this.generateDMNModel = generateDMNModel;

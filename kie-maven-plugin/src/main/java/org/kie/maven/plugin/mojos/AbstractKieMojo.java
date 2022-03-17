@@ -24,7 +24,7 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.kie.maven.plugin.PluginDTO;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParameterEnabled;
@@ -42,10 +42,10 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     private String generateDMNModel;
 
     @Parameter(required = true, defaultValue = "${project.build.resources}")
-    private List<Resource> resources;
+    protected List<Resource> resources;
 
     @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
-    private String validateDMN;
+    protected String validateDMN;
 
     @Parameter(required = true, defaultValue = "${project.basedir}")
     private File projectDir;
@@ -83,24 +83,24 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(property = "javaCompiler", defaultValue = "ecj")
     private String javaCompiler;
 
-    protected PluginDTO getPluginDTO() {
-        return new PluginDTO(dumpKieSourcesFolder,
-                             generateModel,
-                             generateDMNModel,
-                             resources,
-                             validateDMN,
-                             projectDir,
-                             targetDirectory,
-                             properties,
-                             project,
-                             mavenSession,
-                             resourcesDirectories,
-                             outputDirectory,
-                             testDir,
-                             resourceFolder,
-                             isModelParameterEnabled(),
-                             getCompilerType(),
-                             getLog());
+    protected KieMavenPluginContext getKieMavenPluginContext() {
+        return new KieMavenPluginContext(dumpKieSourcesFolder,
+                                         generateModel,
+                                         generateDMNModel,
+                                         resources,
+                                         validateDMN,
+                                         projectDir,
+                                         targetDirectory,
+                                         properties,
+                                         project,
+                                         mavenSession,
+                                         resourcesDirectories,
+                                         outputDirectory,
+                                         testDir,
+                                         resourceFolder,
+                                         isModelParameterEnabled(),
+                                         getCompilerType(),
+                                         getLog());
     }
 
     private boolean isModelParameterEnabled() {

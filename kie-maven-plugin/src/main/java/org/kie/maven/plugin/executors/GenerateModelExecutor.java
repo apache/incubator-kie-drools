@@ -55,7 +55,7 @@ import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.maven.plugin.PluginDTO;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
@@ -76,19 +76,19 @@ public class GenerateModelExecutor {
 
     public static PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
-    public static void generateModel(final PluginDTO pluginDTO) throws MojoExecutionException, MojoFailureException {
-        final MavenProject project = pluginDTO.getProject();
-        final MavenSession mavenSession = pluginDTO.getMavenSession();
-        final File outputDirectory = pluginDTO.getOutputDirectory();
-        final File projectDir = pluginDTO.getProjectDir();
-        final Map<String, String> properties = pluginDTO.getProperties();
-        final File targetDirectory = pluginDTO.getTargetDirectory();
-        final String dumpKieSourcesFolder = pluginDTO.getDumpKieSourcesFolder();
-        final List<Resource> resources = pluginDTO.getResources();
-        final JavaConfiguration.CompilerType compilerType = pluginDTO.getCompilerType();
-        final String validateDMN = pluginDTO.getValidateDMN();
-        final String generateModel = pluginDTO.getGenerateModel();
-        final Log log = pluginDTO.getLog();
+    public static void generateModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException, MojoFailureException {
+        final MavenProject project = kieMavenPluginContext.getProject();
+        final MavenSession mavenSession = kieMavenPluginContext.getMavenSession();
+        final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
+        final File projectDir = kieMavenPluginContext.getProjectDir();
+        final Map<String, String> properties = kieMavenPluginContext.getProperties();
+        final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
+        final String dumpKieSourcesFolder = kieMavenPluginContext.getDumpKieSourcesFolder();
+        final List<Resource> resources = kieMavenPluginContext.getResources();
+        final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
+        final String validateDMN = kieMavenPluginContext.getValidateDMN();
+        final String generateModel = kieMavenPluginContext.getGenerateModel();
+        final Log log = kieMavenPluginContext.getLog();
 
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);

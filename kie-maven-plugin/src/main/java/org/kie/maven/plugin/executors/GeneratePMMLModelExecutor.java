@@ -41,7 +41,7 @@ import org.drools.modelcompiler.builder.GeneratedFile;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.maven.plugin.PMMLResource;
-import org.kie.maven.plugin.PluginDTO;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
@@ -63,17 +63,17 @@ public class GeneratePMMLModelExecutor {
 
     private static final String PMML = "pmml";
 
-    public static void generatePMMLModel(final PluginDTO pluginDTO) throws MojoExecutionException {
-        final MavenProject project = pluginDTO.getProject();
-        final MavenSession mavenSession = pluginDTO.getMavenSession();
-        final File outputDirectory = pluginDTO.getOutputDirectory();
-        final File projectDir = pluginDTO.getProjectDir();
-        final File targetDirectory = pluginDTO.getTargetDirectory();
-        final String dumpKieSourcesFolder = pluginDTO.getDumpKieSourcesFolder();
+    public static void generatePMMLModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException {
+        final MavenProject project = kieMavenPluginContext.getProject();
+        final MavenSession mavenSession = kieMavenPluginContext.getMavenSession();
+        final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
+        final File projectDir = kieMavenPluginContext.getProjectDir();
+        final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
+        final String dumpKieSourcesFolder = kieMavenPluginContext.getDumpKieSourcesFolder();
         final List<org.apache.maven.model.Resource> resourcesDirectories =
-                pluginDTO.getResourcesDirectories();
-        final JavaConfiguration.CompilerType compilerType = pluginDTO.getCompilerType();
-        final Log log = pluginDTO.getLog();
+                kieMavenPluginContext.getResourcesDirectories();
+        final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
+        final Log log = kieMavenPluginContext.getLog();
 
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);

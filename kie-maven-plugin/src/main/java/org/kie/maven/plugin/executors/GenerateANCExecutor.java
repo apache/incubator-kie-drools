@@ -34,7 +34,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
-import org.kie.maven.plugin.PluginDTO;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.util.maven.support.ReleaseIdImpl;
@@ -50,14 +50,14 @@ public class GenerateANCExecutor {
     private GenerateANCExecutor() {
     }
 
-    public static void generateANC(final PluginDTO pluginDTO) throws MojoExecutionException {
-        final MavenProject project = pluginDTO.getProject();
-        final File outputDirectory = pluginDTO.getOutputDirectory();
-        final Map<String, String> properties = pluginDTO.getProperties();
-        final File targetDirectory = pluginDTO.getTargetDirectory();
-        final String dumpKieSourcesFolder = pluginDTO.getDumpKieSourcesFolder();
-        final JavaConfiguration.CompilerType compilerType = pluginDTO.getCompilerType();
-        final Log log = pluginDTO.getLog();
+    public static void generateANC(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException {
+        final MavenProject project = kieMavenPluginContext.getProject();
+        final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
+        final Map<String, String> properties = kieMavenPluginContext.getProperties();
+        final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
+        final String dumpKieSourcesFolder = kieMavenPluginContext.getDumpKieSourcesFolder();
+        final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
+        final Log log = kieMavenPluginContext.getLog();
 
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);

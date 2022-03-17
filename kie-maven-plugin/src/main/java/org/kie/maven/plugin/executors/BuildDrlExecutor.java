@@ -51,7 +51,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.maven.plugin.DiskResourceStore;
-import org.kie.maven.plugin.PluginDTO;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.maven.plugin.ProjectPomModel;
 
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
@@ -66,15 +66,15 @@ public class BuildDrlExecutor {
     private BuildDrlExecutor() {
     }
 
-    public static void buildDrl(final PluginDTO pluginDTO) throws MojoFailureException, MojoExecutionException {
-        final MavenProject project = pluginDTO.getProject();
-        final MavenSession mavenSession = pluginDTO.getMavenSession();
-        final File outputDirectory = pluginDTO.getOutputDirectory();
-        final Map<String, String> properties = pluginDTO.getProperties();
-        final File resourceFolder = pluginDTO.getResourceFolder();
-        final List<Resource> resources = pluginDTO.getResources();
-        final String validateDMN = pluginDTO.getValidateDMN();
-        final Log log = pluginDTO.getLog();
+    public static void buildDrl(final KieMavenPluginContext kieMavenPluginContext) throws MojoFailureException, MojoExecutionException {
+        final MavenProject project = kieMavenPluginContext.getProject();
+        final MavenSession mavenSession = kieMavenPluginContext.getMavenSession();
+        final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
+        final Map<String, String> properties = kieMavenPluginContext.getProperties();
+        final File resourceFolder = kieMavenPluginContext.getResourceFolder();
+        final List<Resource> resources = kieMavenPluginContext.getResources();
+        final String validateDMN = kieMavenPluginContext.getValidateDMN();
+        final Log log = kieMavenPluginContext.getLog();
 
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
