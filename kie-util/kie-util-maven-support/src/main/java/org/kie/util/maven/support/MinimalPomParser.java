@@ -52,6 +52,7 @@ public class MinimalPomParser extends DefaultHandler {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setValidating( false );
             factory.setNamespaceAware( false );
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
             SAXParser parser = factory.newSAXParser();
