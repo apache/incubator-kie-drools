@@ -99,7 +99,7 @@ pipeline {
                         String optaplannerWebsiteModule = 'optaplanner-website-root'
                         String optaplannerWebsiteXsd = "${optaplannerWebsiteModule}/content/xsd"
                         String optaplannerWebsiteDocs = 'optaplanner-website-docs'
-                        sh "cp ${optaplannerRoot}/optaplanner-core/target/classes/solver.xsd ${optaplannerWebsiteXsd}/solver/solver-8.xsd"
+                        sh "cp ${optaplannerRoot}/core/optaplanner-core-impl/target/classes/solver.xsd ${optaplannerWebsiteXsd}/solver/solver-8.xsd"
                         sh "cp ${optaplannerRoot}/optaplanner-benchmark/target/classes/benchmark.xsd ${optaplannerWebsiteXsd}/benchmark/benchmark-8.xsd"
 
                         // Add changed files, commit, open and merge PR
