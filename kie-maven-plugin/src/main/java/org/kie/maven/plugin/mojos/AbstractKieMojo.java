@@ -24,6 +24,7 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.kie.maven.plugin.PluginDTO;
 import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParameterEnabled;
@@ -31,59 +32,79 @@ import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParamete
 public abstract class AbstractKieMojo extends AbstractMojo {
 
     @Parameter(property = "dumpKieSourcesFolder", defaultValue = "")
-    protected String dumpKieSourcesFolder;
+    private String dumpKieSourcesFolder;
 
-    @Parameter(property = "generateModel", defaultValue = "YES_WITHDRL") // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
-    protected String generateModel;
+    @Parameter(property = "generateModel", defaultValue = "YES_WITHDRL")
+    // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
+    private String generateModel;
 
     @Parameter(required = true, defaultValue = "${project.build.resources}")
-    protected List<Resource> resources;
+    private List<Resource> resources;
 
     @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
-    protected String validateDMN;
+    private String validateDMN;
 
     @Parameter(required = true, defaultValue = "${project.basedir}")
-    protected File projectDir;
+    private File projectDir;
 
     @Parameter(required = true, defaultValue = "${project.build.directory}")
-    protected File targetDirectory;
+    private File targetDirectory;
 
     @Parameter
-    protected Map<String, String> properties;
+    private Map<String, String> properties;
 
     @Parameter(required = true, defaultValue = "${project}")
-    protected MavenProject project;
+    private MavenProject project;
 
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
-    protected MavenSession mavenSession;
+    private MavenSession mavenSession;
 
     @Parameter(defaultValue = "${project.resources}", required = true, readonly = true)
-    protected List<org.apache.maven.model.Resource> resourcesDirectories;
+    private List<org.apache.maven.model.Resource> resourcesDirectories;
 
     /**
      * Directory containing the generated JAR.
      */
     @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    protected File outputDirectory;
+    private File outputDirectory;
 
     @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
-    protected File testDir;
+    private File testDir;
 
     /**
      * Project resources folder.
      */
     @Parameter(required = true, defaultValue = "src/main/resources")
-    protected File resourceFolder;
+    private File resourceFolder;
 
     @Parameter(property = "javaCompiler", defaultValue = "ecj")
     private String javaCompiler;
 
-    protected boolean isModelParameterEnabled() {
+    protected PluginDTO getPluginDTO() {
+        return new PluginDTO(dumpKieSourcesFolder,
+                             generateModel,
+                             resources,
+                             validateDMN,
+                             projectDir,
+                             targetDirectory,
+                             properties,
+                             project,
+                             mavenSession,
+                             resourcesDirectories,
+                             outputDirectory,
+                             testDir,
+                             resourceFolder,
+                             isModelParameterEnabled(),
+                             getCompilerType(),
+                             getLog());
+    }
+
+    private boolean isModelParameterEnabled() {
         return execModelParameterEnabled(generateModel);
     }
 
-    protected JavaConfiguration.CompilerType getCompilerType() {
-        return javaCompiler.equalsIgnoreCase("native") ? JavaConfiguration.CompilerType.NATIVE : JavaConfiguration.CompilerType.ECLIPSE;
+    private JavaConfiguration.CompilerType getCompilerType() {
+        return javaCompiler.equalsIgnoreCase("native") ? JavaConfiguration.CompilerType.NATIVE :
+                JavaConfiguration.CompilerType.ECLIPSE;
     }
-
 }

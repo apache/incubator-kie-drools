@@ -41,6 +41,7 @@ import org.drools.modelcompiler.builder.GeneratedFile;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.maven.plugin.PMMLResource;
+import org.kie.maven.plugin.PluginDTO;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
@@ -62,15 +63,18 @@ public class GeneratePMMLModelExecutor {
 
     private static final String PMML = "pmml";
 
-    public static void generatePMMLModel(final MavenProject project,
-                                         final MavenSession mavenSession,
-                                         final File outputDirectory,
-                                         final File projectDir,
-                                         final File targetDirectory,
-                                         final String dumpKieSourcesFolder,
-                                         final List<org.apache.maven.model.Resource> resourcesDirectories,
-                                         final JavaConfiguration.CompilerType compilerType,
-                                         final Log log) throws MojoExecutionException {
+    public static void generatePMMLModel(final PluginDTO pluginDTO) throws MojoExecutionException {
+        final MavenProject project = pluginDTO.getProject();
+        final MavenSession mavenSession = pluginDTO.getMavenSession();
+        final File outputDirectory = pluginDTO.getOutputDirectory();
+        final File projectDir = pluginDTO.getProjectDir();
+        final File targetDirectory = pluginDTO.getTargetDirectory();
+        final String dumpKieSourcesFolder = pluginDTO.getDumpKieSourcesFolder();
+        final List<org.apache.maven.model.Resource> resourcesDirectories =
+                pluginDTO.getResourcesDirectories();
+        final JavaConfiguration.CompilerType compilerType = pluginDTO.getCompilerType();
+        final Log log = pluginDTO.getLog();
+
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 

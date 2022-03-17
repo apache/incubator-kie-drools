@@ -19,6 +19,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.kie.maven.plugin.PluginDTO;
 
 import static org.kie.maven.plugin.executors.GenerateANCExecutor.generateANC;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
@@ -31,20 +33,20 @@ public class GenerateANCMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        final PluginDTO pluginDTO = getPluginDTO();
+        final String generateModel = pluginDTO.getGenerateModel();
+        final MavenProject project = pluginDTO.getProject();
+
         // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
         boolean ancParameterEnabled = ancEnabled(generateModel);
         boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
         if (ancParameterEnabled && modelCompilerInClassPath) {
-            generateANC(project,
-                        outputDirectory,
-                        properties,
-                        targetDirectory,
-                        dumpKieSourcesFolder,
-                        getCompilerType(),
-                        getLog());
+            generateANC(pluginDTO);
         } else if (ancParameterEnabled) { // !modelCompilerInClassPath
-            getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you did not provide the required dependency on the project classpath.\n" +
-                                  "To enable executable rule models for your project, add the `drools-model-compiler` dependency in the `pom.xml` file of your project.\n");
+            getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you did" +
+                                  " not provide the required dependency on the project classpath.\n" +
+                                  "To enable executable rule models for your project, add the `drools-model-compiler`" +
+                                  " dependency in the `pom.xml` file of your project.\n");
         }
     }
 

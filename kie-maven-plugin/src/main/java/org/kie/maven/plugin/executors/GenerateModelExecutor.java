@@ -55,6 +55,7 @@ import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.maven.plugin.PluginDTO;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
@@ -75,18 +76,20 @@ public class GenerateModelExecutor {
 
     public static PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
-    public static void generateModel(final MavenProject project,
-                                     final MavenSession mavenSession,
-                                     final File outputDirectory,
-                                     final File projectDir,
-                                     final Map<String, String> properties,
-                                     final File targetDirectory,
-                                     final String dumpKieSourcesFolder,
-                                     final JavaConfiguration.CompilerType compilerType,
-                                     final List<Resource> resources,
-                                     final String generateModel,
-                                     final String validateDMN,
-                                     final Log log) throws MojoExecutionException, MojoFailureException {
+    public static void generateModel(final PluginDTO pluginDTO) throws MojoExecutionException, MojoFailureException {
+        final MavenProject project = pluginDTO.getProject();
+        final MavenSession mavenSession = pluginDTO.getMavenSession();
+        final File outputDirectory = pluginDTO.getOutputDirectory();
+        final File projectDir = pluginDTO.getProjectDir();
+        final Map<String, String> properties = pluginDTO.getProperties();
+        final File targetDirectory = pluginDTO.getTargetDirectory();
+        final String dumpKieSourcesFolder = pluginDTO.getDumpKieSourcesFolder();
+        final List<Resource> resources = pluginDTO.getResources();
+        final JavaConfiguration.CompilerType compilerType = pluginDTO.getCompilerType();
+        final String validateDMN = pluginDTO.getValidateDMN();
+        final String generateModel = pluginDTO.getGenerateModel();
+        final Log log = pluginDTO.getLog();
+
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 

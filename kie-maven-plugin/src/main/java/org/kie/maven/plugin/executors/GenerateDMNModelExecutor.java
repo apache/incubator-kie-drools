@@ -42,6 +42,7 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
+import org.kie.maven.plugin.PluginDTO;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
 
@@ -57,12 +58,14 @@ public class GenerateDMNModelExecutor {
     private GenerateDMNModelExecutor() {
     }
 
-    public static void generateDMN(final File projectDir,
-            final Map<String, String> properties,
-            final File targetDirectory,
-            final String dumpKieSourcesFolder,
-            final JavaConfiguration.CompilerType compilerType,
-            final Log log) throws MojoExecutionException {
+    public static void generateDMN(final PluginDTO pluginDTO) throws MojoExecutionException {
+        final File projectDir = pluginDTO.getProjectDir();
+        final Map<String, String> properties = pluginDTO.getProperties();
+        final File targetDirectory = pluginDTO.getTargetDirectory();
+        final String dumpKieSourcesFolder = pluginDTO.getDumpKieSourcesFolder();
+        final JavaConfiguration.CompilerType compilerType = pluginDTO.getCompilerType();
+        final Log log = pluginDTO.getLog();
+
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
 

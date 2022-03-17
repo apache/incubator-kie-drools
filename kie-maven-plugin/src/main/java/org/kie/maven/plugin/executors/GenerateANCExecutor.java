@@ -34,6 +34,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
+import org.kie.maven.plugin.PluginDTO;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.util.maven.support.ReleaseIdImpl;
@@ -49,13 +50,15 @@ public class GenerateANCExecutor {
     private GenerateANCExecutor() {
     }
 
-    public static void generateANC(final MavenProject project,
-                                   final File outputDirectory,
-                                   final Map<String, String> properties,
-                                   final File targetDirectory,
-                                   final String dumpKieSourcesFolder,
-                                   final JavaConfiguration.CompilerType compilerType,
-                                   final Log log) throws MojoExecutionException {
+    public static void generateANC(final PluginDTO pluginDTO) throws MojoExecutionException {
+        final MavenProject project = pluginDTO.getProject();
+        final File outputDirectory = pluginDTO.getOutputDirectory();
+        final Map<String, String> properties = pluginDTO.getProperties();
+        final File targetDirectory = pluginDTO.getTargetDirectory();
+        final String dumpKieSourcesFolder = pluginDTO.getDumpKieSourcesFolder();
+        final JavaConfiguration.CompilerType compilerType = pluginDTO.getCompilerType();
+        final Log log = pluginDTO.getLog();
+
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 

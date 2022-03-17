@@ -20,6 +20,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.kie.maven.plugin.PluginDTO;
 
 import static org.kie.maven.plugin.executors.BuildDrlExecutor.buildDrl;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
@@ -34,13 +36,14 @@ import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerIn
 public class BuildMojo extends AbstractKieMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        final PluginDTO pluginDTO = getPluginDTO();
         // BuildMojo is executed when GenerateModelMojo isn't and vice-versa
-        boolean modelParameterEnabled = isModelParameterEnabled();
+        boolean modelParameterEnabled = pluginDTO.isModelParameterEnabled();
+        MavenProject project = pluginDTO.getProject();
         boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
 
         if (!(modelParameterEnabled && modelCompilerInClassPath)) {
-            buildDrl(project, mavenSession, outputDirectory, properties, resourceFolder, resources, validateDMN,
-                     getLog());
+            buildDrl(pluginDTO);
         }
     }
 

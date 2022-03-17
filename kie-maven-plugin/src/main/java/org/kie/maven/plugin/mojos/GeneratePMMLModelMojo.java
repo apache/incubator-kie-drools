@@ -20,6 +20,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.kie.maven.plugin.PluginDTO;
 
 import static org.kie.maven.plugin.executors.GeneratePMMLModelExecutor.generatePMMLModel;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
@@ -32,6 +34,8 @@ public class GeneratePMMLModelMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        final PluginDTO pluginDTO = getPluginDTO();
+        MavenProject project = pluginDTO.getProject();
         boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
         if (!modelCompilerInClassPath) {
             getLog().warn("Skipping `generatePMMLModel` because you did" +
@@ -39,15 +43,7 @@ public class GeneratePMMLModelMojo extends AbstractKieMojo {
                                   "To enable it for your project, add the `drools-model-compiler`" +
                                   " dependency in the `pom.xml` file of your project.\n");
         } else {
-            generatePMMLModel(project,
-                              mavenSession,
-                              outputDirectory,
-                              projectDir,
-                              targetDirectory,
-                              dumpKieSourcesFolder,
-                              resourcesDirectories,
-                              getCompilerType(),
-                              getLog());
+            generatePMMLModel(pluginDTO);
         }
     }
 

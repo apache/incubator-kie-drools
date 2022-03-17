@@ -36,6 +36,7 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.DMNValidatorFactory;
+import org.kie.maven.plugin.PluginDTO;
 
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.computeDMNProfiles;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.computeFlagsFromCSVString;
@@ -47,9 +48,10 @@ public class ValidateDMNExecutor {
     private ValidateDMNExecutor() {
     }
 
-    public static void validateDMN(final List<Resource> resources,
-                                   final String validateDMN,
-                                   final Log log) throws MojoExecutionException, MojoFailureException {
+    public static void validateDMN(final PluginDTO pluginDTO) throws MojoExecutionException,
+            MojoFailureException {
+        String validateDMN = pluginDTO.getValidateDMN();
+        Log log = pluginDTO.getLog();
 
         final List<Validation> actualFlags = new ArrayList<>(computeFlagsFromCSVString(validateDMN, log));
         // for this phase, keep only the following flags (the rest requires the BuildMojo).
@@ -59,6 +61,7 @@ public class ValidateDMNExecutor {
             return;
         }
 
+        final List<Resource> resources = pluginDTO.getResources();
         final List<Path> dmnModelPaths = computeDmnModelPaths(resources, log);
         if (dmnModelPaths.isEmpty()) {
             log.info("No DMN Models found.");

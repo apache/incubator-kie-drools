@@ -31,7 +31,7 @@ public class ValidateDMNMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        validateDMN(resources, validateDMN, getLog());
+        validateDMN(getPluginDTO());
     }
 
 }

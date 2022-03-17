@@ -15,12 +15,14 @@
 
 package org.kie.maven.plugin.mojos;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -33,6 +35,7 @@ import org.apache.maven.repository.RepositorySystem;
 import org.apache.maven.shared.artifact.resolve.ArtifactResolver;
 import org.apache.maven.shared.dependencies.resolve.DependencyResolver;
 import org.kie.maven.plugin.ArtifactItem;
+import org.kie.maven.plugin.PluginDTO;
 
 import static org.kie.maven.plugin.executors.PackageKjarDependenciesExecutor.packageKJarDependencies;
 
@@ -78,7 +81,9 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
             getLog().info("Skipping plugin execution");
             return;
         }
-
+        final PluginDTO pluginDTO = getPluginDTO();
+        final MavenSession mavenSession = pluginDTO.getMavenSession();
+        final File outputDirectory = pluginDTO.getOutputDirectory();
         packageKJarDependencies(mavenSession,
                                 outputDirectory,
                                 pomRemoteRepositories,

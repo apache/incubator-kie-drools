@@ -51,6 +51,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.maven.plugin.DiskResourceStore;
+import org.kie.maven.plugin.PluginDTO;
 import org.kie.maven.plugin.ProjectPomModel;
 
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
@@ -65,14 +66,16 @@ public class BuildDrlExecutor {
     private BuildDrlExecutor() {
     }
 
-    public static void buildDrl(final MavenProject project,
-                                final MavenSession mavenSession,
-                                final File outputDirectory,
-                                final Map<String, String> properties,
-                                final File resourceFolder,
-                                final List<Resource> resources,
-                                final String validateDMN,
-                                final Log log) throws MojoFailureException, MojoExecutionException {
+    public static void buildDrl(final PluginDTO pluginDTO) throws MojoFailureException, MojoExecutionException {
+        final MavenProject project = pluginDTO.getProject();
+        final MavenSession mavenSession = pluginDTO.getMavenSession();
+        final File outputDirectory = pluginDTO.getOutputDirectory();
+        final Map<String, String> properties = pluginDTO.getProperties();
+        final File resourceFolder = pluginDTO.getResourceFolder();
+        final List<Resource> resources = pluginDTO.getResources();
+        final String validateDMN = pluginDTO.getValidateDMN();
+        final Log log = pluginDTO.getLog();
+
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Set<URL> urls = new HashSet<>();
