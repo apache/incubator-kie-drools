@@ -447,4 +447,21 @@ public class MatrixUtilsExtensions {
         x[j] = tmp;
     }
 
+    // == 2D ARRAY FUNCTIONS============================================================================================
+    /**
+     * Get the idx-th column of some 2D array m
+     *
+     * @param m the 2d array
+     * @param idx the column to extract
+     * @return the idx-th column of m
+     *
+     */
+    public static <T> List<T> getColumn(T[][] m, int idx) {
+        List<T> out = new ArrayList<>();
+        for (int i = 0; i < m.length; i++) {
+            out.add(m[i][idx]);
+        }
+        return out;
+    }
+
 }
