@@ -51,8 +51,7 @@ public class LengthSlidingWindowTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Test
