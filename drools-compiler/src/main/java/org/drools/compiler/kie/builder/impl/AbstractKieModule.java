@@ -69,9 +69,9 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractKieModule
-        implements
-        InternalKieModule, Serializable {
+public abstract class AbstractKieModule implements InternalKieModule, Serializable {
+
+    private static final String SPRING_BOOT_PREFIX = "BOOT-INF/classes/";
 
     private static final Logger log = LoggerFactory.getLogger(AbstractKieModule.class);
 
@@ -280,8 +280,12 @@ public abstract class AbstractKieModule
 
     private void addDTableToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, Resource resource, ResourceChangeSet rcs, DecisionTableConfiguration dtableConf ) {
         for (RuleTemplateModel template : kieBaseModel.getRuleTemplates()) {
+            boolean isInSpringBoot = fileName.startsWith(SPRING_BOOT_PREFIX);
+            if (isInSpringBoot) {
+                fileName = fileName.substring(SPRING_BOOT_PREFIX.length());
+            }
             if (template.getDtable().equals( fileName )) {
-                Resource templateResource = getResource( template.getTemplate() );
+                Resource templateResource = getResource( (isInSpringBoot ? SPRING_BOOT_PREFIX : "") + template.getTemplate() );
                 if ( templateResource != null ) {
                     dtableConf.addRuleTemplateConfiguration( templateResource, template.getRow(), template.getCol() );
                 } else {
