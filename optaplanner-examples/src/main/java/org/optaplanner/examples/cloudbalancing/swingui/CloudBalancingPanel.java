@@ -245,17 +245,19 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
         doProblemChange(new DeleteProcessProblemChange(process));
     }
 
-    public JButton createButton(CloudProcess process) {
-        return SwingUtils.makeSmallButton(new JButton(new CloudProcessAction(process)));
+    public JButton createButton(CloudProcess process, Runnable removeAction) {
+        return SwingUtils.makeSmallButton(new JButton(new CloudProcessAction(process, removeAction)));
     }
 
     private class CloudProcessAction extends AbstractAction {
 
-        private CloudProcess process;
+        private final CloudProcess process;
+        private final Runnable removeAction;
 
-        public CloudProcessAction(CloudProcess process) {
+        public CloudProcessAction(CloudProcess process, Runnable removeAction) {
             super(process.getLabel());
             this.process = process;
+            this.removeAction = removeAction;
         }
 
         @Override
@@ -264,8 +266,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
             listFieldsPanel.add(new JLabel("Computer:"));
             List<CloudComputer> computerList = getSolution().getComputerList();
             // Add 1 to array size to add null, which makes the entity unassigned
-            JComboBox computerListField = new JComboBox(
-                    computerList.toArray(new Object[computerList.size() + 1]));
+            JComboBox computerListField = new JComboBox(computerList.toArray(new Object[computerList.size() + 1]));
             LabeledComboBoxRenderer.applyToComboBox(computerListField);
             computerListField.setSelectedItem(process.getComputer());
             listFieldsPanel.add(computerListField);
@@ -274,12 +275,13 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toComputer = (CloudComputer) computerListField.getSelectedItem();
                 if (process.getComputer() != toComputer) {
-                    solutionBusiness.doChangeMove(process, "computer", toComputer);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(process,
+                            "computer",
+                            proc -> process.setComputer(toComputer)), true);
+                    removeAction.run();
                 }
                 solverAndPersistenceFrame.resetScreen();
             }
         }
-
     }
-
 }

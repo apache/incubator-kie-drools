@@ -184,7 +184,8 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
                     "Select day", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Day toDay = (Day) dayListField.getSelectedItem();
-                solutionBusiness.doChangeMove(match, "day", toDay);
+                doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(match, "day",
+                        m -> m.setDay(toDay)));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

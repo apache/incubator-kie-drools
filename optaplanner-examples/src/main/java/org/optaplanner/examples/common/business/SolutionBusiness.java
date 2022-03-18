@@ -46,12 +46,6 @@ import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.core.api.solver.change.ProblemChange;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.change.DefaultProblemChangeDirector;
@@ -86,7 +80,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
 
     private final CommonApp<Solution_> app;
     private final DefaultSolverFactory<Solution_> solverFactory;
-    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final SolverManager<Solution_, Long> solverManager;
     private final ScoreManager<Solution_, Score_> scoreManager;
 
@@ -106,7 +99,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
     public SolutionBusiness(CommonApp<Solution_> app, SolverFactory<Solution_> solverFactory) {
         this.app = app;
         this.solverFactory = ((DefaultSolverFactory<Solution_>) solverFactory);
-        this.solutionDescriptor = this.solverFactory.getSolutionDescriptor();
         this.solverManager = SolverManager.create(solverFactory);
         this.scoreManager = ScoreManager.create(solverFactory);
     }
@@ -268,6 +260,8 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
                         true)) {
             scoreDirector.setWorkingSolution(getSolution());
             Result_ result = function.apply(scoreDirector);
+            scoreDirector.triggerVariableListeners();
+            scoreDirector.calculateScore();
             setSolution(scoreDirector.getWorkingSolution());
             return result;
         }
@@ -318,24 +312,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
 
     public void exportSolution(AbstractSolutionExporter<Solution_> exporter, File file) {
         exporter.writeSolution(getSolution(), file);
-    }
-
-    public void doMove(Move<Solution_> move) {
-        acceptScoreDirector(scoreDirector -> doMove(move, scoreDirector));
-    }
-
-    private void doMove(Move<Solution_> move, InnerScoreDirector<Solution_, Score_> scoreDirector) {
-        if (isSolving()) {
-            LOGGER.error("Not doing user move ({}) because the solver is solving.", move);
-            return;
-        }
-        if (!move.isMoveDoable(scoreDirector)) {
-            LOGGER.warn("Not doing user move ({}) because it is not doable.", move);
-            return;
-        }
-        LOGGER.info("Doing user move ({}).", move);
-        move.doMoveOnly(scoreDirector);
-        scoreDirector.calculateScore();
     }
 
     private void acceptScoreDirector(Consumer<InnerScoreDirector<Solution_, Score_>> consumer) {
@@ -396,25 +372,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
         if (solverJob != null) {
             solverJob.terminateEarly();
         }
-    }
-
-    public GenuineVariableDescriptor<Solution_> findVariableDescriptor(Object entity, String variableName) {
-        return solutionDescriptor.findGenuineVariableDescriptorOrFail(entity, variableName);
-    }
-
-    private ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        // TODO Solver should support building a ChangeMove
-        EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-        GenuineVariableDescriptor<Solution_> variableDescriptor = findVariableDescriptor(entity, variableName);
-        ChangeMoveSelector<Solution_> changeMoveSelector = new ChangeMoveSelector<>(
-                new SingleEntitySelector<>(entityDescriptor, entity),
-                new SingleValueSelector<>(variableDescriptor, toPlanningValue), false);
-        return (ChangeMove<Solution_>) changeMoveSelector.iterator().next();
-    }
-
-    public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        ChangeMove<Solution_> move = createChangeMove(entity, variableName, toPlanningValue);
-        doMove(move);
     }
 
     @Override

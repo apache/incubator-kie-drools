@@ -20,20 +20,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
@@ -54,7 +49,6 @@ public class MrMachinePanel extends JPanel {
     private JPanel resourceListPanel = null;
     private Map<MrResource, JTextField> resourceFieldMap;
     private JLabel numberOfProcessesLabel;
-    private JButton detailsButton;
 
     public MrMachinePanel(MachineReassignmentPanel machineReassignmentPanel, List<MrResource> resourceList,
             MrMachine machine) {
@@ -103,16 +97,6 @@ public class MrMachinePanel extends JPanel {
         numberOfProcessesLabel.setPreferredSize(new Dimension(100, 20));
         numberOfProcessesLabel.setEnabled(false);
         numberAndDetailsPanel.add(numberOfProcessesLabel, BorderLayout.WEST);
-        detailsButton = new JButton(new AbstractAction("Details") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MrProcessAssignmentListDialog processAssignmentListDialog = new MrProcessAssignmentListDialog();
-                processAssignmentListDialog.setLocationRelativeTo(getRootPane());
-                processAssignmentListDialog.setVisible(true);
-            }
-        });
-        detailsButton.setEnabled(false);
-        numberAndDetailsPanel.add(detailsButton, BorderLayout.CENTER);
         add(numberAndDetailsPanel, BorderLayout.EAST);
     }
 
@@ -175,44 +159,6 @@ public class MrMachinePanel extends JPanel {
         }
         numberOfProcessesLabel.setText(processAssignmentList.size() + " processes ");
         numberOfProcessesLabel.setEnabled(used);
-    }
-
-    private class MrProcessAssignmentListDialog extends JDialog {
-
-        public MrProcessAssignmentListDialog() {
-            setModal(true);
-            setTitle(getMachineLabel());
-            JPanel contentPanel = new JPanel();
-            GroupLayout layout = new GroupLayout(contentPanel);
-            contentPanel.setLayout(layout);
-            JPanel assignmentsPanel = createAssignmentsPanel();
-            JScrollPane contentScrollPane = new JScrollPane(assignmentsPanel);
-            contentScrollPane.setPreferredSize(new Dimension(800, 200));
-            contentScrollPane.getVerticalScrollBar().setUnitIncrement(20);
-            setContentPane(contentScrollPane);
-            pack();
-        }
-
-        private JPanel createAssignmentsPanel() {
-            JPanel assignmentsPanel = new JPanel(new GridLayout(0, resourceList.size()));
-            int colorIndex = 0;
-            for (MrProcessAssignment processAssignment : processAssignmentList) {
-                JLabel processAssignmentLabel = new JLabel(processAssignment.getLabel());
-                processAssignmentLabel.setForeground(TangoColorFactory.SEQUENCE_1.get(colorIndex));
-                assignmentsPanel.add(processAssignmentLabel);
-
-                for (MrResource resource : resourceList) {
-                    long usage = processAssignment.getProcess().getProcessRequirement(resource).getUsage();
-                    JTextField resourceField = new JTextField(Long.toString(usage));
-                    resourceField.setEditable(false);
-                    assignmentsPanel.add(resourceField);
-                }
-
-                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.size();
-            }
-            return assignmentsPanel;
-        }
-
     }
 
 }

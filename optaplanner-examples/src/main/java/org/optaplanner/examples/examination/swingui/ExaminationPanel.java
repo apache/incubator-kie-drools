@@ -47,6 +47,7 @@ import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.FollowingExam;
+import org.optaplanner.examples.examination.domain.LeadingExam;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.Room;
 import org.optaplanner.swing.impl.SwingUtils;
@@ -255,13 +256,27 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
                     "Select period and room", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
-                solutionBusiness.doChangeMove(exam, "period", toPeriod);
+                if (exam.getPeriod() != toPeriod) {
+                    doProblemChange((workingSolution, problemChangeDirector) -> {
+                        LeadingExam leadingExam;
+                        if (exam instanceof FollowingExam) {
+                            // FollowingExam has Period as a shadow var; therefore we update the source.
+                            FollowingExam followingExam = (FollowingExam) exam;
+                            leadingExam = followingExam.getLeadingExam();
+                        } else {
+                            leadingExam = (LeadingExam) exam;
+                        }
+                        problemChangeDirector.changeVariable(leadingExam, "period", le -> le.setPeriod(toPeriod));
+                    });
+                }
                 Room toRoom = (Room) roomListField.getSelectedItem();
-                solutionBusiness.doChangeMove(exam, "room", toRoom);
+                if (exam.getRoom() != toRoom) {
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(exam,
+                            "room", le -> le.setRoom(toRoom)));
+                }
                 solverAndPersistenceFrame.resetScreen();
             }
         }
-
     }
 
     private class PeriodIcon implements Icon {
@@ -293,7 +308,6 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
             g.setColor(TangoColorFactory.ALUMINIUM_6);
             g.drawOval(x, y, DIAMETER, DIAMETER);
         }
-
     }
 
     private class RoomIcon implements Icon {
@@ -327,7 +341,6 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
             g.setColor(TangoColorFactory.ALUMINIUM_6);
             g.drawRect(x + 1, y, ICON_WIDTH - 2, ICON_HEIGHT);
         }
-
     }
 
     private class ExamIcon implements Icon {
@@ -370,7 +383,5 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
             g.setColor(TangoColorFactory.ALUMINIUM_6);
             g.drawRect(x + 1, y, ICON_WIDTH - 2, ICON_HEIGHT);
         }
-
     }
-
 }

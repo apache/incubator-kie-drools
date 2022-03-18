@@ -285,19 +285,20 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
             if (result == JOptionPane.OK_OPTION) {
                 TimeGrain toStartingTimeGrain = (TimeGrain) timeGrainListField.getSelectedItem();
                 if (meetingAssignment.getStartingTimeGrain() != toStartingTimeGrain) {
-                    solutionBusiness.doChangeMove(meetingAssignment, "startingTimeGrain", toStartingTimeGrain);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(
+                            meetingAssignment, "startingTimeGrain",
+                            ma -> ma.setStartingTimeGrain(toStartingTimeGrain)));
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (meetingAssignment.getRoom() != toRoom) {
-                    solutionBusiness.doChangeMove(meetingAssignment, "room", toRoom);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(
+                            meetingAssignment, "room",
+                            ma -> ma.setRoom(toRoom)));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (meetingAssignment.isPinned() != toPinned) {
-                    if (solutionBusiness.isSolving()) {
-                        logger.error("Not doing user change because the solver is solving.");
-                        return;
-                    }
-                    meetingAssignment.setPinned(toPinned);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                            .changeProblemProperty(meetingAssignment, ma -> ma.setPinned(toPinned)));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }

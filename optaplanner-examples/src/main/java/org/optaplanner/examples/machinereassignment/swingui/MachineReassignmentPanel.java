@@ -17,7 +17,6 @@
 package org.optaplanner.examples.machinereassignment.swingui;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -26,15 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
@@ -153,34 +148,6 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
             // Remove it the problem fact itself
             problemChangeDirector.removeProblemFact(workingMachine, machineList::remove);
         });
-    }
-
-    private class MrProcessAssignmentAction extends AbstractAction {
-
-        private MrProcessAssignment processAssignment;
-
-        public MrProcessAssignmentAction(MrProcessAssignment processAssignment) {
-            super(processAssignment.getLabel());
-            this.processAssignment = processAssignment;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            List<MrMachine> machineList = getSolution().getMachineList();
-            // Add 1 to array size to add null, which makes the entity unassigned
-            JComboBox machineListField = new JComboBox(
-                    machineList.toArray(new Object[machineList.size() + 1]));
-            LabeledComboBoxRenderer.applyToComboBox(machineListField);
-            machineListField.setSelectedItem(processAssignment.getMachine());
-            int result = JOptionPane.showConfirmDialog(MachineReassignmentPanel.this.getRootPane(), machineListField,
-                    "Select machine", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                MrMachine toMrMachine = (MrMachine) machineListField.getSelectedItem();
-                solutionBusiness.doChangeMove(processAssignment, "machine", toMrMachine);
-                solverAndPersistenceFrame.resetScreen();
-            }
-        }
-
     }
 
 }

@@ -266,19 +266,18 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
                 if (lecture.getPeriod() != toPeriod) {
-                    solutionBusiness.doChangeMove(lecture, "period", toPeriod);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(lecture,
+                            "period", l -> l.setPeriod(toPeriod)));
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (lecture.getRoom() != toRoom) {
-                    solutionBusiness.doChangeMove(lecture, "room", toRoom);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(lecture,
+                            "room", l -> l.setRoom(toRoom)));
                 }
                 boolean toPinned = pinnedField.isSelected();
                 if (lecture.isPinned() != toPinned) {
-                    if (solutionBusiness.isSolving()) {
-                        logger.error("Not doing user change because the solver is solving.");
-                        return;
-                    }
-                    lecture.setPinned(toPinned);
+                    doProblemChange((workingSolution, problemChangeDirector) -> problemChangeDirector
+                            .changeProblemProperty(lecture, l -> l.setPinned(toPinned)));
                 }
                 solverAndPersistenceFrame.resetScreen();
             }

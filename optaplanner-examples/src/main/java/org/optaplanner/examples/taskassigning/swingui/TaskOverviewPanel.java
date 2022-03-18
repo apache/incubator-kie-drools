@@ -46,11 +46,7 @@ import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListAssignMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListUnassignMove;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.taskassigning.domain.Employee;
@@ -228,8 +224,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             if (result == JOptionPane.OK_OPTION) {
                 Employee selectedEmployee = (Employee) employeeListField.getSelectedItem();
                 Integer selectedIndex = (Integer) indexListField.getSelectedItem();
-                Move<TaskAssigningSolution> move = buildMove(selectedEmployee, selectedIndex, unassignCheckBox.isSelected());
-                taskAssigningPanel.getSolutionBusiness().doMove(move);
+                doProblemChange(selectedEmployee, selectedIndex, unassignCheckBox.isSelected());
                 taskAssigningPanel.getSolverAndPersistenceFrame().resetScreen();
             }
         }
@@ -255,35 +250,33 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             }
         }
 
-        private Move<TaskAssigningSolution> buildMove(Employee selectedEmployee, Integer selectedIndex, boolean unassignTask) {
+        private void doProblemChange(Employee selectedEmployee, Integer selectedIndex, boolean unassignTask) {
+            SolutionBusiness<TaskAssigningSolution, ?> solutionBusiness =
+                    taskAssigningPanel.getSolutionBusiness();
             if (unassignTask) {
-                return new ListUnassignMove<>(
-                        getTaskListVariableDescriptor(task.getEmployee()),
-                        task.getEmployee(),
-                        task.getIndex());
+                solutionBusiness.doProblemChange(
+                        (workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(selectedEmployee,
+                                "tasks",
+                                e -> e.getTasks().remove((int) selectedIndex)));
             } else {
                 if (task.getEmployee() == null) {
-                    return new ListAssignMove<>(
-                            getTaskListVariableDescriptor(selectedEmployee),
-                            task,
-                            selectedEmployee,
-                            selectedIndex);
+                    solutionBusiness.doProblemChange(
+                            (workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(selectedEmployee,
+                                    "tasks",
+                                    e -> e.getTasks().add(selectedIndex, task)));
                 } else {
-                    return new ListChangeMove<>(
-                            getTaskListVariableDescriptor(selectedEmployee),
-                            task.getEmployee(),
-                            task.getIndex(),
-                            selectedEmployee,
-                            selectedIndex);
+                    solutionBusiness.doProblemChange((workingSolution, problemChangeDirector) -> {
+                        Task removedTask = task.getEmployee().getTasks().get(task.getIndex());
+                        problemChangeDirector.changeVariable(task.getEmployee(), "tasks",
+                                e -> e.getTasks().remove(task));
+                        if (task.getEmployee() != selectedEmployee) {
+                            problemChangeDirector.changeVariable(selectedEmployee, "tasks",
+                                    e -> e.getTasks().add(selectedIndex, removedTask));
+                        }
+                    });
                 }
             }
         }
-
-        private ListVariableDescriptor<TaskAssigningSolution> getTaskListVariableDescriptor(Employee employee) {
-            return (ListVariableDescriptor<TaskAssigningSolution>) taskAssigningPanel.getSolutionBusiness()
-                    .findVariableDescriptor(employee, "tasks");
-        }
-
     }
 
     @Override

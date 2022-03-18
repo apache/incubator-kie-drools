@@ -314,9 +314,21 @@ public class CloudComputerPanel extends JPanel {
         }
 
         private JPanel createAssignmentsPanel() {
-            JPanel assignmentsPanel = new JPanel(new GridLayout(0, 5));
+            JPanel assignmentsPanel = new JPanel(new GridLayout(0, 1));
             int colorIndex = 0;
             for (final CloudProcess process : processList) {
+                assignmentsPanel.add(new CloudProcessAssignmentPanel(assignmentsPanel, process, colorIndex));
+                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.size();
+            }
+            JPanel fillerAssignmentsPanel = new JPanel(new BorderLayout());
+            fillerAssignmentsPanel.add(assignmentsPanel, BorderLayout.NORTH);
+            return fillerAssignmentsPanel;
+        }
+
+        private class CloudProcessAssignmentPanel extends JPanel {
+
+            public CloudProcessAssignmentPanel(JPanel assignmentsPanel, CloudProcess process, int colorIndex) {
+                super(new GridLayout(0, 5));
                 JPanel labelAndDeletePanel = new JPanel(new BorderLayout(5, 0));
                 labelAndDeletePanel.add(new JLabel(cloudBalancingPanel.getCloudProcessIcon()), BorderLayout.WEST);
                 JLabel processLabel = new JLabel(process.getLabel());
@@ -327,28 +339,26 @@ public class CloudComputerPanel extends JPanel {
                 deleteButton.setToolTipText("Delete");
                 deleteButton.addActionListener(e -> {
                     cloudBalancingPanel.deleteProcess(process);
-                    CloudProcessListDialog.this.dispose();
+                    dispose();
                 });
                 deletePanel.add(deleteButton, BorderLayout.NORTH);
                 labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
-                assignmentsPanel.add(labelAndDeletePanel);
+                add(labelAndDeletePanel);
 
                 JTextField cpuPowerField = new JTextField(process.getRequiredCpuPower() + " GHz");
                 cpuPowerField.setEditable(false);
-                assignmentsPanel.add(cpuPowerField);
+                add(cpuPowerField);
                 JTextField memoryField = new JTextField(process.getRequiredMemory() + " GB");
                 memoryField.setEditable(false);
-                assignmentsPanel.add(memoryField);
+                add(memoryField);
                 JTextField networkBandwidthField = new JTextField(process.getRequiredNetworkBandwidth() + " GB");
                 networkBandwidthField.setEditable(false);
-                assignmentsPanel.add(networkBandwidthField);
-                assignmentsPanel.add(cloudBalancingPanel.createButton(process));
-
-                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.size();
+                add(networkBandwidthField);
+                add(cloudBalancingPanel.createButton(process, () -> {
+                    assignmentsPanel.remove(this);
+                    assignmentsPanel.revalidate();
+                }));
             }
-            JPanel fillerAssignmentsPanel = new JPanel(new BorderLayout());
-            fillerAssignmentsPanel.add(assignmentsPanel, BorderLayout.NORTH);
-            return fillerAssignmentsPanel;
         }
 
     }
