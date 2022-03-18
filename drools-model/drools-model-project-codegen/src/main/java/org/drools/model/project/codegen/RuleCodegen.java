@@ -15,26 +15,41 @@
  */
 package org.drools.model.project.codegen;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import org.drools.drl.extensions.DecisionTableFactory;
-import org.drools.model.project.codegen.context.KogitoBuildContext;
+import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.model.project.codegen.io.CollectedResource;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
+import static java.util.stream.Collectors.toList;
 
 public class RuleCodegen {
 
     public static final GeneratedFileType RULE_TYPE = GeneratedFileType.of("RULE", GeneratedFileType.Category.SOURCE);
     public static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
     public static final String GENERATOR_NAME = "rules";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleCodegen.class);
-    private final KogitoBuildContext context;
+
+    private final DroolsModelBuildContext context;
     private final String name;
 
-    public static RuleCodegen ofResources(KogitoBuildContext context, Collection<Resource> resources) {
+    public static RuleCodegen ofCollectedResources(DroolsModelBuildContext context, Collection<CollectedResource> resources) {
+        List<Resource> generatedRules = resources.stream()
+                .map(CollectedResource::resource)
+                .filter(r -> isRuleFile(r) || r.getResourceType() == ResourceType.PROPERTIES)
+                .collect(toList());
+        return ofResources(context, generatedRules);
+    }
+
+    public static RuleCodegen ofResources(DroolsModelBuildContext context, Collection<Resource> resources) {
         return new RuleCodegen(context, resources);
     }
 
@@ -43,7 +58,7 @@ public class RuleCodegen {
     private boolean hotReloadMode = false;
     private final boolean decisionTableSupported;
 
-    private RuleCodegen(KogitoBuildContext context, Collection<Resource> resources) {
+    private RuleCodegen(DroolsModelBuildContext context, Collection<Resource> resources) {
         Objects.requireNonNull(context, "context cannot be null");
         this.name = GENERATOR_NAME;
         this.context = context;
@@ -68,6 +83,10 @@ public class RuleCodegen {
                 new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
         generatedFiles.addAll(kieSessionModelBuilder.generate());
 
+        if (LOGGER.isDebugEnabled()) {
+            generatedFiles.stream().forEach(genFile -> LOGGER.debug(genFile.dumpContent()));
+        }
+
         return generatedFiles;
     }
 
@@ -75,7 +94,7 @@ public class RuleCodegen {
         return !isEmpty();
     }
 
-    public KogitoBuildContext context() {
+    public DroolsModelBuildContext context() {
         return this.context;
     }
 
@@ -90,9 +109,12 @@ public class RuleCodegen {
         return internalGenerate();
     }
 
-    @Deprecated
     public RuleCodegen withHotReloadMode() {
         hotReloadMode = true;
         return this;
+    }
+
+    private static boolean isRuleFile(Resource resource) {
+        return resource.getResourceType() == ResourceType.DRL || resource.getResourceType() == ResourceType.DTABLE;
     }
 }

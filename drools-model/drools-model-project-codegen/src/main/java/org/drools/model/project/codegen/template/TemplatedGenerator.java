@@ -17,7 +17,7 @@ package org.drools.model.project.codegen.template;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
-import org.drools.model.project.codegen.context.KogitoBuildContext;
+import org.drools.model.project.codegen.context.DroolsModelBuildContext;
 
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -54,10 +54,10 @@ public final class TemplatedGenerator {
 
     protected final String targetTypeName;
     protected final String fallbackContext;
-    protected final KogitoBuildContext context;
+    protected final DroolsModelBuildContext context;
 
     private TemplatedGenerator(
-            KogitoBuildContext context,
+            DroolsModelBuildContext context,
             String packageName,
             String targetTypeName,
             String templateBasePath,
@@ -182,7 +182,7 @@ public final class TemplatedGenerator {
             return this;
         }
 
-        public TemplatedGenerator build(KogitoBuildContext context, String templateName) {
+        public TemplatedGenerator build(DroolsModelBuildContext context, String templateName) {
             Objects.requireNonNull(context, "context cannot be null");
             Objects.requireNonNull(templateName, "templateName cannot be null");
             String aPackageName = packageName == null ? context.getPackageName() : packageName;

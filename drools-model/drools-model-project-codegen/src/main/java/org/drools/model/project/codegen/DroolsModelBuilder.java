@@ -15,9 +15,14 @@
  */
 package org.drools.model.project.codegen;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.drl.parser.DroolsError;
+import org.drools.model.project.codegen.context.DroolsModelBuildContext;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
-import org.drools.model.project.codegen.context.KogitoBuildContext;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -26,11 +31,6 @@ import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableToCompiler;
@@ -44,12 +44,12 @@ public class DroolsModelBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsModelBuilder.class);
     private final ModelBuilderImpl<KogitoPackageSources> modelBuilder;
 
-    private final KogitoBuildContext context;
+    private final DroolsModelBuildContext context;
     private final Collection<Resource> resources;
     private final boolean decisionTableSupported;
     private final boolean hotReloadMode;
 
-    public DroolsModelBuilder(KogitoBuildContext context, Collection<Resource> resources, boolean decisionTableSupported, boolean hotReloadMode) {
+    public DroolsModelBuilder(DroolsModelBuildContext context, Collection<Resource> resources, boolean decisionTableSupported, boolean hotReloadMode) {
         this.context = context;
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
@@ -148,9 +148,6 @@ public class DroolsModelBuilder {
     }
 
     private Collection<GeneratedFile> convertGeneratedRuleFile(Collection<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles) {
-        return legacyModelFiles.stream().map(f -> new GeneratedFile(
-                RuleCodegen.RULE_TYPE,
-                f.getPath(), f.getData()))
-                .collect(toList());
+        return legacyModelFiles.stream().map(f -> new GeneratedFile(RuleCodegen.RULE_TYPE, f.getPath(), f.getData())).collect(toList());
     }
 }

@@ -15,14 +15,14 @@
  */
 package org.drools.model.project.codegen;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.model.project.codegen.context.KogitoBuildContext;
-
 import java.util.NoSuchElementException;
+
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.model.project.codegen.context.DroolsModelBuildContext;
 
 public class KogitoKnowledgeBuilderConfigurationImpl extends KnowledgeBuilderConfigurationImpl {
 
-    public static KogitoKnowledgeBuilderConfigurationImpl fromContext(KogitoBuildContext buildContext) {
+    public static KogitoKnowledgeBuilderConfigurationImpl fromContext(DroolsModelBuildContext buildContext) {
         KogitoKnowledgeBuilderConfigurationImpl conf = new KogitoKnowledgeBuilderConfigurationImpl(buildContext.getClassLoader());
         for (String prop : buildContext.getApplicationProperties()) {
             if (prop.startsWith("drools")) {

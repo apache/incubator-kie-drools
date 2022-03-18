@@ -16,7 +16,7 @@
 package org.drools.model.project.codegen;
 
 import org.drools.modelcompiler.builder.ModelSourceClass;
-import org.drools.model.project.codegen.context.KogitoBuildContext;
+import org.drools.model.project.codegen.context.DroolsModelBuildContext;
 import org.kie.api.builder.model.KieBaseModel;
 
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ public class KieSessionModelBuilder {
 
     private final Map<String, KieBaseModel> kieBaseModels;
     private final Map<String, List<String>> modelByKBase;
-    private KogitoBuildContext context;
+    private DroolsModelBuildContext context;
 
-    public KieSessionModelBuilder(KogitoBuildContext context, Collection<KogitoPackageSources> packageSources) {
+    public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<KogitoPackageSources> packageSources) {
         this.context = context;
         this.kieBaseModels = KieModuleModelWrapper.fromResourcePaths(context.getAppPaths().getResourcePaths()).kieBaseModels();
         this.modelByKBase = getModelByKBase(packageSources, this.kieBaseModels);
