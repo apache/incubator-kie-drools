@@ -1055,7 +1055,7 @@ Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>>
 
 
 [[scoreOfASolution]]
-==== `Score` of asSolution (`@PlanningScore`)
+==== `Score` of a Solution (`@PlanningScore`)
 
 A `@PlanningSolution` class requires a score property (or field), which is annotated with a `@PlanningScore` annotation.
 The score property is `null` if the score hasn't been calculated yet.
