@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.runtime;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
@@ -27,11 +26,11 @@ import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+
 
 public class FEELErrorMessagesTest {
 
@@ -47,9 +46,9 @@ public class FEELErrorMessagesTest {
         final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class );
         verify( fel, times(2) ).onEvent( captor.capture() );
 
-        Assert.assertThat( captor.getAllValues().size(), is( 2 ) );
-        Assert.assertThat( captor.getAllValues().get(1), is( instanceOf( UnknownVariableErrorEvent.class ) ) );
-        Assert.assertThat( ((UnknownVariableErrorEvent)captor.getAllValues().get(1)).getOffendingSymbol(), is( "a variable name" ) );
+        assertThat(captor.getAllValues()).hasSize(2);
+        assertThat(captor.getAllValues().get(1)).isInstanceOf( UnknownVariableErrorEvent.class);
+        assertThat(((UnknownVariableErrorEvent)captor.getAllValues().get(1)).getOffendingSymbol()).isEqualTo("a variable name" );
     }
 
     @Test
@@ -64,9 +63,9 @@ public class FEELErrorMessagesTest {
         final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
         verify(fel, times(1)).onEvent(captor.capture());
 
-        Assert.assertThat(captor.getAllValues().size(), is(1));
-        Assert.assertThat(captor.getAllValues().get(0), is(instanceOf(SyntaxErrorEvent.class)));
-        Assert.assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage(), startsWith("Detected 'if' expression without 'else' part"));
+        assertThat(captor.getAllValues()).hasSize(1);
+        assertThat(captor.getAllValues().get(0)).isInstanceOfAny(SyntaxErrorEvent.class);
+        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).startsWith("Detected 'if' expression without 'else' part");
     }
 
     @Test
@@ -81,9 +80,9 @@ public class FEELErrorMessagesTest {
         final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
         verify(fel, times(1)).onEvent(captor.capture());
 
-        Assert.assertThat(captor.getAllValues().size(), is(1));
-        Assert.assertThat(captor.getAllValues().get(0), is(instanceOf(SyntaxErrorEvent.class)));
-        Assert.assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage(), is("missing 'else' at '456'"));
+        assertThat(captor.getAllValues()).hasSize(1);
+        assertThat(captor.getAllValues().get(0)).isInstanceOf(SyntaxErrorEvent.class);
+        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).isEqualTo("missing 'else' at '456'");
     }
 
     @Test
@@ -98,9 +97,9 @@ public class FEELErrorMessagesTest {
         final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
         verify(fel, times(1)).onEvent(captor.capture());
 
-        Assert.assertThat(captor.getAllValues().size(), is(1));
-        Assert.assertThat(captor.getAllValues().get(0), is(instanceOf(SyntaxErrorEvent.class)));
-        Assert.assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage(), startsWith("Detected 'if' expression without 'then' part"));
+        assertThat(captor.getAllValues()).hasSize(1);
+        assertThat(captor.getAllValues().get(0)).isInstanceOf(SyntaxErrorEvent.class);
+        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).startsWith("Detected 'if' expression without 'then' part");
     }
 
     @Test
@@ -115,11 +114,11 @@ public class FEELErrorMessagesTest {
         final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
         verify(fel, times(2)).onEvent(captor.capture());
 
-        Assert.assertThat(captor.getAllValues().size(), is(2));
-        Assert.assertThat(captor.getAllValues().get(0), is(instanceOf(SyntaxErrorEvent.class)));
-        Assert.assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage(), startsWith("missing 'then' at '123'"));
-        Assert.assertThat(captor.getAllValues().get(1), is(instanceOf(SyntaxErrorEvent.class)));
-        Assert.assertThat(((SyntaxErrorEvent) captor.getAllValues().get(1)).getMessage(), startsWith("Detected 'if' expression without 'then' part"));
+        assertThat(captor.getAllValues()).hasSize(2);
+        assertThat(captor.getAllValues().get(0)).isInstanceOf(SyntaxErrorEvent.class);
+        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).startsWith("missing 'then' at '123'");
+        assertThat(captor.getAllValues().get(1)).isInstanceOf(SyntaxErrorEvent.class);
+        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(1)).getMessage()).startsWith("Detected 'if' expression without 'then' part");
     }
 
 }
