@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin.mojos;
+package org.kie.maven.plugin.executors;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,12 +35,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
@@ -57,63 +55,41 @@ import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnalysis;
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
-import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.shouldDeleteFile;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
 
-@Mojo(name = "generateModel",
-        requiresDependencyResolution = ResolutionScope.NONE,
-        requiresProject = true,
-        defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateModelMojo extends AbstractKieMojo {
+public class GenerateModelExecutor {
+
+    private GenerateModelExecutor() {
+    }
 
     public static PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
-    @Parameter(defaultValue = "${session}", required = true, readonly = true)
-    private MavenSession mavenSession;
+    public static void generateModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException, MojoFailureException {
+        final MavenProject project = kieMavenPluginContext.getProject();
+        final MavenSession mavenSession = kieMavenPluginContext.getMavenSession();
+        final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
+        final File projectDir = kieMavenPluginContext.getProjectDir();
+        final Map<String, String> properties = kieMavenPluginContext.getProperties();
+        final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
+        final String dumpKieSourcesFolder = kieMavenPluginContext.getDumpKieSourcesFolder();
+        final List<Resource> resources = kieMavenPluginContext.getResources();
+        final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
+        final String validateDMN = kieMavenPluginContext.getValidateDMN();
+        final String generateModel = kieMavenPluginContext.getGenerateModel();
+        final Log log = kieMavenPluginContext.getLog();
 
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    private File projectDir;
-
-    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
-    private File testDir;
-
-    @Parameter
-    private Map<String, String> properties;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    private File outputDirectory;
-
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
-        boolean modelParameterEnabled = isModelParameterEnabled();
-        boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
-        if (modelParameterEnabled && modelCompilerInClassPath) {
-            generateModel();
-        } else if (modelParameterEnabled) { // !modelCompilerInClassPath
-            getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you did" +
-                                  " not provide the required dependency on the project classpath.\n" +
-                                  "To enable executable rule models for your project, add the `drools-model-compiler`" +
-                                  " dependency in the `pom.xml` file of your project.\n");
-        }
-    }
-
-    private void generateModel() throws MojoExecutionException, MojoFailureException {
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 
@@ -121,7 +97,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         try {
-            setSystemProperties(properties);
+            setSystemProperties(properties, log);
 
             KieServices ks = KieServices.Factory.get();
             final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(projectDir);
@@ -135,7 +111,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                     .filter(f -> f.endsWith("java"))
                     .collect(Collectors.toList());
 
-            getLog().info(String.format("Found %d generated files in Canonical Model", generatedFiles.size()));
+            log.info(String.format("Found %d generated files in Canonical Model", generatedFiles.size()));
 
             MemoryFileSystem mfs = kieModule instanceof CanonicalKieModule ?
                     ((MemoryKieModule) ((CanonicalKieModule) kieModule).getInternalKieModule()).getMemoryFileSystem() :
@@ -147,10 +123,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
                 MemoryFile f = (MemoryFile) mfs.getFile(generatedFile);
                 String className = toClassName(generatedFile);
                 classNameSourceMap.put(className, new String(mfs.getFileContents(f)));
-                getLog().info("Generating " + className);
+                log.info("Generating " + className);
             }
 
-            compileAndWriteClasses(targetDirectory, projectClassLoader, javaCompilerSettings, getCompilerType(),
+            compileAndWriteClasses(targetDirectory, projectClassLoader, javaCompilerSettings, compilerType,
                                    classNameSourceMap, dumpKieSourcesFolder);
 
             // copy the META-INF packages file
@@ -167,20 +143,22 @@ public class GenerateModelMojo extends AbstractKieMojo {
                 Files.copy(packagesMemoryFile.getContents(), packagesDestinationPath,
                            StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new MojoExecutionException("Unable to write file", e);
             }
 
-            if (shallPerformDMNDTAnalysis(getValidateDMN(), getLog())) {
-                performDMNDTAnalysis(kieModule, resources, getLog());
+            if (shallPerformDMNDTAnalysis(validateDMN, log)) {
+                performDMNDTAnalysis(kieModule, resources, log);
             }
 
-            if (shouldDeleteFile(getGenerateModelOption())) {
+            if (shouldDeleteFile(generateModel)) {
                 Set<String> drlFiles = kieModule.getFileNames()
                         .stream()
                         .filter(f -> f.endsWith("drl"))
                         .collect(Collectors.toSet());
-                deleteDrlFiles(drlFiles);
+                deleteDrlFiles(outputDirectory,
+                               projectDir,
+                               drlFiles,
+                               log);
             }
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
@@ -188,15 +166,18 @@ public class GenerateModelMojo extends AbstractKieMojo {
                 try {
                     projectClassLoader.close();
                 } catch (IOException e) {
-                    getLog().warn(e);
+                    log.warn(e);
                 }
             }
         }
 
-        getLog().info("DSL successfully generated");
+        log.info("DSL successfully generated");
     }
 
-    private void deleteDrlFiles(Set<String> actualDrlFiles) throws MojoExecutionException {
+    private static void deleteDrlFiles(final File outputDirectory,
+                                       final File projectDir,
+                                       final Set<String> actualDrlFiles,
+                                       final Log log) throws MojoExecutionException {
         // Remove drl files
         try (final Stream<Path> drlFilesToDeleted = Files.find(outputDirectory.toPath(), Integer.MAX_VALUE,
                                                                (p, f) -> drlFileMatcher.matches(p))) {
@@ -206,23 +187,24 @@ public class GenerateModelMojo extends AbstractKieMojo {
                     Files.delete(p);
                     deletedFiles.add(p.toString());
                 } catch (IOException e) {
-                    e.printStackTrace();
                     throw new RuntimeException("Unable to delete file " + p);
                 }
             });
             actualDrlFiles.retainAll(deletedFiles);
             if (!actualDrlFiles.isEmpty()) {
                 String actualDrlFiles1 = String.join(",", actualDrlFiles);
-                getLog().warn("Base directory: " + projectDir);
-                getLog().warn("Files not deleted: " + actualDrlFiles1);
+                log.warn("Base directory: " + projectDir);
+                log.warn("Files not deleted: " + actualDrlFiles1);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw new MojoExecutionException("Unable to find .drl files");
         }
     }
 
     public static class ExecutableModelMavenProject implements KieBuilder.ProjectType {
+
+        private ExecutableModelMavenProject() {
+        }
 
         public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER =
                 ExecutableModelMavenPluginKieProject::new;

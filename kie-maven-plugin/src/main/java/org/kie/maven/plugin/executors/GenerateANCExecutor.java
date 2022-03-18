@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin.mojos;
+package org.kie.maven.plugin.executors;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.drools.ancompiler.CompiledNetworkSources;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
@@ -38,56 +34,31 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
-import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
-import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
 
-@Mojo(name = "generateANC",
-        requiresDependencyResolution = ResolutionScope.NONE,
-        defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateANCMojo extends AbstractKieMojo {
+public class GenerateANCExecutor {
 
-    @Parameter(defaultValue = "${session}", required = true, readonly = true)
-    private MavenSession mavenSession;
-
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    private File projectDir;
-
-    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
-    private File testDir;
-
-    @Parameter
-    private Map<String, String> properties;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    private File outputDirectory;
-
-    @Override
-    public void execute() throws MojoExecutionException {
-        // GenerateModelMojo is executed when BuildMojo isn't and vice-versa
-        boolean ancParameterEnabled = ancEnabled(getGenerateModelOption());
-        boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
-        if (ancParameterEnabled && modelCompilerInClassPath) {
-            generateANC();
-        } else if (ancParameterEnabled) { // !modelCompilerInClassPath
-            getLog().warn("You're trying to build rule assets in a project from an executable rule model, but you did not provide the required dependency on the project classpath.\n" +
-                                  "To enable executable rule models for your project, add the `drools-model-compiler` dependency in the `pom.xml` file of your project.\n");
-        }
+    private GenerateANCExecutor() {
     }
 
-    private void generateANC() throws MojoExecutionException {
+    public static void generateANC(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException {
+        final MavenProject project = kieMavenPluginContext.getProject();
+        final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
+        final Map<String, String> properties = kieMavenPluginContext.getProperties();
+        final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
+        final String dumpKieSourcesFolder = kieMavenPluginContext.getDumpKieSourcesFolder();
+        final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
+        final Log log = kieMavenPluginContext.getLog();
+
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 
@@ -95,7 +66,7 @@ public class GenerateANCMojo extends AbstractKieMojo {
         Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         try {
-            setSystemProperties(properties);
+            setSystemProperties(properties, log);
 
             KieServices ks = KieServices.Factory.get();
 
@@ -108,18 +79,21 @@ public class GenerateANCMojo extends AbstractKieMojo {
             for (String kbase : kieContainer.getKieBaseNames()) {
                 InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieContainer.getKieBase(kbase);
 
-                List<CompiledNetworkSources> ancSourceFiles = ObjectTypeNodeCompiler.compiledNetworkSources(kieBase.getRete());
+                List<CompiledNetworkSources> ancSourceFiles =
+                        ObjectTypeNodeCompiler.compiledNetworkSources(kieBase.getRete());
 
-                getLog().info(String.format("Found %d generated files in Knowledge Base %s", ancSourceFiles.size(), kbase));
+                log.info(String.format("Found %d generated files in Knowledge Base %s", ancSourceFiles.size(),
+                                       kbase));
 
                 for (CompiledNetworkSources generatedFile : ancSourceFiles) {
                     String className = toClassName(generatedFile.getSourceName());
                     classNameSourceMap.put(className, generatedFile.getSource());
-                    getLog().info("Generated Alpha Network class: " + className);
+                    log.info("Generated Alpha Network class: " + className);
                 }
             }
 
-            compileAndWriteClasses(targetDirectory, projectClassLoader, javaCompilerSettings, getCompilerType(), classNameSourceMap, dumpKieSourcesFolder);
+            compileAndWriteClasses(targetDirectory, projectClassLoader, javaCompilerSettings, compilerType,
+                                   classNameSourceMap, dumpKieSourcesFolder);
 
             // generate the ANC file
             String ancFile = CanonicalKieModule.getANCFile(new ReleaseIdImpl(
@@ -135,9 +109,8 @@ public class GenerateANCMojo extends AbstractKieMojo {
                 Files.deleteIfExists(ancFilePath);
                 Files.createDirectories(ancFilePath.getParent());
                 Files.createFile(ancFilePath);
-                getLog().info("Written ANC File: " + ancFilePath.toAbsolutePath());
+                log.info("Written ANC File: " + ancFilePath.toAbsolutePath());
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new MojoExecutionException("Unable to write file: ", e);
             }
         } finally {
@@ -146,11 +119,11 @@ public class GenerateANCMojo extends AbstractKieMojo {
                 try {
                     projectClassLoader.close();
                 } catch (IOException e) {
-                    getLog().warn(e);
+                    log.warn(e);
                 }
             }
         }
 
-        getLog().info("Compiled Alpha Network successfully generated");
+        log.info("Compiled Alpha Network successfully generated");
     }
 }

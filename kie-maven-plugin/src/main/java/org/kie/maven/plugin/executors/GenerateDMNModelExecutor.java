@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin.mojos;
+package org.kie.maven.plugin.executors;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,12 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.plugin.logging.Log;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.kie.api.KieServices;
@@ -47,54 +42,37 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-import org.kie.maven.plugin.helpers.DMNModelModeHelper;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.JavaConfiguration;
 
-import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.getFilesByType;
+import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 
-@Mojo(name = "generateDMNModel",
-        requiresDependencyResolution = ResolutionScope.NONE,
-        requiresProject = true,
-        defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateDMNModelMojo extends AbstractKieMojo {
+public class GenerateDMNModelExecutor {
 
     public static final String RULE_CLASS_FILE_NAME = "META-INF/kie/dmn";
 
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    private File projectDir;
-
-    @Parameter
-    private Map<String, String> properties;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter(property = "generateDMNModel", defaultValue = "no")
-    private String generateDMNModel;
-
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        boolean DMNmodelParameterEnabled = DMNModelModeHelper.dmnModelParameterEnabled(generateDMNModel);
-        boolean modelCompilerInClassPath = isModelCompilerInClassPath(project.getDependencies());
-
-        if (DMNmodelParameterEnabled && modelCompilerInClassPath) {
-            generateDMNModel();
-        }
+    private GenerateDMNModelExecutor() {
     }
 
-    private void generateDMNModel() throws MojoExecutionException {
+    public static void generateDMN(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException {
+        final File projectDir = kieMavenPluginContext.getProjectDir();
+        final Map<String, String> properties = kieMavenPluginContext.getProperties();
+        final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
+        final String dumpKieSourcesFolder = kieMavenPluginContext.getDumpKieSourcesFolder();
+        final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
+        final Log log = kieMavenPluginContext.getLog();
+
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
 
         KieServices ks = KieServices.Factory.get();
 
         try {
-            setSystemProperties(properties);
+            setSystemProperties(properties, log);
 
             final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(projectDir);
 
@@ -107,14 +85,14 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
             dmnCompilerConfiguration.addListener(generatedSource -> {
                 for (GeneratedSource generatedFile : generatedSource) {
                     final Path fileNameRelative = transformPathToMavenPath(generatedFile);
-                    getLog().info("Generating new DMN file: " + generatedFile);
+                    log.info("Generating new DMN file: " + generatedFile);
                     classNameSourceMap.put(getCompiledClassName(fileNameRelative), generatedFile.getSourceContent());
                 }
             });
 
             InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModuleIgnoringErrors();
             List<String> dmnFiles = getDMNFIles(kieModule);
-            getLog().info("dmnFiles to process: " + dmnFiles);
+            log.info("dmnFiles to process: " + dmnFiles);
 
             DMNAssemblerService assemblerService = new DMNAssemblerService(dmnCompilerConfiguration);
             KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -123,20 +101,20 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
                 compileDMNFile(kieModule, assemblerService, knowledgeBuilder, dmnFile);
             }
 
-            createDMNFile(classNameSourceMap.keySet());
+            createDMNFile(targetDirectory, classNameSourceMap.keySet());
 
             compileAndWriteClasses(targetDirectory, contextClassLoader,
-                                   javaCompilerSettings, getCompilerType(), classNameSourceMap, dumpKieSourcesFolder);
+                                   javaCompilerSettings,compilerType, classNameSourceMap, dumpKieSourcesFolder);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
 
-        getLog().info("DMN Model successfully generated");
+        log.info("DMN Model successfully generated");
     }
 
-    private void createDMNFile(Collection<String> compiledClassNames) {
+    private static void createDMNFile( File targetDirectory, Collection<String> compiledClassNames) {
         final Path dmnCompiledClassFile = Paths.get(targetDirectory.getPath(), "classes", RULE_CLASS_FILE_NAME);
 
         try {
@@ -149,11 +127,11 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
         }
     }
 
-    private List<String> getDMNFIles(InternalKieModule kieModule) {
+    private static List<String> getDMNFIles(InternalKieModule kieModule) {
         return getFilesByType(kieModule, "dmn");
     }
 
-    private void compileDMNFile(InternalKieModule kieModule, DMNAssemblerService assemblerService,
+    private static void compileDMNFile(InternalKieModule kieModule, DMNAssemblerService assemblerService,
                                 KnowledgeBuilder knowledgeBuilder, String dmnFile) throws Exception {
         Resource resource = kieModule.getResource(dmnFile);
         ResourceConfiguration resourceConfiguration = kieModule.getResourceConfiguration(dmnFile);
@@ -167,13 +145,13 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
                                                 Collections.singletonList(resourceWithConfiguration), ResourceType.DMN);
     }
 
-    private String getCompiledClassName(Path fileNameRelative) {
+    private static String getCompiledClassName(Path fileNameRelative) {
         return fileNameRelative.toString()
                 .replace("/", ".")
                 .replace(".java", "");
     }
 
-    private Path transformPathToMavenPath(GeneratedSource generatedFile) {
+    private static Path transformPathToMavenPath(GeneratedSource generatedFile) {
         Path fileName = Paths.get(generatedFile.getFileName());
         Path originalFilePath = Paths.get("src/main/java");
         final Path fileNameRelative;

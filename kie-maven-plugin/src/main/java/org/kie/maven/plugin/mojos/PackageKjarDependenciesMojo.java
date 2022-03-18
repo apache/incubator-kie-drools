@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.io.Files;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
@@ -38,6 +39,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -61,30 +63,19 @@ import org.apache.maven.shared.dependencies.resolve.DependencyResolverException;
 import org.apache.maven.shared.utils.StringUtils;
 import org.apache.maven.shared.utils.WriterFactory;
 import org.apache.maven.shared.utils.io.IOUtil;
-
-import com.google.common.io.Files;
 import org.kie.maven.plugin.ArtifactItem;
-import org.kie.maven.plugin.mojos.AbstractKieMojo;
+import org.kie.maven.plugin.KieMavenPluginContext;
 
 @Mojo(name = "package-dependencies-kjar",
-      defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
-      threadSafe = true,
-      requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
+        defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
+        threadSafe = true,
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class PackageKjarDependenciesMojo extends AbstractKieMojo {
 
     private static final Pattern ALT_REPO_SYNTAX_PATTERN = Pattern.compile("(.+)::(.*)::(.+)");
 
-    @Parameter(defaultValue = "${project.build.outputDirectory}", required = true, readonly = true)
-    private String outputDirectory;
-
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    private MavenProject project;
-
     @Parameter
     private String classifier;
-
-    @Parameter(defaultValue = "${session}", readonly = true, required = true)
-    private MavenSession session;
 
     @Component
     private ProjectBuilder projectBuilder;
@@ -115,11 +106,15 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        Log log = getLog();
+        if (artifactItems == null || artifactItems.isEmpty()) {
+            log.info("Skipping plugin execution");
+            return;
+        }
+        final KieMavenPluginContext kieMavenPluginContext = getKieMavenPluginContext();
+        final MavenSession mavenSession = kieMavenPluginContext.getMavenSession();
+        final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
         try {
-            if (artifactItems == null || artifactItems.isEmpty()) {
-                getLog().info("Skipping plugin execution");
-                return;
-            }
 
             ArtifactRepositoryPolicy always =
                     new ArtifactRepositoryPolicy(true, ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS,
@@ -135,7 +130,7 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
                 // Use the same format as in the deploy plugin id::layout::url
                 String[] repos = StringUtils.split(remoteRepositories, ",");
                 for (String repo : repos) {
-                    repoList.add(parseRepository(repo, always));
+                    repoList.add(parseRepository(repo, always, repositoryLayouts));
                 }
             }
 
@@ -143,45 +138,51 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
             if (!outputFolder.exists()) {
                 outputFolder.mkdirs();
             }
-            getLog().info("Create directory: " + outputFolder);
+            log.info("Create directory: " + outputFolder);
 
             Set<Artifact> artifacts = new HashSet<>();
             for (ArtifactItem artifactItem : artifactItems) {
-                Artifact kjar = resolveArtifact(toArtifactCoordinate(artifactItem), repoList);
-                getLog().info("Resolved kjar " + kjar + " dependency");
+                ArtifactCoordinate coordinate = toArtifactCoordinate(artifactItem, artifactHandlerManager);
+                Artifact kjar = resolveArtifact(coordinate, artifactResolver, repoList, mavenSession,
+                                                repositorySystem, log);
+                log.info("Resolved kjar " + kjar + " dependency");
                 artifacts.add(kjar);
-
-                ProjectBuildingRequest buildingRequest = buildMavenRequest(repoList);
-                Iterable<ArtifactResult> results = dependencyResolver.resolveDependencies(buildingRequest, toDefaultDependableCoordinate(kjar), null);
+                ProjectBuildingRequest buildingRequest = buildMavenRequest(repoList, mavenSession, repositorySystem);
+                Iterable<ArtifactResult> results = dependencyResolver.resolveDependencies(buildingRequest,
+                                                                                          toDefaultDependableCoordinate(kjar), null);
                 for (ArtifactResult result : results) {
-                    Artifact kjarDependency = resolveArtifact(toArtifactCoordinate(result.getArtifact()), repoList);
+                    coordinate = toArtifactCoordinate(result.getArtifact(), artifactHandlerManager);
+                    Artifact kjarDependency = resolveArtifact(coordinate, artifactResolver, repoList, mavenSession,
+                                                              repositorySystem,
+                                                              log);
                     artifacts.add(kjarDependency);
                 }
             }
 
-            for(Artifact artifact : artifacts) {
-                getLog().info("Copying artifact and creating effective pom: " + artifact);
-                writeEffectivePom(projectBuilder.build(artifact, session.getProjectBuildingRequest()).getProject(), new File(outputFolder, toFile(artifact)));
+            for (Artifact artifact : artifacts) {
+                log.info("Copying artifact and creating effective pom: " + artifact);
+                writeEffectivePom(projectBuilder.build(artifact, mavenSession.getProjectBuildingRequest()).getProject(),
+                                  new File(outputFolder, toFile(artifact)),
+                                  log);
                 File local = artifact.getFile();
                 Files.copy(local, new File(outputFolder, local.getName()));
             }
         } catch (IOException | ArtifactResolverException | DependencyResolverException | ProjectBuildingException e) {
             throw new MojoExecutionException("Couldn't download artifact: " + e.getMessage(), e);
         }
-
     }
 
-    private String toFile(Artifact kjarDependency) {
+    private static String toFile(Artifact kjarDependency) {
         return kjarDependency.getArtifactId() + "-" + kjarDependency.getVersion() + ".pom";
     }
 
-    private File writeEffectivePom(MavenProject mavenProject, File output) throws MojoExecutionException {
+    private static File writeEffectivePom(MavenProject mavenProject, File output, Log log) throws MojoExecutionException {
         Model m = mavenProject.getModel();
         Writer writer = null;
         try {
             writer = WriterFactory.newXmlWriter(output);
             new MavenXpp3Writer().write(writer, m);
-            getLog().debug("Written effective pom at:" + output.getAbsolutePath());
+            log.debug("Written effective pom at:" + output.getAbsolutePath());
             return output;
         } catch (IOException e) {
             throw new MojoExecutionException("Error writing file: " + e.getMessage(), e);
@@ -190,19 +191,21 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
         }
     }
 
-
-    private Artifact resolveArtifact(ArtifactCoordinate artifact, List<ArtifactRepository> repoList) throws ArtifactResolverException {
-        ProjectBuildingRequest buildingRequest = buildMavenRequest(repoList);
-        getLog().debug("resolving kjar dependency: " + artifact);
+    private static Artifact resolveArtifact(ArtifactCoordinate artifact, ArtifactResolver artifactResolver,
+                                            List<ArtifactRepository> repoList, MavenSession mavenSession,
+                                            RepositorySystem repositorySystem, Log log) throws ArtifactResolverException {
+        ProjectBuildingRequest buildingRequest = buildMavenRequest(repoList, mavenSession, repositorySystem);
+        log.debug("resolving kjar dependency: " + artifact);
         ArtifactResult artifactResolverResult = artifactResolver.resolveArtifact(buildingRequest, artifact);
-        Artifact artifactResolved = artifactResolverResult.getArtifact();
-        return artifactResolved;
+        return artifactResolverResult.getArtifact();
     }
 
-
-    private ProjectBuildingRequest buildMavenRequest(List<ArtifactRepository> repoList) {
-        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
-        Settings settings = session.getSettings();
+    private static ProjectBuildingRequest buildMavenRequest(List<ArtifactRepository> repoList,
+                                                            MavenSession mavenSession,
+                                                            RepositorySystem repositorySystem) {
+        ProjectBuildingRequest buildingRequest =
+                new DefaultProjectBuildingRequest(mavenSession.getProjectBuildingRequest());
+        Settings settings = mavenSession.getSettings();
         repositorySystem.injectMirror(repoList, settings.getMirrors());
         repositorySystem.injectProxy(repoList, settings.getProxies());
         repositorySystem.injectAuthentication(repoList, settings.getServers());
@@ -210,7 +213,8 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
         return buildingRequest;
     }
 
-    private ArtifactCoordinate toArtifactCoordinate(Artifact artifact) {
+    private static ArtifactCoordinate toArtifactCoordinate(Artifact artifact,
+                                                           ArtifactHandlerManager artifactHandlerManager) {
         ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler(artifact.getType());
         DefaultArtifactCoordinate gav = new DefaultArtifactCoordinate();
         gav.setGroupId(artifact.getGroupId());
@@ -221,7 +225,8 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
         return gav;
     }
 
-    private ArtifactCoordinate toArtifactCoordinate(ArtifactItem artifact) {
+    private static ArtifactCoordinate toArtifactCoordinate(ArtifactItem artifact,
+                                                           ArtifactHandlerManager artifactHandlerManager) {
         ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler(artifact.getType());
         DefaultArtifactCoordinate gav = new DefaultArtifactCoordinate();
         gav.setGroupId(artifact.getGroupId());
@@ -232,7 +237,7 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
         return gav;
     }
 
-    private DefaultDependableCoordinate toDefaultDependableCoordinate(Artifact artifact){
+    private static DefaultDependableCoordinate toDefaultDependableCoordinate(Artifact artifact) {
         DefaultDependableCoordinate gav = new DefaultDependableCoordinate();
         gav.setArtifactId(artifact.getArtifactId());
         gav.setGroupId(artifact.getGroupId());
@@ -242,10 +247,11 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
         return gav;
     }
 
-    private ArtifactRepository parseRepository(String repo, ArtifactRepositoryPolicy policy) throws MojoFailureException {
+    private static ArtifactRepository parseRepository(String repo, ArtifactRepositoryPolicy policy, Map<String,
+            ArtifactRepositoryLayout> repositoryLayouts) throws MojoFailureException {
         // if it's a simple url
         String id = "temp";
-        ArtifactRepositoryLayout layout = getLayout("default");
+        ArtifactRepositoryLayout layout = getLayout("default", repositoryLayouts);
         String url = repo;
 
         // if it's an extended repo URL of the form id::layout::url
@@ -258,14 +264,15 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
 
             id = matcher.group(1).trim();
             if (!StringUtils.isEmpty(matcher.group(2))) {
-                layout = getLayout(matcher.group(2).trim());
+                layout = getLayout(matcher.group(2).trim(), repositoryLayouts);
             }
             url = matcher.group(3).trim();
         }
         return new MavenArtifactRepository(id, url, layout, policy, policy);
     }
 
-    private ArtifactRepositoryLayout getLayout(String id) throws MojoFailureException {
+    private static ArtifactRepositoryLayout getLayout(String id,
+                                                      Map<String, ArtifactRepositoryLayout> repositoryLayouts) throws MojoFailureException {
         ArtifactRepositoryLayout layout = repositoryLayouts.get(id);
 
         if (layout == null) {
@@ -274,6 +281,4 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
 
         return layout;
     }
-
-
 }

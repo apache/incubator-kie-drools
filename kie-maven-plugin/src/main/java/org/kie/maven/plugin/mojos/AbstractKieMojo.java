@@ -15,14 +15,16 @@
 
 package org.kie.maven.plugin.mojos;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.apache.maven.project.MavenProject;
+import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParameterEnabled;
@@ -30,53 +32,83 @@ import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParamete
 public abstract class AbstractKieMojo extends AbstractMojo {
 
     @Parameter(property = "dumpKieSourcesFolder", defaultValue = "")
-    protected String dumpKieSourcesFolder;
+    private String dumpKieSourcesFolder;
 
-    @Parameter(property = "generateModel", defaultValue = "YES_WITHDRL") // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
+    @Parameter(property = "generateModel", defaultValue = "YES_WITHDRL")
+    // DROOLS-5663 align kie-maven-plugin default value for generateModel configuration flag
     private String generateModel;
 
-
-    @Parameter(property = "javaCompiler", defaultValue = "ecj")
-    private String javaCompiler;
+    @Parameter(property = "generateDMNModel", defaultValue = "no")
+    private String generateDMNModel;
 
     @Parameter(required = true, defaultValue = "${project.build.resources}")
     protected List<Resource> resources;
 
     @Parameter(property = "validateDMN", defaultValue = "VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE")
-    private String validateDMN;
+    protected String validateDMN;
 
-    public String getValidateDMN() {
-        return validateDMN;
+    @Parameter(required = true, defaultValue = "${project.basedir}")
+    private File projectDir;
+
+    @Parameter(required = true, defaultValue = "${project.build.directory}")
+    private File targetDirectory;
+
+    @Parameter
+    private Map<String, String> properties;
+
+    @Parameter(required = true, defaultValue = "${project}")
+    private MavenProject project;
+
+    @Parameter(defaultValue = "${session}", required = true, readonly = true)
+    private MavenSession mavenSession;
+
+    @Parameter(defaultValue = "${project.resources}", required = true, readonly = true)
+    private List<org.apache.maven.model.Resource> resourcesDirectories;
+
+    /**
+     * Directory containing the generated JAR.
+     */
+    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
+    private File outputDirectory;
+
+    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
+    private File testDir;
+
+    /**
+     * Project resources folder.
+     */
+    @Parameter(required = true, defaultValue = "src/main/resources")
+    private File resourceFolder;
+
+    @Parameter(property = "javaCompiler", defaultValue = "ecj")
+    private String javaCompiler;
+
+    protected KieMavenPluginContext getKieMavenPluginContext() {
+        return new KieMavenPluginContext(dumpKieSourcesFolder,
+                                         generateModel,
+                                         generateDMNModel,
+                                         resources,
+                                         validateDMN,
+                                         projectDir,
+                                         targetDirectory,
+                                         properties,
+                                         project,
+                                         mavenSession,
+                                         resourcesDirectories,
+                                         outputDirectory,
+                                         testDir,
+                                         resourceFolder,
+                                         isModelParameterEnabled(),
+                                         getCompilerType(),
+                                         getLog());
     }
 
-    public String getGenerateModelOption() {
-        return generateModel;
-    }
-
-    protected boolean isModelParameterEnabled() {
+    private boolean isModelParameterEnabled() {
         return execModelParameterEnabled(generateModel);
     }
 
-    protected JavaConfiguration.CompilerType getCompilerType() {
-        return javaCompiler.equalsIgnoreCase("native") ? JavaConfiguration.CompilerType.NATIVE : JavaConfiguration.CompilerType.ECLIPSE;
+    private JavaConfiguration.CompilerType getCompilerType() {
+        return javaCompiler.equalsIgnoreCase("native") ? JavaConfiguration.CompilerType.NATIVE :
+                JavaConfiguration.CompilerType.ECLIPSE;
     }
-
-    protected void setSystemProperties(Map<String, String> properties) {
-
-        if (properties != null) {
-            getLog().debug("Additional system properties: " + properties);
-            for (Map.Entry<String, String> property : properties.entrySet()) {
-                System.setProperty(property.getKey(), property.getValue());
-            }
-            getLog().debug("Configured system properties were successfully set.");
-        }
-    }
-
-    protected List<String> getFilesByType(InternalKieModule kieModule, String fileType) {
-        return kieModule.getFileNames()
-                .stream()
-                .filter(f -> f.endsWith(fileType))
-                .collect(Collectors.toList());
-    }
-
 }
