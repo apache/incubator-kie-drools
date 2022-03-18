@@ -159,65 +159,73 @@
         <version.io.swagger>1.6.2</version.io.swagger>
         <version.io.swagger.core.v3>2.0.6</version.io.swagger.core.v3>
         <version.io.swagger.parser.v3>2.0.6</version.io.swagger.parser.v3>
-        <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
-        <version.org.xmlunit>2.8.2</version.org.xmlunit>
-        <!-- The version greater than 1.0.0.GA is not compatible with GWT 2.8.x -->
-        <!-- therefore the property is rewritten in that repository parent -->
-        <version.javax.validation>2.0.1.Final</version.javax.validation>
-        <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
-        <!-- DROOLS-6678: only used by kie-test-util -->
-        <version.simple-jndi>0.11.4.1</version.simple-jndi>
-        <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
-        <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
-        <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-        <version.org.mockito>3.12.4</version.org.mockito>
-        <!-- Version of JMH -->
-        <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
+      <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
+      <version.org.xmlunit>2.8.2</version.org.xmlunit>
+      <!-- The version greater than 1.0.0.GA is not compatible with GWT 2.8.x -->
+      <!-- therefore the property is rewritten in that repository parent -->
+      <version.javax.validation>2.0.1.Final</version.javax.validation>
+      <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
+      <!-- DROOLS-6678: only used by kie-test-util -->
+      <version.simple-jndi>0.11.4.1</version.simple-jndi>
+      <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
+      <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
+      <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
+      <version.org.mockito>3.12.4</version.org.mockito>
+      <!-- Version of JMH -->
+      <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
-        <!-- In community builds productized is false, in product builds it's true to enable branding changes -->
-        <org.kie.productized>false</org.kie.productized>
+      <!-- In community builds productized is false, in product builds it's true to enable branding changes -->
+      <org.kie.productized>false</org.kie.productized>
 
-        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+      <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 
-        <!-- This property needs to be defined in all modules that use the packaging 'jar' or 'bundle'. It is
-             being used by different plugins to make sure the module/bundle names are consistent. -->
-        <java.module.name/>
+      <!-- This property needs to be defined in all modules that use the packaging 'jar' or 'bundle'. It is
+           being used by different plugins to make sure the module/bundle names are consistent. -->
+      <java.module.name/>
 
-        <!-- Plugin version overrides.
-             IMPORTANT: always explain the reason for overriding the plugin version! -->
-        <!-- Surefire version 2.19.1 coming from parent is buggy and kie-osgi tests in droolsjbpm-integration are failing because of that. -->
-        <version.surefire.plugin>2.22.1</version.surefire.plugin>
-        <!-- Jacoco plugin configurations -->
-        <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
-        <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
-        <version.jacoco.plugin>0.8.7</version.jacoco.plugin>
-        <!-- TODO: remove this once all repositories comply to the defined checkstyle rules -->
-        <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
-        <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
-        <checkstyle.header.template>.*</checkstyle.header.template>
-        <checkstyle.header.extensions>java</checkstyle.header.extensions>
-        <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
-        <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
-        <!-- Set to "true" on every project that has no violations. -->
-        <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
-        <!-- replaces findbugs-maven-plugin -->
-        <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
-        <version.org.jboss.maven.plugins.maven-jdocbook-plugin>2.3.9</version.org.jboss.maven.plugins.maven-jdocbook-plugin>
+      <!-- Plugin version overrides.
+           IMPORTANT: always explain the reason for overriding the plugin version! -->
+      <!-- Surefire version 2.19.1 coming from parent is buggy and kie-osgi tests in droolsjbpm-integration are failing because of that. -->
+      <version.surefire.plugin>2.22.1</version.surefire.plugin>
+      <!-- Add for kie-maven-plugin -->
+      <version.plugin.plugin>3.6.4</version.plugin.plugin>
+      <version.plugin.annotations>3.4</version.plugin.annotations>
+      <version.artifact.transfer>0.9.1</version.artifact.transfer>
+      <version.shared.utils>3.2.1</version.shared.utils>
+      <version.common.compress>1.21</version.common.compress>
+      <version.common.exec>1.3</version.common.exec>
+      <!-- -->
+      <!-- Jacoco plugin configurations -->
+      <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
+      <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
+      <version.jacoco.plugin>0.8.7</version.jacoco.plugin>
+      <!-- TODO: remove this once all repositories comply to the defined checkstyle rules -->
+      <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+      <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
+      <checkstyle.header.template>.*</checkstyle.header.template>
+      <checkstyle.header.extensions>java</checkstyle.header.extensions>
+      <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+      <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
+      <!-- Set to "true" on every project that has no violations. -->
+      <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
+      <!-- replaces findbugs-maven-plugin -->
+      <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
+      <version.org.jboss.maven.plugins.maven-jdocbook-plugin>2.3.9</version.org.jboss.maven.plugins.maven-jdocbook-plugin>
 
-        <maven.min.version>3.8.1</maven.min.version>
-        <!-- Important: this is one and only place where the supported user agents (browsers) are configured.
-             All webapps/showcases must use this property in their *.gwt.xml files.
-             We only need to support IE11+, but there is no ie11 permutation. IE11 will use the Firefox one (gecko1_8) -->
-        <gwt.user.agent.all>gecko1_8,safari</gwt.user.agent.all>
-        <!-- Number of GWT compiler worker processes. Defined as property so that it can be easily overridden from cmd line.
-             Default value is 1 to enable building on older machines as well (minimum is still about 4GiB of RAM memory). -->
-        <gwt.compiler.localWorkers>1</gwt.compiler.localWorkers>
-        <!-- property for productisation to know the last released version -->
-        <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
+      <maven.min.version>3.8.1</maven.min.version>
+      <!-- Important: this is one and only place where the supported user agents (browsers) are configured.
+           All webapps/showcases must use this property in their *.gwt.xml files.
+           We only need to support IE11+, but there is no ie11 permutation. IE11 will use the Firefox one (gecko1_8) -->
+      <gwt.user.agent.all>gecko1_8,safari</gwt.user.agent.all>
+      <!-- Number of GWT compiler worker processes. Defined as property so that it can be easily overridden from cmd line.
+           Default value is 1 to enable building on older machines as well (minimum is still about 4GiB of RAM memory). -->
+      <gwt.compiler.localWorkers>1</gwt.compiler.localWorkers>
+      <!-- property for productisation to know the last released version -->
+      <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
 
-        <version.compiler.plugin>3.8.1</version.compiler.plugin>
+      <version.compiler.plugin>3.8.1</version.compiler.plugin>
 
-        <version.net.byte-buddy>1.10.3</version.net.byte-buddy>
+      <version.net.byte-buddy>1.10.3</version.net.byte-buddy>
 
         <version.org.postgresql>42.2.23</version.org.postgresql>
 
@@ -710,26 +718,37 @@
                 <exclusions>
                     <exclusion>
                         <groupId>org.glassfish</groupId>
-                        <artifactId>javax.json</artifactId>
+                      <artifactId>javax.json</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>${version.org.apache.ant}</version>
-            </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>${version.org.apache.ant}</version>
+          </dependency>
 
-            <!-- Keep in sync with groupId commons-* -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${version.org.apache.commons.lang3}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-math3</artifactId>
+          <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${version.common.compress}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>${version.common.exec}</version>
+          </dependency>
+
+          <!-- Keep in sync with groupId commons-* -->
+          <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${version.org.apache.commons.lang3}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
                 <version>${version.org.apache.commons.math3}</version>
             </dependency>
 
@@ -812,46 +831,62 @@
                 <artifactId>maven-compat</artifactId>
                 <version>${version.org.apache.maven}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-aether-provider</artifactId>
-                <version>${version.org.apache.maven}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-repository-metadata</artifactId>
-                <version>${version.org.apache.maven}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-settings</artifactId>
-                <version>${version.org.apache.maven}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-settings-builder</artifactId>
-                <version>${version.org.apache.maven}</version>
-            </dependency>
-            <dependency><!-- Overwrites transitive dependencies of maven-plugin-api:3.0.3 with a lower version -->
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-provider-api</artifactId>
-                <version>${version.org.apache.maven.wagon}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-http</artifactId>
-                <version>${version.org.apache.maven.wagon}</version>
-            </dependency>
+          <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-aether-provider</artifactId>
+            <version>${version.org.apache.maven}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-repository-metadata</artifactId>
+            <version>${version.org.apache.maven}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-settings</artifactId>
+            <version>${version.org.apache.maven}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-settings-builder</artifactId>
+            <version>${version.org.apache.maven}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>${version.plugin.annotations}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-artifact-transfer</artifactId>
+            <version>${version.artifact.transfer}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-shared-utils</artifactId>
+            <version>${version.shared.utils}</version>
+          </dependency>
 
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi</artifactId>
-                <version>${version.org.apache.poi}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi-ooxml</artifactId>
-                <version>${version.org.apache.poi}</version>
+          <dependency><!-- Overwrites transitive dependencies of maven-plugin-api:3.0.3 with a lower version -->
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-provider-api</artifactId>
+            <version>${version.org.apache.maven.wagon}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http</artifactId>
+            <version>${version.org.apache.maven.wagon}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${version.org.apache.poi}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${version.org.apache.poi}</version>
             </dependency>
 
             <dependency>
@@ -2240,68 +2275,74 @@
                                     <exclude>**/logback-test.xml</exclude>
                                     <exclude>**/jndi.properties</exclude>
                                 </excludes>
-                                <archive>
-                                    <manifestEntries>
-                                        <Bundle-SymbolicName>${java.module.name}.tests</Bundle-SymbolicName>
-                                        <Bundle-Version>
-                                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                                        </Bundle-Version>
-                                        <Bundle-Name>${project.name}</Bundle-Name>
-                                        <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                                    </manifestEntries>
-                                </archive>
+                              <archive>
+                                <manifestEntries>
+                                  <Bundle-SymbolicName>${java.module.name}.tests</Bundle-SymbolicName>
+                                  <Bundle-Version>
+                                    ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                                  </Bundle-Version>
+                                  <Bundle-Name>${project.name}</Bundle-Name>
+                                  <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                                </manifestEntries>
+                              </archive>
                             </configuration>
                         </execution>
                     </executions>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
-                        </archive>
-                    </configuration>
+                  <configuration>
+                    <archive>
+                      <manifest>
+                        <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                      </manifest>
+                    </archive>
+                  </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${version.source.plugin}</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                            <configuration>
-                                <archive>
-                                    <manifestEntries>
-                                        <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                                        <Bundle-SymbolicName>${java.module.name}.source</Bundle-SymbolicName>
-                                        <Bundle-Version>
-                                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                                        </Bundle-Version>
-                                        <Bundle-Name>${project.name}</Bundle-Name>
-                                        <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                                        <Eclipse-SourceBundle>
-                                            ${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
-                                        </Eclipse-SourceBundle>
-                                    </manifestEntries>
-                                </archive>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>attach-test-sources</id>
-                            <goals>
-                                <goal>test-jar-no-fork</goal>
-                            </goals>
-                            <configuration>
-                                <archive>
-                                    <manifestEntries>
-                                        <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                                        <Bundle-SymbolicName>${java.module.name}.tests.source</Bundle-SymbolicName>
-                                        <Bundle-Version>
-                                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                                        </Bundle-Version>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${version.plugin.plugin}</version>
+              </plugin>
+
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${version.source.plugin}</version>
+                <executions>
+                  <execution>
+                    <id>attach-sources</id>
+                    <goals>
+                      <goal>jar-no-fork</goal>
+                    </goals>
+                    <configuration>
+                      <archive>
+                        <manifestEntries>
+                          <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                          <Bundle-SymbolicName>${java.module.name}.source</Bundle-SymbolicName>
+                          <Bundle-Version>
+                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                          </Bundle-Version>
+                          <Bundle-Name>${project.name}</Bundle-Name>
+                          <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                          <Eclipse-SourceBundle>
+                            ${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
+                          </Eclipse-SourceBundle>
+                        </manifestEntries>
+                      </archive>
+                    </configuration>
+                  </execution>
+                  <execution>
+                    <id>attach-test-sources</id>
+                    <goals>
+                      <goal>test-jar-no-fork</goal>
+                    </goals>
+                    <configuration>
+                      <archive>
+                        <manifestEntries>
+                          <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                          <Bundle-SymbolicName>${java.module.name}.tests.source</Bundle-SymbolicName>
+                          <Bundle-Version>
+                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                          </Bundle-Version>
                                         <Bundle-Name>${project.name}</Bundle-Name>
                                         <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
                                         <Eclipse-SourceBundle>
