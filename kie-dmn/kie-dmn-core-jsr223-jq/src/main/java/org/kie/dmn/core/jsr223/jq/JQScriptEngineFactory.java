@@ -26,7 +26,7 @@ public class JQScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getMimeTypes() {
-        return Arrays.asList("code/jq");
+        return Arrays.asList("text/x.jq");
     }
 
     @Override
