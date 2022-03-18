@@ -17,6 +17,7 @@
 package org.optaplanner.examples.cloudbalancing.swingui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.LinkedHashMap;
@@ -44,11 +45,13 @@ import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteProcessPro
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/cloudbalancing/swingui/cloudBalancingLogo.png";
 
+    private final TangoColorFactory processColorFactory;
     private final ImageIcon cloudComputerIcon;
     private final ImageIcon addCloudComputerIcon;
     private final ImageIcon deleteCloudComputerIcon;
@@ -66,6 +69,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
     private int maximumComputerNetworkBandwidth;
 
     public CloudBalancingPanel() {
+        processColorFactory = new TangoColorFactory();
         cloudComputerIcon = new ImageIcon(getClass().getResource("cloudComputer.png"));
         addCloudComputerIcon = new ImageIcon(getClass().getResource("addCloudComputer.png"));
         deleteCloudComputerIcon = new ImageIcon(getClass().getResource("deleteCloudComputer.png"));
@@ -83,6 +87,10 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(computersPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE));
+    }
+
+    public Color getCloudProcessColor(CloudProcess process) {
+        return processColorFactory.pickColor(process.getLabel());
     }
 
     public ImageIcon getCloudComputerIcon() {
