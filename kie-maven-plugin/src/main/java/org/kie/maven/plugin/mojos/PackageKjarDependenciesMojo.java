@@ -166,9 +166,9 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
                                   new File(outputFolder, toFile(artifact)),
                                   log);
                 File local = artifact.getFile();
-                FileOutputStream fos = new FileOutputStream(new File(outputFolder, local.getName()));
-                Files.copy(local.toPath(), fos);
-                fos.close();
+                try (FileOutputStream fos = new FileOutputStream(new File(outputFolder, local.getName()))) {
+                    Files.copy(local.toPath(), fos);
+                }
             }
         } catch (IOException | ArtifactResolverException | DependencyResolverException | ProjectBuildingException e) {
             throw new MojoExecutionException("Couldn't download artifact: " + e.getMessage(), e);

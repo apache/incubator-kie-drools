@@ -12,18 +12,10 @@
     <name>Drools :: Quarkus Extension :: Integration Test</name>
     <artifactId>drools-quarkus-integration-test</artifactId>
 
-    <properties>
-        <quarkus.test.list.include>true</quarkus.test.list.include>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-quarkus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-api</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

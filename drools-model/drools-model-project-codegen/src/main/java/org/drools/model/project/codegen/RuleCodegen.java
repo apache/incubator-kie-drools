@@ -22,7 +22,6 @@ import java.util.Objects;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.model.project.codegen.context.DroolsModelBuildContext;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,9 +99,5 @@ public class RuleCodegen {
     public RuleCodegen withHotReloadMode() {
         hotReloadMode = true;
         return this;
-    }
-
-    private static boolean isRuleFile(Resource resource) {
-        return resource.getResourceType() == ResourceType.DRL || resource.getResourceType() == ResourceType.DTABLE;
     }
 }
