@@ -16,11 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.common;
 
-import org.optaplanner.core.api.score.Score;
-
 public interface BavetJoinConstraintStream<Solution_> {
-
-    BavetJoinNode createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetJoinBridgeNode leftNode, BavetJoinBridgeNode rightNode);
 
 }

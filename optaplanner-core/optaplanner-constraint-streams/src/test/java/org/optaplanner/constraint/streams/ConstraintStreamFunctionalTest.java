@@ -18,7 +18,7 @@ package org.optaplanner.constraint.streams;
 
 /**
  * Defines methods that every constraint stream test must have.
- * These methods are enforced because will test each method of the API for basic functionality.
+ * These methods are enforced because they test each method of the API for basic functionality.
  */
 public interface ConstraintStreamFunctionalTest {
 

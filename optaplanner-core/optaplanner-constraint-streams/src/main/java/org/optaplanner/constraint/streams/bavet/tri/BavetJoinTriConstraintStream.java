@@ -16,33 +16,45 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetAbstractBiConstraintStream;
-import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBridgeBiNode;
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeNode;
+import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
+import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniNode;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.Score;
 
-public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
+public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
+        extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
         implements BavetJoinConstraintStream<Solution_> {
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> leftParent;
     private final BavetAbstractUniConstraintStream<Solution_, C> rightParent;
 
+    private final BiFunction<A, B, Object[]> leftMapping;
+    private final Function<C, Object[]> rightMapping;
+    private final IndexerFactory indexerFactory;
+
     public BavetJoinTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> leftParent,
-            BavetAbstractUniConstraintStream<Solution_, C> rightParent) {
+            BavetAbstractUniConstraintStream<Solution_, C> rightParent,
+            BiFunction<A, B, Object[]> leftMapping, Function<C, Object[]> rightMapping,
+            IndexerFactory indexerFactory) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
+        this.leftMapping = leftMapping;
+        this.rightMapping = rightMapping;
+        this.indexerFactory = indexerFactory;
     }
 
     @Override
@@ -50,40 +62,40 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
         return leftParent.guaranteesDistinct() && rightParent.guaranteesDistinct();
     }
 
-    @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return Stream.concat(leftParent.getFromStreamList().stream(),
-                rightParent.getFromStreamList().stream())
-                .collect(Collectors.toList());
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    public BavetJoinTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
-        BavetJoinBridgeBiNode<A, B> leftNode = (BavetJoinBridgeBiNode<A, B>) leftNode_;
-        BavetJoinBridgeUniNode<C> rightNode = (BavetJoinBridgeUniNode<C>) rightNode_;
-        BavetJoinTriNode<A, B, C> node = new BavetJoinTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
-                leftNode, rightNode);
-        leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
-        rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
-        node = (BavetJoinTriNode<A, B, C>) processNode(buildPolicy, null, node); // TODO Sharing never happens
-        createChildNodeChains(buildPolicy, constraintWeight, node);
-        return node;
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        leftParent.collectActiveConstraintStreams(constraintStreamSet);
+        rightParent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
     }
 
     @Override
-    protected BavetJoinTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
-        throw new IllegalStateException("Impossible state: this code is never called.");
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
+        JoinTriNode<A, B, C> node = new JoinTriNode<>(leftMapping, rightMapping,
+                insert, retract,
+                indexerAB, indexerC);
+        buildHelper.addNode(node);
+        buildHelper.putInsertRetract(leftParent, node::insertAB, node::retractAB);
+        buildHelper.putInsertRetract(rightParent, node::insertC, node::retractC);
     }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
 
     @Override
     public String toString() {
-        return "Join() with " + childStreamList.size() + " children";
+        return "TriJoin() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

@@ -17,7 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
 public enum BavetTupleState {
-    NEW(false, true),
+    NEW(false, true), // TODO delete me
     CREATING(true, true),
     UPDATING(true, true),
     /**

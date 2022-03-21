@@ -16,17 +16,18 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
+import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniNode;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B>
@@ -35,12 +36,21 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     private final BavetAbstractUniConstraintStream<Solution_, A> leftParent;
     private final BavetAbstractUniConstraintStream<Solution_, B> rightParent;
 
+    private final Function<A, Object[]> leftMapping;
+    private final Function<B, Object[]> rightMapping;
+    private final IndexerFactory indexerFactory;
+
     public BavetJoinBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> leftParent,
-            BavetAbstractUniConstraintStream<Solution_, B> rightParent) {
+            BavetAbstractUniConstraintStream<Solution_, B> rightParent,
+            Function<A, Object[]> leftMapping, Function<B, Object[]> rightMapping,
+            IndexerFactory indexerFactory) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
+        this.leftMapping = leftMapping;
+        this.rightMapping = rightMapping;
+        this.indexerFactory = indexerFactory;
     }
 
     @Override
@@ -48,40 +58,40 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         return leftParent.guaranteesDistinct() && rightParent.guaranteesDistinct();
     }
 
-    @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return Stream.concat(leftParent.getFromStreamList().stream(),
-                rightParent.getFromStreamList().stream())
-                .collect(Collectors.toList());
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    public BavetJoinBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
-        BavetJoinBridgeUniNode<A> leftNode = (BavetJoinBridgeUniNode<A>) leftNode_;
-        BavetJoinBridgeUniNode<B> rightNode = (BavetJoinBridgeUniNode<B>) rightNode_;
-        BavetJoinBiNode<A, B> node = new BavetJoinBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
-                leftNode, rightNode);
-        leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
-        rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
-        node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, null, node); // TODO Sharing never happens
-        createChildNodeChains(buildPolicy, constraintWeight, node);
-        return node;
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        leftParent.collectActiveConstraintStreams(constraintStreamSet);
+        rightParent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
     }
 
     @Override
-    protected BavetJoinBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
-        throw new IllegalStateException("Impossible state: this code is never called.");
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
+        JoinBiNode<A, B> node = new JoinBiNode<>(leftMapping, rightMapping,
+                insert, retract,
+                indexerA, indexerB);
+        buildHelper.addNode(node);
+        buildHelper.putInsertRetract(leftParent, node::insertA, node::retractA);
+        buildHelper.putInsertRetract(rightParent, node::insertB, node::retractB);
     }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
 
     @Override
     public String toString() {
-        return "Join() with " + childStreamList.size() + " children";
+        return "BiJoin() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

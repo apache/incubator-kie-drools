@@ -31,21 +31,19 @@ class SimpleLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSimple
 
     @Test
     void defaultScore() {
-        TestConstraint<TestdataSimpleLongScoreSolution, SimpleLongScore> constraint =
-                buildConstraint(SimpleLongScore.ONE);
         SimpleLongScoreInliner scoreInliner =
-                new SimpleLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new SimpleLongScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.ZERO);
     }
 
     @Test
     void impact() {
-        TestConstraint<TestdataSimpleLongScoreSolution, SimpleLongScore> constraint =
-                buildConstraint(SimpleLongScore.of(10));
         SimpleLongScoreInliner scoreInliner =
-                new SimpleLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new SimpleLongScoreInliner(constraintMatchEnabled);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        SimpleLongScore constraintWeight = SimpleLongScore.of(10);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleLongScore.of(100));

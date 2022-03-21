@@ -127,7 +127,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         // Build and set the impacters for each constraint; this locks in the constraint weights.
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreInliner<Score_> scoreInliner = AbstractScoreInliner.buildScoreInliner(scoreDefinition,
-                (Map) constraintToWeightMap, constraintMatchEnabled);
+                constraintMatchEnabled);
         Set<String> disabledConstraints = new HashSet<>();
         for (Map.Entry<DroolsConstraint<Solution_>, Score_> entry : constraintToWeightMap.entrySet()) {
             DroolsConstraint<Solution_> constraint = entry.getKey();
@@ -136,7 +136,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
                 disabledConstraints.add(constraint.getConstraintId());
             } else {
                 String globalName = kieBaseDescriptor.getConstraintToGlobalMap().get(constraint).getName();
-                kieSession.setGlobal(globalName, scoreInliner.buildWeightedScoreImpacter(constraint));
+                kieSession.setGlobal(globalName, scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight));
             }
         }
         // Return only the inliner as that holds the work product of the individual impacters.

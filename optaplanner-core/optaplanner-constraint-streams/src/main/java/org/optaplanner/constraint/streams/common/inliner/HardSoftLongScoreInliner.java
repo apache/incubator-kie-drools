@@ -16,8 +16,6 @@
 
 package org.optaplanner.constraint.streams.common.inliner;
 
-import java.util.Map;
-
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 
@@ -26,14 +24,13 @@ final class HardSoftLongScoreInliner extends AbstractScoreInliner<HardSoftLongSc
     private long hardScore;
     private long softScore;
 
-    HardSoftLongScoreInliner(Map<Constraint, HardSoftLongScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled);
+    HardSoftLongScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
-        HardSoftLongScore constraintWeight = getConstraintWeight(constraint);
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, HardSoftLongScore constraintWeight) {
+        validateConstraintWeight(constraint, constraintWeight);
         long hardConstraintWeight = constraintWeight.getHardScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0L) {

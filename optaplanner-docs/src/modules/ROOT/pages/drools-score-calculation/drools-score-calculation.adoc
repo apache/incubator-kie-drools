@@ -94,7 +94,7 @@ To use `File` on the local file system, instead of a classpath resource, add the
 [WARNING]
 ====
 For portability reasons, a classpath resource is recommended over a File.
-An application build on one computer, but used on another computer, might not find the file on the same location.
+An application built on one computer, but used on another computer, might not find the file on the same location.
 Worse, if they use a different Operating System, it is hard to choose a portable file path.
 ====
 

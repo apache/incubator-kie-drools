@@ -30,6 +30,7 @@ import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -51,6 +52,8 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalScoreSolution;
@@ -231,40 +234,105 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @TestTemplate
     public void join_1Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
-        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
-        solution.getEntityGroupList().add(entityGroup);
-        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
-        solution.getEntityList().add(entity1);
+        TestdataLavishValue value1 = solution.getFirstValue();
+        TestdataLavishValue value2 = new TestdataLavishValue("MyValue 2", solution.getFirstValueGroup());
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
+                value2);
         solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                value1);
+        solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntity.class,
-                            equal(TestdataLavishEntity::getEntityGroup))
+                            equal(TestdataLavishEntity::getValue))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatch(solution.getFirstEntity(), solution.getFirstEntity()),
-                assertMatch(solution.getFirstEntity(), entity2),
                 assertMatch(entity1, entity1),
-                assertMatch(entity2, solution.getFirstEntity()),
-                assertMatch(entity2, entity2));
+                assertMatch(entity1, entity3),
+                assertMatch(entity2, entity2),
+                assertMatch(entity3, entity1),
+                assertMatch(entity3, entity3));
 
         // Incremental
-        scoreDirector.beforeProblemPropertyChanged(entity2);
-        entity2.setEntityGroup(entityGroup);
-        scoreDirector.afterProblemPropertyChanged(entity2);
+        scoreDirector.beforeVariableChanged(entity3, "value");
+        entity3.setValue(value2);
+        scoreDirector.afterVariableChanged(entity3, "value");
         assertScore(scoreDirector,
-                assertMatch(solution.getFirstEntity(), solution.getFirstEntity()),
                 assertMatch(entity1, entity1),
+                assertMatch(entity2, entity2),
+                assertMatch(entity2, entity3),
+                assertMatch(entity3, entity2),
+                assertMatch(entity3, entity3));
+
+        // Incremental for which the first change matches a join that doesn't survive the second change
+        scoreDirector.beforeVariableChanged(entity1, "value");
+        entity1.setValue(value2);
+        scoreDirector.afterVariableChanged(entity1, "value");
+        scoreDirector.beforeVariableChanged(entity3, "value");
+        entity3.setValue(value1);
+        scoreDirector.afterVariableChanged(entity3, "value");
+        assertScore(scoreDirector,
+                assertMatch(entity1, entity1),
+                assertMatch(entity2, entity2),
                 assertMatch(entity1, entity2),
                 assertMatch(entity2, entity1),
-                assertMatch(entity2, entity2));
+                assertMatch(entity3, entity3));
+    }
+
+    /**
+     * A join must not presume that left inserts/retracts always happen before right inserts/retracts,
+     * if node sharing is active.
+     * This test triggers a right insert/retract before a left insert/retract.
+     */
+    @TestTemplate
+    public void join_1_mirrored() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1);
+        TestdataLavishValue value1 = solution.getFirstValue();
+        TestdataLavishValue value2 = new TestdataLavishValue("MyValue 2", solution.getFirstValueGroup());
+        solution.getValueList().add(value2);
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(), value2);
+        solution.getEntityList().add(entity2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                TestdataLavishSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        // A.join(B)
+                        factory.forEach(TestdataLavishEntity.class)
+                                .join(TestdataLavishValue.class,
+                                        equal(TestdataLavishEntity::getValue, value -> value))
+                                .penalize("testConstraint1", SimpleScore.ONE),
+                        // B.join(A)
+                        factory.forEach(TestdataLavishValue.class)
+                                .join(TestdataLavishEntity.class,
+                                        equal(value -> value, TestdataLavishEntity::getValue))
+                                .penalize("testConstraint2", SimpleScore.ONE),
+                });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch("testConstraint1", entity1, value1),
+                assertMatch("testConstraint2", value1, entity1),
+                assertMatch("testConstraint1", entity2, value2),
+                assertMatch("testConstraint2", value2, entity2));
+
+        // Incremental
+        scoreDirector.beforeVariableChanged(entity2, "value");
+        entity2.setValue(value1);
+        scoreDirector.afterVariableChanged(entity2, "value");
+        assertScore(scoreDirector,
+                assertMatch("testConstraint1", entity1, value1),
+                assertMatch("testConstraint2", value1, entity1),
+                assertMatch("testConstraint1", entity2, value1),
+                assertMatch("testConstraint2", value1, entity2));
     }
 
     @Override
@@ -541,6 +609,7 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void ifExistsIncludesNullVarsWithFrom() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -753,6 +822,7 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void ifNotExistsIncludesNullVarsWithFrom() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -825,6 +895,36 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
         })).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(Integer.class.getCanonicalName())
                 .hasMessageContaining("assignable from");
+    }
+
+    @TestTemplate
+    public void forEach_polymorphism() {
+        TestdataSolution solution = new TestdataUnannotatedExtendedSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        solution.setValueList(List.of(v1, v2));
+        TestdataUnannotatedExtendedEntity cat = new TestdataUnannotatedExtendedEntity("Cat", v1);
+        TestdataEntity animal = new TestdataEntity("Animal", v1);
+        TestdataUnannotatedExtendedEntity dog = new TestdataUnannotatedExtendedEntity("Dog", v1);
+        solution.setEntityList(List.of(cat, animal, dog));
+
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                TestdataSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEach(TestdataEntity.class)
+                                .penalize("superclassConstraint", SimpleScore.ONE),
+                        factory.forEach(TestdataUnannotatedExtendedEntity.class)
+                                .penalize("subclassConstraint", SimpleScore.ONE)
+                });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch("superclassConstraint", cat),
+                assertMatch("superclassConstraint", animal),
+                assertMatch("superclassConstraint", dog),
+                assertMatch("subclassConstraint", cat),
+                assertMatch("subclassConstraint", dog));
     }
 
     @TestTemplate
@@ -2141,6 +2241,7 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     // ************************************************************************
 
     @TestTemplate
+    @Deprecated(forRemoval = true)
     public void fromIncludesNullWhenNullable() {
         TestdataNullableSolution solution = TestdataNullableSolution.generateSolution();
         TestdataNullableEntity entityWithNull = solution.getEntityList().get(0);

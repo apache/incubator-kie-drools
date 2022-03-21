@@ -33,21 +33,19 @@ class SimpleBigDecimalScoreInlinerTest
 
     @Test
     void defaultScore() {
-        TestConstraint<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> constraint =
-                buildConstraint(SimpleBigDecimalScore.ONE);
         SimpleBigDecimalScoreInliner scoreInliner =
-                new SimpleBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.ZERO);
     }
 
     @Test
     void impact() {
-        TestConstraint<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> constraint =
-                buildConstraint(SimpleBigDecimalScore.of(BigDecimal.valueOf(10)));
         SimpleBigDecimalScoreInliner scoreInliner =
-                new SimpleBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        SimpleBigDecimalScore constraintWeight = SimpleBigDecimalScore.of(BigDecimal.valueOf(10));
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(100)));

@@ -16,11 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 
@@ -46,19 +48,63 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
         return parent.guaranteesDistinct();
     }
 
-    @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetFilterTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
-        return new BavetFilterTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        buildHelper.putInsertRetract(this,
+                new ConditionalTriConsumer<>(predicate, insert),
+                retract);
+    }
+
+    private static final class ConditionalTriConsumer<A, B, C> implements Consumer<TriTuple<A, B, C>> {
+        private final TriPredicate<A, B, C> predicate;
+        private final Consumer<TriTuple<A, B, C>> consumer;
+
+        public ConditionalTriConsumer(TriPredicate<A, B, C> predicate, Consumer<TriTuple<A, B, C>> consumer) {
+            this.predicate = predicate;
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void accept(TriTuple<A, B, C> tuple) {
+            if (predicate.test(tuple.factA, tuple.factB, tuple.factC)) {
+                consumer.accept(tuple);
+            }
+        }
+
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(parent, predicate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetFilterTriConstraintStream) {
+            BavetFilterTriConstraintStream<?, ?, ?, ?> other = (BavetFilterTriConstraintStream<?, ?, ?, ?>) o;
+            return parent == other.parent
+                    && predicate == other.predicate;
+        } else {
+            return false;
+        }
     }
 
     @Override

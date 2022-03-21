@@ -31,21 +31,18 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
 
     @Test
     void defaultScore() {
-        TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
-                buildConstraint(buildScore(1, 1, 1));
         BendableLongScoreInliner scoreInliner =
-                new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+                new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(buildScore(0, 0, 0));
     }
 
     @Test
     void impactHard() {
-        TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
-                buildConstraint(buildScore(90, 0, 0));
-        BendableLongScoreInliner scoreInliner =
-                new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+        BendableLongScoreInliner scoreInliner = new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        BendableLongScore constraintWeight = buildScore(90, 0, 0);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(90, 0, 0));
@@ -65,12 +62,11 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
 
     @Test
     void impactSoft1() {
-        TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
-                buildConstraint(buildScore(0, 90, 0));
-        BendableLongScoreInliner scoreInliner =
-                new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+        BendableLongScoreInliner scoreInliner = new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        BendableLongScore constraintWeight = buildScore(0, 90, 0);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 90, 0));
@@ -90,12 +86,11 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
 
     @Test
     void impactSoft2() {
-        TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
-                buildConstraint(buildScore(0, 0, 90));
-        BendableLongScoreInliner scoreInliner =
-                new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+        BendableLongScoreInliner scoreInliner = new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        BendableLongScore constraintWeight = buildScore(0, 0, 90);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 0, 90));
@@ -115,12 +110,11 @@ class BendableLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataBend
 
     @Test
     void impactAll() {
-        TestConstraint<TestdataBendableLongScoreSolution, BendableLongScore> constraint =
-                buildConstraint(buildScore(10, 100, 1_000));
-        BendableLongScoreInliner scoreInliner =
-                new BendableLongScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+        BendableLongScoreInliner scoreInliner = new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        BendableLongScore constraintWeight = buildScore(10, 100, 1_000);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(100, 1_000, 10_000));

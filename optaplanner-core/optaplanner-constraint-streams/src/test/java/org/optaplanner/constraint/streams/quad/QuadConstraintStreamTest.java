@@ -328,6 +328,7 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     @Disabled("Would cause too many matches to meaningfully assert; cost-benefit ratio is wrong here.")
     public void ifExistsIncludesNullVarsWithFrom() {
     }
@@ -498,6 +499,7 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
 
     @Override
     @TestTemplate
+    @Deprecated(forRemoval = true)
     @Disabled("Would cause too many matches to meaningfully assert; cost-benefit ratio is wrong here.")
     public void ifNotExistsIncludesNullVarsWithFrom() {
 

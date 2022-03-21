@@ -16,27 +16,22 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.List;
-import java.util.function.Function;
+import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 
-public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_>
-        extends BavetAbstractBiConstraintStream<Solution_, GroupKey_, Result_> {
+public final class BavetGroupBiConstraintStream<Solution_, A, B>
+        extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BavetAbstractConstraintStream<Solution_> parent;
-    private final Function<ResultContainer_, Result_> finisher;
 
     public BavetGroupBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractConstraintStream<Solution_> parent,
-            Function<ResultContainer_, Result_> finisher) {
+            BavetAbstractConstraintStream<Solution_> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        this.finisher = finisher;
     }
 
     @Override
@@ -44,31 +39,26 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
         return true;
     }
 
-    @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    public BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
-        return (BavetGroupBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight,
-                parentNode);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
     }
 
     @Override
-    protected BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
-        if (parentNode != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") cannot have a parentNode (" + parentNode + ").");
-        }
-        return new BavetGroupBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), finisher);
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        // Do nothing. BavetGroupBridgeUniConstraintStream, etc build everything.
     }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
 
     @Override
     public String toString() {

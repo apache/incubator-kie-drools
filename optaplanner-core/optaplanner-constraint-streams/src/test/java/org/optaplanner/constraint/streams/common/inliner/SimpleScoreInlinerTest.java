@@ -31,21 +31,19 @@ class SimpleScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSolution, 
 
     @Test
     void defaultScore() {
-        TestConstraint<TestdataSolution, SimpleScore> constraint =
-                buildConstraint(SimpleScore.ONE);
         SimpleScoreInliner scoreInliner =
-                new SimpleScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new SimpleScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.ZERO);
     }
 
     @Test
     void impact() {
-        TestConstraint<TestdataSolution, SimpleScore> constraint =
-                buildConstraint(SimpleScore.of(10));
         SimpleScoreInliner scoreInliner =
-                new SimpleScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new SimpleScoreInliner(constraintMatchEnabled);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        SimpleScore constraintWeight = SimpleScore.of(10);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleScore.of(100));

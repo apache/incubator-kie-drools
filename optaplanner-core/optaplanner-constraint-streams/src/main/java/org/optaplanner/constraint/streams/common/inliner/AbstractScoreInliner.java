@@ -20,22 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -63,49 +49,37 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
             "org.optaplanner.score.stream.inliner";
 
     public static <Score_ extends Score<Score_>, ScoreInliner_ extends AbstractScoreInliner<Score_>> ScoreInliner_
-            buildScoreInliner(ScoreDefinition<Score_> scoreDefinition, Map<Constraint, Score_> constraintIdToWeightMap,
-                    boolean constraintMatchEnabled) {
+            buildScoreInliner(ScoreDefinition<Score_> scoreDefinition, boolean constraintMatchEnabled) {
         if (scoreDefinition instanceof SimpleScoreDefinition) {
-            return (ScoreInliner_) new SimpleScoreInliner((Map<Constraint, SimpleScore>) constraintIdToWeightMap,
-                    constraintMatchEnabled);
+            return (ScoreInliner_) new SimpleScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof SimpleLongScoreDefinition) {
-            return (ScoreInliner_) new SimpleLongScoreInliner((Map<Constraint, SimpleLongScore>) constraintIdToWeightMap,
-                    constraintMatchEnabled);
+            return (ScoreInliner_) new SimpleLongScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof SimpleBigDecimalScoreDefinition) {
-            return (ScoreInliner_) new SimpleBigDecimalScoreInliner(
-                    (Map<Constraint, SimpleBigDecimalScore>) constraintIdToWeightMap, constraintMatchEnabled);
+            return (ScoreInliner_) new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof HardSoftScoreDefinition) {
-            return (ScoreInliner_) new HardSoftScoreInliner((Map<Constraint, HardSoftScore>) constraintIdToWeightMap,
-                    constraintMatchEnabled);
+            return (ScoreInliner_) new HardSoftScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof HardSoftLongScoreDefinition) {
-            return (ScoreInliner_) new HardSoftLongScoreInliner((Map<Constraint, HardSoftLongScore>) constraintIdToWeightMap,
-                    constraintMatchEnabled);
+            return (ScoreInliner_) new HardSoftLongScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof HardSoftBigDecimalScoreDefinition) {
-            return (ScoreInliner_) new HardSoftBigDecimalScoreInliner(
-                    (Map<Constraint, HardSoftBigDecimalScore>) constraintIdToWeightMap, constraintMatchEnabled);
+            return (ScoreInliner_) new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof HardMediumSoftScoreDefinition) {
-            return (ScoreInliner_) new HardMediumSoftScoreInliner(
-                    (Map<Constraint, HardMediumSoftScore>) constraintIdToWeightMap, constraintMatchEnabled);
+            return (ScoreInliner_) new HardMediumSoftScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof HardMediumSoftLongScoreDefinition) {
-            return (ScoreInliner_) new HardMediumSoftLongScoreInliner(
-                    (Map<Constraint, HardMediumSoftLongScore>) constraintIdToWeightMap, constraintMatchEnabled);
+            return (ScoreInliner_) new HardMediumSoftLongScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof HardMediumSoftBigDecimalScoreDefinition) {
-            return (ScoreInliner_) new HardMediumSoftBigDecimalScoreInliner(
-                    (Map<Constraint, HardMediumSoftBigDecimalScore>) constraintIdToWeightMap, constraintMatchEnabled);
+            return (ScoreInliner_) new HardMediumSoftBigDecimalScoreInliner(constraintMatchEnabled);
         } else if (scoreDefinition instanceof BendableScoreDefinition) {
             BendableScoreDefinition bendableScoreDefinition = (BendableScoreDefinition) scoreDefinition;
-            return (ScoreInliner_) new BendableScoreInliner((Map<Constraint, BendableScore>) constraintIdToWeightMap,
-                    constraintMatchEnabled, bendableScoreDefinition.getHardLevelsSize(),
+            return (ScoreInliner_) new BendableScoreInliner(constraintMatchEnabled, bendableScoreDefinition.getHardLevelsSize(),
                     bendableScoreDefinition.getSoftLevelsSize());
         } else if (scoreDefinition instanceof BendableLongScoreDefinition) {
             BendableLongScoreDefinition bendableScoreDefinition = (BendableLongScoreDefinition) scoreDefinition;
-            return (ScoreInliner_) new BendableLongScoreInliner((Map<Constraint, BendableLongScore>) constraintIdToWeightMap,
-                    constraintMatchEnabled, bendableScoreDefinition.getHardLevelsSize(),
+            return (ScoreInliner_) new BendableLongScoreInliner(constraintMatchEnabled,
+                    bendableScoreDefinition.getHardLevelsSize(),
                     bendableScoreDefinition.getSoftLevelsSize());
         } else if (scoreDefinition instanceof BendableBigDecimalScoreDefinition) {
             BendableBigDecimalScoreDefinition bendableScoreDefinition = (BendableBigDecimalScoreDefinition) scoreDefinition;
-            return (ScoreInliner_) new BendableBigDecimalScoreInliner(
-                    (Map<Constraint, BendableBigDecimalScore>) constraintIdToWeightMap, constraintMatchEnabled,
+            return (ScoreInliner_) new BendableBigDecimalScoreInliner(constraintMatchEnabled,
                     bendableScoreDefinition.getHardLevelsSize(), bendableScoreDefinition.getSoftLevelsSize());
         } else {
             String customScoreInlinerClassName = System.getProperty(CUSTOM_SCORE_INLINER_CLASS_PROPERTY_NAME);
@@ -136,14 +110,11 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
         }
     }
 
-    private final Map<String, Score_> constraintIdToWeightMap;
     protected final boolean constraintMatchEnabled;
     private final Map<String, DefaultConstraintMatchTotal<Score_>> constraintMatchTotalMap;
     private final Map<Object, DefaultIndictment<Score_>> indictmentMap;
 
-    protected AbstractScoreInliner(Map<Constraint, Score_> constraintToWeightMap, boolean constraintMatchEnabled) {
-        this.constraintIdToWeightMap = Objects.requireNonNull(constraintToWeightMap).entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().getConstraintId(), Map.Entry::getValue));
+    protected AbstractScoreInliner(boolean constraintMatchEnabled) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
         this.indictmentMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
@@ -155,9 +126,10 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
      * Create a new instance of {@link WeightedScoreImpacter} for a particular constraint.
      * 
      * @param constraint never null
+     * @param constraintWeight never null
      * @return never null
      */
-    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint);
+    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
 
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
             List<Object> justificationList) {
@@ -199,14 +171,12 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
         return (Map) indictmentMap;
     }
 
-    protected final Score_ getConstraintWeight(Constraint constraint) {
-        Score_ constraintWeight = constraintIdToWeightMap.get(constraint.getConstraintId());
+    protected final void validateConstraintWeight(Constraint constraint, Score_ constraintWeight) {
         if (constraintWeight == null || constraintWeight.isZero()) {
             throw new IllegalArgumentException("Impossible state: The constraintWeight (" +
                     constraintWeight + ") cannot be zero, constraint (" + constraint +
-                    ") should have been culled during node creation.");
+                    ") should have been culled during session creation.");
         }
-        return constraintWeight;
     }
 
 }

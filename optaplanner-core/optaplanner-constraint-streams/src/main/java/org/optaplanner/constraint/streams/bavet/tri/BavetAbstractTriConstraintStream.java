@@ -21,10 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.BavetConstraint;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
@@ -51,12 +49,17 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         super(constraintFactory, retrievalSemantics);
     }
 
+    public List<BavetAbstractTriConstraintStream<Solution_, A, B, C>> getChildStreamList() {
+        return childStreamList;
+    }
+
     // ************************************************************************
     // Stream builder methods
     // ************************************************************************
 
-    protected void addChildStream(BavetAbstractTriConstraintStream<Solution_, A, B, C> childStream) {
-        childStreamList.add(childStream);
+    public <Stream_ extends BavetAbstractTriConstraintStream<Solution_, A, B, C>> Stream_ shareAndAddChild(
+            Stream_ stream) {
+        return constraintFactory.share(stream, childStreamList::add);
     }
 
     // ************************************************************************
@@ -65,10 +68,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public BavetAbstractTriConstraintStream<Solution_, A, B, C> filter(TriPredicate<A, B, C> predicate) {
-        BavetFilterTriConstraintStream<Solution_, A, B, C> stream = new BavetFilterTriConstraintStream<>(constraintFactory,
-                this, predicate);
-        addChildStream(stream);
-        return stream;
+        return shareAndAddChild(
+                new BavetFilterTriConstraintStream<>(constraintFactory, this, predicate));
     }
 
     // ************************************************************************
@@ -251,127 +252,73 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this));
+        return buildConstraint(constraintPackage, constraintName, constraintWeight,
+                impactType, stream);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
+        return buildConstraint(constraintPackage, constraintName, constraintWeight,
+                impactType, stream);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
+        return buildConstraint(constraintPackage, constraintName, constraintWeight,
+                impactType, stream);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
+        return buildConstraint(constraintPackage, constraintName, constraintWeight,
+                impactType, stream);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this));
+        return buildConstraintConfigurable(constraintPackage, constraintName,
+                impactType, stream);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
+        return buildConstraintConfigurable(constraintPackage, constraintName,
+                impactType, stream);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
+        return buildConstraintConfigurable(constraintPackage, constraintName,
+                impactType, stream);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType);
-        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = new BavetScoringTriConstraintStream<>(constraintFactory,
-                this, constraint, matchWeigher);
-        childStreamList.add(stream);
-        return constraint;
+        BavetScoringTriConstraintStream<Solution_, A, B, C> stream = shareAndAddChild(
+                new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
+        return buildConstraintConfigurable(constraintPackage, constraintName,
+                impactType, stream);
     }
-
-    // ************************************************************************
-    // Node creation
-    // ************************************************************************
-
-    public BavetAbstractTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
-        BavetAbstractTriNode<A, B, C> node = createNode(buildPolicy, constraintWeight, parentNode);
-        node = processNode(buildPolicy, parentNode, node);
-        createChildNodeChains(buildPolicy, constraintWeight, node);
-        return node;
-    }
-
-    protected BavetAbstractTriNode<A, B, C> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            BavetAbstractTriNode<A, B, C> parentNode, BavetAbstractTriNode<A, B, C> node) {
-        BavetAbstractTriNode<A, B, C> sharedNode = buildPolicy.retrieveSharedNode(node);
-        if (sharedNode != node) { // Share node
-            return sharedNode;
-        }
-        if (parentNode != null) { // TODO remove null check and don't go through this for from and joins
-            parentNode.addChildNode(node);
-        }
-        return node;
-    }
-
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetAbstractTriNode<A, B, C> node) {
-        if (childStreamList.isEmpty()) {
-            throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
-                    + "Maybe don't create it.");
-        }
-        for (BavetAbstractTriConstraintStream<Solution_, A, B, C> childStream : childStreamList) {
-            childStream.createNodeChain(buildPolicy, constraintWeight, node);
-        }
-    }
-
-    protected abstract BavetAbstractTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode);
 
 }

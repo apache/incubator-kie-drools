@@ -16,35 +16,27 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.List;
-import java.util.function.Function;
+import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinBridgeNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
-import org.optaplanner.constraint.streams.bavet.common.index.BavetIndexFactory;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
-        extends BavetAbstractUniConstraintStream<Solution_, A>
-        implements BavetJoinBridgeConstraintStream<Solution_> {
+        extends BavetAbstractUniConstraintStream<Solution_, A> {
 
     private final BavetAbstractUniConstraintStream<Solution_, A> parent;
-    private BavetJoinConstraintStream<Solution_> joinStream;
     private final boolean isLeftBridge;
-    private final Function<A, Object[]> mapping;
-    private final BavetIndexFactory indexFactory;
+
+    private BavetJoinConstraintStream<Solution_> joinStream;
 
     public BavetJoinBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent, boolean isLeftBridge,
-            Function<A, Object[]> mapping, BavetIndexFactory indexFactory) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent, boolean isLeftBridge) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.isLeftBridge = isLeftBridge;
-        this.mapping = mapping;
-        this.indexFactory = indexFactory;
     }
 
     @Override
@@ -56,39 +48,26 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
         this.joinStream = joinStream;
     }
 
-    @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetJoinBridgeUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        return new BavetJoinBridgeUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, mapping,
-                indexFactory.buildIndex(isLeftBridge));
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetAbstractUniNode<A> uncastedNode) {
-        if (!childStreamList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a join bridge.");
-        }
-        BavetJoinBridgeUniNode<A> node = (BavetJoinBridgeUniNode<A>) uncastedNode;
-        BavetJoinBridgeNode otherBridgeNode = buildPolicy.getJoinConstraintStreamToJoinBridgeNodeMap().get(joinStream);
-        if (otherBridgeNode == null) {
-            buildPolicy.getJoinConstraintStreamToJoinBridgeNodeMap().put(joinStream, node);
-        } else {
-            BavetJoinBridgeNode leftNode = isLeftBridge ? node : otherBridgeNode;
-            BavetJoinBridgeNode rightNode = isLeftBridge ? otherBridgeNode : node;
-            joinStream.createNodeChain(buildPolicy, constraintWeight, leftNode, rightNode);
-        }
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
+        // Do nothing. BavetJoinBiConstraintStream, BavetJoinTriConstraintStream, etc build everything.
     }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO, must include isLeftBridge in equality
 
     @Override
     public String toString() {

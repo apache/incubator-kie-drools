@@ -16,13 +16,16 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
-import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiNode;
-import org.optaplanner.constraint.streams.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
+import org.optaplanner.constraint.streams.bavet.bi.GroupUniToBiNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
@@ -32,7 +35,7 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     private final BavetAbstractUniConstraintStream<Solution_, A> parent;
     private final Function<A, NewA> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, NewB> collector;
-    private BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream;
+    private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
 
     public BavetGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
@@ -48,13 +51,8 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
         return parent.guaranteesDistinct();
     }
 
-    public void setGroupStream(BavetGroupBiConstraintStream<Solution_, NewA, ResultContainer_, NewB> groupStream) {
+    public void setGroupStream(BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream) {
         this.groupStream = groupStream;
-    }
-
-    @Override
-    public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
     }
 
     // ************************************************************************
@@ -62,25 +60,30 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     // ************************************************************************
 
     @Override
-    protected BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
-        return new BavetGroupBridgeUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode,
-                groupKeyMapping, collector);
+    public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
+        parent.collectActiveConstraintStreams(constraintStreamSet);
+        constraintStreamSet.add(this);
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            BavetAbstractUniNode<A> node) {
+    public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
-        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy,
-                constraintWeight, null);
-        BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> groupBridgeNode =
-                (BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB>) node;
-        groupBridgeNode.setGroupNode(groupNode);
+        Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
+        Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
+        GroupUniToBiNode<A, NewA, NewB, ResultContainer_> node = new GroupUniToBiNode<>(groupKeyMapping, collector,
+                insert, retract);
+        buildHelper.addNode(node);
+        buildHelper.putInsertRetract(this, node::insertA, node::retractA);
     }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
 
     @Override
     public String toString() {

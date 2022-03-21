@@ -113,7 +113,7 @@ public interface ConstraintFactory {
     <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner);
 
     /**
-     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * As defined by {@link #forEachUniquePair(Class, BiJoiner)}.
      *
      * @param sourceClass never null
      * @param joiner1 never null
@@ -128,7 +128,7 @@ public interface ConstraintFactory {
     }
 
     /**
-     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * As defined by {@link #forEachUniquePair(Class, BiJoiner)}.
      *
      * @param sourceClass never null
      * @param joiner1 never null
@@ -144,7 +144,7 @@ public interface ConstraintFactory {
     }
 
     /**
-     * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
+     * As defined by {@link #forEachUniquePair(Class, BiJoiner)}.
      *
      * @param sourceClass never null
      * @param joiner1 never null

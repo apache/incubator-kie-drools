@@ -31,21 +31,19 @@ class HardSoftScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHardSoft
 
     @Test
     void defaultScore() {
-        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
-                buildConstraint(HardSoftScore.ONE_HARD);
         HardSoftScoreInliner scoreInliner =
-                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new HardSoftScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.ZERO);
     }
 
     @Test
     void impactHard() {
-        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
-                buildConstraint(HardSoftScore.ofHard(90));
         HardSoftScoreInliner scoreInliner =
-                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new HardSoftScoreInliner(constraintMatchEnabled);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        HardSoftScore constraintWeight = HardSoftScore.ofHard(90);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(90, 0));
@@ -65,12 +63,12 @@ class HardSoftScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHardSoft
 
     @Test
     void impactSoft() {
-        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
-                buildConstraint(HardSoftScore.ofSoft(90));
         HardSoftScoreInliner scoreInliner =
-                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new HardSoftScoreInliner(constraintMatchEnabled);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        HardSoftScore constraintWeight = HardSoftScore.ofSoft(90);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(0, 90));
@@ -90,12 +88,12 @@ class HardSoftScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHardSoft
 
     @Test
     void impactAll() {
-        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
-                buildConstraint(HardSoftScore.of(10, 100));
         HardSoftScoreInliner scoreInliner =
-                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+                new HardSoftScoreInliner(constraintMatchEnabled);
 
-        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        HardSoftScore constraintWeight = HardSoftScore.of(10, 100);
+        WeightedScoreImpacter hardImpacter =
+                scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(100, 1_000));

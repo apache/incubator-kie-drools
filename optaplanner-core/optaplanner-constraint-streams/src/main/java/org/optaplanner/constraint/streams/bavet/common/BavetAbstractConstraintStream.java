@@ -16,12 +16,11 @@
 
 package org.optaplanner.constraint.streams.bavet.common;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraint;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
@@ -29,7 +28,6 @@ import org.optaplanner.core.api.score.Score;
 
 public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
-    // TODO make private
     protected final BavetConstraintFactory<Solution_> constraintFactory;
 
     public BavetAbstractConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
@@ -43,28 +41,36 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // ************************************************************************
 
     protected BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType) {
+            Score<?> constraintWeight, ScoreImpactType impactType,
+            BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
-        List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, false, fromStreamList);
+        BavetConstraint<Solution_> constraint =
+                new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
+                        impactType, false, scoringConstraintStream);
+        scoringConstraintStream.setConstraint(constraint);
+        return constraint;
     }
 
     protected BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType) {
+            ScoreImpactType impactType,
+            BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
-        List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, true, fromStreamList);
+        BavetConstraint<Solution_> constraint =
+                new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
+                        impactType, true, scoringConstraintStream);
+        scoringConstraintStream.setConstraint(constraint);
+        return constraint;
     }
 
     // ************************************************************************
     // Node creation
     // ************************************************************************
 
-    public abstract List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList();
+    public abstract void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet);
+
+    public abstract <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper);
 
     // ************************************************************************
     // Getters/setters

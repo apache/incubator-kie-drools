@@ -224,23 +224,22 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
                     + ")'s defineConstraints() must not return null.\n"
                     + "Maybe return an empty array instead if there are no constraints.");
         }
-        List<Constraint_> constraintList = Arrays.stream(constraints)
-                .map(c -> (Constraint_) c)
-                .collect(Collectors.toList());
-        if (constraintList.stream().anyMatch(Objects::isNull)) {
+        if (Arrays.stream(constraints).anyMatch(Objects::isNull)) {
             throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
                     + ")'s defineConstraints() must not contain an element that is null.\n"
                     + "Maybe don't include any null elements in the " + Constraint.class.getSimpleName() + " array.");
         }
         // Fail fast on duplicate constraint IDs.
-        Map<String, List<Constraint_>> constraintsPerIdMap = constraintList.stream()
-                .collect(groupingBy(Constraint::getConstraintId));
+        Map<String, List<Constraint>> constraintsPerIdMap =
+                Arrays.stream(constraints).collect(groupingBy(Constraint::getConstraintId));
         constraintsPerIdMap.forEach((constraintId, duplicateConstraintList) -> {
             if (duplicateConstraintList.size() > 1) {
                 throw new IllegalStateException("There are multiple constraints with the same ID (" + constraintId + ").");
             }
         });
-        return constraintList;
+        return Arrays.stream(constraints)
+                .map(c -> (Constraint_) c)
+                .collect(Collectors.toList());
     }
 
     /**

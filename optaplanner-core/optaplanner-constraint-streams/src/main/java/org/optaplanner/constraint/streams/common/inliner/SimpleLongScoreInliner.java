@@ -16,8 +16,6 @@
 
 package org.optaplanner.constraint.streams.common.inliner;
 
-import java.util.Map;
-
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 
@@ -25,14 +23,13 @@ final class SimpleLongScoreInliner extends AbstractScoreInliner<SimpleLongScore>
 
     private long score;
 
-    SimpleLongScoreInliner(Map<Constraint, SimpleLongScore> constraintToWeightMap,
-            boolean constraintMatchEnabled) {
-        super(constraintToWeightMap, constraintMatchEnabled);
+    SimpleLongScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
-        SimpleLongScore constraintWeight = getConstraintWeight(constraint);
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, SimpleLongScore constraintWeight) {
+        validateConstraintWeight(constraint, constraintWeight);
         long simpleConstraintWeight = constraintWeight.getScore();
         return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
             long impact = simpleConstraintWeight * matchWeight;

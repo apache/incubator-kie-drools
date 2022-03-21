@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.common.inliner;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -27,16 +26,15 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
     private final long[] hardScores;
     private final long[] softScores;
 
-    BendableLongScoreInliner(Map<Constraint, BendableLongScore> constraintToWeightMap,
-            boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintToWeightMap, constraintMatchEnabled);
+    BendableLongScoreInliner(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
+        super(constraintMatchEnabled);
         hardScores = new long[hardLevelsSize];
         softScores = new long[softLevelsSize];
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
-        BendableLongScore constraintWeight = getConstraintWeight(constraint);
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, BendableLongScore constraintWeight) {
+        validateConstraintWeight(constraint, constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (constraintWeight.getHardOrSoftScore(i) != 0L) {
