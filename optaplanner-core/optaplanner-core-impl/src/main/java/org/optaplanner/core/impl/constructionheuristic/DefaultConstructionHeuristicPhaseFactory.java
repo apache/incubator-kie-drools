@@ -134,7 +134,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
 
     private Optional<ListVariableDescriptor<?>> findValidListVariableDescriptor(
             SolutionDescriptor<Solution_> solutionDescriptor) {
-        List<ListVariableDescriptor<Solution_>> listVariableDescriptors = solutionDescriptor.findListVariableDescriptors();
+        List<ListVariableDescriptor<Solution_>> listVariableDescriptors = solutionDescriptor.getListVariableDescriptors();
         if (listVariableDescriptors.isEmpty()) {
             return Optional.empty();
         }

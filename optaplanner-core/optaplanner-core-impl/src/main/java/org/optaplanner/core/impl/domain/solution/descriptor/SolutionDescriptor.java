@@ -165,6 +165,7 @@ public class SolutionDescriptor<Solution_> {
     private final Map<String, MemberAccessor> entityMemberAccessorMap = new LinkedHashMap<>();
     private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap = new LinkedHashMap<>();
     private Set<Class<?>> problemFactOrEntityClassSet;
+    private List<ListVariableDescriptor<Solution_>> listVariableDescriptors;
     private ScoreDescriptor scoreDescriptor;
 
     private ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor;
@@ -502,28 +503,8 @@ public class SolutionDescriptor<Solution_> {
             entityDescriptor.linkVariableDescriptors(descriptorPolicy);
         }
         determineGlobalShadowOrder();
-        // Figure out all problem fact or entity types that are used within this solution,
-        // using the knowledge we've already gained by processing all the annotations.
-        Stream<Class<?>> entityClassStream = entityDescriptorMap.keySet()
-                .stream();
-        Stream<Class<?>> factClassStream = problemFactMemberAccessorMap
-                .values()
-                .stream()
-                .map(MemberAccessor::getType);
-        Stream<Class<?>> problemFactOrEntityClassStream = concat(entityClassStream, factClassStream);
-        Stream<Class<?>> factCollectionClassStream = problemFactCollectionMemberAccessorMap.values()
-                .stream()
-                .map(accessor -> ConfigUtils.extractCollectionGenericTypeParameterLeniently(
-                        "solutionClass", getSolutionClass(),
-                        accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class,
-                        accessor.getName()));
-        problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream, factCollectionClassStream);
-        // Add constraint configuration, if configured.
-        if (constraintConfigurationDescriptor != null) {
-            problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream,
-                    Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()));
-        }
-        problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(Collectors.toSet());
+        problemFactOrEntityClassSet = collectEntityAndProblemFactClasses();
+        listVariableDescriptors = findListVariableDescriptors();
         // And finally log the successful completion of processing.
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
@@ -585,6 +566,40 @@ public class SolutionDescriptor<Solution_> {
             shadow.setGlobalShadowOrder(globalShadowOrder);
             globalShadowOrder++;
         }
+    }
+
+    private Set<Class<?>> collectEntityAndProblemFactClasses() {
+        // Figure out all problem fact or entity types that are used within this solution,
+        // using the knowledge we've already gained by processing all the annotations.
+        Stream<Class<?>> entityClassStream = entityDescriptorMap.keySet()
+                .stream();
+        Stream<Class<?>> factClassStream = problemFactMemberAccessorMap
+                .values()
+                .stream()
+                .map(MemberAccessor::getType);
+        Stream<Class<?>> problemFactOrEntityClassStream = concat(entityClassStream, factClassStream);
+        Stream<Class<?>> factCollectionClassStream = problemFactCollectionMemberAccessorMap.values()
+                .stream()
+                .map(accessor -> ConfigUtils.extractCollectionGenericTypeParameterLeniently(
+                        "solutionClass", getSolutionClass(),
+                        accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class,
+                        accessor.getName()));
+        problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream, factCollectionClassStream);
+        // Add constraint configuration, if configured.
+        if (constraintConfigurationDescriptor != null) {
+            problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream,
+                    Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()));
+        }
+        return problemFactOrEntityClassStream.collect(Collectors.toSet());
+    }
+
+    private List<ListVariableDescriptor<Solution_>> findListVariableDescriptors() {
+        return getGenuineEntityDescriptors().stream()
+                .map(EntityDescriptor::getGenuineVariableDescriptorList)
+                .flatMap(Collection::stream)
+                .filter(GenuineVariableDescriptor::isListVariable)
+                .map(variableDescriptor -> ((ListVariableDescriptor<Solution_>) variableDescriptor))
+                .collect(Collectors.toList());
     }
 
     private void initSolutionCloner(DescriptorPolicy descriptorPolicy) {
@@ -659,6 +674,10 @@ public class SolutionDescriptor<Solution_> {
 
     public Set<Class<?>> getProblemFactOrEntityClassSet() {
         return problemFactOrEntityClassSet;
+    }
+
+    public List<ListVariableDescriptor<Solution_>> getListVariableDescriptors() {
+        return listVariableDescriptors;
     }
 
     public SolutionCloner<Solution_> getSolutionCloner() {
@@ -793,18 +812,6 @@ public class SolutionDescriptor<Solution_> {
             throw new IllegalArgumentException(entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
         }
         return variableDescriptor;
-    }
-
-    public List<ListVariableDescriptor<Solution_>> findListVariableDescriptors() {
-        return streamListVariableDescriptors().collect(Collectors.toList());
-    }
-
-    private Stream<ListVariableDescriptor<Solution_>> streamListVariableDescriptors() {
-        return getGenuineEntityDescriptors().stream()
-                .map(EntityDescriptor::getGenuineVariableDescriptorList)
-                .flatMap(Collection::stream)
-                .filter(GenuineVariableDescriptor::isListVariable)
-                .map(variableDescriptor -> ((ListVariableDescriptor<Solution_>) variableDescriptor));
     }
 
     // ************************************************************************
@@ -1035,10 +1042,12 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public int countUninitialized(Solution_ solution) {
-        return streamListVariableDescriptors()
-                .findFirst()
-                .map(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
-                .orElseGet(() -> countUninitializedVariables(solution));
+        if (!listVariableDescriptors.isEmpty()) {
+            return listVariableDescriptors.stream()
+                    .mapToInt(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
+                    .sum();
+        }
+        return countUninitializedVariables(solution);
     }
 
     private int countUninitializedVariables(Solution_ solution) {

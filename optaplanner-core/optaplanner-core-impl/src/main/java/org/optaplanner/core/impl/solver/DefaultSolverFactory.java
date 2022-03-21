@@ -207,7 +207,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     configPolicy.getSolutionDescriptor().getGenuineEntityDescriptors();
             Map<Class<?>, List<ListVariableDescriptor<Solution_>>> entityClassToListVariableDescriptorListMap =
                     configPolicy.getSolutionDescriptor()
-                            .findListVariableDescriptors()
+                            .getListVariableDescriptors()
                             .stream()
                             .collect(Collectors.groupingBy(
                                     listVariableDescriptor -> listVariableDescriptor.getEntityDescriptor().getEntityClass(),
