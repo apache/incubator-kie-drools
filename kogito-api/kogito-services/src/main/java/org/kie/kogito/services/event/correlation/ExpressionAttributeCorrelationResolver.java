@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package org.kie.kogito.services.event.correlation;
 
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import org.apache.commons.lang3.NotImplementedException;
+import org.kie.kogito.correlation.Correlation;
+import org.kie.kogito.correlation.CorrelationResolver;
 
 /**
- * Generic receiver for cloud events.
- *
- * Implementations provide their specific (usually injectable) behavior.
- *
+ * Resolve attributes based on expressions
  */
-public interface EventReceiver {
+public class ExpressionAttributeCorrelationResolver implements CorrelationResolver {
 
-    /**
-     * Helper method to subscribe to the events.
-     * 
-     * @param consumer the consumer that will receive the events.
-     */
-    <S, T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<S, T> converter);
+    @Override
+    public Correlation resolve(Object data) {
+        //todo
+        throw new NotImplementedException();
+    }
 }

@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.services.event;
 
-import java.util.concurrent.CompletionStage;
+package org.kie.kogito.correlation;
 
-import org.kie.kogito.Application;
-import org.kie.kogito.process.Process;
+public interface CorrelationResolver {
 
-public interface EventConsumer<M> {
-
-    CompletionStage<?> consume(Application application, Process<M> process, Object payload, String trigger);
+    Correlation resolve(Object data);
 
 }

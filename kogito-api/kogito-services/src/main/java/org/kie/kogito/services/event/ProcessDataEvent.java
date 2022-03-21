@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.services.event;
 
+import java.util.Objects;
+
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
@@ -150,5 +152,24 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
                 getKogitoRootProcessinstanceId() + ", getKogitoProcessId()=" + getKogitoProcessId() +
                 ", getKogitoRootProcessId()=" + getKogitoRootProcessId() + ", getKogitoAddons()=" + getKogitoAddons() +
                 "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProcessDataEvent)) {
+            return false;
+        }
+        ProcessDataEvent<?> that = (ProcessDataEvent<?>) o;
+        return Objects.equals(getKogitoParentProcessinstanceId(), that.getKogitoParentProcessinstanceId()) && Objects.equals(getKogitoProcessinstanceState(), that.getKogitoProcessinstanceState())
+                && Objects.equals(getKogitoReferenceId(), that.getKogitoReferenceId()) && Objects.equals(getKogitoStartFromNode(), that.getKogitoStartFromNode())
+                && Objects.equals(getKogitoBusinessKey(), that.getKogitoBusinessKey());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getKogitoParentProcessinstanceId(), getKogitoProcessinstanceState(), getKogitoReferenceId(), getKogitoStartFromNode(), getKogitoBusinessKey());
     }
 }

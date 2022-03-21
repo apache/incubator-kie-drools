@@ -48,7 +48,7 @@ public class SpringKafkaCloudEventReceiver implements EventReceiver {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
+    public <S, T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<S, T> info) {
         log.info("Registering consumer with info {}", info);
         consumers.add(new Subscription(consumer, info));
     }

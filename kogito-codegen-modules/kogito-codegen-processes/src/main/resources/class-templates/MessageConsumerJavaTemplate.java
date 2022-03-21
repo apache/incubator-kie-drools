@@ -15,18 +15,14 @@
  */
 package com.myspace.demo;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.impl.ProcessServiceImpl;
-import org.kie.kogito.services.event.EventConsumerFactory;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
-import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 
 public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$> {
 
@@ -36,14 +32,11 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
 
     boolean useCloudEvents = true;
 
-    EventConsumerFactory eventConsumerFactory;
-    
     ExecutorService executor = Executors.newSingleThreadExecutor();
     
     ProcessService service;
 
     public void configure() {
-        eventConsumerFactory = new DefaultEventConsumerFactory();
         service = new ProcessServiceImpl(application);
     }
 }

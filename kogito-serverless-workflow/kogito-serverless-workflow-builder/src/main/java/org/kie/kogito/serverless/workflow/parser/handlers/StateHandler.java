@@ -442,6 +442,7 @@ public abstract class StateHandler<S extends State> {
                 .inputVariableName(inputVar)
                 .variableName(outputVar)
                 .outMapping(inputVar, outputVar)
+                .metaData(Metadata.MAPPING_VARIABLE, DEFAULT_WORKFLOW_VAR)
                 .eventType("Message-" + eventDefinition.getType());
     }
 

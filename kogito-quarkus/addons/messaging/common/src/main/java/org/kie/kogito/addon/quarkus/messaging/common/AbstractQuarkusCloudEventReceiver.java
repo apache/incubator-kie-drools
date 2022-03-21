@@ -72,7 +72,7 @@ public abstract class AbstractQuarkusCloudEventReceiver implements EventReceiver
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
+    public <S, T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<S, T> info) {
         consumers.add(new Subscription(consumer, info));
     }
 }

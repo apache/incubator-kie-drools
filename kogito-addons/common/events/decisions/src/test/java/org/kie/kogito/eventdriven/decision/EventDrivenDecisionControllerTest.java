@@ -458,7 +458,7 @@ class EventDrivenDecisionControllerTest {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        public <T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
+        public <S, T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<S, T> info) {
             subscription = new Subscription(consumer, info);
         }
     }

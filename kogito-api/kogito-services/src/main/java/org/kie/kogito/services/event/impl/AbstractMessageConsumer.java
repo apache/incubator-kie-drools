@@ -22,13 +22,12 @@ import java.util.function.Function;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.services.event.EventConsumer;
-import org.kie.kogito.services.event.EventConsumerFactory;
 import org.kie.kogito.services.event.ProcessDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +36,8 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractMessageConsumer.class);
 
-    private Process<M> process;
-    private Application application;
     private String trigger;
-    private EventConsumer<M> eventConsumer;
+    private EventDispatcher<M> eventDispatcher;
 
     // in general we should favor the non-empty constructor
     // but there is an issue with Quarkus https://github.com/quarkusio/quarkus/issues/2949#issuecomment-513017781
@@ -51,62 +48,43 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
     public AbstractMessageConsumer(Application application,
             Process<M> process,
             String trigger,
-            EventConsumerFactory eventConsumerFactory,
             EventReceiver eventReceiver,
-            Class<D> dataEventConverter,
+            Class<D> dataClass,
             boolean useCloudEvents,
             ProcessService processService,
             ExecutorService executorService,
             EventUnmarshaller<Object> eventUnmarshaller) {
-        init(application, process, trigger, eventConsumerFactory, eventReceiver, dataEventConverter, useCloudEvents, processService, executorService, eventUnmarshaller);
+        init(application, process, trigger, eventReceiver, dataClass, useCloudEvents, processService, executorService, eventUnmarshaller);
     }
 
     public void init(Application application,
             Process<M> process,
             String trigger,
-            EventConsumerFactory eventConsumerFactory,
             EventReceiver eventReceiver,
-            Class<D> dataEventClass,
+            Class<D> dataClass,
             boolean useCloudEvents,
             ProcessService processService,
             ExecutorService executorService,
             EventUnmarshaller<Object> eventUnmarshaller) {
-        this.process = process;
-        this.application = application;
         this.trigger = trigger;
-        this.eventConsumer = eventConsumerFactory.get(processService, executorService, getModelConverter(), useCloudEvents, this::getData);
+        this.eventDispatcher = new ProcessEventDispatcher<>(process, getModelConverter().orElse(null), processService, executorService);
+
         if (useCloudEvents) {
-            eventReceiver.subscribe(this::consumeCloud,
-                    SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(ProcessDataEvent.class).parametrizedClasses(dataEventClass).type(trigger).createSubscriptionInfo());
+            eventReceiver.subscribe(this::consume,
+                    SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(ProcessDataEvent.class).parametrizedClasses(dataClass).type(trigger).createSubscriptionInfo());
         } else {
-            eventReceiver.subscribe(this::consumeNotCloud, SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(dataEventClass).type(trigger).createSubscriptionInfo());
+            eventReceiver.subscribe(this::consume, SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(dataClass).type(trigger).createSubscriptionInfo());
         }
         logger.info("Consumer for {} started", trigger);
     }
 
-    protected CompletionStage<?> consumeCloud(ProcessDataEvent<D> payload) {
-        return consume(payload);
-    }
-
-    protected CompletionStage<?> consumeNotCloud(D payload) {
-        return consume(payload);
-    }
-
     private CompletionStage<?> consume(Object payload) {
         logger.trace("Received {} for trigger {}", payload, trigger);
-        CompletionStage<?> result = eventConsumer.consume(application, process, payload, trigger);
-        if (logger.isTraceEnabled()) {
-            result = result.thenAccept(v -> logger.trace("Completed {} for trigger {}", payload, trigger));
-        }
-        logger.trace("Dispatched {} for trigger {}", payload, trigger);
-        return result;
+        return eventDispatcher.dispatch(trigger, payload)
+                .thenAccept(v -> logger.trace("Consume completed {} for trigger {}", payload, trigger));
     }
 
-    protected Optional<Function<D, M>> getModelConverter() {
+    protected Optional<Function<Object, M>> getModelConverter() {
         return Optional.empty();
-    }
-
-    protected D getData(ProcessDataEvent<D> cloudEvent) {
-        return cloudEvent.getData();
     }
 }

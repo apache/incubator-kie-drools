@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package org.kie.kogito.correlation;
 
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.Optional;
 
-/**
- * Generic receiver for cloud events.
- *
- * Implementations provide their specific (usually injectable) behavior.
- *
- */
-public interface EventReceiver {
+public class Correlation {
 
-    /**
-     * Helper method to subscribe to the events.
-     * 
-     * @param consumer the consumer that will receive the events.
-     */
-    <S, T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<S, T> converter);
+    private String key;
+    private Object value;
+
+    public Correlation(String key, Object value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public String asString() {
+        return Optional.ofNullable(value).map(Object::toString).orElse(null);
+    }
 }

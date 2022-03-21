@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.process;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.jbpm.compiler.canonical.ModelMetaData;
@@ -29,9 +30,13 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
@@ -103,7 +108,10 @@ public class ProcessInstanceGenerator {
     private MethodDeclaration bind() {
         String modelName = model.getModelClassSimpleName();
         BlockStmt body = new BlockStmt()
-                .addStatement(new ReturnStmt(model.toMap("variables")));
+                .addStatement(new IfStmt()
+                        .setCondition(new BinaryExpr(new NullLiteralExpr(), new NameExpr("variables"), BinaryExpr.Operator.NOT_EQUALS))
+                        .setThenStmt(new ReturnStmt(model.toMap("variables")))
+                        .setElseStmt(new ReturnStmt(new ObjectCreationExpr().setType(new ClassOrInterfaceType(null, HashMap.class.getCanonicalName())))));
         return new MethodDeclaration()
                 .setModifiers(Modifier.Keyword.PROTECTED)
                 .setName("bind")
