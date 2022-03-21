@@ -5,6 +5,7 @@ local/
 .*
 !.gitignore
 !.github
+!.git-blame-ignore-revs
 nbproject
 *.ipr
 *.iws
