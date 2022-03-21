@@ -12,8 +12,11 @@
     <name>Drools :: Quarkus Extension :: Runtime</name>
     <artifactId>drools-quarkus</artifactId>
 
-    <dependencies>
+    <properties>
+        <java.module.name>org.drools.quarkus</java.module.name>
+    </properties>
 
+    <dependencies>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-quarkus-deployment</artifactId>

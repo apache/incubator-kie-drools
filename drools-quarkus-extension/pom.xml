@@ -15,6 +15,10 @@
   <artifactId>drools-quarkus-extension</artifactId>
   <packaging>pom</packaging>
 
+  <properties>
+    <version.org.apache.maven>3.8.4</version.org.apache.maven>
+  </properties>
+
   <modules>
     <module>drools-quarkus-deployment</module>
     <module>drools-quarkus</module>

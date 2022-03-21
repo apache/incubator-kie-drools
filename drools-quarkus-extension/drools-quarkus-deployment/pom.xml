@@ -12,6 +12,10 @@
     <name>Drools :: Quarkus Extension :: Deployment</name>
     <artifactId>drools-quarkus-deployment</artifactId>
 
+    <properties>
+        <java.module.name>org.drools.quarkus.deployment</java.module.name>
+    </properties>
+
     <dependencies>
 
         <dependency>
