@@ -1042,19 +1042,28 @@ public class SolutionDescriptor<Solution_> {
      * @return {@code >= 0}
      */
     public int countUninitialized(Solution_ solution) {
-        if (!listVariableDescriptors.isEmpty()) {
-            return listVariableDescriptors.stream()
-                    .mapToInt(variableDescriptor -> countUnassignedValues(solution, variableDescriptor))
-                    .sum();
-        }
-        return countUninitializedVariables(solution);
+        return countUninitializedVariables(solution) + countUnassignedValues(solution);
     }
 
+    /**
+     * Counts the number of uninitialized basic planning variables on all entities.
+     */
     private int countUninitializedVariables(Solution_ solution) {
         MutableInt result = new MutableInt();
         visitAllEntities(solution,
                 entity -> result.add(findEntityDescriptorOrFail(entity.getClass()).countUninitializedVariables(entity)));
         return result.intValue();
+    }
+
+    /**
+     * Counts the number of elements from list variable value ranges, that are not assigned to any list variable.
+     */
+    private int countUnassignedValues(Solution_ solution) {
+        int unassignedValueCount = 0;
+        for (ListVariableDescriptor<Solution_> listVariableDescriptor : listVariableDescriptors) {
+            unassignedValueCount += countUnassignedValues(solution, listVariableDescriptor);
+        }
+        return unassignedValueCount;
     }
 
     private int countUnassignedValues(Solution_ solution, ListVariableDescriptor<Solution_> variableDescriptor) {
