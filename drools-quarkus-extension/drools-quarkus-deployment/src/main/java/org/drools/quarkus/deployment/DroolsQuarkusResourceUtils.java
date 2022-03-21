@@ -15,16 +15,13 @@
  */
 package org.drools.quarkus.deployment;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -38,19 +35,18 @@ import org.drools.model.project.codegen.GeneratedFileType;
 import org.drools.model.project.codegen.context.AppPaths;
 import org.drools.model.project.codegen.context.DroolsModelBuildContext;
 import org.drools.model.project.codegen.context.impl.QuarkusDroolsModelBuildContext;
-import org.drools.model.project.codegen.io.GeneratedFileWriter;
-import org.jboss.jandex.CompositeIndex;
+import org.drools.quarkus.deployment.io.GeneratedFileWriter;
+import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
-import org.kie.memorycompiler.resources.KiePath;
-import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.stream.Collectors.toList;
+import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
 
 /**
- * Utility class to aggregate and share resource handling in Kogito extensions
+ * Utility class to aggregate and share resource handling in Drools/Kogito extensions
  */
 public class DroolsQuarkusResourceUtils {
 
@@ -74,7 +70,7 @@ public class DroolsQuarkusResourceUtils {
                     System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito/"),
                     "target/generated-sources/kogito/");
 
-    public static DroolsModelBuildContext createBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index, Dependency appArtifact) {
+    public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index, Dependency appArtifact) {
         // scan and parse paths
         AppPaths.BuildTool buildTool;
         if (System.getProperty("org.gradle.appname") == null) {
@@ -83,24 +79,13 @@ public class DroolsQuarkusResourceUtils {
             buildTool = AppPaths.BuildTool.GRADLE;
         }
         AppPaths appPaths = AppPaths.fromQuarkus(outputTarget, paths, buildTool);
-//        ClassLoader classLoader = DroolsAssetsProcessor.class.getClassLoader(); // Thread.currentThread().getContextClassLoader();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
-//                .withApplicationPropertyProvider(new KogitoQuarkusApplicationPropertiesProvider())
                 .withClassLoader(classLoader)
                 .withClassAvailabilityResolver(className -> classAvailabilityResolver(classLoader, index, className))
                 .withAppPaths(appPaths)
                 .build();
-/*
-        if (!context.hasClassAvailable(QuarkusKogitoBuildContext.QUARKUS_REST)) {
-            LOGGER.info("Disabling REST generation because class '" + QuarkusKogitoBuildContext.QUARKUS_REST + "' is not available");
-            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
-        }
-        if (!context.hasClassAvailable(QuarkusKogitoBuildContext.QUARKUS_DI)) {
-            LOGGER.info("Disabling dependency injection generation because class '" + QuarkusKogitoBuildContext.QUARKUS_DI + "' is not available");
-            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_DI, "false");
-        }
-*/
+
         return context;
     }
 
@@ -150,69 +135,50 @@ public class DroolsQuarkusResourceUtils {
         }
     }
 
-    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(
-            DroolsModelBuildContext context,
-            Collection<ResolvedDependency> dependencies,
-            Collection<GeneratedFile> generatedFiles,
-            boolean useDebugSymbols) throws IOException {
-        Collection<GeneratedFile> javaFiles =
-                generatedFiles.stream()
-                        .filter(f -> f.category() == GeneratedFileType.Category.SOURCE)
-                        .collect(toList());
-
-        if (javaFiles.isEmpty()) {
+    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources( DroolsModelBuildContext context, Collection<ResolvedDependency> dependencies,
+                                                                              Collection<GeneratedFile> generatedFiles, boolean useDebugSymbols) {
+        Map<String, String> sourcesMap = getSourceMap(generatedFiles);
+        if (sourcesMap.isEmpty()) {
             LOGGER.info("No Java source to compile");
             return Collections.emptyList();
         }
 
-        InMemoryCompiler inMemoryCompiler =
-                new InMemoryCompiler(
-                        context.getAppPaths().getClassesPaths(),
-                        dependencies,
-                        useDebugSymbols);
-        inMemoryCompiler.compile(javaFiles);
-        return makeBuildItems(
-                context.getAppPaths(),
-                inMemoryCompiler.getTargetFileSystem());
+        JavaCompilerSettings compilerSettings = createJavaCompilerSettings(context, dependencies, useDebugSymbols);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        return makeBuildItems( compileNoLoad(sourcesMap, classLoader, compilerSettings) );
     }
 
-    public static IndexView generateAggregatedIndex(IndexView baseIndex, List<DroolsGeneratedClassesBuildItem> generatedKogitoClasses) {
-        List<IndexView> indexes = new ArrayList<>();
-        indexes.add(baseIndex);
-
-        indexes.addAll(generatedKogitoClasses.stream()
-                .map(DroolsGeneratedClassesBuildItem::getIndexedClasses)
-                .collect(Collectors.toList()));
-        return CompositeIndex.create(indexes.toArray(new IndexView[0]));
-    }
-
-    public static Path getTargetClassesPath(AppPaths appPaths) {
-        return generatedFileWriterBuilder.build(appPaths.getFirstProjectPath()).getClassesDir();
-    }
-
-    private static Collection<GeneratedBeanBuildItem> makeBuildItems(AppPaths appPaths, ResourceReader resources) throws IOException {
-
-        Collection<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
-        for (KiePath path : resources.getFilePaths()) {
-            byte[] data = resources.getBytes(path);
-            String className = toClassName(path.asString());
-
-            // Write the bytecode of the class retriggering the hot reload in the file system
-            // This is necessary to workaround the problem fixed by https://github.com/quarkusio/quarkus/pull/15726 and
-            // TODO this can be removed when we will use a version of quarkus having that fix
-            if (className.equals(HOT_RELOAD_SUPPORT_FQN)) {
-                for (Path classPath : appPaths.getClassesPaths()) {
-                    // Write the class bytecode in the first available directory class path if any
-                    if (classPath.toFile().isDirectory()) {
-                        Files.write(pathOf(classPath.toString(), HOT_RELOAD_SUPPORT_PATH + ".class"), data);
-                        break;
-                    }
-                }
-            }
-
-            buildItems.add(new GeneratedBeanBuildItem(className, data));
+    private static JavaCompilerSettings createJavaCompilerSettings(DroolsModelBuildContext context, Collection<ResolvedDependency> dependencies, boolean useDebugSymbols) {
+        JavaCompilerSettings compilerSettings = JavaParserCompiler.getCompiler().createDefaultSettings();
+        compilerSettings.addOption("-proc:none"); // force disable annotation processing
+        if (useDebugSymbols) {
+            compilerSettings.addOption("-g");
+            compilerSettings.addOption("-parameters");
         }
+        for (Path classPath : context.getAppPaths().getClassesPaths()) {
+            compilerSettings.addClasspath(classPath.toFile());
+        }
+        for (ResolvedDependency i : dependencies) {
+            compilerSettings.addClasspath(i.getResolvedPaths().getSinglePath().toFile());
+        }
+        return compilerSettings;
+    }
 
+    private static Map<String, String> getSourceMap(Collection<GeneratedFile> generatedFiles) {
+        Map<String, String> sourcesMap = new HashMap<>();
+        for (GeneratedFile javaFile : generatedFiles) {
+            if (javaFile.category() == GeneratedFileType.Category.SOURCE) {
+                sourcesMap.put(toClassName(javaFile.relativePath()), new String(javaFile.contents()));
+            }
+        }
+        return sourcesMap;
+    }
+
+    private static Collection<GeneratedBeanBuildItem> makeBuildItems(Map<String, byte[]> byteCodeMap) {
+        Collection<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
+        for (Map.Entry<String, byte[]> byteCode : byteCodeMap.entrySet()) {
+            buildItems.add(new GeneratedBeanBuildItem(byteCode.getKey(), byteCode.getValue()));
+        }
         return buildItems;
     }
 
@@ -226,12 +192,6 @@ public class DroolsQuarkusResourceUtils {
             sourceName = sourceName.substring(0, sourceName.length() - 6);
         }
         return sourceName.replace('/', '.').replace('\\', '.');
-    }
-
-    private static Path pathOf(String location, String end) {
-        Path path = Paths.get(location, end);
-        path.getParent().toFile().mkdirs();
-        return path;
     }
 
     static String getHotReloadSupportSource() {

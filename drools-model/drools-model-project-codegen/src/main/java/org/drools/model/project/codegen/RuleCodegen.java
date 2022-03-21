@@ -17,18 +17,14 @@ package org.drools.model.project.codegen;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.model.project.codegen.context.DroolsModelBuildContext;
-import org.drools.model.project.codegen.io.CollectedResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.stream.Collectors.toList;
 
 public class RuleCodegen {
 
@@ -40,14 +36,6 @@ public class RuleCodegen {
 
     private final DroolsModelBuildContext context;
     private final String name;
-
-    public static RuleCodegen ofCollectedResources(DroolsModelBuildContext context, Collection<CollectedResource> resources) {
-        List<Resource> generatedRules = resources.stream()
-                .map(CollectedResource::resource)
-                .filter(r -> isRuleFile(r) || r.getResourceType() == ResourceType.PROPERTIES)
-                .collect(toList());
-        return ofResources(context, generatedRules);
-    }
 
     public static RuleCodegen ofResources(DroolsModelBuildContext context, Collection<Resource> resources) {
         return new RuleCodegen(context, resources);
