@@ -29,7 +29,11 @@ public class AppPaths {
 
     public enum BuildTool {
         MAVEN,
-        GRADLE
+        GRADLE;
+
+        public static AppPaths.BuildTool findBuildTool() {
+            return System.getProperty("org.gradle.appname") == null ? MAVEN : GRADLE;
+        }
     }
 
     public static final String TARGET_DIR = "target";

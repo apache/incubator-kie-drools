@@ -185,7 +185,7 @@
     <module>drools-impact-analysis</module>
     <module>drools-retediagram</module>
     <module>kie-maven-plugin</module>
-    <module>drools-quarkus-extension</module>
+    <module>drools-drl-quarkus-extension</module>
   </modules>
 
   <profiles>
