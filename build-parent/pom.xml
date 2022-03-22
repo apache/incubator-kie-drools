@@ -47,7 +47,7 @@
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.com.google.protobuf>3.17.3</version.com.google.protobuf>
-    <version.com.h2database>2.0.206</version.com.h2database>
+    <version.com.h2database>2.1.210</version.com.h2database>
     <!-- DROOLS-6678: only used by drools-verifier -->
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <!-- DROOLS-6678: only used by drools-examples -->
