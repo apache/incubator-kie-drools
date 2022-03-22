@@ -48,7 +48,9 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.runtime.functions.YearsAndMonthsFunction;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class RangeFunction extends BaseFEELFunction {
     
     public static final RangeFunction INSTANCE = new RangeFunction();
