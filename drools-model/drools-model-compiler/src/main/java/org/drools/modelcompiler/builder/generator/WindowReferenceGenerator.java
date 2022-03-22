@@ -29,6 +29,8 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.core.addon.TypeResolver;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
@@ -36,7 +38,6 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
-import org.drools.core.addon.TypeResolver;
 import org.drools.model.Window;
 import org.drools.model.WindowDefinition;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -69,14 +70,16 @@ public class WindowReferenceGenerator {
         this.typeResolver = typeResolver;
     }
 
-    public Optional<Expression> visit(PatternSourceDescr sourceDescr) {
+    public Optional<Expression> visit(PatternSourceDescr sourceDescr, RuleContext context) {
         if (sourceDescr instanceof WindowReferenceDescr) {
             final WindowReferenceDescr source = ((WindowReferenceDescr) sourceDescr);
             final String windowVariable = toVar(source.getName());
             if (packageModel.getWindowReferences().containsKey(windowVariable)) {
                 return Optional.of(new NameExpr(windowVariable));
+            } else {
+                context.addCompilationError(new DescrBuildError(context.getParentDescr(), source, null, "Unknown window " + source.getName()));
+                return Optional.empty();
             }
-            return Optional.empty();
         } else {
             return Optional.empty();
         }

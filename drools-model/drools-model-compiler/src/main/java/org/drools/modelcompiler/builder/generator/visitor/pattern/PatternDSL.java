@@ -105,7 +105,7 @@ public abstract class PatternDSL implements DSLNode {
         if (declarationSourceFrom.isPresent()) {
             return declarationSourceFrom;
         }
-        return source.flatMap(new WindowReferenceGenerator(packageModel, context.getTypeResolver())::visit);
+        return source.flatMap(sourceDescr -> new WindowReferenceGenerator(packageModel, context.getTypeResolver()).visit(sourceDescr, context));
     }
 
     private void generatePatternIdentifierIfMissing() {
