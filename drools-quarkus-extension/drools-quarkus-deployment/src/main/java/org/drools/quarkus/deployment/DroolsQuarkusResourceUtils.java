@@ -198,7 +198,7 @@ public class DroolsQuarkusResourceUtils {
         return "package " + HOT_RELOAD_SUPPORT_PACKAGE + ";\n" +
                 "@io.quarkus.runtime.Startup()\n" +
                 "public class " + HOT_RELOAD_SUPPORT_CLASS + " {\n" +
-                "private static final String ID = \"" + UUID.randomUUID().toString() + "\";\n" +
+                "private static final String ID = \"" + UUID.randomUUID() + "\";\n" +
                 "}";
     }
 }

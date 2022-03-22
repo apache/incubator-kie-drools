@@ -23,6 +23,7 @@
     <module>drools-quarkus-deployment</module>
     <module>drools-quarkus</module>
     <module>drools-quarkus-integration-test</module>
+    <module>drools-quarkus-integration-test-hotreload</module>
   </modules>
 
   <dependencyManagement>

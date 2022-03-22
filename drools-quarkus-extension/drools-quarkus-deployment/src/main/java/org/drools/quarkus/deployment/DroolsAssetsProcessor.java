@@ -131,7 +131,7 @@ public class DroolsAssetsProcessor {
             DroolsModelBuildContext context,
             Collection<GeneratedFile> generatedFiles,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
-            boolean useDebugSymbols) throws IOException {
+            boolean useDebugSymbols) {
 
         Collection<ResolvedDependency> dependencies = curateOutcomeBuildItem.getApplicationModel().getRuntimeDependencies();
 
