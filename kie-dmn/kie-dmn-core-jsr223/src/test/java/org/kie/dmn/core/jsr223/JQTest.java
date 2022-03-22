@@ -62,4 +62,21 @@ public class JQTest {
         LOG.info("{}", evaluateAll.getMessages());
         assertThat(evaluateAll.getDecisionResultByName("Is Adult?").getResult()).isEqualTo(false);
     }
+    
+    @Test
+    public void testIsPersonNameAnAdult() {
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+            .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
+            .buildConfiguration()
+            .fromClasspathResource("/jq/IsPersonNAmeAnAdult.dmn", this.getClass())
+            .getOrElseThrow(e -> new RuntimeException(e));
+        DMNModel model = dmnRuntime.getModels().get(0);
+        DMNContext dmnContext = dmnRuntime.newContext();
+        dmnContext.set("Full Name", "John Doe");
+        dmnContext.set("Age", 47);
+        DMNResult evaluateAll = dmnRuntime.evaluateAll(model, dmnContext);
+        LOG.info("{}", evaluateAll.getContext());
+        LOG.info("{}", evaluateAll.getMessages());
+        assertThat(evaluateAll.getDecisionResultByName("expr").getResult()).isEqualTo("The person John Doe is an Adult");
+    }
 }

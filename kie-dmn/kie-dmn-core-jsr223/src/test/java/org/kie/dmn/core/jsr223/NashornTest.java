@@ -1,5 +1,6 @@
 package org.kie.dmn.core.jsr223;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -13,10 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NashornTest {
     private static final Logger LOG = LoggerFactory.getLogger( NashornTest.class );
+    
+    @Before
+    public void init() {
+        System.setProperty("nashorn.args", "--language=es6"); // TODO document: anyway is a partial ES6 support.
+    }
 
     @Test
     public void testNashorn() {
-        System.setProperty("nashorn.args", "--language=es6"); // TODO document: anyway is a partial ES6 support.
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
@@ -30,5 +35,22 @@ public class NashornTest {
         LOG.info("{}", evaluateAll.getContext());
         LOG.info("{}", evaluateAll.getMessages());
         assertThat(evaluateAll.getDecisionResultByName("BMI value classification").getResult()).isEqualTo("Normal range");
+    }
+    
+    @Test
+    public void testIsPersonNameAnAdult() {
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+            .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
+            .buildConfiguration()
+            .fromClasspathResource("/Nashorn/IsPersonNAmeAnAdult.dmn", this.getClass())
+            .getOrElseThrow(e -> new RuntimeException(e));
+        DMNModel model = dmnRuntime.getModels().get(0);
+        DMNContext dmnContext = dmnRuntime.newContext();
+        dmnContext.set("Full Name", "John Doe");
+        dmnContext.set("Age", 47);
+        DMNResult evaluateAll = dmnRuntime.evaluateAll(model, dmnContext);
+        LOG.info("{}", evaluateAll.getContext());
+        LOG.info("{}", evaluateAll.getMessages());
+        assertThat(evaluateAll.getDecisionResultByName("expr").getResult()).isEqualTo("The person John Doe is an Adult");
     }
 }

@@ -29,7 +29,7 @@ public class JSR223ScriptEngineEvaluator {
     public JSR223ScriptEngineEvaluator(ScriptEngine scriptEngine, String expression) {
         this.scriptEngine = scriptEngine;
         this.expression = expression;
-        boolean shouldEscape = Boolean.valueOf(Optional.ofNullable(this.scriptEngine.getFactory().getParameter(DMN_SYMBOL_ESCAPE_BOOL)).map(Object::toString).orElse("true"));
+        boolean shouldEscape = Boolean.valueOf(Optional.ofNullable(this.scriptEngine.getFactory().getParameter(DMN_SYMBOL_ESCAPE_BOOL)).map(Object::toString).orElse("false"));
         if (shouldEscape) {
             keyEscapeFn = JSR223Utils::escapeIdentifierForBinding;
         } else {
@@ -43,7 +43,7 @@ public class JSR223ScriptEngineEvaluator {
     public Object eval(Map<String, Object> ins) throws ScriptException {
         Bindings engineScope = createBindings(ins);
         Object result = scriptEngine.eval(expression, engineScope);
-        LOG.info("Script '{}' result: {}", expression, result);
+        LOG.info("Script eval of '{}' result: {}", expression, result);
         return EvalHelper.coerceNumber(result);
     }
     
@@ -55,7 +55,7 @@ public class JSR223ScriptEngineEvaluator {
         String keyForUnaryTest = Optional.ofNullable(scriptEngine.getFactory().getParameter(DMN_UNARYTEST_SYMBOL).toString()).orElse("_");
         engineScope.put(keyForUnaryTest, in);
         Object result = scriptEngine.eval(expression, engineScope);
-        LOG.info("Script '{}' result: {}", expression, result);
+        LOG.info("Script test of '{}' result: {}", expression, result);
         return result == Boolean.TRUE ? true : false;
     }
 

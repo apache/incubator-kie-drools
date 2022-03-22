@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
-    private static final Logger LOG = LoggerFactory.getLogger( DMNEvaluatorCompiler.class );
+    private static final Logger LOG = LoggerFactory.getLogger( JSR223EvaluatorCompiler.class );
 
     private final ObjectMapper MAPPER = JsonMapper.builder()
         .addModule(new JavaTimeModule())
