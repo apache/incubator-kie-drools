@@ -71,7 +71,7 @@ public class RuleCodegen {
         generatedFiles.addAll(kieSessionModelBuilder.generate());
 
         if (LOGGER.isDebugEnabled()) {
-            generatedFiles.stream().forEach(genFile -> LOGGER.debug(genFile.dumpContent()));
+            generatedFiles.stream().forEach(genFile -> LOGGER.debug(genFile.toStringWithContent()));
         }
 
         return generatedFiles;

@@ -88,7 +88,7 @@ public class GeneratedFile {
         return type.category();
     }
 
-    public String dumpContent() {
+    public String toStringWithContent() {
         return "GeneratedFile{" + "path=" + path +
                 ", content='\n" + new String(contents) + "\n'}";
     }
