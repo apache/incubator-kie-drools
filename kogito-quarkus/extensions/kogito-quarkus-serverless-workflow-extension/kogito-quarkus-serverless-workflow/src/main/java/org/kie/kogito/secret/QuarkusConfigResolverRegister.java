@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.utils;
+package org.kie.kogito.secret;
 
-import java.util.function.Function;
+import javax.annotation.PostConstruct;
 
-public interface SecretResolver extends Function<String, String> {
+import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
+
+import io.quarkus.runtime.Startup;
+
+@Startup
+public class QuarkusConfigResolverRegister {
+
+    @PostConstruct
+    void init() {
+        ConfigResolverHolder.setConfigResolver(new QuarkusConfigResolver());
+    }
+
 }

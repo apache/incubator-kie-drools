@@ -57,7 +57,13 @@ public class ExpressionHandlerUtilsTest {
     @Test
     void testPrepareString() {
         Map<String, String> map = Collections.singletonMap("name", "javierito");
-        SecretResolverFactory.setSecretResolver(k -> map.get(k));
+        ConfigResolverHolder.setConfigResolver(new ConfigResolver() {
+
+            @Override
+            public <T> T getConfigProperty(String name, Class<T> clazz, T defaultValue) {
+                return (T) map.get(name);
+            }
+        });
         assertEquals("My name is javierito carapito", prepareExpr(trimExpr("${ My name is $SECRET.name $CONST.name.surname }"), Optional.of(context)));
     }
 }

@@ -17,14 +17,18 @@ package org.kogito.workitem.rest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.jbpm.process.core.Process;
 import org.jbpm.process.core.context.variable.Variable;
@@ -37,6 +41,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.bodybuilders.RestWorkItemHandlerBodyBuilder;
+import org.kogito.workitem.rest.decorators.RequestDecorator;
 import org.kogito.workitem.rest.resulthandlers.DefaultRestWorkItemHandlerResult;
 import org.kogito.workitem.rest.resulthandlers.RestWorkItemHandlerResult;
 import org.slf4j.Logger;
@@ -47,6 +52,8 @@ import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
+
+import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
 
 public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
@@ -68,9 +75,12 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     private static final Map<String, RestWorkItemHandlerBodyBuilder> BODY_BUILDERS = new ConcurrentHashMap<>();
 
     private WebClient client;
+    private Collection<RequestDecorator> requestDecorators;
 
     public RestWorkItemHandler(WebClient client) {
         this.client = client;
+        this.requestDecorators = StreamSupport.stream(ServiceLoader.load(RequestDecorator.class).spliterator(), false).collect(Collectors.toList());
+
     }
 
     @Override
@@ -86,10 +96,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         if (endPoint == null) {
             throw new IllegalArgumentException("Missing required parameter " + URL);
         }
-        HttpMethod method = HttpMethod.valueOf(getParam(parameters, METHOD, String.class, "GET").toUpperCase());
-        Object inputModel = getParam(parameters, CONTENT_DATA, Object.class, null);
-        String user = getParam(parameters, USER, String.class, null);
-        String password = getParam(parameters, PASSWORD, String.class, null);
+        HttpMethod method = getParam(parameters, METHOD, HttpMethod.class, HttpMethod.GET);
         String hostProp = getParam(parameters, HOST, String.class, "localhost");
         int portProp = getParam(parameters, PORT, Integer.class, 8080);
 
@@ -106,12 +113,9 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         String path = url.map(java.net.URL::getPath).orElse(endPoint).replace(" ", "%20");//fix issue with spaces in the path
 
         HttpRequest<Buffer> request = client.request(method, port, host, path);
-        if (user != null && !user.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
-            request.basicAuthentication(user, password);
-        }
-        HttpResponse<Buffer> response = method == HttpMethod.POST || method == HttpMethod.PUT ? request.sendJsonAndAwait(bodyBuilder.apply(inputModel, parameters)) : request.sendAndAwait();
+        requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
+        HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT) ? request.sendJsonAndAwait(bodyBuilder.apply(parameters)) : request.sendAndAwait();
         manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo)));
-
     }
 
     public RestWorkItemHandlerBodyBuilder getBodyBuilder(Map<String, Object> parameters) {
@@ -204,25 +208,5 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         }
         parameters.keySet().removeAll(toRemove);
         return sb.toString();
-    }
-
-    private <T> T getParam(Map<String, Object> parameters, String paramName, Class<T> type, T defaultValue) {
-        Object value = parameters.remove(paramName);
-        if (value == null) {
-            value = defaultValue;
-        } else if (!type.isAssignableFrom(value.getClass())) {
-            if (type.isAssignableFrom(Integer.class) && CharSequence.class.isAssignableFrom(value.getClass())) {
-                try {
-                    value = Integer.parseInt(value.toString());
-                } catch (NumberFormatException ex) {
-                    value = defaultValue;
-                }
-            } else {
-                throw new IllegalArgumentException("Parameter paramName should be of type " + type +
-                        " but it is of type " +
-                        value.getClass());
-            }
-        }
-        return type.cast(value);
     }
 }

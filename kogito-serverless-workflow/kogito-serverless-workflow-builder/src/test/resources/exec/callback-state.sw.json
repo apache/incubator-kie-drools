@@ -34,7 +34,7 @@
         "functionRef": {
           "refName": "callbackFunction",
           "arguments": {
-            "callbackRequest": { "query" : "$.query" }
+            "query" : "$.query" 
           }
         }
       },

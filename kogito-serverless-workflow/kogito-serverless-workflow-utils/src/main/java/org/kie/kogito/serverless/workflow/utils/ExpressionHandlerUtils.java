@@ -48,7 +48,7 @@ public class ExpressionHandlerUtils {
     private static final Collection<String> MAGIC_WORDS = Arrays.asList(SECRET_MAGIC, CONST_MAGIC, CONTEXT_MAGIC);
 
     public static String prepareExpr(String expr, Optional<KogitoProcessContext> context) {
-        expr = replaceMagic(expr, SECRET_MAGIC, SecretResolverFactory.getSecretResolver());
+        expr = replaceMagic(expr, SECRET_MAGIC, ExpressionHandlerUtils::getSecret);
         if (context.isPresent()) {
             expr = replaceMagic(expr, CONTEXT_MAGIC, key -> KogitoProcessContextResolver.get().readKey(context.get(), key));
         }
@@ -58,6 +58,10 @@ public class ExpressionHandlerUtils {
 
     public static Collection<String> getMagicWords() {
         return MAGIC_WORDS;
+    }
+
+    private static String getSecret(String key) {
+        return ConfigResolverHolder.getConfigResolver().getConfigProperty(key, String.class, null);
     }
 
     private static Object getConstant(String key, JsonNode node) {
@@ -75,6 +79,8 @@ public class ExpressionHandlerUtils {
             T value = replacer.apply(key);
             if (value != null) {
                 expr = expr.replace(magic + key, value.toString());
+            } else {
+                break;
             }
         }
         return expr;
@@ -141,4 +147,5 @@ public class ExpressionHandlerUtils {
         int indexOf = expr.lastIndexOf('.');
         return indexOf < 0 ? Optional.empty() : Optional.of(expr.substring(indexOf + 1));
     }
+
 }

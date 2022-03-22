@@ -27,6 +27,10 @@
       <artifactId>kogito-serverless-workflow-runtime</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.swagger.parser.v3</groupId>
+      <artifactId>swagger-parser</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-codegen-api</artifactId>
     </dependency>

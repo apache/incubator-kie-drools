@@ -619,23 +619,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertNotNull(process.getId());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "/exec/openapi-greeting-operation.sw.json" })
-    public void testSpecOpenApiFunctionParsing(String workflowLocation) throws IOException {
-        Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
-
-        assertNotNull(workflow);
-        assertNotNull(workflow.getId());
-        assertNotNull(workflow.getName());
-        assertNotNull(workflow.getStates());
-        assertTrue(workflow.getStates().size() > 0);
-        assertEquals(1, workflow.getFunctions().getFunctionDefs().size());
-
-        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertNotNull(process);
-        assertNotNull(process.getId());
-    }
-
     @Test
     public void testMinimumWorkflow() {
         Workflow workflow = createMinimumWorkflow();

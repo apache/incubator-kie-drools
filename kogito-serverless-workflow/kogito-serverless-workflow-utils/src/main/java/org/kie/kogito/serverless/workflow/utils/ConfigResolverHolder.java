@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.secret;
+package org.kie.kogito.serverless.workflow.utils;
 
-import javax.annotation.PostConstruct;
+public class ConfigResolverHolder {
 
-import org.kie.kogito.serverless.workflow.utils.SecretResolverFactory;
+    private static ConfigResolver configResolver = new ConfigResolver() {
+        @Override
+        public <T> T getConfigProperty(String name, Class<T> clazz, T defaultValue) {
+            return defaultValue;
+        }
+    };
 
-import io.quarkus.runtime.Startup;
-
-@Startup
-public class QuarkusSecretResolverRegister {
-
-    @PostConstruct
-    void init() {
-        SecretResolverFactory.setSecretResolver(new QuarkusSecretResolver());
+    public static void setConfigResolver(ConfigResolver secretResolver) {
+        ConfigResolverHolder.configResolver = secretResolver;
     }
 
+    public static ConfigResolver getConfigResolver() {
+        return configResolver;
+    }
+
+    private ConfigResolverHolder() {
+    }
 }

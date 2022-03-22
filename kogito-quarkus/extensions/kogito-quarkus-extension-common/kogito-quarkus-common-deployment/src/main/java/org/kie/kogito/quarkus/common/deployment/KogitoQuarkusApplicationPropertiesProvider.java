@@ -38,6 +38,11 @@ public class KogitoQuarkusApplicationPropertiesProvider implements KogitoApplica
     }
 
     @Override
+    public <T> Optional<T> getApplicationProperty(String property, Class<T> clazz) {
+        return ConfigProvider.getConfig().getOptionalValue(property, clazz);
+    }
+
+    @Override
     public void setApplicationProperty(String key, String value) {
         System.setProperty(key, value);
     }

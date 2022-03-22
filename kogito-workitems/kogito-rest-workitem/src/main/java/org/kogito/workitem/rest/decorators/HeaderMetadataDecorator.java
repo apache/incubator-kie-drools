@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.utils;
+package org.kogito.workitem.rest.decorators;
 
-public class SecretResolverFactory {
+import java.util.Map;
 
-    private static SecretResolver secretResolver = k -> k;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.meta.ProcessMeta;
 
-    public static void setSecretResolver(SecretResolver secretResolver) {
-        SecretResolverFactory.secretResolver = secretResolver;
-    }
+import io.vertx.mutiny.ext.web.client.HttpRequest;
 
-    public static SecretResolver getSecretResolver() {
-        return secretResolver;
-    }
+public class HeaderMetadataDecorator implements RequestDecorator {
 
-    private SecretResolverFactory() {
+    @Override
+    public void decorate(KogitoWorkItem item, Map<String, Object> parameters, HttpRequest<?> request) {
+        ProcessMeta meta = ProcessMeta.fromKogitoWorkItem(item);
+        meta.asMap().forEach(request::putHeader);
     }
 }

@@ -24,11 +24,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-events-api</artifactId>
     </dependency>
-    <!-- OpenAPI codegen is required to have access to the descriptors in the BuildContext -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-codegen-openapi</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow</artifactId>

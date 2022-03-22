@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.rest.bodybuilders;
+package org.kogito.workitem.rest.decorators;
 
 import java.util.Map;
 
-public class ParamsRestWorkItemHandlerBodyBuilder implements RestWorkItemHandlerBodyBuilder {
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
-    @Override
-    public Object apply(Object inputModel, Map<String, Object> parameters) {
-        // if parameters is empty at this stage, assume post content is the whole input model
-        // if not, return remaining parameters
-        return parameters.isEmpty() ? inputModel : parameters;
-    }
+import io.vertx.mutiny.ext.web.client.HttpRequest;
+
+public interface RequestDecorator {
+    public void decorate(KogitoWorkItem item, Map<String, Object> parameters, HttpRequest<?> request);
 }

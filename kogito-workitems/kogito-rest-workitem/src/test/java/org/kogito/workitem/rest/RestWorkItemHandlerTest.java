@@ -35,7 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
-import org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder;
+import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.resulthandlers.DefaultRestWorkItemHandlerResult;
 import org.kogito.workitem.rest.resulthandlers.RestWorkItemHandlerResult;
 import org.mockito.ArgumentCaptor;
@@ -254,8 +254,7 @@ public class RestWorkItemHandlerTest {
         parameters.put("id", 26);
         parameters.put("name", "pepe");
         parameters.put(RestWorkItemHandler.METHOD, "POST");
-        parameters.put(BODY_BUILDER, new ParamsRestWorkItemHandlerBodyBuilder());
-        parameters.put(RestWorkItemHandler.CONTENT_DATA, workflowData);
+        parameters.put(BODY_BUILDER, new DefaultWorkItemHandlerBodyBuilder());
 
         handler.executeWorkItem(workItem, manager);
 
@@ -270,7 +269,7 @@ public class RestWorkItemHandlerTest {
     @Test
     public void testContentDataPostRestTaskHandler() {
         parameters.put(RestWorkItemHandler.METHOD, "POST");
-        parameters.put(BODY_BUILDER, new ParamsRestWorkItemHandlerBodyBuilder());
+        parameters.put(BODY_BUILDER, new DefaultWorkItemHandlerBodyBuilder());
         parameters.put(RestWorkItemHandler.CONTENT_DATA, workflowData);
 
         handler.executeWorkItem(workItem, manager);
@@ -291,7 +290,7 @@ public class RestWorkItemHandlerTest {
 
     @Test
     public void testParametersPostWithCustomParamWithClassBuilder() {
-        testParametersPostWithCustomParam(ParamsRestWorkItemHandlerBodyBuilder.class.getName());
+        testParametersPostWithCustomParam(DefaultWorkItemHandlerBodyBuilder.class.getName());
     }
 
     private void testParametersPostWithCustomParam(String bodyBuilderClass) {

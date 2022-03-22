@@ -60,7 +60,6 @@ import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaFactoryGenerator;
-import org.kie.kogito.codegen.process.openapi.OpenApiClientWorkItemIntrospector;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationContext;
 import org.kie.kogito.process.validation.ValidationException;
@@ -280,8 +279,6 @@ public class ProcessCodegen extends AbstractGenerator {
         Map<String, List<UserTaskModelMetaData>> processIdToUserTaskModel = new HashMap<>();
         Map<String, ProcessMetaData> processIdToMetadata = new HashMap<>();
 
-        OpenApiClientWorkItemIntrospector introspector = new OpenApiClientWorkItemIntrospector(this.context());
-
         // first we generate all the data classes from variable declarations
         for (WorkflowProcess workFlowProcess : processes.values()) {
             ModelClassGenerator mcg = new ModelClassGenerator(context(), workFlowProcess);
@@ -307,7 +304,6 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // collect all process descriptors (exec model)
         for (KogitoWorkflowProcess workFlowProcess : processes.values()) {
-            introspector.introspect(workFlowProcess);
             ProcessExecutableModelGenerator execModelGen =
                     new ProcessExecutableModelGenerator(workFlowProcess, execModelGenerator);
             String packageName = workFlowProcess.getPackageName();

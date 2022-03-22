@@ -1,0 +1,4 @@
+org.kogito.workitem.rest.decorators.HeaderMetadataDecorator
+org.kogito.workitem.rest.decorators.BasicAuthDecorator
+org.kogito.workitem.rest.decorators.BearerTokenAuthDecorator
+org.kogito.workitem.rest.decorators.ApiKeyAuthDecorator

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow;
+package org.kie.kogito.serverless.workflow.workitemparams;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.jackson.utils.JsonNodeVisitor;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
-import org.kie.kogito.process.expr.Expression;
-import org.kie.kogito.process.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class JsonNodeResolver extends ExpressionWorkItemResolver {
+public class ObjectResolver extends JsonNodeResolver {
 
-    public JsonNodeResolver(String exprLang, Object expr, String paramName) {
+    public ObjectResolver(String exprLang, Object expr, String paramName) {
         super(exprLang, expr, paramName);
     }
 
     @Override
     protected Object evalExpression(Object inputModel, KogitoProcessContext context) {
-        return JsonNodeVisitor.transformTextNode(JsonObjectUtils.fromValue(expression), node -> transform(node, inputModel, context));
-    }
-
-    private JsonNode transform(JsonNode node, Object inputModel, KogitoProcessContext context) {
-        Expression expr = ExpressionHandlerFactory.get(language, node.asText());
-        return expr.isValid() ? expr.eval(inputModel, JsonNode.class, context) : node;
+        return JsonObjectUtils.simpleToJavaValue((JsonNode) super.evalExpression(inputModel, context));
     }
 }

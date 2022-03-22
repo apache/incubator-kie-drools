@@ -23,7 +23,7 @@ states:
       functionRef:
         refName: callbackFunction
         arguments:
-          callbackRequest: { "query": "$.query" }
+          "query": "$.query" 
     eventRef: callbackEvent
     transition: FinalizeSuccessful
     onErrors:

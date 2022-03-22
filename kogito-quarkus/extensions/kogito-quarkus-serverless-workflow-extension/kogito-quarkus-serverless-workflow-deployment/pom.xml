@@ -56,13 +56,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-jackson-deployment</artifactId>
     </dependency>
-   
-    <!-- codegen dependencies -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-codegen-openapi</artifactId>
-    </dependency>
-    
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-cache-deployment</artifactId>

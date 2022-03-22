@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.suppliers;
+package org.kie.kogito.serverless.workflow.rest;
 
-import java.util.function.Supplier;
+import java.util.Map;
 
-import org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder;
+import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
 
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import static org.kie.kogito.serverless.workflow.SWFConstants.MODEL_WORKFLOW_VAR;
 
-public class RestBodyBuilderSupplier implements Supplier<Expression> {
+public class ParamsRestWorkItemHandlerBodyBuilder extends DefaultWorkItemHandlerBodyBuilder {
 
     @Override
-    public Expression get() {
-        return new ObjectCreationExpr()
-                .setType(ParamsRestWorkItemHandlerBodyBuilder.class.getCanonicalName());
+    protected Object buildFromParams(Map<String, Object> parameters) {
+        Object inputModel = parameters.remove(MODEL_WORKFLOW_VAR);
+        return parameters.isEmpty() ? inputModel : parameters;
     }
-
 }

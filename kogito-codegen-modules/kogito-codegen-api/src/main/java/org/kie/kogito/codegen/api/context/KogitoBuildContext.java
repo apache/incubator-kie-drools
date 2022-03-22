@@ -128,6 +128,8 @@ public interface KogitoBuildContext {
 
     Optional<String> getApplicationProperty(String property);
 
+    <T> Optional<T> getApplicationProperty(String property, Class<T> clazz);
+
     Collection<String> getApplicationProperties();
 
     void setApplicationProperty(String key, String value);

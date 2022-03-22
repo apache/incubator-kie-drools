@@ -127,6 +127,11 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     }
 
     @Override
+    public <T> Optional<T> getApplicationProperty(String property, Class<T> clazz) {
+        return applicationProperties.getApplicationProperty(property, clazz);
+    }
+
+    @Override
     public Collection<String> getApplicationProperties() {
         return applicationProperties.getApplicationProperties();
     }
