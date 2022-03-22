@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,13 +57,11 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint roomConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(MeetingAssignment.class)
-                .join(MeetingAssignment.class,
-                        equal(MeetingAssignment::getRoom),
-                        lessThan(MeetingAssignment::getId),
-                        overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
-                                assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
-                                        assignment.getMeeting().getDurationInGrains()))
+        return constraintFactory.forEachUniquePair(MeetingAssignment.class,
+                equal(MeetingAssignment::getRoom),
+                overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
+                        assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                assignment.getMeeting().getDurationInGrains()))
                 .penalizeConfigurable("Room conflict",
                         (leftAssignment, rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment));
     }
@@ -81,9 +79,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 equal(RequiredAttendance::getPerson))
                 .join(MeetingAssignment.class,
                         equal((leftRequiredAttendance, rightRequiredAttendance) -> leftRequiredAttendance.getMeeting(),
-                                MeetingAssignment::getMeeting),
-                        filtering((leftRequiredAttendance, rightRequiredAttendance,
-                                leftAssignment) -> leftAssignment.getStartingTimeGrain() != null))
+                                MeetingAssignment::getMeeting))
                 .join(MeetingAssignment.class,
                         equal((leftRequiredAttendance, rightRequiredAttendance, leftAssignment) -> rightRequiredAttendance
                                 .getMeeting(),
@@ -124,12 +120,12 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(RequiredAttendance.class)
                 .join(PreferredAttendance.class,
                         equal(RequiredAttendance::getPerson, PreferredAttendance::getPerson))
-                .join(MeetingAssignment.class,
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
+                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal((requiredAttendance, preferredAttendance) -> requiredAttendance.getMeeting(),
-                                MeetingAssignment::getMeeting),
-                        filtering((requiredAttendance, preferredAttendance,
-                                leftAssignment) -> leftAssignment.getStartingTimeGrain() != null))
-                .join(MeetingAssignment.class,
+                                MeetingAssignment::getMeeting))
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
+                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal((requiredAttendance, preferredAttendance, leftAssignment) -> preferredAttendance.getMeeting(),
                                 MeetingAssignment::getMeeting),
                         overlapping((attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex(),
@@ -144,12 +140,12 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     protected Constraint preferredAttendanceConflict(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachUniquePair(PreferredAttendance.class,
                 equal(PreferredAttendance::getPerson))
-                .join(MeetingAssignment.class,
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
+                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal((leftAttendance, rightAttendance) -> leftAttendance.getMeeting(),
-                                MeetingAssignment::getMeeting),
-                        filtering((leftAttendance, rightAttendance,
-                                leftAssignment) -> leftAssignment.getStartingTimeGrain() != null))
-                .join(MeetingAssignment.class,
+                                MeetingAssignment::getMeeting))
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
+                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal((leftAttendance, rightAttendance, leftAssignment) -> rightAttendance.getMeeting(),
                                 MeetingAssignment::getMeeting),
                         overlapping((attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex(),
@@ -175,10 +171,10 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     protected Constraint oneBreakBetweenConsecutiveMeetings(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
-                .join(MeetingAssignment.class,
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
+                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal(MeetingAssignment::getLastTimeGrainIndex,
-                                (rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex() - 1),
-                        filtering((leftAssignment, rightAssignment) -> rightAssignment.getStartingTimeGrain() != null))
+                                (rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex() - 1))
                 .penalizeConfigurable("One TimeGrain break between two consecutive meetings");
     }
 
@@ -211,20 +207,18 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         equal(Attendance::getPerson),
                         filtering((leftAttendance,
                                 rightAttendance) -> leftAttendance.getMeeting() != rightAttendance.getMeeting()))
-                .join(MeetingAssignment.class,
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
+                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal((leftAttendance, rightAttendance) -> leftAttendance.getMeeting(),
-                                MeetingAssignment::getMeeting),
-                        filtering((leftAttendance, rightAttendance,
-                                leftAssignment) -> leftAssignment.getStartingTimeGrain() != null))
-                .join(MeetingAssignment.class,
+                                MeetingAssignment::getMeeting))
+                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
+                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal((leftAttendance, rightAttendance, leftAssignment) -> rightAttendance.getMeeting(),
                                 MeetingAssignment::getMeeting),
                         lessThan(
                                 (leftAttendance, rightAttendance, leftAssignment) -> leftAssignment.getStartingTimeGrain()
                                         .getGrainIndex(),
                                 (rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex()),
-                        filtering((leftAttendance, rightAttendance, leftAssignment,
-                                rightAssignment) -> rightAssignment.getStartingTimeGrain() != null),
                         filtering((leftAttendance, rightAttendance, leftAssignment,
                                 rightAssignment) -> leftAssignment.getRoom() != rightAssignment.getRoom()),
                         filtering((leftAttendance, rightAttendance, leftAssignment,
