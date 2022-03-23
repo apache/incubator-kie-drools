@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Employee;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -34,6 +33,8 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests usage of OOPath expressions resulting in multiple conditional branches (e.g. OR operator).
@@ -84,7 +85,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
+        assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -106,7 +107,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
+        assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -128,7 +129,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
+        assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -150,7 +151,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Bruno", "Alice");
+        assertThat(this.results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
     @Test
@@ -173,7 +174,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
+        assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -198,7 +199,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Bruno", "Alice");
+        assertThat(this.results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
     @Test
@@ -219,7 +220,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactly("Big City");
+        assertThat(this.results).containsExactly("Big City");
     }
 
     @Test
@@ -241,7 +242,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City");
+        assertThat(this.results).containsExactlyInAnyOrder("Big City");
     }
 
     @Test
@@ -263,7 +264,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Alice");
+        assertThat(this.results).containsExactlyInAnyOrder("Alice");
     }
 
     @Test
@@ -286,7 +287,7 @@ public class OOPathLogicalBranchesTest {
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City");
+        assertThat(this.results).containsExactlyInAnyOrder("Big City");
     }
 
     @Test
@@ -315,11 +316,11 @@ public class OOPathLogicalBranchesTest {
         this.kieSession.insert(alice);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).isEmpty();
+        assertThat(this.results).isEmpty();
 
         this.kieSession.delete(brunoFactHandle);
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Alice");
+        assertThat(this.results).containsExactlyInAnyOrder("Alice");
     }
 
     private void initKieSession(final KieBase kieBase) {

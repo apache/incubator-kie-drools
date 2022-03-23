@@ -24,8 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.assertj.core.api.Assertions;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.mvel.compiler.oopath.model.Toy;
@@ -38,6 +36,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class OOPathBindTest {
@@ -94,9 +94,9 @@ public class OOPathBindTest {
                 waitForResultAndStopFireUntilHalt(list, ksession, fireUntilHaltFuture);
             } else {
                 ksession.fireAllRules();
-                Assertions.assertThat(list).hasSize(1);
+                assertThat(list).hasSize(1);
             }
-            Assertions.assertThat(list).contains(40);
+            assertThat(list).contains(40);
         } finally {
             executorService.shutdownNow();
             ksession.dispose();
@@ -190,7 +190,7 @@ public class OOPathBindTest {
         ksession.insert(alice);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(expectedResults);
+        assertThat(list).containsExactlyInAnyOrder(expectedResults);
     }
 
     @Test
@@ -218,7 +218,7 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles", "Debbie");
+        assertThat(list).containsExactlyInAnyOrder("Charles", "Debbie");
     }
 
     @Test
@@ -255,7 +255,7 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(1, 2);
+        assertThat(list).containsExactlyInAnyOrder(1, 2);
     }
 
     @Test
@@ -292,6 +292,6 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(2);
+        assertThat(list).containsExactlyInAnyOrder(2);
     }
 }

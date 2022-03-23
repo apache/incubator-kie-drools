@@ -18,7 +18,6 @@ package org.drools.compiler.integrationtests.drl;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -28,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DRLCepTest {
@@ -60,7 +61,7 @@ public class DRLCepTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("drl-cep-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

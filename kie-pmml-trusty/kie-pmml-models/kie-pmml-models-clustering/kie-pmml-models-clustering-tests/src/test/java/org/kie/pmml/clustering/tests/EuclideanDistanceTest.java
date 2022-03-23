@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
@@ -15,6 +14,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class EuclideanDistanceTest extends AbstractPMMLTest {
@@ -60,8 +61,8 @@ public class EuclideanDistanceTest extends AbstractPMMLTest {
         inputData.put("Dimension2", dimension2);
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(CLUSTER_ID_FIELD)).isEqualTo(classId);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(AFFINITY_FIELD))
+        assertThat(pmml4Result.getResultVariables().get(CLUSTER_ID_FIELD)).isEqualTo(classId);
+        assertThat(pmml4Result.getResultVariables().get(AFFINITY_FIELD))
                 .asInstanceOf(InstanceOfAssertFactories.DOUBLE)
                 .isCloseTo(affinity, Percentage.withPercentage(DOUBLE_VALID_PERCENTAGE));
     }

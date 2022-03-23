@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.builder.Message;
@@ -29,7 +28,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 
 import static java.util.Arrays.asList;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -352,7 +351,7 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         Person first = new Person("686878");
         ksession.insert(first);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class DoubleFact {
@@ -502,7 +501,7 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         Object obj = result.get(0);
         assertTrue(obj instanceof List);
-        Assertions.assertThat((List)obj).containsExactlyInAnyOrder("aaa", "bbb", "ccc");
+        assertThat((List)obj).containsExactlyInAnyOrder("aaa", "bbb", "ccc");
     }
 
     @Test

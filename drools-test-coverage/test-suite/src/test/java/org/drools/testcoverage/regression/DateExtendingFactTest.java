@@ -19,7 +19,6 @@ package org.drools.testcoverage.regression;
 import java.util.Collection;
 import java.util.Date;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -28,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
 * Tests compilation of facts extending java.util.Date (BZ 1072629).
@@ -63,7 +64,7 @@ public class DateExtendingFactTest {
     @Test
     public void testDateExtendingFact() {
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, DRL);
-        Assertions.assertThat(kbuilder.getResults().getMessages(Message.Level.ERROR)).isEmpty();
+        assertThat(kbuilder.getResults().getMessages(Message.Level.ERROR)).isEmpty();
     }
 
 

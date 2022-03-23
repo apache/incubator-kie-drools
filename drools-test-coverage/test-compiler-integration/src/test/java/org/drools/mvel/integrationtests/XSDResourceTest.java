@@ -15,11 +15,12 @@
  */
 package org.drools.mvel.integrationtests;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests KIE package compilation when there is a XSD resource (BZ 1120972) - manifests only when using
@@ -32,7 +33,7 @@ public class XSDResourceTest {
         final KieContainer kcontainer = KieServices.Factory.get().getKieClasspathContainer();
         final KieBase kieBase = kcontainer.getKieBase("xsdKieBase");
 
-        Assertions.assertThat(kieBase).as("Created KieBase with XSD should not be null").isNotNull();
+        assertThat(kieBase).as("Created KieBase with XSD should not be null").isNotNull();
     }
 
 }

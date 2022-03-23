@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.BabyBoy;
 import org.drools.mvel.compiler.oopath.model.BabyGirl;
 import org.drools.mvel.compiler.oopath.model.Man;
@@ -38,6 +37,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 
 @RunWith(Parameterized.class)
@@ -88,7 +88,7 @@ public class OOPathCastTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
+        assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
     @Test
@@ -142,6 +142,6 @@ public class OOPathCastTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Debbie", "Farrah");
+        assertThat(list).containsExactlyInAnyOrder("Debbie", "Farrah");
     }
 }

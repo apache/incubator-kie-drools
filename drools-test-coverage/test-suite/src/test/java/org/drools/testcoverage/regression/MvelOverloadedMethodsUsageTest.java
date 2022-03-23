@@ -16,19 +16,23 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.Overloaded;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.kie.internal.command.CommandFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test verifies that bug #843284 is fixed. Bug is about Mvel not choosing
@@ -75,8 +79,8 @@ public class MvelOverloadedMethodsUsageTest extends KieSessionTest {
         commands.add(CommandFactory.newFireAllRules());
         session.execute(CommandFactory.newBatchExecution(commands));
 
-        Assertions.assertThat(firedRules.ruleFiredCount("MvelOverloadedMethods")).isEqualTo(1);
-        Assertions.assertThat(firedRules.ruleFiredCount("MvelOverloadedMethods2")).isEqualTo(1);
+        assertThat(firedRules.ruleFiredCount("MvelOverloadedMethods")).isEqualTo(1);
+        assertThat(firedRules.ruleFiredCount("MvelOverloadedMethods2")).isEqualTo(1);
     }
 
     @Override

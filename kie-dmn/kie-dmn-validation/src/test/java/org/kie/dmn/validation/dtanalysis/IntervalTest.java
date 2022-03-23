@@ -21,19 +21,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.Domain;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntervalTest {
 
@@ -44,7 +38,7 @@ public class IntervalTest {
         Interval c = new Interval(RangeBoundary.CLOSED, 3, 4, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.flatten(Arrays.asList(c, b, a));
-        assertThat(result, contains(new Interval(RangeBoundary.CLOSED, 0, 4, RangeBoundary.CLOSED, 0, 0)));
+        assertThat(result).contains(new Interval(RangeBoundary.CLOSED, 0, 4, RangeBoundary.CLOSED, 0, 0));
     }
 
     @Test
@@ -54,8 +48,8 @@ public class IntervalTest {
         Interval c = new Interval(RangeBoundary.OPEN, 3, 4, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.flatten(Arrays.asList(c, b, a));
-        assertThat(result, contains(new Interval(RangeBoundary.CLOSED, 0, 3, RangeBoundary.OPEN, 0, 0),
-                                    new Interval(RangeBoundary.OPEN, 3, 4, RangeBoundary.CLOSED, 0, 0)));
+        assertThat(result).contains(new Interval(RangeBoundary.CLOSED, 0, 3, RangeBoundary.OPEN, 0, 0),
+                                    new Interval(RangeBoundary.OPEN, 3, 4, RangeBoundary.CLOSED, 0, 0));
     }
 
     @Test
@@ -65,7 +59,7 @@ public class IntervalTest {
         Interval c = new Interval(RangeBoundary.CLOSED, 3, 4, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.flatten(Arrays.asList(c, b, a));
-        assertThat(result, contains(new Interval(RangeBoundary.CLOSED, 0, 4, RangeBoundary.CLOSED, 0, 0)));
+        assertThat(result).contains(new Interval(RangeBoundary.CLOSED, 0, 4, RangeBoundary.CLOSED, 0, 0));
     }
 
     @Test
@@ -74,7 +68,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(a, domain);
-        assertThat(result, hasSize(2));
+        assertThat(result).hasSize(2);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, 0, RangeBoundary.OPEN, 1, 2);
         assertInterval(result.get(1), RangeBoundary.CLOSED, 3, Interval.POS_INF, RangeBoundary.CLOSED, 1, 2);
     }
@@ -85,7 +79,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, "a", "u", RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(a, domain);
-        assertThat(result, hasSize(2));
+        assertThat(result).hasSize(2);
         assertInterval(result.get(0), RangeBoundary.CLOSED, "a", "i", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.CLOSED, "o", "u", RangeBoundary.CLOSED, 9, 8);
     }
@@ -97,7 +91,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
-        assertThat(result, hasSize(3));
+        assertThat(result).hasSize(3);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.OPEN, "a", "e", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "e", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
@@ -110,7 +104,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
-        assertThat(result, hasSize(2));
+        assertThat(result).hasSize(2);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
     }
@@ -122,7 +116,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
-        assertThat(result, hasSize(3));
+        assertThat(result).hasSize(3);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
@@ -136,7 +130,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1, i2), domain);
-        assertThat(result, hasSize(4));
+        assertThat(result).hasSize(4);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.OPEN, "a", "e", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "e", "i", RangeBoundary.OPEN, 9, 8);
@@ -144,10 +138,10 @@ public class IntervalTest {
     }
 
     private static void assertInterval(Interval interval, RangeBoundary lowType, Comparable<?> lowValue, Comparable<?> hiValue, RangeBoundary hiType, int rule, int col) {
-        assertThat(interval.getLowerBound(), is(new Bound(lowValue, lowType, interval)));
-        assertThat(interval.getUpperBound(), is(new Bound(hiValue, hiType, interval)));
-        assertThat(interval.getRule(), is(rule));
-        assertThat(interval.getCol(), is(col));
+        assertThat(interval.getLowerBound()).isEqualTo(new Bound(lowValue, lowType, interval));
+        assertThat(interval.getUpperBound()).isEqualTo(new Bound(hiValue, hiType, interval));
+        assertThat(interval.getRule()).isEqualTo(rule);
+        assertThat(interval.getCol()).isEqualTo(col);
     }
 
     public static class DummyDomain implements Domain {
@@ -191,13 +185,13 @@ public class IntervalTest {
         Interval domainInterval = new Interval(RangeBoundary.CLOSED, 0, 100, RangeBoundary.CLOSED, 0, 0);
         DummyDomain domain = new DummyDomain(domainInterval, Collections.emptyList());
 
-        assertThat(new Interval(RangeBoundary.CLOSED, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith(">="));
-        assertThat(new Interval(RangeBoundary.OPEN, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith(">"));
-        assertThat(new Interval(RangeBoundary.OPEN, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), not(startsWith(">=")));
-
-        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith("<="));
-        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN, 0, 0).asHumanFriendly(domain), startsWith("<"));
-        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN, 0, 0).asHumanFriendly(domain), not(startsWith("<=")));
+        assertThat(new Interval(RangeBoundary.CLOSED, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain)).startsWith(">=");
+        assertThat(new Interval(RangeBoundary.OPEN  , 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain)).startsWith(">");
+        assertThat(new Interval(RangeBoundary.OPEN  , 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain)).doesNotStartWith(">=");
+        
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain)).startsWith("<=");
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain)).startsWith("<");
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain)).doesNotStartWith("<=");
     }
 
     @Test
@@ -206,7 +200,7 @@ public class IntervalTest {
         Interval b = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-04-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.flatten(Arrays.asList(b, a));
-        Assertions.assertThat(result).containsExactly(new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0));
+        assertThat(result).containsExactly(new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0));
     }
 
     @Test
@@ -215,6 +209,6 @@ public class IntervalTest {
         Interval b = new Interval(RangeBoundary.OPEN, LocalDate.parse("2021-04-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.flatten(Arrays.asList(b, a));
-        Assertions.assertThat(result).containsExactly(a, b);
+        assertThat(result).containsExactly(a, b);
     }
 }

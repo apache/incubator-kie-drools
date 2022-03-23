@@ -33,7 +33,6 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 
-import org.assertj.core.api.Assertions;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
@@ -42,6 +41,8 @@ import org.junit.Test;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractJandexTest {
 
@@ -84,7 +85,7 @@ public abstract class AbstractJandexTest {
 
         Set<DotName> foundsViaJandex = founds.stream().map(ClassInfo::name).collect(Collectors.toSet());
         Set<DotName> foundsViaJSON = dotNamesInJSON.stream().collect(Collectors.toSet());
-        Assertions.assertThat(foundsViaJandex)
+        assertThat(foundsViaJandex)
                   .as("List of classes found via Jandex during test and listed in JSON file must be same.")
                   .isEqualTo(foundsViaJSON)
         ;
