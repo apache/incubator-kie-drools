@@ -5,6 +5,9 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.io.impl.ClassPathResource;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
@@ -30,14 +33,15 @@ public class ExplicitCompilerTest {
 
 
     @Test
-    @Ignore("not finished")
+    //@Ignore("not finished")
     public void testCompile() throws DroolsParserException, IOException {
-        final Reader reader = null;
-        final Resource resource = null;
+        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
+
+        Resource resource = new ClassPathResource("com/sample/from.drl");
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl("com.sample");
+        PackageRegistry packageRegistry = new PackageRegistry(configuration.getClassLoader(), configuration, pkg);
         InternalKnowledgeBase kBase = null;
-        KnowledgeBuilderConfigurationImpl configuration = null;
-        TypeDeclarationBuilder typeBuilder = null;
-        PackageRegistry packageRegistry = null;
+        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder();
         KnowledgeBuilderImpl kBuilder = null;
         ClassLoader rootClassLoader = null;
         int parallelRulesBuildThreshold = 0;

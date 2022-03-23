@@ -41,7 +41,7 @@ import org.kie.internal.builder.ResourceChange;
 
 public class TypeDeclarationBuilder {
 
-    protected final KnowledgeBuilderImpl kbuilder;
+    protected final TypeDeclarationContext kbuilder;
 
     protected final Set<String> generatedTypes = new HashSet<>();
 
@@ -52,7 +52,7 @@ public class TypeDeclarationBuilder {
     protected TypeDeclarationConfigurator typeDeclarationConfigurator;
     protected DeclaredClassBuilder declaredClassBuilder;
 
-    public TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder) {
+    public TypeDeclarationBuilder(TypeDeclarationContext kbuilder) {
         this.kbuilder = kbuilder;
         this.classDeclarationExtractor = new TypeDeclarationCache( kbuilder );
         this.typeDeclarationNameResolver = new TypeDeclarationNameResolver( kbuilder );

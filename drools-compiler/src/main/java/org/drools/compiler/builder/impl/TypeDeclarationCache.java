@@ -45,10 +45,10 @@ import static org.drools.core.util.Drools.hasMvel;
 
 public class TypeDeclarationCache {
 
-    private final KnowledgeBuilderImpl kbuilder;
+    private final TypeDeclarationContext kbuilder;
     private final Map<String, TypeDeclaration> cacheTypes = new HashMap<>();
 
-    TypeDeclarationCache( KnowledgeBuilderImpl kbuilder ) {
+    TypeDeclarationCache( TypeDeclarationContext kbuilder ) {
         this.kbuilder = kbuilder;
         if ( hasMvel() ) {
             initBuiltinTypeDeclarations();

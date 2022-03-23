@@ -37,9 +37,9 @@ import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
 
 public class TypeDeclarationConfigurator {
 
-    protected final KnowledgeBuilderImpl kbuilder;
+    protected final TypeDeclarationContext kbuilder;
 
-    public TypeDeclarationConfigurator( KnowledgeBuilderImpl kbuilder ) {
+    public TypeDeclarationConfigurator( TypeDeclarationContext kbuilder ) {
         this.kbuilder = kbuilder;
     }
 
@@ -99,12 +99,12 @@ public class TypeDeclarationConfigurator {
         return true;
     }
 
-    static void processMvelBasedAccessors( KnowledgeBuilderImpl kbuilder, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
+    static void processMvelBasedAccessors( TypeDeclarationContext kbuilder, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
         wireTimestampAccessor( kbuilder, annotated, type, pkgRegistry );
         wireDurationAccessor( kbuilder, annotated, type, pkgRegistry );
     }
 
-    private static void wireTimestampAccessor( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+    private static void wireTimestampAccessor( TypeDeclarationContext kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
         Timestamp timestamp = annotated.getTypedAnnotation(Timestamp.class);
         if ( timestamp != null ) {
             BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
@@ -129,7 +129,7 @@ public class TypeDeclarationConfigurator {
         }
     }
 
-    private static void wireDurationAccessor( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+    private static void wireDurationAccessor( TypeDeclarationContext kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
         Duration duration = annotated.getTypedAnnotation(Duration.class);
         if (duration != null) {
             BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
@@ -154,7 +154,7 @@ public class TypeDeclarationConfigurator {
         }
     }
 
-    private static AnalysisResult getMvelAnalysisResult( KnowledgeBuilderImpl kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
+    private static AnalysisResult getMvelAnalysisResult( TypeDeclarationContext kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
         PackageBuildContext context = new PackageBuildContext();
         context.init(kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
