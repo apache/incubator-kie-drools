@@ -1,11 +1,9 @@
-package org.drools.compiler.builder.impl.processors;
+package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultAccumulator;
 import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -16,25 +14,28 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChange;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DummyTypeDeclarationContext implements TypeDeclarationContext {
+public class TypeDeclarationContextImpl implements TypeDeclarationContext {
 
     private KnowledgeBuilderConfigurationImpl configuration;
     private final PackageRegistryManager packageRegistryManager;
     private final BuildResultAccumulator buildResultAccumulator = new BuildResultAccumulatorImpl();
+    private TypeDeclarationBuilder typeBuilder;
 
-    public DummyTypeDeclarationContext(KnowledgeBuilderConfigurationImpl configuration, PackageRegistryManager packageRegistryManager) {
+    public TypeDeclarationContextImpl(KnowledgeBuilderConfigurationImpl configuration, PackageRegistryManager packageRegistryManager) {
         this.configuration = configuration;
         this.packageRegistryManager = packageRegistryManager;
     }
 
+    public void setTypeDeclarationBuilder(TypeDeclarationBuilder typeBuilder) {
+        this.typeBuilder = typeBuilder;
+    }
+
     @Override
     public TypeDeclarationBuilder getTypeBuilder() {
-        return null;
+        return typeBuilder;
     }
 
     @Override
@@ -99,4 +100,5 @@ public class DummyTypeDeclarationContext implements TypeDeclarationContext {
         // this is not really used by TypeDeclarationContext!!
         return buildResultAccumulator.getErrors();
     }
+
 }
