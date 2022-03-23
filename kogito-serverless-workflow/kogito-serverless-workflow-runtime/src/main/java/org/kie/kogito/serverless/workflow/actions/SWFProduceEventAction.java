@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.actions;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.jbpm.process.instance.impl.actions.ProduceEventAction;
@@ -38,7 +39,7 @@ public class SWFProduceEventAction extends ProduceEventAction<JsonNode> {
         super(triggerName, varName, supplier);
         if (data != null) {
             this.expr = ExpressionHandlerFactory.get(exprLang, data);
-            if (!expr.isValid()) {
+            if (!expr.isValid(Optional.empty())) {
                 try {
                     this.value = ObjectMapperFactory.get().readTree(data);
                 } catch (JsonProcessingException e) {

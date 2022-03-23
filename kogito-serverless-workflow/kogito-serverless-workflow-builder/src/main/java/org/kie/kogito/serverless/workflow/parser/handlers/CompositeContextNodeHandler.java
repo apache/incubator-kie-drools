@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.compiler.canonical.descriptors.AbstractServiceTaskDescriptor;
@@ -418,7 +419,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private boolean isExpression(Object expr) {
-        return expr instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), expr.toString()).isValid() || expr instanceof JsonNode;
+        return expr instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), expr.toString()).isValid(Optional.empty()) || expr instanceof JsonNode;
     }
 
     private NodeFactory<?, ?> emptyNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionName) {

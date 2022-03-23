@@ -91,9 +91,9 @@ public class JsonPathExpression implements Expression {
     }
 
     @Override
-    public boolean isValid() {
+    public boolean isValid(Optional<KogitoProcessContext> context) {
         if (isValid == null) {
-            isValid = jsonPathRegexPattern.matcher(expr).matches();
+            isValid = jsonPathRegexPattern.matcher(ExpressionHandlerUtils.prepareExpr(expr, context)).matches();
         }
         return isValid;
     }

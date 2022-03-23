@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.serverless.workflow.workitemparams;
 
+import java.util.Optional;
+
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonNodeVisitor;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -37,6 +39,6 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
 
     private JsonNode transform(JsonNode node, Object inputModel, KogitoProcessContext context) {
         Expression expr = ExpressionHandlerFactory.get(language, node.asText());
-        return expr.isValid() ? expr.eval(inputModel, JsonNode.class, context) : node;
+        return expr.isValid(Optional.ofNullable(context)) ? expr.eval(inputModel, JsonNode.class, context) : node;
     }
 }

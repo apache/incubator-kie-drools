@@ -25,6 +25,8 @@ import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -37,10 +39,11 @@ import net.thisptr.jackson.jq.exception.JsonQueryException;
 
 public class JqExpression implements Expression {
 
+    private static final Logger logger = LoggerFactory.getLogger(JqExpression.class);
+
     private final Supplier<Scope> scope;
     private final String expr;
     private JsonQuery query;
-    private Boolean isValid;
     private String compiledExpr;
 
     public JqExpression(Supplier<Scope> scope, String expr) {
@@ -170,23 +173,22 @@ public class JqExpression implements Expression {
 
     private void compile(Optional<KogitoProcessContext> context) throws JsonQueryException {
         String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr, context);
+        logger.debug("Resolved expr {}", resolvedExpr);
         if (this.query == null || !resolvedExpr.equals(compiledExpr)) {
             compiledExpr = resolvedExpr;
+            logger.debug("Compiled expr {}", compiledExpr);
             this.query = JsonQuery.compile(compiledExpr, Versions.JQ_1_6);
         }
     }
 
     @Override
-    public boolean isValid() {
-        if (isValid == null) {
-            try {
-                compile(Optional.empty());
-                isValid = true;
-            } catch (JsonQueryException e) {
-                isValid = false;
-            }
+    public boolean isValid(Optional<KogitoProcessContext> context) {
+        try {
+            compile(context);
+            return true;
+        } catch (JsonQueryException e) {
+            return false;
         }
-        return isValid;
     }
 
     @Override
