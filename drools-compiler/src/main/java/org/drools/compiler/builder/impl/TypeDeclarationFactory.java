@@ -42,9 +42,9 @@ import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAn
 
 public class TypeDeclarationFactory {
 
-    protected KnowledgeBuilderImpl kbuilder;
+    protected TypeDeclarationContext kbuilder;
 
-    public TypeDeclarationFactory( KnowledgeBuilderImpl kbuilder ) {
+    public TypeDeclarationFactory( TypeDeclarationContext kbuilder ) {
         this.kbuilder = kbuilder;
     }
 

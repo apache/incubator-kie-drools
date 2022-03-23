@@ -33,9 +33,9 @@ import org.drools.drl.ast.descr.TypeFieldDescr;
 
 public class TypeDeclarationNameResolver {
 
-    private final KnowledgeBuilderImpl kbuilder;
+    private final TypeDeclarationContext kbuilder;
 
-    public TypeDeclarationNameResolver(KnowledgeBuilderImpl kbuilder) {
+    public TypeDeclarationNameResolver(TypeDeclarationContext kbuilder) {
         this.kbuilder = kbuilder;
     }
 

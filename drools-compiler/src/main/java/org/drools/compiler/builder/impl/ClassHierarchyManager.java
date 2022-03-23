@@ -47,12 +47,12 @@ import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAn
 
 public class ClassHierarchyManager {
 
-    protected final KnowledgeBuilderImpl kbuilder;
+    protected final TypeDeclarationContext kbuilder;
 
     protected List<AbstractClassTypeDeclarationDescr> sortedDescriptors;
     protected Map<QualifiedName, Collection<QualifiedName>> taxonomy;
 
-    public ClassHierarchyManager(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, KnowledgeBuilderImpl kbuilder) {
+    public ClassHierarchyManager(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext kbuilder) {
         this.kbuilder = kbuilder;
         this.sortedDescriptors = sortByHierarchy(unsortedDescrs, kbuilder);
     }
@@ -68,7 +68,7 @@ public class ClassHierarchyManager {
      * resulting collection. This ensures that superclasses are processed before
      * their subclasses
      */
-    protected List<AbstractClassTypeDeclarationDescr> sortByHierarchy(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, KnowledgeBuilderImpl kbuilder) {
+    protected List<AbstractClassTypeDeclarationDescr> sortByHierarchy(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext kbuilder) {
 
         taxonomy = new HashMap<>();
         Map<QualifiedName, AbstractClassTypeDeclarationDescr> cache = new HashMap<>();

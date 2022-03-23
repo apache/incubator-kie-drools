@@ -17,6 +17,7 @@ package org.drools.compiler.builder.impl;
 
 import java.util.Map;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.Dialect;
@@ -157,7 +158,7 @@ public class TypeDeclarationConfigurator {
     private static AnalysisResult getMvelAnalysisResult( TypeDeclarationContext kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
         PackageBuildContext context = new PackageBuildContext();
-        context.init(kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
+        context.init((DroolsAssemblerContext) kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
         if (!type.isTypesafe()) {
             context.setTypesafe(false);
         }

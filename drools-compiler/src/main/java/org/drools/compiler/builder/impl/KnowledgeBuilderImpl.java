@@ -142,7 +142,7 @@ import java.util.function.Supplier;
 import static java.util.Arrays.asList;
 import static org.drools.core.util.StringUtils.isEmpty;
 
-public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
+public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
@@ -319,7 +319,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         this.buildContext = buildContext;
     }
 
-    Resource getCurrentResource() {
+    public Resource getCurrentResource() {
         return resource;
     }
 
@@ -327,7 +327,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         return kBase;
     }
 
-    TypeDeclarationBuilder getTypeBuilder() {
+    public TypeDeclarationBuilder getTypeBuilder() {
         return typeBuilder;
     }
 
@@ -947,7 +947,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
 
-    boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
+    public boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
         return assetFilter == null || !AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
     }
 

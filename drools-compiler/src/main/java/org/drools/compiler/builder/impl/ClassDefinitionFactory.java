@@ -64,9 +64,9 @@ import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAn
 
 public class ClassDefinitionFactory {
 
-    protected KnowledgeBuilderImpl kbuilder;
+    protected TypeDeclarationContext kbuilder;
 
-    public ClassDefinitionFactory(KnowledgeBuilderImpl kbuilder) {
+    public ClassDefinitionFactory(TypeDeclarationContext kbuilder) {
         this.kbuilder = kbuilder;
     }
 
@@ -220,7 +220,7 @@ public class ClassDefinitionFactory {
 
     private static List<FieldDefinition> sortFields(Map<String, TypeFieldDescr> fields,
                                                     TypeResolver typeResolver,
-                                                    KnowledgeBuilderImpl kbuilder) {
+                                                    TypeDeclarationContext kbuilder) {
         List<FieldDefinition> fieldDefs = new ArrayList<>(fields.size());
         int maxDeclaredPos = 0;
         BitSet occupiedPositions = new BitSet(fields.size());
