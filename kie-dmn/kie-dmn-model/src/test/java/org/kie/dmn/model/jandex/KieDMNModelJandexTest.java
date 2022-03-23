@@ -16,6 +16,8 @@
 
 package org.kie.dmn.model.jandex;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,7 +35,6 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 
-import org.assertj.core.api.Assertions;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
@@ -76,7 +77,7 @@ public class KieDMNModelJandexTest {
 
         Set<DotName> foundsViaJandex = founds.stream().map(ClassInfo::name).collect(Collectors.toSet());
         Set<DotName> foundsViaJSON = dotNamesInJSON.stream().collect(Collectors.toSet());
-        Assertions.assertThat(foundsViaJandex)
+        assertThat(foundsViaJandex)
                   .as("List of classes found via Jandex during test and listed in JSON file must be same.")
                   .isEqualTo(foundsViaJSON)
         ;

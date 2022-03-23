@@ -16,7 +16,8 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.v1_3.TDecisionTable;
@@ -27,6 +28,6 @@ public class DMNDTAnalysisExceptionTest {
     public void smokeTest() {
         DecisionTable dtRef = new TDecisionTable();
         DMNDTAnalysisException ut = new DMNDTAnalysisException("smoke test", dtRef);
-        Assertions.assertThat(ut.getDt()).isEqualTo(dtRef);
+        assertThat(ut.getDt()).isEqualTo(dtRef);
     }
 }

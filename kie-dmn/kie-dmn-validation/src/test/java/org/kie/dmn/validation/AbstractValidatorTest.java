@@ -60,6 +60,7 @@ public abstract class AbstractValidatorTest {
 
     @AfterClass
     public static void dispose() {
+    	if (validator != null)
         validator.dispose();
     }
 

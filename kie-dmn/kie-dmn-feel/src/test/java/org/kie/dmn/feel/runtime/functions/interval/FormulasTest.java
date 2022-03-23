@@ -16,7 +16,7 @@
 
 package org.kie.dmn.feel.runtime.functions.interval;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 // ScratchPad to support discussion on https://issues.omg.org/browse/DMN14-125
@@ -79,15 +79,15 @@ public class FormulasTest {
 
     @Test
     public void testOverlapsBeforeFormula() {
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 3, 8, true))).isEqualTo(true);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 6, 8, true))).isEqualTo(false);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 5, 8, true))).isEqualTo(true);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, true), new R(false, 5, 8, true))).isEqualTo(false);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, false), new R(true, 5, 8, true))).isEqualTo(false);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, false), new R(false, 1, 5, true))).isEqualTo(true);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, true), new R(false, 1, 5, true))).isEqualTo(true);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, false), new R(true, 1, 5, true))).isEqualTo(false);
-        Assertions.assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 1, 5, true))).isEqualTo(false);
+        assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 3, 8, true))).isEqualTo(true);
+        assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 6, 8, true))).isEqualTo(false);
+        assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 5, 8, true))).isEqualTo(true);
+        assertThat(overlapsBefore(new R(true, 1, 5, true), new R(false, 5, 8, true))).isEqualTo(false);
+        assertThat(overlapsBefore(new R(true, 1, 5, false), new R(true, 5, 8, true))).isEqualTo(false);
+        assertThat(overlapsBefore(new R(true, 1, 5, false), new R(false, 1, 5, true))).isEqualTo(true);
+        assertThat(overlapsBefore(new R(true, 1, 5, true), new R(false, 1, 5, true))).isEqualTo(true);
+        assertThat(overlapsBefore(new R(true, 1, 5, false), new R(true, 1, 5, true))).isEqualTo(false);
+        assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 1, 5, true))).isEqualTo(false);
     }
 
     static boolean overlaps(R range1, R range2) {
@@ -113,20 +113,20 @@ public class FormulasTest {
 
     @Test
     public void testOverlapsFormula() {
-        Assertions.assertThat(        overlaps( new R(true, 1, 5, true ), new R( true, 3, 8, true )  ) ).isEqualTo( true );   
-        Assertions.assertThat(        overlaps( new R(true, 3, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( true );   
-        Assertions.assertThat(        overlaps( new R(true, 1, 8, true ), new R( true, 3, 5, true )  ) ).isEqualTo( true );   
-        Assertions.assertThat(        overlaps( new R(true, 3, 5, true ), new R( true, 1, 8, true )  ) ).isEqualTo( true );   
-        Assertions.assertThat(        overlaps( new R(true, 1, 5, true ), new R( true, 6, 8, true )  ) ).isEqualTo( false);   
-        Assertions.assertThat(        overlaps( new R(true, 6, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( false);   
-        Assertions.assertThat(        overlaps( new R(true, 1, 5, true ), new R( true, 5, 8, true )  ) ).isEqualTo( true );   
-        Assertions.assertThat(        overlaps( new R(true, 1, 5, true ), new R( false,5, 8, true )  ) ).isEqualTo( false);   
-        Assertions.assertThat(        overlaps( new R(true, 1, 5, false), new R( true, 5, 8, true )  ) ).isEqualTo( false);   
-        Assertions.assertThat(        overlaps( new R(true, 1, 5, false), new R( false,5, 8, true )  ) ).isEqualTo( false);   
-        Assertions.assertThat(        overlaps( new R(true, 5, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( true );   
-        Assertions.assertThat(        overlaps( new R(false,5, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( false);   
-        Assertions.assertThat(        overlaps( new R(true, 5, 8, true ), new R( true, 1, 5, false)  ) ).isEqualTo( false);   
-        Assertions.assertThat(        overlaps( new R(false,5, 8, true ), new R( true, 1, 5, false)  ) ).isEqualTo( false);  
+        assertThat(        overlaps( new R(true, 1, 5, true ), new R( true, 3, 8, true )  ) ).isEqualTo( true );   
+        assertThat(        overlaps( new R(true, 3, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( true );   
+        assertThat(        overlaps( new R(true, 1, 8, true ), new R( true, 3, 5, true )  ) ).isEqualTo( true );   
+        assertThat(        overlaps( new R(true, 3, 5, true ), new R( true, 1, 8, true )  ) ).isEqualTo( true );   
+        assertThat(        overlaps( new R(true, 1, 5, true ), new R( true, 6, 8, true )  ) ).isEqualTo( false);   
+        assertThat(        overlaps( new R(true, 6, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( false);   
+        assertThat(        overlaps( new R(true, 1, 5, true ), new R( true, 5, 8, true )  ) ).isEqualTo( true );   
+        assertThat(        overlaps( new R(true, 1, 5, true ), new R( false,5, 8, true )  ) ).isEqualTo( false);   
+        assertThat(        overlaps( new R(true, 1, 5, false), new R( true, 5, 8, true )  ) ).isEqualTo( false);   
+        assertThat(        overlaps( new R(true, 1, 5, false), new R( false,5, 8, true )  ) ).isEqualTo( false);   
+        assertThat(        overlaps( new R(true, 5, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( true );   
+        assertThat(        overlaps( new R(false,5, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( false);   
+        assertThat(        overlaps( new R(true, 5, 8, true ), new R( true, 1, 5, false)  ) ).isEqualTo( false);   
+        assertThat(        overlaps( new R(false,5, 8, true ), new R( true, 1, 5, false)  ) ).isEqualTo( false);  
 
     }
 }
