@@ -73,6 +73,6 @@ public class SegmentationMaxMiningTest extends AbstractPMMLTest {
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        `pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(result);
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(result);
     }
 }
