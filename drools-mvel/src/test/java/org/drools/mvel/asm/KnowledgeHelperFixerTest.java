@@ -14,7 +14,8 @@
 
 package org.drools.mvel.asm;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 public class KnowledgeHelperFixerTest {
@@ -22,7 +23,7 @@ public class KnowledgeHelperFixerTest {
     private static final KnowledgeHelperFixer fixer = new KnowledgeHelperFixer();
 
     private void assertEqualsIgnoreWhitespace(final String expected, final String actual) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test

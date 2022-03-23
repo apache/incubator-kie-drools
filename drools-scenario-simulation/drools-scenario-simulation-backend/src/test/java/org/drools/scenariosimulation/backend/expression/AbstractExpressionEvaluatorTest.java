@@ -15,6 +15,14 @@
  */
 package org.drools.scenariosimulation.backend.expression;
 
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,20 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Test;
+
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-
-import static java.util.Collections.emptyList;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class AbstractExpressionEvaluatorTest {
 
@@ -204,7 +205,7 @@ public class AbstractExpressionEvaluatorTest {
 
     @Test
     public void getSimpleTypeNodeTextValue() {
-        Assertions.assertThatThrownBy(() -> expressionEvaluatorLocal.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
+        assertThatThrownBy(() -> expressionEvaluatorLocal.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Parameter does not contains a simple type");
 

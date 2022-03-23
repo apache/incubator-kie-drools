@@ -15,6 +15,8 @@
 
 package org.drools.template;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.template.parser.Column;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
@@ -138,7 +139,7 @@ public class DataProviderCompilerTest {
         final String drl = converter.compile(tdp,
                                              "/templates/rule_template_1.drl");
 
-        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
+        assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
     
     @Test
@@ -147,7 +148,7 @@ public class DataProviderCompilerTest {
         final DataProviderCompiler converter = new DataProviderCompiler();
         final String drl = converter.compile( tdp,
                                               "/templates/rule_template_indented.drl" );
-        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
+        assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -174,7 +175,7 @@ public class DataProviderCompilerTest {
                 this.getClass().getResourceAsStream("/templates/rule_template_1.drl");
         final String drl = converter.compile(maps,
                                              templateStream);
-        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
+        assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
 
     public static class OBJ {
@@ -242,7 +243,7 @@ public class DataProviderCompilerTest {
         }
         final String drl = converter.compile(objs,
                                              templateStream);
-        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
+        assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
 
 }

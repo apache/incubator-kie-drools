@@ -1,5 +1,7 @@
 package org.drools.core.io.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 public class ByteArrayResourceSerializationTest {
@@ -29,7 +30,7 @@ public class ByteArrayResourceSerializationTest {
 		try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serializedBar))){
 			desBar = (ByteArrayResource) ois.readObject();
 		}
-		Assertions.assertThat(desBar.getBytes()).isEqualTo(content);
+		assertThat(desBar.getBytes()).isEqualTo(content);
 	}
 
 }

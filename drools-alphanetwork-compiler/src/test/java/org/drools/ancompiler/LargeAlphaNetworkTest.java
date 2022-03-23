@@ -16,9 +16,10 @@
 
 package org.drools.ancompiler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -52,7 +53,7 @@ public class LargeAlphaNetworkTest extends BaseModelTest {
 
         try {
             ksession.fireAllRules();
-            Assertions.assertThat(results).contains(a, b, c);
+            assertThat(results).contains(a, b, c);
         } finally {
             ksession.dispose();
         }
