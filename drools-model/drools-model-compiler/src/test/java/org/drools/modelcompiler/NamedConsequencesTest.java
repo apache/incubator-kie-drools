@@ -16,12 +16,16 @@
 
 package org.drools.modelcompiler;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Cheese;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
@@ -30,10 +34,6 @@ import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class NamedConsequencesTest extends BaseModelTest {
 
@@ -551,7 +551,7 @@ public class NamedConsequencesTest extends BaseModelTest {
         int fired = ksession.fireAllRules();
         assertEquals(2, fired);
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder(10, 15);
+        assertThat(results).containsExactlyInAnyOrder(10, 15);
     }
 
     @Test

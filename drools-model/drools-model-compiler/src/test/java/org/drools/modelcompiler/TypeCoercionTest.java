@@ -16,22 +16,22 @@
 
 package org.drools.modelcompiler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.DateTimeHolder;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class TypeCoercionTest extends BaseModelTest {
 
@@ -278,7 +278,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
-        Assertions.assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(luca);
+        assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(luca);
     }
 
     @Test

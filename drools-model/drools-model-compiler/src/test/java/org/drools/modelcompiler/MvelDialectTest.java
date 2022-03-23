@@ -16,6 +16,12 @@
 
 package org.drools.modelcompiler;
 
+import static java.math.BigDecimal.valueOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -26,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
@@ -35,12 +40,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import static java.math.BigDecimal.valueOf;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class MvelDialectTest extends BaseModelTest {
 
@@ -928,7 +927,7 @@ public class MvelDialectTest extends BaseModelTest {
         Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+        assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
     }
 
     @Test
@@ -973,8 +972,8 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(a);
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
-        Assertions.assertThat(addresses).contains("Milan");
+        assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+        assertThat(addresses).contains("Milan");
     }
 
     @Test

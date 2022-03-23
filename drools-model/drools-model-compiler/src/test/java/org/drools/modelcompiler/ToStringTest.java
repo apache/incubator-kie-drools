@@ -15,9 +15,18 @@
  */
 package org.drools.modelcompiler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.rule;
+
 import java.util.function.Supplier;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.AverageAccumulateFunction;
 import org.drools.model.Index;
 import org.drools.model.PatternDSL;
@@ -30,15 +39,6 @@ import org.drools.model.view.ExprViewItem;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.rule.AccumulateFunction;
-
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.on;
-import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-import static org.drools.model.PatternDSL.rule;
 
 public class ToStringTest {
 
@@ -109,6 +109,6 @@ public class ToStringTest {
                 "consequences: {default=" + consequenceToString +
                 "}), consequences: {default=" + consequenceToString + "})";
 
-        Assertions.assertThat(rule).hasToString(expectedToString);
+        assertThat(rule).hasToString(expectedToString);
     }
 }
