@@ -12,11 +12,13 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChange;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DummyTypeDeclarationContext implements TypeDeclarationContext {
@@ -60,6 +62,11 @@ public class DummyTypeDeclarationContext implements TypeDeclarationContext {
         return packageRegistryManager.getPackageRegistry();
     }
 
+    @Override
+    public List<PackageDescr> getPackageDescrs(String namespace) {
+        // this is not really used by TypeDeclarationContext!!
+        return packageRegistryManager.getPackageDescrs(namespace);
+    }
 
 
     @Override
@@ -85,5 +92,11 @@ public class DummyTypeDeclarationContext implements TypeDeclarationContext {
     @Override
     public boolean hasErrors() {
         return buildResultAccumulator.hasErrors();
+    }
+
+    @Override
+    public KnowledgeBuilderErrors getErrors() {
+        // this is not really used by TypeDeclarationContext!!
+        return buildResultAccumulator.getErrors();
     }
 }

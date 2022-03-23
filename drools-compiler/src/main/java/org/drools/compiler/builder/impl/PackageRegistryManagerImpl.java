@@ -28,22 +28,26 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager {
 
     private final Map<String, PackageRegistry> pkgRegistryMap = new ConcurrentHashMap<>();
 
-    //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
-    //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
-    //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the
-    //AttributeDescr's name.
-    private final Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<>();
+    private final PackageAttributeManagerImpl packageAttributes;
 
     //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
     private final Map<String, List<PackageDescr>> packages = new ConcurrentHashMap<>();
 
     public PackageRegistryManagerImpl(
             KnowledgeBuilderConfigurationImpl configuration,
+            PackageAttributeManagerImpl packageAttributeManager,
             RootClassLoaderProvider classLoaderProvider,
             InternalKnowledgeBaseProvider kBaseProvider) {
         this.configuration = configuration;
+        this.packageAttributes = packageAttributeManager;
         this.classLoaderProvider = classLoaderProvider;
         this.kBaseProvider = kBaseProvider;
+
+    }
+
+    @Override
+    public List<PackageDescr> getPackageDescrs(String packageName) {
+        return packages.get(packageName);
     }
 
     @Override

@@ -1,7 +1,12 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.impl.BuildResultAccumulator;
+import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
+import org.drools.compiler.builder.impl.DroolsAssemblerContextImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
+import org.drools.compiler.builder.impl.PackageAttributeManagerImpl;
 import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
@@ -33,31 +38,39 @@ import static java.util.Arrays.asList;
 
 public class ExplicitCompilerTest {
 
-    private List<KnowledgeBuilderResult> results = new ArrayList<>();
-
-
     @Test
     //@Ignore("not finished")
     public void testCompile() throws DroolsParserException, IOException {
         ClassLoader rootClassLoader = this.getClass().getClassLoader();
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
+        BuildResultAccumulator results = new BuildResultAccumulatorImpl();
 
         Resource resource = new ClassPathResource("com/sample/from.drl");
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl("com.sample");
-        PackageRegistryManagerImpl packageRegistryManager = new PackageRegistryManagerImpl(configuration, () -> rootClassLoader, () -> null);
-        TypeDeclarationContext typeDeclarationContext = new DummyTypeDeclarationContext(configuration, packageRegistryManager);
-        PackageRegistry packageRegistry = new PackageRegistry(configuration.getClassLoader(), configuration, pkg);
-        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
-        InternalKnowledgeBase kBase = null;
-        KnowledgeBuilderImpl kBuilder = null;
-        GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
 
         int parallelRulesBuildThreshold = 0;
-        Map<String, Map<String, AttributeDescr>> packageAttributes = Collections.emptyMap();
 
         DrlResourceHandler handler = new DrlResourceHandler(configuration);
         final PackageDescr packageDescr = handler.process(resource);
-        this.results.addAll(handler.getResults());
+        handler.getResults().forEach(results::addBuilderResult);
+
+        PackageAttributeManagerImpl packageAttributes = new PackageAttributeManagerImpl();
+        PackageRegistryManagerImpl packageRegistryManager = new PackageRegistryManagerImpl(configuration, packageAttributes, () -> rootClassLoader, () -> null);
+        TypeDeclarationContext typeDeclarationContext = new DummyTypeDeclarationContext(configuration, packageRegistryManager);
+        PackageRegistry packageRegistry = packageRegistryManager.getOrCreatePackageRegistry(packageDescr);
+        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
+        GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
+
+        InternalKnowledgeBase kBase = null;
+        DroolsAssemblerContext kBuilder =
+                new DroolsAssemblerContextImpl(
+                        configuration,
+                        rootClassLoader,
+                        kBase,
+                        globalVariableContext,
+                        typeBuilder,
+                        packageRegistryManager,
+                        results);
+
 
         AnnotationNormalizer annotationNormalizer =
                 AnnotationNormalizer.of(
@@ -86,7 +99,7 @@ public class ExplicitCompilerTest {
 
 
         phases.forEach(CompilationPhase::process);
-        phases.forEach(p -> this.results.addAll(p.getResults()));
+        phases.forEach(p -> p.getResults().forEach(results::addBuilderResult));
 
 
         ReteCompiler reteCompiler =
