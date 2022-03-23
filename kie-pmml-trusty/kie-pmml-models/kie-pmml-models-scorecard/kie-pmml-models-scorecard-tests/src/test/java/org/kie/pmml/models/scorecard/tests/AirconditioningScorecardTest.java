@@ -15,7 +15,11 @@
  */
 package org.kie.pmml.models.scorecard.tests;
 
-import org.assertj.core.api.Assertions;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,10 +29,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AirconditioningScorecardTest extends AbstractPMMLTest {
@@ -74,8 +75,8 @@ public class AirconditioningScorecardTest extends AbstractPMMLTest {
         inputData.put("humidity", humidity);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat((double) (pmml4Result.getResultVariables().get(TARGET_FIELD)))
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat((double) (pmml4Result.getResultVariables().get(TARGET_FIELD)))
                 .isCloseTo(score, Percentage.withPercentage(0.1));
     }
 }

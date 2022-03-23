@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -34,6 +33,8 @@ import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ActivationGroupTest {
@@ -55,32 +56,32 @@ public class ActivationGroupTest {
     public void basicTestActivationGroup() {
         TrackingAgendaEventListener listener = prepareKSession("basicActivationGroup");
 
-        Assertions.assertThat(listener.isRuleFired("basic1")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("basic2")).isTrue(); 
-        Assertions.assertThat(listener.isRuleFired("basic3")).isFalse();
+        assertThat(listener.isRuleFired("basic1")).isFalse();
+        assertThat(listener.isRuleFired("basic2")).isTrue(); 
+        assertThat(listener.isRuleFired("basic3")).isFalse();
     }
     
     @Test
     public void recursiveTestActivationGroup() {
         TrackingAgendaEventListener listener = prepareKSession("recursiveActivationGroup");
         
-        Assertions.assertThat(listener.isRuleFired("simplyRecursive1")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("simplyRecursive2")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("simplyRecursive3")).isTrue();
+        assertThat(listener.isRuleFired("simplyRecursive1")).isFalse();
+        assertThat(listener.isRuleFired("simplyRecursive2")).isTrue();
+        assertThat(listener.isRuleFired("simplyRecursive3")).isTrue();
     }
     
     @Test
     public void testActivationGroupWithDefaultSalience() {
         TrackingAgendaEventListener listener = prepareKSession("defaultSalienceActivationGroup");
         
-        Assertions.assertThat(listener.rulesCount()).isEqualTo(1);
+        assertThat(listener.rulesCount()).isEqualTo(1);
     }
     
     @Test
     public void testActivationGroupRecursivelyWithDefaultSalience() {
         TrackingAgendaEventListener listener = prepareKSession("defaultSalienceWithRecursion");
         
-        Assertions.assertThat(listener.rulesCount()).isEqualTo(2);
+        assertThat(listener.rulesCount()).isEqualTo(2);
     }
     
     private TrackingAgendaEventListener prepareKSession(String startingRule) {

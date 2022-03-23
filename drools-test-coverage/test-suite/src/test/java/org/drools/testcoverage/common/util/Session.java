@@ -16,7 +16,8 @@
 
 package org.drools.testcoverage.common.util;
 
-import org.assertj.core.api.Assertions;
+import java.util.Collection;
+
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.process.ProcessEventListener;
@@ -27,7 +28,7 @@ import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Convenient class to help generalizing drools StatelessKnowledgeSession and
@@ -92,7 +93,7 @@ public class Session implements CommandExecutor, KieRuntimeEventManager {
             try {
                 s.dispose();
             } catch (IllegalStateException ex) {
-                Assertions.assertThat(ex.getMessage()).isEqualTo("Illegal method call. This session was previously disposed.");
+                assertThat(ex.getMessage()).isEqualTo("Illegal method call. This session was previously disposed.");
             } finally {
                 session = null;
             }

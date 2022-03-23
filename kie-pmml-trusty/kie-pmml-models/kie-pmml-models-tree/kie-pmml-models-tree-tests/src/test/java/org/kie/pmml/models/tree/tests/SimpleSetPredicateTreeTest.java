@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +28,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
@@ -42,7 +43,7 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
     private double input2;
     private double input3;
     private String expectedResult;
-
+	
     public SimpleSetPredicateTreeTest(double input1, double input2, double input3, String expectedResult) {
         this.input1 = input1;
         this.input2 = input2;
@@ -76,7 +77,7 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
         inputData.put("input3", input3);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
     }
 }

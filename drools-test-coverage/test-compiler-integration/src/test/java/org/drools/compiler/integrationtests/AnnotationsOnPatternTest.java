@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Pattern;
@@ -37,6 +36,7 @@ import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.definition.rule.Rule;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -68,7 +68,7 @@ public class AnnotationsOnPatternTest {
                 "end ";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
+        assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class AnnotationsOnPatternTest {
                 "end ";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
+        assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
     }
 
     @Test

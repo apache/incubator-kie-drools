@@ -16,10 +16,6 @@
 
 package org.kie.dmn.validation;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -41,6 +37,10 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.utils.ChainedProperties;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public abstract class AbstractValidatorTest {
 
     protected static DMNValidator validator;
@@ -60,6 +60,7 @@ public abstract class AbstractValidatorTest {
 
     @AfterClass
     public static void dispose() {
+    	if (validator != null)
         validator.dispose();
     }
 

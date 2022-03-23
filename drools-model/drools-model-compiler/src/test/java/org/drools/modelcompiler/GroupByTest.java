@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToIntFunction;
 
 import org.apache.commons.math3.util.Pair;
-import org.assertj.core.api.Assertions;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
@@ -68,7 +67,9 @@ import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.from;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class GroupByTest {
 
@@ -327,7 +328,7 @@ public class GroupByTest {
         ksession.fireAllRules();
 
         assertEquals( 3, results.size() );
-        Assertions.assertThat(results)
+        assertThat(results)
                 .containsExactlyInAnyOrder("G", "E", "M");
         results.clear();
 
@@ -335,7 +336,7 @@ public class GroupByTest {
         ksession.fireAllRules();
 
         assertEquals( 1, results.size() );
-        Assertions.assertThat(results)
+        assertThat(results)
                 .containsExactlyInAnyOrder("M");
         results.clear();
 
@@ -344,7 +345,7 @@ public class GroupByTest {
         ksession.fireAllRules();
 
         assertEquals( 2, results.size() );
-        Assertions.assertThat(results)
+        assertThat(results)
                 .containsExactlyInAnyOrder("G", "M");
     }
 
@@ -592,7 +593,7 @@ public class GroupByTest {
         // Side issue: this number is unusually high. Perhaps we should try to implement some cache for this?
         System.out.println("GroupKey mapping function was called " + mappingFunctionCallCounter.get() + " times.");
 
-        Assertions.assertThat(result).containsOnly(objectWithoutNestedObject);
+        assertThat(result).containsOnly(objectWithoutNestedObject);
     }
 
     @Test
@@ -795,7 +796,7 @@ public class GroupByTest {
 
         // Yet, we still get (Child1, 0).
         ksession.fireAllRules();
-        Assertions.assertThat(results)
+        assertThat(results)
                 .containsOnly(Arrays.asList(child2, 1L));
     }
 
@@ -1377,9 +1378,9 @@ public class GroupByTest {
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results.size()).isEqualTo(1);
-        Assertions.assertThat(results.get(0)).isEqualTo("M");
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("M");
     }
 
     @Test
@@ -1413,9 +1414,9 @@ public class GroupByTest {
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results.size()).isEqualTo(1);
-        Assertions.assertThat(results.get(0)).isEqualTo("M");
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("M");
     }
 
     @Test
@@ -1459,9 +1460,9 @@ public class GroupByTest {
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results.size()).isEqualTo(2);
-        Assertions.assertThat(results.get(0)).isEqualTo("M");
-        Assertions.assertThat(results.get(1)).isEqualTo("a");
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get(0)).isEqualTo("M");
+        assertThat(results.get(1)).isEqualTo("a");
     }
 
     @Test
@@ -1509,10 +1510,10 @@ public class GroupByTest {
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results.size()).isEqualTo(3);
-        Assertions.assertThat(results.get(0)).isEqualTo("M");
-        Assertions.assertThat(results.get(1)).isEqualTo("a");
-        Assertions.assertThat(results.get(2)).isEqualTo(1L);
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get(0)).isEqualTo("M");
+        assertThat(results.get(1)).isEqualTo("a");
+        assertThat(results.get(2)).isEqualTo(1L);
     }
 
     @Test
@@ -1568,9 +1569,9 @@ public class GroupByTest {
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results.size()).isEqualTo(3);
-        Assertions.assertThat(results.get(0)).isEqualTo("M");
-        Assertions.assertThat(results.get(1)).isEqualTo("a");
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get(0)).isEqualTo("M");
+        assertThat(results.get(1)).isEqualTo("a");
     }
 
     @Test
@@ -1621,7 +1622,7 @@ public class GroupByTest {
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results.size()).isEqualTo(1);
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -1663,7 +1664,7 @@ public class GroupByTest {
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         System.out.println(results);
-        Assertions.assertThat(results).containsOnly(Collections.singletonList(42));
+        assertThat(results).containsOnly(Collections.singletonList(42));
     }
 
     @Test
@@ -1703,7 +1704,7 @@ public class GroupByTest {
 
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results).containsOnly(Collections.singletonList(42));
+        assertThat(results).containsOnly(Collections.singletonList(42));
     }
 
     @Test
@@ -1845,10 +1846,10 @@ public class GroupByTest {
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results.size()).isEqualTo(3);
-        Assertions.assertThat(results.get(0)).isEqualTo("M");
-        Assertions.assertThat(results.get(1)).isEqualTo("a");
-        Assertions.assertThat(results.get(2)).isEqualTo(42);
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get(0)).isEqualTo("M");
+        assertThat(results.get(1)).isEqualTo("a");
+        assertThat(results.get(2)).isEqualTo(42);
     }
 // These two test are commented out, until we figure out the correct way to do this and limitations.
 // If no correct way can be found, the tests can be deleted.

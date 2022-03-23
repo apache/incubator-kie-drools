@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.MessageEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -39,6 +38,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 
 /**
@@ -131,7 +131,7 @@ public class OOPathCepTest {
         entryPoint.insert(anotherEvent);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).containsExactlyInAnyOrder(helloMessage);
+        assertThat(this.messages).containsExactlyInAnyOrder(helloMessage);
     }
 
     @Test
@@ -159,12 +159,12 @@ public class OOPathCepTest {
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -192,12 +192,12 @@ public class OOPathCepTest {
         final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -225,12 +225,12 @@ public class OOPathCepTest {
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -259,12 +259,12 @@ public class OOPathCepTest {
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1500));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -293,12 +293,12 @@ public class OOPathCepTest {
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1000));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -327,12 +327,12 @@ public class OOPathCepTest {
         final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS - 1000));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -361,12 +361,12 @@ public class OOPathCepTest {
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1500));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS - 1500));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -394,12 +394,12 @@ public class OOPathCepTest {
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -427,12 +427,12 @@ public class OOPathCepTest {
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -461,13 +461,13 @@ public class OOPathCepTest {
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), 1), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -496,12 +496,12 @@ public class OOPathCepTest {
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -530,12 +530,12 @@ public class OOPathCepTest {
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1000));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -564,12 +564,12 @@ public class OOPathCepTest {
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS + 1000));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -655,7 +655,7 @@ public class OOPathCepTest {
         this.kieSession.insert(ping3Event);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for 2 events").contains(ping2Event, ping3Event);
+        assertThat(this.events).as("The rule should have fired for 2 events").contains(ping2Event, ping3Event);
         this.events.clear();
 
         final MessageEvent pongEvent = new MessageEvent(MessageEvent.Type.sent, new Message("Pong"));
@@ -665,7 +665,7 @@ public class OOPathCepTest {
         this.kieSession.insert(ping4Event);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
+        assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
     }
 
     @Test
@@ -732,7 +732,7 @@ public class OOPathCepTest {
         clock.advanceTime(1, TimeUnit.SECONDS);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for 2 events").containsExactlyInAnyOrder(ping2Event, ping3Event);
+        assertThat(this.events).as("The rule should have fired for 2 events").containsExactlyInAnyOrder(ping2Event, ping3Event);
         this.events.clear();
 
         final MessageEvent pongEvent = new MessageEvent(MessageEvent.Type.sent, new Message("Pong"));
@@ -744,7 +744,7 @@ public class OOPathCepTest {
         clock.advanceTime(1, TimeUnit.SECONDS);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
+        assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
     }
 
     @Test
@@ -773,12 +773,12 @@ public class OOPathCepTest {
         final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+        assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     private SessionPseudoClock initKieSessionWithPseudoClock(final KieBase kieBase) {

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.JoinNode;
@@ -49,6 +48,7 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -165,7 +165,7 @@ public class JoinNodeRangeIndexingTest {
             ksession.insert(new Cheese("gorgonzola", 43));
             ksession.fireAllRules();
 
-            Assertions.assertThat(list).containsExactly(bd42);
+            assertThat(list).containsExactly(bd42);
         } finally {
             ksession.dispose();
         }
@@ -210,7 +210,7 @@ public class JoinNodeRangeIndexingTest {
             ksession.insert(john);
             ksession.fireAllRules();
 
-            Assertions.assertThat(list).containsExactly(i42);
+            assertThat(list).containsExactly(i42);
         } finally {
             ksession.dispose();
         }
@@ -258,7 +258,7 @@ public class JoinNodeRangeIndexingTest {
 
             ksession.fireAllRules();
 
-            Assertions.assertThat(list).containsExactly(cheese1); // If we do String comparison, cheese10 is also contained
+            assertThat(list).containsExactly(cheese1); // If we do String comparison, cheese10 is also contained
         } finally {
             ksession.dispose();
         }
@@ -308,7 +308,7 @@ public class JoinNodeRangeIndexingTest {
 
             ksession.fireAllRules();
 
-            Assertions.assertThat(list).containsExactly(holder1);
+            assertThat(list).containsExactly(holder1);
         } finally {
             ksession.dispose();
         }
@@ -406,20 +406,20 @@ public class JoinNodeRangeIndexingTest {
             ksession.insert(new Person("Paul", 10));
 
             assertEquals(2, ksession.fireAllRules());
-            Assertions.assertThat(result).containsExactlyInAnyOrder("John > Oliver", "Paul > Oliver");
+            assertThat(result).containsExactlyInAnyOrder("John > Oliver", "Paul > Oliver");
 
             ksession.insert("trigger R2"); // set Paul's age = 20
             assertEquals(3, ksession.fireAllRules());
-            Assertions.assertThat(result).containsExactlyInAnyOrder("John > Oliver", "Paul > Oliver", "Paul > Leo");
+            assertThat(result).containsExactlyInAnyOrder("John > Oliver", "Paul > Oliver", "Paul > Leo");
 
             ksession.insert("trigger R3"); // set all Pets' age minus 5
             assertEquals(8, ksession.fireAllRules());
-            Assertions.assertThat(result).containsExactlyInAnyOrder("John > Oliver", "John > Leo", "Paul > Oliver", "Paul > Leo", "Paul > Milo");
+            assertThat(result).containsExactlyInAnyOrder("John > Oliver", "John > Leo", "Paul > Oliver", "Paul > Leo", "Paul > Milo");
 
             ksession.insert("trigger R4"); // delete Oliver
             ksession.insert(new Person("George", 15));
             assertEquals(2, ksession.fireAllRules());
-            Assertions.assertThat(result).containsExactlyInAnyOrder("John > Oliver", "John > Leo", "Paul > Oliver", "Paul > Leo", "Paul > Milo", "George > Leo");
+            assertThat(result).containsExactlyInAnyOrder("John > Oliver", "John > Leo", "Paul > Oliver", "Paul > Leo", "Paul > Milo", "George > Leo");
 
         } finally {
             ksession.dispose();
@@ -525,7 +525,7 @@ public class JoinNodeRangeIndexingTest {
 
             assertEquals(8, ksession.fireAllRules());
 
-            Assertions.assertThat(result).containsExactlyInAnyOrder("Paul > Charlie", "George > Charlie", "George > Max", "George > Buddy", "Ringo > Charlie", "Ringo > Max", "Ringo > Buddy", "Ringo > Oscar");
+            assertThat(result).containsExactlyInAnyOrder("Paul > Charlie", "George > Charlie", "George > Max", "George > Buddy", "Ringo > Charlie", "Ringo > Max", "Ringo > Buddy", "Ringo > Oscar");
 
         } finally {
             ksession.dispose();

@@ -17,12 +17,12 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class HalfBinaryTest extends BaseModelTest {
@@ -251,7 +251,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert(new Person("D", 40));
 
         ksession.fireAllRules();
-        Assertions.assertThat(result).containsExactlyInAnyOrder("A", "C");
+        assertThat(result).containsExactlyInAnyOrder("A", "C");
     }
 
     @Test
@@ -275,6 +275,6 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert(new Person("D", 40));
 
         ksession.fireAllRules();
-        Assertions.assertThat(result).containsExactlyInAnyOrder("A", "C");
+        assertThat(result).containsExactlyInAnyOrder("A", "C");
     }
 }

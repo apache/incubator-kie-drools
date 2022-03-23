@@ -19,9 +19,11 @@ package org.drools.testcoverage.functional;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.SimplePerson;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,6 +33,8 @@ import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test which takes a collection in working memory and calls iserLogical on each
@@ -66,13 +70,13 @@ public class LogicalInsertFromCollectionTest {
         for (int i = 5; i > 1; i--) {
 
             // before remove 5,4,3,2,1 facts
-            Assertions.assertThat(ksession.getFactCount()).isEqualTo((long) i);
+            assertThat(ksession.getFactCount()).isEqualTo((long) i);
 
             collection.remove(collection.iterator().next());
             ksession.update(handle, collection);
             ksession.fireAllRules();
             // after removing 4,3,2,1,0 facts
-            Assertions.assertThat(ksession.getFactCount()).isEqualTo((long) (i - 1));
+            assertThat(ksession.getFactCount()).isEqualTo((long) (i - 1));
         }
 
     }
@@ -91,14 +95,14 @@ public class LogicalInsertFromCollectionTest {
         ksession.fireAllRules();
 
         // before adding 5 facts
-        Assertions.assertThat(ksession.getFactCount()).isEqualTo((long) 5);
+        assertThat(ksession.getFactCount()).isEqualTo((long) 5);
 
         collection.add(42);
         ksession.update(handle, collection);
         ksession.fireAllRules();
 
         // after adding should be 6 facts
-        Assertions.assertThat(ksession.getFactCount()).isEqualTo((long) 6);
+        assertThat(ksession.getFactCount()).isEqualTo((long) 6);
     }
 
     @Test
@@ -115,20 +119,20 @@ public class LogicalInsertFromCollectionTest {
         ksession.fireAllRules();
 
         // before change - expecting 5 facts
-        Assertions.assertThat(ksession.getFactCount()).isEqualTo((long) 5);
+        assertThat(ksession.getFactCount()).isEqualTo((long) 5);
 
         collection.iterator().next().setAge(80);
         ksession.update(handle, collection);
         ksession.fireAllRules();
 
         // after change - expecting 4 facts
-        Assertions.assertThat(ksession.getFactCount()).isEqualTo((long) 4);
+        assertThat(ksession.getFactCount()).isEqualTo((long) 4);
 
         collection.iterator().next().setAge(30);
         ksession.update(handle, collection);
         ksession.fireAllRules();
 
-        Assertions.assertThat(ksession.getFactCount()).isEqualTo((long) 5);
+        assertThat(ksession.getFactCount()).isEqualTo((long) 5);
 
     }
 

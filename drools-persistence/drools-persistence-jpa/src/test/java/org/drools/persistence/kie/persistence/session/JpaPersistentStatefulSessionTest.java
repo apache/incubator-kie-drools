@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
@@ -63,6 +62,7 @@ import org.kie.internal.command.CommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
@@ -569,44 +569,44 @@ public class JpaPersistentStatefulSessionTest {
 
         // asserts
         List<String> manList = listHolder.getManList();
-        Assertions.assertThat(manList.size()).isEqualTo(4);
-        Assertions.assertThat(manList.contains("Adam")).isTrue();
-        Assertions.assertThat(manList.contains("Kain")).isTrue();
-        Assertions.assertThat(manList.contains("Abel")).isTrue();
-        Assertions.assertThat(manList.contains("Josef")).isTrue();
+        assertThat(manList.size()).isEqualTo(4);
+        assertThat(manList.contains("Adam")).isTrue();
+        assertThat(manList.contains("Kain")).isTrue();
+        assertThat(manList.contains("Abel")).isTrue();
+        assertThat(manList.contains("Josef")).isTrue();
 
         List<String> personList = listHolder.getPersonList();
-        Assertions.assertThat(personList.size()).isEqualTo(5);
-        Assertions.assertThat(personList.contains("Adam")).isTrue();
-        Assertions.assertThat(personList.contains("Kain")).isTrue();
-        Assertions.assertThat(personList.contains("Abel")).isTrue();
-        Assertions.assertThat(personList.contains("Josef")).isTrue();
-        Assertions.assertThat(personList.contains("Eva")).isTrue();
+        assertThat(personList.size()).isEqualTo(5);
+        assertThat(personList.contains("Adam")).isTrue();
+        assertThat(personList.contains("Kain")).isTrue();
+        assertThat(personList.contains("Abel")).isTrue();
+        assertThat(personList.contains("Josef")).isTrue();
+        assertThat(personList.contains("Eva")).isTrue();
 
         List<String> parentList = listHolder.getParentList();
-        Assertions.assertThat(parentList.size()).isEqualTo(5);
-        Assertions.assertThat(parentList.contains("Adam")).isTrue();
-        Assertions.assertThat(parentList.contains("Eva")).isTrue();
-        Assertions.assertThat(parentList.contains("Abel")).isTrue();
+        assertThat(parentList.size()).isEqualTo(5);
+        assertThat(parentList.contains("Adam")).isTrue();
+        assertThat(parentList.contains("Eva")).isTrue();
+        assertThat(parentList.contains("Abel")).isTrue();
 
         List<String> motherList = listHolder.getMotherList();
-        Assertions.assertThat(motherList.size()).isEqualTo(2);
-        Assertions.assertThat(motherList.contains("Eva")).isTrue();
+        assertThat(motherList.size()).isEqualTo(2);
+        assertThat(motherList.contains("Eva")).isTrue();
 
         List<String> fatherList = listHolder.getFatherList();
-        Assertions.assertThat(fatherList.size()).isEqualTo(3);
-        Assertions.assertThat(fatherList.contains("Adam")).isTrue();
-        Assertions.assertThat(fatherList.contains("Abel")).isTrue();
-        Assertions.assertThat(fatherList.contains("Eva")).isFalse();
-        Assertions.assertThat(fatherList.contains("Kain")).isFalse();
-        Assertions.assertThat(fatherList.contains("Josef")).isFalse();
+        assertThat(fatherList.size()).isEqualTo(3);
+        assertThat(fatherList.contains("Adam")).isTrue();
+        assertThat(fatherList.contains("Abel")).isTrue();
+        assertThat(fatherList.contains("Eva")).isFalse();
+        assertThat(fatherList.contains("Kain")).isFalse();
+        assertThat(fatherList.contains("Josef")).isFalse();
 
         List<String> grandparentList = listHolder.getGrandparentList();
-        Assertions.assertThat(grandparentList.size()).isEqualTo(2);
-        Assertions.assertThat(grandparentList.contains("Eva")).isTrue();
-        Assertions.assertThat(grandparentList.contains("Adam")).isTrue();
+        assertThat(grandparentList.size()).isEqualTo(2);
+        assertThat(grandparentList.contains("Eva")).isTrue();
+        assertThat(grandparentList.contains("Adam")).isTrue();
 
-        Assertions.assertThat(listHolder.isGrandmaBlessedAgeTriggered()).isTrue();
+        assertThat(listHolder.isGrandmaBlessedAgeTriggered()).isTrue();
     }
 
     /**

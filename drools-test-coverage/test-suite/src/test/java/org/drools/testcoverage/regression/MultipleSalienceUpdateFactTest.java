@@ -16,11 +16,18 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.ListHolder;
 import org.drools.testcoverage.common.model.Person;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.api.command.Command;
@@ -28,11 +35,7 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 
 /**
@@ -72,8 +75,8 @@ public class MultipleSalienceUpdateFactTest extends KieSessionTest {
 
         session.execute(getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(firedRules.isRuleFired("PERSON_PAUL")).isTrue();
-        Assertions.assertThat(firedRules.isRuleFired("PERSON_PETER")).isTrue();
+        assertThat(firedRules.isRuleFired("PERSON_PAUL")).isTrue();
+        assertThat(firedRules.isRuleFired("PERSON_PETER")).isTrue();
     }
 
     @Override

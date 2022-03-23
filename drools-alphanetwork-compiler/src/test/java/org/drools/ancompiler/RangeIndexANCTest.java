@@ -19,7 +19,6 @@ package org.drools.ancompiler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -28,6 +27,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class RangeIndexANCTest extends BaseModelTest {
@@ -119,12 +119,12 @@ public class RangeIndexANCTest extends BaseModelTest {
 
         ksession.insert(new Person("John", 18));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test1", "test2", "test3");
+        assertThat(results).containsOnly("test1", "test2", "test3");
         results.clear();
 
         ksession.insert(new Person("Paul", 60));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test1", "test3", "test4", "test7");
+        assertThat(results).containsOnly("test1", "test3", "test4", "test7");
     }
 
     @Test
@@ -171,12 +171,12 @@ public class RangeIndexANCTest extends BaseModelTest {
 
         ksession.insert(new Person("John", 35));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test3", "test5");
+        assertThat(results).containsOnly("test3", "test5");
         results.clear();
 
         ksession.insert(new Person("Paul", 20));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test2", "test3");
+        assertThat(results).containsOnly("test2", "test3");
         results.clear();
     }
 
@@ -221,12 +221,12 @@ public class RangeIndexANCTest extends BaseModelTest {
 
         ksession.insert(new Person("John", 35));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test1");
+        assertThat(results).containsOnly("test1");
         results.clear();
 
         ksession.insert(new Person("Paul", 25));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test1", "test2", "test3");
+        assertThat(results).containsOnly("test1", "test2", "test3");
         results.clear();
     }
 }

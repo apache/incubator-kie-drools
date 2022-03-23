@@ -30,10 +30,10 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -204,7 +204,7 @@ public class AbstractExpressionEvaluatorTest {
 
     @Test
     public void getSimpleTypeNodeTextValue() {
-        Assertions.assertThatThrownBy(() -> expressionEvaluatorLocal.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
+        assertThatThrownBy(() -> expressionEvaluatorLocal.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Parameter does not contains a simple type");
 

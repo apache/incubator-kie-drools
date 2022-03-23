@@ -41,7 +41,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
@@ -97,12 +96,11 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -1652,19 +1650,19 @@ public class CepEspTest extends AbstractCepEspTest {
             final List<AfterMatchFiredEvent> values = captor.getAllValues();
             // first rule
             Match act = values.get(0).getMatch();
-            assertThat(act.getRule().getName(), is("launch"));
+            assertThat(act.getRule().getName()).isEqualTo("launch");
 
             // second rule
             act = values.get(1).getMatch();
-            assertThat(act.getRule().getName(), is("ba"));
-            assertThat(((Number) act.getDeclarationValue("$a")).intValue(), is(3));
-            assertThat(((Number) act.getDeclarationValue("$b")).intValue(), is(2));
+            assertThat(act.getRule().getName()).isEqualTo("ba");
+            assertThat(((Number) act.getDeclarationValue("$a")).intValue()).isEqualTo(3);
+            assertThat(((Number) act.getDeclarationValue("$b")).intValue()).isEqualTo(2);
 
             // third rule
             act = values.get(2).getMatch();
-            assertThat(act.getRule().getName(), is("ab"));
-            assertThat(((Number) act.getDeclarationValue("$a")).intValue(), is(3));
-            assertThat(((Number) act.getDeclarationValue("$b")).intValue(), is(2));
+            assertThat(act.getRule().getName()).isEqualTo("ab");
+            assertThat(((Number) act.getDeclarationValue("$a")).intValue()).isEqualTo(3);
+            assertThat(((Number) act.getDeclarationValue("$b")).intValue()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -1719,10 +1717,10 @@ public class CepEspTest extends AbstractCepEspTest {
             verify(ael, times(4)).afterMatchFired(captor.capture());
             final List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-            assertThat(aafe.get(0).getMatch().getRule().getName(), is("R1"));
-            assertThat(aafe.get(1).getMatch().getRule().getName(), is("R1"));
-            assertThat(aafe.get(2).getMatch().getRule().getName(), is("R1"));
-            assertThat(aafe.get(3).getMatch().getRule().getName(), is("R3"));
+            assertThat(aafe.get(0).getMatch().getRule().getName()).isEqualTo("R1");
+            assertThat(aafe.get(1).getMatch().getRule().getName()).isEqualTo("R1");
+            assertThat(aafe.get(2).getMatch().getRule().getName()).isEqualTo("R1");
+            assertThat(aafe.get(3).getMatch().getRule().getName()).isEqualTo("R3");
         } finally {
             ksession.dispose();
         }
@@ -1773,11 +1771,12 @@ public class CepEspTest extends AbstractCepEspTest {
             final ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
             verify(ael, times(4)).afterMatchFired(captor.capture());
             final List<AfterMatchFiredEvent> aafe = captor.getAllValues();
+            
 
-            assertThat(aafe.get(0).getMatch().getRule().getName(), is("R1"));
-            assertThat(aafe.get(1).getMatch().getRule().getName(), is("R1"));
-            assertThat(aafe.get(2).getMatch().getRule().getName(), is("R1"));
-            assertThat(aafe.get(3).getMatch().getRule().getName(), is("R3"));
+            assertThat(aafe.get(0).getMatch().getRule().getName()).isEqualTo("R1");
+            assertThat(aafe.get(1).getMatch().getRule().getName()).isEqualTo("R1");
+            assertThat(aafe.get(2).getMatch().getRule().getName()).isEqualTo("R1");
+            assertThat(aafe.get(3).getMatch().getRule().getName()).isEqualTo("R3");
         } finally {
             ksession.dispose();
         }
@@ -2117,7 +2116,7 @@ public class CepEspTest extends AbstractCepEspTest {
                      "end\n";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test (timeout=10000)
@@ -5610,7 +5609,7 @@ public class CepEspTest extends AbstractCepEspTest {
                      "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Role(Role.Type.EVENT)

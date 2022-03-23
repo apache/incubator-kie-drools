@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.mvel.compiler.Message;
@@ -49,6 +48,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -173,7 +173,7 @@ public class KieBuilderTest {
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
 
-        Assertions.assertThatThrownBy(() -> KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1))
+        assertThatThrownBy(() -> KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1))
         .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("XSD validation failed");
     }
@@ -491,10 +491,10 @@ public class KieBuilderTest {
     public void testAddMissingResourceToPackageBuilder() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL))
+        assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL))
                 .isInstanceOf(RuntimeException.class);
 
-        Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRF))
+        assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.bpmn"), ResourceType.BPMN2))
                 .isInstanceOf(RuntimeException.class);
     }
 

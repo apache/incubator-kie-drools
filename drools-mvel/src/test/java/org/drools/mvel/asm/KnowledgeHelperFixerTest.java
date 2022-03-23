@@ -14,15 +14,16 @@
 
 package org.drools.mvel.asm;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KnowledgeHelperFixerTest {
 
     private static final KnowledgeHelperFixer fixer = new KnowledgeHelperFixer();
 
     private void assertEqualsIgnoreWhitespace(final String expected, final String actual) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test

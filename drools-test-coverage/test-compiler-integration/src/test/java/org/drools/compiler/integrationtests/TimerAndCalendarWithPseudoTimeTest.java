@@ -27,7 +27,6 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
@@ -60,6 +59,7 @@ import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -300,7 +300,7 @@ public class TimerAndCalendarWithPseudoTimeTest {
                                    kieBaseTestConfiguration,
                                        false,
                                        drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test(timeout = 10000)
