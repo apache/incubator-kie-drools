@@ -15,12 +15,13 @@
  */
 package org.kie.pmml.models.drools.scorecard.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -74,8 +75,8 @@ public class MultipleAirconditioningScorecardTest extends AbstractPMMLTest {
         inputData.put("humidity", humidity);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat((double) (pmml4Result.getResultVariables().get(TARGET_FIELD)))
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat((double) (pmml4Result.getResultVariables().get(TARGET_FIELD)))
                 .isCloseTo(score, Percentage.withPercentage(0.1));
     }
 }

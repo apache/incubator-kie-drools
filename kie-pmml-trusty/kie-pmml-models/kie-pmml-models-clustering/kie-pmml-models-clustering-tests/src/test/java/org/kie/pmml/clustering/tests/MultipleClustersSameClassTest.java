@@ -1,11 +1,12 @@
 package org.kie.pmml.clustering.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
@@ -73,15 +74,15 @@ public class MultipleClustersSameClassTest extends AbstractPMMLTest {
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(CLUSTER_ID_FIELD)).isEqualTo(classId);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(CLUSTER_NAME_FIELD)).isEqualTo(className);
+        assertThat(pmml4Result.getResultVariables().get(CLUSTER_ID_FIELD)).isEqualTo(classId);
+        assertThat(pmml4Result.getResultVariables().get(CLUSTER_NAME_FIELD)).isEqualTo(className);
 
         assertDoubleVariable(pmml4Result, AFFINITY_FIELD, affinity);
         assertDoubleVariable(pmml4Result, CLUSTER_AFFINITY_FIELD, affinity);
     }
 
     private static void assertDoubleVariable(PMML4Result pmml4Result, String variableName, double expectedValue) {
-        Assertions.assertThat(pmml4Result.getResultVariables().get(variableName))
+        assertThat(pmml4Result.getResultVariables().get(variableName))
                 .asInstanceOf(InstanceOfAssertFactories.DOUBLE)
                 .isCloseTo(expectedValue, Percentage.withPercentage(DOUBLE_VALID_PERCENTAGE));
     }

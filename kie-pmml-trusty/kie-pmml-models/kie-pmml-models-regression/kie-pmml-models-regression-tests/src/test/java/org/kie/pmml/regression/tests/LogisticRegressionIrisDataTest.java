@@ -16,12 +16,13 @@
 
 package org.kie.pmml.regression.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -85,14 +86,14 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLTest {
         inputData.put("Petal.Width", petalWidth);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
 
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_SETOSA_FIELD))
+        assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_SETOSA_FIELD))
                 .isCloseTo(setosaProbability(), TOLERANCE_PERCENTAGE);
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR_FIELD))
+        assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR_FIELD))
                 .isCloseTo(versicolorProbability(), TOLERANCE_PERCENTAGE);
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA_FIELD))
+        assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA_FIELD))
                 .isCloseTo(virginicaProbability(), TOLERANCE_PERCENTAGE);
     }
 

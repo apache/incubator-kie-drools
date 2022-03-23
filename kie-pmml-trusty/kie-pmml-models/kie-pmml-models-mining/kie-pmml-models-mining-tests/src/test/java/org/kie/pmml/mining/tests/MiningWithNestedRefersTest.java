@@ -16,14 +16,14 @@
 
 package org.kie.pmml.mining.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -100,13 +100,13 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_SETOSA)).isNotNull();
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_SETOSA)).isEqualTo(pSetosa);
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VERSICOLOR)).isNotNull();
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VERSICOLOR)).isEqualTo(pVersicolor);
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VIRGINICA)).isNotNull();
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VIRGINICA)).isEqualTo(pVirginica);
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+//        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_SETOSA)).isNotNull();
+//        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_SETOSA)).isEqualTo(pSetosa);
+//        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VERSICOLOR)).isNotNull();
+//        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VERSICOLOR)).isEqualTo(pVersicolor);
+//        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VIRGINICA)).isNotNull();
+//        assertThat(pmml4Result.getResultVariables().get(PROBABILITY_IRIS_VIRGINICA)).isEqualTo(pVirginica);
     }
 }
