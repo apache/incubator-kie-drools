@@ -18,7 +18,6 @@ package org.drools.testcoverage.regression;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -34,6 +33,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class UnwantedStringConversionTest {
@@ -67,10 +68,10 @@ public class UnwantedStringConversionTest {
         ksession.insert(message);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("R1")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("R2")).isFalse();
+        assertThat(listener.isRuleFired("R1")).isFalse();
+        assertThat(listener.isRuleFired("R2")).isFalse();
 
-        Assertions.assertThat(listener.rulesCount()).isEqualTo(0);
+        assertThat(listener.rulesCount()).isEqualTo(0);
     }
 
     public static class Message {

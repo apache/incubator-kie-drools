@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
@@ -42,6 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -176,8 +176,8 @@ public class ImportsTest {
             "end \n";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test
@@ -193,8 +193,8 @@ public class ImportsTest {
                 "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test

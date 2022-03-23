@@ -3,12 +3,12 @@ package org.drools.modelcompiler;
 import java.time.Instant;
 import java.util.Date;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class MaterializedLambdaTest extends BaseModelTest {
 
@@ -52,7 +52,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
 
         Result r = new Result();
         ksession.setGlobal("result", r);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertEquals(0, r.getValue());
     }
 
@@ -87,7 +87,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
         ksession.setGlobal("result", r);
 
         int actual = ksession.fireAllRules();
-        Assertions.assertThat(actual).isEqualTo(1);
+        assertThat(actual).isEqualTo(1);
         assertEquals(42, r.getValue());
     }
 }

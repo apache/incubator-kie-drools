@@ -41,7 +41,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
@@ -136,6 +135,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -419,7 +419,7 @@ public class Misc2Test {
         final FactHandle mary = ksession.insert(mary33Years);
         final FactHandle elizabeth = ksession.insert(elizabeth35Years);
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(3);
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     private Address producePeopleInCity(final KieSession ksession, final String city, final int countOfPeople) {

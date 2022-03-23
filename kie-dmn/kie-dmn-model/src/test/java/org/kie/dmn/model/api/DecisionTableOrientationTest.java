@@ -16,10 +16,10 @@
 
 package org.kie.dmn.model.api;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class DecisionTableOrientationTest {
 
@@ -28,7 +28,7 @@ public class DecisionTableOrientationTest {
         assertThat(DecisionTableOrientation.fromValue("Rule-as-Row")).isEqualTo(DecisionTableOrientation.RULE_AS_ROW);
         assertThat(DecisionTableOrientation.fromValue("Rule-as-Column")).isEqualTo(DecisionTableOrientation.RULE_AS_COLUMN);
         assertThat(DecisionTableOrientation.fromValue("CrossTable")).isEqualTo(DecisionTableOrientation.CROSS_TABLE);
-        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> DecisionTableOrientation.fromValue("asd"));
+        assertThatIllegalArgumentException().isThrownBy(() -> DecisionTableOrientation.fromValue("asd"));
     }
 
 }

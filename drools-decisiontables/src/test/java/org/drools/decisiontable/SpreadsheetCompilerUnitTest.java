@@ -23,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
@@ -45,6 +44,7 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -91,7 +91,7 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        Assertions.assertThat(drl).doesNotContain("\\n");
+        assertThat(drl).doesNotContain("\\n");
     }
 
     @Test
@@ -101,7 +101,7 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        Assertions.assertThat(drl).contains(" **\n** ");
+        assertThat(drl).contains(" **\n** ");
     }
 
     @Test
@@ -111,7 +111,7 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        Assertions.assertThat(drl).contains(" **\\n** ");
+        assertThat(drl).contains(" **\\n** ");
     }
 
     @Test
@@ -121,8 +121,8 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        Assertions.assertThat(drl).containsSubsequence("/* Say", "Hello */", "/* Say", "Goobye */");
-        Assertions.assertThat(drl).doesNotContain("// Say");
+        assertThat(drl).containsSubsequence("/* Say", "Hello */", "/* Say", "Goobye */");
+        assertThat(drl).doesNotContain("// Say");
     }
 
     @Test
@@ -132,15 +132,15 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        Assertions.assertThat(drl).containsSubsequence("/* Do these actions:",
+        assertThat(drl).containsSubsequence("/* Do these actions:",
                                                     "- Print Greeting",
                                                     "- Set params: {message:'bye cruel world', status:'bye'} */",
                                                     "/* Print message: \"Bye!\"",
                                                     "Author: james@company.org */");
 
-        Assertions.assertThat(drl).doesNotContain("* - Print Greeting");
-        Assertions.assertThat(drl).doesNotContain("* - Set params: {message:'bye cruel world', status:'bye'}");
-        Assertions.assertThat(drl).doesNotContain("* Author: james@company.org");
+        assertThat(drl).doesNotContain("* - Print Greeting");
+        assertThat(drl).doesNotContain("* - Set params: {message:'bye cruel world', status:'bye'}");
+        assertThat(drl).doesNotContain("* Author: james@company.org");
     }
 
     @Test
@@ -522,7 +522,7 @@ public class SpreadsheetCompilerUnitTest {
                 "end";
         //No Pattern generated when all constraints have empty values
 
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -570,7 +570,7 @@ public class SpreadsheetCompilerUnitTest {
                 "end";
         //No Pattern generated when all constraints have empty values
 
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -637,7 +637,7 @@ public class SpreadsheetCompilerUnitTest {
                 "  then\n" +
                 "end";
 
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -695,7 +695,7 @@ public class SpreadsheetCompilerUnitTest {
                 "    System.out.println(false);\n" +
                 "end\n";
 
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     public static class IntHolder {
@@ -806,7 +806,7 @@ public class SpreadsheetCompilerUnitTest {
                 "    System.out.println(m.getMessage());\n" +
                 "end\n";
 
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -815,7 +815,7 @@ public class SpreadsheetCompilerUnitTest {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         String drl = converter.compile("/data/LhsOrder.xls", InputType.XLS);
 
-        Assertions.assertThat(Stream.of(drl.split("\n")).map(String::trim).toArray())
+        assertThat(Stream.of(drl.split("\n")).map(String::trim).toArray())
                 .as("Lhs order is wrong")
                 .containsSequence("accumulate(Person(name == \"John\", $a : age); $max:max($a))",
                         "$p:Person(name == \"John\", age == $max)");

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +29,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.api.enums.ResultCode.FAIL;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 
@@ -100,12 +100,12 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         if (expectedResult != null) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-            Assertions.assertThat(pmml4Result.getResultCode()).isEqualTo(OK.getName());
+            assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+            assertThat(pmml4Result.getResultCode()).isEqualTo(OK.getName());
         } else {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNull();
-            Assertions.assertThat(pmml4Result.getResultCode()).isEqualTo(FAIL.getName());
+            assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNull();
+            assertThat(pmml4Result.getResultCode()).isEqualTo(FAIL.getName());
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
     }
 }

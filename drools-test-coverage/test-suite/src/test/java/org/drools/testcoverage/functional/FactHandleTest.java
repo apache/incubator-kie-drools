@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.event.DefaultRuleRuntimeEventListener;
 import org.drools.testcoverage.common.model.Cheese;
@@ -32,6 +31,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FactHandleTest {
@@ -81,7 +82,7 @@ public class FactHandleTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(factHandleIDs).containsExactly(1L, 2L, 1L);
+        assertThat(factHandleIDs).containsExactly(1L, 2L, 1L);
     }
 
     private DefaultRuleRuntimeEventListener createCollectEventListener(List<Long> factHandleIDs) {

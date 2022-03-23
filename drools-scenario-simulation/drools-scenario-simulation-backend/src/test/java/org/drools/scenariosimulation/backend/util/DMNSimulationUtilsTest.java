@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,7 +44,7 @@ public class DMNSimulationUtilsTest {
 
         List<String> impossibleToFind = Arrays.asList(new StringBuilder("not/find").reverse().toString().split("/"));
 
-        Assertions.assertThatThrownBy(() -> DMNSimulationUtils.findDMNModel(models, impossibleToFind, 1))
+        assertThatThrownBy(() -> DMNSimulationUtils.findDMNModel(models, impossibleToFind, 1))
                 .isInstanceOf(ImpossibleToFindDMNException.class)
                 .hasMessage("Retrieving the DMNModel has failed. Make sure the used DMN asset does not " +
                                     "produce any compilation errors and that the project does not " +

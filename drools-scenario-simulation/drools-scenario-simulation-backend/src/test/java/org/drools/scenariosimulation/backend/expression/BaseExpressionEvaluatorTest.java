@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.backend.model.ListMapClass;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -60,7 +60,7 @@ public class BaseExpressionEvaluatorTest {
         assertNotNull(expressionEvaluator.createObject(String.class.getCanonicalName(), Collections.emptyList()));
         assertTrue(expressionEvaluator.createObject(Map.class.getCanonicalName(), Arrays.asList(String.class.getCanonicalName(), String.class.getCanonicalName())) instanceof Map);
 
-        Assertions.assertThatThrownBy(() -> expressionEvaluator.createObject("com.invalid.class.Name", Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> expressionEvaluator.createObject("com.invalid.class.Name", Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Impossible to instantiate com.invalid.class.Name");
     }
 

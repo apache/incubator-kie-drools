@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -33,6 +32,8 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test for BZ 1150308.
@@ -78,7 +79,7 @@ public class FixedPatternTest {
         ksession.insert(2);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).hasSize(1);
-        Assertions.assertThat(list).first().isEqualTo(1L);
+        assertThat(list).hasSize(1);
+        assertThat(list).first().isEqualTo(1L);
     }
 }

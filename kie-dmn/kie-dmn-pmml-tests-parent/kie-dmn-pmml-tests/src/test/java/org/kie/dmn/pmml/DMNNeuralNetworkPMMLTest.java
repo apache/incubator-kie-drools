@@ -16,7 +16,8 @@
 
 package org.kie.dmn.pmml;
 
-import org.assertj.core.api.Assertions;
+import java.util.Map;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -27,7 +28,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class DMNNeuralNetworkPMMLTest {
 
@@ -44,14 +45,14 @@ public abstract class DMNNeuralNetworkPMMLTest {
 
         dmnModel = runtime.getModel("https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456",
                                     "NeuralNetworkDMN");
-        Assertions.assertThat(dmnModel).isNotNull();
-        Assertions.assertThat(dmnModel.hasErrors()).isFalse();
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
 
-        Assertions.assertThat(evaluateNeuralNetwork(5.7, 3.8, 1.7, 0.3))
+        assertThat(evaluateNeuralNetwork(5.7, 3.8, 1.7, 0.3))
                 .isEqualTo("setosa");
-        Assertions.assertThat(evaluateNeuralNetwork(6.4, 2.8, 5.6, 2.1))
+        assertThat(evaluateNeuralNetwork(6.4, 2.8, 5.6, 2.1))
                 .isEqualTo("virginica");
-        Assertions.assertThat(evaluateNeuralNetwork(5.7, 2.9, 4.2, 1.3))
+        assertThat(evaluateNeuralNetwork(5.7, 2.9, 4.2, 1.3))
                 .isEqualTo("versicolor");
     }
 
@@ -65,8 +66,8 @@ public abstract class DMNNeuralNetworkPMMLTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        Assertions.assertThat(dmnResult.hasErrors()).isFalse();
-        Assertions.assertThat(dmnResult.getDecisionResultByName("Decision1").getResult()).isNotNull();
+        assertThat(dmnResult.hasErrors()).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Decision1").getResult()).isNotNull();
         final Map<String, Object> decisionResult = (Map<String, Object>) dmnResult.getDecisionResultByName("Decision1").getResult();
         final String predictedClassName = (String) decisionResult.get("Predicted_Species");
 

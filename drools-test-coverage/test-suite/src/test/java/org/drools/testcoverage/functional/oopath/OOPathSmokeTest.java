@@ -17,7 +17,7 @@
 package org.drools.testcoverage.functional.oopath;
 
 import java.util.Collection;
-import org.assertj.core.api.Assertions;
+
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -34,6 +34,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests basic usage of OOPath expressions.
@@ -68,7 +70,7 @@ public class OOPathSmokeTest {
     public void testBuildKieBase() {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
                 "oopath.drl");
-        Assertions.assertThat(kieBase).isNotNull();
+        assertThat(kieBase).isNotNull();
     }
 
     @Test
@@ -80,7 +82,7 @@ public class OOPathSmokeTest {
         for (int i = 0; i < 2; i++) {
             final KieContainer kieContainer = KIE_SERVICES.newKieContainer(RELEASE_ID);
             final KieBase kieBase = kieContainer.getKieBase();
-            Assertions.assertThat(kieBase).isNotNull();
+            assertThat(kieBase).isNotNull();
         }
     }
 
@@ -93,7 +95,7 @@ public class OOPathSmokeTest {
         final Person person = new Person("Bruno", 21);
         person.setAddress(new Address("Some Street", 10, "Beautiful City"));
         this.kieSession.insert(person);
-        Assertions.assertThat(this.kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(this.kieSession.fireAllRules()).isEqualTo(1);
     }
 
 }

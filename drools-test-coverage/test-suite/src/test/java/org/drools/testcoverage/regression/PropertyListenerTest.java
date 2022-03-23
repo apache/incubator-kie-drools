@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -38,6 +37,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Bugfix regression test for:
@@ -102,7 +103,7 @@ public class PropertyListenerTest {
                 LOGGER.info("Listener attached of type: " + listener);
             }
             // there should be no listeners
-            Assertions.assertThat(person.getBoundSupport().getPropertyChangeListeners()).isEmpty();
+            assertThat(person.getBoundSupport().getPropertyChangeListeners()).isEmpty();
         }
     }
 

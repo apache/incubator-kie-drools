@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.DRL6Lexer;
 import org.drools.compiler.lang.DRL6Parser;
@@ -68,6 +67,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.compiler.DRLFactory.buildParser;
 
 public class RuleParserTest extends TestCase {
@@ -4302,7 +4302,7 @@ public class RuleParserTest extends TestCase {
 
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
     private Reader getReader( final String name ) throws Exception {

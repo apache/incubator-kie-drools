@@ -15,9 +15,10 @@
 
 package org.drools.core.util.index;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.test.model.Person;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RangeIndexTest {
 
@@ -60,20 +61,20 @@ public class RangeIndexTest {
         index.addIndex(RangeIndex.IndexType.GT, 12, "E");
         index.addIndex(RangeIndex.IndexType.LE, 4, "F");
 
-        Assertions.assertThat(index.getValues(18)).containsExactlyInAnyOrder("A", "B", "C", "D", "E");
-        Assertions.assertThat(index.getValues(60)).containsExactlyInAnyOrder("A", "C", "E");
-        Assertions.assertThat(index.getValues(59)).containsExactlyInAnyOrder("A", "C", "D", "E");
-        Assertions.assertThat(index.getValues(4)).containsExactlyInAnyOrder("B", "D", "F");
-        Assertions.assertThat(index.getAllValues()).containsExactlyInAnyOrder("A", "B", "C", "D", "E", "F");
+        assertThat(index.getValues(18)).containsExactlyInAnyOrder("A", "B", "C", "D", "E");
+        assertThat(index.getValues(60)).containsExactlyInAnyOrder("A", "C", "E");
+        assertThat(index.getValues(59)).containsExactlyInAnyOrder("A", "C", "D", "E");
+        assertThat(index.getValues(4)).containsExactlyInAnyOrder("B", "D", "F");
+        assertThat(index.getAllValues()).containsExactlyInAnyOrder("A", "B", "C", "D", "E", "F");
 
         index.removeIndex(RangeIndex.IndexType.GT, 8); // "C"
         index.removeIndex(RangeIndex.IndexType.LT, 60); // "D"
 
-        Assertions.assertThat(index.getValues(18)).containsExactlyInAnyOrder("A", "B", "E");
-        Assertions.assertThat(index.getValues(60)).containsExactlyInAnyOrder("A", "E");
-        Assertions.assertThat(index.getValues(59)).containsExactlyInAnyOrder("A", "E");
-        Assertions.assertThat(index.getValues(4)).containsExactlyInAnyOrder("B", "F");
-        Assertions.assertThat(index.getAllValues()).containsExactlyInAnyOrder("A", "B", "E", "F");
+        assertThat(index.getValues(18)).containsExactlyInAnyOrder("A", "B", "E");
+        assertThat(index.getValues(60)).containsExactlyInAnyOrder("A", "E");
+        assertThat(index.getValues(59)).containsExactlyInAnyOrder("A", "E");
+        assertThat(index.getValues(4)).containsExactlyInAnyOrder("B", "F");
+        assertThat(index.getAllValues()).containsExactlyInAnyOrder("A", "B", "E", "F");
     }
 
     @Test
@@ -84,9 +85,9 @@ public class RangeIndexTest {
         index.addIndex(RangeIndex.IndexType.GE, 40, "C");
         index.addIndex(RangeIndex.IndexType.GT, 60, "D");
 
-        Assertions.assertThat(index.getValues(25)).containsExactlyInAnyOrder("B");
-        Assertions.assertThat(index.getValues(26)).isEmpty();
-        Assertions.assertThat(index.getValues(39)).isEmpty();
-        Assertions.assertThat(index.getValues(40)).containsExactlyInAnyOrder("C");
+        assertThat(index.getValues(25)).containsExactlyInAnyOrder("B");
+        assertThat(index.getValues(26)).isEmpty();
+        assertThat(index.getValues(39)).isEmpty();
+        assertThat(index.getValues(40)).containsExactlyInAnyOrder("C");
     }
 }
