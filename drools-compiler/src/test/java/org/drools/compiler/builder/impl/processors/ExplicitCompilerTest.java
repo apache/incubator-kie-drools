@@ -1,5 +1,7 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.GlobalVariableContext;
+import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
 import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
@@ -48,6 +50,8 @@ public class ExplicitCompilerTest {
         TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
         InternalKnowledgeBase kBase = null;
         KnowledgeBuilderImpl kBuilder = null;
+        GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
+
         int parallelRulesBuildThreshold = 0;
         Map<String, Map<String, AttributeDescr>> packageAttributes = Collections.emptyMap();
 
@@ -72,7 +76,7 @@ public class ExplicitCompilerTest {
                 new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry),
                 new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, kBuilder),
                 new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
-                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, kBuilder, this::filterAcceptsRemoval),
+                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, this::filterAcceptsRemoval),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
                 /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),
