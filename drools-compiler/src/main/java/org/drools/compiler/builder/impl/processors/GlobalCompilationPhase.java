@@ -1,5 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -18,10 +19,10 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
     protected static final transient Logger logger = LoggerFactory.getLogger(GlobalCompilationPhase.class);
 
     private final InternalKnowledgeBase kBase;
-    private final KnowledgeBuilderImpl knowledgeBuilder;
+    private final GlobalVariableContext knowledgeBuilder;
     private final FilterCondition filterAcceptsRemoval;
 
-    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, KnowledgeBuilderImpl knowledgeBuilder, FilterCondition filterAcceptsRemoval) {
+    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, GlobalVariableContext knowledgeBuilder, FilterCondition filterAcceptsRemoval) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.knowledgeBuilder = knowledgeBuilder;

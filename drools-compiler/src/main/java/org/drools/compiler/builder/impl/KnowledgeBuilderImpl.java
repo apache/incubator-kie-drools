@@ -142,7 +142,7 @@ import java.util.function.Supplier;
 import static java.util.Arrays.asList;
 import static org.drools.core.util.StringUtils.isEmpty;
 
-public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext {
+public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, GlobalVariableContext {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 

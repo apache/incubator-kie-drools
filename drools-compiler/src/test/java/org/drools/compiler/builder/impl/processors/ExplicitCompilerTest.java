@@ -1,5 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -36,71 +37,17 @@ public class ExplicitCompilerTest {
     @Test
     //@Ignore("not finished")
     public void testCompile() throws DroolsParserException, IOException {
+        ClassLoader rootClassLoader = this.getClass().getClassLoader();
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
 
         Resource resource = new ClassPathResource("com/sample/from.drl");
         InternalKnowledgePackage pkg = new KnowledgePackageImpl("com.sample");
+        PackageRegistryManagerImpl packageRegistryManager = new PackageRegistryManagerImpl(configuration, () -> rootClassLoader, () -> null);
+        TypeDeclarationContext typeDeclarationContext = new DummyTypeDeclarationContext(configuration, packageRegistryManager);
         PackageRegistry packageRegistry = new PackageRegistry(configuration.getClassLoader(), configuration, pkg);
-        InternalKnowledgeBase kBase = null;
-        TypeDeclarationContext typeDeclarationContext = new TypeDeclarationContext() {
-            @Override
-            public TypeDeclarationBuilder getTypeBuilder() {
-                return null;
-            }
-
-            @Override
-            public Resource getCurrentResource() {
-                return null;
-            }
-
-            @Override
-            public boolean filterAccepts(ResourceChange.Type declaration, String namespace, String typeName) {
-                return false;
-            }
-
-            @Override
-            public PackageRegistry getPackageRegistry(String packageName) {
-                return packageRegistry;
-            }
-
-            @Override
-            public PackageRegistry getOrCreatePackageRegistry(PackageDescr packageDescr) {
-                return packageRegistry;
-            }
-
-            @Override
-            public Map<String, PackageRegistry> getPackageRegistry() {
-                return null;
-            }
-
-            @Override
-            public void addBuilderResult(KnowledgeBuilderResult result) {
-
-            }
-
-            @Override
-            public boolean hasErrors() {
-                return false;
-            }
-
-            @Override
-            public KnowledgeBuilderConfigurationImpl getBuilderConfiguration() {
-                return configuration;
-            }
-
-            @Override
-            public InternalKnowledgeBase getKnowledgeBase() {
-                return null;
-            }
-
-            @Override
-            public ClassLoader getRootClassLoader() {
-                return configuration.getClassLoader();
-            }
-        };
         TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
+        InternalKnowledgeBase kBase = null;
         KnowledgeBuilderImpl kBuilder = null;
-        ClassLoader rootClassLoader = null;
         int parallelRulesBuildThreshold = 0;
         Map<String, Map<String, AttributeDescr>> packageAttributes = Collections.emptyMap();
 
