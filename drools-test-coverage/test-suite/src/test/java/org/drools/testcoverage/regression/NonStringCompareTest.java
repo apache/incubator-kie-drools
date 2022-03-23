@@ -16,9 +16,10 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -67,7 +68,7 @@ public class NonStringCompareTest {
     @Test
     public void testNonQuotedStringComapre() {
         final KieBuilder kbuilder = build("someString");
-        Assertions.assertThat(kbuilder.getResults().getMessages(Level.ERROR).size()).isEqualTo(1);
+        assertThat(kbuilder.getResults().getMessages(Level.ERROR).size()).isEqualTo(1);
     }
 
     @Test
@@ -79,7 +80,7 @@ public class NonStringCompareTest {
             throws IllegalAccessException, InstantiationException {
 
         final KieBuilder kbuilder = build(factFieldValueForDrl);
-        Assertions.assertThat(kbuilder.getResults().getMessages(Level.ERROR)).isEmpty();
+        assertThat(kbuilder.getResults().getMessages(Level.ERROR)).isEmpty();
 
         final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final KieSession ksession = kbase.newKieSession();
@@ -91,7 +92,7 @@ public class NonStringCompareTest {
 
             ksession.insert(fact);
             final int count = ksession.fireAllRules();
-            Assertions.assertThat(count).isEqualTo(1);
+            assertThat(count).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

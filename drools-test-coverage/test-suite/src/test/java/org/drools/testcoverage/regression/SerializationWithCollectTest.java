@@ -16,7 +16,11 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.fail;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +30,6 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.utils.KieHelper;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 
 /**
  * Simple reproducer for BZ 1193600 - serialization of rules with collect.
@@ -73,7 +74,7 @@ public class SerializationWithCollectTest {
                 ksession = marshaller.unmarshall(bais);
             }
         } catch (NullPointerException e) {
-            Assertions.fail("Consider reopening BZ 1193600!", e);
+            fail("Consider reopening BZ 1193600!", e);
         }
     }
 }

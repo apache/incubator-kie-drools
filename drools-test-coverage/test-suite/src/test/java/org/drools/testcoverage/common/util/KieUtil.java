@@ -16,6 +16,8 @@
 
 package org.drools.testcoverage.common.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.RuleBase;
@@ -158,7 +159,7 @@ public final class KieUtil {
         }
 
         if (failIfBuildError) {
-            Assertions.assertThat(msgs).as(msgs.toString()).isEmpty();
+            assertThat(msgs).as(msgs.toString()).isEmpty();
         }
 
         return kbuilder;

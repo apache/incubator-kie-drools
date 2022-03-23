@@ -15,6 +15,8 @@
 
 package org.drools.mvel.compiler.oopath;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Room;
 import org.drools.mvel.compiler.oopath.model.SensorEvent;
 import org.drools.mvel.compiler.oopath.model.Thing;
@@ -36,8 +37,6 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class OOPathQueriesTest {
@@ -242,6 +241,6 @@ public class OOPathQueriesTest {
         ksession.insert(key);
 
         ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
+        assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
     }
 }

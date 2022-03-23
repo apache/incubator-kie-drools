@@ -15,6 +15,11 @@
 
 package org.drools.mvel.integrationtests;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.StockTick;
@@ -39,10 +43,6 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class NamedConsequencesTest {
@@ -512,7 +512,7 @@ public class NamedConsequencesTest {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+        assertThatThrownBy(() -> executeTestWithDRL(str))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
@@ -607,7 +607,7 @@ public class NamedConsequencesTest {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+        assertThatThrownBy(() -> executeTestWithDRL(str))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }

@@ -16,9 +16,11 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -30,8 +32,6 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarExceptionTest {
@@ -86,7 +86,7 @@ public class TimerAndCalendarExceptionTest {
                                    kieBaseTestConfiguration,
                                        false,
                                        drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test

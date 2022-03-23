@@ -15,13 +15,18 @@
 
 package org.drools.mvel.compiler.compiler.xml.rules;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
-import org.drools.mvel.DrlDumper;
+import org.drools.core.util.StringUtils;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
@@ -38,14 +43,9 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.core.util.StringUtils;
 import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.DrlDumper;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class XmlPackageReaderTest extends CommonTestMethodBase {
 
@@ -214,7 +214,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
         
-        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
+        assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test
@@ -342,7 +342,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         System.out.println(expectedWithoutHeader);
         String actual = new DrlDumper().dump( packageDescr );
         
-        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
+        assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test
@@ -438,7 +438,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
 
-        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
+        assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test

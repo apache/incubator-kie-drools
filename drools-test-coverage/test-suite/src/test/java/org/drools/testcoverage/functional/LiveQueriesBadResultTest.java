@@ -16,10 +16,11 @@
 
 package org.drools.testcoverage.functional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -117,7 +118,7 @@ public class LiveQueriesBadResultTest {
         ksession.insert(new Person("Petr", 25));
 
 
-        Assertions.assertThatThrownBy(() -> ksession.openLiveQuery("simple query with no parameters", new Object[]{}, listener))
+        assertThatThrownBy(() -> ksession.openLiveQuery("simple query with no parameters", new Object[]{}, listener))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("The identifier 'bad' does not exist as a bound variable for this query");
     }

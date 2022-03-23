@@ -16,6 +16,8 @@
 
 package org.drools.testcoverage.functional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -26,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.ObjectDataCompiler;
@@ -265,14 +266,14 @@ public class TemplatesTest {
         }
 
         // check of size of satisfying items
-        Assertions.assertThat(list.size()).isEqualTo(4);
+        assertThat(list.size()).isEqualTo(4);
 
         final Collection<KiePackage> pkgs = kbase.getKiePackages();
-        Assertions.assertThat(pkgs.size()).isEqualTo(1);
+        assertThat(pkgs.size()).isEqualTo(1);
         final KiePackage pkg = pkgs.iterator().next();
 
         // check of generated rules size from template
-        Assertions.assertThat(pkg.getRules().size()).isEqualTo(3);
+        assertThat(pkg.getRules().size()).isEqualTo(3);
     }
 
     private void testManyRows(final String drl, final int expectedResultListSize, final int expectedRulesCount) {
@@ -296,14 +297,14 @@ public class TemplatesTest {
         }
 
         // check of size of satisfying items
-        Assertions.assertThat(list.size()).isEqualTo(expectedResultListSize);
+        assertThat(list.size()).isEqualTo(expectedResultListSize);
 
         final Collection<KiePackage> pkgs = kbase.getKiePackages();
-        Assertions.assertThat(pkgs.size()).isEqualTo(1);
+        assertThat(pkgs.size()).isEqualTo(1);
         final KiePackage pkg = pkgs.iterator().next();
 
         // check of generated rules size from template
-        Assertions.assertThat(pkg.getRules().size()).isEqualTo(expectedRulesCount);
+        assertThat(pkg.getRules().size()).isEqualTo(expectedRulesCount);
     }
 
     private void testManyRules(final String drl, final int expectedRulesCount) {
@@ -312,11 +313,11 @@ public class TemplatesTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
 
         Collection<KiePackage> pkgs = kbase.getKiePackages();
-        Assertions.assertThat(pkgs.size()).isEqualTo(1);
+        assertThat(pkgs.size()).isEqualTo(1);
         KiePackage pkg = pkgs.iterator().next();
 
         // check of generated rules size from template
-        Assertions.assertThat(pkg.getRules().size()).isEqualTo(expectedRulesCount);
+        assertThat(pkg.getRules().size()).isEqualTo(expectedRulesCount);
     }
 
     private Collection<Map<String, Object>> getMapsParam() {
@@ -464,6 +465,6 @@ public class TemplatesTest {
     }
 
     private static void assertEqualsIgnoreWhitespace(final String expected, final String actual) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 }

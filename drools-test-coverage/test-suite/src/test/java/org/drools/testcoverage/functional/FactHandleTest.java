@@ -15,11 +15,12 @@
 
 package org.drools.testcoverage.functional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.event.DefaultRuleRuntimeEventListener;
 import org.drools.testcoverage.common.model.Cheese;
@@ -81,7 +82,7 @@ public class FactHandleTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(factHandleIDs).containsExactly(1L, 2L, 1L);
+        assertThat(factHandleIDs).containsExactly(1L, 2L, 1L);
     }
 
     private DefaultRuleRuntimeEventListener createCollectEventListener(List<Long> factHandleIDs) {

@@ -16,11 +16,12 @@
 
 package org.drools.compiler.integrationtests.equalitymode;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.EngineTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -65,12 +66,12 @@ public class EqualityModeTest {
         try {
             ksession.insert(new FactWithEquals(10));
             ksession.insert(new FactWithEquals(10));
-            Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
             ksession.insert(new FactWithEquals(10));
             ksession.insert(new FactWithEquals(11));
             ksession.insert(new FactWithEquals(12));
-            Assertions.assertThat(ksession.fireAllRules()).isEqualTo(2);
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -100,9 +101,9 @@ public class EqualityModeTest {
             ksession.insert(new FactWithEquals(10));
             ksession.insert(new FactWithEquals(11));
 
-            Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
-            Assertions.assertThat(resultList).hasSize(1);
-            Assertions.assertThat(resultList).containsExactly(2L);
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+            assertThat(resultList).hasSize(1);
+            assertThat(resultList).containsExactly(2L);
         } finally {
             ksession.dispose();
         }

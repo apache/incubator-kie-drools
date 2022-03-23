@@ -16,11 +16,12 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -76,7 +77,7 @@ public class MultipleSheetsLoadingTest {
         if (results.size() > 0) {
             LOGGER.error(results.toString());
         }
-        Assertions.assertThat(results).as("Some errors/warnings found").isEmpty();
+        assertThat(results).as("Some errors/warnings found").isEmpty();
 
         final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final StatelessKieSession ksession = kbase.newStatelessKieSession();
@@ -84,9 +85,9 @@ public class MultipleSheetsLoadingTest {
         final Set<String> resultSet = new HashSet<String>();
         ksession.execute((Object) resultSet);
 
-        Assertions.assertThat(resultSet.size()).as("Wrong number of rules was fired").isEqualTo(2);
+        assertThat(resultSet.size()).as("Wrong number of rules was fired").isEqualTo(2);
         for (String ruleName : new String[] { "rule1", "rule2" }) {
-            Assertions.assertThat(resultSet.contains(ruleName)).as("Rule " + ruleName + " was not fired!").isTrue();
+            assertThat(resultSet.contains(ruleName)).as("Rule " + ruleName + " was not fired!").isTrue();
         }
     }
 

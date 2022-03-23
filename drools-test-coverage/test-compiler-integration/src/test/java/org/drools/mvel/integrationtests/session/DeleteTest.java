@@ -16,11 +16,16 @@
 
 package org.drools.mvel.integrationtests.session;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
 import org.drools.mvel.compiler.PersonInterface;
@@ -42,11 +47,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class DeleteTest {
@@ -86,30 +86,30 @@ public class DeleteTest {
 
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("informationAboutPersons");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(2L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(2L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("informationAboutPersons");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(1L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(1L);
     }
 
     @Test
     public void deleteFactTwiceTest() {
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
 
         ksession.delete(george);
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -124,30 +124,30 @@ public class DeleteTest {
         ksession.update(person, new Person("John", 21));
 
         QueryResults results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
         ksession.delete(person);
         results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
     @Test
     public void deleteUpdatedFactDifferentClassTest() {
         FactHandle fact = ksession.insert(new Person("George", 18));
 
-        Assertions.assertThat(ksession.getObjects()).hasSize(1);
-        Assertions.assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
+        assertThat(ksession.getObjects()).hasSize(1);
+        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
 
         ksession.update(fact, new Cheese("Cheddar", 50));
 
-        Assertions.assertThat(ksession.getObjects()).hasSize(1);
-        Assertions.assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Cheese.class);
+        assertThat(ksession.getObjects()).hasSize(1);
+        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Cheese.class);
 
         ksession.delete(fact);
 
-        Assertions.assertThat(ksession.getObjects()).isEmpty();
+        assertThat(ksession.getObjects()).isEmpty();
     }
 
     @Test

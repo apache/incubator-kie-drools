@@ -16,6 +16,8 @@
 
 package org.drools.mvel.integrationtests.concurrency;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -23,7 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.kie.api.KieBase;
@@ -72,7 +73,7 @@ public abstract class AbstractConcurrentInsertionsTest {
                 }
             }
 
-            Assertions.assertThat(successCounter).isEqualTo(threadCount);
+            assertThat(successCounter).isEqualTo(threadCount);
             if (ksession != null) {
                 ksession.dispose();
             }

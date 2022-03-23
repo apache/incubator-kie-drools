@@ -16,10 +16,11 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Collection;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -71,8 +72,8 @@ public class EscapesInMetadataTest {
         final Map<String, Object> metadata = kieBase.getRule(TestConstants.PACKAGE_REGRESSION, RULE_NAME).getMetaData();
         LOGGER.debug(rule);
 
-        Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
-        Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
+        assertThat(metadata.containsKey(RULE_KEY)).isTrue();
+        assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
     }
 
 }

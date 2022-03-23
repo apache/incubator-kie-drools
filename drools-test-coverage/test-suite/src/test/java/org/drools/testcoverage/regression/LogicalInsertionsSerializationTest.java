@@ -16,10 +16,22 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.testcoverage.common.util.KieUtil.getServices;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.Promotion;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -28,11 +40,6 @@ import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
-
-import java.io.*;
-import java.util.Collection;
-
-import static org.drools.testcoverage.common.util.KieUtil.getServices;
 
 public class LogicalInsertionsSerializationTest extends KieSessionTest {
 
@@ -71,7 +78,7 @@ public class LogicalInsertionsSerializationTest extends KieSessionTest {
         ksession.insert(new Promotion("Claire", "Scientist"));
         int firedRules = ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules).isEqualTo(1);
+        assertThat(firedRules).isEqualTo(1);
     }
 
     private KieBase getKbase() {

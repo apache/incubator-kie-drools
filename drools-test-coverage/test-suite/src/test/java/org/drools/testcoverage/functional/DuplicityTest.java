@@ -16,10 +16,11 @@
 
 package org.drools.testcoverage.functional;
 
+import static org.assertj.core.api.Assertions.fail;
+
 import java.util.Collection;
-import org.assertj.core.api.Assertions;
+
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class DuplicityTest {
             final Resource resource =
                     KieServices.Factory.get().getResources().newClassPathResource("rule-name.drl", getClass());
             KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
-            Assertions.fail("Builder should have had errors, two rules of the same name are not allowed in one file together!");
+            fail("Builder should have had errors, two rules of the same name are not allowed in one file together!");
         } catch (AssertionError e) {
             // expected
             LoggerFactory.getLogger(getClass()).info("", e);

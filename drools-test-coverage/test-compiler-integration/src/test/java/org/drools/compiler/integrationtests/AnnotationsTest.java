@@ -16,6 +16,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,7 +30,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -38,11 +43,6 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class AnnotationsTest {
@@ -225,7 +225,7 @@ public class AnnotationsTest {
                 " end \n ";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isEmpty();
 
         final String drl2 = "package org.drools.compiler.test;\n " +
                 "" +
@@ -239,7 +239,7 @@ public class AnnotationsTest {
                 " end \n ";
 
         final KieBuilder kieBuilder2 = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl2);
-        Assertions.assertThat(kieBuilder2.getResults().getMessages()).hasSize(3);
+        assertThat(kieBuilder2.getResults().getMessages()).hasSize(3);
     }
 
     @Test

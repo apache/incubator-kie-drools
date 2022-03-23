@@ -16,6 +16,9 @@
 
 package org.drools.mvel.compiler.lang;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.drl.parser.DRLFactory.buildParser;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -25,14 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
-import org.assertj.core.api.Assertions;
-import org.drools.drl.parser.DrlParser;
-import org.drools.drl.parser.lang.DRL6Lexer;
-import org.drools.drl.parser.lang.DRL6Parser;
-import org.drools.drl.parser.lang.DRLParser;
+import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AndDescr;
@@ -62,13 +60,16 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
-import org.drools.compiler.builder.impl.EvaluatorRegistry;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.lang.DRL6Lexer;
+import org.drools.drl.parser.lang.DRL6Parser;
+import org.drools.drl.parser.lang.DRLParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.drools.drl.parser.DRLFactory.buildParser;
+import junit.framework.TestCase;
 
 public class RuleParserTest extends TestCase {
 
@@ -4302,7 +4303,7 @@ public class RuleParserTest extends TestCase {
 
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
     private Reader getReader( final String name ) throws Exception {

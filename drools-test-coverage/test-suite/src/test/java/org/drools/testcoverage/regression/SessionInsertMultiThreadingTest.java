@@ -16,6 +16,8 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import org.assertj.core.api.Assertions;
+
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -31,7 +33,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -203,8 +204,8 @@ public class SessionInsertMultiThreadingTest {
 
             statelessKieSession.execute(kieCommands.newBatchExecution(commandList));
 
-            Assertions.assertThat(p.getName()).isNotNull();
-            Assertions.assertThat(m.getMessage()).isNotNull();
+            assertThat(p.getName()).isNotNull();
+            assertThat(m.getMessage()).isNotNull();
         }
     }
 
@@ -229,8 +230,8 @@ public class SessionInsertMultiThreadingTest {
 
             ksession.fireAllRules();
 
-            Assertions.assertThat(p.getName()).isNotNull();
-            Assertions.assertThat(m.getMessage()).isNotNull();
+            assertThat(p.getName()).isNotNull();
+            assertThat(m.getMessage()).isNotNull();
         }
     }
 

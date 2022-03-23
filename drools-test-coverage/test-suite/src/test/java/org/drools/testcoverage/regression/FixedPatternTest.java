@@ -16,11 +16,12 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -78,7 +79,7 @@ public class FixedPatternTest {
         ksession.insert(2);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).hasSize(1);
-        Assertions.assertThat(list).first().isEqualTo(1L);
+        assertThat(list).hasSize(1);
+        assertThat(list).first().isEqualTo(1L);
     }
 }

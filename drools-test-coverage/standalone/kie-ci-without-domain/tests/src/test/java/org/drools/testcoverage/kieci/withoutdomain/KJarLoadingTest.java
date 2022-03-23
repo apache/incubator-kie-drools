@@ -1,6 +1,7 @@
 package org.drools.testcoverage.kieci.withoutdomain;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.drools.testcoverage.kieci.withoutdomain.util.KJarLoadUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class KJarLoadingTest {
     @Test
     public void testLoadingKJarWithDeps() {
         // BZ 1305798
-        Assertions.assertThat(this.kieSession).as("Failed to create KieSession.").isNotNull();
-        Assertions.assertThat(this.kieSession.getKieBase().getKiePackages()).as("No rules compiled.").isNotEmpty();
+        assertThat(this.kieSession).as("Failed to create KieSession.").isNotNull();
+        assertThat(this.kieSession.getKieBase().getKiePackages()).as("No rules compiled.").isNotEmpty();
     }
 }

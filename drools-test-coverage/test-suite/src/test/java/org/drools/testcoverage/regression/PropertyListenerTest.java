@@ -16,13 +16,14 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -102,7 +103,7 @@ public class PropertyListenerTest {
                 LOGGER.info("Listener attached of type: " + listener);
             }
             // there should be no listeners
-            Assertions.assertThat(person.getBoundSupport().getPropertyChangeListeners()).isEmpty();
+            assertThat(person.getBoundSupport().getPropertyChangeListeners()).isEmpty();
         }
     }
 

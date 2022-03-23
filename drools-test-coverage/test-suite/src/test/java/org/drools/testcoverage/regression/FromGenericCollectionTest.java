@@ -16,13 +16,14 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.ClassObjectFilter;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -77,7 +78,7 @@ public class FromGenericCollectionTest {
             ksession.insert(gh);
             ksession.fireAllRules();
 
-            Assertions.assertThat(ksession.getObjects(new ClassObjectFilter(Boolean.class)).size()).isEqualTo(1);
+            assertThat(ksession.getObjects(new ClassObjectFilter(Boolean.class)).size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

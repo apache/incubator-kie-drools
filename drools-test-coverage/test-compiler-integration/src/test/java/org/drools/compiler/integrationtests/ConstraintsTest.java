@@ -15,6 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
@@ -37,9 +40,6 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class ConstraintsTest {
@@ -208,7 +208,7 @@ public class ConstraintsTest {
                 "end\n";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test
@@ -450,8 +450,8 @@ public class ConstraintsTest {
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
-        Assertions.assertThat(messages).hasSize(1);
-        Assertions.assertThat(messages.iterator().next().getText())
+        assertThat(messages).hasSize(1);
+        assertThat(messages.iterator().next().getText())
                 .contains("Predicate 'name + name' must be a Boolean expression")
                 .isNotEmpty();
     }

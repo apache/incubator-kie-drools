@@ -15,7 +15,8 @@
  */
 package org.drools.mvel.integrationtests;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -32,7 +33,7 @@ public class XSDResourceTest {
         final KieContainer kcontainer = KieServices.Factory.get().getKieClasspathContainer();
         final KieBase kieBase = kcontainer.getKieBase("xsdKieBase");
 
-        Assertions.assertThat(kieBase).as("Created KieBase with XSD should not be null").isNotNull();
+        assertThat(kieBase).as("Created KieBase with XSD should not be null").isNotNull();
     }
 
 }

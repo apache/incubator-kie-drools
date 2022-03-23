@@ -15,11 +15,12 @@
 
 package org.drools.mvel.compiler.kie.builder.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.ClasspathKieProject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,6 @@ public class ClasspathKieProjectTransformUrlToFileSystemPathTest {
     @Test
     public void testTransformUrl() {
         String actualPath = ClasspathKieProject.fixURLFromKProjectPath(url);
-        Assertions.assertThat(actualPath).isEqualTo(expectedPath);
+        assertThat(actualPath).isEqualTo(expectedPath);
     }
 }

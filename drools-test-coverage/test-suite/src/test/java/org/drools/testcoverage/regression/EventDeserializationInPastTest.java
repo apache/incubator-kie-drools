@@ -16,12 +16,13 @@
 
 package org.drools.testcoverage.regression;
 
+import static org.assertj.core.api.Assertions.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
@@ -92,7 +93,7 @@ public class EventDeserializationInPastTest {
                 ksession = marshaller.unmarshall(bais, sessionConfig, null);
             }
         } catch (Exception e) {
-            Assertions.fail("Unexpected exception: ", e);
+            fail("Unexpected exception: ", e);
         }
         return ksession;
     }

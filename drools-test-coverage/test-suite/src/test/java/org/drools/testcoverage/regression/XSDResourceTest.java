@@ -16,7 +16,8 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -33,7 +34,7 @@ public class XSDResourceTest {
     public void testXSDResourceNotBreakingCompilation() {
         final KieContainer kcontainer = KieServices.Factory.get().getKieClasspathContainer();
 
-        Assertions.assertThat(kcontainer.getKieBase("kbaseXsdResource"))
+        assertThat(kcontainer.getKieBase("kbaseXsdResource"))
                 .as("Created KieBase with XSD should not be null").isNotNull();
     }
 }
