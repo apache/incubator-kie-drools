@@ -67,7 +67,7 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager {
 
     @Override
     public Map<String, PackageRegistry> getPackageRegistry() {
-        return null;
+        return pkgRegistryMap;
     }
 
     private PackageRegistry createPackageRegistry(PackageDescr packageDescr) {

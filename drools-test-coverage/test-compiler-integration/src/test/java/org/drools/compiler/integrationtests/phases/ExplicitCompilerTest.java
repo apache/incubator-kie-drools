@@ -30,11 +30,17 @@ import org.drools.compiler.builder.impl.processors.TypeDeclarationCompilationPha
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.impl.RuleBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
@@ -42,6 +48,7 @@ import org.kie.internal.builder.ResourceChange;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -120,6 +127,14 @@ public class ExplicitCompilerTest {
         ReteCompiler reteCompiler =
                 new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts);
         reteCompiler.process();
+
+        RuleBase kbase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(rootClassLoader));
+        kbase.addPackages(packageRegistryManager.getPackageRegistry().values().stream().map(PackageRegistry::getPackage).collect(Collectors.toList()));
+        StatefulKnowledgeSessionImpl statefulKnowledgeSession = new StatefulKnowledgeSessionImpl(1, new SessionsAwareKnowledgeBase(kbase));
+
+        statefulKnowledgeSession.insert("HELLO");
+
+        statefulKnowledgeSession.fireAllRules();
 
 
     }
