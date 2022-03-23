@@ -227,7 +227,7 @@
 
     <version.net.byte-buddy>1.10.3</version.net.byte-buddy>
 
-    <version.org.postgresql>42.2.23</version.org.postgresql>
+    <version.org.postgresql>42.3.3</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.org.jboss.jandex>2.4.0.Final</version.org.jboss.jandex>
