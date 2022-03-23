@@ -65,9 +65,9 @@ public class DroolsQuarkusResourceUtils {
     private static final GeneratedFileWriter.Builder generatedFileWriterBuilder =
             new GeneratedFileWriter.Builder(
                     "target/classes",
-                    System.getProperty("kogito.codegen.sources.directory", "target/generated-sources/kogito/"),
-                    System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito/"),
-                    "target/generated-sources/kogito/");
+                    System.getProperty("drools.codegen.sources.directory", "target/generated-sources/drools/"),
+                    System.getProperty("drools.codegen.resources.directory", "target/generated-resources/drools/"),
+                    "target/generated-sources/drools/");
 
     public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {
         // scan and parse paths

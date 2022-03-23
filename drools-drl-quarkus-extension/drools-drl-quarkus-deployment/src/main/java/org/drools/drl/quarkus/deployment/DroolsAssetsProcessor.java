@@ -85,9 +85,9 @@ public class DroolsAssetsProcessor {
         // dump files to disk
         dumpFilesToDisk(context.getAppPaths(), generatedFiles);
 
-        // build Java source code and register the generated beans
         Collection<ResolvedDependency> dependencies = curateOutcomeBuildItem.getApplicationModel().getRuntimeDependencies();
 
+        // build Java source code and register the generated beans
         Collection<GeneratedBeanBuildItem> generatedBeanBuildItems =
                 compileGeneratedSources(context, dependencies, generatedFiles, liveReload.isLiveReload());
         generatedBeanBuildItems.forEach(generatedBeans::produce);
