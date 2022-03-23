@@ -13,7 +13,7 @@
     <artifactId>drools-drl-quarkus</artifactId>
 
     <properties>
-        <java.module.name>org.drools.drl.quarkus</java.module.name>
+        <java.module.name>org.drools.drl.quarkus.runtime</java.module.name>
     </properties>
 
     <dependencies>
