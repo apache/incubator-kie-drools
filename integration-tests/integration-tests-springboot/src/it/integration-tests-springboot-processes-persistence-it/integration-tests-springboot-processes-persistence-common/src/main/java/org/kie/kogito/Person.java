@@ -40,7 +40,7 @@ public class Person implements Serializable {
 
     private static String staticallyIgnoreMe;
 
-    private transient List<Address> addresses = new ArrayList<>();
+    private List<Address> addresses;
 
     public Person() {
     }

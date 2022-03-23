@@ -33,6 +33,7 @@ import org.infinispan.protostream.descriptors.EnumDescriptor;
 import org.infinispan.protostream.descriptors.EnumValueDescriptor;
 import org.infinispan.protostream.descriptors.FieldDescriptor;
 import org.infinispan.protostream.descriptors.FileDescriptor;
+import org.infinispan.protostream.descriptors.Label;
 import org.infinispan.protostream.impl.SerializationContextImpl;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -179,6 +180,8 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
                 fieldBuilder.setTypeName("." + descriptor.getTypeName());
             }
         }
+        fieldBuilder.setLabel(descriptor.getLabel() == Label.ONE_OF ? FieldDescriptorProto.Label.LABEL_OPTIONAL :
+                FieldDescriptorProto.Label.valueOf("LABEL_" + descriptor.getLabel().name()));
         fieldBuilder.setProto3Optional(!descriptor.isRequired());
         return fieldBuilder.build();
     }

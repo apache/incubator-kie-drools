@@ -24,6 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Address;
 import org.kie.kogito.Person;
 
 import io.restassured.RestAssured;
@@ -31,6 +32,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -52,6 +54,7 @@ public abstract class PersistenceTest {
         Person person = new Person("Name", 10, BigDecimal.valueOf(5.0), Instant.now(), ZonedDateTime.now(ZoneOffset.UTC));
         Person relative = new Person("relative", 5, BigDecimal.valueOf(5.0), Instant.now(), ZonedDateTime.now(ZoneOffset.UTC));
         person.setRelatives(new Person[] { relative });
+        person.setAddresses(asList(new Address("Brisbane"), new Address("Sydney")));
         final String pid = given().contentType(ContentType.JSON)
                 .when()
                 .body(Map.of("var1", "Tiago", "person", person))
@@ -70,6 +73,9 @@ public abstract class PersistenceTest {
                 .body("person.relatives.size()", equalTo(1))
                 .body("person.relatives[0].name", equalTo(relative.getName()))
                 .body("person.relatives[0].age", equalTo(relative.getAge()))
+                .body("person.addresses.size()", equalTo(person.getAddresses().size()))
+                .body("person.addresses[0].city", equalTo(person.getAddresses().get(0).getCity()))
+                .body("person.addresses[1].city", equalTo(person.getAddresses().get(1).getCity()))
                 .extract()
                 .path("id");
 
@@ -89,6 +95,9 @@ public abstract class PersistenceTest {
                 .body("person.relatives.size()", equalTo(1))
                 .body("person.relatives[0].name", equalTo(relative.getName()))
                 .body("person.relatives[0].age", equalTo(relative.getAge()))
+                .body("person.addresses.size()", equalTo(person.getAddresses().size()))
+                .body("person.addresses[0].city", equalTo(person.getAddresses().get(0).getCity()))
+                .body("person.addresses[1].city", equalTo(person.getAddresses().get(1).getCity()))
                 .extract()
                 .path("id");
 

@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +39,7 @@ public class Person implements Serializable {
 
     private static String staticallyIgnoreMe;
 
-    private transient List<Address> addresses = new ArrayList<>();
+    private List<Address> addresses;
 
     public Person() {
     }
