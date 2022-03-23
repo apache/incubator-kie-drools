@@ -1,0 +1,22 @@
+name: Generate status page
+
+on: workflow_dispatch
+
+jobs:
+  generate-status-page:
+    concurrency:
+      group: generate-status-page
+      cancel-in-progress: true
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+      fail-fast: true
+    runs-on: ubuntu-latest
+    name: Generate status page
+    steps:
+      - name: Generate status page
+        uses: kiegroup/chain-status/.ci/actions/generate-app@main
+        with:
+          info-md-url: "https://raw.githubusercontent.com/kiegroup/optaplanner/main/.ci/chain-status-info.md"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
