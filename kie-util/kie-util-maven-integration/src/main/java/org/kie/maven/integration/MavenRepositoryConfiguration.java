@@ -179,8 +179,8 @@ public class MavenRepositoryConfiguration {
         if ( policy != null ) {
             org.eclipse.aether.repository.RepositoryPolicy repoPolicy =
                     new org.eclipse.aether.repository.RepositoryPolicy( policy.isEnabled(),
-                                                                        policy.getUpdatePolicy(),
-                                                                        policy.getChecksumPolicy() );
+                                                                        policy.getUpdatePolicy() != null ? policy.getUpdatePolicy() : org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_NEVER,
+                                                                        policy.getChecksumPolicy() != null ? policy.getChecksumPolicy() : org.eclipse.aether.repository.RepositoryPolicy.CHECKSUM_POLICY_WARN );
             if ( snapshot ) {
                 builder.setSnapshotPolicy( repoPolicy );
             } else {

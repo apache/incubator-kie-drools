@@ -15,13 +15,9 @@
   <artifactId>drools-drl-quarkus-extension</artifactId>
   <packaging>pom</packaging>
 
-  <properties>
-    <version.org.apache.maven>3.8.4</version.org.apache.maven>
-  </properties>
-
   <modules>
-    <module>drools-drl-quarkus-deployment</module>
     <module>drools-drl-quarkus</module>
+    <module>drools-drl-quarkus-deployment</module>
     <module>drools-drl-quarkus-integration-test</module>
     <module>drools-drl-quarkus-integration-test-hotreload</module>
   </modules>
