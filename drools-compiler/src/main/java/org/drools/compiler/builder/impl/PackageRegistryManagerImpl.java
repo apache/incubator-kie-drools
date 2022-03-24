@@ -38,9 +38,9 @@ import java.util.concurrent.ExecutionException;
 import static org.drools.core.util.StringUtils.isEmpty;
 
 public class PackageRegistryManagerImpl implements PackageRegistryManager, PackageRegistryCompiler {
-    private final RootClassLoaderProvider classLoaderProvider;
+    private final ClassLoader rootClassLoader;
     private final KnowledgeBuilderConfigurationImpl configuration;
-    private final InternalKnowledgeBaseProvider kBaseProvider;
+    private final InternalKnowledgeBase kBase;
 
     private final Map<String, PackageRegistry> pkgRegistryMap = new ConcurrentHashMap<>();
 
@@ -52,13 +52,12 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
     public PackageRegistryManagerImpl(
             KnowledgeBuilderConfigurationImpl configuration,
             PackageAttributeManagerImpl packageAttributeManager,
-            RootClassLoaderProvider classLoaderProvider,
-            InternalKnowledgeBaseProvider kBaseProvider) {
+            ClassLoader rootClassLoader,
+            InternalKnowledgeBase kBase) {
         this.configuration = configuration;
         this.packageAttributes = packageAttributeManager;
-        this.classLoaderProvider = classLoaderProvider;
-        this.kBaseProvider = kBaseProvider;
-
+        this.rootClassLoader = rootClassLoader;
+        this.kBase = kBase;
     }
 
     @Override
@@ -88,10 +87,8 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
 
     private PackageRegistry createPackageRegistry(PackageDescr packageDescr) {
         initPackage(packageDescr);
-        ClassLoader rootClassLoader = this.classLoaderProvider.getRootClassLoader();
 
         InternalKnowledgePackage pkg;
-        InternalKnowledgeBase kBase = kBaseProvider.getKnowledgeBase();
         if (kBase == null || (pkg = kBase.getPackage(packageDescr.getName())) == null) {
             // there is no rulebase or it does not define this package so define it
             pkg = CoreComponentFactory.get().createKnowledgePackage((packageDescr.getName()));
@@ -118,6 +115,8 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
         for (ImportDescr importDescr : packageDescr.getImports()) {
             pkgRegistry.registerImport(importDescr.getTarget());
         }
+
+        pkgRegistry.setDialect(getPackageDialect(packageDescr));
 
         return pkgRegistry;
     }
@@ -151,6 +150,18 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
                         attr);
             }
         }
+    }
+
+    private String getPackageDialect(PackageDescr packageDescr) {
+        String dialectName = this.configuration.getDefaultDialect();
+        // see if this packageDescr overrides the current default dialect
+        for (AttributeDescr value : packageDescr.getAttributes()) {
+            if ("dialect".equals(value.getName())) {
+                dialectName = value.getValue();
+                break;
+            }
+        }
+        return dialectName;
     }
 
     @Override

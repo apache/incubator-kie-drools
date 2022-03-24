@@ -21,11 +21,9 @@ import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.DroolsAssemblerContextImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
-import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.PackageAttributeManagerImpl;
 import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
-import org.drools.compiler.builder.impl.RootClassLoaderProvider;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.builder.impl.TypeDeclarationContextImpl;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
@@ -73,32 +71,27 @@ public class ExplicitCompilerTest {
 
     @Test
     public void testCompile() throws DroolsParserException, IOException {
-        ClassLoader rootClassLoader = this.getClass().getClassLoader();
-        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
-        BuildResultAccumulator results = new BuildResultAccumulatorImpl();
-
         Resource resource = new ClassPathResource("org/drools/compiler/integrationtests/phases/ExplicitCompilerTest.drl");
 
         int parallelRulesBuildThreshold = 0;
+        InternalKnowledgeBase kBase = null;
+        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
+        ClassLoader rootClassLoader = configuration.getClassLoader();
 
-        DrlResourceHandler handler = new DrlResourceHandler(configuration);
-        final PackageDescr packageDescr = handler.process(resource);
-        handler.getResults().forEach(results::addBuilderResult);
+        BuildResultAccumulator results = new BuildResultAccumulatorImpl();
 
         PackageAttributeManagerImpl packageAttributes = new PackageAttributeManagerImpl();
-        RootClassLoaderProvider rootClassLoaderProvider = () -> rootClassLoader;
-        InternalKnowledgeBaseProvider internalKnowledgeBaseProvider = () -> null;
         PackageRegistryManagerImpl packageRegistryManager =
                 new PackageRegistryManagerImpl(
-                        configuration, packageAttributes, rootClassLoaderProvider, internalKnowledgeBaseProvider);
-        TypeDeclarationContextImpl typeDeclarationContext = new TypeDeclarationContextImpl(configuration, packageRegistryManager);
+                        configuration, packageAttributes, rootClassLoader, kBase);
+
+        TypeDeclarationContextImpl typeDeclarationContext =
+                new TypeDeclarationContextImpl(configuration, packageRegistryManager);
         TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
         typeDeclarationContext.setTypeDeclarationBuilder(typeBuilder);
 
-        PackageRegistry packageRegistry = packageRegistryManager.getOrCreatePackageRegistry(packageDescr);
         GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
 
-        InternalKnowledgeBase kBase = null;
         DroolsAssemblerContext kBuilder =
                 new DroolsAssemblerContextImpl(
                         configuration,
@@ -110,13 +103,20 @@ public class ExplicitCompilerTest {
                         results);
 
 
+        DrlResourceHandler handler = new DrlResourceHandler(configuration);
+        final PackageDescr packageDescr = handler.process(resource);
+        handler.getResults().forEach(results::addBuilderResult);
+
+
+        PackageRegistry packageRegistry =
+                packageRegistryManager.getOrCreatePackageRegistry(packageDescr);
+
         AnnotationNormalizer annotationNormalizer =
                 AnnotationNormalizer.of(
                         packageRegistry.getTypeResolver(),
                         configuration.getLanguageLevel().useJavaAnnotations());
 
 
-        packageRegistry.setDialect(getPackageDialect(packageDescr));
 
         Map<String, AttributeDescr> attributesForPackage = packageAttributes.get(packageDescr.getNamespace());
         List<CompilationPhase> phases = asList(
@@ -145,22 +145,9 @@ public class ExplicitCompilerTest {
             if (results.hasErrors()) {
                 System.out.printf("Found compilation errors at %s\n", phase.getClass().getSimpleName());
                 results.getErrors().forEach(System.out::println);
-                fail("Found compilation errors at Phase "+phase.getClass().getSimpleName());
+                fail("Found compilation errors at Phase " + phase.getClass().getSimpleName());
             }
         }
-
-
-//        ReteCompiler reteCompiler =
-//                new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts);
-//        reteCompiler.process();
-//
-//        ConsequenceCompilationPhase consequenceCompilationPhase =
-//                new ConsequenceCompilationPhase(packageRegistryManager);
-//        consequenceCompilationPhase.process();
-
-
-//        results.getErrors().forEach(System.out::println);
-//        if (results.hasErrors()) fail("Found compilation errors.");
 
 
         List<InternalKnowledgePackage> packages =
@@ -177,10 +164,6 @@ public class ExplicitCompilerTest {
         kieSession.fireAllRules();
 
 
-    }
-
-    private String getPackageDialect(PackageDescr packageDescr) {
-        return null;
     }
 
     private boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {

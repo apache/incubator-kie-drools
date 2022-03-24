@@ -34,26 +34,25 @@ import static java.util.Arrays.asList;
 public class ExplicitCompilerTest {
 
     @Test
-    @Ignore("not finished")
     public void testCompile() throws DroolsParserException, IOException {
-        ClassLoader rootClassLoader = this.getClass().getClassLoader();
-        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
-        BuildResultAccumulator results = new BuildResultAccumulatorImpl();
-
         Resource resource = new ClassPathResource("com/sample/from.drl");
 
+        ClassLoader rootClassLoader = this.getClass().getClassLoader();
         int parallelRulesBuildThreshold = 0;
+        InternalKnowledgeBase kBase = null;
+
+        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
+        BuildResultAccumulator results = new BuildResultAccumulatorImpl();
 
         DrlResourceHandler handler = new DrlResourceHandler(configuration);
         final PackageDescr packageDescr = handler.process(resource);
         handler.getResults().forEach(results::addBuilderResult);
 
         PackageAttributeManagerImpl packageAttributes = new PackageAttributeManagerImpl();
-        RootClassLoaderProvider rootClassLoaderProvider = () -> rootClassLoader;
         InternalKnowledgeBaseProvider internalKnowledgeBaseProvider = () -> null;
         PackageRegistryManagerImpl packageRegistryManager =
                 new PackageRegistryManagerImpl(
-                        configuration, packageAttributes, rootClassLoaderProvider, internalKnowledgeBaseProvider);
+                        configuration, packageAttributes, rootClassLoader, kBase);
         TypeDeclarationContextImpl typeDeclarationContext = new TypeDeclarationContextImpl(configuration, packageRegistryManager);
         TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
         typeDeclarationContext.setTypeDeclarationBuilder(typeBuilder);
@@ -61,7 +60,6 @@ public class ExplicitCompilerTest {
         PackageRegistry packageRegistry = packageRegistryManager.getOrCreatePackageRegistry(packageDescr);
         GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
 
-        InternalKnowledgeBase kBase = null;
         DroolsAssemblerContext kBuilder =
                 new DroolsAssemblerContextImpl(
                         configuration,

@@ -45,6 +45,10 @@ public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
         this.results.add(result);
     }
 
+    public void addAllBuilderResult(Collection<KnowledgeBuilderResult> results) {
+        this.results.addAll(results);
+    }
+
     /**
      * This will return true if there were errors in the package building and
      * compiling phase

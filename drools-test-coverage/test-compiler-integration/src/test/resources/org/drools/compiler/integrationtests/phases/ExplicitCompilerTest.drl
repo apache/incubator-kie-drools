@@ -1,8 +1,6 @@
 package org.drools.compiler.integrationtests.phases;
 
-rule hello
-	dialect "java"
-    when
+rule hello when
     s: String()
 then
     System.out.println(s);
