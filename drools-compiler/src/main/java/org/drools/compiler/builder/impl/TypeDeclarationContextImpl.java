@@ -85,6 +85,12 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
     }
 
     @Override
+    public Collection<String> getPackageNames() {
+        // this is not really used by TypeDeclarationContext!!
+        return packageRegistryManager.getPackageNames();
+    }
+
+    @Override
     public KnowledgeBuilderConfigurationImpl getBuilderConfiguration() {
         return configuration;
     }

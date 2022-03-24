@@ -146,7 +146,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
-    private final Map<String, PackageRegistry> pkgRegistryMap = new ConcurrentHashMap<>();
+    private PackageRegistryManagerImpl pkgRegistryManager;
 
     private List<KnowledgeBuilderResult> results;
 
@@ -175,11 +175,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
 
-    //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
-    //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
-    //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the
-    //AttributeDescr's name.
-    private final Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<>();
+    private final PackageAttributeManagerImpl packageAttributes = new PackageAttributeManagerImpl();
 
     //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
     private final Map<String, List<PackageDescr>> packages = new ConcurrentHashMap<>();
@@ -249,7 +245,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, this.configuration, pkg);
         pkgRegistry.setDialect(this.defaultDialect);
-        this.pkgRegistryMap.put(pkg.getName(),
+        this.pkgRegistryManager.getPackageRegistry().put(pkg.getName(),
                                 pkgRegistry);
 
         // add imports to pkg registry
@@ -282,6 +278,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results = new ArrayList<>();
 
         this.kBase = kBase;
+
+        this.pkgRegistryManager =
+                new PackageRegistryManagerImpl(
+                        configuration, this.packageAttributes, this, this);
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
 
@@ -804,8 +804,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
-        PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
-
+        PackageRegistry packageRegistry = this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
         Map<String, AttributeDescr> packageAttributes = this.packageAttributes.get(packageDescr.getNamespace());
 
         List<CompilationPhase> phases = asList(
@@ -830,7 +829,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     protected void processKieBaseTypes() {
         if (!hasErrors() && this.kBase != null) {
             List<InternalKnowledgePackage> pkgs = new ArrayList<>();
-            for (PackageRegistry pkgReg : pkgRegistryMap.values()) {
+            for (PackageRegistry pkgReg : pkgRegistryManager.getPackageRegistry().values()) {
                 pkgs.add(pkgReg.getPackage());
             }
             this.kBase.processAllTypesDeclaration(pkgs);
@@ -862,47 +861,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public PackageRegistry getOrCreatePackageRegistry(PackageDescr packageDescr) {
-        if (packageDescr == null) {
-            return null;
-        }
-        if (isEmpty(packageDescr.getNamespace())) {
-            packageDescr.setNamespace(this.configuration.getDefaultPackageName());
-        }
-        return pkgRegistryMap.computeIfAbsent(packageDescr.getName(), name -> createPackageRegistry(packageDescr));
-    }
-
-    private PackageRegistry createPackageRegistry(PackageDescr packageDescr) {
-        initPackage(packageDescr);
-
-        InternalKnowledgePackage pkg;
-        if (this.kBase == null || (pkg = this.kBase.getPackage(packageDescr.getName())) == null) {
-            // there is no rulebase or it does not define this package so define it
-            pkg = CoreComponentFactory.get().createKnowledgePackage((packageDescr.getName()));
-            pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(this.rootClassLoader));
-
-            // if there is a rulebase then add the package.
-            if (this.kBase != null) {
-                try {
-                    pkg = (InternalKnowledgePackage) this.kBase.addPackage(pkg).get();
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                // the RuleBase will also initialise the
-                pkg.getDialectRuntimeRegistry().onAdd(this.rootClassLoader);
-            }
-        }
-
-        PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, configuration, pkg);
-
-        // add default import for this namespace
-        pkgRegistry.addImport(new ImportDescr(packageDescr.getNamespace() + ".*"));
-
-        for (ImportDescr importDescr : packageDescr.getImports()) {
-            pkgRegistry.registerImport(importDescr.getTarget());
-        }
-
-        return pkgRegistry;
+        return this.pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
     }
 
     public void registerPackage(PackageDescr packageDescr) {
@@ -980,26 +939,20 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public void compileAll() {
-        for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
-            pkgRegistry.compileAll();
-        }
+        this.pkgRegistryManager.compileAll();
     }
 
     public void reloadAll() {
-        for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
-            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
-        }
+        this.pkgRegistryManager.reloadAll();
     }
 
     private List<KnowledgeBuilderResult> getResults(List<KnowledgeBuilderResult> results) {
-        for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
-            results = pkgRegistry.getDialectCompiletimeRegistry().addResults(results);
-        }
+        results.addAll(this.pkgRegistryManager.getResults());
         return results;
     }
 
     public synchronized void addPackage(InternalKnowledgePackage newPkg) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get(newPkg.getName());
+        PackageRegistry pkgRegistry = this.pkgRegistryManager.getPackageRegistry(newPkg.getName());
         InternalKnowledgePackage pkg = null;
         if (pkgRegistry != null) {
             pkg = pkgRegistry.getPackage();
@@ -1008,7 +961,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         if (pkg == null) {
             PackageDescr packageDescr = new PackageDescr(newPkg.getName());
             pkgRegistry = getOrCreatePackageRegistry(packageDescr);
-            mergePackage(this.pkgRegistryMap.get(packageDescr.getNamespace()), packageDescr);
+            mergePackage(this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()), packageDescr);
             pkg = pkgRegistry.getPackage();
         }
 
@@ -1103,7 +1056,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     protected void validateUniqueRuleNames(final PackageDescr packageDescr) {
-        PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
+        PackageRegistry packageRegistry = this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
         RuleValidator ruleValidator = new RuleValidator(packageRegistry, packageDescr, configuration);
         ruleValidator.process();
         this.results.addAll(ruleValidator.getResults());
@@ -1186,13 +1139,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public InternalKnowledgePackage[] getPackages() {
-        InternalKnowledgePackage[] pkgs = new InternalKnowledgePackage[this.pkgRegistryMap.size()];
+        InternalKnowledgePackage[] pkgs = new InternalKnowledgePackage[this.pkgRegistryManager.getPackageRegistry().size()];
         String errors = null;
         if (!getErrors().isEmpty()) {
             errors = getErrors().toString();
         }
         int i = 0;
-        for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
+        for (PackageRegistry pkgRegistry : this.pkgRegistryManager.getPackageRegistry().values()) {
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
             pkg.getDialectRuntimeRegistry().onBeforeExecute();
             if (errors != null) {
@@ -1214,21 +1167,21 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public PackageRegistry getPackageRegistry(String name) {
-        return this.pkgRegistryMap.get(name);
+        return this.pkgRegistryManager.getPackageRegistry(name);
     }
 
     @Override
     public InternalKnowledgePackage getPackage(String name) {
-        PackageRegistry registry = this.pkgRegistryMap.get(name);
+        PackageRegistry registry = this.getPackageRegistry(name);
         return registry == null ? null : registry.getPackage();
     }
 
     public Map<String, PackageRegistry> getPackageRegistry() {
-        return this.pkgRegistryMap;
+        return this.pkgRegistryManager.getPackageRegistry();
     }
 
     public Collection<String> getPackageNames() {
-        return pkgRegistryMap.keySet();
+        return this.pkgRegistryManager.getPackageNames();
     }
 
     public List<PackageDescr> getPackageDescrs(String packageName) {
@@ -1439,7 +1392,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public ResourceRemovalResult removeObjectsGeneratedFromResource(Resource resource) {
         boolean modified = false;
-        for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
+        for (PackageRegistry packageRegistry : this.pkgRegistryManager.getPackageRegistry().values()) {
             modified = packageRegistry.removeObjectsGeneratedFromResource(resource) || modified;
         }
 
@@ -1453,7 +1406,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         if (results != null && results.size() == 0) {
             // TODO Error attribution might be bugged
-            for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
+            for (PackageRegistry packageRegistry : this.pkgRegistryManager.getPackageRegistry().values()) {
                 packageRegistry.getPackage().resetErrors();
             }
         }

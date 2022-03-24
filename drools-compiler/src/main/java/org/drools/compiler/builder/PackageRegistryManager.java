@@ -30,5 +30,5 @@ public interface PackageRegistryManager {
     PackageRegistry getOrCreatePackageRegistry(PackageDescr packageDescr);
     Map<String, PackageRegistry> getPackageRegistry();
     List<PackageDescr> getPackageDescrs(String namespace);
-
+    Collection<String> getPackageNames();
 }

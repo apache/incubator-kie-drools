@@ -85,6 +85,12 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
         return pkgRegistryMap;
     }
 
+    @Override
+    public Collection<String> getPackageNames() {
+        return this.pkgRegistryMap.keySet();
+    }
+
+
     private PackageRegistry createPackageRegistry(PackageDescr packageDescr) {
         initPackage(packageDescr);
 
