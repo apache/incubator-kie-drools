@@ -852,7 +852,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public void registerPackage(PackageDescr packageDescr) {
-        this.registerPackage(packageDescr);
+        this.pkgRegistryManager.registerPackage(packageDescr);
     }
 
     public static class ForkJoinPoolHolder {
