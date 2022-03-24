@@ -30,9 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, BuilderConfigurationProvider, InternalKnowledgeBaseProvider, RootClassLoaderProvider {
-//    private final BuilderConfigurationProvider builderConfigurationProvider;
-//    private final InternalKnowledgeBaseProvider knowledgeBaseProvider;
-//    private final RootClassLoaderProvider rootClassLoaderProvider;
 
     private final KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration;
     private final ClassLoader rootClassLoader;

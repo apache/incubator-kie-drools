@@ -21,9 +21,11 @@ import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.DroolsAssemblerContextImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
+import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.PackageAttributeManagerImpl;
 import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
+import org.drools.compiler.builder.impl.RootClassLoaderProvider;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.builder.impl.TypeDeclarationContextImpl;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
@@ -81,9 +83,12 @@ public class ExplicitCompilerTest {
         BuildResultAccumulator results = new BuildResultAccumulatorImpl();
 
         PackageAttributeManagerImpl packageAttributes = new PackageAttributeManagerImpl();
+        RootClassLoaderProvider rootClassLoaderProvider = () -> rootClassLoader;
+        InternalKnowledgeBaseProvider internalKnowledgeBaseProvider = () -> kBase;
+
         PackageRegistryManagerImpl packageRegistryManager =
                 new PackageRegistryManagerImpl(
-                        configuration, packageAttributes, rootClassLoader, kBase);
+                        configuration, packageAttributes, rootClassLoaderProvider, internalKnowledgeBaseProvider);
 
         TypeDeclarationContextImpl typeDeclarationContext =
                 new TypeDeclarationContextImpl(configuration, packageRegistryManager);
@@ -92,7 +97,7 @@ public class ExplicitCompilerTest {
 
         GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
 
-        DroolsAssemblerContext kBuilder =
+        DroolsAssemblerContext assemblerContext =
                 new DroolsAssemblerContextImpl(
                         configuration,
                         rootClassLoader,
@@ -125,7 +130,7 @@ public class ExplicitCompilerTest {
                 new EntryPointDeclarationCompilationPhase(packageRegistry, packageDescr),
                 new AccumulateFunctionCompilationPhase(packageRegistry, packageDescr),
                 new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry),
-                new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, kBuilder),
+                new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, assemblerContext),
                 new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
                 new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, this::filterAcceptsRemoval),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
@@ -133,7 +138,7 @@ public class ExplicitCompilerTest {
                 new RuleValidator(packageRegistry, packageDescr, configuration),
                 new FunctionCompiler(packageDescr, packageRegistry, this::filterAccepts, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, kBuilder),
+                        this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, assemblerContext),
                 new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts),
                 new ConsequenceCompilationPhase(packageRegistryManager)
         );

@@ -38,9 +38,9 @@ import java.util.concurrent.ExecutionException;
 import static org.drools.core.util.StringUtils.isEmpty;
 
 public class PackageRegistryManagerImpl implements PackageRegistryManager, PackageRegistryCompiler {
-    private final ClassLoader rootClassLoader;
     private final KnowledgeBuilderConfigurationImpl configuration;
-    private final InternalKnowledgeBase kBase;
+    private final RootClassLoaderProvider rootClassLoaderProvider;
+    private final InternalKnowledgeBaseProvider kBaseProvider;
 
     private final Map<String, PackageRegistry> pkgRegistryMap = new ConcurrentHashMap<>();
 
@@ -52,12 +52,12 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
     public PackageRegistryManagerImpl(
             KnowledgeBuilderConfigurationImpl configuration,
             PackageAttributeManagerImpl packageAttributeManager,
-            ClassLoader rootClassLoader,
-            InternalKnowledgeBase kBase) {
+            RootClassLoaderProvider rootClassLoaderProvider,
+            InternalKnowledgeBaseProvider kBaseProvider) {
         this.configuration = configuration;
         this.packageAttributes = packageAttributeManager;
-        this.rootClassLoader = rootClassLoader;
-        this.kBase = kBase;
+        this.rootClassLoaderProvider = rootClassLoaderProvider;
+        this.kBaseProvider = kBaseProvider;
     }
 
     @Override
@@ -89,6 +89,8 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
         initPackage(packageDescr);
 
         InternalKnowledgePackage pkg;
+        InternalKnowledgeBase kBase = this.kBaseProvider.getKnowledgeBase();
+        ClassLoader rootClassLoader = this.rootClassLoaderProvider.getRootClassLoader();
         if (kBase == null || (pkg = kBase.getPackage(packageDescr.getName())) == null) {
             // there is no rulebase or it does not define this package so define it
             pkg = CoreComponentFactory.get().createKnowledgePackage((packageDescr.getName()));
