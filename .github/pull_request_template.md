@@ -56,4 +56,4 @@ How to retest this PR or trigger a specific build:
 
 ### CI Status
 
- You can check Optaplanner organization repositories CI status from [Chain Status webpage](https://kiegroup.github.io/optaplanner/)
+ You can check OptaPlanner repositories CI status from [Chain Status webpage](https://kiegroup.github.io/optaplanner/).
