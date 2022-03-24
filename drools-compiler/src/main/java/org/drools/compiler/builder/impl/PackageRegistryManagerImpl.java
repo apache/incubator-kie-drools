@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.drools.core.util.StringUtils.isEmpty;
 
-public class PackageRegistryManagerImpl implements PackageRegistryManager, PackageRegistryCompiler {
+public class PackageRegistryManagerImpl implements PackageRegistryManager, PackageRegistryCompiler, PackageDescrManager {
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final RootClassLoaderProvider rootClassLoaderProvider;
     private final InternalKnowledgeBaseProvider kBaseProvider;
@@ -51,18 +51,32 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
 
     public PackageRegistryManagerImpl(
             KnowledgeBuilderConfigurationImpl configuration,
-            PackageAttributeManagerImpl packageAttributeManager,
             RootClassLoaderProvider rootClassLoaderProvider,
             InternalKnowledgeBaseProvider kBaseProvider) {
         this.configuration = configuration;
-        this.packageAttributes = packageAttributeManager;
         this.rootClassLoaderProvider = rootClassLoaderProvider;
         this.kBaseProvider = kBaseProvider;
+        this.packageAttributes = new PackageAttributeManagerImpl();
     }
 
     @Override
     public List<PackageDescr> getPackageDescrs(String packageName) {
         return packages.get(packageName);
+    }
+
+    public PackageAttributeManagerImpl getPackageAttributes() {
+        return packageAttributes;
+    }
+
+    public Collection<List<PackageDescr>> getPackageDescrs() {
+        return packages.values();
+    }
+
+    public void registerPackage(PackageDescr packageDescr) {
+        if (isEmpty(packageDescr.getNamespace())) {
+            packageDescr.setNamespace(this.configuration.getDefaultDialect());
+        }
+        initPackage(packageDescr);
     }
 
     @Override

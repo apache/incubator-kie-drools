@@ -166,12 +166,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-
-    private final PackageAttributeManagerImpl packageAttributes = new PackageAttributeManagerImpl();
-
-    //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
-    private final Map<String, List<PackageDescr>> packages = new ConcurrentHashMap<>();
-
     private final Stack<List<Resource>> buildResources = new Stack<>();
 
     private AssetFilter assetFilter = null;
@@ -273,7 +267,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.pkgRegistryManager =
                 new PackageRegistryManagerImpl(
-                        configuration, this.packageAttributes, this, this);
+                        this.configuration, this, this);
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
 
@@ -797,7 +791,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
         PackageRegistry packageRegistry = this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
-        Map<String, AttributeDescr> packageAttributes = this.packageAttributes.get(packageDescr.getNamespace());
+        Map<String, AttributeDescr> packageAttributes = this.pkgRegistryManager.getPackageAttributes().get(packageDescr.getNamespace());
 
         List<CompilationPhase> phases = asList(
                 new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
@@ -857,40 +851,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public void registerPackage(PackageDescr packageDescr) {
-        if (isEmpty(packageDescr.getNamespace())) {
-            packageDescr.setNamespace(this.configuration.getDefaultPackageName());
-        }
-        initPackage(packageDescr);
-    }
-
-    private void initPackage(PackageDescr packageDescr) {
-        //Gather all imports for all PackageDescrs for the current package and replicate into
-        //all PackageDescrs for the current package, thus maintaining a complete list of
-        //ImportDescrs for all PackageDescrs for the current package.
-        List<PackageDescr> packageDescrsForPackage = packages.computeIfAbsent(packageDescr.getName(), k -> new ArrayList<>());
-        packageDescrsForPackage.add(packageDescr);
-        Set<ImportDescr> imports = new HashSet<>();
-        for (PackageDescr pd : packageDescrsForPackage) {
-            imports.addAll(pd.getImports());
-        }
-        for (PackageDescr pd : packageDescrsForPackage) {
-            pd.getImports().clear();
-            pd.addAllImports(imports);
-        }
-
-        //Copy package level attributes for inclusion on individual rules
-        if (!packageDescr.getAttributes().isEmpty()) {
-            Map<String, AttributeDescr> pkgAttributes = packageAttributes.get(packageDescr.getNamespace());
-            if (pkgAttributes == null) {
-                pkgAttributes = new HashMap<>();
-                this.packageAttributes.put(packageDescr.getNamespace(),
-                                           pkgAttributes);
-            }
-            for (AttributeDescr attr : packageDescr.getAttributes()) {
-                pkgAttributes.put(attr.getName(),
-                                  attr);
-            }
-        }
+        this.registerPackage(packageDescr);
     }
 
     public static class ForkJoinPoolHolder {
@@ -1177,7 +1138,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public List<PackageDescr> getPackageDescrs(String packageName) {
-        return packages.get(packageName);
+        return pkgRegistryManager.getPackageDescrs(packageName);
     }
 
     /**
@@ -1354,7 +1315,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         Collection<String> removedTypes = typeBuilder.removeTypesGeneratedFromResource(resource);
 
-        for (List<PackageDescr> pkgDescrs : packages.values()) {
+        for (List<PackageDescr> pkgDescrs : pkgRegistryManager.getPackageDescrs()) {
             for (PackageDescr pkgDescr : pkgDescrs) {
                 pkgDescr.removeObjectsGeneratedFromResource(resource);
             }

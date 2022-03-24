@@ -79,12 +79,6 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
     }
 
     @Override
-    public List<PackageDescr> getPackageDescrs(String namespace) {
-        // this is not really used by TypeDeclarationContext!!
-        return packageRegistryManager.getPackageDescrs(namespace);
-    }
-
-    @Override
     public Collection<String> getPackageNames() {
         // this is not really used by TypeDeclarationContext!!
         return packageRegistryManager.getPackageNames();

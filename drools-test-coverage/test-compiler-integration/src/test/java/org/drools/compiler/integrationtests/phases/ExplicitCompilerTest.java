@@ -82,13 +82,12 @@ public class ExplicitCompilerTest {
 
         BuildResultAccumulator results = new BuildResultAccumulatorImpl();
 
-        PackageAttributeManagerImpl packageAttributes = new PackageAttributeManagerImpl();
         RootClassLoaderProvider rootClassLoaderProvider = () -> rootClassLoader;
         InternalKnowledgeBaseProvider internalKnowledgeBaseProvider = () -> kBase;
 
         PackageRegistryManagerImpl packageRegistryManager =
                 new PackageRegistryManagerImpl(
-                        configuration, packageAttributes, rootClassLoaderProvider, internalKnowledgeBaseProvider);
+                        configuration, rootClassLoaderProvider, internalKnowledgeBaseProvider);
 
         TypeDeclarationContextImpl typeDeclarationContext =
                 new TypeDeclarationContextImpl(configuration, packageRegistryManager);
@@ -123,7 +122,9 @@ public class ExplicitCompilerTest {
 
 
 
-        Map<String, AttributeDescr> attributesForPackage = packageAttributes.get(packageDescr.getNamespace());
+        Map<String, AttributeDescr> attributesForPackage =
+                packageRegistryManager.getPackageAttributes().get(packageDescr.getNamespace());
+
         List<CompilationPhase> phases = asList(
                 new ImportCompilationPhase(packageRegistry, packageDescr),
                 new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr),

@@ -29,6 +29,6 @@ public interface PackageRegistryManager {
     PackageRegistry getPackageRegistry(String packageName);
     PackageRegistry getOrCreatePackageRegistry(PackageDescr packageDescr);
     Map<String, PackageRegistry> getPackageRegistry();
-    List<PackageDescr> getPackageDescrs(String namespace);
+
     Collection<String> getPackageNames();
 }
