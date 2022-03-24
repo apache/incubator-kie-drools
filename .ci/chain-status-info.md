@@ -1,4 +1,4 @@
-# Optaplanner CI Status
+# OptaPlanner CI Status
 
 This project is based on [chain-status](https://github.com/kiegroup/chain-status) and information generated thanks to [build-chain-configuration-reader](https://github.com/kiegroup/build-chain-configuration-reader) using [kogito-pipeliens definition file](https://raw.githubusercontent.com/kiegroup/kogito-pipelines/main/.ci/pull-request-config.yaml).
 
