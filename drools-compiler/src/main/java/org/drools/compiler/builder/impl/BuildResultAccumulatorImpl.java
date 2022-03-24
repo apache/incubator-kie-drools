@@ -57,6 +57,10 @@ public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
         return !getErrorList().isEmpty();
     }
 
+    public Collection<KnowledgeBuilderResult> getInternalResultCollection() {
+        return results;
+    }
+
     public KnowledgeBuilderResults getResults(ResultSeverity... problemTypes) {
         List<KnowledgeBuilderResult> problems = getResultList(problemTypes);
         return new PackageBuilderResults(problems.toArray(new BaseKnowledgeBuilderResultImpl[problems.size()]));
@@ -159,5 +163,9 @@ public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
 //        if (this.processBuilder != null) {
 //            this.processBuilder.getErrors().clear();
 //        }
+    }
+
+    public void addAll(Collection<? extends KnowledgeBuilderResult> results) {
+        this.results.addAll(results);
     }
 }

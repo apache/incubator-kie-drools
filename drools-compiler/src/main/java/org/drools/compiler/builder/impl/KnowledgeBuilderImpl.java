@@ -33,13 +33,9 @@ import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
-import org.drools.compiler.compiler.ConfigurableSeverityResult;
-import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.compiler.compiler.DroolsWarning;
-import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.PackageBuilderErrors;
-import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
@@ -49,7 +45,6 @@ import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.core.addon.TypeResolver;
-import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -61,7 +56,6 @@ import org.drools.core.io.impl.BaseResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.ReaderResource;
 import org.drools.core.io.internal.InternalResource;
-import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
@@ -79,7 +73,6 @@ import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateProvider;
 import org.drools.drl.extensions.ResourceConversionResult;
-import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsError;
 import org.drools.drl.parser.DroolsParserException;
@@ -135,7 +128,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
@@ -148,7 +140,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private PackageRegistryManagerImpl pkgRegistryManager;
 
-    private List<KnowledgeBuilderResult> results;
+    private BuildResultAccumulatorImpl results;
 
     private final KnowledgeBuilderConfigurationImpl configuration;
 
@@ -241,7 +233,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
-        this.results = new ArrayList<>();
+        this.results = new BuildResultAccumulatorImpl();
 
         PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, this.configuration, pkg);
         pkgRegistry.setDialect(this.defaultDialect);
@@ -275,7 +267,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
-        this.results = new ArrayList<>();
+        this.results = new BuildResultAccumulatorImpl();
 
         this.kBase = kBase;
 
@@ -738,7 +730,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             overrideReSource(kpkg, resource);
             addPackage(kpkg);
         } else {
-            results.add(new DroolsError(resource) {
+            results.addBuilderResult(new DroolsError(resource) {
 
                 @Override
                 public String getMessage() {
@@ -844,7 +836,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public void addBuilderResult(KnowledgeBuilderResult result) {
-        this.results.add(result);
+        this.results.addBuilderResult(result);
     }
 
     @Override
@@ -931,11 +923,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void updateResults() {
         // some of the rules and functions may have been redefined
-        updateResults(this.results);
+        updateResults(new ArrayList<>(this.results.getInternalResultCollection()));
     }
 
     public void updateResults(List<KnowledgeBuilderResult> results) {
-        this.results = getResults(results);
+        this.results.addAll(getResults(results));
     }
 
     public void compileAll() {
@@ -1216,72 +1208,32 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      * compiling phase
      */
     public boolean hasErrors() {
-        return !getErrorList().isEmpty();
+        return results.hasErrors();
     }
 
     public KnowledgeBuilderResults getResults(ResultSeverity... problemTypes) {
-        List<KnowledgeBuilderResult> problems = getResultList(problemTypes);
-        return new PackageBuilderResults(problems.toArray(new BaseKnowledgeBuilderResultImpl[problems.size()]));
-    }
-
-    private List<KnowledgeBuilderResult> getResultList(ResultSeverity... severities) {
-        List<ResultSeverity> typesToFetch = asList(severities);
-        ArrayList<KnowledgeBuilderResult> problems = new ArrayList<>();
-        for (KnowledgeBuilderResult problem : results) {
-            if (typesToFetch.contains(problem.getSeverity())) {
-                problems.add(problem);
-            }
-        }
-        return problems;
+        return results.getResults(problemTypes);
     }
 
     public boolean hasResults(ResultSeverity... problemTypes) {
-        return !getResultList(problemTypes).isEmpty();
-    }
-
-    private List<DroolsError> getErrorList() {
-        List<DroolsError> errors = new ArrayList<>();
-        for (KnowledgeBuilderResult problem : results) {
-            if (problem.getSeverity() == ResultSeverity.ERROR) {
-                if (problem instanceof ConfigurableSeverityResult) {
-                    errors.add(new DroolsErrorWrapper(problem));
-                } else {
-                    errors.add((DroolsError) problem);
-                }
-            }
-        }
-        return errors;
+        return results.hasResults(problemTypes);
     }
 
     public boolean hasWarnings() {
-        return !getWarnings().isEmpty();
+        return results.hasWarnings();
     }
 
     public boolean hasInfo() {
-        return !getInfoList().isEmpty();
+        return results.hasInfo();
     }
 
     public List<DroolsWarning> getWarnings() {
-        List<DroolsWarning> warnings = new ArrayList<>();
-        for (KnowledgeBuilderResult problem : results) {
-            if (problem.getSeverity() == ResultSeverity.WARNING) {
-                if (problem instanceof ConfigurableSeverityResult) {
-                    warnings.add(new DroolsWarningWrapper(problem));
-                } else {
-                    warnings.add((DroolsWarning) problem);
-                }
-            }
-        }
-        return warnings;
-    }
-
-    private List<KnowledgeBuilderResult> getInfoList() {
-        return getResultList(ResultSeverity.INFO);
+        return results.getWarnings();
     }
 
     @Override
     public void reportError(KnowledgeBuilderError error) {
-        getErrors().add(error);
+        results.reportError(error);
     }
 
     /**
@@ -1289,8 +1241,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      * the package.
      */
     public PackageBuilderErrors getErrors() {
-        List<DroolsError> errors = getErrorList();
-        return new PackageBuilderErrors(errors.toArray(new DroolsError[errors.size()]));
+        return results.getErrors();
     }
 
     /**
@@ -1300,25 +1251,15 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      * you will get spurious errors which will not be that helpful.
      */
     public void resetErrors() {
-        resetProblemType(ResultSeverity.ERROR);
+        results.resetErrors();
     }
 
     public void resetWarnings() {
-        resetProblemType(ResultSeverity.WARNING);
-    }
-
-    private void resetProblemType(ResultSeverity problemType) {
-        List<KnowledgeBuilderResult> toBeDeleted = new ArrayList<>();
-        for (KnowledgeBuilderResult problem : results) {
-            if (problemType != null && problemType.equals(problem.getSeverity())) {
-                toBeDeleted.add(problem);
-            }
-        }
-        this.results.removeAll(toBeDeleted);
+        results.resetWarnings();
     }
 
     public void resetProblems() {
-        this.results.clear();
+        this.results.resetProblems();
         if (this.processBuilder != null) {
             this.processBuilder.getErrors().clear();
         }
@@ -1361,7 +1302,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 resources.addAll(changeSet.getResourcesRemoved());
                 buildResources.push(resources);
             } catch (Exception e) {
-                results.add(new DroolsError() {
+                results.addBuilderResult(new DroolsError() {
 
                     public String getMessage() {
                         return "Unable to register changeset resource " + resource;
@@ -1397,14 +1338,14 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
 
         if (results != null) {
-            results.removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
+            results.getInternalResultCollection().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
         }
 
         if (processBuilder != null && processBuilder.getErrors() != null) {
             processBuilder.getErrors().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
         }
 
-        if (results != null && results.size() == 0) {
+        if (results != null && results.getInternalResultCollection().size() == 0) {
             // TODO Error attribution might be bugged
             for (PackageRegistry packageRegistry : this.pkgRegistryManager.getPackageRegistry().values()) {
                 packageRegistry.getPackage().resetErrors();
