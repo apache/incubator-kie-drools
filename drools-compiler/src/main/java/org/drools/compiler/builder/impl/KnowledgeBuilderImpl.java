@@ -229,6 +229,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.results = new BuildResultAccumulatorImpl();
 
+        this.pkgRegistryManager =
+                new PackageRegistryManagerImpl(
+                        this.configuration, this, this);
+
         PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, this.configuration, pkg);
         pkgRegistry.setDialect(this.defaultDialect);
         this.pkgRegistryManager.getPackageRegistry().put(pkg.getName(),
