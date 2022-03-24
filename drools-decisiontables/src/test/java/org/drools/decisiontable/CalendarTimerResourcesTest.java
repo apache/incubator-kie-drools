@@ -54,7 +54,7 @@ public class CalendarTimerResourcesTest {
                  .setClockType(ClockTypeOption.PSEUDO);
 
         kfs.writeKModuleXML(kmodule.toXML());
-        kfs.write(ks.getResources().newClassPathResource("calendar_timer.xls", this.getClass())); // README when path is set then test works
+        kfs.write(ks.getResources().newClassPathResource("calendar_timer.drl.xls", this.getClass())); // README when path is set then test works
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 

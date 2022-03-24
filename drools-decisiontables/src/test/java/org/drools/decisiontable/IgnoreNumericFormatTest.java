@@ -22,13 +22,13 @@ public class IgnoreNumericFormatTest {
     @Test
     public void testPercentAndCurrencyFormat() throws IOException {
         SpreadsheetCompiler compiler = new SpreadsheetCompiler();
-        String drl = compiler.compile(ResourceFactory.newClassPathResource("ignore-numeric-format.xls", getClass()).getInputStream(), InputType.XLS);
+        String drl = compiler.compile(ResourceFactory.newClassPathResource("ignore-numeric-format.drl.xls", getClass()).getInputStream(), InputType.XLS);
         System.out.println(drl);
 
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.XLSX);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("ignore-numeric-format.xls", getClass()), ResourceType.DTABLE, dtconf);
+        kbuilder.add(ResourceFactory.newClassPathResource("ignore-numeric-format.drl.xls", getClass()), ResourceType.DTABLE, dtconf);
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }

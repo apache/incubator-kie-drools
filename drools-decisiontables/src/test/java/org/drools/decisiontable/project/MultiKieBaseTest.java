@@ -38,8 +38,8 @@ public class MultiKieBaseTest {
         KieFileSystem kfs = ks.newKieFileSystem()
                 .write( "src/main/resources/org/drools/decisiontable/project/rules/Sample.drl",
                         kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/rules/Sample.drl" ) )
-                .write( "src/main/resources/org/drools/decisiontable/project/dtable/CanDrink.xls",
-                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.xls" ) );
+                .write( "src/main/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls",
+                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls" ) );
 
         KieModuleModel kproj = ks.newKieModuleModel();
         kproj.newKieBaseModel("rulesKB")
@@ -77,8 +77,8 @@ public class MultiKieBaseTest {
         KieFileSystem kfs = ks.newKieFileSystem()
                 .write( "src/main/resources/org/drools/decisiontable/projectwrong/rules/Sample.drl",
                         kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/rules/Sample.drl" ) )
-                .write( "src/main/resources/org/drools/decisiontable/projectwrong/dtable/CanDrink.xls",
-                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.xls" ) );
+                .write( "src/main/resources/org/drools/decisiontable/projectwrong/dtable/CanDrink.drl.xls",
+                        kr.newFileSystemResource( "src/test/resources/org/drools/decisiontable/project/dtable/CanDrink.drl.xls" ) );
 
         KieModuleModel kproj = ks.newKieModuleModel();
         kproj.newKieBaseModel("rulesKB")

@@ -41,7 +41,7 @@ public class FixedPatternTest {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.XLS);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("fixedPattern.xls", getClass()), ResourceType.DTABLE, dtconf);
+        kbuilder.add(ResourceFactory.newClassPathResource("fixedPattern.drl.xls", getClass()), ResourceType.DTABLE, dtconf);
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }

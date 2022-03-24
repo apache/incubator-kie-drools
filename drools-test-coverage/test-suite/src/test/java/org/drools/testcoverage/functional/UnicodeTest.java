@@ -146,7 +146,7 @@ public class UnicodeTest {
     @Test
     public void testCzechXLSDecisionTable() throws FileNotFoundException {
         final KieServices kieServices = KieServices.Factory.get();
-        final Resource resource = kieServices.getResources().newClassPathResource("unicode.xls", getClass());
+        final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl.xls", getClass());
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
         final KieSession ksession = kbase.newKieSession();
 
@@ -171,7 +171,7 @@ public class UnicodeTest {
         final KieServices kieServices = KieServices.Factory.get();
 
         final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("unicode.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("unicode.drl.csv", getClass(), DecisionTableInputType.CSV);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
         final KieSession ksession = kbase.newKieSession();

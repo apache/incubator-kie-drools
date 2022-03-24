@@ -64,7 +64,7 @@ public class RuleTemplateTest {
 
         final KieServices kieServices = KieServices.Factory.get();
 
-        final Resource table = kieServices.getResources().newClassPathResource("sample_cheese.xls", getClass());
+        final Resource table = kieServices.getResources().newClassPathResource("sample_cheese.drl.xls", getClass());
         final Resource template = kieServices.getResources().newClassPathResource("sample_cheese.drt", getClass());
 
         String drl = null;

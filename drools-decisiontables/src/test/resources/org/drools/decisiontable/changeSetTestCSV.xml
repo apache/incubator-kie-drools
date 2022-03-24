@@ -3,7 +3,7 @@
             xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-1.0.0.xsd'>
 
   <add>
-    <resource source="classpath:org/drools/decisiontable/changeSetTestCSV.csv" type="DTABLE">
+    <resource source="classpath:org/drools/decisiontable/changeSetTestCSV.drl.csv" type="DTABLE">
       <decisiontable-conf input-type="CSV" worksheet-name="Tables"/>
     </resource>
   </add>

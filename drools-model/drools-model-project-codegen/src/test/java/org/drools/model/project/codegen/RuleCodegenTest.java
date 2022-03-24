@@ -117,7 +117,7 @@ public class RuleCodegenTest {
 
         RuleCodegen ruleCodegen = getRuleCodegenFromFiles(
                 contextBuilder,
-                new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.xls"));
+                new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.drl.xls"));
 
         Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
         assertHasLegacyApiFiles(generatedFiles);

@@ -19,7 +19,6 @@ package org.drools.decisiontable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class XlsFormulaTest {
     public void testFormulaValue() throws Exception {
         // DROOLS-643
 
-        Resource dt = ResourceFactory.newClassPathResource("/data/XlsFormula.xls", getClass());
+        Resource dt = ResourceFactory.newClassPathResource("/data/XlsFormula.drl.xls", getClass());
 
         KieSession ksession = getKieSession( dt );
         

@@ -129,7 +129,7 @@ public class GraphCollapsionTest extends AbstractGraphTest {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.drools.impact.analysis.integrationtests", "spreadsheet-test", "1.0.0");
         KieFileSystem kfs = createKieFileSystemWithClassPathResourceNames(releaseId, getClass(),
-                                                                          "collapsion01.xls", "collapsion02.xls", "collapsion03.xls");
+                                                                          "collapsion01.drl.xls", "collapsion02.drl.xls", "collapsion03.drl.xls");
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(ImpactAnalysisProject.class);
         ImpactAnalysisKieModule analysisKieModule = (ImpactAnalysisKieModule) kieBuilder.getKieModule();

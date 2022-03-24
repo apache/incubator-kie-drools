@@ -48,7 +48,7 @@ public class RuleWorksheetParseLargeTest {
     @Test
     public void testLargeWorkSheetParseToRuleset() throws Exception {
         //  Test removed until have streaming sorted in future. No one using Uber Tables just yet !
-        InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream( "/data/VeryLargeWorkbook.xls" );
+        InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream("/data/VeryLargeWorkbook.drl.xls");
 
         startTimer( );
         RuleSheetListener listener = RuleWorksheetParseTest.getRuleSheetListener( stream );

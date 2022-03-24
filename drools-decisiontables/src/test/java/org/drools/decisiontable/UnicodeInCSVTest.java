@@ -45,10 +45,10 @@ public class UnicodeInCSVTest {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.CSV);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("unicode.csv", getClass()), ResourceType.DTABLE, dtconf);
+        kbuilder.add(ResourceFactory.newClassPathResource("unicode.drl.csv", getClass()), ResourceType.DTABLE, dtconf);
         if (kbuilder.hasErrors()) {
             System.out.println(kbuilder.getErrors().toString());
-            System.out.println(DecisionTableFactory.loadFromInputStream(getClass().getResourceAsStream("unicode.xls"), dtconf));
+            System.out.println(DecisionTableFactory.loadFromInputStream(getClass().getResourceAsStream("unicode.drl.xls"), dtconf));
             fail("Cannot build CSV decision table containing utf-8 characters\n" + kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

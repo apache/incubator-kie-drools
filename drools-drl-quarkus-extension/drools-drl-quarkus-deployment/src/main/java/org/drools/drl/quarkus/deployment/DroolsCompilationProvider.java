@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class DroolsCompilationProvider extends AbstractCompilationProvider {
 
-    private static final Set<String> MANAGED_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(".drl", ".xls", ".xlsx", ".csv")));
+    private static final Set<String> MANAGED_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(".drl", ".drl.xls", ".drl.xlsx", ".drl.csv")));
 
     @Override
     public Set<String> handledExtensions() {

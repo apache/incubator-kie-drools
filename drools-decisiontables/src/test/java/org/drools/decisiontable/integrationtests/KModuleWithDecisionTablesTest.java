@@ -66,7 +66,7 @@ public class KModuleWithDecisionTablesTest {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.csv", csv );
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl.csv", csv );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertFalse(results.getMessages().isEmpty());
     }

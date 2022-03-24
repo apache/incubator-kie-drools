@@ -58,19 +58,19 @@ public class OOPathDtablesTest {
 
     @Test
     public void xlsWithOOPathTest() {
-        final KieSession kieSession = getKieSessionFromXls("oopath.xls");
+        final KieSession kieSession = getKieSessionFromXls("oopath.drl.xls");
         testOOPathWithDTable(kieSession);
     }
 
     @Test
     public void xlsxWithOOPathTest() {
-        final KieSession kieSession = getKieSessionFromXlsx("oopath.xlsx");
+        final KieSession kieSession = getKieSessionFromXlsx("oopath.drl.xlsx");
         testOOPathWithDTable(kieSession);
     }
 
     @Test
     public void csvWithOOPathTest() {
-        final KieSession kieSession = getKieSessionFromCsv("oopath.csv");
+        final KieSession kieSession = getKieSessionFromCsv("oopath.drl.csv");
         testOOPathWithDTable(kieSession);
     }
 

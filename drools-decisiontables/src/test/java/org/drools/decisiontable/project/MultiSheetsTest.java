@@ -52,9 +52,9 @@ public class MultiSheetsTest {
         KieResources kr = ks.getResources();
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls",
-                        kr.newFileSystemResource( "src/test/resources/data/CanDrinkAndDrive.xls" ) )
-                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls.properties",
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.drl.xls",
+                        kr.newFileSystemResource( "src/test/resources/data/CanDrinkAndDrive.drl.xls" ) )
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.drl.xls.properties",
                         sheets != null ? "sheets="+sheets : "" );
 
         KieModuleModel kproj = ks.newKieModuleModel();
