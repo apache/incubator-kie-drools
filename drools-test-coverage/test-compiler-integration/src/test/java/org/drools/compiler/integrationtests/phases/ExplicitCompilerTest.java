@@ -16,6 +16,7 @@ import org.drools.compiler.builder.impl.TypeDeclarationContextImpl;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
+import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
@@ -30,7 +31,7 @@ import org.drools.compiler.builder.impl.processors.TypeDeclarationCompilationPha
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
@@ -38,11 +39,11 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.ResourceChange;
 
 import java.io.IOException;
@@ -51,6 +52,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.fail;
 
 public class ExplicitCompilerTest {
 
@@ -61,7 +63,7 @@ public class ExplicitCompilerTest {
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
         BuildResultAccumulator results = new BuildResultAccumulatorImpl();
 
-        Resource resource = new ClassPathResource("com/sample/from.drl");
+        Resource resource = new ClassPathResource("org/drools/compiler/integrationtests/phases/ExplicitCompilerTest.drl");
 
         int parallelRulesBuildThreshold = 0;
 
@@ -117,24 +119,48 @@ public class ExplicitCompilerTest {
                 new RuleValidator(packageRegistry, packageDescr, configuration),
                 new FunctionCompiler(packageDescr, packageRegistry, this::filterAccepts, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, kBuilder));
+                        this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, kBuilder),
+                new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts),
+                new ConsequenceCompilationPhase(packageRegistryManager)
+        );
 
 
-        phases.forEach(CompilationPhase::process);
-        phases.forEach(p -> p.getResults().forEach(results::addBuilderResult));
+        for (CompilationPhase phase : phases) {
+            phase.process();
+            phase.getResults().forEach(results::addBuilderResult);
+            if (results.hasErrors()) {
+                System.out.printf("Found compilation errors at %s\n", phase.getClass().getSimpleName());
+                results.getErrors().forEach(System.out::println);
+                fail("Found compilation errors at Phase "+phase.getClass().getSimpleName());
+            }
+        }
 
 
-        ReteCompiler reteCompiler =
-                new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts);
-        reteCompiler.process();
+//        ReteCompiler reteCompiler =
+//                new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts);
+//        reteCompiler.process();
+//
+//        ConsequenceCompilationPhase consequenceCompilationPhase =
+//                new ConsequenceCompilationPhase(packageRegistryManager);
+//        consequenceCompilationPhase.process();
 
-        RuleBase kbase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(rootClassLoader));
-        kbase.addPackages(packageRegistryManager.getPackageRegistry().values().stream().map(PackageRegistry::getPackage).collect(Collectors.toList()));
-        StatefulKnowledgeSessionImpl statefulKnowledgeSession = new StatefulKnowledgeSessionImpl(1, new SessionsAwareKnowledgeBase(kbase));
 
-        statefulKnowledgeSession.insert("HELLO");
+//        results.getErrors().forEach(System.out::println);
+//        if (results.hasErrors()) fail("Found compilation errors.");
 
-        statefulKnowledgeSession.fireAllRules();
+
+        List<InternalKnowledgePackage> packages =
+                packageRegistryManager.getPackageRegistry().values()
+                        .stream().map(PackageRegistry::getPackage).collect(Collectors.toList());
+        RuleBase kbase = RuleBaseFactory.newRuleBase((KieBaseConfiguration)null);
+        kbase.addPackages(packages);
+        SessionsAwareKnowledgeBase sessionsAwareKnowledgeBase =
+                new SessionsAwareKnowledgeBase(kbase);
+        KieSession kieSession = sessionsAwareKnowledgeBase.newKieSession();
+
+
+        kieSession.insert("HELLO");
+        kieSession.fireAllRules();
 
 
     }

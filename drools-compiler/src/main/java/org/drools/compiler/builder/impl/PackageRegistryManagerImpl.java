@@ -9,8 +9,10 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.drools.core.util.StringUtils.isEmpty;
 
-public class PackageRegistryManagerImpl implements PackageRegistryManager {
+public class PackageRegistryManagerImpl implements PackageRegistryManager, PackageRegistryCompiler {
     private final RootClassLoaderProvider classLoaderProvider;
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final InternalKnowledgeBaseProvider kBaseProvider;
@@ -137,4 +139,26 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager {
         }
     }
 
+    @Override
+    public void compileAll() {
+        for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
+            pkgRegistry.compileAll();
+        }
+    }
+
+    @Override
+    public void reloadAll() {
+        for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
+            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
+        }
+    }
+
+    @Override
+    public Collection<KnowledgeBuilderResult> getResults() {
+        List<KnowledgeBuilderResult> results = new ArrayList<>();
+        for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
+            results = pkgRegistry.getDialectCompiletimeRegistry().addResults(results);
+        }
+        return results;
+    }
 }

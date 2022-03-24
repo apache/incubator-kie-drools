@@ -14,6 +14,7 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChange;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,6 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
         // this is not really used by TypeDeclarationContext!!
         return packageRegistryManager.getPackageDescrs(namespace);
     }
-
 
     @Override
     public KnowledgeBuilderConfigurationImpl getBuilderConfiguration() {

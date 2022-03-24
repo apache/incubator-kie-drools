@@ -10,7 +10,6 @@ import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
 import org.drools.compiler.builder.impl.PackageAttributeManagerImpl;
 import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.RootClassLoaderProvider;
-import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.TypeDeclarationContextImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -21,6 +20,7 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
@@ -34,7 +34,7 @@ import static java.util.Arrays.asList;
 public class ExplicitCompilerTest {
 
     @Test
-    //@Ignore("not finished")
+    @Ignore("not finished")
     public void testCompile() throws DroolsParserException, IOException {
         ClassLoader rootClassLoader = this.getClass().getClassLoader();
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();

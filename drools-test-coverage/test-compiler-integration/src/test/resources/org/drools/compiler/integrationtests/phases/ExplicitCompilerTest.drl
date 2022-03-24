@@ -1,0 +1,9 @@
+package org.drools.compiler.integrationtests.phases;
+
+rule hello
+	dialect "java"
+    when
+    s: String()
+then
+    System.out.println(s);
+end
