@@ -73,6 +73,6 @@ To consider any individual ticket "Done", following requirements must be satisfi
 
 In order to avoid introducing unstable features, the PR will be merged only after these points have been fulfilled. For PRs contributed by community the core team will assist with making the functionality meet these conditions.
 
-=== Optaplanner CI Status
+=== OptaPlanner CI Status
 
 You can check kogito organization repositories CI status from [Chain Status webpage](https://kiegroup.github.io/optaplanner/)
