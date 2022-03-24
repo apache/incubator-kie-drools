@@ -17,14 +17,17 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.servers.Server;
 import io.vertx.core.http.HttpMethod;
 
@@ -49,7 +52,7 @@ class OpenAPIDescriptor {
             throw new IllegalArgumentException("There is more than one operation " + operations + " in different methods with name " + operationId + " for path " + operEntry.getKey());
         }
         OperationInfo operation = operEntry.getValue().get(0);
-        return new OpenAPIDescriptor(operation.getMethod(), operEntry.getKey());
+        return new OpenAPIDescriptor(operation.getMethod(), operEntry.getKey(), operation.getOperation());
     }
 
     private static void checkOperation(String path, String operationId, HttpMethod method, Operation operation, Map<String, List<OperationInfo>> map) {
@@ -75,10 +78,30 @@ class OpenAPIDescriptor {
 
     private final HttpMethod method;
     private final String path;
+    private final Set<String> pathParams = new HashSet<>();
+    private final Set<String> queryParams = new HashSet<>();
+    private final Set<String> headerParams = new HashSet<>();
 
-    private OpenAPIDescriptor(HttpMethod method, String path) {
+    private OpenAPIDescriptor(HttpMethod method, String path, Operation operation) {
         this.method = method;
         this.path = path;
+        if (operation.getParameters() != null) {
+            operation.getParameters().forEach(this::addParameter);
+        }
+    }
+
+    private void addParameter(Parameter parameter) {
+        switch (parameter.getIn()) {
+            case "query":
+                queryParams.add(parameter.getName());
+                break;
+            case "path":
+                pathParams.add(parameter.getName());
+                break;
+            case "header":
+                headerParams.add(parameter.getName());
+                break;
+        }
     }
 
     public HttpMethod getMethod() {
@@ -87,6 +110,18 @@ class OpenAPIDescriptor {
 
     public String getPath() {
         return path;
+    }
+
+    public Set<String> getPathParams() {
+        return pathParams;
+    }
+
+    public Set<String> getQueryParams() {
+        return queryParams;
+    }
+
+    public Set<String> getHeaderParams() {
+        return headerParams;
     }
 
     private static class OperationInfo {
@@ -100,6 +135,10 @@ class OpenAPIDescriptor {
 
         public HttpMethod getMethod() {
             return method;
+        }
+
+        public Operation getOperation() {
+            return operation;
         }
 
         @Override

@@ -15,17 +15,6 @@
  */
 package org.kogito.workitem.rest.decorators;
 
-import java.util.Map;
+public interface ParamsDecorator extends RequestDecorator {
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.meta.ProcessMeta;
-
-import io.vertx.mutiny.ext.web.client.HttpRequest;
-
-public class HeaderMetadataDecorator implements RequestDecorator {
-
-    @Override
-    public void decorate(KogitoWorkItem item, Map<String, Object> parameters, HttpRequest<?> request) {
-        ProcessMeta.fromKogitoWorkItem(item).asMap().forEach(request::putHeader);
-    }
 }

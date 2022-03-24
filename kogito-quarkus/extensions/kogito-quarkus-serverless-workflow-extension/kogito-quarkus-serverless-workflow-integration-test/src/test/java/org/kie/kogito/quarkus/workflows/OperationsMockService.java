@@ -17,8 +17,11 @@ package org.kie.kogito.quarkus.workflows;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
@@ -35,10 +38,10 @@ public class OperationsMockService implements QuarkusTestResourceLifecycleManage
     public Map<String, String> start() {
         multiplicationService =
                 this.startServer(9090,
-                        "{\"multiplication\": { \"leftElement\": \"68.0\", \"rightElement\": \"0.5556\", \"product\": \"37.808\" }}");
+                        "{\"multiplication\": { \"leftElement\": \"68.0\", \"rightElement\": \"0.5556\", \"product\": \"37.808\" }}", p -> p.withHeader("pepe", new EqualToPattern("pepa")));
         subtractionService =
                 this.startServer(9191,
-                        "{\"subtraction\": { \"leftElement\": \"100\", \"rightElement\": \"32\", \"difference\": \"68.0\" }}");
+                        "{\"subtraction\": { \"leftElement\": \"100\", \"rightElement\": \"32\", \"difference\": \"68.0\" }}", p -> p);
         return Collections.emptyMap();
     }
 
@@ -52,10 +55,10 @@ public class OperationsMockService implements QuarkusTestResourceLifecycleManage
         }
     }
 
-    private WireMockServer startServer(final int port, final String response) {
+    private WireMockServer startServer(final int port, final String response, UnaryOperator<MappingBuilder> function) {
         final WireMockServer server = new WireMockServer(port);
         server.start();
-        server.stubFor(post(urlEqualTo("/"))
+        server.stubFor(function.apply(post(urlEqualTo("/")))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(response)));

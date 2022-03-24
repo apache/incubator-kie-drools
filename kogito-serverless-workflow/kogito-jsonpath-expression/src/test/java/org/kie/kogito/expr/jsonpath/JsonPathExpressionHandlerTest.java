@@ -17,6 +17,7 @@ package org.kie.kogito.expr.jsonpath;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
@@ -37,6 +38,7 @@ class JsonPathExpressionHandlerTest {
     @Test
     void testStringExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "javierito");
         assertEquals("javierito", parsedExpression.eval(node, String.class, context));
     }
@@ -44,6 +46,7 @@ class JsonPathExpressionHandlerTest {
     @Test
     void testBooleanExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", true);
         assertTrue(parsedExpression.eval(node, Boolean.class, context));
     }
@@ -51,6 +54,7 @@ class JsonPathExpressionHandlerTest {
     @Test
     void testJsonNodeExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
         ObjectMapper mapper = new ObjectMapper();
         JsonNode compositeNode = mapper.createObjectNode().put("name", "Javierito");
         JsonNode node = mapper.createObjectNode().set("foo", compositeNode);
@@ -60,6 +64,7 @@ class JsonPathExpressionHandlerTest {
     @Test
     void testCollection() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode node = objectMapper.createObjectNode().set("foo", objectMapper.createArrayNode().add("pepe").add(false).add(3).add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3)));
         assertEquals(Arrays.asList("pepe", false, 3, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(node, Collection.class, context));

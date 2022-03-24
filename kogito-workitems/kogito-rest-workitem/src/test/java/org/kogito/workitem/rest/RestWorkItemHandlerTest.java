@@ -16,7 +16,6 @@
 package org.kogito.workitem.rest;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -57,7 +56,6 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kogito.workitem.rest.RestWorkItemHandler.BODY_BUILDER;
 import static org.mockito.ArgumentMatchers.any;
@@ -151,64 +149,6 @@ public class RestWorkItemHandlerTest {
         when(ioSpecification.getOutputMappingBySources()).thenReturn(outputMapping);
 
         handler = new RestWorkItemHandler(webClient);
-    }
-
-    @Test
-    public void testReplaceTemplateTrivial() {
-        Map<String, Object> parameters = Collections.emptyMap();
-        String endPoint = "http://pepe:password@www.google.com/results/id/?user=pepe#at_point";
-        assertEquals(
-                "http://pepe:password@www.google.com/results/id/?user=pepe#at_point",
-                RestWorkItemHandler.resolvePathParams(endPoint, parameters));
-    }
-
-    @Test
-    public void testReplaceTemplate() {
-        Map<String, Object> parameters = new HashMap<>();
-        // no use singletonMap here since the map must be mutable
-        parameters.put("id", "pepe");
-        String endPoint = "http://pepe:password@www.google.com/results/{id}/?user=pepe#at_point";
-        assertEquals(
-                "http://pepe:password@www.google.com/results/pepe/?user=pepe#at_point",
-                RestWorkItemHandler.resolvePathParams(endPoint, parameters));
-    }
-
-    @Test
-    public void testReplaceTemplateMultiple() {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", 26);
-        parameters.put("name", "pepe");
-        String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name}/?user=pepe#at_point";
-        assertEquals(
-                "http://pepe:password@www.google.com/results/26/names/pepe/?user=pepe#at_point",
-                RestWorkItemHandler.resolvePathParams(endPoint, parameters));
-    }
-
-    @Test
-    public void testReplaceTemplateMissing() {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", 26);
-        String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name}/?user=pepe#at_point";
-        assertTrue(
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () -> RestWorkItemHandler.resolvePathParams(endPoint, parameters))
-                                .getMessage()
-                                .contains("name"));
-    }
-
-    @Test
-    public void testReplaceTemplateBadEndpoint() {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", 26);
-        parameters.put("name", "pepe");
-        String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name/?user=pepe#at_point";
-        assertTrue(
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () -> RestWorkItemHandler.resolvePathParams(endPoint, parameters))
-                                .getMessage()
-                                .contains("}"));
     }
 
     @Test

@@ -15,6 +15,11 @@
  */
 package org.jbpm.compiler.canonical.descriptors;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -30,6 +35,22 @@ public class SupplierUtils {
             result.addArgument(arg == null ? new NullLiteralExpr() : new StringLiteralExpr().setString(arg));
         }
         return result;
+    }
+
+    public static MethodCallExpr getCollectionCreationExpr(Collection<?> collection) {
+        if (collection.isEmpty()) {
+            return getStaticMethodCall(Collections.class, "emptyList");
+        } else {
+            MethodCallExpr expr = getStaticMethodCall(Arrays.class, "asList");
+            for (Object item : collection) {
+                expr.addArgument(AbstractServiceTaskDescriptor.getLiteralExpr(item));
+            }
+            return expr;
+        }
+    }
+
+    public static MethodCallExpr getStaticMethodCall(Class<?> clazz, String methodName) {
+        return new MethodCallExpr(clazz.getCanonicalName() + "." + methodName);
     }
 
 }

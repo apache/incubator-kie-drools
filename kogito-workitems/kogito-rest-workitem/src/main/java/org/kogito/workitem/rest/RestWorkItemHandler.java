@@ -20,12 +20,9 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -41,7 +38,11 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.bodybuilders.RestWorkItemHandlerBodyBuilder;
+import org.kogito.workitem.rest.decorators.ParamsDecorator;
+import org.kogito.workitem.rest.decorators.PrefixParamsDecorator;
 import org.kogito.workitem.rest.decorators.RequestDecorator;
+import org.kogito.workitem.rest.pathresolvers.DefaultPathParamResolver;
+import org.kogito.workitem.rest.pathresolvers.PathParamResolver;
 import org.kogito.workitem.rest.resulthandlers.DefaultRestWorkItemHandlerResult;
 import org.kogito.workitem.rest.resulthandlers.RestWorkItemHandlerResult;
 import org.slf4j.Logger;
@@ -53,6 +54,7 @@ import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
+import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getClassParam;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
 
 public class RestWorkItemHandler implements KogitoWorkItemHandler {
@@ -68,11 +70,18 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     public static final String PORT = "Port";
     public static final String RESULT_HANDLER = "ResultHandler";
     public static final String BODY_BUILDER = "BodyBuilder";
+    public static final String PARAMS_DECORATOR = "ParamsDecorator";
+    public static final String PATH_PARAM_RESOLVER = "PathParamResolver";
 
     private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandler.class);
     private static final RestWorkItemHandlerResult DEFAULT_RESULT_HANDLER = new DefaultRestWorkItemHandlerResult();
     private static final RestWorkItemHandlerBodyBuilder DEFAULT_BODY_BUILDER = new DefaultWorkItemHandlerBodyBuilder();
-    private static final Map<String, RestWorkItemHandlerBodyBuilder> BODY_BUILDERS = new ConcurrentHashMap<>();
+    private static final ParamsDecorator DEFAULT_PARAMS_DECORATOR = new PrefixParamsDecorator();
+    private static final PathParamResolver DEFAULT_PATH_PARAM_RESOLVER = new DefaultPathParamResolver();
+    private static final Map<String, RestWorkItemHandlerResult> resultHandlers = new ConcurrentHashMap<>();
+    private static final Map<String, RestWorkItemHandlerBodyBuilder> bodyBuilders = new ConcurrentHashMap<>();
+    private static final Map<String, ParamsDecorator> paramsDecorators = new ConcurrentHashMap<>();
+    private static final Map<String, PathParamResolver> pathParamsResolvers = new ConcurrentHashMap<>();
 
     private WebClient client;
     private Collection<RequestDecorator> requestDecorators;
@@ -80,7 +89,6 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     public RestWorkItemHandler(WebClient client) {
         this.client = client;
         this.requestDecorators = StreamSupport.stream(ServiceLoader.load(RequestDecorator.class).spliterator(), false).collect(Collectors.toList());
-
     }
 
     @Override
@@ -91,7 +99,6 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
         //removing unnecessary parameter
         parameters.remove("TaskName");
-
         String endPoint = getParam(parameters, URL, String.class, null);
         if (endPoint == null) {
             throw new IllegalArgumentException("Missing required parameter " + URL);
@@ -99,52 +106,23 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         HttpMethod method = getParam(parameters, METHOD, HttpMethod.class, HttpMethod.GET);
         String hostProp = getParam(parameters, HOST, String.class, "localhost");
         int portProp = getParam(parameters, PORT, Integer.class, 8080);
-
-        RestWorkItemHandlerResult resultHandler = getParam(parameters, RESULT_HANDLER, RestWorkItemHandlerResult.class,
-                DEFAULT_RESULT_HANDLER);
-        RestWorkItemHandlerBodyBuilder bodyBuilder = getBodyBuilder(parameters);
+        RestWorkItemHandlerResult resultHandler = getClassParam(parameters, RESULT_HANDLER, RestWorkItemHandlerResult.class, DEFAULT_RESULT_HANDLER, resultHandlers);
+        RestWorkItemHandlerBodyBuilder bodyBuilder = getClassParam(parameters, BODY_BUILDER, RestWorkItemHandlerBodyBuilder.class, DEFAULT_BODY_BUILDER, bodyBuilders);
+        ParamsDecorator paramsDecorator = getClassParam(parameters, PARAMS_DECORATOR, ParamsDecorator.class, DEFAULT_PARAMS_DECORATOR, paramsDecorators);
+        PathParamResolver pathParamResolver = getClassParam(parameters, PATH_PARAM_RESOLVER, PathParamResolver.class, DEFAULT_PATH_PARAM_RESOLVER, pathParamsResolvers);
 
         logger.debug("Filtered parameters are {}", parameters);
         // create request
-        endPoint = resolvePathParams(endPoint, parameters);
+        endPoint = pathParamResolver.apply(endPoint, parameters);
         Optional<URL> url = getUrl(endPoint);
         String host = url.map(java.net.URL::getHost).orElse(hostProp);
         int port = url.map(java.net.URL::getPort).orElse(portProp);
         String path = url.map(java.net.URL::getPath).orElse(endPoint).replace(" ", "%20");//fix issue with spaces in the path
-
         HttpRequest<Buffer> request = client.request(method, port, host, path);
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
+        paramsDecorator.decorate(workItem, parameters, request);
         HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT) ? request.sendJsonAndAwait(bodyBuilder.apply(parameters)) : request.sendAndAwait();
         manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo)));
-    }
-
-    public RestWorkItemHandlerBodyBuilder getBodyBuilder(Map<String, Object> parameters) {
-        Object param = parameters.remove(BODY_BUILDER);
-        //in case the body builder is not set as an input, just use the default
-        if (Objects.isNull(param)) {
-            return DEFAULT_BODY_BUILDER;
-        }
-        //check if an instance of RestWorkItemHandlerBodyBuilder was set and just return it
-        if (param instanceof RestWorkItemHandlerBodyBuilder) {
-            return (RestWorkItemHandlerBodyBuilder) param;
-        }
-        //in case of String, try to load an instance by the FQN of a RestWorkItemHandlerBodyBuilder
-        if (param instanceof String) {
-            return BODY_BUILDERS.computeIfAbsent(param.toString(), this::loadBodyBuilder);
-        }
-        throw new IllegalArgumentException("Invalid body builder instance " + param);
-    }
-
-    private RestWorkItemHandlerBodyBuilder loadBodyBuilder(String className) {
-        try {
-            return getClassLoader().loadClass(className).asSubclass(RestWorkItemHandlerBodyBuilder.class).getConstructor().newInstance();
-        } catch (ReflectiveOperationException | ClassCastException e) {
-            throw new IllegalArgumentException("Invalid RestWorkItemHandlerBodyBuilder Class " + className, e);
-        }
-    }
-
-    private ClassLoader getClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
     }
 
     private Optional<URL> getUrl(String endPoint) {
@@ -184,29 +162,4 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         // rest item handler does not support abort
     }
 
-    //  package scoped to allow unit test
-    static String resolvePathParams(String endPoint, Map<String, Object> parameters) {
-        Set<String> toRemove = new HashSet<>();
-        int start = endPoint.indexOf('{');
-        if (start == -1) {
-            return endPoint;
-        }
-        StringBuilder sb = new StringBuilder(endPoint);
-        while (start != -1) {
-            int end = sb.indexOf("}", start);
-            if (end == -1) {
-                throw new IllegalArgumentException("malformed endpoint should contain enclosing '}' " + endPoint);
-            }
-            final String key = sb.substring(start + 1, end);
-            final Object value = parameters.get(key);
-            if (value == null) {
-                throw new IllegalArgumentException("missing parameter " + key);
-            }
-            toRemove.add(key);
-            sb.replace(start, end + 1, value.toString());
-            start = sb.indexOf("{", end);
-        }
-        parameters.keySet().removeAll(toRemove);
-        return sb.toString();
-    }
 }

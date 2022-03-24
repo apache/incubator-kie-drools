@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.Output;
@@ -164,7 +165,7 @@ public class JqExpression implements Expression {
         try {
             TypedOutput<T> output = output(returnClass);
             compile(Optional.ofNullable(processInfo));
-            query.apply(this.scope.get(), context, output);
+            query.apply(scope.get(), context, output);
             return output.getResult();
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);
@@ -185,10 +186,18 @@ public class JqExpression implements Expression {
     public boolean isValid(Optional<KogitoProcessContext> context) {
         try {
             compile(context);
+            // jq considers a string not containing any special char a valid one, for those ones, validate with a null context
+            if (isConstantString()) {
+                query.apply(scope.get(), NullNode.instance, output(JsonNode.class));
+            }
             return true;
         } catch (JsonQueryException e) {
             return false;
         }
+    }
+
+    private boolean isConstantString() {
+        return compiledExpr.chars().allMatch(Character::isJavaIdentifierPart);
     }
 
     @Override

@@ -7,6 +7,12 @@ paths:
   /:
     post:
       operationId: doOperation
+      parameters:
+        - in: header
+          name: pepe
+          schema: 
+            type: string
+          required: true
       requestBody:
         content:
           application/json:

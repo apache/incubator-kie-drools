@@ -42,6 +42,7 @@ import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.suppliers.CollectionParamsDecoratorSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigSuppliedWorkItemSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ParamsRestBodyBuilderSupplier;
@@ -328,7 +329,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         String serviceName = getServiceName(uri);
         String operationId = operation.substring(indexOf + OPENAPI_OPERATION_SEPARATOR.length());
         try {
-            // although OpenAPIParser has built built in support to load uri, it messes up when using contextclassloader, so using our retrieval apis to get the content
+            // although OpenAPIParser has built in support to load uri, it messes up when using contextclassloader, so using our retrieval apis to get the content
             SwaggerParseResult result =
                     new OpenAPIParser().readContents(new String(URIContentLoaderFactory.buildLoader(URI.create(uri), parserContext.getContext().getClassLoader()).toBytes()), null, null);
             OpenAPI openAPI = result.getOpenAPI();
@@ -344,7 +345,8 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                                     new LambdaExpr(new Parameter(new UnknownType(), "calculatedKey"),
                                             new MethodCallExpr(ConversionUtils.class.getCanonicalName() + ".concatPaths")
                                                     .addArgument(new NameExpr("calculatedKey")).addArgument(new StringLiteralExpr(openAPIDescriptor.getPath()))))))
-                    .workParameter(RestWorkItemHandler.METHOD, openAPIDescriptor.getMethod());
+                    .workParameter(RestWorkItemHandler.METHOD, openAPIDescriptor.getMethod())
+                    .workParameter(RestWorkItemHandler.PARAMS_DECORATOR, new CollectionParamsDecoratorSupplier(openAPIDescriptor.getHeaderParams(), openAPIDescriptor.getQueryParams()));
         } catch (IOException e) {
             throw new IllegalArgumentException("Problem retrieving uri " + uri);
         }

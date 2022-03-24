@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.rest.decorators;
+package org.kogito.workitem.rest.pathresolvers;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.meta.ProcessMeta;
-
-import io.vertx.mutiny.ext.web.client.HttpRequest;
-
-public class HeaderMetadataDecorator implements RequestDecorator {
-
-    @Override
-    public void decorate(KogitoWorkItem item, Map<String, Object> parameters, HttpRequest<?> request) {
-        ProcessMeta.fromKogitoWorkItem(item).asMap().forEach(request::putHeader);
-    }
+public interface PathParamResolver extends BiFunction<String, Map<String, Object>, String> {
 }

@@ -43,4 +43,9 @@ public class JsonNodeVisitorTest {
                 ObjectMapperFactory.get().createObjectNode().set("embedded", ObjectMapperFactory.get().createArrayNode().add(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"))),
                 JsonNodeVisitor.transformTextNode(source, n -> JsonObjectUtils.fromValue("javierito")));
     }
+
+    @Test
+    void testStringNodeVisitor() {
+        assertEquals("pepa", JsonNodeVisitor.transformTextNode(JsonObjectUtils.fromValue("pepa"), p -> p).asText());
+    }
 }

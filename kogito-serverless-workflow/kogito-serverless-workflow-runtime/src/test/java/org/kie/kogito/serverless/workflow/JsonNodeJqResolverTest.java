@@ -26,8 +26,10 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.workitemparams.JsonNodeResolver;
+import org.kie.kogito.serverless.workflow.workitemparams.ObjectResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -97,4 +99,12 @@ class JsonNodeJqResolverTest {
         assertThat(processedNode.findValue("leftElement").asText(), equalTo(".fahrenheit"));
     }
 
+    @Test
+    void verifyStringNode() throws JsonMappingException, JsonProcessingException {
+        final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
+        when(workItem.getParameter("pepe")).thenReturn(inputModel);
+        assertThat(new ObjectResolver("jq", "pepa", "pepe").apply(workItem).toString(), equalTo("pepa"));
+        assertThat(new ObjectResolver("jq", "pepa_1", "pepe").apply(workItem).toString(), equalTo("pepa_1"));
+        assertThat(new ObjectResolver("jq", "pepa.1", "pepe").apply(workItem).toString(), equalTo("pepa.1"));
+    }
 }
