@@ -24,7 +24,7 @@ jobs:
           subtitle: OptaPlanner organization repositories CI Status
           base-branch-filter: main,8\.*
           project-filter: kiegroup/opta.*$
-          created-by: Github Action
+          created-by: GitHub Action
           created-url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
