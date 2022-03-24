@@ -19,6 +19,7 @@ import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
+import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
@@ -807,13 +808,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     protected void wireAllRules() {
-        compileAll();
-        try {
-            reloadAll();
-        } catch (Exception e) {
-            addBuilderResult(new DialectError(null, "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage()));
-        }
-        updateResults();
+        ConsequenceCompilationPhase compilationPhase = new ConsequenceCompilationPhase(pkgRegistryManager);
+        compilationPhase.process();
+        results.addAll(compilationPhase.getResults());
     }
 
     protected void processKieBaseTypes() {
