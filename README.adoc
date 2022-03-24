@@ -75,4 +75,4 @@ In order to avoid introducing unstable features, the PR will be merged only afte
 
 === OptaPlanner CI Status
 
-You can check kogito organization repositories CI status from [Chain Status webpage](https://kiegroup.github.io/optaplanner/)
+You can check OptaPlanner repositories CI status from [Chain Status webpage](https://kiegroup.github.io/optaplanner/).
