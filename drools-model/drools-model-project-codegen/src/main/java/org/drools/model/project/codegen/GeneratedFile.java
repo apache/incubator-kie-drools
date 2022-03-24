@@ -15,13 +15,13 @@
  */
 package org.drools.model.project.codegen;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GeneratedFile {
 
@@ -86,6 +86,11 @@ public class GeneratedFile {
 
     public GeneratedFileType.Category category() {
         return type.category();
+    }
+
+    public String toStringWithContent() {
+        return "GeneratedFile{" + "path=" + path +
+                ", content='\n" + new String(contents) + "\n'}";
     }
 
     @Override

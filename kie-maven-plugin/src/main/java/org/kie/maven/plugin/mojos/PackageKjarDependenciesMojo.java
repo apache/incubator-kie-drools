@@ -16,8 +16,10 @@
 package org.kie.maven.plugin.mojos;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +28,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.io.Files;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
@@ -165,7 +166,9 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
                                   new File(outputFolder, toFile(artifact)),
                                   log);
                 File local = artifact.getFile();
-                Files.copy(local, new File(outputFolder, local.getName()));
+                try (FileOutputStream fos = new FileOutputStream(new File(outputFolder, local.getName()))) {
+                    Files.copy(local.toPath(), fos);
+                }
             }
         } catch (IOException | ArtifactResolverException | DependencyResolverException | ProjectBuildingException e) {
             throw new MojoExecutionException("Couldn't download artifact: " + e.getMessage(), e);

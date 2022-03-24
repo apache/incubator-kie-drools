@@ -1,0 +1,18 @@
+package org.drools.hotreload;
+
+import org.drools.quarkus.test.hotreload.Person;
+
+global java.util.List results;
+
+rule CheckAdult when
+    $p: Person( age >= 18 )
+then
+    modify($p) { setAdult(true) };
+end
+
+rule CollectAdult when
+    $p: Person( adult )
+then
+    results.add($p.getName());
+end
+

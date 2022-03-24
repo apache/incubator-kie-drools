@@ -15,13 +15,13 @@
 
 package org.kie.api.builder.helper;
 
-import org.junit.Test;
-import org.kie.api.builder.helper.KieModuleDeploymentHelperImpl.KJarResource;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
+
+import org.junit.Test;
+import org.kie.api.builder.helper.KieModuleDeploymentHelperImpl.KJarResource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -60,7 +60,7 @@ public class KieModuleDeploymentHelperLoadResourcesTest {
 
         path = "META-INF/plexus/";
         resources = internalLoadResources(path, true);
-        assertEquals( path, 3, resources.size());
+        assertEquals( path, 1, resources.size());
         content = resources.get(0).content;
         assertTrue( content != null && content.length() > 10 );
 

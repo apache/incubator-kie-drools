@@ -18,8 +18,6 @@ package org.kie.scanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -35,8 +33,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -51,7 +47,6 @@ import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.maven.integration.MavenRepository;
-import org.kie.maven.integration.embedder.MavenEmbedderUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,31 +60,13 @@ import static org.junit.Assert.fail;
 import static org.kie.maven.integration.MavenRepository.getMavenRepository;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
-
-@RunWith(Parameterized.class)
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
     private static final Logger LOG = LoggerFactory.getLogger(KieRepositoryScannerTest.class);
-    
-    private final boolean useWiredComponentProvider;
 
     private FileManager fileManager;
 
-    @Parameterized.Parameters(name = "Manually wired component provider={0}")
-    public static Collection modes() {
-        Object[][] manuallyWiredProvider = new Object[][] {
-                { true },
-                { false }
-        };
-        return Arrays.asList(manuallyWiredProvider);
-    }
-
-    public KieRepositoryScannerTest( boolean useWiredComponentProvider) {
-        this.useWiredComponentProvider = useWiredComponentProvider;
-    }
-
     @Before
     public void setUp() throws Exception {
-        MavenEmbedderUtils.enforceWiredComponentProvider = useWiredComponentProvider;
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
@@ -98,7 +75,6 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     @After
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
-        MavenEmbedderUtils.enforceWiredComponentProvider = false;
     }
 
     private void resetFileManager() {

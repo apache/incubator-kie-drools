@@ -20,10 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.kie.kogito.drools.core.config.DefaultRuleEventListenerConfig;
-import org.kie.kogito.drools.core.config.StaticRuleConfig;
-import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
-import org.kie.kogito.legacy.rules.impl.KieBaseImpl;
+import org.drools.drl.quarkus.runtime.KieRuntimeBuilder;
 
 public class ProjectRuntime implements KieRuntimeBuilder {
 
@@ -34,7 +31,7 @@ public class ProjectRuntime implements KieRuntimeBuilder {
 
     private static java.util.Map<String, KieBase> initKieBases() {
         java.util.Map<String, KieBase> kbaseMap = new ConcurrentHashMap<>();
-        if (org.kie.kogito.internal.RuntimeEnvironment.isNative()) {
+        if (org.drools.core.util.Drools.isNativeImage()) {
         }
         return kbaseMap;
     }
@@ -46,7 +43,7 @@ public class ProjectRuntime implements KieRuntimeBuilder {
 
     @Override
     public KieBase getKieBase(String name) {
-        return kbases.computeIfAbsent(name, n -> new KieBaseImpl( KieBaseBuilder.createKieBaseFromModel(model.getModelsForKieBase(n), model.getKieModuleModel().getKieBaseModels().get(n)) ));
+        return kbases.computeIfAbsent( name, n -> KieBaseBuilder.createKieBaseFromModel(model.getModelsForKieBase(n), model.getKieModuleModel().getKieBaseModels().get(n)) );
     }
 
     @Override
@@ -56,18 +53,11 @@ public class ProjectRuntime implements KieRuntimeBuilder {
 
     @Override
     public KieSession newKieSession(String sessionName) {
-        return newKieSession(sessionName, new StaticRuleConfig(new DefaultRuleEventListenerConfig())) ;
-    }
-
-    @Override
-    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {
         KieBase kbase = getKieBaseForSession(sessionName);
         if (kbase == null) {
             throw new RuntimeException("Unknown KieSession with name '" + sessionName + "'");
         }
         KieSession ksession = kbase.newKieSession(getConfForSession(sessionName), null);
-        ruleConfig.ruleEventListeners().agendaListeners().forEach(ksession::addEventListener);
-        ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach(ksession::addEventListener);
         return ksession;
     }
 

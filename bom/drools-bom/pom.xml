@@ -434,6 +434,45 @@
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
+
+      <!-- Quarkus Extension -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-alphanetwork-compiler</artifactId>
@@ -452,7 +491,8 @@
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
-      <!-- /Drools Model -->
+
+      <!-- Drools Model -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-extensions</artifactId>

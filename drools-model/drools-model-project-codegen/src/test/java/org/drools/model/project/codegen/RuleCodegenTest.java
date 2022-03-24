@@ -15,21 +15,6 @@
  */
 package org.drools.model.project.codegen;
 
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.drl.extensions.DecisionTableFactory;
-import org.drools.drl.extensions.DecisionTableProvider;
-import org.drools.model.project.codegen.context.impl.JavaKogitoBuildContext;
-import org.drools.model.project.codegen.context.impl.QuarkusKogitoBuildContext;
-import org.drools.model.project.codegen.context.impl.SpringBootKogitoBuildContext;
-import org.drools.model.project.codegen.context.KogitoBuildContext;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.api.internal.utils.KieService;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,15 +24,30 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import org.drools.core.io.impl.FileSystemResource;
+import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.drl.extensions.DecisionTableProvider;
+import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.model.project.codegen.context.impl.JavaDroolsModelBuildContext;
+import org.drools.model.project.codegen.context.impl.QuarkusDroolsModelBuildContext;
+import org.drools.model.project.codegen.context.impl.SpringBootDroolsModelBuildContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.api.internal.utils.KieService;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleCodegenTest {
 
     public static Stream<Arguments> contextBuilders() {
         return Stream.of(
-                Arguments.of(JavaKogitoBuildContext.builder()),
-                Arguments.of(QuarkusKogitoBuildContext.builder()),
-                Arguments.of(SpringBootKogitoBuildContext.builder()));
+                Arguments.of(JavaDroolsModelBuildContext.builder()),
+                Arguments.of(QuarkusDroolsModelBuildContext.builder()),
+                Arguments.of(SpringBootDroolsModelBuildContext.builder()));
     }
 
     private static final String RESOURCE_PATH = "src/test/resources";
@@ -59,10 +59,10 @@ public class RuleCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.drools.model.project.codegen.RuleCodegenTest#contextBuilders")
-    public void isEmpty(KogitoBuildContext.Builder contextBuilder) {
+    public void isEmpty(DroolsModelBuildContext.Builder contextBuilder) {
         withLegacyApi(contextBuilder);
 
-        KogitoBuildContext context = contextBuilder.build();
+        DroolsModelBuildContext context = contextBuilder.build();
         RuleCodegen emptyCodeGenerator = RuleCodegen.ofResources(context, Collections.emptyList());
 
         assertThat(emptyCodeGenerator.isEmpty()).isTrue();
@@ -71,9 +71,9 @@ public class RuleCodegenTest {
         Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
         assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
 
-        RuleCodegen codeGenerator = getIncrementalRuleCodegenFromFiles(
+        RuleCodegen codeGenerator = getRuleCodegenFromFiles(
                 contextBuilder,
-                new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/pkg1/file1.drl"));
+                new File(RESOURCE_PATH + "/org/drools/model/project/codegen/pkg1/file1.drl"));
 
         assertThat(codeGenerator.isEmpty()).isFalse();
         assertThat(codeGenerator.isEnabled()).isTrue();
@@ -84,42 +84,42 @@ public class RuleCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.drools.model.project.codegen.RuleCodegenTest#contextBuilders")
-    public void generateSingleFile(KogitoBuildContext.Builder contextBuilder) {
+    public void generateSingleFile(DroolsModelBuildContext.Builder contextBuilder) {
         withLegacyApi(contextBuilder);
 
-        RuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
+        RuleCodegen ruleCodegen = getRuleCodegenFromFiles(
                 contextBuilder,
-                new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/pkg1/file1.drl"));
+                new File(RESOURCE_PATH + "/org/drools/model/project/codegen/pkg1/file1.drl"));
 
-        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
         assertHasLegacyApiFiles(generatedFiles);
         assertRules(5, 1, generatedFiles.size());
     }
 
     @ParameterizedTest
     @MethodSource("org.drools.model.project.codegen.RuleCodegenTest#contextBuilders")
-    public void generateSinglePackage(KogitoBuildContext.Builder contextBuilder) {
+    public void generateSinglePackage(DroolsModelBuildContext.Builder contextBuilder) {
         withLegacyApi(contextBuilder);
 
-        RuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
+        RuleCodegen ruleCodegen = getRuleCodegenFromFiles(
                 contextBuilder,
-                new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/pkg1").listFiles());
+                new File(RESOURCE_PATH + "/org/drools/model/project/codegen/pkg1").listFiles());
 
-        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
         assertHasLegacyApiFiles(generatedFiles);
         assertRules(7, 1, generatedFiles.size());
     }
 
     @ParameterizedTest
     @MethodSource("org.drools.model.project.codegen.RuleCodegenTest#contextBuilders")
-    public void generateSingleDtable(KogitoBuildContext.Builder contextBuilder) {
+    public void generateSingleDtable(DroolsModelBuildContext.Builder contextBuilder) {
         withLegacyApi(contextBuilder);
 
-        RuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
+        RuleCodegen ruleCodegen = getRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.xls"));
 
-        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
         assertHasLegacyApiFiles(generatedFiles);
         int externalizedLambda = 5;
         int legacyApiFiles = 2;
@@ -128,14 +128,14 @@ public class RuleCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.drools.model.project.codegen.RuleCodegenTest#contextBuilders")
-    public void generateCepRule(KogitoBuildContext.Builder contextBuilder) {
+    public void generateCepRule(DroolsModelBuildContext.Builder contextBuilder) {
         withLegacyApi(contextBuilder);
 
-        RuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
+        RuleCodegen ruleCodegen = getRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/drools/simple/cep/cep.drl"));
 
-        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
         assertHasLegacyApiFiles(generatedFiles);
         int externalizedLambda = 2;
         int legacyApiFiles = 2;
@@ -148,11 +148,11 @@ public class RuleCodegenTest {
         assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().endsWith("/ProjectRuntime.java"));
     }
 
-    private RuleCodegen getIncrementalRuleCodegenFromFiles(KogitoBuildContext.Builder contextBuilder, File... resources) {
-        return getIncrementalRuleCodegenFromFiles(contextBuilder.build(), resources);
+    private RuleCodegen getRuleCodegenFromFiles(DroolsModelBuildContext.Builder contextBuilder, File... resources) {
+        return getRuleCodegenFromFiles(contextBuilder.build(), resources);
     }
 
-    private RuleCodegen getIncrementalRuleCodegenFromFiles(KogitoBuildContext context, File... resources) {
+    private RuleCodegen getRuleCodegenFromFiles(DroolsModelBuildContext context, File... resources) {
         return RuleCodegen.ofResources(context,
                 fromFiles(Paths.get(RESOURCE_PATH), resources));
     }
@@ -171,7 +171,7 @@ public class RuleCodegenTest {
         return resources;
     }
 
-    static void withLegacyApi(KogitoBuildContext.Builder builder) {
+    static void withLegacyApi(DroolsModelBuildContext.Builder builder) {
         /* No-Op */
     }
 

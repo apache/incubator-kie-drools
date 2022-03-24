@@ -15,6 +15,8 @@
  */
 package org.drools.model.project.codegen;
 
+import java.util.Map;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -26,13 +28,11 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
-import org.drools.model.project.codegen.context.impl.JavaKogitoBuildContext;
-import org.drools.modelcompiler.builder.ModelSourceClass;
-import org.drools.model.project.codegen.context.KogitoBuildContext;
+import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.model.project.codegen.context.impl.JavaDroolsModelBuildContext;
 import org.drools.model.project.codegen.template.InvalidTemplateException;
 import org.drools.model.project.codegen.template.TemplatedGenerator;
-
-import java.util.Map;
+import org.drools.modelcompiler.builder.ModelSourceClass;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static org.drools.model.project.codegen.RuleCodegen.TEMPLATE_RULE_FOLDER;
@@ -40,16 +40,16 @@ import static org.drools.model.project.codegen.RuleCodegen.TEMPLATE_RULE_FOLDER;
 public class ProjectRuntimeGenerator {
 
     private final ModelSourceClass.KieModuleModelMethod modelMethod;
-    private final KogitoBuildContext context;
+    private final DroolsModelBuildContext context;
     private final TemplatedGenerator generator;
 
-    public ProjectRuntimeGenerator(ModelSourceClass.KieModuleModelMethod modelMethod, KogitoBuildContext context) {
+    public ProjectRuntimeGenerator(ModelSourceClass.KieModuleModelMethod modelMethod, DroolsModelBuildContext context) {
         this.modelMethod = modelMethod;
         this.context = context;
         this.generator = TemplatedGenerator.builder()
                 .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
                 .withPackageName("org.drools.project.model")
-                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .withFallbackContext(JavaDroolsModelBuildContext.CONTEXT_NAME)
                 .build(context, "ProjectRuntime");
     }
 
@@ -61,9 +61,7 @@ public class ProjectRuntimeGenerator {
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Compilation unit doesn't contain a class or interface declaration!"));
 
         if (context.hasDI()) {
-//            context.getDependencyInjectionAnnotator().withApplicationComponent(clazz);
-//            clazz.addAnnotation("javax.enterprise.context.ApplicationScoped");
-//            clazz.addAnnotation("org.springframework.stereotype.Component");
+            clazz.addAnnotation("javax.enterprise.context.ApplicationScoped");
         }
 
         writeInitKieBasesMethod(clazz);
@@ -86,8 +84,8 @@ public class ProjectRuntimeGenerator {
         BlockStmt ifBlock = ifStmt.getThenStmt().asBlockStmt();
         for (String kbaseName : modelMethod.getKieBaseNames()) {
             ifBlock.addStatement("kbaseMap.put( \"" + kbaseName + "\", " +
-                    "new KieBaseImpl( KieBaseBuilder.createKieBaseFromModel( model.getModelsForKieBase( \"" + kbaseName + "\" ), " +
-                    "model.getKieModuleModel().getKieBaseModels().get( \"" + kbaseName + "\" ) ) ) );\n");
+                    "KieBaseBuilder.createKieBaseFromModel( model.getModelsForKieBase( \"" + kbaseName + "\" ), " +
+                    "model.getKieModuleModel().getKieBaseModels().get( \"" + kbaseName + "\" ) ) );\n");
         }
     }
 
