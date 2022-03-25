@@ -20,6 +20,7 @@ import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
+import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -36,7 +37,7 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
 
     private KnowledgeBuilderConfigurationImpl configuration;
     private final PackageRegistryManager packageRegistryManager;
-    private final BuildResultAccumulator buildResultAccumulator = new BuildResultAccumulatorImpl();
+    private final BuildResultAccumulatorImpl buildResultAccumulator = new BuildResultAccumulatorImpl();
     private TypeDeclarationBuilder typeBuilder;
 
     public TypeDeclarationContextImpl(KnowledgeBuilderConfigurationImpl configuration, PackageRegistryManager packageRegistryManager) {
@@ -109,8 +110,7 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
         return buildResultAccumulator.hasErrors();
     }
 
-    @Override
-    public KnowledgeBuilderErrors getErrors() {
+    public PackageBuilderErrors getErrors() {
         // this is not really used by TypeDeclarationContext!!
         return buildResultAccumulator.getErrors();
     }

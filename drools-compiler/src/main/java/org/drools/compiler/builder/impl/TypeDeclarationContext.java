@@ -19,12 +19,22 @@ import org.drools.compiler.builder.PackageRegistryManager;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
 
+/**
+ * The build context for {@link TypeDeclarationBuilder}, {@link ClassDefinitionFactory} and
+ * all their related siblings.
+ *
+ * This is a facade that exposes only part of the {@link KnowledgeBuilderImpl} API surface
+ */
 public interface TypeDeclarationContext extends
         RootClassLoaderProvider,
         BuildResultAccumulator,
         BuilderConfigurationProvider,
         PackageRegistryManager,
         InternalKnowledgeBaseProvider {
+
+    // these methods are necessary to complete the facade
+    // but they should be refactored and cleaned up (possibly removed)
+    // https://issues.redhat.com/browse/DROOLS-6884
 
     TypeDeclarationBuilder getTypeBuilder();
 

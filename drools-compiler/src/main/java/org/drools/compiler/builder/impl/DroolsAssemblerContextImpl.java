@@ -16,7 +16,6 @@
 package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
-import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -38,7 +37,7 @@ public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, Build
     private final GlobalVariableContext globalVariableContext;
     private final TypeDeclarationBuilder typeBuilder;
     private final PackageRegistryManagerImpl pkgRegistryManager;
-    private final BuildResultAccumulator buildResultAccumulator;
+    private final BuildResultAccumulatorImpl buildResultAccumulator;
 
     public DroolsAssemblerContextImpl(
             KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration,
@@ -47,7 +46,7 @@ public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, Build
             GlobalVariableContext globalVariableContext,
             TypeDeclarationBuilder typeBuilder,
             PackageRegistryManagerImpl pkgRegistryManager,
-            BuildResultAccumulator buildResultAccumulator) {
+            BuildResultAccumulatorImpl buildResultAccumulator) {
         this.knowledgeBuilderConfiguration = knowledgeBuilderConfiguration;
         this.rootClassLoader = rootClassLoader;
         this.kBase = kBase;

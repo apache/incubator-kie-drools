@@ -5,6 +5,10 @@ import org.drools.drl.ast.descr.PackageDescr;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Manages handling of {@link PackageDescr} instances.
+ * 
+ */
 public interface PackageDescrManager {
     void registerPackage(PackageDescr packageDescr);
 

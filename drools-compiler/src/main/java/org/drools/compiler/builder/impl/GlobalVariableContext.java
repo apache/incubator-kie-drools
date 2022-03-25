@@ -17,6 +17,11 @@ package org.drools.compiler.builder.impl;
 
 import java.util.Map;
 
+/**
+ * A build context that holds all the declared global variables
+ * as a string -> type map.
+ * 
+ */
 public interface GlobalVariableContext {
     Map<String, Class<?>> getGlobals();
 

@@ -45,14 +45,11 @@ public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
         this.results.add(result);
     }
 
-    public void addAllBuilderResult(Collection<KnowledgeBuilderResult> results) {
-        this.results.addAll(results);
-    }
-
     /**
      * This will return true if there were errors in the package building and
      * compiling phase
      */
+    @Override
     public boolean hasErrors() {
         return !getErrorList().isEmpty();
     }
@@ -160,9 +157,6 @@ public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
 
     public void resetProblems() {
         this.results.clear();
-//        if (this.processBuilder != null) {
-//            this.processBuilder.getErrors().clear();
-//        }
     }
 
     public void addAll(Collection<? extends KnowledgeBuilderResult> results) {

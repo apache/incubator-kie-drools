@@ -16,14 +16,12 @@
 package org.drools.compiler.integrationtests.phases;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
-import org.drools.compiler.builder.impl.BuildResultAccumulator;
 import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.DroolsAssemblerContextImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
 import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.PackageAttributeManagerImpl;
 import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.RootClassLoaderProvider;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -80,7 +78,7 @@ public class ExplicitCompilerTest {
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
         ClassLoader rootClassLoader = configuration.getClassLoader();
 
-        BuildResultAccumulator results = new BuildResultAccumulatorImpl();
+        BuildResultAccumulatorImpl results = new BuildResultAccumulatorImpl();
 
         RootClassLoaderProvider rootClassLoaderProvider = () -> rootClassLoader;
         InternalKnowledgeBaseProvider internalKnowledgeBaseProvider = () -> kBase;

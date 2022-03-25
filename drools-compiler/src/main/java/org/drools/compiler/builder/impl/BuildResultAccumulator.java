@@ -15,13 +15,18 @@
 
 package org.drools.compiler.builder.impl;
 
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
+/**
+ * Holds build processing info, warnings and errors.
+ */
 public interface BuildResultAccumulator {
     void addBuilderResult(KnowledgeBuilderResult result);
 
+    /**
+     * This will return true if there were errors in the package building and
+     * compiling phase
+     */
     boolean hasErrors();
 
-    KnowledgeBuilderErrors getErrors();
 }
