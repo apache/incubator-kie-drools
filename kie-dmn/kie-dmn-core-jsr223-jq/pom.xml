@@ -6,6 +6,7 @@
         <version>8.19.0-SNAPSHOT</version>
     </parent>
     <artifactId>kie-dmn-core-jsr223-jq</artifactId>
+    <name>KIE :: Decision Model Notation :: JSR-223 JQ ScriptEngine</name>
     <description>An opinionated JSR-223 binding for jq, for use in Drools DMN Engine. May change location in the future.</description>
     <properties>
         <java.module.name>org.kie.dmn.core.jsr223.jq</java.module.name>

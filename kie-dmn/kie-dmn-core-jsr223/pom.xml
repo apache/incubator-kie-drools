@@ -16,7 +16,7 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- test scope dependencies -->
+      <!-- test-only scope dependencies -->
       <dependency>
           <groupId>org.openjdk.nashorn</groupId>
           <artifactId>nashorn-core</artifactId>
@@ -39,6 +39,7 @@
           <version>${project.version}</version>
         </dependency>
     </dependencies>
+     <!-- /test-only scope dependencies -->
   </dependencyManagement>
   <dependencies>
     <dependency>
