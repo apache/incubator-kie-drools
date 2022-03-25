@@ -19,14 +19,14 @@ import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
+import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
-import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
+import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
 import org.drools.compiler.builder.impl.processors.OtherDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
-import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
@@ -44,7 +44,6 @@ import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
@@ -121,27 +120,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
-import static org.drools.core.util.StringUtils.isEmpty;
 
 public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, GlobalVariableContext {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
-    private PackageRegistryManagerImpl pkgRegistryManager;
+    private final PackageRegistryManagerImpl pkgRegistryManager;
 
-    private BuildResultAccumulatorImpl results;
+    private final BuildResultAccumulatorImpl results;
 
     private final KnowledgeBuilderConfigurationImpl configuration;
 

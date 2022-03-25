@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Manages handling of {@link PackageDescr} instances.
- * 
+ *
  */
 public interface PackageDescrManager {
     void registerPackage(PackageDescr packageDescr);
