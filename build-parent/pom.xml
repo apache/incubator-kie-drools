@@ -62,6 +62,7 @@
     <version.io.smallrye.openapi.core>2.1.15</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
+    <version.net.thisptr.jackson.jq>1.0.0-preview.20210928</version.net.thisptr.jackson.jq>
     <version.antlr>2.7.7</version.antlr>
     <version.org.antlr>3.5.2</version.org.antlr>
     <version.org.antlrgwt>4.8.2</version.org.antlrgwt>
@@ -625,6 +626,12 @@
         <groupId>net.java.dev.glazedlists</groupId>
         <artifactId>glazedlists_java15</artifactId>
         <version>${version.net.java.dev.glazedlists}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>net.thisptr</groupId>
+        <artifactId>jackson-jq</artifactId>
+        <version>${version.net.thisptr.jackson.jq}</version>
       </dependency>
 
       <!--Both antlr:antlr and org.antlr:antlr-runtime is needed. They are completely different.-->

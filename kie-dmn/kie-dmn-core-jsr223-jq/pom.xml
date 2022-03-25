@@ -11,16 +11,6 @@
     <properties>
         <java.module.name>org.kie.dmn.core.jsr223.jq</java.module.name>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <!-- TODO conversely than other test-scope dependency, this one could be placed in parent poms -->
-                <groupId>net.thisptr</groupId>
-                <artifactId>jackson-jq</artifactId>
-                <version>1.0.0-preview.20210928</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>net.thisptr</groupId>
