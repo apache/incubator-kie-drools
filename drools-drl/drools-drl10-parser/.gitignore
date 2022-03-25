@@ -1,4 +1,5 @@
 target/
+gen/
 local/
 
 # Eclipse, Netbeans and IntelliJ files
