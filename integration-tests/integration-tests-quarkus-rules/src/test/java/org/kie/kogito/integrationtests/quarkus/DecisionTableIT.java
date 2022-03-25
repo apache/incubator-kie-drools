@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.hasItems;
 public class DecisionTableIT {
 
     private static final String PACKAGE = "org.kie.kogito.queries";
-    private static final String RESOURCE_FILE = "src/main/resources/" + PACKAGE.replace('.', '/') + "/LoanUnit.xls";
+    private static final String RESOURCE_FILE = "src/main/resources/" + PACKAGE.replace('.', '/') + "/LoanUnit.drl.xls";
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()

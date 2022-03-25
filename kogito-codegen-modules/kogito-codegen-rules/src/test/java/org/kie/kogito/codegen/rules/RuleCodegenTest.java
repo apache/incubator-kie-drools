@@ -144,7 +144,7 @@ public class RuleCodegenTest {
 
         RuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
-                new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.xls"));
+                new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.drl.xls"));
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertHasLegacyApiFiles(generatedFiles);
@@ -206,7 +206,7 @@ public class RuleCodegenTest {
         DecisionTableFactory.setDecisionTableProvider(null);
         RuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
-                new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.xls"));
+                new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.drl.xls"));
         assertThatThrownBy(incrementalRuleCodegen.withHotReloadMode()::generate).isInstanceOf(MissingDecisionTableDependencyError.class);
     }
 
