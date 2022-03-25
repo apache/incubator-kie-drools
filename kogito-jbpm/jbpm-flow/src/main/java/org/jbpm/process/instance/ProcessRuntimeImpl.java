@@ -70,11 +70,11 @@ import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.services.jobs.impl.LegacyInMemoryJobService;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.services.jobs.impl.LegacyInMemoryJobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

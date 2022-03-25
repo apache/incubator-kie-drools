@@ -19,7 +19,7 @@ package org.kie.kogito.jobs.management.springboot;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
-import org.kie.services.jobs.impl.TriggerJobCommand;
+import org.kie.kogito.services.jobs.impl.TriggerJobCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,8 +30,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_POST_URI;
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_URI;
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.LIMIT;
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.LIMIT_DEFAULT_VALUE;
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.PROCESS_ID;
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.PROCESS_INSTANCE_ID;
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.TIMER_ID;
+
 @RestController
-@RequestMapping("/management/jobs")
+@RequestMapping(JOBS_CALLBACK_URI)
 public class CallbackJobsServiceResource {
 
     @Autowired
@@ -40,11 +48,11 @@ public class CallbackJobsServiceResource {
     @Autowired
     Application application;
 
-    @PostMapping(value = "{processId}/instances/{processInstanceId}/timers/{timerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity triggerTimer(@PathVariable("processId") String processId,
-            @PathVariable("processInstanceId") String processInstanceId,
-            @PathVariable("timerId") String timerId,
-            @RequestParam(value = "limit", defaultValue = "0", required = false) Integer limit) {
+    @PostMapping(value = JOBS_CALLBACK_POST_URI, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> triggerTimer(@PathVariable(PROCESS_ID) String processId,
+            @PathVariable(PROCESS_INSTANCE_ID) String processInstanceId,
+            @PathVariable(TIMER_ID) String timerId,
+            @RequestParam(value = LIMIT, defaultValue = LIMIT_DEFAULT_VALUE, required = false) Integer limit) {
         if (processId == null || processInstanceId == null) {
             return ResponseEntity.badRequest().body("Process id and Process instance id must be  given");
         }

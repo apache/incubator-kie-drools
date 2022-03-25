@@ -58,9 +58,9 @@ import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.services.jobs.impl.InMemoryJobService;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.services.jobs.impl.InMemoryJobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

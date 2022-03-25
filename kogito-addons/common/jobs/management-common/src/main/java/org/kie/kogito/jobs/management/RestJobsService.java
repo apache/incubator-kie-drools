@@ -21,8 +21,10 @@ import java.util.Objects;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.api.URIBuilder;
+
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.buildCallbackPatternJob;
+import static org.kie.kogito.jobs.api.JobCallbackResourceDef.buildCallbackURI;
 
 public abstract class RestJobsService implements JobsService {
 
@@ -38,14 +40,7 @@ public abstract class RestJobsService implements JobsService {
     }
 
     public String getCallbackEndpoint(ProcessInstanceJobDescription description) {
-        return URIBuilder.toURI(callbackEndpoint
-                + "/management/jobs/"
-                + description.processId()
-                + "/instances/"
-                + description.processInstanceId()
-                + "/timers/"
-                + description.id())
-                .toString();
+        return buildCallbackURI(description, callbackEndpoint);
     }
 
     private URI buildJobsServiceURI(String jobServiceUrl) {
@@ -57,18 +52,6 @@ public abstract class RestJobsService implements JobsService {
     }
 
     public Job buildJob(ProcessInstanceJobDescription description, String callback) {
-        return JobBuilder.builder()
-                .id(description.id())
-                .expirationTime(description.expirationTime().get())
-                .repeatInterval(description.expirationTime().repeatInterval())
-                .repeatLimit(description.expirationTime().repeatLimit())
-                .priority(0)
-                .callbackEndpoint(callback)
-                .processId(description.processId())
-                .processInstanceId(description.processInstanceId())
-                .rootProcessId(description.rootProcessId())
-                .rootProcessInstanceId(description.rootProcessInstanceId())
-                .nodeInstanceId(description.nodeInstanceId())
-                .build();
+        return buildCallbackPatternJob(description, callback);
     }
 }

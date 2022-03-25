@@ -26,10 +26,10 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
+import org.kie.kogito.services.signal.LightSignalManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.services.signal.LightSignalManager;
 
 public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServiceProvider {
 

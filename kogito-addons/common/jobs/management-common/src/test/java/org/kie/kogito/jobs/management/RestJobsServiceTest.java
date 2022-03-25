@@ -16,7 +16,6 @@
 package org.kie.kogito.jobs.management;
 
 import java.net.URI;
-import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
@@ -47,11 +46,6 @@ public class RestJobsServiceTest {
             @Override
             public boolean cancelJob(String id) {
                 return false;
-            }
-
-            @Override
-            public ZonedDateTime getScheduledTime(String id) {
-                return null;
             }
         };
     }

@@ -29,12 +29,12 @@ import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
+import org.kie.kogito.services.signal.DefaultSignalManagerHub;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.events.UnitOfWorkEventListener;
-import org.kie.services.signal.DefaultSignalManagerHub;
 
 public abstract class AbstractProcessConfig implements ProcessConfig {
 

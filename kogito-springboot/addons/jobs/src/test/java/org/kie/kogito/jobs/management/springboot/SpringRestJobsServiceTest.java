@@ -16,7 +16,6 @@
 package org.kie.kogito.jobs.management.springboot;
 
 import java.net.URI;
-import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,25 +25,22 @@ import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.api.JobNotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
 import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SpringRestJobsServiceTest {
+class SpringRestJobsServiceTest {
 
     public static final String CALLBACK_URL = "http://localhost";
     public static final String JOB_SERVICE_URL = "http://localhost:8085";
@@ -89,28 +85,5 @@ public class SpringRestJobsServiceTest {
     void testCancelJob() {
         tested.cancelJob("123");
         verify(restTemplate).delete(tested.getJobsServiceUri() + "/{id}", "123");
-    }
-
-    @Test
-    void testGetScheduleTime() {
-
-        Job job = new Job();
-        job.setId("123");
-        job.setExpirationTime(ZonedDateTime.now());
-
-        when(restTemplate.getForObject(any(), any(), anyString())).thenReturn(job);
-
-        ZonedDateTime scheduledTime = tested.getScheduledTime("123");
-        assertThat(scheduledTime).isEqualTo(job.getExpirationTime());
-        verify(restTemplate).getForObject(tested.getJobsServiceUri() + "/{id}", Job.class, "123");
-    }
-
-    @Test
-    void testGetScheduleTimeJobNotFound() {
-
-        when(restTemplate.getForObject(any(), any(), anyString())).thenThrow(NotFound.class);
-
-        assertThatThrownBy(() -> tested.getScheduledTime("123")).isInstanceOf(JobNotFoundException.class);
-        verify(restTemplate).getForObject(tested.getJobsServiceUri() + "/{id}", Job.class, "123");
     }
 }

@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.jobs;
 
-import java.time.ZonedDateTime;
-
 /**
  * JobsService provides an entry point for working with different types of jobs
  * that are meant by default to run in background.
@@ -49,12 +47,4 @@ public interface JobsService {
      * @return returns true if the cancellation was successful, otherwise false
      */
     boolean cancelJob(String id);
-
-    /**
-     * Returns actual schedule time for the next expiration of given job
-     * 
-     * @param id unique id of the job
-     * @return returns actual expiration time for the job
-     */
-    ZonedDateTime getScheduledTime(String id);
 }
