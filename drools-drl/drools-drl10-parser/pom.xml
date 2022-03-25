@@ -63,6 +63,7 @@
             <configuration>
               <visitor>true</visitor>
               <listener>false</listener>
+              <libDirectory>src/main/antlr4/org/drools/parser/</libDirectory>
             </configuration>
           </execution>
         </executions>
