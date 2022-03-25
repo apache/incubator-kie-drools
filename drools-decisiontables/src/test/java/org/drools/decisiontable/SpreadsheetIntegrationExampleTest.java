@@ -43,7 +43,7 @@ public class SpreadsheetIntegrationExampleTest {
     @Test
     public void testExecuteUsingKieAPI() throws Exception {
         // get the resource
-        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.xls", getClass());
+        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass());
         
         // create the builder
         KieSession ksession = getKieSession( dt );
@@ -77,7 +77,7 @@ public class SpreadsheetIntegrationExampleTest {
 
     @Test
     public void testExecuteJBRULES3005() throws Exception {
-        Resource dt = ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() );
+        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass() );
         KieSession ksession = getKieSession( dt );
 
         //ASSERT AND FIRE
@@ -102,7 +102,7 @@ public class SpreadsheetIntegrationExampleTest {
         dtconf.setInputType( DecisionTableInputType.XLS );
         dtconf.setWorksheetName( "Tables_2" );
 
-        Resource dt = ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() )
+        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.drl.xls", getClass() )
                                      .setConfiguration( dtconf );
         KieSession ksession = getKieSession( dt );
 
@@ -134,7 +134,7 @@ public class SpreadsheetIntegrationExampleTest {
 
     @Test
     public void testBooleanField() throws Exception {
-        Resource dt = ResourceFactory.newClassPathResource("/data/ShopRules.xls", getClass());
+        Resource dt = ResourceFactory.newClassPathResource("/data/ShopRules.drl.xls", getClass());
         KieSession ksession = getKieSession( dt );
 
         Person p = new Person( "michael", "stilton", 42 );
@@ -149,7 +149,7 @@ public class SpreadsheetIntegrationExampleTest {
     public void testHeadingWhitespace() throws Exception {
         System.setProperty( "drools.trimCellsInDTable", "false" );
         try {
-            Resource dt = ResourceFactory.newClassPathResource( "/data/HeadingWhitespace.xls", getClass() );
+            Resource dt = ResourceFactory.newClassPathResource("/data/HeadingWhitespace.drl.xls", getClass() );
             KieSession ksession = getKieSession( dt );
 
             Person p = new Person( " me" );
@@ -174,7 +174,7 @@ public class SpreadsheetIntegrationExampleTest {
                 .setDefault( true );
 
         KieBase kbase = new KieHelper().setKieModuleModel( kmodel )
-                .addResource( ks.getResources().newClassPathResource( "/data/CanNotDrink2.xls", getClass() ), ResourceType.DTABLE )
+                .addResource( ks.getResources().newClassPathResource("/data/CanNotDrink2.drl.xls", getClass() ), ResourceType.DTABLE )
                 .build();
 
         assertEquals( 2, kbase.getKiePackage( "org.drools.simple.candrink" ).getRules().size() );

@@ -24,9 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ResourceType
-        implements
-        Serializable {
+public class ResourceType implements Serializable {
 
     private static final long serialVersionUID = 1613735834228581906L;
 
@@ -42,7 +40,7 @@ public class ResourceType
 
     private final boolean fullyCoveredByExecModel;
 
-    private static final Map<String, ResourceType> CACHE = Collections.synchronizedMap(new HashMap<String, ResourceType>());
+    private static final Map<String, ResourceType> CACHE = Collections.synchronizedMap(new HashMap<>());
 
     public ResourceType(String name,
                         boolean fullyCoveredByExecModel,
@@ -82,12 +80,9 @@ public class ResourceType
                                                   otherExtensions );
 
         CACHE.put( resourceType, resource );
-        resource.getAllExtensions().forEach( ext -> {
-            if (ext.contains( "." )) {
-                throw new IllegalArgumentException( "A resource extension cannot contain a dot. Found: " + ext );
-            }
-            CACHE.put( "." + ext, resource );
-        } );
+        for (String ext : resource.getAllExtensions()) {
+            CACHE.put("." + ext, resource);
+        }
         return resource;
     }
 
@@ -98,9 +93,9 @@ public class ResourceType
                                                                      "drl");
 
     public static final ResourceType DRLX = addResourceTypeToRegistry("DRLX",
-                                                               "Drools Extended Rule Language (experimental)",
-                                                               "src/main/resources",
-                                                               "drlx");
+                                                                      "Drools Extended Rule Language (experimental)",
+                                                                      "src/main/resources",
+                                                                      "drlx");
 
 
     /** Drools Rule Language - Guided Globals definitions - Workaround for double-dot file extensions for 6.0 */
@@ -161,7 +156,7 @@ public class ResourceType
     public static final ResourceType DTABLE = addResourceTypeToRegistry("DTABLE",
                                                                         "Decision Table",
                                                                         "src/main/resources",
-                                                                        "xls", "xlsx", "csv");
+                                                                        "drl.xls", "drl.xlsx", "drl.csv");
 
     /** Binary Package */
     public static final ResourceType PKG = addResourceTypeToRegistry("PKG",
@@ -234,7 +229,7 @@ public class ResourceType
     public static final ResourceType TEMPLATE = addResourceTypeToRegistry("TEMPLATE",
                                                                           "Drools Rule Template",
                                                                           "src/main/resources",
-                                                                          "template");
+                                                                          "drl.template");
 
     public static final ResourceType DRT = addResourceTypeToRegistry("DRT",
                                                                      "Drools Rule Template",
@@ -277,17 +272,13 @@ public class ResourceType
                                                                       "src/main/resources",
                                                                       "no_op");
 
-    public static ResourceType getResourceType(final String resourceType) {
-        ResourceType resource = CACHE.get(resourceType);
-        if (resource == null) {
-            throw new RuntimeException("Unable to determine resource type " + resourceType);
-        }
-        return resource;
-    }
-
     public static ResourceType determineResourceType(final String resourceName) {
-        int dotPos = resourceName.lastIndexOf( '.' );
-        return dotPos < 0 ? null : CACHE.get( resourceName.substring( dotPos ) );
+        for ( Map.Entry<String, ResourceType> entry : CACHE.entrySet() ) {
+            if (resourceName.endsWith(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     public boolean matchesExtension(String resourceName) {

@@ -45,7 +45,7 @@ public class PricingRuleLauncher {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "/data/ExamplePolicyPricing.xls", getClass() ),
+        kbuilder.add( ResourceFactory.newClassPathResource("/data/ExamplePolicyPricing.drl.xls", getClass() ),
                               ResourceType.DTABLE,
                               dtconf );
 
@@ -77,7 +77,7 @@ public class PricingRuleLauncher {
     }
 
     private InputStream getSpreadsheetStream() {
-        return this.getClass().getResourceAsStream( "/data/ExamplePolicyPricing.xls" );
+        return this.getClass().getResourceAsStream("/data/ExamplePolicyPricing.drl.xls");
     }
 
 }

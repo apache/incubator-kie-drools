@@ -80,7 +80,7 @@ public class ResourcesTest {
     @Test
     public void testXLS() {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
-                "sample.xls");
+                "sample.drl.xls");
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
 
@@ -91,7 +91,7 @@ public class ResourcesTest {
     @Test
     public void testCSV() {
         final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("sample.drl.csv", getClass(), DecisionTableInputType.CSV);
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
@@ -106,7 +106,7 @@ public class ResourcesTest {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
 
         // the data we are interested in starts at row 2, column 2 (e.g. B2)
-        final String drl = converter.compile(getClass().getResourceAsStream("sample_cheese.xls"), getClass()
+        final String drl = converter.compile(getClass().getResourceAsStream("sample_cheese.drl.xls"), getClass()
                 .getResourceAsStream("sample_cheese.drt"), 2, 2);
 
         // compile the drl

@@ -53,9 +53,9 @@ public class ExampleUsageTest {
         ReleaseId releaseId = ks.newReleaseId("org.drools.impact.analysis.example", "order-process", "1.0.0");
 
         KieFileSystem kfs = createKieFileSystemWithClassPathResourceNames(releaseId, getClass(),
-                                                                          "/org/drools/impact/analysis/example/CustomerCheck.xls",
-                                                                          "/org/drools/impact/analysis/example/PriceCheck.xls",
-                                                                          "/org/drools/impact/analysis/example/StatusCheck.xls",
+                                                                          "/org/drools/impact/analysis/example/CustomerCheck.drl.xls",
+                                                                          "/org/drools/impact/analysis/example/PriceCheck.drl.xls",
+                                                                          "/org/drools/impact/analysis/example/StatusCheck.drl.xls",
                                                                           "/org/drools/impact/analysis/example/inventory.drl");
 
         //--- Just to confirm that this rule can run. This part is not actually required for impact analysis

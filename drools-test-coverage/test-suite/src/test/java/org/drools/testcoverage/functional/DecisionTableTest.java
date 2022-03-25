@@ -93,55 +93,55 @@ public class DecisionTableTest {
 
     @BeforeClass
     public static void loadDecisionTablesToAvoidLoadingThemForEachKieBaseConfiguration() {
-        sampleXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample.xls",
+        sampleXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample.drl.xls",
                                                                                     DecisionTableTest.class,
                                                                                     DecisionTableInputType.XLS);
 
-        sampleCsvDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample.csv",
+        sampleCsvDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample.drl.csv",
                                                                                     DecisionTableTest.class,
                                                                                     DecisionTableInputType.CSV);
 
-        multipleTablesDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("multiple_tables.xls",
+        multipleTablesDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("multiple_tables.drl.xls",
                                                                                          DecisionTableTest.class,
                                                                                          DecisionTableInputType.XLS);
 
-        evalDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("eval_dt.xls",
+        evalDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("eval_dt.drl.xls",
                                                                                DecisionTableTest.class,
                                                                                DecisionTableInputType.XLS);
 
-        advancedDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("advanced_dt.xls",
+        advancedDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("advanced_dt.drl.xls",
                                                                                    DecisionTableTest.class,
                                                                                    DecisionTableInputType.XLS);
 
-        agendaGroupDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv",
+        agendaGroupDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.drl.csv",
                                                                                       DecisionTableTest.class,
                                                                                       DecisionTableInputType.CSV);
 
-        emptyConditionDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("emptyCondition.xls",
+        emptyConditionDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("emptyCondition.drl.xls",
                                                                                          DecisionTableTest.class,
                                                                                          DecisionTableInputType.XLS);
 
-        emptyActionDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("emptyAction.csv",
+        emptyActionDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("emptyAction.drl.csv",
                                                                                       DecisionTableTest.class,
                                                                                       DecisionTableInputType.CSV);
 
-        queriesDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls",
+        queriesDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("queries.drl.xls",
                                                                                   DecisionTableTest.class,
                                                                                   DecisionTableInputType.XLS);
 
-        sequentialDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sequential.csv",
+        sequentialDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sequential.drl.csv",
                                                                                      DecisionTableTest.class,
                                                                                      DecisionTableInputType.CSV);
 
-        sampleDatesCsvDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.csv",
+        sampleDatesCsvDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.drl.csv",
                                                                                          DecisionTableTest.class,
                                                                                          DecisionTableInputType.CSV);
 
-        sampleDatesXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.xls",
+        sampleDatesXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.drl.xls",
                                                                                          DecisionTableTest.class,
                                                                                          DecisionTableInputType.XLS);
 
-        sampleDateXLSXDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("inputObjectExample.xlsx",
+        sampleDateXLSXDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("inputObjectExample.drl.xlsx",
                                                                                          DecisionTableTest.class,
                                                                                          DecisionTableInputType.XLSX);
 

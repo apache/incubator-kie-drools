@@ -31,7 +31,7 @@ public class LinkedWorkbookTest {
     public void testBrokenExternalLinkButValueIsCached() throws Exception {
         KieHelper kieHelper = new KieHelper();
         // do not modify this XLS file using OpenOffice or LibreOffice or the external link gets corrupted and the test fails!
-        InputStream dtableIs = this.getClass().getResourceAsStream("BZ967609-brokenExtLinkButValueCached.xls");
+        InputStream dtableIs = this.getClass().getResourceAsStream("BZ967609-brokenExtLinkButValueCached.drl.xls");
         kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
                 ResourceType.DTABLE);
         KieBase kbase = kieHelper.build();

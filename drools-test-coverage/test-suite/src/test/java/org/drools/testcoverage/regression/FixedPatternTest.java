@@ -66,7 +66,7 @@ public class FixedPatternTest {
     @Test
     public void testFixedPattern() {
 
-        final Resource resource = KieServices.Factory.get().getResources().newClassPathResource("fixedPattern.xls", getClass());
+        final Resource resource = KieServices.Factory.get().getResources().newClassPathResource("fixedPattern.drl.xls", getClass());
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
 
         final KieSession ksession = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder).newKieSession();

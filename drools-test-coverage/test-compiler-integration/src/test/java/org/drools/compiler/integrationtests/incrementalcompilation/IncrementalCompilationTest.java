@@ -4593,7 +4593,7 @@ public class IncrementalCompilationTest {
         KieResources kr = ks.getResources();
 
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-dtable", "1.1.1");
-        buildDTableProject( ks, kr, releaseId1, "CanDrinkAndDrive.xls" );
+        buildDTableProject( ks, kr, releaseId1, "CanDrinkAndDrive.drl.xls" );
 
         KieContainer kc = ks.newKieContainer(releaseId1);
 
@@ -4611,7 +4611,7 @@ public class IncrementalCompilationTest {
         }
 
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-dtable", "1.1.2");
-        buildDTableProject( ks, kr, releaseId2, "CanDrinkAndDrive2.xls" );
+        buildDTableProject( ks, kr, releaseId2, "CanDrinkAndDrive2.drl.xls" );
 
         kc.updateToVersion(releaseId2);
 
@@ -4627,9 +4627,9 @@ public class IncrementalCompilationTest {
 
     private void buildDTableProject( KieServices ks, KieResources kr, ReleaseId releaseId, String dtableFile ) {
         KieFileSystem kfs = ks.newKieFileSystem()
-                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls",
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.drl.xls",
                         kr.newFileSystemResource( "src/test/resources/data/" + dtableFile ) )
-                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls.properties",
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.drl.xls.properties",
                         "sheets=Sheet1,Sheet2" );
 
         kfs.generateAndWritePomXML(releaseId);

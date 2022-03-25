@@ -45,10 +45,10 @@ public class UnicodeInXLSTest {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.XLS);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("unicode.xls", getClass()), ResourceType.DTABLE, dtconf);
+        kbuilder.add(ResourceFactory.newClassPathResource("unicode.drl.xls", getClass()), ResourceType.DTABLE, dtconf);
         if (kbuilder.hasErrors()) {
             System.out.println(kbuilder.getErrors().toString());
-            System.out.println(DecisionTableFactory.loadFromInputStream(getClass().getResourceAsStream("unicode.xls"), dtconf));
+            System.out.println(DecisionTableFactory.loadFromInputStream(getClass().getResourceAsStream("unicode.drl.xls"), dtconf));
             fail("Cannot build XLS decision table containing utf-8 characters\n" + kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

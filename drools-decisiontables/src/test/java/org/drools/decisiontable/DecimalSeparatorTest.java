@@ -45,7 +45,7 @@ public class DecimalSeparatorTest {
         baseModel.newKieSessionModel( "defaultKSession" ).setDefault( true );
 
         kfs.writeKModuleXML( kmodule.toXML() );
-        kfs.write( ks.getResources().newClassPathResource( "decimalSeparator.xls",
+        kfs.write( ks.getResources().newClassPathResource( "decimalSeparator.drl.xls",
                                                            this.getClass() ) ); // README when path is set then test works
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         assertEquals( 0,

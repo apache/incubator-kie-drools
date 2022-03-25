@@ -35,7 +35,7 @@ public class EmptyHeaderTest {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource(
-                "emptyCondition.xls", getClass()), ResourceType.DTABLE,
+                "emptyCondition.drl.xls", getClass()), ResourceType.DTABLE,
                 dtconf);
 	}
 
@@ -47,6 +47,6 @@ public class EmptyHeaderTest {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource(
-                "emptyAction.csv", getClass()), ResourceType.DTABLE, dtconf);
+                "emptyAction.drl.csv", getClass()), ResourceType.DTABLE, dtconf);
 	}
 }

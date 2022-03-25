@@ -33,7 +33,7 @@ public class MakeSureMultiLinesWorkTest {
 
         KieHelper kieHelper = new KieHelper();
         // do not modify this XLS file using OpenOffice or LibreOffice or the external link gets corrupted and the test fails!
-        InputStream dtableIs = this.getClass().getResourceAsStream("MultiLinesInAction.xls");
+        InputStream dtableIs = this.getClass().getResourceAsStream("MultiLinesInAction.drl.xls");
         kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
                               ResourceType.DTABLE);
         KieBase kbase = kieHelper.build();

@@ -44,13 +44,13 @@ public class IncrementalCompilationTest {
         try {
 
             //Add XLS decision table
-            in1 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.xls" );
-            kfs.write( "src/main/resources/incrementalBuild1.dtable.xls",
+            in1 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
+            kfs.write( "src/main/resources/incrementalBuild1.dtable.drl.xls",
                        KieServices.Factory.get().getResources().newInputStreamResource( in1 ) );
 
             //Add the same XLS decision table again as a different resource
-            in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.xls" );
-            kfs.write( "src/main/resources/incrementalBuild2.dtable.xls",
+            in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
+            kfs.write( "src/main/resources/incrementalBuild2.dtable.drl.xls",
                        KieServices.Factory.get().getResources().newInputStreamResource( in2 ) );
 
             //Check errors on a full build
@@ -81,8 +81,8 @@ public class IncrementalCompilationTest {
         try {
 
             //Add XLS decision table
-            in1 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.xls" );
-            kfs.write( "src/main/resources/incrementalBuild1.dtable.xls",
+            in1 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
+            kfs.write( "src/main/resources/incrementalBuild1.dtable.drl.xls",
                        KieServices.Factory.get().getResources().newInputStreamResource( in1 ) );
 
             //Expect no errors
@@ -90,10 +90,10 @@ public class IncrementalCompilationTest {
             assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
             //Add the same XLS decision table again as a different resource
-            in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.xls" );
-            kfs.write( "src/main/resources/incrementalBuild2.dtable.xls",
+            in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.drl.xls" );
+            kfs.write( "src/main/resources/incrementalBuild2.dtable.drl.xls",
                        KieServices.Factory.get().getResources().newInputStreamResource( in2 ) );
-            IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/incrementalBuild2.dtable.xls" ).build();
+            IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/incrementalBuild2.dtable.drl.xls" ).build();
 
             //Expect duplicate rule errors
             assertEquals( 1, addResults.getAddedMessages().size() );

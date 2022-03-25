@@ -49,7 +49,7 @@ public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testLoadFromClassPath() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final String drl = converter.compile( "/data/MultiSheetDST.xls",
+        final String drl = converter.compile("/data/MultiSheetDST.drl.xls",
                                               "/templates/test_template1.drl",
                                               11,
                                               2 );
@@ -66,7 +66,7 @@ public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testLoadSpecificWorksheet() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final String drl = converter.compile( "/data/MultiSheetDST.xls",
+        final String drl = converter.compile("/data/MultiSheetDST.drl.xls",
                                               "Another Sheet",
                                               "/templates/test_template1.drl",
                                               11,
@@ -78,7 +78,7 @@ public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testLoadCsv() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final String drl = converter.compile( "/data/ComplexWorkbook.csv",
+        final String drl = converter.compile("/data/ComplexWorkbook.drl.csv",
                                               "/templates/test_template2.drl",
                                               InputType.CSV,
                                               10,
@@ -94,13 +94,13 @@ public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testLoadBasicWithMergedCells() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final String drl = converter.compile( "/data/BasicWorkbook.xls",
+        final String drl = converter.compile("/data/BasicWorkbook.drl.xls",
                                               "/templates/test_template3.drl",
                                               InputType.XLS,
                                               10,
                                               2 );
 
-        final String drl1 = converter.compile( "/data/BasicWorkbook.xls",
+        final String drl1 = converter.compile("/data/BasicWorkbook.drl.xls",
                                                "/templates/test_template3.drl",
                                                InputType.XLS,
                                                21,
@@ -129,7 +129,7 @@ public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testLoadBasicWithExtraCells() {
         final ExternalSpreadsheetCompiler compiler = new ExternalSpreadsheetCompiler();
-        final String drl = compiler.compile( "/data/BasicWorkbook.xls",
+        final String drl = compiler.compile("/data/BasicWorkbook.drl.xls",
                                              "/templates/test_template4.drl",
                                              InputType.XLS,
                                              10,
@@ -151,7 +151,7 @@ public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testIntegration() throws Exception {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final String drl = converter.compile("/data/IntegrationExampleTest.xls", "/templates/test_integration.drl", 18, 3);
+        final String drl = converter.compile("/data/IntegrationExampleTest.drl.xls", "/templates/test_integration.drl", 18, 3);
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
@@ -178,7 +178,7 @@ public class ExternalSpreadsheetCompilerTest {
         listeners.add(l1);
         TemplateDataListener l2 = new TemplateDataListener(30, 3, "/templates/test_pricing2.drl");
         listeners.add(l2);
-        converter.compile("/data/ExamplePolicyPricing.xls", InputType.XLS, listeners);
+        converter.compile("/data/ExamplePolicyPricing.drl.xls", InputType.XLS, listeners);
 
         //COMPILE
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

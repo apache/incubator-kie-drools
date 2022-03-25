@@ -39,14 +39,21 @@ public class RuntimeIT {
     KieRuntimeBuilder runtimeBuilder;
 
     @Test
-    public void testRuleEvaluation() {
+    public void testDrlEvaluation() {
         // canDrinkKS is the default session
-        KieSession ksession = runtimeBuilder.newKieSession();
+        testSimpleDrl(runtimeBuilder.newKieSession(), "org.drools.drl");
+    }
 
+    @Test
+    public void testDTableEvaluation() {
+        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDTable"), "org.drools.dtable");
+    }
+
+    private void testSimpleDrl(KieSession ksession, String assetPackage) {
         List<String> pkgNames = ksession.getKieBase().getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
         assertEquals(2, pkgNames.size());
         assertTrue(pkgNames.contains("org.drools.quarkus.test"));
-        assertTrue(pkgNames.contains("org.drools.simple.candrink"));
+        assertTrue(pkgNames.contains(assetPackage));
 
         Result result = new Result();
         ksession.insert(result);
@@ -105,9 +112,10 @@ public class RuntimeIT {
         KieBase kBase = runtimeBuilder.getKieBase("allKB");
 
         List<String> pkgNames = kBase.getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
-        assertEquals(4, pkgNames.size());
+        assertEquals(5, pkgNames.size());
         assertTrue(pkgNames.contains("org.drools.quarkus.test"));
-        assertTrue(pkgNames.contains("org.drools.simple.candrink"));
+        assertTrue(pkgNames.contains("org.drools.drl"));
+        assertTrue(pkgNames.contains("org.drools.dtable"));
         assertTrue(pkgNames.contains("org.drools.cep"));
         assertTrue(pkgNames.contains("org.drools.probe"));
     }

@@ -161,7 +161,7 @@ public class TemplatesTest {
 
         final KieServices kieServices = KieServices.Factory.get();
         // the data we are interested in starts at row 1, column 1 (e.g. A1)
-        try (InputStream spreadSheetStream = kieServices.getResources().newClassPathResource("template1_spreadsheet.xls", getClass()).getInputStream();
+        try (InputStream spreadSheetStream = kieServices.getResources().newClassPathResource("template1_spreadsheet.drl.xls", getClass()).getInputStream();
              InputStream templateStream = kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
 
             final String drl = converter.compile(spreadSheetStream, templateStream, 1, 1);

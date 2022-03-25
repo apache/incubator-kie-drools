@@ -89,7 +89,7 @@ public class ResourceHandler extends BaseAbstractHandler
             ((UrlResource)resource).setPassword(password);
         }
         
-        resource.setResourceType( ResourceType.getResourceType( type ) );
+        resource.setResourceType( ResourceType.determineResourceType( type ) );
         
         resource.setSourcePath(name);
         resource.setDescription(description);

@@ -19,8 +19,6 @@ package org.drools.decisiontable.parser.csv;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,7 +33,7 @@ public class CsvParserTest {
         final CsvParser parser = new CsvParser( listener,
                                                 lineParser );
 
-        parser.parseFile( getClass().getResourceAsStream( "/data/TestCsv.csv" ) );
+        parser.parseFile( getClass().getResourceAsStream("/data/TestCsv.drl.csv") );
         assertEquals( "A",
                       listener.getCell( 0,
                                         0 ) );

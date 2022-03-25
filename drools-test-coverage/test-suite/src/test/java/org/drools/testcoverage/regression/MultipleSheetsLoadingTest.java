@@ -61,7 +61,7 @@ public class MultipleSheetsLoadingTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultipleSheetsLoadingTest.class);
 
-    private static final String XLS_EXTENSION = "xls";
+    private static final String XLS_EXTENSION = "drl.xls";
     private static final String XLS_FILE_NAME_NO_EXTENSION = "multiple-sheets";
     private static final String XLS_FILE_NAME = XLS_FILE_NAME_NO_EXTENSION + "." + XLS_EXTENSION;
 

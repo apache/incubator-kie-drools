@@ -1,4 +1,4 @@
-package org.drools.simple.candrink
+package org.drools.drl
 
 import org.drools.quarkus.test.Person
 import org.drools.quarkus.test.Result

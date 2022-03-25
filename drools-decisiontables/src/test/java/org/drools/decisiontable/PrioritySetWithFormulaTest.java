@@ -39,7 +39,7 @@ public class PrioritySetWithFormulaTest {
 
         kfs.writeKModuleXML( kmodule.toXML() );
         kfs.write( ks.getResources().newClassPathResource(
-                "prioritySetWithFormula.xls", this.getClass() ) );
+                "prioritySetWithFormula.drl.xls", this.getClass() ) );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
 
