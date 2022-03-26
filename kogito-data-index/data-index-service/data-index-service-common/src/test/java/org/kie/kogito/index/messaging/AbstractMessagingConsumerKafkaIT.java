@@ -69,7 +69,7 @@ public abstract class AbstractMessagingConsumerKafkaIT {
     void testProcessInstanceEvent() throws Exception {
         sendProcessInstanceEvent();
 
-        String processInstanceId = "c2fa5c5e-3002-44c7-aef7-bce82297e3fe";
+        String processInstanceId = "2308e23d-9998-47e9-a772-a078cf5b891b";
 
         await()
                 .atMost(timeout)
@@ -86,7 +86,7 @@ public abstract class AbstractMessagingConsumerKafkaIT {
     void testUserTaskInstanceEvent() throws Exception {
         sendUserTaskInstanceEvent();
 
-        String taskId = "228d5922-5e88-4bfa-8329-7116a5cbe58b";
+        String taskId = "45fae435-b098-4f27-97cf-a0c107072e8b";
 
         await()
                 .atMost(timeout)

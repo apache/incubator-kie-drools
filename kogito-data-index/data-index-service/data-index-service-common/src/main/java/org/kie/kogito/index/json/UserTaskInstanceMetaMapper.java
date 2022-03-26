@@ -18,12 +18,12 @@ package org.kie.kogito.index.json;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
-import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.kie.kogito.index.Constants.ID;
 import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.Constants.LAST_UPDATE;
@@ -31,55 +31,54 @@ import static org.kie.kogito.index.Constants.PROCESS_ID;
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
-public class UserTaskInstanceMetaMapper implements Function<KogitoUserTaskCloudEvent, ObjectNode> {
+public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceDataEvent, ObjectNode> {
 
     @Override
-    public ObjectNode apply(KogitoUserTaskCloudEvent event) {
+    public ObjectNode apply(UserTaskInstanceDataEvent event) {
         if (event == null) {
             return null;
         }
 
-        UserTaskInstance ut = event.getData();
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
-        json.put(PROCESS_ID, event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
+        json.put(ID, isNullOrEmpty(event.getData().getRootProcessInstanceId()) ? event.getData().getProcessInstanceId() : event.getData().getRootProcessInstanceId());
+        json.put(PROCESS_ID, isNullOrEmpty(event.getData().getRootProcessId()) ? event.getData().getProcessId() : event.getData().getRootProcessId());
         ObjectNode kogito = getObjectMapper().createObjectNode();
         kogito.put(LAST_UPDATE, event.getTime().toInstant().toEpochMilli());
-        kogito.withArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).add(getUserTaskJson(ut));
+        kogito.withArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).add(getUserTaskJson(event));
         json.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
         return json;
     }
 
-    private ObjectNode getUserTaskJson(UserTaskInstance ut) {
+    private ObjectNode getUserTaskJson(UserTaskInstanceDataEvent event) {
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, ut.getId());
-        json.put("processInstanceId", ut.getProcessInstanceId());
-        json.put("state", ut.getState());
-        if (ut.getDescription() != null) {
-            json.put("description", ut.getDescription());
+        json.put(ID, event.getData().getId());
+        json.put("processInstanceId", event.getData().getProcessInstanceId());
+        json.put("state", event.getData().getState());
+        if (!isNullOrEmpty(event.getData().getTaskDescription())) {
+            json.put("description", event.getData().getTaskDescription());
         }
-        if (ut.getName() != null) {
-            json.put("name", ut.getName());
+        if (!isNullOrEmpty(event.getData().getTaskName())) {
+            json.put("name", event.getData().getTaskName());
         }
-        if (ut.getPriority() != null) {
-            json.put("priority", ut.getPriority());
+        if (!isNullOrEmpty(event.getData().getTaskPriority())) {
+            json.put("priority", event.getData().getTaskPriority());
         }
-        if (ut.getActualOwner() != null) {
-            json.put("actualOwner", ut.getActualOwner());
+        if (!isNullOrEmpty(event.getData().getActualOwner())) {
+            json.put("actualOwner", event.getData().getActualOwner());
         }
-        mapArray("adminUsers", ut.getAdminUsers(), json);
-        mapArray("adminGroups", ut.getAdminGroups(), json);
-        mapArray("excludedUsers", ut.getExcludedUsers(), json);
-        mapArray("potentialGroups", ut.getPotentialGroups(), json);
-        mapArray("potentialUsers", ut.getPotentialUsers(), json);
-        if (ut.getCompleted() != null) {
-            json.put("completed", ut.getCompleted().toInstant().toEpochMilli());
+        mapArray("adminUsers", event.getData().getAdminUsers(), json);
+        mapArray("adminGroups", event.getData().getAdminGroups(), json);
+        mapArray("excludedUsers", event.getData().getExcludedUsers(), json);
+        mapArray("potentialGroups", event.getData().getPotentialGroups(), json);
+        mapArray("potentialUsers", event.getData().getPotentialUsers(), json);
+        if (event.getData().getCompleteDate() != null) {
+            json.put("completed", event.getData().getCompleteDate().toInstant().toEpochMilli());
         }
-        if (ut.getStarted() != null) {
-            json.put("started", ut.getStarted().toInstant().toEpochMilli());
+        if (event.getData().getStartDate() != null) {
+            json.put("started", event.getData().getStartDate().toInstant().toEpochMilli());
         }
-        if (ut.getLastUpdate() != null) {
-            json.put(LAST_UPDATE, ut.getLastUpdate().toInstant().toEpochMilli());
+        if (event.getTime() != null) {
+            json.put(LAST_UPDATE, event.getTime().toInstant().toEpochMilli());
         }
         return json;
     }

@@ -16,13 +16,11 @@
 package org.kie.kogito.index.service;
 
 import java.time.Duration;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -32,15 +30,13 @@ import javax.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -54,7 +50,9 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
+import static org.kie.kogito.index.DateTimeUtils.formatDateTime;
+import static org.kie.kogito.index.DateTimeUtils.formatOffsetDateTime;
+import static org.kie.kogito.index.DateTimeUtils.formatZonedDateTime;
 import static org.kie.kogito.index.GraphQLUtils.getJobById;
 import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByBusinessKey;
 import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceById;
@@ -81,8 +79,8 @@ import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndState;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdNoActualOwner;
 import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.TestUtils.getProcessInstanceVariablesMap;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
-import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
@@ -100,10 +98,6 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     static void setup() {
         RestAssured.config = RestAssured.config()
                 .encoderConfig(encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false));
-    }
-
-    protected String formatZonedDateTime(ZonedDateTime time) {
-        return time.truncatedTo(ChronoUnit.MILLIS).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
     @AfterEach
@@ -130,62 +124,48 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                 .then().log().ifValidationFails().statusCode(200).body("data.Jobs", isA(Collection.class));
     }
 
-    protected void validateProcessInstance(String query, KogitoProcessCloudEvent event, String childProcessInstanceId) {
+    protected void validateProcessInstance(String query, ProcessInstanceDataEvent event, String childProcessInstanceId) {
         LOGGER.debug("GraphQL query: {}", query);
         await()
                 .atMost(timeout)
                 .untilAsserted(() -> given().contentType(ContentType.JSON).body(query)
                         .when().post("/graphql")
                         .then().log().ifValidationFails().statusCode(200)
-                        .body("data.ProcessInstances[0].id", is(event.getProcessInstanceId()))
-                        .body("data.ProcessInstances[0].processId", is(event.getProcessId()))
+                        .body("data.ProcessInstances[0].id", is(event.getData().getId()))
+                        .body("data.ProcessInstances[0].processId", is(event.getData().getProcessId()))
                         .body("data.ProcessInstances[0].processName", is(event.getData().getProcessName()))
-                        .body("data.ProcessInstances[0].rootProcessId", is(event.getRootProcessId()))
-                        .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
-                        .body("data.ProcessInstances[0].parentProcessInstanceId",
-                                is(event.getParentProcessInstanceId()))
-                        .body("data.ProcessInstances[0].parentProcessInstance.id",
-                                event.getParentProcessInstanceId() == null ? is(nullValue()) : is(event.getParentProcessInstanceId()))
-                        .body("data.ProcessInstances[0].parentProcessInstance.processName",
-                                event.getParentProcessInstanceId() == null ? is(nullValue()) : is(not(emptyOrNullString())))
-                        .body("data.ProcessInstances[0].start",
-                                is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                        .body("data.ProcessInstances[0].end",
-                                event.getData().getEnd() == null ? is(nullValue()) : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
-                        .body("data.ProcessInstances[0].childProcessInstances[0].id",
-                                childProcessInstanceId == null ? is(nullValue()) : is(childProcessInstanceId))
-                        .body("data.ProcessInstances[0].childProcessInstances[0].processName",
-                                childProcessInstanceId == null ? is(nullValue()) : is(not(emptyOrNullString())))
+                        .body("data.ProcessInstances[0].rootProcessId", is(event.getData().getRootProcessId()))
+                        .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getData().getRootInstanceId()))
+                        .body("data.ProcessInstances[0].parentProcessInstanceId", is(event.getData().getParentInstanceId()))
+                        .body("data.ProcessInstances[0].parentProcessInstance.id", event.getData().getParentInstanceId() == null ? is(nullValue()) : is(event.getData().getParentInstanceId()))
+                        .body("data.ProcessInstances[0].parentProcessInstance.processName", event.getData().getParentInstanceId() == null ? is(nullValue()) : is(not(emptyOrNullString())))
+                        .body("data.ProcessInstances[0].start", is(formatDateTime(event.getData().getStartDate())))
+                        .body("data.ProcessInstances[0].end", event.getData().getEndDate() == null ? is(nullValue()) : is(formatDateTime(event.getData().getEndDate())))
+                        .body("data.ProcessInstances[0].childProcessInstances[0].id", childProcessInstanceId == null ? is(nullValue()) : is(childProcessInstanceId))
+                        .body("data.ProcessInstances[0].childProcessInstances[0].processName", childProcessInstanceId == null ? is(nullValue()) : is(not(emptyOrNullString())))
                         .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()))
-                        .body("data.ProcessInstances[0].serviceUrl",
-                                event.getSource().toString().equals("/" + event.getProcessId()) ? is(nullValue()) : is("http://localhost:8080"))
-                        .body("data.ProcessInstances[0].addons", hasItems(event.getData().getAddons().toArray()))
-                        .body("data.ProcessInstances[0].error.message",
-                                event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
+                        .body("data.ProcessInstances[0].serviceUrl", event.getSource().toString().equals("/" + event.getData().getProcessId()) ? is(nullValue()) : is("http://localhost:8080"))
+                        .body("data.ProcessInstances[0].addons", event.getKogitoAddons() == null ? is(nullValue()) : hasItems(event.getKogitoAddons().split(",")))
+                        .body("data.ProcessInstances[0].error.message", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getErrorMessage()))
                         .body("data.ProcessInstances[0].error.nodeDefinitionId", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getNodeDefinitionId()))
-                        .body("data.ProcessInstances[0].lastUpdate",
-                                is(formatZonedDateTime(
-                                        event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
-                        .body("data.ProcessInstances[0].nodes", hasSize(event.getData().getNodes().size()))
-                        .body("data.ProcessInstances[0].nodes[0].id", is(event.getData().getNodes().get(0).getId()))
-                        .body("data.ProcessInstances[0].nodes[0].name", is(event.getData().getNodes().get(0).getName()))
-                        .body("data.ProcessInstances[0].nodes[0].nodeId", is(event.getData().getNodes().get(0).getNodeId()))
-                        .body("data.ProcessInstances[0].nodes[0].type", is(event.getData().getNodes().get(0).getType()))
-                        .body("data.ProcessInstances[0].nodes[0].definitionId", is(event.getData().getNodes().get(0).getDefinitionId()))
-                        .body("data.ProcessInstances[0].nodes[0].enter", is(formatZonedDateTime(event.getData().getNodes().get(0).getEnter().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.ProcessInstances[0].lastUpdate", is(formatOffsetDateTime(event.getTime())))
+                        .body("data.ProcessInstances[0].nodes.size()", is(event.getData().getNodeInstances().size()))
+                        .body("data.ProcessInstances[0].nodes[0].id", is(event.getData().getNodeInstances().stream().findFirst().get().getId()))
+                        .body("data.ProcessInstances[0].nodes[0].name", is(event.getData().getNodeInstances().stream().findFirst().get().getNodeName()))
+                        .body("data.ProcessInstances[0].nodes[0].nodeId", is(event.getData().getNodeInstances().stream().findFirst().get().getNodeId()))
+                        .body("data.ProcessInstances[0].nodes[0].type", is(event.getData().getNodeInstances().stream().findFirst().get().getNodeType()))
+                        .body("data.ProcessInstances[0].nodes[0].definitionId", is(event.getData().getNodeInstances().stream().findFirst().get().getNodeDefinitionId()))
+                        .body("data.ProcessInstances[0].nodes[0].enter", is(formatDateTime(event.getData().getNodeInstances().stream().findFirst().get().getTriggerTime())))
                         .body("data.ProcessInstances[0].nodes[0].exit",
-                                event.getData().getNodes().get(0).getExit() == null ? is(nullValue())
-                                        : is(formatZonedDateTime(event.getData().getNodes().get(0).getExit().withZoneSameInstant(ZoneOffset.UTC))))
-                        .body("data.ProcessInstances[0].milestones", hasSize(event.getData().getMilestones().size()))
-                        .body("data.ProcessInstances[0].milestones[0].id",
-                                is(event.getData().getMilestones().get(0).getId()))
-                        .body("data.ProcessInstances[0].milestones[0].name",
-                                is(event.getData().getMilestones().get(0).getName()))
-                        .body("data.ProcessInstances[0].milestones[0].status",
-                                is(event.getData().getMilestones().get(0).getStatus())));
+                                event.getData().getNodeInstances().stream().findFirst().get().getLeaveTime() == null ? is(nullValue())
+                                        : is(formatDateTime(event.getData().getNodeInstances().stream().findFirst().get().getLeaveTime())))
+                        .body("data.ProcessInstances[0].milestones.size()", is(event.getData().getMilestones().size()))
+                        .body("data.ProcessInstances[0].milestones[0].id", is(event.getData().getMilestones().stream().findFirst().get().getId()))
+                        .body("data.ProcessInstances[0].milestones[0].name", is(event.getData().getMilestones().stream().findFirst().get().getName()))
+                        .body("data.ProcessInstances[0].milestones[0].status", is(event.getData().getMilestones().stream().findFirst().get().getStatus())));
     }
 
-    protected void validateProcessInstance(String query, KogitoProcessCloudEvent event) {
+    protected void validateProcessInstance(String query, ProcessInstanceDataEvent event) {
         validateProcessInstance(query, event, null);
     }
 
@@ -194,37 +174,36 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         String processId = "travels";
         List<String> pIds = new ArrayList<>();
 
-        IntStream.range(0, 200).forEach(i -> {
+        IntStream.range(0, 100).forEach(i -> {
             String pId = UUID.randomUUID().toString();
-            KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, pId, ACTIVE, null, null, null);
+            ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, pId, ACTIVE, null, null, null);
             indexProcessCloudEvent(startEvent);
             pIds.add(pId);
+            await()
+                    .atMost(timeout)
+                    .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances { id } }\" }")
+                            .when().post("/graphql")
+                            .then().log().ifValidationFails().statusCode(200)
+                            .body("data.ProcessInstances.size()", is(pIds.size())));
         });
 
         await()
                 .atMost(timeout)
-                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances { id } }\" }")
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(orderBy : {start: ASC}, pagination: {offset: 50, limit: 50}) { id, start } }\" }")
                         .when().post("/graphql")
                         .then().log().ifValidationFails().statusCode(200)
-                        .body("data.ProcessInstances.size()", is(pIds.size())));
+                        .body("data.ProcessInstances.size()", is(50))
+                        .body("data.ProcessInstances[0].id", is(pIds.get(50)))
+                        .body("data.ProcessInstances[49].id", is(pIds.get(99))));
 
         await()
                 .atMost(timeout)
-                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(orderBy : {start: ASC}, pagination: {offset: 100, limit: 100}) { id } }\" }")
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(orderBy : {start: ASC}, pagination: {offset: 0, limit: 50}) { id, start } }\" }")
                         .when().post("/graphql")
                         .then().log().ifValidationFails().statusCode(200)
-                        .body("data.ProcessInstances.size()", is(100))
-                        .body("data.ProcessInstances[0].id", is(pIds.get(100)))
-                        .body("data.ProcessInstances[99].id", is(pIds.get(199))));
-
-        await()
-                .atMost(timeout)
-                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances(orderBy : {start: ASC}, pagination: {offset: 0, limit: 100}) { id } }\" }")
-                        .when().post("/graphql")
-                        .then().log().ifValidationFails().statusCode(200)
-                        .body("data.ProcessInstances.size()", is(100))
+                        .body("data.ProcessInstances.size()", is(50))
                         .body("data.ProcessInstances[0].id", is(pIds.get(0)))
-                        .body("data.ProcessInstances[99].id", is(pIds.get(99))));
+                        .body("data.ProcessInstances[49].id", is(pIds.get(49))));
     }
 
     @Test
@@ -232,56 +211,55 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         String processId = "deals";
         List<String> taskIds = new ArrayList<>();
 
-        IntStream.range(0, 200).forEach(i -> {
+        IntStream.range(0, 100).forEach(i -> {
             String taskId = UUID.randomUUID().toString();
-            KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, UUID.randomUUID().toString(), null, null, "InProgress");
+            UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, UUID.randomUUID().toString(), null, null, "InProgress");
             indexUserTaskCloudEvent(event);
             taskIds.add(taskId);
+            await()
+                    .atMost(timeout)
+                    .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances { id } }\" }")
+                            .when().post("/graphql")
+                            .then().log().ifValidationFails().statusCode(200)
+                            .body("data.UserTaskInstances.size()", is(taskIds.size())));
         });
 
         await()
                 .atMost(timeout)
-                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances { id } }\" }")
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances(orderBy : {started: ASC}, pagination: {offset: 0, limit: 50}) { id } }\" }")
                         .when().post("/graphql")
                         .then().log().ifValidationFails().statusCode(200)
-                        .body("data.UserTaskInstances.size()", is(taskIds.size())));
+                        .body("data.UserTaskInstances.size()", is(50))
+                        .body("data.UserTaskInstances[0].id", is(taskIds.get(0)))
+                        .body("data.UserTaskInstances[49].id", is(taskIds.get(49))));
+
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances(orderBy : {started: ASC}, pagination: {offset: 50, limit: 50}) { id } }\" }")
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.UserTaskInstances.size()", is(50))
+                        .body("data.UserTaskInstances[0].id", is(taskIds.get(50)))
+                        .body("data.UserTaskInstances[49].id", is(taskIds.get(99))));
 
         await()
                 .atMost(timeout)
                 .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances(orderBy : {started: ASC}, pagination: {offset: 0, limit: 100}) { id } }\" }")
                         .when().post("/graphql")
                         .then().log().ifValidationFails().statusCode(200)
-                        .body("data.UserTaskInstances.size()", is(100))
+                        .body("data.UserTaskInstances.size()", is(taskIds.size()))
                         .body("data.UserTaskInstances[0].id", is(taskIds.get(0)))
                         .body("data.UserTaskInstances[99].id", is(taskIds.get(99))));
 
         await()
                 .atMost(timeout)
-                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances(orderBy : {started: ASC}, pagination: {offset: 100, limit: 100}) { id } }\" }")
-                        .when().post("/graphql")
-                        .then().log().ifValidationFails().statusCode(200)
-                        .body("data.UserTaskInstances.size()", is(100))
-                        .body("data.UserTaskInstances[0].id", is(taskIds.get(100)))
-                        .body("data.UserTaskInstances[99].id", is(taskIds.get(199))));
-
-        await()
-                .atMost(timeout)
-                .untilAsserted(() -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{UserTaskInstances(orderBy : {started: ASC}, pagination: {offset: 0, limit: 200}) { id } }\" }")
-                        .when().post("/graphql")
-                        .then().log().ifValidationFails().statusCode(200)
-                        .body("data.UserTaskInstances.size()", is(taskIds.size()))
-                        .body("data.UserTaskInstances[0].id", is(taskIds.get(0)))
-                        .body("data.UserTaskInstances[199].id", is(taskIds.get(199))));
-
-        await()
-                .atMost(timeout)
                 .untilAsserted(() -> given().contentType(ContentType.JSON)
-                        .body("{ \"query\" : \"{UserTaskInstances(where: {state: {in: [\\\"InProgress\\\"]}}, orderBy : {started: ASC}, pagination: {offset: 0, limit: 200}) { id } }\" }")
+                        .body("{ \"query\" : \"{UserTaskInstances(where: {state: {in: [\\\"InProgress\\\"]}}, orderBy : {started: ASC}, pagination: {offset: 0, limit: 100}) { id } }\" }")
                         .when().post("/graphql")
                         .then().log().ifValidationFails().statusCode(200)
                         .body("data.UserTaskInstances.size()", is(taskIds.size()))
                         .body("data.UserTaskInstances[0].id", is(taskIds.get(0)))
-                        .body("data.UserTaskInstances[199].id", is(taskIds.get(199))));
+                        .body("data.UserTaskInstances[99].id", is(taskIds.get(99))));
     }
 
     @Test
@@ -291,14 +269,14 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         String subProcessId = processId + "_sub";
         String subProcessInstanceId = UUID.randomUUID().toString();
 
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         validateProcessInstance(getProcessInstanceById(processInstanceId), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndProcessId(processInstanceId, processId), startEvent);
         validateProcessInstance(
-                getProcessInstanceByIdAndStart(processInstanceId, formatZonedDateTime(startEvent.getData().getStart())),
+                getProcessInstanceByIdAndStart(processInstanceId, formatDateTime(startEvent.getData().getStartDate())),
                 startEvent);
         validateProcessInstance(getProcessInstanceByIdAndAddon(processInstanceId, "process-management"), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndMilestoneName(processInstanceId, "SimpleMilestone"), startEvent);
@@ -306,17 +284,19 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                 startEvent);
         validateProcessInstance(getProcessInstanceByBusinessKey(startEvent.getData().getBusinessKey()), startEvent);
 
-        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
-        endEvent.getData().setEnd(ZonedDateTime.now());
-        endEvent.getData().setVariables((ObjectNode) getObjectMapper().readTree(
-                "{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
-        endEvent.getData().getMilestones().get(0).setStatus(MilestoneStatus.COMPLETED.name());
+        ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
+        endEvent.getData().update().endDate(new Date());
+        Map<String, Object> variablesMap = getProcessInstanceVariablesMap();
+        ((Map<String, Object>) variablesMap.get("hotel")).put("name", "Ibis");
+        ((Map<String, Object>) variablesMap.get("flight")).put("flightNumber", "QF444");
+        endEvent.getData().update().variables(variablesMap);
+        endEvent.getData().getMilestones().stream().findFirst().get().update().status(MilestoneStatus.COMPLETED.name());
         indexProcessCloudEvent(endEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent);
         validateProcessInstance(getProcessInstanceByIdAndMilestoneStatus(processInstanceId, MilestoneStatus.COMPLETED.name()), endEvent);
 
-        KogitoProcessCloudEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId,
+        ProcessInstanceDataEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId,
                 processId, processInstanceId);
         indexProcessCloudEvent(event);
 
@@ -330,7 +310,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         validateProcessInstance(getProcessInstanceByIdAndParentProcessInstanceId(subProcessInstanceId, processInstanceId),
                 event);
 
-        KogitoProcessCloudEvent errorEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ERROR, processInstanceId,
+        ProcessInstanceDataEvent errorEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ERROR, processInstanceId,
                 processId, processInstanceId);
         indexProcessCloudEvent(errorEvent);
 
@@ -346,7 +326,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         String processId = "deals";
         String processInstanceId = UUID.randomUUID().toString();
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(getUserTaskInstanceById(taskId), event);
@@ -358,16 +338,16 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         validateUserTaskInstance(
                 getUserTaskInstanceByIdAndPotentialUsers(taskId, new ArrayList<>(event.getData().getPotentialUsers())), event);
         validateUserTaskInstance(getUserTaskInstanceByIdAndState(taskId, event.getData().getState()), event);
-        validateUserTaskInstance(getUserTaskInstanceByIdAndStarted(taskId, formatZonedDateTime(event.getData().getStarted())),
+        validateUserTaskInstance(getUserTaskInstanceByIdAndStarted(taskId, formatDateTime(event.getData().getStartDate())),
                 event);
         validateUserTaskInstance(
-                getUserTaskInstanceByIdAndCompleted(taskId, formatZonedDateTime(event.getData().getCompleted())), event);
+                getUserTaskInstanceByIdAndCompleted(taskId, formatDateTime(event.getData().getCompleteDate())), event);
 
         event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
-        event.getData().setCompleted(ZonedDateTime.now());
-        event.getData().setPriority("Low");
-        event.getData().setActualOwner("admin");
-        event.getData().setState("Completed");
+        event.getData().update().completeDate(new Date());
+        event.getData().update().taskPriority("Low");
+        event.getData().update().actualOwner("admin");
+        event.getData().update().state("Completed");
 
         indexUserTaskCloudEvent(event);
 
@@ -406,51 +386,41 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                         .body("data.Jobs[0].rootProcessId", is(event.getData().getRootProcessId()))
                         .body("data.Jobs[0].rootProcessInstanceId", is(event.getData().getRootProcessInstanceId()))
                         .body("data.Jobs[0].status", is(event.getData().getStatus()))
-                        .body("data.Jobs[0].expirationTime",
-                                is(formatZonedDateTime(
-                                        event.getData().getExpirationTime().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.Jobs[0].expirationTime", is(formatZonedDateTime(event.getData().getExpirationTime())))
                         .body("data.Jobs[0].priority", is(event.getData().getPriority()))
                         .body("data.Jobs[0].callbackEndpoint", is(event.getData().getCallbackEndpoint()))
                         .body("data.Jobs[0].repeatInterval", is(event.getData().getRepeatInterval().intValue()))
                         .body("data.Jobs[0].repeatLimit", is(event.getData().getRepeatLimit()))
                         .body("data.Jobs[0].scheduledId", is(event.getData().getScheduledId()))
                         .body("data.Jobs[0].retries", is(event.getData().getRetries()))
-                        .body("data.Jobs[0].lastUpdate",
-                                is(formatZonedDateTime(event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.Jobs[0].lastUpdate", is(formatZonedDateTime(event.getData().getLastUpdate())))
                         .body("data.Jobs[0].executionCounter", is(event.getData().getExecutionCounter()))
                         .body("data.Jobs[0].endpoint", is(event.getData().getEndpoint())));
     }
 
-    protected void validateUserTaskInstance(String query, KogitoUserTaskCloudEvent event) {
+    protected void validateUserTaskInstance(String query, UserTaskInstanceDataEvent event) {
         LOGGER.debug("GraphQL query: {}", query);
         await()
                 .atMost(timeout)
                 .untilAsserted(() -> given().contentType(ContentType.JSON).body(query)
                         .when().post("/graphql")
                         .then().log().ifValidationFails().statusCode(200)
-                        .body("data.UserTaskInstances[0].id", is(event.getUserTaskInstanceId()))
-                        .body("data.UserTaskInstances[0].processId", is(event.getProcessId()))
-                        .body("data.UserTaskInstances[0].rootProcessId", is(event.getRootProcessId()))
-                        .body("data.UserTaskInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
-                        .body("data.UserTaskInstances[0].description", is(event.getData().getDescription()))
-                        .body("data.UserTaskInstances[0].name", is(event.getData().getName()))
-                        .body("data.UserTaskInstances[0].priority", is(event.getData().getPriority()))
+                        .body("data.UserTaskInstances[0].id", is(event.getData().getId()))
+                        .body("data.UserTaskInstances[0].processId", is(event.getData().getProcessId()))
+                        .body("data.UserTaskInstances[0].rootProcessId", is(event.getData().getRootProcessId()))
+                        .body("data.UserTaskInstances[0].rootProcessInstanceId", is(event.getData().getRootProcessInstanceId()))
+                        .body("data.UserTaskInstances[0].description", is(event.getData().getTaskDescription()))
+                        .body("data.UserTaskInstances[0].name", is(event.getData().getTaskName()))
+                        .body("data.UserTaskInstances[0].priority", is(event.getData().getTaskPriority()))
                         .body("data.UserTaskInstances[0].actualOwner", is(event.getData().getActualOwner()))
-                        .body("data.UserTaskInstances[0].excludedUsers",
-                                hasItems(event.getData().getExcludedUsers().toArray()))
-                        .body("data.UserTaskInstances[0].potentialUsers",
-                                hasItems(event.getData().getPotentialUsers().toArray()))
-                        .body("data.UserTaskInstances[0].potentialGroups",
-                                hasItems(event.getData().getPotentialGroups().toArray()))
-                        .body("data.UserTaskInstances[0].started",
-                                is(formatZonedDateTime(
-                                        event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
-                        .body("data.UserTaskInstances[0].completed",
-                                is(formatZonedDateTime(
-                                        event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
-                        .body("data.UserTaskInstances[0].lastUpdate",
-                                is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))))
-                        .body("data.UserTaskInstances[0].endpoint", is(event.getData().getEndpoint())));
+                        .body("data.UserTaskInstances[0].excludedUsers", hasItems(event.getData().getExcludedUsers().toArray()))
+                        .body("data.UserTaskInstances[0].potentialUsers", hasItems(event.getData().getPotentialUsers().toArray()))
+                        .body("data.UserTaskInstances[0].potentialGroups", hasItems(event.getData().getPotentialGroups().toArray()))
+                        .body("data.UserTaskInstances[0].started", is(formatDateTime(event.getData().getStartDate())))
+                        .body("data.UserTaskInstances[0].completed", is(formatDateTime(event.getData().getCompleteDate())))
+                        .body("data.UserTaskInstances[0].lastUpdate", is(formatOffsetDateTime(event.getTime())))
+                        .body("data.UserTaskInstances[0].endpoint",
+                                is(event.getSource().toString() + "/" + event.getData().getProcessInstanceId() + "/" + event.getData().getTaskName() + "/" + event.getData().getId())));
     }
 
 }

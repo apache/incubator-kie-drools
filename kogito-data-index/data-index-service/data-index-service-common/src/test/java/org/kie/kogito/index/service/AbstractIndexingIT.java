@@ -18,9 +18,9 @@ package org.kie.kogito.index.service;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
 import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
 
@@ -34,11 +34,11 @@ public abstract class AbstractIndexingIT {
     @Any
     public InMemoryConnector connector;
 
-    protected void indexProcessCloudEvent(KogitoProcessCloudEvent event) {
+    protected void indexProcessCloudEvent(ProcessInstanceDataEvent event) {
         connector.source(KOGITO_PROCESSINSTANCES_EVENTS).send(event);
     }
 
-    protected void indexUserTaskCloudEvent(KogitoUserTaskCloudEvent event) {
+    protected void indexUserTaskCloudEvent(UserTaskInstanceDataEvent event) {
         connector.source(KOGITO_USERTASKINSTANCES_EVENTS).send(event);
     }
 

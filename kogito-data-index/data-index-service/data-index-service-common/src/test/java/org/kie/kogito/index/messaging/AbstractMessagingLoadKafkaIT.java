@@ -29,8 +29,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
@@ -106,17 +106,17 @@ public abstract class AbstractMessagingLoadKafkaIT {
                 String processInstanceId = UUID.randomUUID().toString();
                 String taskId = UUID.randomUUID().toString();
 
-                KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+                ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
 
                 sendProcessInstanceEvent(client, startEvent);
 
-                KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
+                UserTaskInstanceDataEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
                 sendUserTaskEvent(client, userTaskEvent);
 
                 userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "Completed");
                 sendUserTaskEvent(client, userTaskEvent);
 
-                KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
+                ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
                 sendProcessInstanceEvent(client, endEvent);
 
                 return processInstanceId;
@@ -184,11 +184,11 @@ public abstract class AbstractMessagingLoadKafkaIT {
 
     }
 
-    private void sendProcessInstanceEvent(KafkaTestClient client, KogitoProcessCloudEvent event) throws Exception {
+    private void sendProcessInstanceEvent(KafkaTestClient client, ProcessInstanceDataEvent event) throws Exception {
         client.produce(mapper.writeValueAsString(event), "kogito-processinstances-events");
     }
 
-    private void sendUserTaskEvent(KafkaTestClient client, KogitoUserTaskCloudEvent event) throws Exception {
+    private void sendUserTaskEvent(KafkaTestClient client, UserTaskInstanceDataEvent event) throws Exception {
         client.produce(mapper.writeValueAsString(event), "kogito-usertaskinstances-events");
     }
 

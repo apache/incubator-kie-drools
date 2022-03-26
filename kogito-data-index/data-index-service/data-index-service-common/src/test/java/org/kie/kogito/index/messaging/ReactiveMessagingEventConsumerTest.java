@@ -21,10 +21,10 @@ import javax.enterprise.event.Event;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.index.event.KogitoCloudEvent;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.IndexingService;
 import org.mockito.InjectMocks;
@@ -49,89 +49,89 @@ public class ReactiveMessagingEventConsumerTest {
     IndexingService service;
 
     @Mock
-    Event<KogitoCloudEvent> eventPublisher;
+    Event<DataEvent> eventPublisher;
 
     @InjectMocks
     @Spy
     ReactiveMessagingEventConsumer consumer;
 
     @Test
-    public void testOnProcessInstanceEvent() throws Exception {
+    public void testOnProcessInstanceEvent() {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
-        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null,
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null,
                 null, null);
 
         UniAssertSubscriber<Void> future = consumer.onProcessInstanceEvent(event).subscribe()
                 .withSubscriber(UniAssertSubscriber.create());
 
-        future.await().assertCompleted();
-        verify(service).indexProcessInstance(event.getData());
+        future.awaitItem().assertCompleted();
+        verify(service).indexProcessInstance(any());
         verify(eventPublisher).fire(event);
     }
 
     @Test
-    public void testOnUserTaskInstanceEvent() throws Exception {
+    public void testOnUserTaskInstanceEvent() {
 
         String taskId = UUID.randomUUID().toString();
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
 
         UniAssertSubscriber<Void> future = consumer.onUserTaskInstanceEvent(event).subscribe()
                 .withSubscriber(UniAssertSubscriber.create());
 
-        future.await().assertCompleted();
-        verify(service).indexUserTaskInstance(event.getData());
+        future.awaitItem().assertCompleted();
+        verify(service).indexUserTaskInstance(any());
         verify(eventPublisher).fire(event);
     }
 
     @Test
-    public void testOnProcessInstanceEventException() throws Exception {
-        KogitoProcessCloudEvent event = mock(KogitoProcessCloudEvent.class);
+    public void testOnProcessInstanceEventException() {
+        ProcessInstanceDataEvent event = mock(ProcessInstanceDataEvent.class);
         doThrow(new RuntimeException("")).when(service).indexProcessInstance(any());
 
         UniAssertSubscriber<Void> future = consumer.onProcessInstanceEvent(event).subscribe()
                 .withSubscriber(UniAssertSubscriber.create());
 
-        future.await().assertFailedWith(RuntimeException.class, "");
-        verify(service).indexProcessInstance(event.getData());
+        future.awaitFailure().assertFailedWith(RuntimeException.class, "");
+        verify(service).indexProcessInstance(any());
         verify(eventPublisher, never()).fire(event);
     }
 
     @Test
-    public void testOnUserTaskInstanceEventException() throws Exception {
-        KogitoUserTaskCloudEvent event = mock(KogitoUserTaskCloudEvent.class);
+    public void testOnUserTaskInstanceEventException() {
+        UserTaskInstanceDataEvent event = mock(UserTaskInstanceDataEvent.class);
         doThrow(new RuntimeException("")).when(service).indexUserTaskInstance(any());
 
         UniAssertSubscriber<Void> future = consumer.onUserTaskInstanceEvent(event).subscribe()
                 .withSubscriber(UniAssertSubscriber.create());
 
-        future.await().assertFailedWith(RuntimeException.class, "");
-        verify(service).indexUserTaskInstance(event.getData());
+        future.awaitFailure().assertFailedWith(RuntimeException.class, "");
+        verify(service).indexUserTaskInstance(any());
         verify(eventPublisher, never()).fire(event);
     }
 
     @Test
-    public void testOnJobEvent() throws Exception {
+    public void testOnJobEvent() {
         KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
 
         UniAssertSubscriber<Void> future = consumer.onJobEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create());
 
-        future.await().assertCompleted();
+        future.awaitItem().assertCompleted();
         verify(service).indexJob(event.getData());
     }
 
     @Test
-    public void testOnJobEventException() throws Exception {
+    public void testOnJobEventException() {
         KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
         doThrow(new RuntimeException("")).when(service).indexJob(any());
 
         UniAssertSubscriber<Void> future = consumer.onJobEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create());
 
-        future.await().assertFailedWith(RuntimeException.class, "");
+        future.awaitFailure().assertFailedWith(RuntimeException.class, "");
         verify(service).indexJob(event.getData());
     }
 }

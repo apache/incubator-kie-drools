@@ -17,11 +17,11 @@ package org.kie.kogito.index.json;
 
 import java.util.function.Function;
 
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.kie.kogito.index.Constants.ID;
 import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.Constants.LAST_UPDATE;
@@ -30,56 +30,54 @@ import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.Constants.PROCESS_NAME;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
-public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEvent, ObjectNode> {
+public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEvent, ObjectNode> {
 
     @Override
-    public ObjectNode apply(KogitoProcessCloudEvent event) {
+    public ObjectNode apply(ProcessInstanceDataEvent event) {
         if (event == null) {
             return null;
         } else {
-            ProcessInstance pi = event.getData();
-
             ObjectNode json = getObjectMapper().createObjectNode();
-            json.put(ID, event.getRootProcessInstanceId() == null ? event.getProcessInstanceId() : event.getRootProcessInstanceId());
-            json.put(PROCESS_ID, event.getRootProcessId() == null ? event.getProcessId() : event.getRootProcessId());
+            json.put(ID, isNullOrEmpty(event.getData().getRootInstanceId()) ? event.getData().getId() : event.getData().getRootInstanceId());
+            json.put(PROCESS_ID, isNullOrEmpty(event.getData().getRootProcessId()) ? event.getData().getProcessId() : event.getData().getRootProcessId());
             ObjectNode kogito = getObjectMapper().createObjectNode();
             kogito.put(LAST_UPDATE, event.getTime().toInstant().toEpochMilli());
-            kogito.withArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).add(getProcessJson(event, pi));
+            kogito.withArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).add(getProcessJson(event));
             json.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
-            json.setAll((ObjectNode) event.getData().getVariables());
+            json.setAll((ObjectNode) getObjectMapper().valueToTree(event.getData().getVariables()));
             return json;
         }
     }
 
-    private ObjectNode getProcessJson(KogitoProcessCloudEvent event, ProcessInstance pi) {
+    private ObjectNode getProcessJson(ProcessInstanceDataEvent event) {
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, pi.getId());
-        json.put(PROCESS_ID, pi.getProcessId());
-        json.put(PROCESS_NAME, pi.getProcessName());
-        if (pi.getRootProcessInstanceId() != null) {
-            json.put("rootProcessInstanceId", pi.getRootProcessInstanceId());
+        json.put(ID, event.getData().getId());
+        json.put(PROCESS_ID, event.getData().getProcessId());
+        json.put(PROCESS_NAME, event.getData().getProcessName());
+        if (!isNullOrEmpty(event.getData().getRootInstanceId())) {
+            json.put("rootProcessInstanceId", event.getData().getRootInstanceId());
         }
-        if (pi.getParentProcessInstanceId() != null) {
-            json.put("parentProcessInstanceId", pi.getParentProcessInstanceId());
+        if (!isNullOrEmpty(event.getData().getParentInstanceId())) {
+            json.put("parentProcessInstanceId", event.getData().getParentInstanceId());
         }
-        if (pi.getRootProcessId() != null) {
-            json.put("rootProcessId", pi.getRootProcessId());
+        if (!isNullOrEmpty(event.getData().getRootProcessId())) {
+            json.put("rootProcessId", event.getData().getRootProcessId());
         }
-        json.put("state", pi.getState());
+        json.put("state", event.getData().getState());
         if (event.getSource() != null) {
             json.put("endpoint", event.getSource().toString());
         }
-        if (pi.getStart() != null) {
-            json.put("start", pi.getStart().toInstant().toEpochMilli());
+        if (event.getData().getStartDate() != null) {
+            json.put("start", event.getData().getStartDate().toInstant().toEpochMilli());
         }
-        if (pi.getEnd() != null) {
-            json.put("end", pi.getEnd().toInstant().toEpochMilli());
+        if (event.getData().getEndDate() != null) {
+            json.put("end", event.getData().getEndDate().toInstant().toEpochMilli());
         }
-        if (pi.getLastUpdate() != null) {
-            json.put(LAST_UPDATE, pi.getLastUpdate().toInstant().toEpochMilli());
+        if (event.getTime() != null) {
+            json.put(LAST_UPDATE, event.getTime().toInstant().toEpochMilli());
         }
-        if (pi.getBusinessKey() != null) {
-            json.put("businessKey", pi.getBusinessKey());
+        if (!isNullOrEmpty(event.getData().getBusinessKey())) {
+            json.put("businessKey", event.getData().getBusinessKey());
         }
         return json;
     }

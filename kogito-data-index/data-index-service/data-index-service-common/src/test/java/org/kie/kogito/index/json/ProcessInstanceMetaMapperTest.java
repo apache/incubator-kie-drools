@@ -18,7 +18,7 @@ package org.kie.kogito.index.json;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,7 +38,7 @@ public class ProcessInstanceMetaMapperTest {
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
         String piPrefix = KOGITO_DOMAIN_ATTRIBUTE + "." + PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
         ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
         assertThat(json).isNotNull();
         assertThatJson(json.toString()).and(
@@ -57,9 +57,9 @@ public class ProcessInstanceMetaMapperTest {
                 a -> a.node(piPrefix + "[0].rootProcessId").isEqualTo(rootProcessId),
                 a -> a.node(piPrefix + "[0].state").isEqualTo(ProcessInstanceState.COMPLETED.ordinal()),
                 a -> a.node(piPrefix + "[0].endpoint").isEqualTo(event.getSource().toString()),
-                a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStart().toInstant().toEpochMilli()),
-                a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEnd().toInstant().toEpochMilli()),
-                a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli()));
+                a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStartDate().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEndDate().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getTime().toInstant().toEpochMilli()));
     }
 
     @Test
@@ -69,8 +69,8 @@ public class ProcessInstanceMetaMapperTest {
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
         String piPrefix = KOGITO_DOMAIN_ATTRIBUTE + "." + PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
-        event.getData().setBusinessKey("custom-key");
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
+        event.getData().update().businessKey("custom-key");
         ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
         assertThat(json).isNotNull();
         assertThatJson(json.toString()).and(
@@ -89,9 +89,9 @@ public class ProcessInstanceMetaMapperTest {
                 a -> a.node(piPrefix + "[0].rootProcessId").isEqualTo(rootProcessId),
                 a -> a.node(piPrefix + "[0].state").isEqualTo(ProcessInstanceState.COMPLETED.ordinal()),
                 a -> a.node(piPrefix + "[0].endpoint").isEqualTo(event.getSource().toString()),
-                a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStart().toInstant().toEpochMilli()),
-                a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEnd().toInstant().toEpochMilli()),
-                a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStartDate().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEndDate().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getTime().toInstant().toEpochMilli()),
                 a -> a.node(piPrefix + "[0].businessKey").isEqualTo(event.getData().getBusinessKey()));
     }
 }

@@ -18,7 +18,7 @@ package org.kie.kogito.index.json;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -38,7 +38,7 @@ public class UserTaskInstanceMetaMapperTest {
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
         String utPrefix = KOGITO_DOMAIN_ATTRIBUTE + "." + USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, "InProgress");
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, "InProgress");
         ObjectNode json = new UserTaskInstanceMetaMapper().apply(event);
         assertThat(json).isNotNull();
         assertThatJson(json.toString()).and(
@@ -50,17 +50,17 @@ public class UserTaskInstanceMetaMapperTest {
                 a -> a.node(utPrefix + "[0].id").isEqualTo(taskId),
                 a -> a.node(utPrefix + "[0].processInstanceId").isEqualTo(processInstanceId),
                 a -> a.node(utPrefix + "[0].state").isEqualTo(event.getData().getState()),
-                a -> a.node(utPrefix + "[0].description").isEqualTo(event.getData().getDescription()),
-                a -> a.node(utPrefix + "[0].name").isEqualTo(event.getData().getName()),
-                a -> a.node(utPrefix + "[0].priority").isEqualTo(event.getData().getPriority()),
+                a -> a.node(utPrefix + "[0].description").isEqualTo(event.getData().getTaskDescription()),
+                a -> a.node(utPrefix + "[0].name").isEqualTo(event.getData().getTaskName()),
+                a -> a.node(utPrefix + "[0].priority").isEqualTo(event.getData().getTaskPriority()),
                 a -> a.node(utPrefix + "[0].actualOwner").isEqualTo(event.getData().getActualOwner()),
                 a -> a.node(utPrefix + "[0].adminUsers[0]").isEqualTo(event.getData().getAdminUsers().stream().findFirst().get()),
                 a -> a.node(utPrefix + "[0].adminGroups[0]").isEqualTo(event.getData().getAdminGroups().stream().findFirst().get()),
                 a -> a.node(utPrefix + "[0].excludedUsers[0]").isEqualTo(event.getData().getExcludedUsers().stream().findFirst().get()),
                 a -> a.node(utPrefix + "[0].potentialGroups[0]").isEqualTo(event.getData().getPotentialGroups().stream().findFirst().get()),
                 a -> a.node(utPrefix + "[0].potentialUsers[0]").isEqualTo(event.getData().getPotentialUsers().stream().findFirst().get()),
-                a -> a.node(utPrefix + "[0].started").isEqualTo(event.getData().getStarted().toInstant().toEpochMilli()),
-                a -> a.node(utPrefix + "[0].completed").isEqualTo(event.getData().getCompleted().toInstant().toEpochMilli()),
-                a -> a.node(utPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli()));
+                a -> a.node(utPrefix + "[0].started").isEqualTo(event.getData().getStartDate().toInstant().toEpochMilli()),
+                a -> a.node(utPrefix + "[0].completed").isEqualTo(event.getData().getCompleteDate().toInstant().toEpochMilli()),
+                a -> a.node(utPrefix + "[0].lastUpdate").isEqualTo(event.getTime().toInstant().toEpochMilli()));
     }
 }

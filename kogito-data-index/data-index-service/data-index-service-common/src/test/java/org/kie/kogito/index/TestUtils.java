@@ -21,19 +21,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.kogito.event.process.AttachmentEventBody;
+import org.kie.kogito.event.process.CommentEventBody;
+import org.kie.kogito.event.process.MilestoneEventBody;
+import org.kie.kogito.event.process.NodeInstanceEventBody;
+import org.kie.kogito.event.process.ProcessErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceEventBody;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.Attachment;
 import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.Job;
@@ -48,6 +58,7 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
@@ -71,52 +82,57 @@ public final class TestUtils {
     }
 
     public static String readFileContent(String file) throws IOException {
-        InputStream inputStream = null;
-        BufferedInputStream bis = null;
-        ByteArrayOutputStream buf = null;
-        try {
-            inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
+                BufferedInputStream bis = new BufferedInputStream(inputStream);
+                ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
             Objects.requireNonNull(inputStream, "Could not resolve file path: " + file);
-            bis = new BufferedInputStream(inputStream);
-            buf = new ByteArrayOutputStream();
             int result = bis.read();
             while (result != -1) {
                 buf.write((byte) result);
                 result = bis.read();
             }
             return buf.toString(StandardCharsets.UTF_8.name());
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (bis != null) {
-                bis.close();
-            }
-            if (buf != null) {
-                buf.close();
-            }
         }
     }
 
-    public static KogitoProcessCloudEvent getProcessCloudEvent(String processId, String processInstanceId, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId,
+    public static ProcessInstanceDataEvent getProcessCloudEvent(String processId, String processInstanceId, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId,
             String parentProcessInstanceId) {
-        return KogitoProcessCloudEvent.builder()
-                .id(UUID.randomUUID().toString())
-                .rootProcessInstanceId(rootProcessInstanceId)
-                .rootProcessId(rootProcessId)
-                .parentProcessInstanceId(parentProcessInstanceId)
+
+        ProcessInstanceEventBody body = ProcessInstanceEventBody.create()
+                .id(processInstanceId)
+                .parentInstanceId(parentProcessInstanceId)
+                .rootInstanceId(rootProcessInstanceId)
                 .processId(processId)
+                .rootProcessId(rootProcessId)
+                .processName(RandomStringUtils.randomAlphabetic(10))
+                .startDate(new Date())
+                .endDate(status == ProcessInstanceState.COMPLETED ? Date.from(Instant.now().plus(1, ChronoUnit.HOURS)) : null)
                 .state(status.ordinal())
-                .contentType("application/json")
-                .processInstanceId(processInstanceId)
-                .type("ProcessInstanceEvent")
-                .data(getProcessInstance(processId, processInstanceId, status.ordinal(), rootProcessInstanceId, rootProcessId))
-                .kogitoReferenceId(UUID.randomUUID().toString())
-                .schemaURL(URI.create("kogito"))
-                .source(URI.create("http://localhost:8080/" + processId))
-                .kogitoAddons("jobs-management,prometheus-monitoring,process-management")
-                .time(ZonedDateTime.now())
+                .businessKey(RandomStringUtils.randomAlphabetic(10))
+                .variables(getProcessInstanceVariablesMap())
+                .milestones(Set.of(
+                        MilestoneEventBody.create()
+                                .id(MILESTONE_ID)
+                                .name("SimpleMilestone")
+                                .status(MilestoneStatus.AVAILABLE.name())
+                                .build()))
+                .roles("admin")
+                .nodeInstance(NodeInstanceEventBody.create()
+                        .id(processInstanceId + "-1")
+                        .triggerTime(new Date())
+                        .nodeName("Start")
+                        .nodeType("StartNode")
+                        .nodeId("1")
+                        .nodeDefinitionId("StartEvent_1")
+                        .leaveTime(status == ProcessInstanceState.COMPLETED ? Date.from(Instant.now().plus(1, ChronoUnit.HOURS)) : null)
+                        .build())
+                .error(status == ProcessInstanceState.ERROR ? ProcessErrorEventBody.create()
+                        .nodeDefinitionId("StartEvent_1")
+                        .errorMessage("Something went wrong")
+                        .build() : null)
                 .build();
+
+        return new ProcessInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", body.metaData(), body);
     }
 
     public static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) {
@@ -128,7 +144,7 @@ public final class TestUtils {
         pi.setParentProcessInstanceId(rootProcessInstanceId);
         pi.setRootProcessId(rootProcessId);
         pi.setRoles(singleton("admin"));
-        pi.setVariables(getProcessInstanceVariables());
+        pi.setVariables(getProcessInstanceVariablesJson());
         pi.setNodes(getNodeInstances(status));
         pi.setState(status);
         pi.setStart(ZonedDateTime.now());
@@ -162,7 +178,7 @@ public final class TestUtils {
                         .build());
     }
 
-    private static ObjectNode getProcessInstanceVariables() {
+    public static Map<String, Object> getProcessInstanceVariablesMap() {
         Map<String, Object> json = new HashMap<>();
         Map<String, Object> traveller = new HashMap<>();
         traveller.put("firstName", "Maciej");
@@ -175,27 +191,63 @@ public final class TestUtils {
         flight.put("arrival", "2019-08-20T22:12:57.340Z");
         flight.put("departure", "2019-08-20T07:12:57.340Z");
         json.put("flight", flight);
-        return getObjectMapper().valueToTree(json);
+        return json;
     }
 
-    public static KogitoUserTaskCloudEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state) {
+    private static ObjectNode getProcessInstanceVariablesJson() {
+        return getObjectMapper().valueToTree(getProcessInstanceVariablesMap());
+    }
+
+    public static UserTaskInstanceDataEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state) {
         return getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state, "kogito");
     }
 
-    public static KogitoUserTaskCloudEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state,
+    public static UserTaskInstanceDataEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state,
             String actualOwner) {
-        return KogitoUserTaskCloudEvent.builder()
-                .id(UUID.randomUUID().toString())
-                .userTaskInstanceId(taskId)
-                .rootProcessInstanceId(rootProcessInstanceId)
-                .rootProcessId(rootProcessId)
-                .processId(processId)
-                .contentType("application/json")
+
+        UserTaskInstanceEventBody body = UserTaskInstanceEventBody.create()
+                .id(taskId)
+                .state(state)
+                .taskName("TaskName")
+                .taskDescription("TaskDescription")
+                .taskPriority("High")
+                .actualOwner(actualOwner)
+                .startDate(new Date())
+                .completeDate(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
+                .adminGroups(singleton("admin"))
+                .adminUsers(singleton("kogito"))
+                .excludedUsers(singleton("excluded"))
+                .potentialGroups(singleton("potentialGroup"))
+                .potentialUsers(singleton("potentialUser"))
                 .processInstanceId(processInstanceId)
-                .type("UserTaskInstanceEvent")
-                .data(getUserTaskInstance(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state, actualOwner))
-                .source(URI.create("http://localhost:8080/" + processId))
-                .time(ZonedDateTime.now())
+                .rootProcessInstanceId(rootProcessInstanceId)
+                .processId(processId)
+                .rootProcessId(rootProcessId)
+                .comments(singleton(getTaskComment("commentId" + taskId, "kogito", "Comment 1")))
+                .attachments(singleton(getTaskAttachment("attachmentId" + taskId, "kogito", "http://linltodoc.com/1", "doc1")))
+                .inputs(emptyMap())
+                .outputs(emptyMap())
+                .build();
+
+        return new UserTaskInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), null, body.metaData(), body);
+    }
+
+    public static AttachmentEventBody getTaskAttachment(String id, String user, String name, String content) {
+        return AttachmentEventBody.create()
+                .id(id)
+                .updatedBy(user)
+                .name(name)
+                .content(content == null ? null : URI.create(content))
+                .updatedAt(new Date())
+                .build();
+    }
+
+    public static CommentEventBody getTaskComment(String id, String user, String comment) {
+        return CommentEventBody.create()
+                .id(id)
+                .content(comment)
+                .updatedBy(user)
+                .updatedAt(new Date())
                 .build();
     }
 

@@ -27,9 +27,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class KogitoUserTaskCloudEventTest {
+class UserTaskInstanceEventMapperTest {
 
-    private KogitoUserTaskCloudEvent event = new KogitoUserTaskCloudEvent();
+    private UserTaskInstanceEventMapper mapper = new UserTaskInstanceEventMapper();
 
     private static Stream<Arguments> provideEndpoint() {
         String pId = UUID.randomUUID().toString();
@@ -44,6 +44,6 @@ class KogitoUserTaskCloudEventTest {
     @ParameterizedTest
     @MethodSource("provideEndpoint")
     void testUserTaskEndpoint(URI source, String pId, String taskName, String taskId, String expected) {
-        assertThat(event.getEndpoint(source, pId, taskName, taskId)).isEqualTo(expected);
+        assertThat(mapper.getEndpoint(source, pId, taskName, taskId)).isEqualTo(expected);
     }
 }

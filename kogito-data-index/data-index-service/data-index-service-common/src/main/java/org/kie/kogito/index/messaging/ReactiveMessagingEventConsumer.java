@@ -20,10 +20,12 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.kie.kogito.index.event.KogitoCloudEvent;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.index.event.ProcessInstanceEventMapper;
+import org.kie.kogito.index.event.UserTaskInstanceEventMapper;
 import org.kie.kogito.index.service.IndexingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,27 +47,27 @@ public class ReactiveMessagingEventConsumer {
     IndexingService indexingService;
 
     @Inject
-    Event<KogitoCloudEvent> eventPublisher;
+    Event<DataEvent> eventPublisher;
 
     @Incoming(KOGITO_PROCESSINSTANCES_EVENTS)
-    public Uni<Void> onProcessInstanceEvent(KogitoProcessCloudEvent event) {
-        LOGGER.debug("Process instance consumer received KogitoCloudEvent: \n{}", event);
+    public Uni<Void> onProcessInstanceEvent(ProcessInstanceDataEvent event) {
+        LOGGER.debug("Process instance consumer received ProcessInstanceDataEvent: \n{}", event);
         return Uni.createFrom().item(event)
-                .invoke(e -> indexingService.indexProcessInstance(e.getData()))
+                .invoke(e -> indexingService.indexProcessInstance(new ProcessInstanceEventMapper().apply(e)))
                 .invoke(e -> eventPublisher.fire(e))
                 .onFailure()
-                .invoke(t -> LOGGER.error("Error processing process instance KogitoCloudEvent: {}", t.getMessage(), t))
+                .invoke(t -> LOGGER.error("Error processing process instance ProcessInstanceDataEvent: {}", t.getMessage(), t))
                 .onItem().ignore().andContinueWithNull();
     }
 
     @Incoming(KOGITO_USERTASKINSTANCES_EVENTS)
-    public Uni<Void> onUserTaskInstanceEvent(KogitoUserTaskCloudEvent event) {
-        LOGGER.debug("Task instance received KogitoUserTaskCloudEvent \n{}", event);
+    public Uni<Void> onUserTaskInstanceEvent(UserTaskInstanceDataEvent event) {
+        LOGGER.debug("Task instance received UserTaskInstanceDataEvent \n{}", event);
         return Uni.createFrom().item(event)
-                .invoke(e -> indexingService.indexUserTaskInstance(e.getData()))
+                .invoke(e -> indexingService.indexUserTaskInstance(new UserTaskInstanceEventMapper().apply(e)))
                 .invoke(e -> eventPublisher.fire(e))
                 .onFailure()
-                .invoke(t -> LOGGER.error("Error processing task instance KogitoUserTaskCloudEvent: {}", t.getMessage(), t))
+                .invoke(t -> LOGGER.error("Error processing task instance UserTaskInstanceDataEvent: {}", t.getMessage(), t))
                 .onItem().ignore().andContinueWithNull();
     }
 

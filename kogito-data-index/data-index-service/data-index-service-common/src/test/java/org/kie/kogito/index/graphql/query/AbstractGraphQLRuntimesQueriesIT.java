@@ -25,13 +25,12 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceEventBody;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
-import org.kie.kogito.index.model.Attachment;
-import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
@@ -46,6 +45,8 @@ import static org.kie.kogito.index.TestUtils.getJob;
 import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessInstance;
+import static org.kie.kogito.index.TestUtils.getTaskAttachment;
+import static org.kie.kogito.index.TestUtils.getTaskComment;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.mockito.ArgumentMatchers.eq;
@@ -77,7 +78,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceAbort() {
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceAbort ( id: \\\"" + processInstanceId + "\\\")}\"}");
@@ -89,7 +90,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceRetry() {
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceRetry ( id: \\\"" + processInstanceId + "\\\")}\"}");
@@ -101,7 +102,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceSkip() {
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceSkip ( id: \\\"" + processInstanceId + "\\\")}\"}");
@@ -115,7 +116,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String variablesUpdated = "variablesUpdated";
         String processInstanceId = UUID.randomUUID().toString();
 
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceUpdateVariables ( id: \\\"" + processInstanceId + "\\\", variables: \\\"" + variablesUpdated + "\\\")}\"}");
@@ -127,7 +128,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceNodeDefinitions() {
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"query { ProcessInstances (where: { id: {equal: \\\"" + processInstanceId + "\\\"}}) { nodeDefinitions { id }} }\" }");
@@ -138,7 +139,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceDiagram() {
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"query { ProcessInstances (where: { id: {equal: \\\"" + processInstanceId + "\\\"}}) {diagram} }\" }");
@@ -151,7 +152,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     void testNodeInstanceTrigger() {
         String nodeId = "nodeIdToTrigger";
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ NodeInstanceTrigger ( id: \\\"" + processInstanceId + "\\\", nodeId: \\\"" + nodeId + "\\\")}\"}");
@@ -164,7 +165,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     void testNodeInstanceRetrigger() {
         String nodeInstanceId = "nodeInstanceIdToRetrigger";
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ NodeInstanceRetrigger ( id: \\\"" + processInstanceId + "\\\", nodeInstanceId: \\\"" + nodeInstanceId + "\\\")}\"}");
@@ -177,7 +178,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     void testNodeInstanceCancel() {
         String nodeInstanceId = "nodeInstanceIdToCancel";
         String processInstanceId = UUID.randomUUID().toString();
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ NodeInstanceCancel ( id: \\\"" + processInstanceId + "\\\", nodeInstanceId: \\\"" + nodeInstanceId + "\\\")}\"}");
@@ -221,7 +222,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String processInstanceId = UUID.randomUUID().toString();
         String taskId = UUID.randomUUID().toString();
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
 
         indexUserTaskCloudEvent(event);
@@ -242,7 +243,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String taskId = UUID.randomUUID().toString();
         String newDescription = "NewDescription";
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
 
         indexUserTaskCloudEvent(event);
@@ -268,7 +269,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String taskId = UUID.randomUUID().toString();
         String comment = "Comment to add";
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
 
         indexUserTaskCloudEvent(event);
@@ -294,11 +295,10 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String commentId = UUID.randomUUID().toString();
         String commentContent = "commentContent";
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
-        UserTaskInstance userTaskInstance = event.getData();
-        userTaskInstance.setComments(List.of(Comment.builder().id(commentId).build()));
-        event.setData(userTaskInstance);
+        UserTaskInstanceEventBody userTaskInstance = event.getData();
+        userTaskInstance.setComments(List.of(getTaskComment(commentId, null, null)));
         indexUserTaskCloudEvent(event);
         checkOkResponse("{ \"query\" : \"mutation { UserTaskInstanceCommentUpdate ( " +
                 "user: \\\"" + user + "\\\", " +
@@ -320,11 +320,10 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String taskId = UUID.randomUUID().toString();
         String commentId = UUID.randomUUID().toString();
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
-        UserTaskInstance userTaskInstance = event.getData();
-        userTaskInstance.setComments(List.of(Comment.builder().id(commentId).build()));
-        event.setData(userTaskInstance);
+        UserTaskInstanceEventBody userTaskInstance = event.getData();
+        userTaskInstance.setComments(List.of(getTaskComment(commentId, null, null)));
         indexUserTaskCloudEvent(event);
         checkOkResponse("{ \"query\" : \"mutation { UserTaskInstanceCommentDelete ( " +
                 "user: \\\"" + user + "\\\", " +
@@ -346,7 +345,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String attachmentName = "attachment name";
         String attachmentUri = "https://drive.google.com/file/d/1Z_Lipg2jzY9TNewTaskAttachmentUri";
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
 
         indexUserTaskCloudEvent(event);
@@ -375,11 +374,10 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String attachmentName = "attachmentName";
         String attachmentUri = "attachmentUri";
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
-        UserTaskInstance userTaskInstance = event.getData();
-        userTaskInstance.setAttachments(List.of(Attachment.builder().id(attachmentId).build()));
-        event.setData(userTaskInstance);
+        UserTaskInstanceEventBody userTaskInstance = event.getData();
+        userTaskInstance.setAttachments(List.of(getTaskAttachment(attachmentId, null, null, null)));
         indexUserTaskCloudEvent(event);
         checkOkResponse("{ \"query\" : \"mutation { UserTaskInstanceAttachmentUpdate ( " +
                 "user: \\\"" + user + "\\\", " +
@@ -402,11 +400,10 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String taskId = UUID.randomUUID().toString();
         String attachmentId = UUID.randomUUID().toString();
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
                 null, "InProgress", user);
-        UserTaskInstance userTaskInstance = event.getData();
-        userTaskInstance.setAttachments(List.of(Attachment.builder().id(attachmentId).build()));
-        event.setData(userTaskInstance);
+        UserTaskInstanceEventBody userTaskInstance = event.getData();
+        userTaskInstance.setAttachments(List.of(getTaskAttachment(attachmentId, null, null, null)));
         indexUserTaskCloudEvent(event);
         checkOkResponse("{ \"query\" : \"mutation { UserTaskInstanceAttachmentDelete ( " +
                 "user: \\\"" + user + "\\\", " +

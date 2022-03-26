@@ -16,9 +16,6 @@
 
 package org.kie.kogito.index.service;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
 import org.kie.kogito.index.test.InMemoryMessageTestProfile;
 
 import io.quarkus.test.junit.QuarkusTest;
@@ -27,10 +24,5 @@ import io.quarkus.test.junit.TestProfile;
 @QuarkusTest
 @TestProfile(InMemoryMessageTestProfile.class)
 class InmemoryPostgreSqlIndexingServiceIT extends AbstractIndexingServiceIT {
-
-    @Override
-    protected String formatZonedDateTime(ZonedDateTime time) {
-        return time.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-    }
 
 }

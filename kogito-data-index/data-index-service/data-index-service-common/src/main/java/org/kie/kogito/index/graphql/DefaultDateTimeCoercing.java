@@ -20,11 +20,12 @@ import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.kogito.index.DateTimeUtils;
 
 import io.quarkus.arc.DefaultBean;
 
@@ -37,7 +38,7 @@ public class DefaultDateTimeCoercing implements DateTimeCoercing {
 
     public static ZonedDateTime parseDateTime(String s) {
         try {
-            return ZonedDateTime.parse(s, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            return DateTimeUtils.parseZonedDateTime(s);
         } catch (DateTimeParseException e) {
             throw new CoercingSerializeException("Invalid ISO-8601 value : '" + s + "'. because of : '" + e.getMessage() + "'");
         }
@@ -45,7 +46,7 @@ public class DefaultDateTimeCoercing implements DateTimeCoercing {
 
     public String formatDateTime(ZonedDateTime dateTime) {
         try {
-            return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime);
+            return DateTimeUtils.formatZonedDateTime(dateTime);
         } catch (DateTimeException e) {
             throw new CoercingSerializeException(
                     "Unable to turn TemporalAccessor into OffsetDateTime because of : '" + e.getMessage() + "'.");

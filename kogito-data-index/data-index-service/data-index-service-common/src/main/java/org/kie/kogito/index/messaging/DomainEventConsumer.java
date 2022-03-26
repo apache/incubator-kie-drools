@@ -21,9 +21,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.kie.kogito.index.event.KogitoCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.json.ProcessInstanceMetaMapper;
 import org.kie.kogito.index.json.UserTaskInstanceMetaMapper;
 import org.kie.kogito.index.service.IndexingService;
@@ -48,7 +48,7 @@ public class DomainEventConsumer {
     @Inject
     IndexingService indexingService;
 
-    public void onDomainEvent(@Observes KogitoCloudEvent event) {
+    public void onDomainEvent(@Observes DataEvent event) {
         if (!indexDomain) {
             return;
         }
@@ -57,12 +57,12 @@ public class DomainEventConsumer {
         indexingService.indexModel(getDomainData(event));
     }
 
-    private ObjectNode getDomainData(KogitoCloudEvent event) {
-        if (event instanceof KogitoProcessCloudEvent) {
-            return new ProcessInstanceMetaMapper().apply((KogitoProcessCloudEvent) event);
+    private ObjectNode getDomainData(DataEvent event) {
+        if (event instanceof ProcessInstanceDataEvent) {
+            return new ProcessInstanceMetaMapper().apply((ProcessInstanceDataEvent) event);
         }
-        if (event instanceof KogitoUserTaskCloudEvent) {
-            return new UserTaskInstanceMetaMapper().apply((KogitoUserTaskCloudEvent) event);
+        if (event instanceof UserTaskInstanceDataEvent) {
+            return new UserTaskInstanceMetaMapper().apply((UserTaskInstanceDataEvent) event);
         }
         throw new IllegalArgumentException(
                 format("Unknown message type: '%s' for event class: '%s'", event.getType(), event.getClass().getName()));

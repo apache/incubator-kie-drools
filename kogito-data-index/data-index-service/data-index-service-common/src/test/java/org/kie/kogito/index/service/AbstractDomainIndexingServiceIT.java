@@ -15,33 +15,34 @@
  */
 package org.kie.kogito.index.service;
 
-import java.net.URI;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import javax.inject.Inject;
 
+import org.apache.groovy.util.Maps;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.kie.kogito.index.DateTimeUtils.formatDateTime;
+import static org.kie.kogito.index.DateTimeUtils.formatOffsetDateTime;
 import static org.kie.kogito.index.GraphQLUtils.getDealsByTaskId;
 import static org.kie.kogito.index.GraphQLUtils.getDealsByTaskIdNoActualOwner;
 import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceById;
@@ -54,8 +55,8 @@ import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceById;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndActualOwner;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdNoActualOwner;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.TestUtils.getProcessInstanceVariablesMap;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
-import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
@@ -159,7 +160,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
@@ -170,8 +171,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
                 .body("data.Travels[0].__typename", is("Travels"))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(startEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(startEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(1))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -179,22 +179,22 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].start",
-                        is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].start", is(formatDateTime(startEvent.getData().getStartDate())))
                 .body("data.Travels[0].metadata.processInstances[0].end", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(startEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(startEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(startEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
 
-        KogitoProcessCloudEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE,
+        ProcessInstanceDataEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE,
                 processInstanceId, processId, processInstanceId);
-        subProcessStartEvent.getData().setVariables((ObjectNode) getObjectMapper().readTree(
-                "{ \"traveller\":{\"firstName\":\"Maciej\", \"email\":\"mail@mail.com\", \"nationality\":\"Polish\"} }"));
-        subProcessStartEvent.setSource(URI.create("/" + subProcessId));
+        Map<String, Object> travellerMap = new HashMap<>();
+        travellerMap.put("firstName", "Maciej");
+        travellerMap.put("email", "mail@mail.com");
+        travellerMap.put("nationality", "Polish");
+        subProcessStartEvent.getData().update().variables(Maps.of("traveller", travellerMap));
         indexProcessCloudEvent(subProcessStartEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(subProcessInstanceId, ACTIVE), subProcessStartEvent);
@@ -206,8 +206,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
                 .body("data.Travels[0].__typename", is("Travels"))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(subProcessStartEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(subProcessStartEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(2))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -215,22 +214,18 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].start",
-                        is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].start", is(formatDateTime(startEvent.getData().getStartDate())))
                 .body("data.Travels[0].metadata.processInstances[0].end", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(startEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(startEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(startEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].metadata.processInstances[1].id", is(subProcessInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].processId", is(subProcessId))
-                .body("data.Travels[0].metadata.processInstances[1].processName",
-                        is(subProcessStartEvent.getData().getProcessName()))
+                .body("data.Travels[0].metadata.processInstances[1].processName", is(subProcessStartEvent.getData().getProcessName()))
                 .body("data.Travels[0].metadata.processInstances[1].rootProcessId", is(processId))
                 .body("data.Travels[0].metadata.processInstances[1].rootProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].parentProcessInstanceId", is(processInstanceId))
-                .body("data.Travels[0].metadata.processInstances[1].start",
-                        is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[1].start", is(formatDateTime(subProcessStartEvent.getData().getStartDate())))
                 .body("data.Travels[0].metadata.processInstances[1].end", is(nullValue()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].traveller.email", is("mail@mail.com"))
@@ -240,12 +235,12 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
 
-        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
+        ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
         indexProcessCloudEvent(endEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent, subProcessInstanceId);
 
-        KogitoUserTaskCloudEvent firstUserTaskEvent = getUserTaskCloudEvent(firstTaskId, subProcessId, subProcessInstanceId,
+        UserTaskInstanceDataEvent firstUserTaskEvent = getUserTaskCloudEvent(firstTaskId, subProcessId, subProcessInstanceId,
                 processInstanceId, processId, state);
 
         indexUserTaskCloudEvent(firstUserTaskEvent);
@@ -258,8 +253,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
                 .body("data.Travels[0].__typename", is("Travels"))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(firstUserTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(firstUserTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.userTasks.size()", is(1))
                 .body("data.Travels[0].metadata.userTasks[0].id", is(firstTaskId))
                 .body("data.Travels[0].metadata.userTasks[0].processInstanceId", is(subProcessInstanceId))
@@ -267,8 +261,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.userTasks[0].name", is("TaskName"))
                 .body("data.Travels[0].metadata.userTasks[0].priority", is("High"))
                 .body("data.Travels[0].metadata.userTasks[0].actualOwner", is("kogito"))
-                .body("data.Travels[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(firstUserTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(firstUserTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(2))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -276,33 +269,27 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].start",
-                        is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].metadata.processInstances[0].end",
-                        is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(endEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].start", is(formatDateTime(endEvent.getData().getStartDate())))
+                .body("data.Travels[0].metadata.processInstances[0].end", is(formatDateTime(endEvent.getData().getEndDate())))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(endEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[1].id", is(subProcessInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].processId", is(subProcessId))
-                .body("data.Travels[0].metadata.processInstances[1].processName",
-                        is(subProcessStartEvent.getData().getProcessName()))
+                .body("data.Travels[0].metadata.processInstances[1].processName", is(subProcessStartEvent.getData().getProcessName()))
                 .body("data.Travels[0].metadata.processInstances[1].rootProcessId", is(processId))
                 .body("data.Travels[0].metadata.processInstances[1].rootProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].parentProcessInstanceId", is(processInstanceId))
-                .body("data.Travels[0].metadata.processInstances[1].start",
-                        is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[1].start", is(formatDateTime(subProcessStartEvent.getData().getStartDate())))
                 .body("data.Travels[0].metadata.processInstances[1].end", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[1].endpoint", is(subProcessStartEvent.getSource().toString()))
-                .body("data.Travels[0].metadata.processInstances[1].serviceUrl", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[1].lastUpdate", is(formatZonedDateTime(
-                        subProcessStartEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[1].serviceUrl", is("http://localhost:8080"))
+                .body("data.Travels[0].metadata.processInstances[1].lastUpdate", is(formatOffsetDateTime(subProcessStartEvent.getTime())))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
 
-        KogitoUserTaskCloudEvent secondUserTaskEvent = getUserTaskCloudEvent(secondTaskId, processId, processInstanceId, null,
+        UserTaskInstanceDataEvent secondUserTaskEvent = getUserTaskCloudEvent(secondTaskId, processId, processInstanceId, null,
                 null, state);
 
         indexUserTaskCloudEvent(secondUserTaskEvent);
@@ -315,8 +302,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
                 .body("data.Travels[0].__typename", is("Travels"))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(secondUserTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(secondUserTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.userTasks.size()", is(2))
                 .body("data.Travels[0].metadata.userTasks[0].id", is(firstTaskId))
                 .body("data.Travels[0].metadata.userTasks[0].processInstanceId", is(subProcessInstanceId))
@@ -324,16 +310,14 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.userTasks[0].name", is("TaskName"))
                 .body("data.Travels[0].metadata.userTasks[0].priority", is("High"))
                 .body("data.Travels[0].metadata.userTasks[0].actualOwner", is("kogito"))
-                .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatZonedDateTime(
-                        firstUserTaskEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(firstUserTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.userTasks[1].id", is(secondTaskId))
                 .body("data.Travels[0].metadata.userTasks[1].processInstanceId", is(processInstanceId))
                 .body("data.Travels[0].metadata.userTasks[1].description", is("TaskDescription"))
                 .body("data.Travels[0].metadata.userTasks[1].name", is("TaskName"))
                 .body("data.Travels[0].metadata.userTasks[1].priority", is("High"))
                 .body("data.Travels[0].metadata.userTasks[1].actualOwner", is("kogito"))
-                .body("data.Travels[0].metadata.userTasks[1].lastUpdate", is(formatZonedDateTime(
-                        secondUserTaskEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.userTasks[1].lastUpdate", is(formatOffsetDateTime(secondUserTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(2))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -341,28 +325,22 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].start",
-                        is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].metadata.processInstances[0].end",
-                        is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(endEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].start", is(formatDateTime(endEvent.getData().getStartDate())))
+                .body("data.Travels[0].metadata.processInstances[0].end", is(formatDateTime(endEvent.getData().getEndDate())))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(endEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(endEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].metadata.processInstances[1].id", is(subProcessInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].processId", is(subProcessId))
-                .body("data.Travels[0].metadata.processInstances[1].processName",
-                        is(subProcessStartEvent.getData().getProcessName()))
+                .body("data.Travels[0].metadata.processInstances[1].processName", is(subProcessStartEvent.getData().getProcessName()))
                 .body("data.Travels[0].metadata.processInstances[1].rootProcessId", is(processId))
                 .body("data.Travels[0].metadata.processInstances[1].rootProcessInstanceId", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].parentProcessInstanceId", is(processInstanceId))
-                .body("data.Travels[0].metadata.processInstances[1].start",
-                        is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].metadata.processInstances[1].lastUpdate", is(formatZonedDateTime(
-                        subProcessStartEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[1].start", is(formatDateTime(subProcessStartEvent.getData().getStartDate())))
+                .body("data.Travels[0].metadata.processInstances[1].lastUpdate", is(formatOffsetDateTime(subProcessStartEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[1].end", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[1].endpoint", is(subProcessStartEvent.getSource().toString()))
-                .body("data.Travels[0].metadata.processInstances[1].serviceUrl", is(nullValue()))
+                .body("data.Travels[0].metadata.processInstances[1].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
@@ -383,7 +361,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        UserTaskInstanceDataEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(userTaskEvent);
 
         given().contentType(ContentType.JSON)
@@ -395,20 +373,18 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight", is(nullValue()))
                 .body("data.Travels[0].hotel", is(nullValue()))
                 .body("data.Travels[0].traveller", is(nullValue()))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(userTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(userTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.userTasks.size()", is(1))
                 .body("data.Travels[0].metadata.userTasks[0].id", is(taskId))
                 .body("data.Travels[0].metadata.userTasks[0].processInstanceId", is(processInstanceId))
-                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getDescription()))
-                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getName()))
-                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getPriority()))
+                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getTaskDescription()))
+                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getTaskName()))
+                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getTaskPriority()))
                 .body("data.Travels[0].metadata.userTasks[0].actualOwner", is(userTaskEvent.getData().getActualOwner()))
-                .body("data.Travels[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(userTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(userTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances", is(nullValue()));
 
-        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(processEvent);
 
         given().contentType(ContentType.JSON)
@@ -420,17 +396,15 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(processEvent.getTime())))
                 .body("data.Travels[0].metadata.userTasks.size()", is(1))
                 .body("data.Travels[0].metadata.userTasks[0].id", is(taskId))
                 .body("data.Travels[0].metadata.userTasks[0].processInstanceId", is(processInstanceId))
-                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getDescription()))
-                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getName()))
-                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getPriority()))
+                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getTaskDescription()))
+                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getTaskName()))
+                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getTaskPriority()))
                 .body("data.Travels[0].metadata.userTasks[0].actualOwner", is(userTaskEvent.getData().getActualOwner()))
-                .body("data.Travels[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(userTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(userTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(1))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -438,8 +412,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(processEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
     }
@@ -457,7 +430,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(processEvent);
 
         given().contentType(ContentType.JSON)
@@ -468,8 +441,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(processEvent.getTime())))
                 .body("data.Travels[0].metadata.userTasks", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances.size()", is(1))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
@@ -478,12 +450,11 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(processEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
 
-        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        UserTaskInstanceDataEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(userTaskEvent);
 
         given().contentType(ContentType.JSON)
@@ -494,17 +465,15 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(userTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(userTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.userTasks.size()", is(1))
                 .body("data.Travels[0].metadata.userTasks[0].id", is(taskId))
                 .body("data.Travels[0].metadata.userTasks[0].processInstanceId", is(processInstanceId))
-                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getDescription()))
-                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getName()))
-                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getPriority()))
+                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getTaskDescription()))
+                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getTaskName()))
+                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getTaskPriority()))
                 .body("data.Travels[0].metadata.userTasks[0].actualOwner", is(userTaskEvent.getData().getActualOwner()))
-                .body("data.Travels[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(userTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(userTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(1))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -512,8 +481,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(processEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
     }
@@ -531,8 +499,8 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
-        KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        UserTaskInstanceDataEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
 
         CompletableFuture.allOf(
                 CompletableFuture.runAsync(() -> indexProcessCloudEvent(processEvent)),
@@ -547,18 +515,15 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
-                .body("data.Travels[0].metadata.lastUpdate", anyOf(Arrays
-                        .asList(is(formatZonedDateTime(userTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))),
-                                is((formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC)))))))
+                .body("data.Travels[0].metadata.lastUpdate", anyOf(asList(is(formatOffsetDateTime(userTaskEvent.getTime())), is((formatOffsetDateTime(processEvent.getTime()))))))
                 .body("data.Travels[0].metadata.userTasks.size()", is(1))
                 .body("data.Travels[0].metadata.userTasks[0].id", is(taskId))
                 .body("data.Travels[0].metadata.userTasks[0].processInstanceId", is(processInstanceId))
-                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getDescription()))
-                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getName()))
-                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getPriority()))
+                .body("data.Travels[0].metadata.userTasks[0].description", is(userTaskEvent.getData().getTaskDescription()))
+                .body("data.Travels[0].metadata.userTasks[0].name", is(userTaskEvent.getData().getTaskName()))
+                .body("data.Travels[0].metadata.userTasks[0].priority", is(userTaskEvent.getData().getTaskPriority()))
                 .body("data.Travels[0].metadata.userTasks[0].actualOwner", is(userTaskEvent.getData().getActualOwner()))
-                .body("data.Travels[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(userTaskEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(userTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(1))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -566,8 +531,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(processEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
     }
@@ -585,7 +549,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
         validateProcessInstance(getProcessInstanceById(processInstanceId), startEvent);
@@ -595,8 +559,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(startEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(startEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(1))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -605,10 +568,8 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].state", is(ACTIVE.name()))
-                .body("data.Travels[0].metadata.processInstances[0].start",
-                        is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate",
-                        is(formatZonedDateTime(startEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].start", is(formatDateTime(startEvent.getData().getStartDate())))
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatOffsetDateTime(startEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(startEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
@@ -616,10 +577,13 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
-        KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
-        endEvent.getData().setEnd(ZonedDateTime.now());
-        endEvent.getData().setVariables((ObjectNode) getObjectMapper().readTree(
-                "{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
+        ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
+        endEvent.getData().update().endDate(new Date());
+        Map<String, Object> variablesMap = getProcessInstanceVariablesMap();
+        ((Map<String, Object>) variablesMap.get("hotel")).put("name", "Ibis");
+        ((Map<String, Object>) variablesMap.get("flight")).put("flightNumber", "QF444");
+        endEvent.getData().update().variables(variablesMap);
+
         indexProcessCloudEvent(endEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent);
@@ -629,8 +593,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels[0].id", is(processInstanceId))
-                .body("data.Travels[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(endEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.lastUpdate", is(formatOffsetDateTime(endEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances.size()", is(1))
                 .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
                 .body("data.Travels[0].metadata.processInstances[0].processId", is(processId))
@@ -639,23 +602,21 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].state", is(COMPLETED.name()))
-                .body("data.Travels[0].metadata.processInstances[0].start",
-                        is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Travels[0].metadata.processInstances[0].end",
-                        is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].start", is(formatDateTime(endEvent.getData().getStartDate())))
+                .body("data.Travels[0].metadata.processInstances[0].end", is(formatDateTime(endEvent.getData().getEndDate())))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(endEvent.getSource().toString()))
                 .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].flight.flightNumber", is("QF444"))
                 .body("data.Travels[0].hotel.name", is("Ibis"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
-        KogitoProcessCloudEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId,
+        ProcessInstanceDataEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId,
                 processId, processInstanceId);
         indexProcessCloudEvent(event);
 
         validateProcessInstance(getProcessInstanceByParentProcessInstanceId(processInstanceId), event);
 
-        KogitoProcessCloudEvent errorEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ERROR, processInstanceId,
+        ProcessInstanceDataEvent errorEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ERROR, processInstanceId,
                 processId, processInstanceId);
         indexProcessCloudEvent(errorEvent);
 
@@ -677,7 +638,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Deals", isA(Collection.class));
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(getUserTaskInstanceById(taskId), event);
@@ -688,8 +649,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Deals[0].id", is(processInstanceId))
                 .body("data.Deals[0].__typename", is("Deals"))
-                .body("data.Deals[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Deals[0].metadata.lastUpdate", is(formatOffsetDateTime(event.getTime())))
                 .body("data.Deals[0].metadata.userTasks.size()", is(1))
                 .body("data.Deals[0].metadata.userTasks[0].id", is(taskId))
                 .body("data.Deals[0].metadata.userTasks[0].description", is("TaskDescription"))
@@ -697,18 +657,15 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Deals[0].metadata.userTasks[0].name", is("TaskName"))
                 .body("data.Deals[0].metadata.userTasks[0].priority", is("High"))
                 .body("data.Deals[0].metadata.userTasks[0].actualOwner", is("kogito"))
-                .body("data.Deals[0].metadata.userTasks[0].started",
-                        is(formatZonedDateTime(event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Deals[0].metadata.userTasks[0].completed",
-                        is(formatZonedDateTime(event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Deals[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.Deals[0].metadata.userTasks[0].started", is(formatDateTime(event.getData().getStartDate())))
+                .body("data.Deals[0].metadata.userTasks[0].completed", is(formatDateTime(event.getData().getCompleteDate())))
+                .body("data.Deals[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(event.getTime())));
 
         event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
-        event.getData().setCompleted(ZonedDateTime.now());
-        event.getData().setPriority("Low");
-        event.getData().setActualOwner("admin");
-        event.getData().setState("Completed");
+        event.getData().update().completeDate(new Date());
+        event.getData().update().taskPriority("Low");
+        event.getData().update().actualOwner("admin");
+        event.getData().update().state("Completed");
 
         indexUserTaskCloudEvent(event);
 
@@ -720,8 +677,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Deals[0].id", is(processInstanceId))
                 .body("data.Deals[0].__typename", is("Deals"))
-                .body("data.Deals[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Deals[0].metadata.lastUpdate", is(formatOffsetDateTime(event.getTime())))
                 .body("data.Deals[0].metadata.userTasks.size()", is(1))
                 .body("data.Deals[0].metadata.userTasks[0].id", is(taskId))
                 .body("data.Deals[0].metadata.userTasks[0].description", is("TaskDescription"))
@@ -729,12 +685,9 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Deals[0].metadata.userTasks[0].name", is("TaskName"))
                 .body("data.Deals[0].metadata.userTasks[0].priority", is("Low"))
                 .body("data.Deals[0].metadata.userTasks[0].actualOwner", is("admin"))
-                .body("data.Deals[0].metadata.userTasks[0].started",
-                        is(formatZonedDateTime(event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Deals[0].metadata.userTasks[0].completed",
-                        is(formatZonedDateTime(event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Deals[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.Deals[0].metadata.userTasks[0].started", is(formatDateTime(event.getData().getStartDate())))
+                .body("data.Deals[0].metadata.userTasks[0].completed", is(formatDateTime(event.getData().getCompleteDate())))
+                .body("data.Deals[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(event.getTime())));
 
         event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, null);
         indexUserTaskCloudEvent(event);
@@ -747,8 +700,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Deals[0].id", is(processInstanceId))
                 .body("data.Deals[0].__typename", is("Deals"))
-                .body("data.Deals[0].metadata.lastUpdate",
-                        is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Deals[0].metadata.lastUpdate", is(formatOffsetDateTime(event.getTime())))
                 .body("data.Deals[0].metadata.userTasks.size()", is(1))
                 .body("data.Deals[0].metadata.userTasks[0].id", is(taskId))
                 .body("data.Deals[0].metadata.userTasks[0].description", is("TaskDescription"))
@@ -756,12 +708,9 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Deals[0].metadata.userTasks[0].name", is("TaskName"))
                 .body("data.Deals[0].metadata.userTasks[0].priority", is("High"))
                 .body("data.Deals[0].metadata.userTasks[0].actualOwner", nullValue())
-                .body("data.Deals[0].metadata.userTasks[0].started",
-                        is(formatZonedDateTime(event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Deals[0].metadata.userTasks[0].completed",
-                        is(formatZonedDateTime(event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Deals[0].metadata.userTasks[0].lastUpdate",
-                        is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.Deals[0].metadata.userTasks[0].started", is(formatDateTime(event.getData().getStartDate())))
+                .body("data.Deals[0].metadata.userTasks[0].completed", is(formatDateTime(event.getData().getCompleteDate())))
+                .body("data.Deals[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(event.getTime())));
     }
 
     private String getProtoBufferFileWithoutModelType() {

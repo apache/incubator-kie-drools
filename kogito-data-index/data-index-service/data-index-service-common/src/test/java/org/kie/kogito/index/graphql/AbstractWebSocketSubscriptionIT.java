@@ -26,11 +26,11 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.KogitoProcessCloudEvent;
-import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
@@ -146,7 +146,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
         indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
@@ -165,7 +165,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
         indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
@@ -184,7 +184,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Deals", isA(Collection.class));
 
-        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
