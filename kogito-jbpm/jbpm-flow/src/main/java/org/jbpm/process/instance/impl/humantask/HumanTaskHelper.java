@@ -49,7 +49,7 @@ public class HumanTaskHelper {
 
     public static Comment addComment(KogitoWorkItem item, String commentInfo, String user) {
         HumanTaskWorkItemImpl humanTask = asHumanTask(item);
-        Object id = getNewId();
+        String id = getNewId();
         Comment comment = buildComment(id, commentInfo, user);
         humanTask.getComments().put(id, comment);
         return comment;
@@ -57,13 +57,13 @@ public class HumanTaskHelper {
 
     public static Attachment addAttachment(KogitoWorkItem item, AttachmentInfo attachmentInfo, String user) {
         HumanTaskWorkItemImpl humanTask = asHumanTask(item);
-        Object id = getNewId();
+        String id = getNewId();
         Attachment attachment = buildAttachment(id, attachmentInfo, user);
         humanTask.getAttachments().put(id, attachment);
         return attachment;
     }
 
-    public static Comment updateComment(KogitoWorkItem item, Object id, String commentInfo, String user) {
+    public static Comment updateComment(KogitoWorkItem item, String id, String commentInfo, String user) {
         Comment comment = asHumanTask(item).getComments().get(id);
         if (comment == null) {
             throw new IllegalArgumentException("Comment " + id + " does not exist");
@@ -75,7 +75,7 @@ public class HumanTaskHelper {
     }
 
     public static Attachment updateAttachment(KogitoWorkItem item,
-            Object id,
+            String id,
             AttachmentInfo attachmentInfo,
             String user) {
         Attachment attachment = asHumanTask(item).getAttachments().get(id);
@@ -128,11 +128,11 @@ public class HumanTaskHelper {
                 ((WorkItemNodeInstance) ni).getWorkItem() instanceof HumanTaskWorkItem;
     }
 
-    private static Comment buildComment(Object id, String content, String user) {
+    private static Comment buildComment(String id, String content, String user) {
         return fillTaskMetaEntity(new Comment(id, user), content);
     }
 
-    private static Attachment buildAttachment(Object id, AttachmentInfo attachmentInfo, String user) {
+    private static Attachment buildAttachment(String id, AttachmentInfo attachmentInfo, String user) {
         return setAttachmentName(fillTaskMetaEntity(new Attachment(id, user), attachmentInfo.getUri()), attachmentInfo);
     }
 
@@ -145,14 +145,14 @@ public class HumanTaskHelper {
         return attachment;
     }
 
-    private static <T extends Serializable, C extends TaskMetaEntity<T>> C fillTaskMetaEntity(C metaInfo,
+    private static <K extends Serializable, T extends Serializable, C extends TaskMetaEntity<K, T>> C fillTaskMetaEntity(C metaInfo,
             T content) {
         metaInfo.setUpdatedAt(new Date());
         metaInfo.setContent(content);
         return metaInfo;
     }
 
-    private static Object getNewId() {
+    private static String getNewId() {
         return UUID.randomUUID().toString();
     }
 }

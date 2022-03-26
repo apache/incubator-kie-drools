@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
@@ -162,8 +164,8 @@ public class ApplicationGenerator {
         return Collections.unmodifiableCollection(generators);
     }
 
-    protected Collection<String> loadAddonList() {
-        ArrayList<String> addons = new ArrayList<>();
+    protected Set<String> loadAddonList() {
+        Set<String> addons = new HashSet<>();
         try {
             Enumeration<URL> urls = context.getClassLoader().getResources("META-INF/kogito.addon");
             while (urls.hasMoreElements()) {

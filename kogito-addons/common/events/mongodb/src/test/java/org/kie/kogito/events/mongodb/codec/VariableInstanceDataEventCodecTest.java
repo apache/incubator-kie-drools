@@ -29,9 +29,9 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.services.event.VariableInstanceDataEvent;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
-import org.kie.kogito.services.event.impl.VariableInstanceEventBody;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceEventBody;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 

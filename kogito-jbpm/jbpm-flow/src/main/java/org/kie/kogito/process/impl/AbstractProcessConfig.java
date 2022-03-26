@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
@@ -24,6 +23,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.kogito.Addons;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
@@ -92,7 +92,7 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
     }
 
     public org.kie.kogito.Addons addons() {
-        return new org.kie.kogito.Addons(Arrays.asList());
+        return Addons.EMTPY;
     }
 
     static <T> T orDefault(Iterable<T> instance, Supplier<? extends T> supplier) {

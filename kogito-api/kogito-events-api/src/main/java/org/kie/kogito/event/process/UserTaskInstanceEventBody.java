@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.services.event.impl;
+package org.kie.kogito.event.process;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.Comment;
 
 public class UserTaskInstanceEventBody {
 
@@ -49,8 +46,8 @@ public class UserTaskInstanceEventBody {
     private Map<String, Object> inputs;
     private Map<String, Object> outputs;
 
-    private Collection<Comment> comments;
-    private Collection<Attachment> attachments;
+    private Collection<CommentEventBody> comments;
+    private Collection<AttachmentEventBody> attachments;
 
     private String processInstanceId;
     private String rootProcessInstanceId;
@@ -141,19 +138,19 @@ public class UserTaskInstanceEventBody {
         return rootProcessId;
     }
 
-    public Collection<Comment> getComments() {
+    public Collection<CommentEventBody> getComments() {
         return comments;
     }
 
-    public void setComments(Collection<Comment> comments) {
+    public void setComments(Collection<CommentEventBody> comments) {
         this.comments = comments;
     }
 
-    public Collection<Attachment> getAttachments() {
+    public Collection<AttachmentEventBody> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(Collection<Attachment> attachments) {
+    public void setAttachments(Collection<AttachmentEventBody> attachments) {
         this.attachments = attachments;
     }
 
@@ -173,6 +170,10 @@ public class UserTaskInstanceEventBody {
         return "UserTaskInstanceEventBody [id=" + id + ", taskName=" + taskName + ", taskDescription=" + taskDescription + ", startDate=" + startDate + ", completeDate=" + completeDate + ", state="
                 + state +
                 ", actualOwner=" + actualOwner + "]";
+    }
+
+    public Builder update() {
+        return new Builder(this);
     }
 
     public static Builder create() {
@@ -296,12 +297,12 @@ public class UserTaskInstanceEventBody {
             return this;
         }
 
-        public Builder comments(Collection<Comment> comments) {
+        public Builder comments(Collection<CommentEventBody> comments) {
             instance.comments = comments;
             return this;
         }
 
-        public Builder attachments(Collection<Attachment> attachments) {
+        public Builder attachments(Collection<AttachmentEventBody> attachments) {
             instance.attachments = attachments;
             return this;
         }

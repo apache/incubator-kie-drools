@@ -32,11 +32,11 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.services.event.ProcessInstanceDataEvent;
-import org.kie.kogito.services.event.impl.MilestoneEventBody;
-import org.kie.kogito.services.event.impl.NodeInstanceEventBody;
-import org.kie.kogito.services.event.impl.ProcessErrorEventBody;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.MilestoneEventBody;
+import org.kie.kogito.event.process.NodeInstanceEventBody;
+import org.kie.kogito.event.process.ProcessErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 

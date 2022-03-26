@@ -26,9 +26,9 @@ import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.SubscriptionInfo;
+import org.kie.kogito.event.process.ProcessDataEvent;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.services.event.ProcessDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

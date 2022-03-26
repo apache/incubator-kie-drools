@@ -16,7 +16,7 @@
 package org.kie.kogito;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -28,11 +28,11 @@ public class Addons {
     /**
      * Default empty addons instance
      */
-    public static final Addons EMTPY = new Addons(Collections.emptyList());
+    public static final Addons EMTPY = new Addons(Collections.emptySet());
 
-    private final List<String> availableAddons;
+    private final Set<String> availableAddons;
 
-    public Addons(List<String> availableAddons) {
+    public Addons(Set<String> availableAddons) {
         this.availableAddons = availableAddons;
     }
 
@@ -41,7 +41,7 @@ public class Addons {
      * 
      * @return returns addons
      */
-    public List<String> availableAddons() {
+    public Set<String> availableAddons() {
         return availableAddons;
     }
 

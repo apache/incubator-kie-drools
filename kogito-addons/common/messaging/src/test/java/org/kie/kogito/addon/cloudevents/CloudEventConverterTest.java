@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
-import org.kie.kogito.services.event.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessDataEvent;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

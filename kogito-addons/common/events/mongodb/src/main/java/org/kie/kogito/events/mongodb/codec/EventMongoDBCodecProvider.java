@@ -19,9 +19,9 @@ package org.kie.kogito.events.mongodb.codec;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.kie.kogito.services.event.ProcessInstanceDataEvent;
-import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
-import org.kie.kogito.services.event.VariableInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
 
 public class EventMongoDBCodecProvider implements CodecProvider {
 

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.services.event.impl.UserTaskDeadlineEventBody;
+import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;

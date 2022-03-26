@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.services.event;
+package org.kie.kogito.event.process;
 
 import java.util.Map;
 
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
-import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,10 +27,13 @@ public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanc
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID)
-    private final String kogitoUserTaskinstanceId;
+    private String kogitoUserTaskinstanceId;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE)
-    private final String kogitoUserTaskinstanceState;
+    private String kogitoUserTaskinstanceState;
+
+    public UserTaskInstanceDataEvent() {
+    }
 
     public UserTaskInstanceDataEvent(String source, String addons, Map<String, String> metaData, UserTaskInstanceEventBody body) {
 

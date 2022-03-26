@@ -33,11 +33,11 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.Comment;
-import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
-import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
+import org.kie.kogito.event.process.AttachmentEventBody;
+import org.kie.kogito.event.process.CommentEventBody;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceEventBody;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 
@@ -65,15 +65,21 @@ class UserTaskInstanceDataEventCodecTest {
         String source = "testSource";
         String kogitoAddons = "testKogitoAddons";
 
-        Comment comment = new Comment("testCommentId", "testCommentUpdatedBy");
-        comment.setContent("testCommentContent");
-        comment.setUpdatedAt(new Date());
-        Set<Comment> comments = Collections.singleton(comment);
-        Attachment attachment = new Attachment("testAttachmentId", "testAttachmentUpdatedBy");
-        attachment.setContent(URI.create("test.attachment.test"));
-        attachment.setName("testAttachmentName");
-        attachment.setUpdatedAt(new Date());
-        Set<Attachment> attachments = Collections.singleton(attachment);
+        CommentEventBody comment = CommentEventBody.create()
+                .id("testCommentId")
+                .updatedBy("testCommentUpdatedBy")
+                .content("testCommentContent")
+                .updatedAt(new Date())
+                .build();
+        Set<CommentEventBody> comments = Collections.singleton(comment);
+        AttachmentEventBody attachment = AttachmentEventBody.create()
+                .id("testAttachmentId")
+                .updatedBy("testAttachmentUpdatedBy")
+                .content(URI.create("test.attachment.test"))
+                .name("testAttachmentName")
+                .updatedAt(new Date())
+                .build();
+        Set<AttachmentEventBody> attachments = Collections.singleton(attachment);
 
         Map<String, String> metaData = new HashMap<>();
         metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessinstanceId");
@@ -183,14 +189,14 @@ class UserTaskInstanceDataEventCodecTest {
             assertEquals(event.getData().getProcessId(), ((Document) doc.get("data")).get("processId"));
             assertEquals(event.getData().getRootProcessId(), ((Document) doc.get("data")).get("rootProcessId"));
 
-            Comment c = event.getData().getComments().iterator().next();
+            CommentEventBody c = event.getData().getComments().iterator().next();
             Document comment = new Document().append("id", c.getId()).append("content", c.getContent())
                     .append("updatedAt", c.getUpdatedAt()).append("updatedBy", c.getUpdatedBy());
             Set<Document> comments = new HashSet<>();
             comments.add(comment);
             assertEquals(comments, ((Document) doc.get("data")).get("comments"));
 
-            Attachment a = event.getData().getAttachments().iterator().next();
+            AttachmentEventBody a = event.getData().getAttachments().iterator().next();
             Document attachment = new Document().append("id", a.getId()).append("content", a.getContent())
                     .append("updatedAt", a.getUpdatedAt()).append("updatedBy", a.getUpdatedBy()).append("name", a.getName());
             Set<Document> attachments = new HashSet<>();

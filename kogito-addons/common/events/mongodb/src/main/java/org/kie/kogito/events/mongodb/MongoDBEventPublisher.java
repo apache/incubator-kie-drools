@@ -24,11 +24,11 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
 import org.kie.kogito.events.mongodb.codec.EventMongoDBCodecProvider;
 import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
-import org.kie.kogito.services.event.ProcessInstanceDataEvent;
-import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
-import org.kie.kogito.services.event.VariableInstanceDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

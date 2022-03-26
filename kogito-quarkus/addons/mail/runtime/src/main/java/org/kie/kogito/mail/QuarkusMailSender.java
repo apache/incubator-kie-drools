@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.kie.kogito.services.event.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

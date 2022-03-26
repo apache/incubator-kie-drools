@@ -26,8 +26,8 @@ import org.bson.Document;
 import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
-import org.kie.kogito.services.event.ProcessInstanceDataEvent;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
 
 import static org.kie.kogito.events.mongodb.codec.CodecUtils.codec;
 import static org.kie.kogito.events.mongodb.codec.CodecUtils.encodeDataEvent;

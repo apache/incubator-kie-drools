@@ -17,6 +17,7 @@
 package org.kie.kogito.services.event.impl;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.process.MilestoneEventBody;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.process.flexible.Milestone;
 
@@ -25,8 +26,8 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.event.process.ProcessInstanceEventBody.PROCESS_ID_META_DATA;
 import static org.kie.kogito.process.flexible.ItemDescription.Status;
-import static org.kie.kogito.services.event.impl.ProcessInstanceEventBody.PROCESS_ID_META_DATA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

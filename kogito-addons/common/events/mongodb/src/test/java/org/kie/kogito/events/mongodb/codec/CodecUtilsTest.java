@@ -22,9 +22,9 @@ import java.util.Map;
 import org.bson.Document;
 import org.bson.codecs.DocumentCodec;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.services.event.VariableInstanceDataEvent;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
-import org.kie.kogito.services.event.impl.VariableInstanceEventBody;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceEventBody;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.events.mongodb.codec.CodecUtils.ID;

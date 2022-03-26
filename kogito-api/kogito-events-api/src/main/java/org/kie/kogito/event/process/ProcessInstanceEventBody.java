@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.services.event.impl;
+package org.kie.kogito.event.process;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,7 +50,7 @@ public class ProcessInstanceEventBody {
 
     private ProcessErrorEventBody error;
 
-    private List<String> roles;
+    private Set<String> roles;
 
     private Set<MilestoneEventBody> milestones = Collections.emptySet();
 
@@ -111,7 +109,7 @@ public class ProcessInstanceEventBody {
         return variables;
     }
 
-    public List<String> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
@@ -244,7 +242,7 @@ public class ProcessInstanceEventBody {
         }
 
         public Builder roles(String... roles) {
-            instance.roles = Arrays.asList(roles);
+            instance.roles = Set.of(roles);
             return this;
         }
 

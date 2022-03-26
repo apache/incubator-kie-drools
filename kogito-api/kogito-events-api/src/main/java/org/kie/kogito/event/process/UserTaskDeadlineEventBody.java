@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.services.event.impl;
+package org.kie.kogito.event.process;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
-
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.Comment;
 
 public class UserTaskDeadlineEventBody {
 
@@ -43,8 +40,8 @@ public class UserTaskDeadlineEventBody {
     private String rootProcessInstanceId;
     private String processId;
     private String rootProcessId;
-    private Collection<Comment> comments;
-    private Collection<Attachment> attachments;
+    private Collection<CommentEventBody> comments;
+    private Collection<AttachmentEventBody> attachments;
 
     public UserTaskDeadlineEventBody() {
     }
@@ -126,11 +123,11 @@ public class UserTaskDeadlineEventBody {
         return potentialGroups;
     }
 
-    public Collection<Comment> getComments() {
+    public Collection<CommentEventBody> getComments() {
         return comments;
     }
 
-    public Collection<Attachment> getAttachments() {
+    public Collection<AttachmentEventBody> getAttachments() {
         return attachments;
     }
 
@@ -217,12 +214,12 @@ public class UserTaskDeadlineEventBody {
             return this;
         }
 
-        public Builder comments(Collection<Comment> comments) {
+        public Builder comments(Collection<CommentEventBody> comments) {
             instance.comments = comments;
             return this;
         }
 
-        public Builder attachments(Collection<Attachment> attachments) {
+        public Builder attachments(Collection<AttachmentEventBody> attachments) {
             instance.attachments = attachments;
             return this;
         }

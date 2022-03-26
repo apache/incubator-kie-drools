@@ -17,13 +17,11 @@ package org.kie.kogito.process.workitem;
 
 import java.net.URI;
 
-public class Attachment extends TaskMetaEntity<URI> {
-
-    private static final long serialVersionUID = 1L;
+public class Attachment extends TaskMetaEntity<String, URI> {
 
     private String name;
 
-    public Attachment(Object id, String user) {
+    public Attachment(String id, String user) {
         super(id, user);
     }
 

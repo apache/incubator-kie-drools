@@ -18,15 +18,18 @@ package org.kie.kogito.process.workitem;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TaskMetaEntity<T extends Serializable> implements Serializable {
+public class TaskMetaEntity<K extends Serializable, T extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Object id;
+    private K id;
     protected T content;
     protected Date updatedAt;
     protected String updatedBy;
 
-    public TaskMetaEntity(Object id, String user) {
+    public TaskMetaEntity() {
+    }
+
+    public TaskMetaEntity(K id, String user) {
         this.id = id;
         this.updatedBy = user;
     }
@@ -51,7 +54,7 @@ public class TaskMetaEntity<T extends Serializable> implements Serializable {
         return updatedBy;
     }
 
-    public Object getId() {
+    public K getId() {
         return id;
     }
 
@@ -71,7 +74,7 @@ public class TaskMetaEntity<T extends Serializable> implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        return id.equals(((TaskMetaEntity<T>) obj).id);
+        return id.equals(((TaskMetaEntity<K, T>) obj).id);
     }
 
     @Override

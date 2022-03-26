@@ -22,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -33,6 +34,19 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.kogito.Addons;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
+import org.kie.kogito.event.process.AttachmentEventBody;
+import org.kie.kogito.event.process.CommentEventBody;
+import org.kie.kogito.event.process.MilestoneEventBody;
+import org.kie.kogito.event.process.NodeInstanceEventBody;
+import org.kie.kogito.event.process.ProcessErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceEventBody;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceEventBody;
 import org.kie.kogito.internal.process.event.HumanTaskDeadlineEvent;
 import org.kie.kogito.internal.process.event.KogitoProcessVariableChangedEvent;
 import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
@@ -40,11 +54,11 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
+import org.kie.kogito.process.workitem.Attachment;
+import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-import org.kie.kogito.services.event.ProcessInstanceDataEvent;
-import org.kie.kogito.services.event.UserTaskDeadlineDataEvent;
-import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
-import org.kie.kogito.services.event.VariableInstanceDataEvent;
+
+import static java.util.stream.Collectors.toList;
 
 public class ProcessInstanceEventBatch implements EventBatch {
 
@@ -180,8 +194,27 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .rootProcessId(pi.getRootProcessId())
                 .inputs(workItem.getParameters())
                 .outputs(workItem.getResults())
-                .comments(workItem.getComments().values())
-                .attachments(workItem.getAttachments().values())
+                .comments(workItem.getComments().values().stream().map(createComment()).collect(toList()))
+                .attachments(workItem.getAttachments().values().stream().map(createAttachment()).collect(toList()))
+                .build();
+    }
+
+    protected Function<Comment, CommentEventBody> createComment() {
+        return comment -> CommentEventBody.create()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .updatedAt(comment.getUpdatedAt())
+                .updatedBy(comment.getUpdatedBy())
+                .build();
+    }
+
+    protected Function<Attachment, AttachmentEventBody> createAttachment() {
+        return attachment -> AttachmentEventBody.create()
+                .id(attachment.getId())
+                .name(attachment.getName())
+                .content(attachment.getContent())
+                .updatedAt(attachment.getUpdatedAt())
+                .updatedBy(attachment.getUpdatedBy())
                 .build();
     }
 

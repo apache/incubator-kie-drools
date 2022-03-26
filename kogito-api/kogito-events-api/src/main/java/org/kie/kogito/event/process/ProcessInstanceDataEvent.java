@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.services.event;
+package org.kie.kogito.event.process;
 
 import java.util.Map;
 
-import org.kie.kogito.event.AbstractDataEvent;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
-import org.kie.kogito.services.event.impl.VariableInstanceEventBody;
+public class ProcessInstanceDataEvent extends ProcessDataEvent<ProcessInstanceEventBody> {
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+    public ProcessInstanceDataEvent() {
+    }
 
-public class VariableInstanceDataEvent extends AbstractDataEvent<VariableInstanceEventBody> {
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final String kogitoVariableName;
-
-    public VariableInstanceDataEvent(String source, String addons, Map<String, String> metaData, VariableInstanceEventBody body) {
-
-        super("VariableInstanceEvent",
+    public ProcessInstanceDataEvent(String source, String addons, Map<String, String> metaData, ProcessInstanceEventBody body) {
+        super("ProcessInstanceEvent",
                 source,
                 body,
                 metaData.get(ProcessInstanceEventBody.ID_META_DATA),
+                metaData.get(ProcessInstanceEventBody.PARENT_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
+                metaData.get(ProcessInstanceEventBody.STATE_META_DATA),
                 addons);
-        this.kogitoVariableName = body.getVariableName();
-
-    }
-
-    public String getKogitoVariableName() {
-        return kogitoVariableName;
     }
 }

@@ -17,6 +17,8 @@ package org.kie.kogito.services.event;
 
 import java.util.Optional;
 
+import org.kie.kogito.event.process.ProcessDataEvent;
+
 public class DummyCloudEvent extends ProcessDataEvent<DummyEvent> {
 
     public DummyCloudEvent() {

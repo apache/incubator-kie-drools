@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.Addons;
@@ -45,7 +46,7 @@ public class ApplicationConfigGenerator {
     private final TemplatedGenerator templatedGenerator;
     private KogitoBuildContext context;
 
-    private Collection<String> addons = Collections.emptyList();
+    private Set<String> addons = Collections.emptySet();
 
     private final Collection<ConfigGenerator> configGenerators = new ArrayList<>();
 
@@ -119,7 +120,7 @@ public class ApplicationConfigGenerator {
     }
 
     private ObjectCreationExpr generateAddonsList() {
-        MethodCallExpr asListOfAddons = new MethodCallExpr(new NameExpr("java.util.Arrays"), "asList");
+        MethodCallExpr asListOfAddons = new MethodCallExpr(new NameExpr("java.util.Set"), "of");
         for (String addon : addons) {
             asListOfAddons.addArgument(new StringLiteralExpr(addon));
         }
@@ -127,7 +128,7 @@ public class ApplicationConfigGenerator {
         return newObject(Addons.class, asListOfAddons);
     }
 
-    public void withAddons(Collection<String> addons) {
+    public void withAddons(Set<String> addons) {
         this.addons = addons;
     }
 

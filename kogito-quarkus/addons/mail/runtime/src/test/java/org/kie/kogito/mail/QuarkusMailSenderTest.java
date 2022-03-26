@@ -23,8 +23,8 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.services.event.UserTaskDeadlineDataEvent;
-import org.kie.kogito.services.event.impl.UserTaskDeadlineEventBody;
+import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
 import org.mockito.Mockito;
 
 import io.quarkus.mailer.Mail;

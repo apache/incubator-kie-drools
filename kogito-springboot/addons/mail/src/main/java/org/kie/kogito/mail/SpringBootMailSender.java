@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.mail;
 
-import org.kie.kogito.services.event.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

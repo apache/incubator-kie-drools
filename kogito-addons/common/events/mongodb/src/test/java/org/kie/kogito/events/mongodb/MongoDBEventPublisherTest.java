@@ -24,10 +24,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
 import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
-import org.kie.kogito.services.event.ProcessInstanceDataEvent;
-import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
-import org.kie.kogito.services.event.VariableInstanceDataEvent;
 
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;

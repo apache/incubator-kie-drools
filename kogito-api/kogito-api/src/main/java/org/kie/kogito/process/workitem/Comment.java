@@ -15,11 +15,9 @@
  */
 package org.kie.kogito.process.workitem;
 
-public class Comment extends TaskMetaEntity<String> {
+public class Comment extends TaskMetaEntity<String, String> {
 
-    private static final long serialVersionUID = 1L;
-
-    public Comment(Object id, String user) {
+    public Comment(String id, String user) {
         super(id, user);
     }
 }

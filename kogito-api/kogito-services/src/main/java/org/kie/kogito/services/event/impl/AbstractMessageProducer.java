@@ -18,8 +18,8 @@ package org.kie.kogito.services.event.impl;
 import java.util.Optional;
 
 import org.kie.kogito.event.EventEmitter;
+import org.kie.kogito.event.process.ProcessDataEvent;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.services.event.ProcessDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

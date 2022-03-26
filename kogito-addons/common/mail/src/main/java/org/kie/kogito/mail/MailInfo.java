@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-import org.kie.kogito.services.event.impl.UserTaskDeadlineEventBody;
+import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
 import org.mvel2.templates.TemplateRuntime;
 
 public class MailInfo {

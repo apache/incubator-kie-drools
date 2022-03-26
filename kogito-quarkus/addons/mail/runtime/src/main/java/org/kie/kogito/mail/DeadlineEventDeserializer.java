@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.mail;
 
-import org.kie.kogito.services.event.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 
