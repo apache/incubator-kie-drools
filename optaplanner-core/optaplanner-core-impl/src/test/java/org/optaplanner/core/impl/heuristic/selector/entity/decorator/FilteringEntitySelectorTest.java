@@ -39,36 +39,31 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class FilteringEntitySelectorTest {
+class FilteringEntitySelectorTest {
 
     @Test
-    public void filterCacheTypeSolver() {
+    void filterCacheTypeSolver() {
         filter(SelectionCacheType.SOLVER, 1, SelectionOrder.RANDOM);
     }
 
     @Test
-    public void filterCacheTypePhase() {
+    void filterCacheTypePhase() {
         filter(SelectionCacheType.PHASE, 2, SelectionOrder.RANDOM);
     }
 
     @Test
-    public void filterCacheTypeStep() {
+    void filterCacheTypeStep() {
         filter(SelectionCacheType.STEP, 5, SelectionOrder.RANDOM);
     }
 
     @Test
-    public void filterCacheTypeJustInTime() {
+    void filterCacheTypeJustInTime() {
         filter(SelectionCacheType.JUST_IN_TIME, 5, SelectionOrder.RANDOM);
     }
 
     @Test
-    public void filterOrderedCacheTypeSolver() {
+    void filterOrderedCacheTypeSolver() {
         filter(SelectionCacheType.JUST_IN_TIME, 5, SelectionOrder.ORIGINAL);
-    }
-
-    @FunctionalInterface
-    private interface PlannerAssertFunc {
-        public void apply(EntitySelector entitySelector, long size, String... codes);
     }
 
     private void verifyStep(EntitySelector entitySelector, SelectionCacheType cacheType,
