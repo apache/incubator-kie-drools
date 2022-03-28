@@ -64,7 +64,8 @@ public final class FunctionTestUtil {
 
     public static <T> void assertResultNull(final FEELFnResult<T> result) {
         assertResultNotError(result);
-        //assertThat(result.cata(left -> false, right -> right)).isNull();
+        T invokedResult = result.cata(left -> null, right -> right);
+        assertThat(invokedResult).isNull();
     }
 
     public static <T> void assertResultNotError(final FEELFnResult<T> result) {
