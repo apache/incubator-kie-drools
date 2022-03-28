@@ -75,9 +75,7 @@ class ScoreDirectorFactoryFactoryTest {
         IncrementalScoreCalculator<TestdataSolution, ?> assertionScoreCalculator =
                 assertionScoreDirector.getIncrementalScoreCalculator();
 
-        assertThat(assertionScoreCalculator)
-                .isNotNull()
-                .isExactlyInstanceOf(TestCustomPropertiesIncrementalScoreCalculator.class);
+        assertThat(assertionScoreCalculator).isExactlyInstanceOf(TestCustomPropertiesIncrementalScoreCalculator.class);
     }
 
     @Test

@@ -50,9 +50,7 @@ class PolymorphicScoreJaxbAdapterTest {
         GenericJaxbIO<DummyRootElement> xmlIO = new GenericJaxbIO<>(DummyRootElement.class);
         DummyRootElement dummyRootElement = xmlIO.read(new StringReader(xmlString));
 
-        assertThat(dummyRootElement.score)
-                .isNotNull()
-                .isEqualTo(HardSoftLongScore.of(-1L, -10L));
+        assertThat(dummyRootElement.score).isEqualTo(HardSoftLongScore.of(-1L, -10L));
     }
 
     @XmlRootElement(name = "dummy")

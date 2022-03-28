@@ -27,9 +27,7 @@ class NoneIndexerTest {
     @Test
     void getEmpty() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
-        assertThat(indexer.get(new Object[] {}))
-                .isNotNull()
-                .isEmpty();
+        assertThat(indexer.get(new Object[] {})).isEmpty();
     }
 
     @Test
@@ -65,9 +63,7 @@ class NoneIndexerTest {
         UniTuple<String> bethTuple = newTuple("Beth-F-30");
         indexer.put(new Object[] {}, bethTuple, "Beth value");
 
-        assertThat(indexer.get(new Object[] {}))
-                .isNotNull()
-                .containsOnlyKeys(annTuple, bethTuple);
+        assertThat(indexer.get(new Object[] {})).containsOnlyKeys(annTuple, bethTuple);
     }
 
     private static UniTuple<String> newTuple(String factA) {

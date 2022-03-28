@@ -44,9 +44,7 @@ class PooledEntityPlacerFactoryTest {
         HeuristicConfigPolicy<TestdataSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
         PooledEntityPlacerConfig placerConfig = PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
-        assertThat(placerConfig.getMoveSelectorConfig())
-                .isNotNull()
-                .isExactlyInstanceOf(ChangeMoveSelectorConfig.class);
+        assertThat(placerConfig.getMoveSelectorConfig()).isExactlyInstanceOf(ChangeMoveSelectorConfig.class);
 
         ChangeMoveSelectorConfig changeMoveSelectorConfig =
                 (ChangeMoveSelectorConfig) placerConfig.getMoveSelectorConfig();

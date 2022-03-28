@@ -28,9 +28,7 @@ class EqualsAndComparisonIndexerTest {
     @Test
     void getEmpty() {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
-        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(40) }))
-                .isNotNull()
-                .isEmpty();
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(40) })).isEmpty();
     }
 
     @Test
@@ -70,18 +68,10 @@ class EqualsAndComparisonIndexerTest {
         UniTuple<String> ednaTuple = newTuple("Edna-F-40");
         indexer.put(new Object[] { "F", Integer.valueOf(40) }, ednaTuple, "Edna value");
 
-        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(40) }))
-                .isNotNull()
-                .containsOnlyKeys(annTuple, bethTuple, ednaTuple);
-        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(35) }))
-                .isNotNull()
-                .containsOnlyKeys(bethTuple);
-        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(30) }))
-                .isNotNull()
-                .containsOnlyKeys(bethTuple);
-        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(20) }))
-                .isNotNull()
-                .isEmpty();
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(40) })).containsOnlyKeys(annTuple, bethTuple, ednaTuple);
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(35) })).containsOnlyKeys(bethTuple);
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(30) })).containsOnlyKeys(bethTuple);
+        assertThat(indexer.get(new Object[] { "F", Integer.valueOf(20) })).isEmpty();
     }
 
     private static UniTuple<String> newTuple(String factA) {

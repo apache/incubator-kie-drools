@@ -396,7 +396,6 @@ class OptaPlannerAutoConfigurationTest {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
                     assertThat(solverConfig).isNotNull();
                     assertThat(solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList())
-                            .isNotNull()
                             .containsExactly(constraintsUrl);
                 });
     }
@@ -408,7 +407,6 @@ class OptaPlannerAutoConfigurationTest {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
                     assertThat(solverConfig).isNotNull();
                     assertThat(solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList())
-                            .isNotNull()
                             .containsExactly("constraints.drl");
                 });
     }
