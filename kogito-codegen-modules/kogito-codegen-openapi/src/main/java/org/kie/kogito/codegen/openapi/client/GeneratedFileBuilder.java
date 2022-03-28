@@ -62,15 +62,23 @@ public class GeneratedFileBuilder {
      * @param openAPIGeneratorFile the OpenAPI generated java file
      * @return the path within the Kogito Codegen context
      */
-    private String getGeneratedFilePath(final File openAPIGeneratorFile) {
+    protected String getGeneratedFilePath(final File openAPIGeneratorFile) {
         final Path path = openAPIGeneratorFile.toPath();
         for (int i = 0; i < path.getNameCount(); i++) {
-            if ("src".equals(path.getName(i).toString())) {
+            if (isExactSrcPath(path, i)) {
                 return path.subpath(i, path.getNameCount()).toString()
                         .replace(Paths.get("src", "main", "java").toString().concat(File.separator), "");
             }
         }
         return "";
+    }
+
+    private boolean isExactSrcPath(final Path path, final int currentIndex) {
+        if (currentIndex + 2 < path.getNameCount() && "src".equals(path.getName(currentIndex).toString())
+                && "main".equals(path.getName(currentIndex + 1).toString()) && "java".equals(path.getName(currentIndex + 2).toString())) {
+            return true;
+        }
+        return false;
     }
 
     private String readFileContent(final File file) {
