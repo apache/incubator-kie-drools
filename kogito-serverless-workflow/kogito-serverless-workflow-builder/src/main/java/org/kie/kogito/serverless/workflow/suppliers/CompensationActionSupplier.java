@@ -17,7 +17,7 @@ package org.kie.kogito.serverless.workflow.suppliers;
 
 import org.jbpm.compiler.canonical.ExpressionSupplier;
 import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
@@ -33,6 +33,6 @@ public class CompensationActionSupplier extends ProcessInstanceCompensationActio
 
     @Override
     public Expression get(KogitoNode node, ProcessMetaData metadata) {
-        return SupplierUtils.getExpression(ProcessInstanceCompensationAction.class, getActivityRef());
+        return ExpressionUtils.getObjectCreationExpr(ProcessInstanceCompensationAction.class, getActivityRef());
     }
 }

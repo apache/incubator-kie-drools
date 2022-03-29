@@ -17,7 +17,7 @@ package org.kie.kogito.serverless.workflow.suppliers;
 
 import org.jbpm.compiler.canonical.ExpressionSupplier;
 import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.MergeAction;
 
@@ -29,7 +29,7 @@ public class MergeActionSupplier extends MergeAction implements ExpressionSuppli
 
     public MergeActionSupplier(String inputName, String outputName) {
         super(inputName, outputName);
-        this.expression = SupplierUtils.getExpression(MergeAction.class, inputName, outputName);
+        this.expression = ExpressionUtils.getObjectCreationExpr(MergeAction.class, inputName, outputName);
 
     }
 

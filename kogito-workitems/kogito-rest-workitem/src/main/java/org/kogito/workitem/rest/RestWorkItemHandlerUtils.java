@@ -15,8 +15,11 @@
  */
 package org.kogito.workitem.rest;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import io.vertx.mutiny.core.Vertx;
 
@@ -27,13 +30,19 @@ public class RestWorkItemHandlerUtils {
     private RestWorkItemHandlerUtils() {
     }
 
-    private static Vertx vertx;
+    private static Vertx vertxContext;
 
-    public static synchronized Vertx vertx() {
-        if (vertx == null) {
-            vertx = Vertx.vertx();
-        }
-        return vertx;
+    public static synchronized Vertx vertx(Vertx vertx) {
+        vertxContext = vertx == null ? Vertx.vertx() : vertx;
+        return vertxContext;
+    }
+
+    public static Vertx vertx() {
+        return vertxContext;
+    }
+
+    public static String getParam(Map<String, Object> parameters, String paramName) {
+        return getParam(parameters, paramName, String.class, null);
     }
 
     public static <T> T getParam(Map<String, Object> parameters, String paramName, Class<T> type, T defaultValue) {
@@ -41,21 +50,31 @@ public class RestWorkItemHandlerUtils {
         return value == null ? defaultValue : convert(value, type, v -> v.toString().toUpperCase());
     }
 
-    public static <T> T getClassParam(Map<String, Object> parameters, String paramName, Class<T> clazz, T defaultValue, Map<String, T> instances) {
+    public static <T> Collection<T> getClassListParam(Map<String, Object> parameters, String paramName, Class<T> clazz, Collection<T> defaultValue, Map<String, T> instances) {
         Object param = parameters.remove(paramName);
-        //in case the body builder is not set as an input, just use the default
-        if (Objects.isNull(param)) {
+        if (param == null) {
             return defaultValue;
+        } else {
+            return param instanceof Collection ? ((Collection<?>) param).stream().filter(Objects::nonNull).map(p -> getClassParam(p, clazz, instances)).collect(Collectors.toList())
+                    : Collections.singletonList(getClassParam(param, clazz, instances));
         }
+    }
+
+    private static <T> T getClassParam(Object param, Class<T> clazz, Map<String, T> instances) {
         //check if an instance of RestWorkItemHandlerBodyBuilder was set and just return it
-        else if (clazz.isAssignableFrom(param.getClass())) {
+        if (clazz.isAssignableFrom(param.getClass())) {
             return clazz.cast(param);
         }
         //in case of String, try to load an instance by the FQN of a RestWorkItemHandlerBodyBuilder
         else if (param instanceof String) {
             return instances.computeIfAbsent(param.toString(), k -> loadClass(k, clazz));
         }
-        throw new IllegalArgumentException(param + " is not a valid instance of class " + clazz + " Check value of argument " + paramName);
+        throw new IllegalArgumentException(param + " is not a valid instance of class " + clazz);
+    }
+
+    public static <T> T getClassParam(Map<String, Object> parameters, String paramName, Class<T> clazz, T defaultValue, Map<String, T> instances) {
+        Object param = parameters.remove(paramName);
+        return param == null ? defaultValue : getClassParam(param, clazz, instances);
     }
 
     private static <T> T loadClass(String className, Class<T> clazz) {

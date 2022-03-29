@@ -20,24 +20,19 @@ import java.util.function.Supplier;
 import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
 
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 public class WorkItemParamResolverSupplier implements Supplier<Expression> {
 
     private Class<? extends WorkItemParamResolver> clazz;
-    private Supplier<Expression>[] args;
+    private Object[] args;
 
-    public WorkItemParamResolverSupplier(Class<? extends WorkItemParamResolver> clazz, Supplier<Expression>... args) {
+    public WorkItemParamResolverSupplier(Class<? extends WorkItemParamResolver> clazz, Object... args) {
         this.clazz = clazz;
         this.args = args;
     }
 
     @Override
     public Expression get() {
-        ObjectCreationExpr result = new ObjectCreationExpr().setType(clazz.getCanonicalName());
-        for (Supplier<Expression> arg : args) {
-            result.addArgument(arg.get());
-        }
-        return result;
+        return ExpressionUtils.getObjectCreationExpr(clazz, args);
     }
 }

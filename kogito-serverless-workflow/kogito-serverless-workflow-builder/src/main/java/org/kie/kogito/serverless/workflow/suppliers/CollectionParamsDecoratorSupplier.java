@@ -22,8 +22,7 @@ import org.kogito.workitem.rest.decorators.CollectionParamsDecorator;
 
 import com.github.javaparser.ast.expr.Expression;
 
-import static org.jbpm.compiler.canonical.descriptors.SupplierUtils.getCollectionCreationExpr;
-import static org.jbpm.compiler.canonical.descriptors.SupplierUtils.getExpression;
+import static org.jbpm.compiler.canonical.descriptors.ExpressionUtils.getObjectCreationExpr;
 
 public class CollectionParamsDecoratorSupplier extends CollectionParamsDecorator implements Supplier<Expression> {
 
@@ -31,7 +30,7 @@ public class CollectionParamsDecoratorSupplier extends CollectionParamsDecorator
 
     public CollectionParamsDecoratorSupplier(Collection<String> headerParams, Collection<String> queryParams) {
         super(headerParams, queryParams);
-        expression = getExpression(CollectionParamsDecorator.class).addArgument(getCollectionCreationExpr(headerParams)).addArgument(getCollectionCreationExpr(queryParams));
+        expression = getObjectCreationExpr(CollectionParamsDecorator.class, headerParams, queryParams);
     }
 
     @Override

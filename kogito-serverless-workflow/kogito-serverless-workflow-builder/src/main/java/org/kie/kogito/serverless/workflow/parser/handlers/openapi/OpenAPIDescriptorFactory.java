@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.parser.handlers;
+package org.kie.kogito.serverless.workflow.parser.handlers.openapi;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,13 +29,14 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
-import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import io.vertx.core.http.HttpMethod;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.toCamelCase;
 
-class OpenAPIDescriptor {
+public class OpenAPIDescriptorFactory {
 
     public static OpenAPIDescriptor of(OpenAPI openAPI, String operationId) {
         // path to operation map
@@ -52,7 +55,31 @@ class OpenAPIDescriptor {
             throw new IllegalArgumentException("There is more than one operation " + operations + " in different methods with name " + operationId + " for path " + operEntry.getKey());
         }
         OperationInfo operation = operEntry.getValue().get(0);
-        return new OpenAPIDescriptor(operation.getMethod(), operEntry.getKey(), operation.getOperation());
+        return new OpenAPIDescriptor(operation.getMethod(), operEntry.getKey(), operation.getOperation(), getSchemes(openAPI, operation.getOperation()));
+    }
+
+    private static Collection<SecurityScheme> getSchemes(OpenAPI openAPI, Operation operation) {
+        Set<String> schemeNames = new HashSet<>();
+        List<SecurityRequirement> security = operation.getSecurity();
+        if (security != null) {
+            if (security.isEmpty()) {
+                return Collections.emptyList();
+            }
+            // do not care if and or or, we try to fill all 
+            security.forEach(s -> schemeNames.addAll(s.keySet()));
+        }
+
+        if (openAPI.getComponents() != null) {
+            Map<String, SecurityScheme> schemes = openAPI.getComponents().getSecuritySchemes();
+            if (schemes != null) {
+                if (!schemeNames.isEmpty()) {
+                    schemes = new HashMap<>(schemes);
+                    schemes.keySet().retainAll(schemeNames);
+                }
+                return schemes.values();
+            }
+        }
+        return Collections.emptyList();
     }
 
     private static void checkOperation(String path, String operationId, HttpMethod method, Operation operation, Map<String, List<OperationInfo>> map) {
@@ -74,54 +101,6 @@ class OpenAPIDescriptor {
             checkOperation(path.getKey(), operationId, HttpMethod.TRACE, path.getValue().getTrace(), result);
         }
         return result;
-    }
-
-    private final HttpMethod method;
-    private final String path;
-    private final Set<String> pathParams = new HashSet<>();
-    private final Set<String> queryParams = new HashSet<>();
-    private final Set<String> headerParams = new HashSet<>();
-
-    private OpenAPIDescriptor(HttpMethod method, String path, Operation operation) {
-        this.method = method;
-        this.path = path;
-        if (operation.getParameters() != null) {
-            operation.getParameters().forEach(this::addParameter);
-        }
-    }
-
-    private void addParameter(Parameter parameter) {
-        switch (parameter.getIn()) {
-            case "query":
-                queryParams.add(parameter.getName());
-                break;
-            case "path":
-                pathParams.add(parameter.getName());
-                break;
-            case "header":
-                headerParams.add(parameter.getName());
-                break;
-        }
-    }
-
-    public HttpMethod getMethod() {
-        return method;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public Set<String> getPathParams() {
-        return pathParams;
-    }
-
-    public Set<String> getQueryParams() {
-        return queryParams;
-    }
-
-    public Set<String> getHeaderParams() {
-        return headerParams;
     }
 
     private static class OperationInfo {
@@ -150,5 +129,8 @@ class OpenAPIDescriptor {
     public static String getDefaultURL(OpenAPI openAPI, String defaultBase) {
         List<Server> servers = openAPI.getServers();
         return servers != null && !servers.isEmpty() ? servers.get(0).getUrl() : defaultBase;
+    }
+
+    private OpenAPIDescriptorFactory() {
     }
 }

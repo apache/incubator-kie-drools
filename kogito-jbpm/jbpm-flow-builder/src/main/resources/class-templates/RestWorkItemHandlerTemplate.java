@@ -27,7 +27,7 @@ public class xxxRestWorkItemHandler extends RestWorkItemHandler {
     }
 
     public xxxRestWorkItemHandler(Vertx vertx) {
-        super(WebClient.create(vertx == null ? vertx() : vertx));
+        super(WebClient.create(vertx(vertx)));
     }
     
     @Override

@@ -1,0 +1,46 @@
+---
+openapi: 3.0.3
+info:
+  title: Generated API
+  version: "1.0"
+paths:
+  /:
+    post:
+      operationId: doOperation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MultiplicationOperation'
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    MultiplicationOperation:
+      type: object
+  securitySchemes:
+   client_id:
+    type: apiKey
+    in: header
+    name: X-Client-Id
+    x-key-type: clientId
+   bearerAuth:
+     type: http
+     scheme: bearer
+   oauth:
+     type: oauth2
+     flows: 
+       authorizationCode:
+        authorizationUrl: https://example.com/oauth/authorize
+        tokenUrl: https://example.com/oauth/token
+        scopes:
+         read: Grants read access
+         write: Grants write access
+         admin: Grants read and write access to administrative information
+       clientCredentials:
+         tokenUrl: http://localhost:8382/oauth/token
+  security:
+  - client_id: [ ]
+  - oauth: [ read, write ]
+  - bearerAuth: []

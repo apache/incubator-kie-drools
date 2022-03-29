@@ -17,19 +17,23 @@ package org.kie.kogito.serverless.workflow.suppliers;
 
 import org.jbpm.compiler.canonical.ExpressionSupplier;
 import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 public class SysoutActionSupplier extends SysoutAction implements ExpressionSupplier {
 
-    private final Expression expression;
+    private final ObjectCreationExpr expression;
 
     public SysoutActionSupplier(String lang, String expr, String inputVar, String... addVars) {
         super(lang, expr, inputVar, addVars);
-        this.expression = SupplierUtils.getExpression(SysoutAction.class, SWFSupplierUtils.getVarArgs(lang, expr, inputVar, addVars));
+        this.expression = ExpressionUtils.getObjectCreationExpr(SysoutAction.class, lang, expr, inputVar);
+        for (String addVar : addVars) {
+            expression.addArgument(ExpressionUtils.getLiteralExpr(addVar));
+        }
     }
 
     @Override

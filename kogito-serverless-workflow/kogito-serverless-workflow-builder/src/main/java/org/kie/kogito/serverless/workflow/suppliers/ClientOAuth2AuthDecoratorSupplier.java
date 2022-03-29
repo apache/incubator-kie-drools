@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,24 @@
  */
 package org.kie.kogito.serverless.workflow.suppliers;
 
-import org.jbpm.compiler.canonical.ExpressionSupplier;
-import org.jbpm.compiler.canonical.ProcessMetaData;
+import java.util.function.Supplier;
+
 import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
-import org.kie.kogito.internal.process.runtime.KogitoNode;
-import org.kie.kogito.serverless.workflow.actions.CollectorAction;
+import org.kogito.workitem.rest.auth.ClientOAuth2AuthDecorator;
 
 import com.github.javaparser.ast.expr.Expression;
 
-public class CollectorActionSupplier extends CollectorAction implements ExpressionSupplier {
+public class ClientOAuth2AuthDecoratorSupplier extends ClientOAuth2AuthDecorator implements Supplier<Expression> {
 
-    private Expression expression;
+    private final Expression expression;
 
-    public CollectorActionSupplier(String lang, String expr, String inputVar, String outputVar) {
-        super(lang, expr, inputVar, outputVar);
-        expression = ExpressionUtils.getObjectCreationExpr(CollectorAction.class, lang, expr, inputVar, outputVar);
+    public ClientOAuth2AuthDecoratorSupplier(String tokenUrl, String refreshUrl) {
+        super(tokenUrl, refreshUrl);
+        this.expression = ExpressionUtils.getObjectCreationExpr(ClientOAuth2AuthDecorator.class, tokenUrl, refreshUrl);
     }
 
     @Override
-    public Expression get(KogitoNode node, ProcessMetaData metadata) {
+    public Expression get() {
         return expression;
     }
 

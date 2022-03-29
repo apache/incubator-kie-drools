@@ -17,7 +17,7 @@ package org.kie.kogito.serverless.workflow.suppliers;
 
 import org.jbpm.compiler.canonical.ExpressionSupplier;
 import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.serverless.workflow.actions.InjectAction;
@@ -35,7 +35,7 @@ public class InjectActionSupplier extends InjectAction implements ExpressionSupp
     @Override
     public Expression get(KogitoNode kogitoNode, ProcessMetaData metadata) {
         try {
-            return SupplierUtils.getExpression(InjectAction.class, JsonObjectUtils.toString(this.node));
+            return ExpressionUtils.getObjectCreationExpr(InjectAction.class, JsonObjectUtils.toString(this.node));
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);
         }

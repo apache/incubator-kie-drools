@@ -259,6 +259,13 @@
         <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
         <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>io.smallrye.reactive</groupId>
+        <artifactId>smallrye-mutiny-vertx-auth-oauth2</artifactId>
+        <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
+      </dependency>
+      
       <!-- metrics - monitoring -->
       <dependency>
         <groupId>io.micrometer</groupId>

@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
@@ -36,6 +38,8 @@ public abstract class MockServiceConfigurer implements QuarkusTestResourceLifecy
     public MockServiceConfigurer(MockServerConfig... configs) {
         Arrays.stream(configs).forEach(c -> {
             final WireMockServer server = new WireMockServer(c.getPort());
+            server.stubFor(post(urlEqualTo("/oauth/token")).willReturn(aResponse().withHeader("Content-Type", "application/json").withJsonBody(
+                    ObjectMapperFactory.get().createObjectNode().put("access_token", "mytoken"))));
             server.stubFor(post(urlEqualTo(c.getPath()))
                     .willReturn(aResponse()
                             .withHeader("Content-Type", "application/json")

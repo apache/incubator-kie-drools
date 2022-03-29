@@ -35,7 +35,7 @@ public class ExpressionReturnValueSupplier implements Supplier<Expression> {
 
     @Override
     public Expression get() {
-        return SupplierUtils.getExpression(ExpressionReturnValueEvaluator.class, lang, expr, rootName);
+        return ExpressionUtils.getObjectCreationExpr(ExpressionReturnValueEvaluator.class, lang, expr, rootName);
     }
 
 }

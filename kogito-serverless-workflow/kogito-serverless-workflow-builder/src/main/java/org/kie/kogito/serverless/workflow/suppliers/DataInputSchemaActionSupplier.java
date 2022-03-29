@@ -17,11 +17,10 @@ package org.kie.kogito.serverless.workflow.suppliers;
 
 import org.jbpm.compiler.canonical.ExpressionSupplier;
 import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.DataInputSchemaAction;
 
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 
 public class DataInputSchemaActionSupplier extends DataInputSchemaAction implements ExpressionSupplier {
@@ -32,6 +31,6 @@ public class DataInputSchemaActionSupplier extends DataInputSchemaAction impleme
 
     @Override
     public Expression get(KogitoNode node, ProcessMetaData metadata) {
-        return SupplierUtils.getExpression(DataInputSchemaAction.class, schema).addArgument(new BooleanLiteralExpr(failOnValidationErrors));
+        return ExpressionUtils.getObjectCreationExpr(DataInputSchemaAction.class, schema, failOnValidationErrors);
     }
 }

@@ -39,27 +39,14 @@ consumes:
   - application/json
 produces:
   - application/json
-x-configuration:
-  assembly:
-    execute:
-      - set-variable:
-          actions:
-            - set: message.headers.Authorization
-              value: >-
-                Basic
-                dGhpc2lzYXRlc3QK
-      - invoke:
-          target-url: >-
-            https://myapp.sso.com$(request.path)$(request.search)
-          verb: keep
-  cors:
-    enabled: true
 securityDefinitions:
   client_id:
     type: apiKey
     in: header
     name: X-Client-Id
     x-key-type: clientId
+  basicAuth:
+    type: basic
   oauth:
     type: oauth2
     flow: accessCode
@@ -72,5 +59,6 @@ securityDefinitions:
 security:
   - client_id: [ ]
   - oauth: [ read, write ]
+  - basicAuth: []
 tags:
   - name: myapp

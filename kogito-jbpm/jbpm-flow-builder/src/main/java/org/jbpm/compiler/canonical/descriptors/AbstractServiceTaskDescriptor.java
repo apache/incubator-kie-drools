@@ -15,15 +15,10 @@
  */
 package org.jbpm.compiler.canonical.descriptors;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.jbpm.compiler.canonical.NodeValidator;
-import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -41,21 +36,14 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.CharLiteralExpr;
-import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
@@ -233,46 +221,7 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
 
     public static Object processWorkItemValue(String exprLang, Object object, String paramName, Class<? extends ExpressionWorkItemResolver> clazz, boolean isExpression) {
         return isExpression
-                ? new WorkItemParamResolverSupplier(clazz, () -> new StringLiteralExpr(exprLang), () -> getLiteralExpr(object), () -> new StringLiteralExpr(paramName))
+                ? new WorkItemParamResolverSupplier(clazz, exprLang, object, paramName)
                 : object;
-    }
-
-    public static Expression getLiteralExpr(Object object) {
-        if (object == null) {
-            return new NullLiteralExpr();
-        } else if (object instanceof Boolean) {
-            return new BooleanLiteralExpr(((Boolean) object).booleanValue());
-        } else if (object instanceof Character) {
-            return new CharLiteralExpr(((Character) object).charValue());
-        } else if (object instanceof Long) {
-            return new LongLiteralExpr(object.toString());
-        } else if (object instanceof Integer || object instanceof Short) {
-            return new IntegerLiteralExpr(object.toString());
-        } else if (object instanceof BigInteger) {
-            return new BigIntegerLiteralExpr((BigInteger) object);
-        } else if (object instanceof BigDecimal) {
-            return new BigDecimalLiteralExpr((BigDecimal) object);
-        } else if (object instanceof Number) {
-            return new DoubleLiteralExpr(((Number) object).doubleValue());
-        } else if (object instanceof String) {
-            return new StringLiteralExpr().setString(object.toString());
-        } else {
-            return convertExpression(object);
-        }
-    }
-
-    private static Expression convertExpression(Object object) {
-        Class<?> objectClass = object.getClass();
-        while (objectClass != null && !TypeConverterRegistry.get().isRegistered(objectClass.getName())) {
-            objectClass = objectClass.getSuperclass();
-        }
-        if (objectClass != null) {
-            // will generate TypeConverterRegistry.get().forType("JsonNode.class").apply("{\"dog\":\"perro\"}"));
-            return new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
-                    NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
-                    NodeList.nodeList(new StringLiteralExpr().setString(TypeConverterRegistry.get().forTypeReverse(object).apply((object)))));
-        } else {
-            return new StringLiteralExpr().setString(object.toString());
-        }
     }
 }

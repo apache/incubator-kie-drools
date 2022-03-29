@@ -17,6 +17,7 @@ package org.kogito.workitem.rest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +37,10 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
+import org.kogito.workitem.rest.auth.AuthDecorator;
+import org.kogito.workitem.rest.auth.BasicAuthDecorator;
+import org.kogito.workitem.rest.auth.BearerTokenAuthDecorator;
 import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.bodybuilders.RestWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.decorators.ParamsDecorator;
@@ -54,6 +59,7 @@ import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
+import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getClassListParam;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getClassParam;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
 
@@ -72,6 +78,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     public static final String BODY_BUILDER = "BodyBuilder";
     public static final String PARAMS_DECORATOR = "ParamsDecorator";
     public static final String PATH_PARAM_RESOLVER = "PathParamResolver";
+    public static final String AUTH_METHOD = "AuthMethod";
 
     private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandler.class);
     private static final RestWorkItemHandlerResult DEFAULT_RESULT_HANDLER = new DefaultRestWorkItemHandlerResult();
@@ -82,6 +89,8 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     private static final Map<String, RestWorkItemHandlerBodyBuilder> bodyBuilders = new ConcurrentHashMap<>();
     private static final Map<String, ParamsDecorator> paramsDecorators = new ConcurrentHashMap<>();
     private static final Map<String, PathParamResolver> pathParamsResolvers = new ConcurrentHashMap<>();
+    private static final Map<String, AuthDecorator> authDecoratorsMap = new ConcurrentHashMap<>();
+    private static final Collection<AuthDecorator> DEFAULT_AUTH_DECORATORS = Arrays.asList(new ApiKeyAuthDecorator(), new BasicAuthDecorator(), new BearerTokenAuthDecorator());
 
     private WebClient client;
     private Collection<RequestDecorator> requestDecorators;
@@ -110,6 +119,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         RestWorkItemHandlerBodyBuilder bodyBuilder = getClassParam(parameters, BODY_BUILDER, RestWorkItemHandlerBodyBuilder.class, DEFAULT_BODY_BUILDER, bodyBuilders);
         ParamsDecorator paramsDecorator = getClassParam(parameters, PARAMS_DECORATOR, ParamsDecorator.class, DEFAULT_PARAMS_DECORATOR, paramsDecorators);
         PathParamResolver pathParamResolver = getClassParam(parameters, PATH_PARAM_RESOLVER, PathParamResolver.class, DEFAULT_PATH_PARAM_RESOLVER, pathParamsResolvers);
+        Collection<? extends AuthDecorator> authDecorators = getClassListParam(parameters, AUTH_METHOD, AuthDecorator.class, DEFAULT_AUTH_DECORATORS, authDecoratorsMap);
 
         logger.debug("Filtered parameters are {}", parameters);
         // create request
@@ -120,6 +130,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         String path = url.map(java.net.URL::getPath).orElse(endPoint).replace(" ", "%20");//fix issue with spaces in the path
         HttpRequest<Buffer> request = client.request(method, port, host, path);
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
+        authDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         paramsDecorator.decorate(workItem, parameters, request);
         HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT) ? request.sendJsonAndAwait(bodyBuilder.apply(parameters)) : request.sendAndAwait();
         manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo)));

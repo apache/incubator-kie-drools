@@ -22,6 +22,10 @@
       <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
     </dependency>
     <dependency>
+       <groupId>io.smallrye.reactive</groupId>
+       <artifactId>smallrye-mutiny-vertx-auth-oauth2</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>

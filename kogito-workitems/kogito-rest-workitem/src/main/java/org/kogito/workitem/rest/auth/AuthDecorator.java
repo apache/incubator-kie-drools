@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kogito.workitem.rest.auth;
 
-package org.kie.kogito.quarkus.it.openapi.client.mocks;
+import org.kogito.workitem.rest.decorators.RequestDecorator;
 
-/**
- * Mock Service to emulate a secured service for OpenAPI Client calls with tokens, basic auth, and etc.
- */
-public class AuthSecurityMockService extends MockServiceConfigurer {
-
-    public static final MockServerConfig SEC_20 =
-            new MockServerConfig(8383, "{}", "/watsonorchestrate", "authWithApiKeyServer2");
-
-    public static final MockServerConfig SEC_30 =
-            new MockServerConfig(8382, "{}", "/", "authWithApiKeyServer3");
-
-    public AuthSecurityMockService() {
-        super(SEC_20, SEC_30);
-    }
+public interface AuthDecorator extends RequestDecorator {
 
 }

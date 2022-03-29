@@ -39,7 +39,8 @@ import static io.restassured.RestAssured.given;
 class ApiWithSecurityContextIT {
 
     // injected by quarkus
-    WireMockServer authWithApiKeyServer;
+    WireMockServer authWithApiKeyServer2;
+    WireMockServer authWithApiKeyServer3;
 
     @BeforeAll
     static void init() {
@@ -56,13 +57,30 @@ class ApiWithSecurityContextIT {
                                 .singletonMap(
                                         "workflowdata",
                                         Collections.singletonMap("foo", "bar")))
-                .post("/thirdparty")
+                .post("/sec20")
                 .then()
                 .statusCode(201);
 
         // verify if the headers were correctly sent
-        authWithApiKeyServer
-                .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.CONFIG.getPath()))
+        authWithApiKeyServer2
+                .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.SEC_20.getPath()))
+                        .withHeader("X-Client-Id", matching("12345"))
+                        .withHeader("Authorization", matching("Basic amF2aWVyaXRvOmZ1bGFuaXRv")));
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(
+                        Collections
+                                .singletonMap(
+                                        "workflowdata",
+                                        Collections.singletonMap("foo", "bar")))
+                .post("/sec30")
+                .then()
+                .statusCode(201);
+
+        authWithApiKeyServer3
+                .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.SEC_30.getPath()))
                         .withHeader("X-Client-Id", matching("12345"))
                         .withHeader("Authorization", matching("Bearer mytoken")));
     }

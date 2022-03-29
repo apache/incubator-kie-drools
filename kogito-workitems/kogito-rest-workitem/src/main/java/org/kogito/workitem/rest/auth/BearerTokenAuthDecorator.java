@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.rest.decorators;
+package org.kogito.workitem.rest.auth;
 
 import java.util.Map;
 
@@ -22,19 +22,17 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
-import static org.kogito.workitem.rest.RestWorkItemHandler.PASSWORD;
-import static org.kogito.workitem.rest.RestWorkItemHandler.USER;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
 
-public class BasicAuthDecorator implements RequestDecorator {
+public class BearerTokenAuthDecorator implements AuthDecorator {
+
+    public static final String BEARER_TOKEN = "accessToken";
 
     @Override
     public void decorate(KogitoWorkItem item, Map<String, Object> parameters, HttpRequest<?> request) {
-        String user = getParam(parameters, USER, String.class, null);
-        String password = getParam(parameters, PASSWORD, String.class, null);
-
-        if (!isEmpty(user) && !isEmpty(password)) {
-            request.basicAuthentication(user, password);
+        String bearerToken = getParam(parameters, BEARER_TOKEN, String.class, null);
+        if (!isEmpty(bearerToken)) {
+            request.bearerTokenAuthentication(bearerToken);
         }
     }
 }

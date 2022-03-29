@@ -17,7 +17,7 @@ package org.kie.kogito.serverless.workflow.suppliers;
 
 import org.jbpm.compiler.canonical.ExpressionSupplier;
 import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.descriptors.SupplierUtils;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.serverless.workflow.actions.ExpressionAction;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
@@ -79,7 +79,10 @@ public class ExpressionActionSupplier extends ExpressionAction implements Expres
 
     private ExpressionActionSupplier(String lang, String expr, String inputVar, String outputVar, String collectVar, String[] addInputVars) {
         super(lang, expr, inputVar, outputVar, collectVar, addInputVars);
-        expression = SupplierUtils.getExpression(ExpressionAction.class, SWFSupplierUtils.getVarArgs(lang, expr, inputVar, outputVar, collectVar, addInputVars));
+        expression = ExpressionUtils.getObjectCreationExpr(ExpressionAction.class, lang, expr, inputVar, outputVar, collectVar);
+        for (String addInputVar : addInputVars) {
+            expression.addArgument(ExpressionUtils.getLiteralExpr(addInputVar));
+        }
     }
 
     @Override

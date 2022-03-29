@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.jbpm.compiler.canonical.descriptors.AbstractServiceTaskDescriptor;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
@@ -202,7 +202,7 @@ public class ProcessVisitor extends AbstractVisitor {
         }
         process.getMetaData().entrySet().stream().filter(e -> e.getKey().startsWith("custom"))
                 .forEach(entry -> body
-                        .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "metaData", new StringLiteralExpr(entry.getKey()), AbstractServiceTaskDescriptor.getLiteralExpr(entry.getValue()))));
+                        .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "metaData", new StringLiteralExpr(entry.getKey()), ExpressionUtils.getLiteralExpr(entry.getValue()))));
     }
 
     private <U extends org.kie.api.definition.process.Node> void visitNodes(List<U> nodes, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
