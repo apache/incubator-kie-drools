@@ -780,7 +780,7 @@ To verify the constraints against an independent implementation, configure a ``a
   <environmentMode>FAST_ASSERT</environmentMode>
   ...
   <scoreDirectorFactory>
-    <constraintProviderClass>org.optaplanner.examples.nqueens.optional.score.NQueensConstraintProviderorg.optaplanner.examples.nqueens.optional.score.NQueensConstraintProvider</constraintProviderClass>
+    <constraintProviderClass>org.optaplanner.examples.nqueens.optional.score.NQueensConstraintProvider</constraintProviderClass>
     <assertionScoreDirectorFactory>
       <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
     </assertionScoreDirectorFactory>
