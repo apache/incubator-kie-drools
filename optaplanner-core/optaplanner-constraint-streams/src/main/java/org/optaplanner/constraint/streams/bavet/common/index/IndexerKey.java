@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,44 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Arrays;
 
-public class IndexerKey {
+public final class IndexerKey {
 
-    private Object[] indexProperties;
+    private final Object[] indexProperties;
+    private final int effectiveLength;
 
     public IndexerKey(Object[] indexProperties) {
+        this(indexProperties, indexProperties.length);
+    }
+
+    public IndexerKey(Object[] indexProperties, int effectiveLength) {
         this.indexProperties = indexProperties;
+        this.effectiveLength = effectiveLength;
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(indexProperties);
+        if (indexProperties == null) {
+            return 0;
+        }
+        int result = 1;
+        for (int i = 0; i < effectiveLength; i++) {
+            Object element = indexProperties[i];
+            result = 31 * result + (element == null ? 0 : element.hashCode());
+        }
+        return result;
     }
 
     @Override
     public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
         if (!(o instanceof IndexerKey)) {
             return false;
         }
         IndexerKey other = (IndexerKey) o;
-        return Arrays.equals(indexProperties, other.indexProperties);
+        return Arrays.equals(indexProperties, 0, effectiveLength,
+                other.indexProperties, 0, effectiveLength);
     }
 
 }
