@@ -20,6 +20,7 @@ import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
+import org.drools.compiler.builder.impl.processors.CompositePackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
@@ -32,6 +33,7 @@ import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
+import org.drools.compiler.builder.impl.processors.TypeDeclarationCompositeCompilationPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
@@ -1486,14 +1488,75 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      */
     protected void doSecondBuildStep( Collection<CompositePackageDescr> packages ) { }
 
-    public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
+    public void _buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);
-        packages.forEach(packageDescr -> normalizeTypeDeclarationAnnotations(packageDescr, getOrCreatePackageRegistry(packageDescr).getTypeResolver()));
+        packages.forEach(pkgRegistryManager::getOrCreatePackageRegistry);
+        packages.forEach(packageDescr ->
+                normalizeTypeDeclarationAnnotations(
+                        packageDescr,
+                        pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()).getTypeResolver()));
         buildTypeDeclarations(packages);
-        packages.forEach(packageDescr -> processEntryPointDeclarations(getPackageRegistry(packageDescr.getNamespace()), packageDescr));
+        packages.forEach(packageDescr ->
+                processEntryPointDeclarations(
+                        pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()),
+                        packageDescr));
         buildOtherDeclarations(packages);
-        packages.forEach(packageDescr -> normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver()));
+        packages.forEach(packageDescr ->
+                normalizeRuleAnnotations(
+                        packageDescr,
+                        pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()).getTypeResolver()));
     }
+
+
+    public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
+        CompositePackageCompilationPhase compositePackageCompilationPhase = new CompositePackageCompilationPhase(
+                packages, pkgRegistryManager, typeBuilder, this, kBase, configuration);
+        compositePackageCompilationPhase.process();
+        this.results.addAll(compositePackageCompilationPhase.getResults());
+    }
+    public void __buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
+        initPackageRegistries(packages);
+//        packages.forEach(pkgRegistryManager::getOrCreatePackageRegistry);
+        Map<String, AnnotationNormalizer> annotationNormalizers = new HashMap<>();
+        for (CompositePackageDescr packageDescr : packages) {
+            annotationNormalizers.put(
+                    packageDescr.getNamespace(),
+                    AnnotationNormalizer.of(
+                            pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()).getTypeResolver(),
+                            configuration.getLanguageLevel().useJavaAnnotations()));
+        }
+        packages.forEach(packageDescr -> {
+            AnnotationNormalizer annotationNormalizer = annotationNormalizers.get(packageDescr.getNamespace());
+            TypeDeclarationAnnotationNormalizer typeDeclarationAnnotationNormalizer =
+                    new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr);
+
+            typeDeclarationAnnotationNormalizer.process();
+
+            this.results.addAll(typeDeclarationAnnotationNormalizer.getResults());
+        });
+
+        TypeDeclarationCompositeCompilationPhase typeDeclarationCompositeCompilationPhase =
+                new TypeDeclarationCompositeCompilationPhase(packages, typeBuilder);
+        typeDeclarationCompositeCompilationPhase.process();
+
+        packages.forEach(packageDescr -> {
+            EntryPointDeclarationCompilationPhase entryPointDeclarationProcessor =
+                    new EntryPointDeclarationCompilationPhase(pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()), packageDescr);
+            entryPointDeclarationProcessor.process();
+            this.results.addAll(entryPointDeclarationProcessor.getResults());
+        });
+        buildOtherDeclarations(packages);
+        packages.forEach(packageDescr -> {
+            AnnotationNormalizer annotationNormalizer = annotationNormalizers.get(packageDescr.getNamespace());
+
+            RuleAnnotationNormalizer ruleAnnotationNormalizer =
+                    new RuleAnnotationNormalizer(annotationNormalizer, packageDescr);
+
+            ruleAnnotationNormalizer.process();
+            this.results.addAll(ruleAnnotationNormalizer.getResults());
+        });
+    }
+
 
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         for ( CompositePackageDescr packageDescr : packages ) {
@@ -1521,6 +1584,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         getTypeBuilder().processTypeDeclarations( packages, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
 
+        // ImportCompilationPhase
         for ( CompositePackageDescr packageDescr : packages ) {
             for ( ImportDescr importDescr : packageDescr.getImports() ) {
                 getPackageRegistry( packageDescr.getNamespace() ).addImport( importDescr );
