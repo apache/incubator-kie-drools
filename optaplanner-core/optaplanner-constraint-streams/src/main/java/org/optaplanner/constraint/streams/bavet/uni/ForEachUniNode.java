@@ -33,26 +33,29 @@ public final class ForEachUniNode<A> extends AbstractNode {
      * Calls for example {@link UniScorer#insert(UniTuple)}, {@link JoinBiNode#insertA(UniTuple)},
      * {@link JoinBiNode#insertB(UniTuple)} and/or ...
      */
-    public final Consumer<UniTuple<A>> nextNodesInsert;
+    private final Consumer<UniTuple<A>> nextNodesInsert;
     /**
      * Calls for example {@link UniScorer#retract(UniTuple)}, {@link JoinBiNode#retractA(UniTuple)},
      * {@link JoinBiNode#retractB(UniTuple)} and/or ...
      */
-    public final Consumer<UniTuple<A>> nextNodesRetract;
+    private final Consumer<UniTuple<A>> nextNodesRetract;
+    private final int outputStoreSize;
 
     private final Map<A, UniTuple<A>> tupleMap = new IdentityHashMap<>(1000);
     private final Queue<UniTuple<A>> dirtyTupleQueue;
 
     public ForEachUniNode(Class<A> forEachClass,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract) {
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            int outputStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
+        this.outputStoreSize = outputStoreSize;
         dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
     public void insert(A a) {
-        UniTuple<A> tuple = new UniTuple<>(a);
+        UniTuple<A> tuple = new UniTuple<>(a, outputStoreSize);
         tuple.state = BavetTupleState.CREATING;
         UniTuple<A> old = tupleMap.put(a, tuple);
         if (old != null) {

@@ -19,15 +19,17 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-// TODO Java 17: refactor to record
 public final class UniTuple<A> implements Tuple {
 
     public final A factA;
 
+    public final Object[] store;
+
     public BavetTupleState state;
 
-    public UniTuple(A factA) {
+    public UniTuple(A factA, int storeSize) {
         this.factA = factA;
+        store = (storeSize <= 0) ? null : new Object[storeSize];
     }
 
     @Override

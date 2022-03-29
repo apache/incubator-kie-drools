@@ -19,19 +19,21 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-// TODO Java 17: refactor to record
 public final class TriTuple<A, B, C> implements Tuple {
 
     public final A factA;
     public final B factB;
     public final C factC;
 
+    public final Object[] store;
+
     public BavetTupleState state;
 
-    public TriTuple(A factA, B factB, C factC) {
+    public TriTuple(A factA, B factB, C factC, int storeSize) {
         this.factA = factA;
         this.factB = factB;
         this.factC = factC;
+        store = (storeSize <= 0) ? null : new Object[storeSize];
     }
 
     @Override

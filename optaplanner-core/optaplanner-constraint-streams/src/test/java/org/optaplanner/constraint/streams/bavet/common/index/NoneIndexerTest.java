@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -36,7 +35,7 @@ class NoneIndexerTest {
     @Test
     void putTwice() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
-        UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
+        UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new Object[] {}, annTuple, "Ann value");
         assertThatThrownBy(() -> indexer.put(new Object[] {}, annTuple, "Ann value"))
                 .isInstanceOf(IllegalStateException.class);
@@ -45,10 +44,10 @@ class NoneIndexerTest {
     @Test
     void removeTwice() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
-        UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
+        UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new Object[] {}, annTuple, "Ann value");
 
-        UniTuple<String> ednaTuple = new UniTuple<>("Edna-F-40");
+        UniTuple<String> ednaTuple = newTuple("Edna-F-40");
         assertThatThrownBy(() -> indexer.remove(new Object[] {}, ednaTuple))
                 .isInstanceOf(IllegalStateException.class);
         assertThat(indexer.remove(new Object[] {}, annTuple))
@@ -61,13 +60,18 @@ class NoneIndexerTest {
     void get() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
 
-        UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
+        UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new Object[] {}, annTuple, "Ann value");
-        UniTuple<String> bethTuple = new UniTuple<>("Beth-F-30");
+        UniTuple<String> bethTuple = newTuple("Beth-F-30");
         indexer.put(new Object[] {}, bethTuple, "Beth value");
 
         assertThat(indexer.get(new Object[] {}))
                 .isNotNull()
                 .containsOnlyKeys(annTuple, bethTuple);
     }
+
+    private static UniTuple<String> newTuple(String factA) {
+        return new UniTuple<>(factA, 0);
+    }
+
 }

@@ -25,6 +25,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
@@ -54,6 +55,11 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
         parent.collectActiveConstraintStreams(constraintStreamSet);
         constraintStreamSet.add(this);
+    }
+
+    @Override
+    public ConstraintStream getTupleSource() {
+        return parent.getTupleSource();
     }
 
     @Override

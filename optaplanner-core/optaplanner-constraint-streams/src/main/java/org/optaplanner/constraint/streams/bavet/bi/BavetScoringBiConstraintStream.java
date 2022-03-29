@@ -33,6 +33,7 @@ import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.constraint.streams.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringBiConstraintStream<Solution_, A, B>
         extends BavetAbstractBiConstraintStream<Solution_, A, B>
@@ -111,6 +112,11 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     }
 
     @Override
+    public ConstraintStream getTupleSource() {
+        return parent.getTupleSource();
+    }
+
+    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Score_ constraintWeight = buildHelper.getConstraintWeight(constraint);
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
@@ -140,7 +146,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         BiScorer<A, B> scorer = new BiScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
-                constraintWeight, scoreImpacter);
+                constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
         buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 

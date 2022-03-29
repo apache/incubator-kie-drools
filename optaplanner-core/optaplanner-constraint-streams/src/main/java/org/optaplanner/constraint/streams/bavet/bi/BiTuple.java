@@ -19,17 +19,19 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-// TODO Java 17: refactor to record
 public final class BiTuple<A, B> implements Tuple {
 
     public final A factA;
     public final B factB;
 
+    public final Object[] store;
+
     public BavetTupleState state;
 
-    public BiTuple(A factA, B factB) {
+    public BiTuple(A factA, B factB, int storeSize) {
         this.factA = factA;
         this.factB = factB;
+        store = (storeSize <= 0) ? null : new Object[storeSize];
     }
 
     @Override

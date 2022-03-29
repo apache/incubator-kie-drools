@@ -16,8 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
@@ -30,32 +28,34 @@ public final class BiScorer<A, B> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
-
-    private final Map<BiTuple<A, B>, UndoScoreImpacter> impacterMap = new HashMap<>();
+    private final int inputStoreIndex;
 
     public BiScorer(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
+            Score<?> constraintWeight, BiFunction<A, B, UndoScoreImpacter> scoreImpacter,
+            int inputStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
+        this.inputStoreIndex = inputStoreIndex;
     }
 
     public void insert(BiTuple<A, B> tupleAB) {
-        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleAB.factA, tupleAB.factB);
-        UndoScoreImpacter old = impacterMap.put(tupleAB, undoScoreImpacter);
-        if (old != null) {
+        if (tupleAB.store[inputStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the facts ("
                     + tupleAB.factA + ", " + tupleAB.factB
-                    + ") was already added in the impacterMap.");
+                    + ") was already added in the scorerStore.");
         }
+        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleAB.factA, tupleAB.factB);
+        tupleAB.store[inputStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(BiTuple<A, B> tupleAB) {
-        UndoScoreImpacter undoScoreImpacter = impacterMap.remove(tupleAB);
+        UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleAB.store[inputStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
+            tupleAB.store[inputStoreIndex] = null;
         }
     }
 

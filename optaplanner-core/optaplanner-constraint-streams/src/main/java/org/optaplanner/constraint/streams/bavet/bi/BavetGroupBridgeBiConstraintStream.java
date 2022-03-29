@@ -24,6 +24,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
 public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, ResultContainer_, NewB>
@@ -63,15 +64,23 @@ public final class BavetGroupBridgeBiConstraintStream<Solution_, A, B, NewA, Res
     }
 
     @Override
+    public ConstraintStream getTupleSource() {
+        return parent.getTupleSource();
+    }
+
+    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
+        int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
         Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
-        GroupBiToBiNode<A, B, NewA, NewB, ResultContainer_> node = new GroupBiToBiNode<>(groupKeyMapping, collector,
-                insert, retract);
+        int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
+        GroupBiToBiNode<A, B, NewA, NewB, ResultContainer_> node = new GroupBiToBiNode<>(
+                groupKeyMapping, inputStoreIndex, collector,
+                insert, retract, outputStoreSize);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
     }

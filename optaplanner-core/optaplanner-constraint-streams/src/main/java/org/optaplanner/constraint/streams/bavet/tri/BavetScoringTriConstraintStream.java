@@ -33,6 +33,7 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
@@ -111,6 +112,11 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public ConstraintStream getTupleSource() {
+        return parent.getTupleSource();
+    }
+
+    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Score_ constraintWeight = buildHelper.getConstraintWeight(constraint);
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
@@ -140,7 +146,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         TriScorer<A, B, C> scorer = new TriScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
-                constraintWeight, scoreImpacter);
+                constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
         buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 

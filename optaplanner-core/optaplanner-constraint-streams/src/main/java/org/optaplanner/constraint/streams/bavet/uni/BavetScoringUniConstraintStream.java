@@ -33,6 +33,7 @@ import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.constraint.streams.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringUniConstraintStream<Solution_, A>
         extends BavetAbstractUniConstraintStream<Solution_, A>
@@ -110,6 +111,11 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
     }
 
     @Override
+    public ConstraintStream getTupleSource() {
+        return parent.getTupleSource();
+    }
+
+    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Score_ constraintWeight = buildHelper.getConstraintWeight(constraint);
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
@@ -143,7 +149,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }
         UniScorer<A> scorer = new UniScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
-                constraintWeight, scoreImpacter);
+                constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
         buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
     }
 

@@ -36,7 +36,7 @@ class EqualsAndComparisonIndexerTest {
     @Test
     void putTwice() {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
-        UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
+        UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value");
         assertThatThrownBy(() -> indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value"))
                 .isInstanceOf(IllegalStateException.class);
@@ -45,10 +45,10 @@ class EqualsAndComparisonIndexerTest {
     @Test
     void removeTwice() {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
-        UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
+        UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value");
 
-        UniTuple<String> ednaTuple = new UniTuple<>("Edna-F-40");
+        UniTuple<String> ednaTuple = newTuple("Edna-F-40");
         assertThatThrownBy(() -> indexer.remove(new Object[] { "F", Integer.valueOf(40) }, ednaTuple))
                 .isInstanceOf(IllegalStateException.class);
         assertThat(indexer.remove(new Object[] { "F", Integer.valueOf(40) }, annTuple))
@@ -61,13 +61,13 @@ class EqualsAndComparisonIndexerTest {
     void get() {
         Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
 
-        UniTuple<String> annTuple = new UniTuple<>("Ann-F-40");
+        UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new Object[] { "F", Integer.valueOf(40) }, annTuple, "Ann value");
-        UniTuple<String> bethTuple = new UniTuple<>("Beth-F-30");
+        UniTuple<String> bethTuple = newTuple("Beth-F-30");
         indexer.put(new Object[] { "F", Integer.valueOf(30) }, bethTuple, "Beth value");
-        indexer.put(new Object[] { "M", Integer.valueOf(40) }, new UniTuple<>("Carl-M-40"), "Carl value");
-        indexer.put(new Object[] { "M", Integer.valueOf(30) }, new UniTuple<>("Dan-M-30"), "Dan value");
-        UniTuple<String> ednaTuple = new UniTuple<>("Edna-F-40");
+        indexer.put(new Object[] { "M", Integer.valueOf(40) }, newTuple("Carl-M-40"), "Carl value");
+        indexer.put(new Object[] { "M", Integer.valueOf(30) }, newTuple("Dan-M-30"), "Dan value");
+        UniTuple<String> ednaTuple = newTuple("Edna-F-40");
         indexer.put(new Object[] { "F", Integer.valueOf(40) }, ednaTuple, "Edna value");
 
         assertThat(indexer.get(new Object[] { "F", Integer.valueOf(40) }))
@@ -82,6 +82,10 @@ class EqualsAndComparisonIndexerTest {
         assertThat(indexer.get(new Object[] { "F", Integer.valueOf(20) }))
                 .isNotNull()
                 .isEmpty();
+    }
+
+    private static UniTuple<String> newTuple(String factA) {
+        return new UniTuple<>(factA, 0);
     }
 
 }

@@ -16,8 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
@@ -30,31 +28,34 @@ public final class UniScorer<A> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final Function<A, UndoScoreImpacter> scoreImpacter;
-
-    private final Map<UniTuple<A>, UndoScoreImpacter> impacterMap = new HashMap<>();
+    private final int inputStoreIndex;
 
     public UniScorer(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, Function<A, UndoScoreImpacter> scoreImpacter) {
+            Score<?> constraintWeight, Function<A, UndoScoreImpacter> scoreImpacter,
+            int inputStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
+        this.inputStoreIndex = inputStoreIndex;
     }
 
     public void insert(UniTuple<A> tupleA) {
-        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleA.factA);
-        UndoScoreImpacter old = impacterMap.put(tupleA, undoScoreImpacter);
-        if (old != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact (" + tupleA.factA
-                    + ") was already added in the impacterMap.");
+        if (tupleA.store[inputStoreIndex] != null) {
+            throw new IllegalStateException("Impossible state: the tuple for the fact ("
+                    + tupleA.factA
+                    + ") was already added in the scorerStore.");
         }
+        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleA.factA);
+        tupleA.store[inputStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(UniTuple<A> tupleA) {
-        UndoScoreImpacter undoScoreImpacter = impacterMap.remove(tupleA);
+        UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleA.store[inputStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
+            tupleA.store[inputStoreIndex] = null;
         }
     }
 

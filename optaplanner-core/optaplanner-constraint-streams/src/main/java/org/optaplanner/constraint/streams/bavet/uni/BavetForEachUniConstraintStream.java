@@ -24,6 +24,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintSt
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
@@ -53,10 +54,16 @@ public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAb
     }
 
     @Override
+    public ConstraintStream getTupleSource() {
+        return this;
+    }
+
+    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        buildHelper.addNode(new ForEachUniNode<>(forEachClass, insert, retract));
+        int outputStoreSize = buildHelper.extractTupleStoreSize(this);
+        buildHelper.addNode(new ForEachUniNode<>(forEachClass, insert, retract, outputStoreSize));
     }
 
     // ************************************************************************

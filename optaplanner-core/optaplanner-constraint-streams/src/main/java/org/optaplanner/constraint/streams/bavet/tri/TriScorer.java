@@ -16,9 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.function.TriFunction;
@@ -30,32 +27,34 @@ public final class TriScorer<A, B, C> extends AbstractScorer {
     private final String constraintName;
     private final Score<?> constraintWeight;
     private final TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
-
-    private final Map<TriTuple<A, B, C>, UndoScoreImpacter> impacterMap = new HashMap<>();
+    private final int inputStoreIndex;
 
     public TriScorer(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter) {
+            Score<?> constraintWeight, TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter,
+            int inputStoreIndex) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
+        this.inputStoreIndex = inputStoreIndex;
     }
 
     public void insert(TriTuple<A, B, C> tupleABC) {
-        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleABC.factA, tupleABC.factB, tupleABC.factC);
-        UndoScoreImpacter old = impacterMap.put(tupleABC, undoScoreImpacter);
-        if (old != null) {
+        if (tupleABC.store[inputStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the tuple for the facts ("
                     + tupleABC.factA + ", " + tupleABC.factB + ", " + tupleABC.factC
-                    + ") was already added in the impacterMap.");
+                    + ") was already added in the scorerStore.");
         }
+        UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleABC.factA, tupleABC.factB, tupleABC.factC);
+        tupleABC.store[inputStoreIndex] = undoScoreImpacter;
     }
 
     public void retract(TriTuple<A, B, C> tupleABC) {
-        UndoScoreImpacter undoScoreImpacter = impacterMap.remove(tupleABC);
+        UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleABC.store[inputStoreIndex];
         // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
         if (undoScoreImpacter != null) {
             undoScoreImpacter.run();
+            tupleABC.store[inputStoreIndex] = null;
         }
     }
 
