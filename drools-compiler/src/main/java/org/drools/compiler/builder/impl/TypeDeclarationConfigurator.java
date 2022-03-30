@@ -158,7 +158,8 @@ public class TypeDeclarationConfigurator {
     private static AnalysisResult getMvelAnalysisResult( TypeDeclarationContext kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
         PackageBuildContext context = new PackageBuildContext();
-        context.init((DroolsAssemblerContext) kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
+        context.init((DroolsAssemblerContext) kbuilder, // this cast still breaks encapsulation https://issues.redhat.com/browse/DROOLS-6887
+                pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
         if (!type.isTypesafe()) {
             context.setTypesafe(false);
         }

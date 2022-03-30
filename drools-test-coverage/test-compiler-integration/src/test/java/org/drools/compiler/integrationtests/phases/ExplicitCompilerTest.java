@@ -147,7 +147,6 @@ public class ExplicitCompilerTest {
             phase.process();
             phase.getResults().forEach(results::addBuilderResult);
             if (results.hasErrors()) {
-                System.out.printf("Found compilation errors at %s\n", phase.getClass().getSimpleName());
                 results.getErrors().forEach(System.out::println);
                 fail("Found compilation errors at Phase " + phase.getClass().getSimpleName());
             }
