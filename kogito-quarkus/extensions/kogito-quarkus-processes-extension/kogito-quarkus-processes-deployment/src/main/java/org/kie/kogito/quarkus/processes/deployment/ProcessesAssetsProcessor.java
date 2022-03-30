@@ -139,9 +139,14 @@ public class ProcessesAssetsProcessor {
     }
 
     @BuildStep
-    public ReflectiveClassBuildItem reflectionProcess() {
+    public ReflectiveClassBuildItem reflectionProcess(BuildProducer<ServiceProviderBuildItem> serviceProvider) {
+        serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath("org.kogito.workitem.rest.decorators.RequestDecorator"));
         return new ReflectiveClassBuildItem(true, true,
                 "org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder",
+                "org.kogito.workitem.rest.decorators.CollectionParamsDecorator",
+                "org.kogito.workitem.rest.auth.ClientOAuth2AuthDecorator",
+                "org.kogito.workitem.rest.auth.PasswordOAuth2AuthDecorator",
+                "io.vertx.core.http.HttpMethod",
                 "org.kie.kogito.process.impl.BaseWorkItem",
                 "org.kie.kogito.event.Topic",
                 "org.kie.kogito.event.cloudevents.CloudEventMeta",
