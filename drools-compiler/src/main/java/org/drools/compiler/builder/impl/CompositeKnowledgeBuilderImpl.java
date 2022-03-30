@@ -237,22 +237,22 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void registerPackageDescr(
             ResourceDescr resourceDescr, Map<String, CompositePackageDescr> packages, Resource resource, PackageDescr packageDescr) {
         if (packageDescr == null) { return; }
-
-        CompositePackageDescr compositePackageDescr =
-                packages.computeIfAbsent(
-                        packageDescr.getNamespace(),
-                        k -> makeCompositePackageDescr(resource, packageDescr));
-
-        compositePackageDescr.addPackageDescr(resource, packageDescr);
+        CompositePackageDescr compositePackageDescr = packages.get(packageDescr.getNamespace());
+        if (compositePackageDescr == null) {
+            compositePackageDescr = makeCompositePackageDescr(resource, packageDescr);
+            packages.put(packageDescr.getNamespace(), compositePackageDescr);
+        } else {
+            compositePackageDescr.addPackageDescr(resource, packageDescr);
+        }
         compositePackageDescr.addFilter( resourceDescr.getFilter() );
     }
 
     private CompositePackageDescr makeCompositePackageDescr(Resource resource, PackageDescr packageDescr) {
-        if (packageDescr instanceof CompositePackageDescr) {
-            return (CompositePackageDescr) packageDescr;
-        } else {
-            return new CompositePackageDescr(resource, packageDescr);
-        }
+        CompositePackageDescr compositePackageDescr;
+        compositePackageDescr = packageDescr instanceof CompositePackageDescr ?
+                ( (CompositePackageDescr) packageDescr) :
+                new CompositePackageDescr(resource, packageDescr);
+        return compositePackageDescr;
     }
 
     private static class ResourceDescr {
