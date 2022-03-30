@@ -1491,10 +1491,18 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     protected void doSecondBuildStep( Collection<CompositePackageDescr> packages ) { }
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
-        CompositePackageCompilationPhase compositePackageCompilationPhase = new CompositePackageCompilationPhase(
-                packages, pkgRegistryManager, typeBuilder, this, this, assetFilter, kBase, configuration);
+        CompositePackageCompilationPhase compositePackageCompilationPhase =
+                new CompositePackageCompilationPhase(
+                        packages,
+                        pkgRegistryManager,
+                        typeBuilder,
+                        this,   // as GlobalVariableContext
+                        this, // as DroolsAssemblerContext
+                        this, // as BuildResultAccumulator: we need to propagate messages for each phase
+                        assetFilter,
+                        kBase,
+                        configuration);
         compositePackageCompilationPhase.process();
-        this.results.addAll(compositePackageCompilationPhase.getResults());
     }
 
     public void _buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {

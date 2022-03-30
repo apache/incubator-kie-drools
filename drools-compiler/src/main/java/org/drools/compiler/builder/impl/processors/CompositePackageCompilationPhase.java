@@ -2,6 +2,8 @@ package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.PackageRegistryManager;
+import org.drools.compiler.builder.impl.BuildResultAccumulator;
+import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -12,6 +14,7 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.StringUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +33,8 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     private KnowledgeBuilderImpl.AssetFilter assetFilter;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
-    private final Collection<KnowledgeBuilderResult> results = new ArrayList<>();
+
+    private final BuildResultAccumulator buildResultAccumulator;
 
     public CompositePackageCompilationPhase(
             Collection<CompositePackageDescr> packages,
@@ -38,6 +42,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
             TypeDeclarationBuilder typeBuilder,
             GlobalVariableContext globalVariableContext,
             DroolsAssemblerContext droolsAssemblerContext,
+            BuildResultAccumulator buildResultAccumulator,
             KnowledgeBuilderImpl.AssetFilter assetFilter,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration) {
@@ -46,6 +51,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         this.typeBuilder = typeBuilder;
         this.globalVariableContext = globalVariableContext;
         this.droolsAssemblerContext = droolsAssemblerContext;
+        this.buildResultAccumulator = buildResultAccumulator;
         this.assetFilter = assetFilter;
         this.kBase = kBase;
         this.configuration = configuration;
@@ -72,7 +78,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
 
         for (CompilationPhase phase : phases) {
             phase.process();
-            this.results.addAll(phase.getResults());
+            phase.getResults().forEach(this.buildResultAccumulator::addBuilderResult);
         }
 
     }
@@ -101,7 +107,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
 
     @Override
     public Collection<? extends KnowledgeBuilderResult> getResults() {
-        return this.results;
+        return buildResultAccumulator.getResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR);
     }
 }
 
