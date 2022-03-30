@@ -1497,12 +1497,46 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results.addAll(compositePackageCompilationPhase.getResults());
     }
 
+    public void _buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
+        initPackageRegistries(packages);
+        packages.forEach(packageDescr -> normalizeTypeDeclarationAnnotations(packageDescr, getOrCreatePackageRegistry(packageDescr).getTypeResolver()));
+        buildTypeDeclarations(packages);
+        packages.forEach(packageDescr -> processEntryPointDeclarations(getPackageRegistry(packageDescr.getNamespace()), packageDescr));
+        buildOtherDeclarations(packages);
+        packages.forEach(packageDescr -> normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver()));
+    }
+
+
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         for ( CompositePackageDescr packageDescr : packages ) {
             if ( StringUtils.isEmpty(packageDescr.getName()) ) {
                 packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
             }
             getOrCreatePackageRegistry( packageDescr );
+        }
+    }
+
+    protected void buildEntryPoints( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            processEntryPointDeclarations(getPackageRegistry( packageDescr.getNamespace() ), packageDescr);
+        }
+    }
+
+    protected void buildTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+        Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<>();
+        List<TypeDefinition> unresolvedTypes = new ArrayList<>();
+        List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<>();
+        for (CompositePackageDescr packageDescr : packages) {
+            unsortedDescrs.addAll(packageDescr.getTypeDeclarations());
+            unsortedDescrs.addAll(packageDescr.getEnumDeclarations());
+        }
+
+        getTypeBuilder().processTypeDeclarations( packages, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+
+        for ( CompositePackageDescr packageDescr : packages ) {
+            for ( ImportDescr importDescr : packageDescr.getImports() ) {
+                getPackageRegistry( packageDescr.getNamespace() ).addImport( importDescr );
+            }
         }
     }
 
