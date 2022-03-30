@@ -7,6 +7,7 @@ import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.util.StringUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -54,12 +55,12 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
                 new TypeDeclarationCompositeCompilationPhase(packages, typeBuilder),
                 iteratingPhase(ImportCompilationPhase::new),
                 iteratingPhase(EntryPointDeclarationCompilationPhase::new),
-                iteratingPhase((pkgRegistry,packageDescr) -> {
-                        kBuilder.setAssetFilter(packageDescr.getFilter());
-                        CompilationPhase ph = new OtherDeclarationCompilationPhase(
-                                kBuilder, kBase, configuration, kBuilder::filterAccepts, pkgRegistry, packageDescr);
-                        kBuilder.setAssetFilter(null);
-                        return ph;
+                iteratingPhase((pkgRegistry, packageDescr) -> {
+                    kBuilder.setAssetFilter(packageDescr.getFilter());
+                    CompilationPhase ph = new OtherDeclarationCompilationPhase(
+                            kBuilder, kBase, configuration, kBuilder::filterAccepts, pkgRegistry, packageDescr);
+                    kBuilder.setAssetFilter(null);
+                    return ph;
                 }),
                 iteratingPhase((pkgRegistry, packageDescr) ->
                         new RuleAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr))
@@ -77,6 +78,9 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         Map<String, Supplier<AnnotationNormalizer>> annotationNormalizers = new HashMap<>();
         boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
         for (CompositePackageDescr packageDescr : packages) {
+            if (StringUtils.isEmpty(packageDescr.getName())) {
+                packageDescr.setName(configuration.getDefaultPackageName());
+            }
             PackageRegistry pkgRegistry = pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
             TypeResolver typeResolver = pkgRegistry.getTypeResolver();
 
