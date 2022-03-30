@@ -47,10 +47,11 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     public void process() {
         Map<String, AnnotationNormalizer> annotationNormalizers = new HashMap<>();
         for (CompositePackageDescr packageDescr : packages) {
+            PackageRegistry pkgRegistry = pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
             annotationNormalizers.put(
                     packageDescr.getNamespace(),
                     AnnotationNormalizer.of(
-                            pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()).getTypeResolver(),
+                            pkgRegistry.getTypeResolver(),
                             configuration.getLanguageLevel().useJavaAnnotations()));
         }
 
@@ -74,6 +75,11 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         for (CompilationPhase phase : phases) {
             phase.process();
             this.results.addAll(phase.getResults());
+            if (phase.getResults().isEmpty()) {
+                System.out.printf("Phase %s succeeded\n", phase.getClass().getSimpleName());
+            } else {
+                System.out.printf("Phase %s failed\n", phase.getClass().getSimpleName());
+            }
         }
 
     }
