@@ -39,8 +39,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
 
     private InternalKnowledgeBase kBase;
     private int parallelRulesBuildThreshold;
-    private final FilterCondition filterAccepts;
-    private final FilterCondition filterAcceptsRemoval;
+    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
 
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
@@ -50,12 +49,11 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
     private final DroolsAssemblerContext kBuilder;
 
 
-    public RuleCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, int parallelRulesBuildThreshold, FilterCondition filterAccepts, FilterCondition filterAcceptsRemoval, Map<String, AttributeDescr> packageAttributes, Resource resource, DroolsAssemblerContext kBuilder) {
+    public RuleCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, int parallelRulesBuildThreshold, KnowledgeBuilderImpl.AssetFilter assetFilter, Map<String, AttributeDescr> packageAttributes, Resource resource, DroolsAssemblerContext kBuilder) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.parallelRulesBuildThreshold = parallelRulesBuildThreshold;
-        this.filterAccepts = filterAccepts;
-        this.filterAcceptsRemoval = filterAcceptsRemoval;
+        this.assetFilter = assetFilter;
         this.packageAttributes = packageAttributes;
         this.resource = resource;
         this.kBuilder = kBuilder;
@@ -86,7 +84,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
 
         // first, check if any rules no longer exist
         for (org.kie.api.definition.rule.Rule rule : pkg.getRules()) {
-            if (filterAcceptsRemoval.accepts(ResourceChange.Type.RULE, rule.getPackageName(), rule.getName())) {
+            if (filterAcceptsRemoval(ResourceChange.Type.RULE, rule.getPackageName(), rule.getName())) {
                 needsRemoval = true;
                 break;
             }
@@ -94,7 +92,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
 
         if (!needsRemoval) {
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if (filterAccepts.accepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
+                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
                     if (pkg.getRule(ruleDescr.getName()) != null) {
                         needsRemoval = true;
                         break;
@@ -108,7 +106,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
                 Collection<RuleImpl> rulesToBeRemoved = new HashSet<>();
 
                 for (org.kie.api.definition.rule.Rule rule : pkg.getRules()) {
-                    if (filterAcceptsRemoval.accepts(ResourceChange.Type.RULE, rule.getPackageName(), rule.getName())) {
+                    if (filterAcceptsRemoval(ResourceChange.Type.RULE, rule.getPackageName(), rule.getName())) {
                         rulesToBeRemoved.add(((RuleImpl) rule));
                     }
                 }
@@ -116,7 +114,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
                 rulesToBeRemoved.forEach(pkg::removeRule);
 
                 for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                    if (filterAccepts.accepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
+                    if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
                         RuleImpl rule = pkg.getRule(ruleDescr.getName());
                         if (rule != null) {
                             rulesToBeRemoved.add(rule);
@@ -132,6 +130,13 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
         }
     }
 
+    private boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
+        return assetFilter == null || !KnowledgeBuilderImpl.AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
+    }
+
+    private boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
+        return assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(type, namespace, name));
+    }
 
 
     private SortedRules sortRulesByDependency(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
@@ -274,7 +279,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
     private void compileAllQueries(PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules) {
         Map<String, RuleBuildContext> ruleCxts = buildRuleBuilderContexts(rules, pkgRegistry);
         for (RuleDescr ruleDescr : rules) {
-            if (filterAccepts.accepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
+            if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
                 initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
                 this.results.addAll(addRule(ruleCxts.get(ruleDescr.getName())));
             }
@@ -315,7 +320,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
             try {
                 KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
                         rules.stream().parallel()
-                                .filter(ruleDescr -> filterAccepts.accepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
+                                .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
                                 .forEach(ruleDescr -> {
                                     initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
                                     RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
@@ -339,7 +344,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
             }
         } else {
             for (RuleDescr ruleDescr : rules) {
-                if (filterAccepts.accepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
+                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
                     initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
                     RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
                     this.results.addAll(addRule(context));

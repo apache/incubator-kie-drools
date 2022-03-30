@@ -20,13 +20,13 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
 
     private final InternalKnowledgeBase kBase;
     private final GlobalVariableContext knowledgeBuilder;
-    private final FilterCondition filterAcceptsRemoval;
+    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
 
-    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, GlobalVariableContext knowledgeBuilder, FilterCondition filterAcceptsRemoval) {
+    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, GlobalVariableContext knowledgeBuilder, KnowledgeBuilderImpl.AssetFilter filterAcceptsRemoval) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.knowledgeBuilder = knowledgeBuilder;
-        this.filterAcceptsRemoval = filterAcceptsRemoval;
+        this.assetFilter = filterAcceptsRemoval;
     }
 
     public void process() {
@@ -62,7 +62,7 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
         }
 
         for (String toBeRemoved : existingGlobals) {
-            if (filterAcceptsRemoval.accepts(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
+            if (assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved))) {
                 pkg.removeGlobal(toBeRemoved);
                 if (kBase != null) {
                     kBase.removeGlobal(toBeRemoved);

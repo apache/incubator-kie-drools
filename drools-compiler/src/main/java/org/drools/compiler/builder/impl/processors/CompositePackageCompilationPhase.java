@@ -1,6 +1,8 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.PackageRegistryManager;
+import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -23,7 +25,9 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     private final Collection<CompositePackageDescr> packages;
     private final PackageRegistryManager pkgRegistryManager;
     private final TypeDeclarationBuilder typeBuilder;
-    private final KnowledgeBuilderImpl kBuilder;
+    private GlobalVariableContext globalVariableContext;
+    private DroolsAssemblerContext droolsAssemblerContext;
+    private KnowledgeBuilderImpl.AssetFilter assetFilter;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final Collection<KnowledgeBuilderResult> results = new ArrayList<>();
@@ -32,13 +36,17 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
             Collection<CompositePackageDescr> packages,
             PackageRegistryManager pkgRegistryManager,
             TypeDeclarationBuilder typeBuilder,
-            KnowledgeBuilderImpl kBuilder,
+            GlobalVariableContext globalVariableContext,
+            DroolsAssemblerContext droolsAssemblerContext,
+            KnowledgeBuilderImpl.AssetFilter assetFilter,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration) {
         this.packages = packages;
         this.pkgRegistryManager = pkgRegistryManager;
         this.typeBuilder = typeBuilder;
-        this.kBuilder = kBuilder;
+        this.globalVariableContext = globalVariableContext;
+        this.droolsAssemblerContext = droolsAssemblerContext;
+        this.assetFilter = assetFilter;
         this.kBase = kBase;
         this.configuration = configuration;
     }
@@ -55,13 +63,9 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
                 new TypeDeclarationCompositeCompilationPhase(packages, typeBuilder),
                 iteratingPhase(ImportCompilationPhase::new),
                 iteratingPhase(EntryPointDeclarationCompilationPhase::new),
-                iteratingPhase((pkgRegistry, packageDescr) -> {
-                    kBuilder.setAssetFilter(packageDescr.getFilter());
-                    CompilationPhase ph = new OtherDeclarationCompilationPhase(
-                            kBuilder, kBase, configuration, kBuilder::filterAccepts, pkgRegistry, packageDescr);
-                    kBuilder.setAssetFilter(null);
-                    return ph;
-                }),
+                iteratingPhase((pkgRegistry, packageDescr) ->
+                            new OtherDeclarationCompilationPhase(
+                                    pkgRegistry, packageDescr, globalVariableContext, droolsAssemblerContext, kBase, configuration, assetFilter)),
                 iteratingPhase((pkgRegistry, packageDescr) ->
                         new RuleAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr))
         );

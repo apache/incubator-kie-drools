@@ -1,5 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.rule.JavaDialectRuntimeData;
@@ -15,12 +16,12 @@ import static org.drools.core.util.StringUtils.isEmpty;
 
 public class FunctionCompiler extends AbstractPackageCompilationPhase {
 
-    private final FilterCondition filter;
+    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
     private ClassLoader rootClassLoader;
 
-    public FunctionCompiler(PackageDescr packageDescr, PackageRegistry pkgRegistry, FilterCondition filter, ClassLoader rootClassLoader) {
+    public FunctionCompiler(PackageDescr packageDescr, PackageRegistry pkgRegistry, KnowledgeBuilderImpl.AssetFilter assetFilter, ClassLoader rootClassLoader) {
         super(pkgRegistry, packageDescr);
-        this.filter = filter;
+        this.assetFilter = assetFilter;
         this.rootClassLoader = rootClassLoader;
     }
 
@@ -42,7 +43,8 @@ public class FunctionCompiler extends AbstractPackageCompilationPhase {
 
             // iterate and compile
             for (FunctionDescr functionDescr : functions) {
-                if (filter.accepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName())) {
+                if (filterAccepts(functionDescr)) {
+
                     // inherit the dialect from the package
                     addFunction(functionDescr, pkgRegistry);
                 }
@@ -52,13 +54,21 @@ public class FunctionCompiler extends AbstractPackageCompilationPhase {
             pkgRegistry.compileAll();
 
             for (FunctionDescr functionDescr : functions) {
-                if (filter.accepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName())) {
+                if (filterAccepts(functionDescr)) {
                     postCompileAddFunction(functionDescr, pkgRegistry);
                 }
             }
         }
     }
 
+    private boolean filterAccepts(FunctionDescr functionDescr) {
+        return assetFilter == null ||
+                !KnowledgeBuilderImpl.AssetFilter.Action.DO_NOTHING.equals(
+                        assetFilter.accept(
+                                ResourceChange.Type.FUNCTION,
+                                functionDescr.getNamespace(),
+                                functionDescr.getName()));
+    }
 
 
     private void preCompileAddFunction(final FunctionDescr functionDescr, PackageRegistry pkgRegistry) {

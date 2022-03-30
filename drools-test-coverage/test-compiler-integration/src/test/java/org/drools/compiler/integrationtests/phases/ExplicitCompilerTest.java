@@ -131,13 +131,13 @@ public class ExplicitCompilerTest {
                 new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry),
                 new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, assemblerContext),
                 new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
-                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, this::filterAcceptsRemoval),
+                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, null),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
                 /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),
-                new FunctionCompiler(packageDescr, packageRegistry, this::filterAccepts, rootClassLoader),
+                new FunctionCompiler(packageDescr, packageRegistry, null, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, assemblerContext),
+                        null, attributesForPackage, resource, assemblerContext),
                 new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts),
                 new ConsequenceCompilationPhase(packageRegistryManager)
         );

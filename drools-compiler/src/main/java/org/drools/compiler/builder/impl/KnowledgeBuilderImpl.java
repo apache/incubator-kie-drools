@@ -797,9 +797,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         List<CompilationPhase> phases = asList(
                 new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
-                new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts, rootClassLoader),
+                new FunctionCompiler(packageDescr, pkgRegistry, assetFilter, rootClassLoader),
                 new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, this));
+                        assetFilter, packageAttributes, resource, this));
         phases.forEach(CompilationPhase::process);
         phases.forEach(p -> this.results.addAll(p.getResults()));
     }
@@ -1019,7 +1019,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         kBase,
                         configuration,
                         typeBuilder,
-                        this::filterAcceptsRemoval,
+                        assetFilter,
                         pkgRegistry,
                         packageDescr);
         packageProcessor.process();
@@ -1027,19 +1027,21 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(this,
+        OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
+                pkgRegistry,
+                packageDescr,
+                this,
+                this,
                 kBase,
                 configuration,
-                this::filterAcceptsRemoval,
-                pkgRegistry,
-                packageDescr);
+                assetFilter);
         otherDeclarationProcessor.process();
         this.results.addAll(otherDeclarationProcessor.getResults());
     }
 
     protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         GlobalCompilationPhase globalProcessor =
-                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, this, this::filterAcceptsRemoval);
+                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, this, assetFilter);
         globalProcessor.process();
         this.results.addAll(globalProcessor.getResults());
     }
@@ -1490,7 +1492,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         CompositePackageCompilationPhase compositePackageCompilationPhase = new CompositePackageCompilationPhase(
-                packages, pkgRegistryManager, typeBuilder, this, kBase, configuration);
+                packages, pkgRegistryManager, typeBuilder, this, this, assetFilter, kBase, configuration);
         compositePackageCompilationPhase.process();
         this.results.addAll(compositePackageCompilationPhase.getResults());
     }

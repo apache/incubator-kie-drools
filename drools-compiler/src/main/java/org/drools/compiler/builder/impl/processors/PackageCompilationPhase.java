@@ -16,14 +16,14 @@ public final class PackageCompilationPhase extends AbstractPackageCompilationPha
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final TypeDeclarationBuilder typeBuilder;
-    private final FilterCondition filterCondition;
+    private final KnowledgeBuilderImpl.AssetFilter filterCondition;
 
     public PackageCompilationPhase(
             KnowledgeBuilderImpl knowledgeBuilder,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration,
             TypeDeclarationBuilder typeBuilder,
-            FilterCondition filterCondition,
+            KnowledgeBuilderImpl.AssetFilter filterCondition,
             PackageRegistry pkgRegistry,
             PackageDescr packageDescr) {
         super(pkgRegistry, packageDescr);
