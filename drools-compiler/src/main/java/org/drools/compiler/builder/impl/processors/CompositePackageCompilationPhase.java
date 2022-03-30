@@ -75,11 +75,6 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         for (CompilationPhase phase : phases) {
             phase.process();
             this.results.addAll(phase.getResults());
-            if (phase.getResults().isEmpty()) {
-                System.out.printf("Phase %s succeeded\n", phase.getClass().getSimpleName());
-            } else {
-                System.out.printf("Phase %s failed\n", phase.getClass().getSimpleName());
-            }
         }
 
     }

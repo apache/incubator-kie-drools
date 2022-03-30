@@ -1488,15 +1488,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      */
     protected void doSecondBuildStep( Collection<CompositePackageDescr> packages ) { }
 
-    public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
-        initPackageRegistries(packages);
-        packages.forEach(packageDescr -> normalizeTypeDeclarationAnnotations(packageDescr, getOrCreatePackageRegistry(packageDescr).getTypeResolver()));
-        buildTypeDeclarations(packages);
-        packages.forEach(packageDescr -> processEntryPointDeclarations(getPackageRegistry(packageDescr.getNamespace()), packageDescr));
-        buildOtherDeclarations(packages);
-        packages.forEach(packageDescr -> normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver()));
-    }
-
     public void ___buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);
         packages.forEach(pkgRegistryManager::getOrCreatePackageRegistry);
@@ -1517,7 +1508,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
 
-    public void _buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
+    public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         CompositePackageCompilationPhase compositePackageCompilationPhase = new CompositePackageCompilationPhase(
                 packages, pkgRegistryManager, typeBuilder, this, kBase, configuration);
         compositePackageCompilationPhase.process();
