@@ -6,15 +6,15 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 
@@ -45,19 +45,12 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
 
     @Override
     public void process() {
-        Map<String, AnnotationNormalizer> annotationNormalizers = new HashMap<>();
-        for (CompositePackageDescr packageDescr : packages) {
-            PackageRegistry pkgRegistry = pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
-            annotationNormalizers.put(
-                    packageDescr.getNamespace(),
-                    AnnotationNormalizer.of(
-                            pkgRegistry.getTypeResolver(),
-                            configuration.getLanguageLevel().useJavaAnnotations()));
-        }
+        Map<String, Supplier<AnnotationNormalizer>> annotationNormalizers =
+                initAnnotationNormalizers();
 
         Collection<CompilationPhase> phases = asList(
                 iteratingPhase((pkgRegistry, packageDescr) ->
-                        new TypeDeclarationAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()), packageDescr)),
+                        new TypeDeclarationAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr)),
                 new TypeDeclarationCompositeCompilationPhase(packages, typeBuilder),
                 iteratingPhase(ImportCompilationPhase::new),
                 iteratingPhase(EntryPointDeclarationCompilationPhase::new),
@@ -69,7 +62,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
                         return ph;
                 }),
                 iteratingPhase((pkgRegistry, packageDescr) ->
-                        new RuleAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()), packageDescr))
+                        new RuleAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr))
         );
 
         for (CompilationPhase phase : phases) {
@@ -77,6 +70,21 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
             this.results.addAll(phase.getResults());
         }
 
+    }
+
+    private Map<String, Supplier<AnnotationNormalizer>> initAnnotationNormalizers() {
+        // use a supplier to ensure a fresh instance
+        Map<String, Supplier<AnnotationNormalizer>> annotationNormalizers = new HashMap<>();
+        boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
+        for (CompositePackageDescr packageDescr : packages) {
+            PackageRegistry pkgRegistry = pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
+            TypeResolver typeResolver = pkgRegistry.getTypeResolver();
+
+            annotationNormalizers.put(
+                    packageDescr.getNamespace(),
+                    () -> AnnotationNormalizer.of(typeResolver, isStrict));
+        }
+        return annotationNormalizers;
     }
 
     private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
