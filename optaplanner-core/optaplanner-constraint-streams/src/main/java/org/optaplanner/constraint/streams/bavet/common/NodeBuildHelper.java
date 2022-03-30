@@ -93,35 +93,49 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
     }
 
     public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedInsert(List<? extends ConstraintStream> streamList) {
-        Consumer<Tuple_> aggregatedInsert = null;
-        for (ConstraintStream stream : streamList) {
-            if (isStreamActive(stream)) {
-                Consumer<Tuple_> insert = getInsert(stream);
-                // TODO investigate if iterating is faster (or less StackOverflowError prone) than chaining .andThen()
-                aggregatedInsert = (aggregatedInsert == null) ? insert : aggregatedInsert.andThen(insert);
-            }
-        }
-        if (aggregatedInsert == null) {
+        Consumer<Tuple_>[] inserts = streamList.stream()
+                .filter(this::isStreamActive)
+                .map(this::getInsert)
+                .toArray(Consumer[]::new);
+        if (inserts.length == 0) {
             throw new IllegalStateException("Impossible state: None of the streamList (" + streamList
                     + ") are active.");
         }
-        return aggregatedInsert;
+        if (inserts.length == 1) {
+            return inserts[0];
+        }
+        return new AggregatedConsumer<>(inserts);
     }
 
     public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedRetract(List<? extends ConstraintStream> streamList) {
-        Consumer<Tuple_> aggregatedRetract = null;
-        for (ConstraintStream stream : streamList) {
-            if (isStreamActive(stream)) {
-                Consumer<Tuple_> retract = getRetract(stream);
-                // TODO investigate if iterating is faster (or less StackOverflowError prone) than chaining .andThen()
-                aggregatedRetract = (aggregatedRetract == null) ? retract : aggregatedRetract.andThen(retract);
-            }
-        }
-        if (aggregatedRetract == null) {
+        Consumer<Tuple_>[] retracts = streamList.stream()
+                .filter(this::isStreamActive)
+                .map(this::getRetract)
+                .toArray(Consumer[]::new);
+        if (retracts.length == 0) {
             throw new IllegalStateException("Impossible state: None of the streamList (" + streamList
                     + ") are active.");
         }
-        return aggregatedRetract;
+        if (retracts.length == 1) {
+            return retracts[0];
+        }
+        return new AggregatedConsumer<>(retracts);
+    }
+
+    private static final class AggregatedConsumer<Tuple_ extends Tuple> implements Consumer<Tuple_> {
+        private final Consumer<Tuple_>[] consumers;
+
+        public AggregatedConsumer(Consumer<Tuple_>[] consumers) {
+            this.consumers = consumers;
+        }
+
+        @Override
+        public void accept(Tuple_ tuple) {
+            for (int i = 0; i < consumers.length; i++) {
+                consumers[i].accept(tuple);
+            }
+        }
+
     }
 
     public int reserveTupleStoreIndex(ConstraintStream tupleSourceStream) {
