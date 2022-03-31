@@ -233,9 +233,9 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                         .inMapping(inputVar, WORKITEM_PARAM)
                         .outMapping(WORKITEM_PARAM, outputVar), actionFunction, operation, functionRef.getArguments());
             case REST:
-                return addRestParameters(buildRestWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar, functionRef.getArguments()), actionFunction, operation);
+                return addFunctionArgs(addRestParameters(buildRestWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar), actionFunction, operation), functionRef);
             case OPENAPI:
-                return addOpenApiParameters(buildRestWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar, functionRef.getArguments()), actionFunction, operation);
+                return addFunctionArgs(addOpenApiParameters(buildRestWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar), actionFunction, operation), functionRef);
             default:
                 return emptyNode(embeddedSubProcess, actionName);
         }
@@ -244,9 +244,8 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     private WorkItemNodeFactory<?> buildRestWorkItem(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             FunctionDefinition actionFunction,
             String inputVar,
-            String outputVar,
-            JsonNode functionArgs) {
-        WorkItemNodeFactory<?> workItemFactory = embeddedSubProcess
+            String outputVar) {
+        return embeddedSubProcess
                 .workItemNode(parserContext.newId())
                 .name(actionFunction.getName())
                 .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, RestWorkItemHandler.REST_TASK_TYPE)
@@ -254,11 +253,14 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 .inMapping(inputVar, SWFConstants.MODEL_WORKFLOW_VAR)
                 .outMapping(RestWorkItemHandler.RESULT, outputVar)
                 .workParameter(RestWorkItemHandler.BODY_BUILDER, new ParamsRestBodyBuilderSupplier());
-        if (functionArgs != null) {
-            processArgs(workItemFactory, functionArgs, SWFConstants.MODEL_WORKFLOW_VAR);
-        }
-        return workItemFactory;
+    }
 
+    private <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addFunctionArgs(WorkItemNodeFactory<T> node, FunctionRef functionRef) {
+        JsonNode functionArgs = functionRef.getArguments();
+        if (functionArgs != null) {
+            processArgs(node, functionArgs, SWFConstants.MODEL_WORKFLOW_VAR);
+        }
+        return node;
     }
 
     private <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addServiceParameters(WorkItemNodeFactory<T> node,
@@ -340,7 +342,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 .workParameter(ApiKeyAuthDecorator.KEY, runtimeRestApi(actionFunction, API_KEY, parserContext.getContext()));
     }
 
-    private NodeFactory<?, ?> addOpenApiParameters(WorkItemNodeFactory<?> node,
+    private <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addOpenApiParameters(WorkItemNodeFactory<T> node,
             FunctionDefinition function,
             String operation) {
         int indexOf = function.getOperation().indexOf(OPENAPI_OPERATION_SEPARATOR);
