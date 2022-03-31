@@ -16,17 +16,16 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
-import org.jbpm.compiler.canonical.descriptors.ExpressionReturnValueSupplier;
 import org.jbpm.compiler.canonical.dialect.feel.FEELDialectCanonicalUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
-import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
@@ -60,13 +59,10 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
         if (node.getType() == Split.TYPE_OR || node.getType() == Split.TYPE_XOR) {
             for (Entry<ConnectionRef, Constraint> entry : node.getConstraints().entrySet()) {
                 if (entry.getValue() != null) {
-                    Expression returnValueEvaluator = null;
-                    if (ExpressionHandlerFactory.isSupported(entry.getValue().getDialect())) {
-                        returnValueEvaluator =
-                                new ExpressionReturnValueSupplier(entry.getValue().getDialect(), entry.getValue().getConstraint(), (String) entry.getValue().getMetaData(Metadata.VARIABLE)).get();
-                    }
-                    // TODO integrate FEEL with ExpressionHander 
-                    else if ("FEEL".equals(entry.getValue().getDialect())) {
+                    Expression returnValueEvaluator;
+                    if (entry.getValue() instanceof ReturnValueConstraintEvaluator && ((ReturnValueConstraintEvaluator) entry.getValue()).getReturnValueEvaluator() instanceof Supplier) {
+                        returnValueEvaluator = ((Supplier<Expression>) ((ReturnValueConstraintEvaluator) entry.getValue()).getReturnValueEvaluator()).get();
+                    } else if ("FEEL".equals(entry.getValue().getDialect())) {
                         returnValueEvaluator = FEELDialectCanonicalUtils.buildFEELReturnValueEvaluator(variableScope, entry);
                     } else {
                         BlockStmt actionBody = new BlockStmt();

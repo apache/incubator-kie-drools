@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jbpm.compiler.canonical.descriptors.ExpressionReturnValueSupplier;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
@@ -166,9 +167,11 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     }
 
     private void addConstraint(NodeFactory<?, ?> startNode, long targetId, DataCondition condition) {
-        ((SplitFactory<?>) startNode).constraintBuilder(targetId, concatId(startNode.getNode().getId(), targetId),
-                "DROOLS_DEFAULT", workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, condition.getCondition())).withDefault(isDefaultCondition(state, condition))
-                .metadata(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
+        ((SplitFactory<?>) startNode).constraint(targetId, concatId(startNode.getNode().getId(), targetId),
+                "DROOLS_DEFAULT", workflow.getExpressionLang(),
+                new ExpressionReturnValueSupplier(workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, condition.getCondition()), DEFAULT_WORKFLOW_VAR), 0,
+                isDefaultCondition(state, condition))
+                .metaData(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
     }
 
     private static String concatId(long start, long end) {

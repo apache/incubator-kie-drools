@@ -21,21 +21,18 @@ import org.jbpm.process.instance.impl.ExpressionReturnValueEvaluator;
 
 import com.github.javaparser.ast.expr.Expression;
 
-public class ExpressionReturnValueSupplier implements Supplier<Expression> {
+public class ExpressionReturnValueSupplier extends ExpressionReturnValueEvaluator implements Supplier<Expression> {
 
-    private String lang;
-    private String expr;
-    private String rootName;
+    private final Expression expression;
 
     public ExpressionReturnValueSupplier(String lang, String expr, String rootName) {
-        this.lang = lang;
-        this.expr = expr;
-        this.rootName = rootName;
+        super(lang, expr, rootName);
+        expression = ExpressionUtils.getObjectCreationExpr(ExpressionReturnValueEvaluator.class, lang, expr, rootName);
     }
 
     @Override
     public Expression get() {
-        return ExpressionUtils.getObjectCreationExpr(ExpressionReturnValueEvaluator.class, lang, expr, rootName);
+        return expression;
     }
 
 }
