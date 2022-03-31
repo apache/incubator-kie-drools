@@ -64,9 +64,14 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
                 new TypeDeclarationCompositeCompilationPhase(packages, typeBuilder),
                 iteratingPhase(ImportCompilationPhase::new),
                 iteratingPhase(EntryPointDeclarationCompilationPhase::new),
-                iteratingPhase((pkgRegistry, packageDescr) ->
-                            new OtherDeclarationCompilationPhase(
-                                    pkgRegistry, packageDescr, globalVariableContext, droolsAssemblerContext, kBase, configuration, packageDescr.getFilter())),
+
+                // begin OtherDeclarationCompilationPhase
+                iteratingPhase(AccumulateFunctionCompilationPhase::new),
+                iteratingPhase((reg, desc) -> new WindowDeclarationCompilationPhase(reg, desc, droolsAssemblerContext)),
+                iteratingPhase((reg, desc) -> new FunctionCompilationPhase(reg, desc, configuration)),
+                iteratingPhase((reg, desc) -> new GlobalCompilationPhase(reg, desc, kBase, globalVariableContext, desc.getFilter())),
+                // end OtherDeclarationCompilationPhase
+
                 iteratingPhase((pkgRegistry, packageDescr) ->
                         new RuleAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr))
         );
