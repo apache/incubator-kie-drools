@@ -861,7 +861,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return assetFilter == null || !AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
     }
 
-    private boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
+    public boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
         return assetFilter != null && AssetFilter.Action.REMOVE.equals(assetFilter.accept(type, namespace, name));
     }
 

@@ -61,8 +61,10 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
             }
         }
 
+        KnowledgeBuilderImpl kb = (KnowledgeBuilderImpl) knowledgeBuilder;
         for (String toBeRemoved : existingGlobals) {
-            if (assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved))) {
+            if (kb.filterAcceptsRemoval(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
+//            if (assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved))) {
                 pkg.removeGlobal(toBeRemoved);
                 if (kBase != null) {
                     kBase.removeGlobal(toBeRemoved);
