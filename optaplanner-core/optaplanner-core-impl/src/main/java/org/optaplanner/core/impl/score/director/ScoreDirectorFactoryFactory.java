@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,8 +128,8 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             if (config.getConstraintProviderClass() != null) {
                 throw new IllegalStateException("Constraint Streams requested via constraintProviderClass (" +
                         config.getConstraintProviderClass() + ") but the supporting classes were not found on the classpath.\n"
-                        +
-                        "Maybe include org.optaplanner:optaplanner-constraint-streams dependency in your project?");
+                        + "Maybe include org.optaplanner:optaplanner-constraint-streams dependency in your project?\n"
+                        + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
             }
         }
 
@@ -138,10 +138,11 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         } else {
             if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())
                     || !ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-                throw new IllegalStateException("DRL constraints requested via scoreDrlList (" +
-                        config.getScoreDrlList() + ") or scoreDrlFileList (" + config.getScoreDrlFileList() + "), " +
-                        "but the supporting classes were not found on the classpath.\n" +
-                        "Maybe include org.optaplanner:optaplanner-constraint-drl dependency in your project?");
+                throw new IllegalStateException("DRL constraints requested via scoreDrlList (" + config.getScoreDrlList()
+                        + ") or scoreDrlFileList (" + config.getScoreDrlFileList() + "), "
+                        + "but the supporting classes were not found on the classpath.\n"
+                        + "Maybe include org.optaplanner:optaplanner-constraint-drl dependency in your project?\n"
+                        + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
             }
         }
         throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
