@@ -19,13 +19,13 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
     protected static final transient Logger logger = LoggerFactory.getLogger(GlobalCompilationPhase.class);
 
     private final InternalKnowledgeBase kBase;
-    private final GlobalVariableContext knowledgeBuilder;
+    private final GlobalVariableContext globalVariableContext;
     private final KnowledgeBuilderImpl.AssetFilter assetFilter;
 
-    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, GlobalVariableContext knowledgeBuilder, KnowledgeBuilderImpl.AssetFilter filterAcceptsRemoval) {
+    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, GlobalVariableContext globalVariableContext, KnowledgeBuilderImpl.AssetFilter filterAcceptsRemoval) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
-        this.knowledgeBuilder = knowledgeBuilder;
+        this.globalVariableContext = globalVariableContext;
         this.assetFilter = filterAcceptsRemoval;
     }
 
@@ -50,7 +50,7 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
                     return;
                 }
                 pkg.addGlobal(identifier, clazz);
-                knowledgeBuilder.addGlobal(identifier, clazz);
+                globalVariableContext.addGlobal(identifier, clazz);
 
                 if (kBase != null) {
                     kBase.addGlobal(identifier, clazz);
@@ -61,10 +61,8 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
             }
         }
 
-        KnowledgeBuilderImpl kb = (KnowledgeBuilderImpl) knowledgeBuilder;
         for (String toBeRemoved : existingGlobals) {
-            if (kb.filterAcceptsRemoval(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved)) {
-//            if (assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved))) {
+            if (assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved))) {
                 pkg.removeGlobal(toBeRemoved);
                 if (kBase != null) {
                     kBase.removeGlobal(toBeRemoved);

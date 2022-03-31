@@ -33,7 +33,6 @@ import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
-import org.drools.compiler.builder.impl.processors.TypeDeclarationCompositeCompilationPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
@@ -1499,7 +1498,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         this,   // as GlobalVariableContext
                         this, // as DroolsAssemblerContext
                         this, // as BuildResultAccumulator: we need to propagate messages for each phase
-                        assetFilter,
                         kBase,
                         configuration);
         compositePackageCompilationPhase.process();

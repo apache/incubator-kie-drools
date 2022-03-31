@@ -14,8 +14,7 @@ import static java.util.Arrays.asList;
 
 public class OtherDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
 
-
-    private GlobalVariableContext globalVariableContext;
+    private final GlobalVariableContext globalVariableContext;
     private final DroolsAssemblerContext droolsAssemblerContext;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfiguration configuration;

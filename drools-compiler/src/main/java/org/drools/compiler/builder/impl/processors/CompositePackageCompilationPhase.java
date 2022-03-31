@@ -3,10 +3,8 @@ package org.drools.compiler.builder.impl.processors;
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultAccumulator;
-import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -30,7 +28,6 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     private final TypeDeclarationBuilder typeBuilder;
     private GlobalVariableContext globalVariableContext;
     private DroolsAssemblerContext droolsAssemblerContext;
-    private KnowledgeBuilderImpl.AssetFilter assetFilter;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
 
@@ -43,7 +40,6 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
             GlobalVariableContext globalVariableContext,
             DroolsAssemblerContext droolsAssemblerContext,
             BuildResultAccumulator buildResultAccumulator,
-            KnowledgeBuilderImpl.AssetFilter assetFilter,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration) {
         this.packages = packages;
@@ -52,7 +48,6 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         this.globalVariableContext = globalVariableContext;
         this.droolsAssemblerContext = droolsAssemblerContext;
         this.buildResultAccumulator = buildResultAccumulator;
-        this.assetFilter = assetFilter;
         this.kBase = kBase;
         this.configuration = configuration;
     }
@@ -71,7 +66,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
                 iteratingPhase(EntryPointDeclarationCompilationPhase::new),
                 iteratingPhase((pkgRegistry, packageDescr) ->
                             new OtherDeclarationCompilationPhase(
-                                    pkgRegistry, packageDescr, globalVariableContext, droolsAssemblerContext, kBase, configuration, assetFilter)),
+                                    pkgRegistry, packageDescr, globalVariableContext, droolsAssemblerContext, kBase, configuration, packageDescr.getFilter())),
                 iteratingPhase((pkgRegistry, packageDescr) ->
                         new RuleAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr))
         );
