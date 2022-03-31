@@ -89,9 +89,10 @@ public final class ForEachUniNode<A> extends AbstractNode {
                 throw new IllegalStateException("The fact (" + a + ") was already retracted, so it cannot retract.");
             }
             tuple.state = BavetTupleState.ABORTING;
+        } else {
+            tuple.state = BavetTupleState.DYING;
+            dirtyTupleQueue.add(tuple);
         }
-        tuple.state = BavetTupleState.DYING;
-        dirtyTupleQueue.add(tuple);
     }
 
     @Override
