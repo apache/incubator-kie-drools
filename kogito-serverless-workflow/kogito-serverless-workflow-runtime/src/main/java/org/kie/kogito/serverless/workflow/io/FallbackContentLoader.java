@@ -16,6 +16,7 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -32,12 +33,12 @@ public abstract class FallbackContentLoader implements URIContentLoader {
     }
 
     @Override
-    public byte[] toBytes() throws IOException {
+    public InputStream getInputStream() throws IOException {
         try {
-            return internalToBytes();
+            return internalInputStream();
         } catch (IOException io) {
             try {
-                return fallbackLoader.orElseThrow(() -> io).toBytes();
+                return fallbackLoader.orElseThrow(() -> io).getInputStream();
             } catch (IOException io2) {
                 logger.error("Fallback loader failed with message \"{}\", throwing original exception", io2.getMessage());
                 throw io;
@@ -45,6 +46,6 @@ public abstract class FallbackContentLoader implements URIContentLoader {
         }
     }
 
-    protected abstract byte[] internalToBytes() throws IOException;
+    protected abstract InputStream internalInputStream() throws IOException;
 
 }

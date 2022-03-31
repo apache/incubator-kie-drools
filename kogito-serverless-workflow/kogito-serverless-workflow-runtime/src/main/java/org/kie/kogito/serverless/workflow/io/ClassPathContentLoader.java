@@ -41,13 +41,13 @@ public class ClassPathContentLoader implements URIContentLoader {
     }
 
     @Override
-    public byte[] toBytes() throws IOException {
-        try (InputStream is = cl.orElse(Thread.currentThread().getContextClassLoader()).getResourceAsStream(path)) {
-            if (is == null) {
-                throw new IOException("Cannot find resource " + path + " in classpath");
-            }
-            return is.readAllBytes();
+    public InputStream getInputStream() throws IOException {
+        InputStream is = cl.orElse(Thread.currentThread().getContextClassLoader()).getResourceAsStream(path);
+        if (is == null) {
+            throw new IOException("Cannot find resource " + path + " in classpath");
         }
+        return is;
+
     }
 
 }

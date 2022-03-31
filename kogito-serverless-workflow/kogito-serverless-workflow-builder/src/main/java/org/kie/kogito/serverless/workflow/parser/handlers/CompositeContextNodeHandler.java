@@ -42,7 +42,6 @@ import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 import org.kie.kogito.serverless.workflow.SWFConstants;
-import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.handlers.openapi.OpenAPIDescriptor;
@@ -91,6 +90,8 @@ import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.concatPaths;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.buildLoader;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.OPENAPI_OPERATION_SEPARATOR;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.getServiceName;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.resolveFunctionMetadata;
@@ -351,7 +352,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         try {
             // although OpenAPIParser has built in support to load uri, it messes up when using contextclassloader, so using our retrieval apis to get the content
             SwaggerParseResult result =
-                    new OpenAPIParser().readContents(new String(URIContentLoaderFactory.buildLoader(URI.create(uri), parserContext.getContext().getClassLoader()).toBytes()), null, null);
+                    new OpenAPIParser().readContents(new String(readAllBytes(buildLoader(URI.create(uri), parserContext.getContext().getClassLoader(), workflow, function.getAuthRef()))), null, null);
             OpenAPI openAPI = result.getOpenAPI();
             if (openAPI == null) {
                 throw new IllegalArgumentException("Problem parsing uri " + uri);

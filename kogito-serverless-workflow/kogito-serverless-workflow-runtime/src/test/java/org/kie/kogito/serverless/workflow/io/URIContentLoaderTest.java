@@ -22,27 +22,29 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.runtimeLoader;
 
 class URIContentLoaderTest {
 
     @Test
     void testExistingFile() throws IOException {
-        assertEquals("my name is javierito", new String(URIContentLoaderFactory.runtimeLoader("file:/pepe.txt").toBytes()));
+        assertEquals("my name is javierito", new String(readAllBytes(runtimeLoader("file:/pepe.txt"))));
     }
 
     @Test
     void testExistingClasspath() throws IOException {
-        assertEquals("my name is javierito", new String(URIContentLoaderFactory.runtimeLoader("classpath:/pepe.txt").toBytes()));
+        assertEquals("my name is javierito", new String(readAllBytes(runtimeLoader("classpath:/pepe.txt"))));
     }
 
     @Test
     void testNotExistingFile() {
-        assertThrows(NoSuchFileException.class, () -> URIContentLoaderFactory.runtimeLoader("file:/noPepe.txt").toBytes());
+        assertThrows(NoSuchFileException.class, () -> readAllBytes(runtimeLoader("file:/noPepe.txt")));
     }
 
     @Test
     void testNotExistingClasspath() {
-        assertThrows(IOException.class, () -> URIContentLoaderFactory.runtimeLoader("classpath:/noPepe.txt").toBytes());
+        assertThrows(IOException.class, () -> readAllBytes(runtimeLoader("classpath:/noPepe.txt")));
     }
 
 }

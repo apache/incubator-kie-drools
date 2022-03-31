@@ -16,6 +16,7 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class FileContentLoader extends FallbackContentLoader {
     }
 
     @Override
-    protected byte[] internalToBytes() throws IOException {
-        return Files.readAllBytes(path);
+    protected InputStream internalInputStream() throws IOException {
+        return Files.newInputStream(path);
     }
 }

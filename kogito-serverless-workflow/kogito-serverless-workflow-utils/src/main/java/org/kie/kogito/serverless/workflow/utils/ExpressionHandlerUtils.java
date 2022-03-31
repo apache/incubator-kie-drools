@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.jbpm.ruleflow.core.Metadata;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
@@ -49,11 +48,11 @@ public class ExpressionHandlerUtils {
 
     public static String prepareExpr(String expr, Optional<KogitoProcessContext> context) {
         expr = replaceMagic(expr, SECRET_MAGIC, ExpressionHandlerUtils::getSecret);
-        if (context.isPresent()) {
-            expr = replaceMagic(expr, CONTEXT_MAGIC, key -> KogitoProcessContextResolver.get().readKey(context.get(), key));
-        }
-        Optional<JsonNode> node = context.map(c -> (JsonNode) c.getProcessInstance().getProcess().getMetaData().get(Metadata.CONSTANTS));
-        return node.isPresent() ? replaceMagic(expr, CONST_MAGIC, key -> getConstant(key, node.get())) : expr;
+        return context.isPresent() ? replaceMagic(expr, CONTEXT_MAGIC, key -> KogitoProcessContextResolver.get().readKey(context.get(), key)) : expr;
+    }
+
+    public static String prepareExpr(String expr, Workflow workflow) {
+        return replaceMagic(replaceMagic(expr, SECRET_MAGIC, ExpressionHandlerUtils::getSecret), CONST_MAGIC, key -> getConstant(key, workflow.getConstants().getConstantsDef()));
     }
 
     public static Collection<String> getMagicWords() {
@@ -130,6 +129,7 @@ public class ExpressionHandlerUtils {
                                 .map(FunctionDefinition::getOperation)
                                 .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName)));
             }
+            return replaceMagic(candidate, CONST_MAGIC, key -> getConstant(key, workflow.getConstants().getConstantsDef()));
         }
         return expr;
     }

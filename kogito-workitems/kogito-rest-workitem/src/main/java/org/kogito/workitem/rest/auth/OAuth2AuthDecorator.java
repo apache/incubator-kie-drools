@@ -41,8 +41,12 @@ public abstract class OAuth2AuthDecorator<T> implements AuthDecorator {
 
     @Override
     public void decorate(KogitoWorkItem item, Map<String, Object> parameters, HttpRequest<?> request) {
+        request.bearerTokenAuthentication(getToken(parameters));
+    }
+
+    public String getToken(Map<String, Object> parameters) {
         User user = usersCache.compute(getCacheKey(parameters), this::getOrRefreshUser);
-        request.bearerTokenAuthentication(user.principal().getString("access_token"));
+        return user.principal().getString("access_token");
     }
 
     private User getOrRefreshUser(Object c, User user) {

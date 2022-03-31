@@ -15,27 +15,37 @@
  */
 package org.kie.kogito.serverless.workflow.io;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import io.serverlessworkflow.api.Workflow;
+
 public class URIContentLoaderFactory {
+
+    public static byte[] readAllBytes(URIContentLoader loader) throws IOException {
+        try (InputStream is = loader.getInputStream()) {
+            return is.readAllBytes();
+        }
+    }
 
     public static URIContentLoader runtimeLoader(String uriStr) {
         URI uri = URI.create(uriStr);
-        return loader(uri, URIContentLoaderType.from(uri), Optional.empty(), Optional.of(new ClassPathContentLoader(uri, Optional.empty())));
+        return loader(uri, Optional.empty(), Optional.of(new ClassPathContentLoader(uri, Optional.empty())), Optional.empty(), null);
     }
 
-    public static URIContentLoader buildLoader(URI uri, ClassLoader cl) {
-        return loader(uri, URIContentLoaderType.from(uri), Optional.of(cl), Optional.empty());
+    public static URIContentLoader buildLoader(URI uri, ClassLoader cl, Workflow workflow, String authRef) {
+        return loader(uri, Optional.of(cl), Optional.empty(), Optional.of(workflow), authRef);
     }
 
-    private static URIContentLoader loader(URI uri, URIContentLoaderType type, Optional<ClassLoader> cl, Optional<URIContentLoader> fallback) {
-        switch (type) {
+    private static URIContentLoader loader(URI uri, Optional<ClassLoader> cl, Optional<URIContentLoader> fallback, Optional<Workflow> workflow, String authRef) {
+        switch (URIContentLoaderType.from(uri)) {
             case FILE:
                 return new FileContentLoader(Path.of(uri), fallback);
             case HTTP:
-                return new HttpContentLoader(uri, fallback);
+                return new HttpContentLoader(uri, fallback, workflow, authRef);
             default:
             case CLASSPATH:
                 return new ClassPathContentLoader(uri, cl);

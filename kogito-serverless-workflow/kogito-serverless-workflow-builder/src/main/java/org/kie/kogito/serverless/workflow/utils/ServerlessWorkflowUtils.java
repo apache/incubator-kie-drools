@@ -15,16 +15,9 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.function.Supplier;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.serverless.workflow.io.URIContentLoader;
-import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
-import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,16 +149,5 @@ public class ServerlessWorkflowUtils {
 
     public static String getServiceName(String uri) {
         return uri.substring(uri.lastIndexOf('/') + 1).toLowerCase().replaceFirst(REGEX_NO_EXT, "").replaceAll(ONLY_CHARS, "");
-    }
-
-    public static void processResourceFile(URI uri, ParserContext context) {
-        URIContentLoader contentLoader = URIContentLoaderFactory.buildLoader(uri, context.getContext().getClassLoader());
-        try {
-            context.addGeneratedFile(
-                    new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(), contentLoader.toBytes()));
-        } catch (IOException io) {
-            // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime) 
-            logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);
-        }
     }
 }

@@ -21,13 +21,14 @@ import org.jbpm.process.instance.impl.Action;
 import org.json.JSONObject;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getWorkflowData;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
+import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.runtimeLoader;
 
 public class DataInputSchemaAction implements Action {
 
@@ -45,7 +46,7 @@ public class DataInputSchemaAction implements Action {
     public void execute(KogitoProcessContext context) throws Exception {
         ObjectMapper mapper = ObjectMapperFactory.get();
         try {
-            SchemaLoader.load(mapper.readValue(URIContentLoaderFactory.runtimeLoader(schema).toBytes(), JSONObject.class))
+            SchemaLoader.load(mapper.readValue(readAllBytes(runtimeLoader(schema)), JSONObject.class))
                     .validate(mapper.convertValue(getWorkflowData(context), JSONObject.class));
         } catch (ValidationException ex) {
             logger.warn("There are validation errors {}", ex.getCausingExceptions());

@@ -16,7 +16,8 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public interface URIContentLoader {
-    byte[] toBytes() throws IOException;
+    InputStream getInputStream() throws IOException;
 }
