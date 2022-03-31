@@ -1025,19 +1025,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results.addAll(packageProcessor.getResults());
     }
 
-    protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
-                pkgRegistry,
-                packageDescr,
-                this,
-                this,
-                kBase,
-                configuration,
-                assetFilter);
-        otherDeclarationProcessor.process();
-        this.results.addAll(otherDeclarationProcessor.getResults());
-    }
-
     protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         GlobalCompilationPhase globalProcessor =
                 new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, this, assetFilter);
@@ -1548,10 +1535,17 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     protected void buildOtherDeclarations(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
-            setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            processOtherDeclarations( pkgRegistry, packageDescr );
-            setAssetFilter(null);
+            OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
+                    pkgRegistry,
+                    packageDescr,
+                    this,
+                    this,
+                    kBase,
+                    configuration,
+                    packageDescr.getFilter());
+            otherDeclarationProcessor.process();
+            this.results.addAll(otherDeclarationProcessor.getResults());
         }
     }
 
