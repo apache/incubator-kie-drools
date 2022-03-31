@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TaskDescriptorBuilder {
 
-    private static final Set<String> SUPPORTED_DESCRIPTORS = new HashSet<>(Arrays.asList(OpenApiTaskDescriptor.TYPE, RestTaskDescriptor.TYPE, ServiceTaskDescriptor.TYPE));
+    private static final Set<String> SUPPORTED_DESCRIPTORS = new HashSet<>(Arrays.asList(RestTaskDescriptor.TYPE, ServiceTaskDescriptor.TYPE));
     private final String descriptorName;
     private WorkItemNode workItemNode;
     private ClassLoader classLoader;
@@ -66,9 +66,6 @@ public final class TaskDescriptorBuilder {
      */
     public TaskDescriptor build() {
         switch (this.descriptorName) {
-            case (OpenApiTaskDescriptor.TYPE):
-                requireNonNull(this.workItemNode, "Error creating descriptor " + OpenApiTaskDescriptor.TYPE + " WorkItemNode can't be null");
-                return new OpenApiTaskDescriptor(this.workItemNode);
             case (RestTaskDescriptor.TYPE):
                 requireNonNull(this.metadata, "Error creating descriptor " + RestTaskDescriptor.TYPE + " ProcessMetadata can't be null");
                 return new RestTaskDescriptor(this.metadata);

@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.compiler.canonical.descriptors;
+package org.kie.kogito.serverless.workflow.suppliers;
 
 import java.util.function.Supplier;
 
-import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
+import org.kie.kogito.serverless.workflow.workitemparams.ObjectResolver;
 
 import com.github.javaparser.ast.expr.Expression;
 
-public class WorkItemParamResolverSupplier implements Supplier<Expression> {
+public class ObjectResolverSupplier extends ObjectResolver implements Supplier<Expression> {
 
-    private Class<? extends WorkItemParamResolver> clazz;
-    private Object[] args;
+    private final Expression expression;
 
-    public WorkItemParamResolverSupplier(Class<? extends WorkItemParamResolver> clazz, Object... args) {
-        this.clazz = clazz;
-        this.args = args;
+    public ObjectResolverSupplier(String exprLang, Object expr, String paramName) {
+        super(exprLang, expr, paramName);
+        expression = ExpressionUtils.getObjectCreationExpr(ObjectResolver.class, exprLang, expr, paramName);
     }
 
     @Override
     public Expression get() {
-        return ExpressionUtils.getObjectCreationExpr(clazz, args);
+        return expression;
     }
 }

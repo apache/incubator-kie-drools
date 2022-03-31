@@ -28,7 +28,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.drools.mvel.java.JavaDialect;
-import org.jbpm.compiler.canonical.descriptors.AbstractServiceTaskDescriptor;
 import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
@@ -40,7 +39,6 @@ import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jackson.utils.JsonNodeVisitor;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
@@ -53,11 +51,11 @@ import org.kie.kogito.serverless.workflow.suppliers.ClientOAuth2AuthDecoratorSup
 import org.kie.kogito.serverless.workflow.suppliers.CollectionParamsDecoratorSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigSuppliedWorkItemSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.ObjectResolverSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ParamsRestBodyBuilderSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.PasswordOAuth2AuthDecoratorSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.SysoutActionSupplier;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
-import org.kie.kogito.serverless.workflow.workitemparams.ObjectResolver;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator.Location;
@@ -257,7 +255,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 .outMapping(RestWorkItemHandler.RESULT, outputVar)
                 .workParameter(RestWorkItemHandler.BODY_BUILDER, new ParamsRestBodyBuilderSupplier());
         if (functionArgs != null) {
-            processArgs(workItemFactory, functionArgs, SWFConstants.MODEL_WORKFLOW_VAR, ObjectResolver.class);
+            processArgs(workItemFactory, functionArgs, SWFConstants.MODEL_WORKFLOW_VAR);
         }
         return workItemFactory;
 
@@ -301,7 +299,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         if (functionArgs == null || functionArgs.isEmpty()) {
             node.workParameter(WORKITEM_PARAM_TYPE, ServerlessWorkflowParser.JSON_NODE);
         } else {
-            processArgs(node, functionArgs, WORKITEM_PARAM, ObjectResolver.class);
+            processArgs(node, functionArgs, WORKITEM_PARAM);
         }
 
         return node.workParameter(WORKITEM_INTERFACE, intfc)
@@ -453,25 +451,21 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private void processArgs(WorkItemNodeFactory<?> workItemFactory,
-            JsonNode functionArgs, String paramName, Class<? extends ExpressionWorkItemResolver> clazz) {
+            JsonNode functionArgs, String paramName) {
         if (functionArgs.isObject()) {
-            functionsToMap(functionArgs).entrySet().forEach(entry -> processArg(entry.getKey(), entry.getValue(), workItemFactory, paramName, clazz));
+            functionsToMap(functionArgs).entrySet().forEach(entry -> processArg(entry.getKey(), entry.getValue(), workItemFactory, paramName));
         } else {
-            processArg(RestWorkItemHandler.CONTENT_DATA, functionReference(JsonObjectUtils.simpleToJavaValue(functionArgs)), workItemFactory, paramName, clazz);
+            processArg(RestWorkItemHandler.CONTENT_DATA, functionReference(JsonObjectUtils.simpleToJavaValue(functionArgs)), workItemFactory, paramName);
         }
     }
 
-    private void processArg(String key, Object value, WorkItemNodeFactory<?> workItemFactory, String paramName, Class<? extends ExpressionWorkItemResolver> clazz) {
-        boolean isExpr = isExpression(value);
+    private void processArg(String key, Object value, WorkItemNodeFactory<?> workItemFactory, String paramName) {
+        boolean isExpr = value instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), value.toString()).isValid(Optional.empty()) || value instanceof JsonNode;
         workItemFactory
                 .workParameter(key,
-                        AbstractServiceTaskDescriptor.processWorkItemValue(workflow.getExpressionLang(), value, paramName, clazz, isExpr))
+                        isExpr ? new ObjectResolverSupplier(workflow.getExpressionLang(), value, paramName) : value)
                 .workParameterDefinition(key,
                         DataTypeResolver.fromObject(value, isExpr));
-    }
-
-    private boolean isExpression(Object expr) {
-        return expr instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), expr.toString()).isValid(Optional.empty()) || expr instanceof JsonNode;
     }
 
     private NodeFactory<?, ?> emptyNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionName) {

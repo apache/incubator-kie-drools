@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
-import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 import com.github.javaparser.StaticJavaParser;
@@ -217,11 +216,5 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
                 .addMember(getName);
 
         return cls;
-    }
-
-    public static Object processWorkItemValue(String exprLang, Object object, String paramName, Class<? extends ExpressionWorkItemResolver> clazz, boolean isExpression) {
-        return isExpression
-                ? new WorkItemParamResolverSupplier(clazz, exprLang, object, paramName)
-                : object;
     }
 }
