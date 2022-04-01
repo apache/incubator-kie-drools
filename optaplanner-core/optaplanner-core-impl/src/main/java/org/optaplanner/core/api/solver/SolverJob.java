@@ -54,7 +54,9 @@ public interface SolverJob<Solution_, ProblemId_> {
 
     /**
      * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
-     *
+     * <p>
+     * To learn more about problem change semantics, please refer to the {@link ProblemChange} Javadoc.
+     * 
      * @param problemChange never null
      * @return completes after the best solution containing this change has been consumed.
      * @throws IllegalStateException if the underlying {@link Solver} is not in the {@link SolverStatus#SOLVING_ACTIVE}

@@ -43,6 +43,8 @@ import org.optaplanner.core.impl.solver.DefaultSolverManager;
  * <p>
  * Internally a SolverManager manages a thread pool of solver threads (which call {@link Solver#solve(Object)})
  * and consumer threads (to handle the {@link BestSolutionChangedEvent}s).
+ * <p>
+ * To learn more about problem change semantics, please refer to the {@link ProblemChange} Javadoc.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.

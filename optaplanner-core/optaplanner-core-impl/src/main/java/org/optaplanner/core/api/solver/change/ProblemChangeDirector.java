@@ -26,8 +26,13 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 /**
- * Allows external changes to the {@link PlanningSolution working solution}.
+ * Allows external changes to the {@link PlanningSolution working solution}. If the changes are not applied through
+ * the ProblemChangeDirector,
+ * {@link org.optaplanner.core.api.domain.variable.VariableListener both internal and custom variable listeners} are
+ * never notified about them, resulting to inconsistencies in the {@link PlanningSolution working solution}.
  * Should be used only from a {@link ProblemChange} implementation.
+ *
+ * To see an example implementation, please refer to the {@link ProblemChange} Javadoc.
  */
 public interface ProblemChangeDirector {
 

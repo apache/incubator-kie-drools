@@ -98,6 +98,8 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
+     * <p>
+     * To learn more about problem change semantics, please refer to the {@link ProblemChange} Javadoc.
      *
      * @param problemChange never null
      * @see #addProblemChanges(List)
@@ -113,6 +115,8 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
+     * <p>
+     * To learn more about problem change semantics, please refer to the {@link ProblemChange} Javadoc.
      *
      * @param problemChangeList never null
      * @see #addProblemChange(ProblemChange)

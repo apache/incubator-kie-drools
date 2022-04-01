@@ -171,6 +171,13 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     // Complex methods
     // ************************************************************************
 
+    /**
+     * Note: resetting the working solution does NOT substitute the calls to before/after methods of
+     * the {@link org.optaplanner.core.api.solver.change.ProblemChangeDirector} during
+     * {@link org.optaplanner.core.api.solver.change.ProblemChange problem changes},
+     * as these calls are propagated to {@link VariableListener variable listeners}, which update shadow variables
+     * in the {@link org.optaplanner.core.api.domain.solution.PlanningSolution working solution} to keep it consistent.
+     */
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
         this.workingSolution = requireNonNull(workingSolution);
