@@ -278,29 +278,24 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             BlockingQueue<ProblemChangeAdapter<Solution_>> problemFactChangeQueue = basicPlumbingTermination
                     .startProblemFactChangesProcessing();
             solverScope.setWorkingSolutionFromBestSolution();
-            Score<?> score = null;
+
             int stepIndex = 0;
-            ProblemChangeAdapter<Solution_> problemFactChange = problemFactChangeQueue.poll();
-            while (problemFactChange != null) {
-                score = doProblemChange(problemFactChange, stepIndex);
+            ProblemChangeAdapter<Solution_> problemChangeAdapter = problemFactChangeQueue.poll();
+            while (problemChangeAdapter != null) {
+                problemChangeAdapter.doProblemChange(solverScope);
                 stepIndex++;
-                problemFactChange = problemFactChangeQueue.poll();
+                problemChangeAdapter = problemFactChangeQueue.poll();
             }
             // All PFCs are processed, fail fast if any of the new facts have null planning IDs.
             InnerScoreDirector<Solution_, ?> scoreDirector = solverScope.getScoreDirector();
             scoreDirector.assertNonNullPlanningIds();
             // Everything is fine, proceed.
+            Score<?> score = scoreDirector.calculateScore();
             basicPlumbingTermination.endProblemFactChangesProcessing();
             bestSolutionRecaller.updateBestSolutionAndFire(solverScope);
             logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",
                     stepIndex, score);
             return true;
         }
-    }
-
-    private Score<?> doProblemChange(ProblemChangeAdapter<Solution_> problemChangeAdapter, int stepIndex) {
-        Score<?> score = problemChangeAdapter.doProblemChange(solverScope);
-        logger.debug("    Step index ({}), new score ({}) for real-time problem change.", stepIndex, score);
-        return score;
     }
 }

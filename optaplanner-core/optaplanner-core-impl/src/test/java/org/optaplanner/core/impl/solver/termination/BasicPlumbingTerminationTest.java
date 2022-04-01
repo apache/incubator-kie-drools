@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,9 +71,10 @@ class BasicPlumbingTerminationTest {
     }
 
     private SolverScope<TestdataSolution> mockSolverScope() {
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         InnerScoreDirector<TestdataSolution, ?> scoreDirectorMock = mock(InnerScoreDirector.class);
-        SolverScope<TestdataSolution> solverScopeMock = mock(SolverScope.class);
-        when(solverScopeMock.getProblemChangeDirector()).thenReturn(new DefaultProblemChangeDirector<>(scoreDirectorMock));
-        return solverScopeMock;
+        solverScope.setScoreDirector(scoreDirectorMock);
+        solverScope.setProblemChangeDirector(new DefaultProblemChangeDirector<>(scoreDirectorMock));
+        return solverScope;
     }
 }
