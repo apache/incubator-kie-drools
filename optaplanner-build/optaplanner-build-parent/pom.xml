@@ -33,8 +33,8 @@
     <version.org.freemarker>2.3.31</version.org.freemarker>
     <version.org.jdom>1.1.3</version.org.jdom>
     <version.org.jfree.jfreechart>1.5.3</version.org.jfree.jfreechart>
-    <version.org.springframework>5.3.6</version.org.springframework>
-    <version.org.springframework.boot>2.4.5</version.org.springframework.boot>
+    <version.org.springframework>5.3.18</version.org.springframework>
+    <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
 
     <!-- ************************************************************************ -->
     <!-- Plugins -->
