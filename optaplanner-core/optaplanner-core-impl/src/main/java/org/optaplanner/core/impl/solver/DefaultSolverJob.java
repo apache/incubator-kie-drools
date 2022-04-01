@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -35,6 +36,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.optaplanner.core.api.solver.change.ProblemChange;
+import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
@@ -62,6 +64,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private Future<Solution_> finalBestSolutionFuture;
     private ConsumerSupport<Solution_, ProblemId_> consumerSupport;
     private final AtomicBoolean terminatedEarly = new AtomicBoolean(false);
+    private final BestSolutionHolder<Solution_> bestSolutionHolder = new BestSolutionHolder<>();
 
     public DefaultSolverJob(
             DefaultSolverManager<Solution_, ProblemId_> solverManager,
@@ -113,21 +116,18 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             solverStatus = SolverStatus.SOLVING_ACTIVE;
             // Create the consumer thread pool only when this solver job is active.
             consumerSupport = new ConsumerSupport<>(getProblemId(), bestSolutionConsumer, finalBestSolutionConsumer,
-                    exceptionHandler);
+                    exceptionHandler, bestSolutionHolder);
 
             Solution_ problem = problemFinder.apply(problemId);
             // add a phase lifecycle listener that unlock the solver status lock when solving started
             solver.addPhaseLifecycleListener(new UnlockLockPhaseLifecycleListener());
-            if (bestSolutionConsumer != null) {
-                solver.addEventListener(event -> consumerSupport.consumeIntermediateBestSolution(event.getNewBestSolution()));
-            }
+            solver.addEventListener(this::onBestSolutionChangedEvent);
             final Solution_ finalBestSolution = solver.solve(problem);
-            if (finalBestSolutionConsumer != null) {
-                consumerSupport.consumeFinalBestSolution(finalBestSolution);
-            }
+            consumerSupport.consumeFinalBestSolution(finalBestSolution);
             return finalBestSolution;
         } catch (Exception e) {
             exceptionHandler.accept(problemId, e);
+            bestSolutionHolder.cancelPendingChanges();
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
             if (solverStatusModifyingLock.isHeldByCurrentThread()) {
@@ -143,6 +143,11 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
     }
 
+    private void onBestSolutionChangedEvent(BestSolutionChangedEvent<Solution_> bestSolutionChangedEvent) {
+        consumerSupport.consumeIntermediateBestSolution(bestSolutionChangedEvent.getNewBestSolution(),
+                () -> bestSolutionChangedEvent.isEveryProblemChangeProcessed());
+    }
+
     private void solvingTerminated() {
         solverStatus = SolverStatus.NOT_SOLVING;
         solverManager.unregisterSolverJob(problemId);
@@ -156,13 +161,14 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     //    }
 
     @Override
-    public void addProblemChange(ProblemChange<Solution_> problemChange) {
+    public CompletableFuture<Void> addProblemChange(ProblemChange<Solution_> problemChange) {
         Objects.requireNonNull(problemChange, () -> "A problem change (" + problemChange + ") must not be null.");
         if (solverStatus == SolverStatus.NOT_SOLVING) {
             throw new IllegalStateException("Cannot add the problem change (" + problemChange
                     + ") because the solver job (" + solverStatus + ") is not solving.");
         }
-        solver.addProblemChange(problemChange);
+
+        return bestSolutionHolder.addProblemChange(solver, problemChange);
     }
 
     @Override

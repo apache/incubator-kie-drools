@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.solver;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -312,9 +313,10 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
      *        or {@link #solveAndListen(Object, Function, Consumer)}
      * @param problemChange never null
+     * @return completes after the best solution containing this change has been consumed.
      * @throws IllegalStateException if there is no solver actively solving the problem associated with the problemId
      */
-    void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
+    CompletableFuture<Void> addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.

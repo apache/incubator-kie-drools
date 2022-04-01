@@ -18,6 +18,7 @@ package org.optaplanner.core.api.solver;
 
 import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -55,10 +56,11 @@ public interface SolverJob<Solution_, ProblemId_> {
      * Schedules a {@link ProblemChange} to be processed by the underlying {@link Solver} and returns immediately.
      *
      * @param problemChange never null
+     * @return completes after the best solution containing this change has been consumed.
      * @throws IllegalStateException if the underlying {@link Solver} is not in the {@link SolverStatus#SOLVING_ACTIVE}
      *         state
      */
-    void addProblemChange(ProblemChange<Solution_> problemChange);
+    CompletableFuture<Void> addProblemChange(ProblemChange<Solution_> problemChange);
 
     /**
      * Terminates the solver or cancels the solver job if it hasn't (re)started yet.

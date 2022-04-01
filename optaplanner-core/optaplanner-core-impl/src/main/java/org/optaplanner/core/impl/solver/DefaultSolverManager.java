@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.solver;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
@@ -146,7 +147,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     //    }
 
     @Override
-    public void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange) {
+    public CompletableFuture<Void> addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange) {
         DefaultSolverJob<Solution_, ProblemId_> solverJob = getSolverJob(problemId);
         if (solverJob == null) {
             // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
@@ -154,7 +155,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
                     "Cannot add the problem change (" + problemChange + ") because there is no solver solving the problemId ("
                             + problemId + ").");
         }
-        solverJob.addProblemChange(problemChange);
+        return solverJob.addProblemChange(problemChange);
     }
 
     @Override

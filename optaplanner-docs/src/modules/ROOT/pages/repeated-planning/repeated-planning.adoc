@@ -348,7 +348,7 @@ public interface SolverManager<Solution_, ProblemId_> {
 
     ...
 
-    void addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
+    CompletableFuture<Void> addProblemChange(ProblemId_ problemId, ProblemChange<Solution_> problemChange);
 
     ...
 
@@ -363,13 +363,15 @@ public interface SolverJob<Solution_, ProblemId_> {
 
     ...
 
-    void addProblemChange(ProblemChange<Solution_> problemChange);
+    CompletableFuture<Void> addProblemChange(ProblemChange<Solution_> problemChange);
 
     ...
 
 }
 ----
 
+Notice the method returns `CompletableFuture<Void>`, which is completed when a user-defined `Consumer` accepts
+the best solution containing this problem change.
 
 [source,java,options="nowrap"]
 ----

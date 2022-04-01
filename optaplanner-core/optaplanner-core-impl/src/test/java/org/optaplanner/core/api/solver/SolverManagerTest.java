@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
@@ -537,33 +538,26 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    void submitProblemChange() throws InterruptedException {
+    void addProblemChange() throws InterruptedException, ExecutionException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setDaemon(true);
         solverManager = SolverManager.create(solverConfig);
-        CountDownLatch solverStarted = new CountDownLatch(1);
-        CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
         final long problemId = 1L;
 
         final int entityAndValueCount = 4;
         AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
         solverManager.solveAndListen(problemId,
                 id -> PlannerTestUtils.generateTestdataSolution("s1", entityAndValueCount),
-                testdataSolution -> {
-                    solverStarted.countDown();
-                    if (testdataSolution.getValueList().size() == entityAndValueCount + 1) {
-                        bestSolution.set(testdataSolution);
-                        solutionWithProblemChangeReceived.countDown();
-                    }
+                bestSolution::set);
+
+        CompletableFuture<Void> futureChange = solverManager
+                .addProblemChange(problemId, (workingSolution, problemChangeDirector) -> {
+                    problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
+                            workingSolution.getValueList()::add);
                 });
 
-        solverStarted.await();
-        solverManager.addProblemChange(problemId, (workingSolution, problemChangeDirector) -> {
-            problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
-                    workingSolution.getValueList()::add);
-        });
-
-        solutionWithProblemChangeReceived.await();
+        futureChange.get();
+        assertThat(futureChange).isCompleted();
         assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
 
@@ -586,7 +580,7 @@ class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    void addProblemChangeToWaitingSolver() throws InterruptedException {
+    void addProblemChangeToWaitingSolver() throws InterruptedException, ExecutionException {
         CountDownLatch solvingPausedLatch = new CountDownLatch(1);
         PhaseConfig<?> pausedPhaseConfig = new CustomPhaseConfig().withCustomPhaseCommands(
                 scoreDirector -> {
@@ -609,26 +603,20 @@ class SolverManagerTest {
         // The second solver is scheduled and waits for the fist solver to finish.
         final long secondProblemId = 2L;
         final int entityAndValueCount = 4;
-        CountDownLatch solutionWithProblemChangeReceived = new CountDownLatch(1);
         AtomicReference<TestdataSolution> bestSolution = new AtomicReference<>();
         solverManager.solveAndListen(secondProblemId,
-                id -> PlannerTestUtils.generateTestdataSolution("s2", entityAndValueCount),
-                testdataSolution -> {
-                    if (testdataSolution.getValueList().size() == entityAndValueCount + 1) {
-                        bestSolution.set(testdataSolution);
-                        solutionWithProblemChangeReceived.countDown();
-                    }
-                });
+                id -> PlannerTestUtils.generateTestdataSolution("s2", entityAndValueCount), bestSolution::set);
 
-        solverManager.addProblemChange(secondProblemId, (workingSolution, problemChangeDirector) -> {
-            problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
-                    workingSolution.getValueList()::add);
-        });
+        CompletableFuture<Void> futureChange = solverManager
+                .addProblemChange(secondProblemId, (workingSolution, problemChangeDirector) -> {
+                    problemChangeDirector.addProblemFact(new TestdataValue("addedValue"),
+                            workingSolution.getValueList()::add);
+                });
 
         // The first solver can proceed. When it finishes, the second solver starts solving and picks up the change.
         solvingPausedLatch.countDown();
-
-        solutionWithProblemChangeReceived.await();
+        futureChange.get();
+        assertThat(futureChange).isCompleted();
         assertThat(bestSolution.get().getValueList()).hasSize(entityAndValueCount + 1);
     }
 
