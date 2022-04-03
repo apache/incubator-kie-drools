@@ -23,7 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,7 +72,6 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
 
     private static final String EMPTY_WORKFLOW_DATA = "{\"workflowdata\" : \"\"}";
 
-    @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
     String kafkaBootstrapServers;
 
     ObjectMapper objectMapper;
@@ -81,6 +80,7 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
 
     @BeforeEach
     void setup() {
+        kafkaBootstrapServers = ConfigProvider.getConfig().getValue(KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY, String.class);
         kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
         objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())

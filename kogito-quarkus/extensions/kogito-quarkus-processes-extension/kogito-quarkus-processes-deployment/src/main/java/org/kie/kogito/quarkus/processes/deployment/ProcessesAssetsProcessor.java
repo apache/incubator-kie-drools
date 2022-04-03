@@ -50,6 +50,20 @@ import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusHumanTaskSe
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusProcessIdFactory;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStatefulProcessService;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStraightThroughProcessService;
+import org.kie.kogito.event.process.AttachmentEventBody;
+import org.kie.kogito.event.process.CommentEventBody;
+import org.kie.kogito.event.process.MilestoneEventBody;
+import org.kie.kogito.event.process.NodeInstanceEventBody;
+import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
+import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.UserTaskInstanceEventBody;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceEventBody;
 import org.kie.kogito.quarkus.common.deployment.InMemoryClassLoader;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedClassesBuildItem;
@@ -153,6 +167,25 @@ public class ProcessesAssetsProcessor {
                 "org.kie.kogito.event.cloudevents.SpecVersionDeserializer",
                 "org.kie.kogito.event.cloudevents.SpecVersionSerializer",
                 "org.kie.kogito.jobs.api.Job");
+    }
+
+    @BuildStep
+    public ReflectiveClassBuildItem eventsApiReflection() {
+        return new ReflectiveClassBuildItem(true, true,
+                AttachmentEventBody.class.getName(),
+                CommentEventBody.class.getName(),
+                MilestoneEventBody.class.getName(),
+                NodeInstanceEventBody.class.getName(),
+                ProcessDataEvent.class.getName(),
+                ProcessErrorEventBody.class.getName(),
+                ProcessInstanceDataEvent.class.getName(),
+                ProcessInstanceEventBody.class.getName(),
+                UserTaskDeadlineDataEvent.class.getName(),
+                UserTaskDeadlineEventBody.class.getName(),
+                UserTaskInstanceDataEvent.class.getName(),
+                UserTaskInstanceEventBody.class.getName(),
+                VariableInstanceDataEvent.class.getName(),
+                VariableInstanceEventBody.class.getName());
     }
 
     @BuildStep
