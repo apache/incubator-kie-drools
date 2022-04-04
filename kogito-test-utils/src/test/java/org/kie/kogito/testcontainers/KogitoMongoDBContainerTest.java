@@ -48,6 +48,6 @@ class KogitoMongoDBContainerTest {
 
     @Test
     void shouldGetDockerImageName() {
-        assertEquals("library/" + System.getProperty(KogitoMongoDBContainer.MONGODB_PROPERTY), container.getDockerImageName());
+        assertEquals(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME), container.getDockerImageName());
     }
 }

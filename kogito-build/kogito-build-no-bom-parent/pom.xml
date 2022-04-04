@@ -51,7 +51,8 @@
     <container.image.keycloak>jboss/keycloak:${version.org.keycloak}</container.image.keycloak>
     <container.image.kafka>vectorized/redpanda:v21.11.8</container.image.kafka>
     <container.image.wurstmeister.kafka>wurstmeister/kafka:${version.wurstmeister.kafka}</container.image.wurstmeister.kafka>
-    <container.image.mongodb>mongo:${version.org.mongo-image}</container.image.mongodb>
+    <container.image.mongodb>library/mongo:${version.org.mongo-image}</container.image.mongodb>
+    <container.image.redis>redislabs/redisearch:${version.org.redis}</container.image.redis>
 
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>

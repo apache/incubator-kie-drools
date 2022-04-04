@@ -22,7 +22,7 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.DockerImageName;
 
-import static org.kie.kogito.testcontainers.Constants.CONTAINER_NAME_PREFIX;
+import static org.kie.kogito.testcontainers.KogitoGenericContainer.getImageName;
 
 /**
  * MongoDB Container for Kogito examples.
@@ -31,13 +31,11 @@ public class KogitoMongoDBContainer extends MongoDBContainer implements TestReso
 
     public static final String NAME = "mongodb";
     public static final int MONGODB_INTERNAL_PORT = 27018;
-    public static final String DEFAULT_IMAGE = "mongo:4.4.10";
-    public static final String MONGODB_PROPERTY = CONTAINER_NAME_PREFIX + NAME;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoMongoDBContainer.class);
 
     public KogitoMongoDBContainer() {
-        super(DockerImageName.parse(mongoImage()));
+        super(DockerImageName.parse(getImageName(NAME)).asCompatibleSubstituteFor("mongo"));
         withLogConsumer(f -> System.out.print(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         addFixedExposedPort(MONGODB_INTERNAL_PORT, MONGODB_INTERNAL_PORT);
@@ -54,7 +52,4 @@ public class KogitoMongoDBContainer extends MongoDBContainer implements TestReso
         return NAME;
     }
 
-    private static String mongoImage() {
-        return System.getProperty(MONGODB_PROPERTY, DEFAULT_IMAGE);
-    }
 }

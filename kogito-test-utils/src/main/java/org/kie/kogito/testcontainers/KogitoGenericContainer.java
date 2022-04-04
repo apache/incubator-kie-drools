@@ -16,14 +16,12 @@
 
 package org.kie.kogito.testcontainers;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.utility.TestcontainersConfiguration;
 
-import static org.kie.kogito.testcontainers.Constants.CONTAINER_NAME_PREFIX;
 import static org.kie.kogito.testcontainers.Constants.CONTAINER_START_TIMEOUT;
 
 public abstract class KogitoGenericContainer<T extends GenericContainer<T>> extends GenericContainer<T> {
@@ -37,10 +35,8 @@ public abstract class KogitoGenericContainer<T extends GenericContainer<T>> exte
         withLogConsumer(f -> System.out.print(f.getUtf8String()));
     }
 
-    public static String getImageName(String containerName) {
-        String propertyName = CONTAINER_NAME_PREFIX + containerName;
-        return Optional.ofNullable(System.getProperty(propertyName))
-                .filter(s -> s != null && s.trim().length() > 0)
-                .orElseThrow(() -> new IllegalArgumentException(propertyName + " property should be set in pom.xml"));
+    public static String getImageName(String name) {
+        return System.getProperty(Constants.CONTAINER_NAME_PREFIX + name,
+                TestcontainersConfiguration.getInstance().getClasspathProperties().getProperty(Constants.CONTAINER_NAME_PREFIX + name));
     }
 }

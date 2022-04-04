@@ -17,6 +17,7 @@ package org.kie.kogito.testcontainers.springboot;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -56,7 +57,7 @@ class MongoDBSpringBootTestResourceTest {
     @Test
     void shouldGetDockerImageName() {
         givenResource();
-        assertEquals("library/" + System.getProperty(KogitoMongoDBContainer.MONGODB_PROPERTY), resource.getTestResource().getDockerImageName());
+        assertEquals(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME), resource.getTestResource().getDockerImageName());
     }
 
     private void givenConditionalResource() {

@@ -16,6 +16,7 @@
 package org.kie.kogito.testcontainers.quarkus;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,7 +50,7 @@ class MongoDBQuarkusTestResourceTest {
     @Test
     void shouldGetDockerImageName() {
         givenResource();
-        assertEquals("library/" + System.getProperty(KogitoMongoDBContainer.MONGODB_PROPERTY), resource.getTestResource().getDockerImageName());
+        assertEquals(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME), resource.getTestResource().getDockerImageName());
     }
 
     private void givenConditionalResource() {
