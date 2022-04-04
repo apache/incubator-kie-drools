@@ -117,7 +117,7 @@
     <version.org.mvel>2.4.14.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.slf4j>1.7.30</version.org.slf4j>
-    <version.org.springframework>5.3.14</version.org.springframework>
+    <version.org.springframework>5.3.18</version.org.springframework>
     <version.org.springframework.boot>2.3.4.RELEASE</version.org.springframework.boot>
     <version.org.springframework.amqpboot>2.3.4</version.org.springframework.amqpboot>
     <version.org.springframework.osgi>1.2.1</version.org.springframework.osgi>
