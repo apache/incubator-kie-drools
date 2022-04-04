@@ -66,7 +66,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
     @Override
     public DMNExpressionEvaluator compileExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
         if (expression instanceof LiteralExpression) {
-            return compileLiteralExpression(ctx, model, node, exprName, (LiteralExpression) expression);
+            return compileLiteralExpr(ctx, model, node, exprName, (LiteralExpression) expression);
         } else if ( expression instanceof DecisionTable) {
             return compileDecisionTable(ctx, model, node, exprName, (DecisionTable) expression);
         } else {
@@ -83,7 +83,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         for (InputClause input : dt.getInput()) {
             LiteralExpression inExpr = input.getInputExpression();
             normalizeLiteralExpressionInTable(model, inExpr);
-            JSR223LiteralExpressionEvaluator inLiteralExpr = (JSR223LiteralExpressionEvaluator) compileLiteralExpression(ctx, model, node, dtName, inExpr);
+            JSR223LiteralExpressionEvaluator inLiteralExpr = (JSR223LiteralExpressionEvaluator) compileLiteralExpr(ctx, model, node, dtName, inExpr);
             ins.add(inLiteralExpr);
         }
         if (dt.getOutput().size() != 1) {
@@ -102,7 +102,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
             }
             LiteralExpression outExpr = rule.getOutputEntry().get(0);
             normalizeLiteralExpressionInTable(model, outExpr);
-            JSR223LiteralExpressionEvaluator outLiteralExpr = (JSR223LiteralExpressionEvaluator) compileLiteralExpression(ctx, model, node, dtName, outExpr);
+            JSR223LiteralExpressionEvaluator outLiteralExpr = (JSR223LiteralExpressionEvaluator) compileLiteralExpr(ctx, model, node, dtName, outExpr);
             rules.add(new JSR223Rule(ruleTests, outLiteralExpr));
         }
         return new JSR223DTExpressionEvaluator(node, dt, ins, rules);
@@ -130,7 +130,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         lExpr.setExpressionLanguage(model.getDefinitions().getExpressionLanguage());
     }
 
-    protected DMNExpressionEvaluator compileLiteralExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
+    protected DMNExpressionEvaluator compileLiteralExpr(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
         String exprLanguage = Optional.ofNullable(expression.getExpressionLanguage()).orElse(model.getDefinitions().getExpressionLanguage());
         if (!exprLanguage.equals(model.getDefinitions().getURIFEEL())) {
             LOG.info("exprLanguage {}", exprLanguage);
