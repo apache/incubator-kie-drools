@@ -42,7 +42,6 @@ import org.optaplanner.core.api.solver.Solver;
  * <p>
  * Note that the {@link Solver} clones a {@link PlanningSolution} at will.
  * Any change must be done on the problem facts and planning entities referenced by the {@link PlanningSolution}.
- * Any change must be done on the problem facts and planning entities referenced by the {@link PlanningSolution}.
  * <p>
  * An example implementation, based on the Cloud balancing problem, looks as follows:
  *

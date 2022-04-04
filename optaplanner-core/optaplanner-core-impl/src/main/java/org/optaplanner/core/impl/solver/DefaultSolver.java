@@ -283,6 +283,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             ProblemChangeAdapter<Solution_> problemChangeAdapter = problemFactChangeQueue.poll();
             while (problemChangeAdapter != null) {
                 problemChangeAdapter.doProblemChange(solverScope);
+                logger.debug("    Real-time problem change applied; step index ({}).", stepIndex);
                 stepIndex++;
                 problemChangeAdapter = problemFactChangeQueue.poll();
             }
