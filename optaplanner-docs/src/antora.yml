@@ -1,7 +1,18 @@
-# This file is a placeholder that is replaced by antora-template.yml during a release.
-# Please note that some AsciiDoc attributes might be missing if you build the docs from this branch.
+# This file is a template for antora.yml, which is created during a release by:
+#   1. running maven that substitutes the properties into this file
+#   2. running build/release/update_antora_yml.sh that copies the result of the previous step to src/antora.yml
+#
+# The goal is to have the antora.yml containing correct attributes available in the release branch before
+# the optaplanner-website is refreshed.
 name: optaplanner
-title: OptaPlanner User Guide
+title: OptaPlanner User Guide 8.20.0-SNAPSHOT
 version: latest
+asciidoc:
+  attributes:
+    optaplanner-version: 8.20.0-SNAPSHOT
+    java-version: 11
+    maven-version: 3.8.1
+    quarkus-version: 2.7.3.Final
+    spring-boot-version: 2.4.5
 nav:
   - modules/ROOT/nav.adoc
