@@ -58,7 +58,7 @@ public class NashornTest {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
-            .fromClasspathResource("/Nashorn/IsPersonNAmeAnAdult.dmn", this.getClass())
+            .fromClasspathResource("/Nashorn/IsPersonNameAnAdult.dmn", this.getClass())
             .getOrElseThrow(e -> new RuntimeException(e));
         DMNModel model = dmnRuntime.getModels().get(0);
         DMNContext dmnContext = dmnRuntime.newContext();

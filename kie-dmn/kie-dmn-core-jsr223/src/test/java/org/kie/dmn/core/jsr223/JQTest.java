@@ -84,7 +84,7 @@ public class JQTest {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
-            .fromClasspathResource("/jq/IsPersonNAmeAnAdult.dmn", this.getClass())
+            .fromClasspathResource("/jq/IsPersonNameAnAdult.dmn", this.getClass())
             .getOrElseThrow(e -> new RuntimeException(e));
         DMNModel model = dmnRuntime.getModels().get(0);
         DMNContext dmnContext = dmnRuntime.newContext();
