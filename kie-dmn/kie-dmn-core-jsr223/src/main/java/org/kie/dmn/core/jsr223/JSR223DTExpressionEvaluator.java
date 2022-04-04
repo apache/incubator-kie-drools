@@ -100,7 +100,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
             r = DMNDTExpressionEvaluator.processEvents( events, dmrem, result, node );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } catch (ScriptException e) {
-            e.printStackTrace();
+            LOG.debug("failed evaluate", e);
             throw new RuntimeException(e);
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), node.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
@@ -130,7 +130,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
             try {
                 return eval.eval(ctx.getAllValues());
             } catch (ScriptException e) {
-                e.printStackTrace();
+                LOG.debug("failed Fn eval", e);
             }
             return null;
         }

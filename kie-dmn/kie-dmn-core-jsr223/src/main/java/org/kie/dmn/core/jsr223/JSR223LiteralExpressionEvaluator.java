@@ -23,8 +23,12 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JSR223LiteralExpressionEvaluator implements DMNExpressionEvaluator {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(JSR223LiteralExpressionEvaluator.class);
     
     private final JSR223ScriptEngineEvaluator eval;
 
@@ -40,7 +44,7 @@ public class JSR223LiteralExpressionEvaluator implements DMNExpressionEvaluator 
         try {
             evaluatorResult = eval.eval(result.getContext().getAll());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.debug("failed literal evaluate", e);
             resultType = ResultType.FAILURE;
         }
         return new EvaluatorResultImpl(evaluatorResult, resultType);
