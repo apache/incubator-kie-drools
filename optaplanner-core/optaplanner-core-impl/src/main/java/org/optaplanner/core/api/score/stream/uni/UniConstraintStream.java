@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <B> the type of the second matched fact
      * @return never null, a stream that matches every combination of A and B for which the {@link BiJoiner} is true
      */
-    <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner);
+    default <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
+        return join(otherStream, new BiJoiner[] { joiner });
+    }
 
     /**
      * As defined by {@link #join(UniConstraintStream, BiJoiner)}.

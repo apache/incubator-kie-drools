@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> implements QuadJoiner<A, B, C, D> {
 
-    public static final QuadJoiner NONE = new DefaultQuadJoiner(new TriFunction[0], new JoinerType[0], new Function[0]);
+    private static final DefaultQuadJoiner NONE =
+            new DefaultQuadJoiner(new TriFunction[0], new JoinerType[0], new Function[0]);
 
     private final TriFunction<A, B, C, ?>[] leftMappings;
 
@@ -40,6 +41,14 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> imple
             Function<D, Property_>[] rightMappings) {
         super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
+    }
+
+    public static <A, B, C, D> QuadJoiner<A, B, C, D> merge(QuadJoiner<A, B, C, D>... joiners) {
+        if (joiners.length == 1) {
+            return joiners[0];
+        }
+        return Arrays.stream(joiners)
+                .reduce(NONE, QuadJoiner::and);
     }
 
     @Override

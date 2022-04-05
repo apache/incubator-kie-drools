@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -42,6 +43,8 @@ public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
         UniConstraintStreamHelper<A, B> helper = new UniConstraintStreamHelper<>(this);
         return helper.join(otherStream, joiners);
     }
+
+    <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream, DefaultBiJoiner<A, B>... joiners);
 
     @Override
     default UniConstraintStream<A> distinct() {

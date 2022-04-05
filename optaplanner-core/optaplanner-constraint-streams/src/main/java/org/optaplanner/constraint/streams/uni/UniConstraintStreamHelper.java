@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package org.optaplanner.constraint.streams.uni;
 
+import java.util.List;
 import java.util.function.BiPredicate;
 
+import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.bi.FilteringBiJoiner;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamHelper;
-import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -28,35 +29,20 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 public final class UniConstraintStreamHelper<A, B>
         extends AbstractConstraintStreamHelper<B, BiConstraintStream<A, B>, BiJoiner<A, B>, BiPredicate<A, B>> {
 
-    private final UniConstraintStream<A> stream;
+    private final InnerUniConstraintStream<A> stream;
 
-    public UniConstraintStreamHelper(UniConstraintStream<A> stream) {
+    public UniConstraintStreamHelper(InnerUniConstraintStream<A> stream) {
         this.stream = stream;
     }
 
     @Override
-    protected BiConstraintStream<A, B> doJoin(UniConstraintStream<B> otherStream) {
-        return stream.join(otherStream);
-    }
-
-    @Override
-    protected BiConstraintStream<A, B> doJoin(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
-        return stream.join(otherStream, joiner);
-    }
-
-    @Override
-    protected BiConstraintStream<A, B> doJoin(UniConstraintStream<B> otherStream, BiJoiner<A, B>... joiners) {
-        return stream.join(otherStream, joiners);
+    protected BiConstraintStream<A, B> doJoin(UniConstraintStream<B> otherStream, List<BiJoiner<A, B>> joiners) {
+        return stream.actuallyJoin(otherStream, joiners.toArray(new DefaultBiJoiner[0]));
     }
 
     @Override
     protected BiConstraintStream<A, B> filter(BiConstraintStream<A, B> stream, BiPredicate<A, B> predicate) {
         return stream.filter(predicate);
-    }
-
-    @Override
-    protected BiJoiner<A, B> mergeJoiners(BiJoiner<A, B>... joiners) {
-        return InnerConstraintFactory.merge(joiners);
     }
 
     @Override

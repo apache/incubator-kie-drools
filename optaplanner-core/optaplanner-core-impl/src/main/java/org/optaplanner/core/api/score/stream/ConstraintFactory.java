@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,9 @@ public interface ConstraintFactory {
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return a stream that matches every unique combination of A and another A for which the {@link BiJoiner} is true
      */
-    <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner);
+    default <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner) {
+        return forEachUniquePair(sourceClass, new BiJoiner[] { joiner });
+    }
 
     /**
      * As defined by {@link #forEachUniquePair(Class, BiJoiner)}.
@@ -294,7 +296,9 @@ public interface ConstraintFactory {
      * @return a stream that matches every unique combination of A and another A for which the {@link BiJoiner} is true
      */
     @Deprecated(forRemoval = true)
-    <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner);
+    default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+        return fromUniquePair(fromClass, new BiJoiner[] { joiner });
+    }
 
     /**
      * This method is deprecated.

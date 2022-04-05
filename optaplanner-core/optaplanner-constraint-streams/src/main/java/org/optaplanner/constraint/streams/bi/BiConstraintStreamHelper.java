@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package org.optaplanner.constraint.streams.bi;
 
+import java.util.List;
+
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamHelper;
 import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
 import org.optaplanner.constraint.streams.tri.FilteringTriJoiner;
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -28,46 +29,21 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 public final class BiConstraintStreamHelper<A, B, C>
         extends AbstractConstraintStreamHelper<C, TriConstraintStream<A, B, C>, TriJoiner<A, B, C>, TriPredicate<A, B, C>> {
 
-    private final BiConstraintStream<A, B> stream;
+    private final InnerBiConstraintStream<A, B> stream;
 
-    public BiConstraintStreamHelper(BiConstraintStream<A, B> stream) {
+    public BiConstraintStreamHelper(InnerBiConstraintStream<A, B> stream) {
         this.stream = stream;
     }
 
     @Override
-    protected TriConstraintStream<A, B, C> doJoin(UniConstraintStream<C> otherStream) {
-        return stream.join(otherStream);
-    }
-
-    @Override
-    protected TriConstraintStream<A, B, C> doJoin(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
-        return stream.join(otherStream, joiner);
-    }
-
-    @Override
-    protected TriConstraintStream<A, B, C> doJoin(UniConstraintStream<C> otherStream, TriJoiner<A, B, C>... joiners) {
-        return stream.join(otherStream, joiners);
+    protected TriConstraintStream<A, B, C> doJoin(UniConstraintStream<C> otherStream, List<TriJoiner<A, B, C>> joiners) {
+        return stream.actuallyJoin(otherStream, joiners.toArray(new DefaultTriJoiner[0]));
     }
 
     @Override
     protected TriConstraintStream<A, B, C> filter(TriConstraintStream<A, B, C> stream,
             TriPredicate<A, B, C> predicate) {
         return stream.filter(predicate);
-    }
-
-    @Override
-    protected TriJoiner<A, B, C> mergeJoiners(TriJoiner<A, B, C>... joiners) {
-        int joinerCount = joiners.length;
-        if (joinerCount == 0) {
-            return DefaultTriJoiner.NONE;
-        } else if (joinerCount == 1) {
-            return joiners[0];
-        }
-        TriJoiner<A, B, C> result = joiners[0];
-        for (int i = 1; i < joinerCount; i++) {
-            result = result.and(joiners[i]);
-        }
-        return result;
     }
 
     @Override

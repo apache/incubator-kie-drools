@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import org.optaplanner.constraint.streams.bi.FilteringBiJoiner;
+import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
@@ -64,15 +64,12 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
-        if (joiner instanceof FilteringBiJoiner) {
-            return join(otherStream)
-                    .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
-        }
+    public <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream,
+            DefaultBiJoiner<A, B>... joiners) {
         DroolsAbstractUniConstraintStream<Solution_, B> castOtherStream =
                 (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream;
         DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
-                this, castOtherStream, joiner);
+                this, castOtherStream, DefaultBiJoiner.merge(joiners));
         addChildStream(stream);
         castOtherStream.addChildStream(stream);
         return stream;

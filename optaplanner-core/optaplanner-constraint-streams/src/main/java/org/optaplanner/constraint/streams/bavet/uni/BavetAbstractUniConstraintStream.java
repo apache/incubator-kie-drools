@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintSt
 import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
-import org.optaplanner.constraint.streams.bi.FilteringBiJoiner;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.uni.InnerUniConstraintStream;
@@ -83,7 +82,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
+    public <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream,
+            DefaultBiJoiner<A, B>... joiners) {
         if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
             throw new IllegalStateException("The streams (" + this + ", " + otherStream
                     + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
@@ -95,18 +95,12 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     + other.getConstraintFactory()
                     + ").");
         }
-        if (joiner instanceof FilteringBiJoiner) {
-            return join(otherStream)
-                    .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
-        } else if (!(joiner instanceof DefaultBiJoiner)) {
-            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-        }
-        DefaultBiJoiner<A, B> castedJoiner = (DefaultBiJoiner<A, B>) joiner;
-        IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
-        Function<A, Object[]> leftMapping = JoinerUtils.combineLeftMappings(castedJoiner);
+        DefaultBiJoiner<A, B> mergedJoiner = DefaultBiJoiner.merge(joiners);
+        IndexerFactory indexerFactory = new IndexerFactory(mergedJoiner);
+        Function<A, Object[]> leftMapping = JoinerUtils.combineLeftMappings(mergedJoiner);
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge = shareAndAddChild(
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, this, true));
-        Function<B, Object[]> rightMapping = JoinerUtils.combineRightMappings(castedJoiner);
+        Function<B, Object[]> rightMapping = JoinerUtils.combineRightMappings(mergedJoiner);
         BavetJoinBridgeUniConstraintStream<Solution_, B> rightBridge = other.shareAndAddChild(
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false));
         return constraintFactory.share(

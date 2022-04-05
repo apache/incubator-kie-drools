@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     @Override
-    public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
+    public <C> TriConstraintStream<A, B, C> actuallyJoin(UniConstraintStream<C> otherStream,
+            DefaultTriJoiner<A, B, C>... joiners) {
         if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
             throw new IllegalStateException("The streams (" + this + ", " + otherStream
                     + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
@@ -96,15 +97,12 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     + other.getConstraintFactory()
                     + ").");
         }
-        if (!(joiner instanceof DefaultTriJoiner)) {
-            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-        }
-        DefaultTriJoiner<A, B, C> castedJoiner = (DefaultTriJoiner<A, B, C>) joiner;
-        IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
-        BiFunction<A, B, Object[]> leftMapping = JoinerUtils.combineLeftMappings(castedJoiner);
+        DefaultTriJoiner<A, B, C> mergedJoiner = DefaultTriJoiner.merge(joiners);
+        IndexerFactory indexerFactory = new IndexerFactory(mergedJoiner);
+        BiFunction<A, B, Object[]> leftMapping = JoinerUtils.combineLeftMappings(mergedJoiner);
         BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge = shareAndAddChild(
                 new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true));
-        Function<C, Object[]> rightMapping = JoinerUtils.combineRightMappings(castedJoiner);
+        Function<C, Object[]> rightMapping = JoinerUtils.combineRightMappings(mergedJoiner);
         BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge = other.shareAndAddChild(
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false));
         return constraintFactory.share(

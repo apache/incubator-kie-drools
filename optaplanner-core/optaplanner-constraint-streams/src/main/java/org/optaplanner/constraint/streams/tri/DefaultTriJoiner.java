@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implements TriJoiner<A, B, C> {
 
-    public static final TriJoiner NONE = new DefaultTriJoiner(new BiFunction[0], new JoinerType[0], new Function[0]);
+    private static final DefaultTriJoiner NONE =
+            new DefaultTriJoiner(new BiFunction[0], new JoinerType[0], new Function[0]);
 
     private final BiFunction<A, B, ?>[] leftMappings;
 
@@ -40,6 +41,14 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implement
             Function<C, Property_>[] rightMappings) {
         super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
+    }
+
+    public static <A, B, C> DefaultTriJoiner<A, B, C> merge(DefaultTriJoiner<A, B, C>... joiners) {
+        if (joiners.length == 1) {
+            return joiners[0];
+        }
+        return Arrays.stream(joiners)
+                .reduce(NONE, DefaultTriJoiner::and);
     }
 
     @Override
@@ -76,4 +85,5 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implement
         }
         return true;
     }
+
 }

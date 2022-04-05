@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -77,7 +78,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     // ************************************************************************
 
     @Override
-    public <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D> joiner) {
+    public <D> QuadConstraintStream<A, B, C, D> actuallyJoin(UniConstraintStream<D> otherStream,
+            DefaultQuadJoiner<A, B, C, D>... joiners) {
         throw new UnsupportedOperationException();
     }
 

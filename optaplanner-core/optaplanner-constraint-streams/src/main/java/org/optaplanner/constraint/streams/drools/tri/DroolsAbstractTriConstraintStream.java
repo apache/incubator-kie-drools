@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.optaplanner.constraint.streams.drools.quad.DroolsJoinQuadConstraintSt
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
-import org.optaplanner.constraint.streams.quad.FilteringQuadJoiner;
+import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -67,15 +67,12 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream,
-            QuadJoiner<A, B, C, D> joiner) {
-        if (joiner instanceof FilteringQuadJoiner) {
-            return join(otherStream)
-                    .filter(((FilteringQuadJoiner<A, B, C, D>) joiner).getFilter());
-        }
+    public <D> QuadConstraintStream<A, B, C, D> actuallyJoin(UniConstraintStream<D> otherStream,
+            DefaultQuadJoiner<A, B, C, D>... joiners) {
         DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsJoinQuadConstraintStream<>(constraintFactory, this,
-                        (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
+                        (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream,
+                        DefaultQuadJoiner.merge(joiners));
         addChildStream(stream);
         return stream;
     }

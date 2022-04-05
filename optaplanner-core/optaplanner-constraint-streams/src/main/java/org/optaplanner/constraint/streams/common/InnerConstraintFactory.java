@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -67,11 +66,13 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         int indexOfFirstFilter = findIndexOfFirstFilteringJoiner(joiners);
         if (indexOfFirstFilter < 0) {
             // No filtering joiners. Simply merge all joiners and create the stream.
-            return forEachUniquePair(sourceClass, merge(joiners));
+            DefaultBiJoiner<A, A>[] indexingJoiners = Arrays.asList(joiners).toArray(new DefaultBiJoiner[0]);
+            return innerForEachUniquePair(sourceClass, DefaultBiJoiner.merge(indexingJoiners));
         }
-        // Merge indexing joiners, create stream and append filters for every subsequent filtering joiner.
-        BiJoiner<A, A> mergedJoiner = merge(Arrays.copyOf(joiners, indexOfFirstFilter));
-        BiConstraintStream<A, A> resultingStream = forEachUniquePair(sourceClass, mergedJoiner);
+        // Create stream using indexing joiners and append filters for every subsequent filtering joiner.
+        DefaultBiJoiner<A, A>[] indexingJoiners = Arrays.asList(Arrays.copyOf(joiners, indexOfFirstFilter))
+                .toArray(new DefaultBiJoiner[0]);
+        BiConstraintStream<A, A> resultingStream = innerForEachUniquePair(sourceClass, indexingJoiners);
         for (int filterIndex = indexOfFirstFilter; filterIndex < joiners.length; filterIndex++) {
             FilteringBiJoiner<A, A> filteringJoiner = (FilteringBiJoiner<A, A>) joiners[filterIndex];
             resultingStream = resultingStream.filter(filteringJoiner.getFilter());
@@ -99,23 +100,7 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         return indexOfFirstFilter;
     }
 
-    @SafeVarargs
-    public static <A, B> BiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
-        int joinerCount = joiners.length;
-        if (joinerCount == 0) {
-            return DefaultBiJoiner.NONE;
-        } else if (joinerCount == 1) {
-            return joiners[0];
-        }
-        BiJoiner<A, B> result = joiners[0];
-        for (int i = 1; i < joinerCount; i++) {
-            result = result.and(joiners[i]);
-        }
-        return result;
-    }
-
-    @Override
-    public <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A> joiner) {
+    private <A> BiConstraintStream<A, A> innerForEachUniquePair(Class<A> sourceClass, DefaultBiJoiner<A, A>... joiner) {
         MemberAccessor planningIdMemberAccessor =
                 ConfigUtils.findPlanningIdMemberAccessor(sourceClass, getSolutionDescriptor().getDomainAccessType(),
                         getSolutionDescriptor().getGeneratedMemberAccessorMap());
@@ -126,16 +111,9 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         }
         // TODO In Bavet breaks node sharing + involves unneeded indirection
         Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
-        if (joiner instanceof FilteringBiJoiner) {
-            BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>) joiner).getFilter();
-            return forEach(sourceClass)
-                    .join(sourceClass, lessThan(planningIdGetter))
-                    .filter(filter);
-        } else {
-            return forEach(sourceClass)
-                    .join(sourceClass, joiner, lessThan(planningIdGetter));
-        }
+        // Bavet requires that Joiner.lessThan() be last.
+        return forEach(sourceClass)
+                .join(sourceClass, DefaultBiJoiner.merge(joiner), lessThan(planningIdGetter));
     }
 
     @Override
@@ -155,11 +133,13 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         int indexOfFirstFilter = findIndexOfFirstFilteringJoiner(joiners);
         if (indexOfFirstFilter < 0) {
             // No filtering joiners. Simply merge all joiners and create the stream.
-            return fromUniquePair(fromClass, merge(joiners));
+            DefaultBiJoiner<A, A>[] indexingJoiners = Arrays.asList(joiners).toArray(new DefaultBiJoiner[0]);
+            return innerFromUniquePair(fromClass, DefaultBiJoiner.merge(indexingJoiners));
         }
-        // Merge indexing joiners, create stream and append filters for every subsequent filtering joiner.
-        BiJoiner<A, A> mergedJoiner = merge(Arrays.copyOf(joiners, indexOfFirstFilter));
-        BiConstraintStream<A, A> resultingStream = fromUniquePair(fromClass, mergedJoiner);
+        // Create stream using indexing joiners and append filters for every subsequent filtering joiner.
+        DefaultBiJoiner<A, A>[] indexingJoiners = Arrays.asList(Arrays.copyOf(joiners, indexOfFirstFilter))
+                .toArray(new DefaultBiJoiner[0]);
+        BiConstraintStream<A, A> resultingStream = innerFromUniquePair(fromClass, indexingJoiners);
         for (int filterIndex = indexOfFirstFilter; filterIndex < joiners.length; filterIndex++) {
             FilteringBiJoiner<A, A> filteringJoiner = (FilteringBiJoiner<A, A>) joiners[filterIndex];
             resultingStream = resultingStream.filter(filteringJoiner.getFilter());
@@ -167,8 +147,7 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         return resultingStream;
     }
 
-    @Override
-    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+    private <A> BiConstraintStream<A, A> innerFromUniquePair(Class<A> fromClass, DefaultBiJoiner<A, A>... joiners) {
         MemberAccessor planningIdMemberAccessor =
                 ConfigUtils.findPlanningIdMemberAccessor(fromClass, getSolutionDescriptor().getDomainAccessType(),
                         getSolutionDescriptor().getGeneratedMemberAccessorMap());
@@ -179,16 +158,9 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
         }
         // TODO In Bavet breaks node sharing + involves unneeded indirection
         Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
-        if (joiner instanceof FilteringBiJoiner) {
-            BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>) joiner).getFilter();
-            return from(fromClass)
-                    .join(fromClass, lessThan(planningIdGetter))
-                    .filter(filter);
-        } else {
-            return from(fromClass)
-                    .join(fromClass, joiner, lessThan(planningIdGetter));
-        }
+        // Bavet requires that Joiner.lessThan() be last.
+        return from(fromClass)
+                .join(fromClass, DefaultBiJoiner.merge(joiners), lessThan(planningIdGetter));
     }
 
     public <A> void assertValidFromType(Class<A> fromType) {

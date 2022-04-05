@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements BiJoiner<A, B> {
 
-    public static final BiJoiner NONE = new DefaultBiJoiner(new Function[0], new JoinerType[0], new Function[0]);
+    private static final DefaultBiJoiner NONE = new DefaultBiJoiner(new Function[0], new JoinerType[0], new Function[0]);
 
     private final Function<A, ?>[] leftMappings;
 
@@ -39,6 +39,15 @@ public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements Bi
             Function<B, Property_>[] rightMappings) {
         super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
+    }
+
+    @SafeVarargs
+    public static <A, B> DefaultBiJoiner<A, B> merge(DefaultBiJoiner<A, B>... joiners) {
+        if (joiners.length == 1) {
+            return joiners[0];
+        }
+        return Arrays.stream(joiners)
+                .reduce(NONE, DefaultBiJoiner::and);
     }
 
     @Override

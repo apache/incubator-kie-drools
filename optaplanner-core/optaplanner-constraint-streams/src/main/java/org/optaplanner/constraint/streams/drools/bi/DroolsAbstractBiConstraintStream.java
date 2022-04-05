@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.optaplanner.constraint.streams.drools.bi;
 
-import static org.optaplanner.constraint.streams.common.RetrievalSemantics.*;
+import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -39,7 +39,7 @@ import org.optaplanner.constraint.streams.drools.tri.DroolsJoinTriConstraintStre
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
-import org.optaplanner.constraint.streams.tri.FilteringTriJoiner;
+import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -67,14 +67,12 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
-        if (joiner instanceof FilteringTriJoiner) {
-            return join(otherStream)
-                    .filter(((FilteringTriJoiner<A, B, C>) joiner).getFilter());
-        }
+    public <C> TriConstraintStream<A, B, C> actuallyJoin(UniConstraintStream<C> otherStream,
+            DefaultTriJoiner<A, B, C>... joiners) {
         DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsJoinTriConstraintStream<>(constraintFactory, this,
-                        (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream, joiner);
+                        (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream,
+                        DefaultTriJoiner.merge(joiners));
         addChildStream(stream);
         return stream;
     }

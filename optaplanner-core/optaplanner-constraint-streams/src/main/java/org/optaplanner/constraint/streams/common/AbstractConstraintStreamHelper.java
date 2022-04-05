@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,16 @@
 package org.optaplanner.constraint.streams.common;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner, Predicate> {
 
-    protected abstract JoinedStream doJoin(UniConstraintStream<Right> otherStream);
-
-    protected abstract JoinedStream doJoin(UniConstraintStream<Right> otherStream, Joiner joiner);
-
-    protected abstract JoinedStream doJoin(UniConstraintStream<Right> otherStream, Joiner... joiners);
+    protected abstract JoinedStream doJoin(UniConstraintStream<Right> otherStream, List<Joiner> joiners);
 
     protected abstract JoinedStream filter(JoinedStream stream, Predicate predicate);
-
-    protected abstract Joiner mergeJoiners(Joiner... joiners);
 
     protected abstract boolean isFilteringJoiner(Joiner joiner);
 
@@ -48,6 +44,9 @@ public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner
      */
     public final JoinedStream join(UniConstraintStream<Right> otherStream, Joiner... joiners) {
         int joinerCount = joiners.length;
+        if (joinerCount == 0) {
+            return doJoin(otherStream, Arrays.asList(joiners));
+        }
         int indexOfFirstFilter = -1;
         // Make sure all indexing joiners, if any, come before filtering joiners. This is necessary for performance.
         for (int i = 0; i < joinerCount; i++) {
@@ -66,16 +65,11 @@ public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner
             }
         }
         if (indexOfFirstFilter < 0) { // Only found indexing joiners.
-            Joiner mergedJoiners = mergeJoiners(joiners);
-            return doJoin(otherStream, mergedJoiners);
+            return doJoin(otherStream, Arrays.asList(joiners));
         }
         // Assemble the join stream that may be followed by filter stream.
-        JoinedStream joined = indexOfFirstFilter == 0 ? doJoin(otherStream)
-                : doJoin(otherStream, Arrays.copyOf(joiners, indexOfFirstFilter));
-        int filterCount = joinerCount - indexOfFirstFilter;
-        if (filterCount == 0) { // No filters, return the original join stream.
-            return joined;
-        }
+        JoinedStream joined = indexOfFirstFilter == 0 ? doJoin(otherStream, Collections.emptyList())
+                : doJoin(otherStream, Arrays.asList(Arrays.copyOf(joiners, indexOfFirstFilter)));
         // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
         Joiner filteringJoiner = joiners[indexOfFirstFilter];
         Predicate resultingFilter = extractPredicate(filteringJoiner);

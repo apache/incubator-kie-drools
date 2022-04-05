@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,6 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
-
-    public static final DefaultPentaJoiner NONE =
-            new DefaultPentaJoiner(new QuadFunction[0], new JoinerType[0], new Function[0]);
 
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
 

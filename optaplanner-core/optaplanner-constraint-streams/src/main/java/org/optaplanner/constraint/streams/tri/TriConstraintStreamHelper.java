@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,59 +16,36 @@
 
 package org.optaplanner.constraint.streams.tri;
 
+import java.util.List;
+
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamHelper;
 import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.quad.FilteringQuadJoiner;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public final class TriConstraintStreamHelper<A, B, C, D>
         extends
         AbstractConstraintStreamHelper<D, QuadConstraintStream<A, B, C, D>, QuadJoiner<A, B, C, D>, QuadPredicate<A, B, C, D>> {
 
-    private final TriConstraintStream<A, B, C> stream;
+    private final InnerTriConstraintStream<A, B, C> stream;
 
-    public TriConstraintStreamHelper(TriConstraintStream<A, B, C> stream) {
+    public TriConstraintStreamHelper(InnerTriConstraintStream<A, B, C> stream) {
         this.stream = stream;
     }
 
     @Override
-    protected QuadConstraintStream<A, B, C, D> doJoin(UniConstraintStream<D> otherStream) {
-        return stream.join(otherStream);
-    }
-
-    @Override
-    protected QuadConstraintStream<A, B, C, D> doJoin(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D> joiner) {
-        return stream.join(otherStream, joiner);
-    }
-
-    @Override
-    protected QuadConstraintStream<A, B, C, D> doJoin(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D>... joiners) {
-        return stream.join(otherStream, joiners);
+    protected QuadConstraintStream<A, B, C, D> doJoin(UniConstraintStream<D> otherStream,
+            List<QuadJoiner<A, B, C, D>> joiners) {
+        return stream.actuallyJoin(otherStream, joiners.toArray(new DefaultQuadJoiner[0]));
     }
 
     @Override
     protected QuadConstraintStream<A, B, C, D> filter(QuadConstraintStream<A, B, C, D> stream,
             QuadPredicate<A, B, C, D> predicate) {
         return stream.filter(predicate);
-    }
-
-    @Override
-    protected QuadJoiner<A, B, C, D> mergeJoiners(QuadJoiner<A, B, C, D>... joiners) {
-        int joinerCount = joiners.length;
-        if (joinerCount == 0) {
-            return DefaultQuadJoiner.NONE;
-        } else if (joinerCount == 1) {
-            return joiners[0];
-        }
-        QuadJoiner<A, B, C, D> result = joiners[0];
-        for (int i = 1; i < joinerCount; i++) {
-            result = result.and(joiners[i]);
-        }
-        return result;
     }
 
     @Override

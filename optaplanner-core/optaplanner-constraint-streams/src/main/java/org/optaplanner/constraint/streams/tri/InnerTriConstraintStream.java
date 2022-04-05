@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.optaplanner.constraint.streams.tri;
 import java.math.BigDecimal;
 
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -43,6 +44,9 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
         TriConstraintStreamHelper<A, B, C, D> helper = new TriConstraintStreamHelper<>(this);
         return helper.join(otherStream, joiners);
     }
+
+    <D> QuadConstraintStream<A, B, C, D> actuallyJoin(UniConstraintStream<D> otherStream,
+            DefaultQuadJoiner<A, B, C, D>... joiners);
 
     @Override
     default TriConstraintStream<A, B, C> distinct() {

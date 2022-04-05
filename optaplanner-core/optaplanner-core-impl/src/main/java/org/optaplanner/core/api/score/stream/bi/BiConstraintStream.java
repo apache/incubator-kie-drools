@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,9 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null, a stream that matches every combination of [A, B] and C for which the {@link TriFunction} is
      *         true
      */
-    <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner);
+    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
+        return join(otherStream, new TriJoiner[] { joiner });
+    }
 
     /**
      * As defined by {@link #join(Class, TriJoiner)}.
