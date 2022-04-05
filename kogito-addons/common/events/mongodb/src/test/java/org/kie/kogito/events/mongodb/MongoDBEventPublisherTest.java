@@ -27,7 +27,7 @@ import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.process.VariableInstanceDataEvent;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
@@ -49,7 +49,7 @@ class MongoDBEventPublisherTest {
 
     private MongoDatabase mongoDatabase;
 
-    private MongoDBTransactionManager transactionManager;
+    private AbstractTransactionManager transactionManager;
 
     private MongoCollection mongoCollection;
 
@@ -68,7 +68,7 @@ class MongoDBEventPublisherTest {
         }
 
         @Override
-        protected MongoDBTransactionManager transactionManager() {
+        protected AbstractTransactionManager transactionManager() {
             return transactionManager;
         }
 
@@ -118,7 +118,7 @@ class MongoDBEventPublisherTest {
         when(mongoDatabase.getCollection(any(), any())).thenReturn(mongoCollection);
         when(mongoCollection.withCodecRegistry(any())).thenReturn(mongoCollection);
 
-        transactionManager = mock(MongoDBTransactionManager.class);
+        transactionManager = mock(AbstractTransactionManager.class);
 
         processInstanceDataEvent = mock(ProcessInstanceDataEvent.class);
         when(processInstanceDataEvent.getType()).thenReturn("ProcessInstanceEvent");

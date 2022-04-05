@@ -30,7 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
@@ -163,15 +162,10 @@ class CacheProcessInstancesIT {
         assertThat(process.instances().size()).isZero();
     }
 
-    private class CacheProcessInstancesFactory extends KogitoProcessInstancesFactory {
+    private class CacheProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
         CacheProcessInstancesFactory(RemoteCacheManager cacheManager) {
-            super(cacheManager);
-        }
-
-        @Override
-        public boolean lock() {
-            return false;
+            super(cacheManager, false, null);
         }
 
     }

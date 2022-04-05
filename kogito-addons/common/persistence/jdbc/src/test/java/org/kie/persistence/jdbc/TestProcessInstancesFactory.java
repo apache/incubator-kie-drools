@@ -17,30 +17,22 @@ package org.kie.persistence.jdbc;
 
 import javax.sql.DataSource;
 
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
+import org.kie.kogito.persistence.jdbc.AbstractProcessInstancesFactory;
 import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
 import org.kie.kogito.process.Process;
 
 import static org.mockito.Mockito.spy;
 
-public class TestProcessInstancesFactory extends KogitoProcessInstancesFactory {
-
-    private boolean enableLock;
+public class TestProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
     public TestProcessInstancesFactory(DataSource dataSource, boolean lock) {
-        super(dataSource, true);
-        this.enableLock = lock;
+        super(dataSource, true, lock);
     }
 
     @Override
     public JDBCProcessInstances createProcessInstances(Process<?> process) {
         JDBCProcessInstances instances = spy(super.createProcessInstances(process));
         return instances;
-    }
-
-    @Override
-    public boolean lock() {
-        return enableLock;
     }
 
 }

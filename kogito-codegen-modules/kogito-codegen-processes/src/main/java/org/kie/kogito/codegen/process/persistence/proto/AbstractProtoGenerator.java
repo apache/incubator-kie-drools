@@ -38,12 +38,10 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
     protected final ObjectMapper mapper;
     protected final Collection<T> modelClasses;
     protected final Collection<T> dataClasses;
-    protected final T persistenceClass;
 
-    protected AbstractProtoGenerator(T persistenceClass, Collection<T> rawModelClasses, Collection<T> rawDataClasses) {
+    protected AbstractProtoGenerator(Collection<T> rawModelClasses, Collection<T> rawDataClasses) {
         this.modelClasses = rawModelClasses == null ? Collections.emptyList() : rawModelClasses;
         this.dataClasses = rawDataClasses == null ? Collections.emptyList() : rawDataClasses;
-        this.persistenceClass = persistenceClass;
         this.mapper = new ObjectMapper();
     }
 
@@ -120,10 +118,6 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
         return Collections.unmodifiableCollection(dataClasses);
     }
 
-    public T getPersistenceClass() {
-        return persistenceClass;
-    }
-
     protected Proto generate(String messageComment, String fieldComment, String packageName, T dataModel, String... headers) {
         return generate(messageComment, fieldComment, packageName, Collections.singleton(dataModel), headers);
     }
@@ -170,16 +164,10 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
     }
 
     protected abstract static class AbstractProtoGeneratorBuilder<E, T extends ProtoGenerator> implements Builder<E, T> {
-        protected E persistenceClass;
+
         protected Collection<E> dataClasses;
 
         protected abstract Collection<E> extractDataClasses(Collection<E> modelClasses);
-
-        @Override
-        public Builder<E, T> withPersistenceClass(E persistenceClass) {
-            this.persistenceClass = persistenceClass;
-            return this;
-        }
 
         @Override
         public Builder<E, T> withDataClasses(Collection<E> dataClasses) {

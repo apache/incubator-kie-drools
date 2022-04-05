@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.persistence.kafka;
 
-import java.util.List;
-
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -26,33 +24,29 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.lang.String.format;
-
 public class KafkaPersistenceUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaPersistenceUtils.class);
-    private static final String TOPIC = "kogito.process.%s";
-    private static final String STORE = "kogito-%s-store";
+    private static final String TOPIC = "kogito.process";
+    private static final String STORE = "kogito-store";
 
     private KafkaPersistenceUtils() {
     }
 
-    public static String topicName(String processId) {
-        return format(TOPIC, processId);
+    public static String topicName() {
+        return TOPIC;
     }
 
-    public static String storeName(String processId) {
-        return format(STORE, processId);
+    public static String storeName() {
+        return STORE;
     }
 
-    public static Topology createTopologyForProcesses(List<String> processes) {
+    public static Topology createTopologyForProcesses() {
         StreamsBuilder builder = new StreamsBuilder();
-        processes.forEach(p -> {
-            builder.globalTable(topicName(p), Materialized.<String, byte[], KeyValueStore<Bytes, byte[]>> as(storeName(p))
-                    .withKeySerde(Serdes.String())
-                    .withValueSerde(Serdes.ByteArray()));
-            LOGGER.info("Created Kafka Stream GlobalTable for process {}", p);
-        });
+        builder.globalTable(topicName(), Materialized.<String, byte[], KeyValueStore<Bytes, byte[]>> as(storeName())
+                .withKeySerde(Serdes.String())
+                .withValueSerde(Serdes.ByteArray()));
+        LOGGER.info("Created Kafka Stream GlobalTable");
         return builder.build();
     }
 }

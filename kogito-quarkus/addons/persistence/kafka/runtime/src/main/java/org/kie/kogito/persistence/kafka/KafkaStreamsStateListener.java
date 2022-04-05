@@ -72,7 +72,7 @@ public class KafkaStreamsStateListener implements KafkaStreams.StateListener {
     }
 
     private void setStore(KafkaProcessInstances pi) {
-        pi.setStore(streams.store(StoreQueryParameters.fromNameAndType(storeName(pi.getProcess().id()), QueryableStoreTypes.keyValueStore())));
+        pi.setStore(streams.store(StoreQueryParameters.fromNameAndType(storeName(), QueryableStoreTypes.keyValueStore())));
     }
 
     public void addProcessInstances(KafkaProcessInstances pi) {

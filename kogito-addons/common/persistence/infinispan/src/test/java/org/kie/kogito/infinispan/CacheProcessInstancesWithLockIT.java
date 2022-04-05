@@ -25,7 +25,6 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
@@ -70,7 +69,7 @@ class CacheProcessInstancesWithLockIT {
 
     private BpmnProcess createProcess(String fileName) {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
-        KogitoProcessInstancesFactory factory = mock(KogitoProcessInstancesFactory.class);
+        AbstractProcessInstancesFactory factory = mock(AbstractProcessInstancesFactory.class);
         process.setProcessInstancesFactory(factory);
         process.configure();
         return process;

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 
 import com.mongodb.client.MongoClient;
 
@@ -32,7 +32,7 @@ public class QuarkusMongoDBEventPublisher extends MongoDBEventPublisher {
     MongoClient quarkusMongoClient;
 
     @Inject
-    MongoDBTransactionManager quarkusTransactionManager;
+    AbstractTransactionManager quarkusTransactionManager;
 
     @Inject
     @ConfigProperty(name = "kogito.events.processinstances.enabled", defaultValue = "true")
@@ -73,7 +73,7 @@ public class QuarkusMongoDBEventPublisher extends MongoDBEventPublisher {
     }
 
     @Override
-    protected MongoDBTransactionManager transactionManager() {
+    protected AbstractTransactionManager transactionManager() {
         return this.quarkusTransactionManager;
     }
 

@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.infinispan.client.hotrod.DefaultTemplate;
 import org.infinispan.client.hotrod.MetadataValue;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
@@ -31,6 +32,7 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 @SuppressWarnings({ "rawtypes" })
@@ -43,7 +45,12 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, boolean lock) {
         this.process = process;
-        this.cache = cacheManager.administration().getOrCreateCache(process.id() + "_store", ignoreNullOrEmpty(templateName));
+        String cacheName = process.id() + "_store";
+        if (isNullOrEmpty(templateName)) {
+            this.cache = cacheManager.administration().getOrCreateCache(cacheName, DefaultTemplate.LOCAL);
+        } else {
+            this.cache = cacheManager.administration().getOrCreateCache(cacheName, templateName);
+        }
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
         this.lock = lock;
     }
@@ -102,14 +109,6 @@ public class CacheProcessInstances implements MutableProcessInstances {
         } else {
             cache.remove(id);
         }
-    }
-
-    protected String ignoreNullOrEmpty(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-
-        return value;
     }
 
     @Override

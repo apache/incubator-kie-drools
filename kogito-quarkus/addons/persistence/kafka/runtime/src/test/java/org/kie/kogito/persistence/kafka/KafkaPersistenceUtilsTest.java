@@ -19,8 +19,6 @@ package org.kie.kogito.persistence.kafka;
 import org.apache.kafka.streams.Topology;
 import org.junit.jupiter.api.Test;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.createTopologyForProcesses;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.storeName;
@@ -30,20 +28,17 @@ public class KafkaPersistenceUtilsTest {
 
     @Test
     public void testTopicName() {
-        assertThat(topicName("aProcessId")).isEqualTo("kogito.process.aProcessId");
+        assertThat(topicName()).isEqualTo("kogito.process");
     }
 
     @Test
     public void testStoreName() {
-        assertThat(storeName("aProcessId")).isEqualTo("kogito-aProcessId-store");
+        assertThat(storeName()).isEqualTo("kogito-store");
     }
 
     @Test
     public void testTopology() {
-        Topology topology = createTopologyForProcesses(emptyList());
-        assertThat(topology.describe().globalStores()).isEmpty();
-
-        topology = createTopologyForProcesses(singletonList("aProcess"));
+        Topology topology = createTopologyForProcesses();
         assertThat(topology.describe().globalStores()).hasSize(1);
     }
 }

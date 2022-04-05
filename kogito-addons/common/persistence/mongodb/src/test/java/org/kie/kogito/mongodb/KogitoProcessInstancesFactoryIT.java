@@ -17,12 +17,9 @@
 package org.kie.kogito.mongodb;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.process.Process;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -31,33 +28,15 @@ class KogitoProcessInstancesFactoryIT extends TestHelper {
 
     @Test
     void test() {
-        MongoDBTransactionManager transactionManager = mock(MongoDBTransactionManager.class);
+        AbstractTransactionManager transactionManager = mock(AbstractTransactionManager.class);
 
-        KogitoProcessInstancesFactory factory = new KogitoProcessInstancesFactory(getMongoClient()) {
-
-            @Override
-            public String dbName() {
-                return DB_NAME;
-            }
-
-            @Override
-            public MongoDBTransactionManager transactionManager() {
-                return transactionManager;
-            }
-
-            @Override
-            public boolean lock() {
-                return false;
-            }
-
+        AbstractProcessInstancesFactory factory = new AbstractProcessInstancesFactory(getMongoClient(), DB_NAME, false, transactionManager) {
         };
         assertNotNull(factory);
-        assertThat(factory.dbName()).isEqualTo(DB_NAME);
         Process<?> process = mock(Process.class);
         lenient().when(process.id()).thenReturn(PROCESS_NAME);
         lenient().when(process.name()).thenReturn(PROCESS_NAME);
         MongoDBProcessInstances<?> instance = factory.createProcessInstances(process);
         assertNotNull(instance);
-        assertEquals(transactionManager, factory.transactionManager());
     }
 }

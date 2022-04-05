@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-addons-springboot-parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kogito-addons-springboot-persistence-parent</artifactId>
+  <name>Kogito :: Add-Ons :: Spring Boot :: Persistence :: Parent</name>
+  <description>Kogito Persistence Addons for Spring Boot</description>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>filesystem</module>
+    <module>infinispan</module>
+    <module>jdbc</module>
+    <module>mongodb</module>
+    <module>postgresql</module>
+  </modules>
+
+</project>

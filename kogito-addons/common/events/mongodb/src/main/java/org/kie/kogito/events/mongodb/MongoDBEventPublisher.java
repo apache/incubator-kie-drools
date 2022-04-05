@@ -28,7 +28,7 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.process.VariableInstanceDataEvent;
 import org.kie.kogito.events.mongodb.codec.EventMongoDBCodecProvider;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public abstract class MongoDBEventPublisher implements EventPublisher {
 
     protected abstract MongoClient mongoClient();
 
-    protected abstract MongoDBTransactionManager transactionManager();
+    protected abstract AbstractTransactionManager transactionManager();
 
     protected abstract boolean processInstancesEvents();
 

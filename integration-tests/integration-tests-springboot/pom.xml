@@ -124,19 +124,23 @@
         <!-- Persistence -->
         <dependency>
           <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-persistence-infinispan</artifactId>
+          <artifactId>kogito-addons-springboot-persistence-infinispan</artifactId>
         </dependency>
         <dependency>
           <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-persistence-postgresql</artifactId>
+          <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
         </dependency>
         <dependency>
           <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-persistence-mongodb</artifactId>
+          <artifactId>kogito-addons-springboot-persistence-mongodb</artifactId>
         </dependency>
         <dependency>
           <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-persistence-jdbc</artifactId>
+          <artifactId>kogito-addons-springboot-persistence-jdbc</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-springboot-persistence-filesystem</artifactId>
         </dependency>
       </dependencies>
       <build>

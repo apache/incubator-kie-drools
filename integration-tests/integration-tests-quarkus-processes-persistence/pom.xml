@@ -29,6 +29,7 @@
     <module>integration-tests-quarkus-processes-mongodb</module>
     <module>integration-tests-quarkus-processes-kafka-persistence</module>
     <module>integration-tests-quarkus-processes-jdbc</module>
+    <module>integration-tests-quarkus-processes-filesystem</module>
   </modules>
 
   <build>

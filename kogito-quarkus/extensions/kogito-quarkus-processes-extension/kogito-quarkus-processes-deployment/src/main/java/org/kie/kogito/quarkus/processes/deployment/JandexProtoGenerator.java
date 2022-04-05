@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,7 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toSet;
 
 public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
 
@@ -59,33 +57,9 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
     private static final DotName modelClazz = DotName.createSimple(Model.class.getCanonicalName());
     private final IndexView index;
 
-    JandexProtoGenerator(ClassInfo persistenceClass, Collection<ClassInfo> modelClasses, Collection<ClassInfo> dataClasses, IndexView index) {
-        super(persistenceClass, modelClasses, dataClasses);
+    JandexProtoGenerator(Collection<ClassInfo> modelClasses, Collection<ClassInfo> dataClasses, IndexView index) {
+        super(modelClasses, dataClasses);
         this.index = index;
-    }
-
-    @Override
-    public Collection<String> getPersistenceClassParams() {
-        List<String> parameters = new ArrayList<>();
-        Optional.ofNullable(persistenceClass)
-                .map(ClassInfo::constructors)
-                .flatMap(values -> values.isEmpty() ? Optional.empty() : Optional.of(values.get(0)))
-                .ifPresent(mi -> mi.parameters().stream()
-                        .map(p -> p.name().toString())
-                        .forEach(parameters::add));
-        return parameters;
-    }
-
-    @Override
-    public Set<String> getProcessIds() {
-        return modelClasses.stream().map(c -> {
-            AnnotationInstance instance = c.classAnnotation(generatedAnnotation);
-            if (instance == null) {
-                return null;
-            }
-            AnnotationValue value = instance.value("reference");
-            return value == null ? null : value.asString();
-        }).filter(Objects::nonNull).collect(toSet());
     }
 
     @Override
@@ -350,7 +324,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
 
         @Override
         public JandexProtoGenerator build(Collection<ClassInfo> modelClasses) {
-            return new JandexProtoGenerator(persistenceClass, modelClasses, extractDataClasses(modelClasses), index);
+            return new JandexProtoGenerator(modelClasses, extractDataClasses(modelClasses), index);
         }
     }
 }

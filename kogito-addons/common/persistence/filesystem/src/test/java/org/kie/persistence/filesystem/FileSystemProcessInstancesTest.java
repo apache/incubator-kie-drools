@@ -25,7 +25,7 @@ import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
+import org.kie.kogito.persistence.filesystem.AbstractProcessInstancesFactory;
 import org.kie.kogito.persistence.filesystem.FileSystemProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -225,7 +225,11 @@ class FileSystemProcessInstancesTest {
         assertThat(fileSystemBasedStorage.size()).isZero();
     }
 
-    private class FileSystemProcessInstancesFactory extends KogitoProcessInstancesFactory {
+    private class FileSystemProcessInstancesFactory extends AbstractProcessInstancesFactory {
+
+        public FileSystemProcessInstancesFactory() {
+            super("target");
+        }
 
         @Override
         public FileSystemProcessInstances createProcessInstances(Process<?> process) {
@@ -233,9 +237,5 @@ class FileSystemProcessInstancesTest {
             return instances;
         }
 
-        @Override
-        public String path() {
-            return "target";
-        }
     }
 }

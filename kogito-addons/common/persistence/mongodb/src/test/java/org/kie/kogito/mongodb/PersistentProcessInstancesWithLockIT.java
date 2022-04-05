@@ -20,14 +20,10 @@ import java.util.Optional;
 
 import org.drools.core.io.impl.ClassPathResource;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-
-import com.mongodb.client.MongoClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,12 +39,12 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
 
     @Test
     public void testUpdate() {
-        MongoDBProcessInstancesFactory factory = new MongoDBProcessInstancesFactory(getMongoClient());
+        MongoDBProcessInstancesFactory factory = new MongoDBProcessInstancesFactory();
 
         BpmnProcess process = createProcess(factory);
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
-        MongoDBProcessInstances<?> processInstances = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, factory.transactionManager(), true);
+        MongoDBProcessInstances<?> processInstances = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, getDisabledMongoDBTransactionManager(), true);
         assertThat(processInstances.size()).isOne();
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
@@ -74,7 +70,7 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
 
     @Test
     public void testRemove() {
-        MongoDBProcessInstancesFactory factory = new MongoDBProcessInstancesFactory(getMongoClient());
+        MongoDBProcessInstancesFactory factory = new MongoDBProcessInstancesFactory();
 
         BpmnProcess process = createProcess(factory);
 
@@ -82,7 +78,7 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
 
         processInstance.start();
 
-        MongoDBProcessInstances<?> processInstances = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, factory.transactionManager(), true);
+        MongoDBProcessInstances<?> processInstances = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, getDisabledMongoDBTransactionManager(), true);
         assertThat(processInstances.size()).isOne();
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
@@ -100,33 +96,11 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         }
     }
 
-    private class MongoDBProcessInstancesFactory extends KogitoProcessInstancesFactory {
+    private class MongoDBProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
-        MongoDBTransactionManager transactionManager;
-
-        public MongoDBProcessInstancesFactory(MongoClient mongoClient) {
-            super(mongoClient);
-            this.transactionManager = new MongoDBTransactionManager(mongoClient) {
-                @Override
-                public boolean enabled() {
-                    return false;
-                }
-            };
+        public MongoDBProcessInstancesFactory() {
+            super(getMongoClient(), DB_NAME, true, getDisabledMongoDBTransactionManager());
         }
 
-        @Override
-        public String dbName() {
-            return DB_NAME;
-        }
-
-        @Override
-        public MongoDBTransactionManager transactionManager() {
-            return this.transactionManager;
-        }
-
-        @Override
-        public boolean lock() {
-            return true;
-        }
     }
 }

@@ -19,22 +19,17 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.infinispan.protostream.annotations.ProtoEnumValue;
@@ -47,35 +42,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toSet;
 
 public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
 
-    private ReflectionProtoGenerator(Class<?> persistenceClass, Collection<Class<?>> modelClasses, Collection<Class<?>> dataClasses) {
-        super(persistenceClass, modelClasses, dataClasses);
-    }
-
-    @Override
-    public Collection<String> getPersistenceClassParams() {
-        if (persistenceClass != null) {
-            Class[] types = Arrays.stream(persistenceClass.getConstructors())
-                    .map(Constructor::getParameterTypes)
-                    .filter(parameterTypes -> parameterTypes.length > 0)
-                    .findFirst()
-                    .orElse(new Class[0]);
-            return Arrays.stream(types)
-                    .map(Class::getTypeName)
-                    .collect(Collectors.toList());
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Set<String> getProcessIds() {
-        return modelClasses.stream().map(c -> {
-            Generated generated = c.getAnnotation(Generated.class);
-            return generated == null ? null : generated.reference();
-        }).filter(Objects::nonNull).collect(toSet());
+    private ReflectionProtoGenerator(Collection<Class<?>> modelClasses, Collection<Class<?>> dataClasses) {
+        super(modelClasses, dataClasses);
     }
 
     @Override
@@ -294,7 +265,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
 
         @Override
         public ReflectionProtoGenerator build(Collection<Class<?>> modelClasses) {
-            return new ReflectionProtoGenerator(persistenceClass, modelClasses, extractDataClasses(modelClasses));
+            return new ReflectionProtoGenerator(modelClasses, extractDataClasses(modelClasses));
         }
     }
 }

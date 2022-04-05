@@ -32,71 +32,55 @@ class AbstractKogitoBuildContextTest {
 
     @BeforeEach
     public void init() {
-        builder = MockKogitoBuildContext.builder()
-                .withAddonsConfig(AddonsConfig.DEFAULT);
+        builder = MockKogitoBuildContext.builder().withAddonsConfig(AddonsConfig.DEFAULT);
     }
 
     @Test
     public void packageNameValidation() {
         assertThat(builder.build().getPackageName()).isEqualTo(KogitoBuildContext.DEFAULT_PACKAGE_NAME);
-        assertThatThrownBy(() -> builder.withPackageName(null))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> builder.withPackageName("i.am.an-invalid.package-name.sorry"))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.withPackageName(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> builder.withPackageName("i.am.an-invalid.package-name.sorry")).isInstanceOf(IllegalArgumentException.class);
         KogitoBuildContext context = builder.withPackageName(AbstractKogitoBuildContext.DEFAULT_GROUP_ID).build();
-        assertThat(context.getPackageName())
-                .isNotEqualTo(AbstractKogitoBuildContext.DEFAULT_GROUP_ID);
+        assertThat(context.getPackageName()).isNotEqualTo(AbstractKogitoBuildContext.DEFAULT_GROUP_ID);
     }
 
     @Test
     public void applicationPropertiesValidation() {
         assertThat(builder.build().getApplicationProperties()).isNotNull();
-        assertThatThrownBy(() -> builder.withApplicationProperties((Properties) null))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("applicationProperties");
+        assertThatThrownBy(() -> builder.withApplicationProperties((Properties) null)).isInstanceOf(NullPointerException.class).hasMessageContaining("applicationProperties");
     }
 
     @Test
     public void withAddonsConfig() {
-        assertThat(builder
-                .withAddonsConfig(null)
-                .build().getAddonsConfig())
-                        .isNotNull()
-                        .isNotEqualTo(AddonsConfig.DEFAULT);
-        assertThat(builder
-                .withAddonsConfig(AddonsConfig.DEFAULT)
-                .build().getAddonsConfig())
-                        .isEqualTo(AddonsConfig.DEFAULT);
+        assertThat(builder.withAddonsConfig(null).build().getAddonsConfig()).isNotNull().isNotEqualTo(AddonsConfig.DEFAULT);
+        assertThat(builder.withAddonsConfig(AddonsConfig.DEFAULT).build().getAddonsConfig()).isEqualTo(AddonsConfig.DEFAULT);
     }
 
     @Test
     public void withClassAvailabilityResolver() {
-        assertThatThrownBy(() -> builder.withClassAvailabilityResolver(null))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("classAvailabilityResolver");
+        assertThatThrownBy(() -> builder.withClassAvailabilityResolver(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("classAvailabilityResolver");
+    }
+
+    @Test
+    public void withClassSubTypeAvailabilityResolver() {
+        assertThatThrownBy(() -> builder.withClassSubTypeAvailabilityResolver(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("classSubTypeAvailabilityResolver");
     }
 
     @Test
     public void withClassLoader() {
-        assertThatThrownBy(() -> builder.withClassLoader(null))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("classLoader");
+        assertThatThrownBy(() -> builder.withClassLoader(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("classLoader");
     }
 
     @Test
     public void withAppPaths() {
         assertThat(builder.build().getAppPaths()).isNotNull();
-        assertThatThrownBy(() -> builder.withAppPaths(null))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("appPaths");
+        assertThatThrownBy(() -> builder.withAppPaths(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("appPaths");
     }
 
     @Test
     public void withGAV() {
         assertThat(builder.build().getGAV()).isEmpty();
-        assertThatThrownBy(() -> builder.withGAV(null))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("gav");
+        assertThatThrownBy(() -> builder.withGAV(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("gav");
         assertThat(builder.withGAV(KogitoGAV.EMPTY_GAV).build().getGAV()).hasValue(KogitoGAV.EMPTY_GAV);
     }
 

@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.persistence.kafka;
 
-import java.util.Arrays;
+import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
@@ -23,14 +23,14 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.drools.core.io.impl.ClassPathResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
-import org.kie.kogito.process.Process;
+import org.kie.kogito.persistence.KafkaProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
@@ -58,16 +58,18 @@ import static org.kie.kogito.process.ProcessInstance.STATE_ERROR;
 public class KafkaProcessInstancesIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProcessInstancesIT.class);
+    private static final Duration TIMEOUT = Duration.ofMinutes(1);
 
     @Container
     KogitoKafkaContainer kafka = new KogitoKafkaContainer();
 
     KafkaProcessInstancesFactory factory;
 
-    KafkaStreamsStateListener listener = new KafkaStreamsStateListener();
+    KafkaStreamsStateListener listener;
 
     @BeforeEach
     void start() {
+        listener = new KafkaStreamsStateListener();
         factory = new KafkaProcessInstancesFactory();
         factory.setKafkaConfig(singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers()));
         factory.setStateListener(listener);
@@ -82,13 +84,14 @@ public class KafkaProcessInstancesIT {
             listener.getKafkaStreams().close();
             listener.getKafkaStreams().cleanUp();
         }
+        listener.close();
     }
 
     @Test
     void testFindByIdReadMode() {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
 
-        listener.setKafkaStreams(createStreams(process));
+        listener.setKafkaStreams(createStreams());
         process.setProcessInstancesFactory(factory);
         process.configure();
         listener.getKafkaStreams().start();
@@ -106,7 +109,7 @@ public class KafkaProcessInstancesIT {
         });
         assertThat(mutablePi.variables().toMap()).containsExactly(entry("var", "value"));
 
-        await().until(() -> instances.values().size() == 1);
+        await().atMost(TIMEOUT).until(() -> instances.values().size() == 1);
 
         ProcessInstance<BpmnVariables> pi = instances.findById(mutablePi.id(), ProcessInstanceReadMode.READ_ONLY).get();
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> pi.abort());
@@ -121,13 +124,13 @@ public class KafkaProcessInstancesIT {
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> readOnlyPi.abort());
 
         instances.findById(mutablePi.id()).get().abort();
-        assertThat(instances.size()).isZero();
+        await().atMost(TIMEOUT).until(() -> instances.size() == 0);
     }
 
     @Test
     void testValuesReadMode() {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        listener.setKafkaStreams(createStreams(process));
+        listener.setKafkaStreams(createStreams());
         process.setProcessInstancesFactory(factory);
         process.configure();
         listener.getKafkaStreams().start();
@@ -139,18 +142,18 @@ public class KafkaProcessInstancesIT {
 
         processInstance.start();
 
-        await().until(() -> instances.values().size() == 1);
+        await().atMost(TIMEOUT).until(() -> instances.values().size() == 1);
 
         ProcessInstance<BpmnVariables> pi = instances.values().stream().findFirst().get();
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> pi.abort());
         instances.values(ProcessInstanceReadMode.MUTABLE).stream().findFirst().get().abort();
-        assertThat(instances.size()).isZero();
+        await().atMost(TIMEOUT).until(() -> instances.size() == 0);
     }
 
     @Test
     void testBasicFlow() {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        listener.setKafkaStreams(createStreams(process));
+        listener.setKafkaStreams(createStreams());
         process.setProcessInstancesFactory(factory);
         process.configure();
         listener.getKafkaStreams().start();
@@ -163,7 +166,7 @@ public class KafkaProcessInstancesIT {
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        await().until(() -> instances.values().size() == 1);
+        await().atMost(TIMEOUT).until(() -> instances.values().size() == 1);
 
         SecurityPolicy asJohn = SecurityPolicy.of(IdentityProviders.of("john"));
 
@@ -175,13 +178,16 @@ public class KafkaProcessInstancesIT {
         assertEquals("john", workItem.getParameters().get("ActorId"));
         processInstance.completeWorkItem(workItem.getId(), null, asJohn);
         assertEquals(STATE_COMPLETED, processInstance.status());
-        assertThat(instances.size()).isZero();
+        await().atMost(TIMEOUT).until(() -> instances.size() == 0);
     }
 
-    KafkaStreams createStreams(Process process) {
-        Topology topology = createTopologyForProcesses(Arrays.asList(process.id()));
+    KafkaStreams createStreams() {
+        Topology topology = createTopologyForProcesses();
         KafkaStreams streams = new KafkaStreams(topology, getStreamsConfig());
-        streams.setUncaughtExceptionHandler((Thread thread, Throwable throwable) -> LOGGER.error("Kafka persistence error: " + throwable.getMessage(), throwable));
+        streams.setUncaughtExceptionHandler((Throwable throwable) -> {
+            LOGGER.error("Kafka persistence error: " + throwable.getMessage(), throwable);
+            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.REPLACE_THREAD;
+        });
         streams.cleanUp();
         return streams;
     }
@@ -193,7 +199,4 @@ public class KafkaProcessInstancesIT {
         return properties;
     }
 
-    private class KafkaProcessInstancesFactory extends KogitoProcessInstancesFactory {
-
-    }
 }

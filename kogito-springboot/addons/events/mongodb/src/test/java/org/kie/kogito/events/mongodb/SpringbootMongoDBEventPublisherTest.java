@@ -18,7 +18,7 @@ package org.kie.kogito.events.mongodb;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -67,7 +67,7 @@ class SpringbootMongoDBEventPublisherTest {
     MongoClient mongoClient;
 
     @MockBean
-    MongoDBTransactionManager transactionManager;
+    AbstractTransactionManager transactionManager;
 
     @Autowired
     SpringbootMongoDBEventPublisher publisher;

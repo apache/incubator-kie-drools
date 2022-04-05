@@ -16,6 +16,7 @@
 package org.kie.kogito.quarkus.common.deployment;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.jboss.jandex.CompositeIndex;
@@ -90,6 +92,7 @@ public class KogitoQuarkusResourceUtils {
                 .withApplicationPropertyProvider(new KogitoQuarkusApplicationPropertiesProvider())
                 .withClassLoader(classLoader)
                 .withClassAvailabilityResolver(className -> classAvailabilityResolver(classLoader, index, className))
+                .withClassSubTypeAvailabilityResolver(classSubTypeAvailabilityResolver(index))
                 .withAppPaths(appPaths)
                 .withGAV(new KogitoGAV(appArtifact.getGroupId(), appArtifact.getArtifactId(), appArtifact.getVersion()))
                 .build();
@@ -103,6 +106,14 @@ public class KogitoQuarkusResourceUtils {
             context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_DI, "false");
         }
         return context;
+    }
+
+    private static Predicate<Class<?>> classSubTypeAvailabilityResolver(IndexView index) {
+        return clazz -> index.getAllKnownImplementors(DotName.createSimple(clazz.getCanonicalName()))
+                .stream()
+                .filter(c -> !Modifier.isInterface(c.flags()) && !Modifier.isAbstract(c.flags()))
+                .findFirst()
+                .isPresent();
     }
 
     /**

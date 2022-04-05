@@ -18,7 +18,6 @@ package org.kie.kogito.codegen.process.persistence.proto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +29,8 @@ import org.kie.kogito.codegen.data.Answer;
 import org.kie.kogito.codegen.data.AnswerBroken;
 import org.kie.kogito.codegen.data.AnswerBrokenV2;
 import org.kie.kogito.codegen.data.AnswerWithAnnotations;
-import org.kie.kogito.codegen.data.EmptyConstructor;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.data.JacksonData;
-import org.kie.kogito.codegen.data.NotEmptyConstructor;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonSubClass;
 import org.kie.kogito.codegen.data.PersonVarInfo;
@@ -699,15 +696,12 @@ public abstract class AbstractProtoGeneratorTest<T> {
         // empty
         AbstractProtoGenerator<T> emptyGenerator = protoGeneratorBuilder()
                 .build(null);
-        assertThat(emptyGenerator.getPersistenceClass()).isNull();
         assertThat(emptyGenerator.getDataClasses()).isEmpty();
         assertThat(emptyGenerator.getModelClasses()).isEmpty();
 
         // persistence class
         AbstractProtoGenerator<T> persistenceClassGenerator = protoGeneratorBuilder()
-                .withPersistenceClass(person)
                 .build(null);
-        assertThat(persistenceClassGenerator.getPersistenceClass()).isEqualTo(person);
         assertThat(persistenceClassGenerator.getDataClasses()).isEmpty();
         assertThat(persistenceClassGenerator.getModelClasses()).isEmpty();
 
@@ -715,14 +709,12 @@ public abstract class AbstractProtoGeneratorTest<T> {
         AbstractProtoGenerator<T> dataClassGenerator = protoGeneratorBuilder()
                 .withDataClasses(Collections.singleton(person))
                 .build(null);
-        assertThat(dataClassGenerator.getPersistenceClass()).isNull();
         assertThat(dataClassGenerator.getDataClasses()).hasSize(1);
         assertThat(dataClassGenerator.getModelClasses()).isEmpty();
 
         // retrieve data classes
         AbstractProtoGenerator<T> modelClassGenerator = protoGeneratorBuilder()
                 .build(Collections.singleton(generatedPojo));
-        assertThat(modelClassGenerator.getPersistenceClass()).isNull();
         assertThat(modelClassGenerator.getDataClasses()).hasSize(1);
         assertThat(modelClassGenerator.getModelClasses()).hasSize(1);
 
@@ -730,33 +722,8 @@ public abstract class AbstractProtoGeneratorTest<T> {
         AbstractProtoGenerator<T> dataClassAndModelClassGenerator = protoGeneratorBuilder()
                 .withDataClasses(Arrays.asList(person, address))
                 .build(Collections.singleton(generatedPojo));
-        assertThat(dataClassAndModelClassGenerator.getPersistenceClass()).isNull();
         assertThat(dataClassAndModelClassGenerator.getDataClasses()).hasSize(2);
         assertThat(dataClassAndModelClassGenerator.getModelClasses()).hasSize(1);
-    }
-
-    @Test
-    void persistenceClassParams() {
-        AbstractProtoGenerator<T> noPersistenceClassGenerator = protoGeneratorBuilder()
-                .withPersistenceClass(null)
-                .build(null);
-        assertThat(noPersistenceClassGenerator.getPersistenceClassParams()).isEmpty();
-
-        AbstractProtoGenerator<T> emptyGenerator = protoGeneratorBuilder()
-                .withPersistenceClass(convertToType(EmptyConstructor.class))
-                .build(null);
-
-        assertThat(emptyGenerator.getPersistenceClassParams()).isEmpty();
-
-        AbstractProtoGenerator<T> notEmptyGenerator = protoGeneratorBuilder()
-                .withPersistenceClass(convertToType(NotEmptyConstructor.class))
-                .build(null);
-
-        Collection<String> notEmptyClassParams = notEmptyGenerator.getPersistenceClassParams();
-        assertThat(notEmptyClassParams)
-                .isNotEmpty()
-                .hasSize(2)
-                .isEqualTo(Arrays.asList(String.class.getCanonicalName(), int.class.getCanonicalName()));
     }
 
     @Test

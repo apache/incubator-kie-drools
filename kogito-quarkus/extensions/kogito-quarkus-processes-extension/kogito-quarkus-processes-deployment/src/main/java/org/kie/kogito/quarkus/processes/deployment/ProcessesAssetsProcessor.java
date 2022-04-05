@@ -86,7 +86,6 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
-import io.quarkus.deployment.builditem.RunTimeConfigurationDefaultBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourcePatternsBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
@@ -98,7 +97,6 @@ import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.compileGeneratedSources;
@@ -228,7 +226,6 @@ public class ProcessesAssetsProcessor {
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<NativeImageResourcePatternsBuildItem> resourcePatterns,
             BuildProducer<GeneratedResourceBuildItem> genResBI,
-            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration,
             CombinedIndexBuildItem combinedIndexBuildItem,
             KogitoBuildContextBuildItem kogitoBuildContextBuildItem,
             Capabilities capabilities) throws IOException {
@@ -247,7 +244,6 @@ public class ProcessesAssetsProcessor {
                     aggregatedIndex,
                     generatedBeans,
                     resourcePatterns,
-                    runTimeConfiguration,
                     liveReload.isLiveReload()));
         }
 
@@ -273,10 +269,9 @@ public class ProcessesAssetsProcessor {
             IndexView index,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<NativeImageResourcePatternsBuildItem> resourcePatterns,
-            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration,
             boolean useDebugSymbols) throws IOException {
 
-        Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(index, context, runTimeConfiguration, resourcePatterns);
+        Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(index, context, resourcePatterns);
 
         validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.INTERNAL_RESOURCE, GeneratedFileType.Category.STATIC_HTTP_RESOURCE));
 
@@ -289,30 +284,17 @@ public class ProcessesAssetsProcessor {
 
     private Collection<GeneratedFile> getGeneratedPersistenceFiles(IndexView index,
             KogitoBuildContext context,
-            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration,
             BuildProducer<NativeImageResourcePatternsBuildItem> resourcePatterns) {
-        ClassInfo persistenceClass = index
-                .getClassByName(persistenceFactoryClass);
 
         Collection<ClassInfo> modelClasses = index
                 .getAllKnownImplementors(DotName.createSimple(Model.class.getCanonicalName()));
-        JandexProtoGenerator protoGenerator = JandexProtoGenerator.builder(
-                index)
-                .withPersistenceClass(persistenceClass)
+        JandexProtoGenerator protoGenerator = JandexProtoGenerator.builder(index)
                 .build(modelClasses);
 
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
                 context,
                 protoGenerator,
                 new JandexMarshallerGenerator(context, modelClasses));
-
-        if (persistenceGenerator.persistenceType().equals(PersistenceGenerator.POSTGRESQL_PERSISTENCE_TYPE) ||
-                persistenceGenerator.persistenceType().equals(PersistenceGenerator.JDBC_PERSISTENCE_TYPE)) {
-            resourcePatterns.produce(new NativeImageResourcePatternsBuildItem.Builder().includeGlob("sql/*.sql").build());
-        } else if (persistenceGenerator.persistenceType().equals(PersistenceGenerator.KAFKA_PERSISTENCE_TYPE)) {
-            String processIds = protoGenerator.getProcessIds().stream().map(s -> "kogito.process." + s).collect(joining(","));
-            runTimeConfiguration.produce(new RunTimeConfigurationDefaultBuildItem(PersistenceGenerator.QUARKUS_KAFKA_STREAMS_TOPICS_PROP, processIds));
-        }
 
         return persistenceGenerator.generate();
     }

@@ -51,8 +51,8 @@ public abstract class PersistenceTest {
 
     @Test
     void testPersistence() {
-        Person person = new Person("Name", 10, BigDecimal.valueOf(5.0), Instant.now(), ZonedDateTime.now(ZoneOffset.UTC));
-        Person relative = new Person("relative", 5, BigDecimal.valueOf(5.0), Instant.now(), ZonedDateTime.now(ZoneOffset.UTC));
+        Person person = new Person("Name", 10, BigDecimal.valueOf(5.0), Instant.now().truncatedTo(ChronoUnit.MILLIS), ZonedDateTime.now(ZoneOffset.UTC));
+        Person relative = new Person("relative", 5, BigDecimal.valueOf(5.0), Instant.now().truncatedTo(ChronoUnit.MILLIS), ZonedDateTime.now(ZoneOffset.UTC));
         person.setRelatives(new Person[] { relative });
         person.setAddresses(asList(new Address("Brisbane"), new Address("Sydney")));
         final String pid = given().contentType(ContentType.JSON)

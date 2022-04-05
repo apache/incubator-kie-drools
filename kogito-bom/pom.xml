@@ -826,6 +826,17 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-infinispan</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-infinispan</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-quarkus-persistence-kafka</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -892,6 +903,17 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-jdbc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-jdbc</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-quarkus-persistence-jdbc-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -947,6 +969,17 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-quarkus-persistence-filesystem</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -993,12 +1026,34 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-filesystem</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-filesystem</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-persistence-mongodb</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-persistence-mongodb</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-mongodb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-addons-springboot-persistence-mongodb</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

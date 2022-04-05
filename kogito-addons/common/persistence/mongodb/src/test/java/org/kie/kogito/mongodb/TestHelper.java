@@ -15,24 +15,12 @@
  */
 package org.kie.kogito.mongodb;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.bson.Document;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.kie.kogito.serialization.process.protobuf.KogitoProcessInstanceProtobuf;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
@@ -60,32 +48,9 @@ public class TestHelper {
         return mongoClient;
     }
 
-    public static Address getTestObject() {
-        return new Address("main street", "Boston", "10005", "US");
-    }
-
-    public static byte[] getTestByteArrays() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance);
-        String json = mapper.writeValueAsString(getTestObject());
-        return json.getBytes();
-    }
-
-    public static Document getProcessInstanceDocument() throws URISyntaxException, IOException {
-        Document doc = Document.parse(readFileContent("process_instance_document.json"));
-        return doc;
-    }
-
-    public static KogitoProcessInstanceProtobuf.ProcessInstance getprocessInstance() throws InvalidProtocolBufferException, URISyntaxException, IOException {
-        KogitoProcessInstanceProtobuf.ProcessInstance.Builder builder = KogitoProcessInstanceProtobuf.ProcessInstance.newBuilder();
-        JsonFormat.Parser parser = JsonFormat.parser();
-        parser.merge(readFileContent("process_instance.json"), builder);
-        return builder.build();
-    }
-
-    public static String readFileContent(String file) throws URISyntaxException, IOException {
-        Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
-        return new String(Files.readAllBytes(path));
+    public static AbstractTransactionManager getDisabledMongoDBTransactionManager() {
+        return new AbstractTransactionManager(mongoClient, false) {
+        };
     }
 
 }

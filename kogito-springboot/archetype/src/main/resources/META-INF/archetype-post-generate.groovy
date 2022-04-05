@@ -56,11 +56,11 @@ def addonsToArtifactsIds(String addons) {
     // this list should be maintained manually for now for each generic/spring boot add-on we create
     // see: https://issues.redhat.com/browse/KOGITO-5619
     def validAddons = [
-            [id: "persistence-filesystem", addon: "kogito-addons-persistence-filesystem"],
-            [id: "persistence-infinispan", addon: "kogito-addons-persistence-infinispan"],
-            [id: "persistence-jdbc", addon: "kogito-addons-persistence-jdbc"],
-            [id: "persistence-mongodb", addon: "kogito-addons-persistence-mongodb"],
-            [id: "persistence-postgresql", addon: "kogito-addons-persistence-postgresql"],
+            [id: "persistence-filesystem", addon: "kogito-addons-springboot-persistence-filesystem"],
+            [id: "persistence-infinispan", addon: "kogito-addons-springboot-persistence-infinispan"],
+            [id: "persistence-jdbc", addon: "kogito-addons-springboot-persistence-jdbc"],
+            [id: "persistence-mongodb", addon: "kogito-addons-springboot-persistence-mongodb"],
+            [id: "persistence-postgresql", addon: "kogito-addons-springboot-persistence-postgresql"],
             [id: "human-task-prediction-api", addon: "kogito-addons-human-task-prediction-api"],
             [id: "messaging", addon: "kogito-addons-springboot-messaging"],
             [id: "events-decisions", addon: "kogito-addons-springboot-events-decisions"],

@@ -18,7 +18,7 @@ package org.kie.kogito.events.mongodb;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 
 import com.mongodb.client.ClientSession;
 
@@ -26,10 +26,10 @@ import io.quarkus.test.Mock;
 
 @Mock
 @ApplicationScoped
-public class MockTransactionManager extends MongoDBTransactionManager {
+public class MockTransactionManager extends AbstractTransactionManager {
 
     public MockTransactionManager() {
-        super(null);
+        super(null, false);
     }
 
     @Override
@@ -37,8 +37,4 @@ public class MockTransactionManager extends MongoDBTransactionManager {
         return null;
     }
 
-    @Override
-    public boolean enabled() {
-        return false;
-    }
 }

@@ -51,6 +51,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractKogitoBuildContext.class);
 
     protected final Predicate<String> classAvailabilityResolver;
+    protected final Predicate<Class<?>> classSubTypeAvailabilityResolver;
     protected final KogitoApplicationPropertyProvider applicationProperties;
     protected final String packageName;
     protected final AddonsConfig addonsConfig;
@@ -70,11 +71,12 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
             String contextName) {
         this.packageName = builder.packageName;
         this.classAvailabilityResolver = builder.classAvailabilityResolver;
+        this.classSubTypeAvailabilityResolver = builder.classSubTypeAvailabilityResolver;
         this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
         this.restAnnotator = restAnnotator;
         this.applicationProperties = builder.applicationProperties;
-        this.addonsConfig = builder.addonsConfig != null ? builder.addonsConfig : AddonsConfigDiscovery.discover(this);
         this.classLoader = builder.classLoader;
+        this.addonsConfig = builder.addonsConfig != null ? builder.addonsConfig : AddonsConfigDiscovery.discover(this);
         this.appPaths = builder.appPaths;
         this.gav = builder.gav;
         this.contextName = contextName;
@@ -99,6 +101,11 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     @Override
     public boolean hasClassAvailable(String fqcn) {
         return classAvailabilityResolver.test(fqcn);
+    }
+
+    @Override
+    public boolean hasImplementationClassAvailable(Class<?> clazz) {
+        return classSubTypeAvailabilityResolver.test(clazz);
     }
 
     @Override
@@ -225,6 +232,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         protected AddonsConfig addonsConfig;
         protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         protected Predicate<String> classAvailabilityResolver = this::hasClass;
+        protected Predicate<Class<?>> classSubTypeAvailabilityResolver = c -> false;
         // default fallback value (usually overridden)
         protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath(), Path.of(".", AppPaths.TARGET_DIR));
         protected KogitoGAV gav;
@@ -280,6 +288,13 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         public Builder withClassAvailabilityResolver(Predicate<String> classAvailabilityResolver) {
             Objects.requireNonNull(classAvailabilityResolver, "classAvailabilityResolver cannot be null");
             this.classAvailabilityResolver = classAvailabilityResolver;
+            return this;
+        }
+
+        @Override
+        public Builder withClassSubTypeAvailabilityResolver(Predicate<Class<?>> classSubTypeAvailabilityResolver) {
+            Objects.requireNonNull(classSubTypeAvailabilityResolver, "classSubTypeAvailabilityResolver cannot be null");
+            this.classSubTypeAvailabilityResolver = classSubTypeAvailabilityResolver;
             return this;
         }
 

@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import org.drools.core.io.impl.ClassPathResource;
+import org.infinispan.client.hotrod.DefaultTemplate;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
@@ -34,7 +35,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
@@ -69,7 +69,7 @@ public class MockCacheProcessInstancesTest {
         RemoteCacheManagerAdmin admin = mock(RemoteCacheManagerAdmin.class);
         RemoteCache<Object, Object> cache = mock(RemoteCache.class);
         when(cacheManager.administration()).thenReturn(admin);
-        when(admin.getOrCreateCache(any(), (String) any())).thenReturn(cache);
+        when(admin.getOrCreateCache(any(), (DefaultTemplate) any())).thenReturn(cache);
 
         when(cache.put(any(), any())).then(invocation -> {
             Object key = invocation.getArgument(0, Object.class);
@@ -249,15 +249,11 @@ public class MockCacheProcessInstancesTest {
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
     }
 
-    private class CacheProcessInstancesFactory extends KogitoProcessInstancesFactory {
+    private class CacheProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
         CacheProcessInstancesFactory(RemoteCacheManager cacheManager) {
-            super(cacheManager);
+            super(cacheManager, false, null);
         }
 
-        @Override
-        public boolean lock() {
-            return false;
-        }
     }
 }

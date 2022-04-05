@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-jdbc</artifactId>
+      <artifactId>kogito-addons-springboot-persistence-jdbc</artifactId>
     </dependency>
 
     <dependency>

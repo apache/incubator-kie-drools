@@ -19,7 +19,7 @@ package org.kie.kogito.events.mongodb;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 
 import com.mongodb.client.MongoClient;
 
@@ -42,7 +42,7 @@ class QuarkusMongoDBEventPublisherTest {
     MongoClient mongoClient;
 
     @Inject
-    MongoDBTransactionManager transactionManager;
+    AbstractTransactionManager transactionManager;
 
     @Test
     void setup() {

@@ -24,8 +24,7 @@ import org.bson.conversions.Bson;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
@@ -59,7 +58,7 @@ class PersistentProcessInstancesIT extends TestHelper {
 
     @Test
     void testMongoDBPersistence() {
-        MongoDBProcessInstancesFactory factory = new MongoDBProcessInstancesFactory(getMongoClient());
+        MongoDBProcessInstancesFactory factory = new MongoDBProcessInstancesFactory(getMongoClient(), getDisabledMongoDBTransactionManager());
 
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(factory);
@@ -70,7 +69,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        MongoDBProcessInstances<?> mongodbInstance = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, factory.transactionManager(), false);
+        MongoDBProcessInstances<?> mongodbInstance = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, getDisabledMongoDBTransactionManager(), false);
 
         assertThat(mongodbInstance.size()).isOne();
         assertThat(mongodbInstance.size()).isEqualTo(process.instances().size());
@@ -95,7 +94,7 @@ class PersistentProcessInstancesIT extends TestHelper {
 
     @Test
     void testMongoDBPersistenceWithTransaction() {
-        MongoDBTransactionManager transactionExecutor = mock(MongoDBTransactionManager.class);
+        AbstractTransactionManager transactionExecutor = mock(AbstractTransactionManager.class);
         ClientSession clientSession = mock(ClientSession.class);
         when(transactionExecutor.getClientSession()).thenReturn(clientSession);
 
@@ -120,7 +119,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         String id = "testId";
 
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(getMongoClient()));
+        process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(getMongoClient(), transactionExecutor));
         process.configure();
 
         MongoDBProcessInstances<BpmnVariables> mongodbInstance = new MongoDBProcessInstances<>(mongoClient, process, DB_NAME, transactionExecutor, false);
@@ -163,34 +162,12 @@ class PersistentProcessInstancesIT extends TestHelper {
         verify(mongoCollection, times(1)).insertOne(eq(clientSession), any());
     }
 
-    private class MongoDBProcessInstancesFactory extends KogitoProcessInstancesFactory {
+    private class MongoDBProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
-        MongoDBTransactionManager transactionManager;
-
-        public MongoDBProcessInstancesFactory(MongoClient mongoClient) {
-            super(mongoClient);
-            this.transactionManager = new MongoDBTransactionManager(mongoClient) {
-                @Override
-                public boolean enabled() {
-                    return false;
-                }
-            };
+        public MongoDBProcessInstancesFactory(MongoClient mongoClient, AbstractTransactionManager transactionManager) {
+            super(mongoClient, DB_NAME, false, transactionManager);
         }
 
-        @Override
-        public String dbName() {
-            return DB_NAME;
-        }
-
-        @Override
-        public MongoDBTransactionManager transactionManager() {
-            return this.transactionManager;
-        }
-
-        @Override
-        public boolean lock() {
-            return false;
-        }
     }
 
 }

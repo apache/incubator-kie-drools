@@ -18,7 +18,7 @@ package org.kie.kogito.events.mongodb;
 
 import javax.annotation.PostConstruct;
 
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class SpringbootMongoDBEventPublisher extends MongoDBEventPublisher {
     MongoClient springMongoClient;
 
     @Autowired
-    MongoDBTransactionManager springTransactionManager;
+    AbstractTransactionManager springTransactionManager;
 
     @Value("${kogito.events.processinstances.enabled:true}")
     boolean springEnableProcessInstancesEvents;
@@ -66,7 +66,7 @@ public class SpringbootMongoDBEventPublisher extends MongoDBEventPublisher {
     }
 
     @Override
-    protected MongoDBTransactionManager transactionManager() {
+    protected AbstractTransactionManager transactionManager() {
         return this.springTransactionManager;
     }
 

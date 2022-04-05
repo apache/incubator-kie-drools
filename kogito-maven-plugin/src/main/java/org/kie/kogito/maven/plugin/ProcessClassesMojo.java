@@ -17,12 +17,8 @@ package org.kie.kogito.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -44,15 +40,12 @@ import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
-import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.resources.KiePath;
-import org.reflections.Reflections;
-import org.reflections.util.ConfigurationBuilder;
 
 import static java.util.Arrays.asList;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
@@ -73,62 +66,43 @@ public class ProcessClassesMojo extends AbstractKieMojo {
     public void execute() throws MojoExecutionException {
         try {
             JavaCompilerSettings settings = new JavaCompilerSettings();
-            List<URL> pathUrls = new ArrayList<>();
             for (String path : project.getRuntimeClasspathElements()) {
                 File pathFile = new File(path);
-                pathUrls.add(pathFile.toURI().toURL());
                 settings.addClasspath(pathFile);
             }
 
-            URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
+            @SuppressWarnings({ "rawtype", "unchecked" })
+            Set<Class<?>> modelClasses = (Set) getReflections().getSubTypesOf(Model.class);
 
-            // need to define parent classloader which knows all dependencies of the plugin
-            try (URLClassLoader cl = new URLClassLoader(urlsForClassLoader, Thread.currentThread().getContextClassLoader())) {
-                ConfigurationBuilder builder = new ConfigurationBuilder();
-                builder.addUrls(cl.getURLs());
-                builder.addClassLoader(cl);
+            ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder()
+                    .build(modelClasses);
 
-                Reflections reflections = new Reflections(builder);
-                @SuppressWarnings({ "rawtype", "unchecked" })
-                Set<Class<?>> modelClasses = (Set) reflections.getSubTypesOf(Model.class);
+            ClassLoader classLoader = projectClassLoader();
+            KogitoBuildContext context = discoverKogitoRuntimeContext(classLoader);
 
-                // collect constructor parameters so the generated class can create constructor with injection
-                Class<?> persistenceClass = reflections.getSubTypesOf(ProcessInstancesFactory.class)
-                        .stream()
-                        .filter(c -> !c.isInterface())
-                        .findFirst()
-                        .orElse(null);
+            // Generate persistence files
+            PersistenceGenerator persistenceGenerator = new PersistenceGenerator(context, protoGenerator, new ReflectionMarshallerGenerator(context, protoGenerator.getDataClasses()));
+            Collection<GeneratedFile> persistenceFiles = persistenceGenerator.generate();
 
-                ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder()
-                        .withPersistenceClass(persistenceClass)
-                        .build(modelClasses);
+            validateGeneratedFileTypes(persistenceFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.INTERNAL_RESOURCE, GeneratedFileType.Category.STATIC_HTTP_RESOURCE));
 
-                KogitoBuildContext context = discoverKogitoRuntimeContext(cl);
+            Collection<GeneratedFile> generatedClasses = persistenceFiles.stream().filter(x -> x.category().equals(GeneratedFileType.Category.SOURCE)).collect(Collectors.toList());
+            Collection<GeneratedFile> generatedResources = persistenceFiles.stream()
+                    .filter(x -> x.category().equals(GeneratedFileType.Category.INTERNAL_RESOURCE) || x.category().equals(GeneratedFileType.Category.STATIC_HTTP_RESOURCE))
+                    .collect(Collectors.toList());
 
-                // Generate persistence files
-                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(context, protoGenerator, new ReflectionMarshallerGenerator(context, protoGenerator.getDataClasses()));
-                Collection<GeneratedFile> persistenceFiles = persistenceGenerator.generate();
+            // Compile and write persistence files
+            compileAndWriteClasses(generatedClasses, classLoader, settings);
 
-                validateGeneratedFileTypes(persistenceFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.INTERNAL_RESOURCE, GeneratedFileType.Category.STATIC_HTTP_RESOURCE));
+            // Dump resources
+            generatedResources.forEach(this::writeGeneratedFile);
 
-                Collection<GeneratedFile> generatedClasses = persistenceFiles.stream().filter(x -> x.category().equals(GeneratedFileType.Category.SOURCE)).collect(Collectors.toList());
-                Collection<GeneratedFile> generatedResources = persistenceFiles.stream()
-                        .filter(x -> x.category().equals(GeneratedFileType.Category.INTERNAL_RESOURCE) || x.category().equals(GeneratedFileType.Category.STATIC_HTTP_RESOURCE))
-                        .collect(Collectors.toList());
+            // Json schema generation
+            Stream<Class<?>> processClassStream = getReflections().getTypesAnnotatedWith(ProcessInput.class).stream();
+            generateJsonSchema(processClassStream).forEach(this::writeGeneratedFile);
 
-                // Compile and write persistence files
-                compileAndWriteClasses(generatedClasses, cl, settings);
-
-                // Dump resources
-                generatedResources.forEach(this::writeGeneratedFile);
-
-                // Json schema generation
-                Stream<Class<?>> processClassStream = reflections.getTypesAnnotatedWith(ProcessInput.class).stream();
-                generateJsonSchema(processClassStream).forEach(this::writeGeneratedFile);
-
-                Stream<Class<?>> userTaskClassStream = reflections.getTypesAnnotatedWith(UserTask.class).stream();
-                generateJsonSchema(userTaskClassStream).forEach(this::writeGeneratedFile);
-            }
+            Stream<Class<?>> userTaskClassStream = getReflections().getTypesAnnotatedWith(UserTask.class).stream();
+            generateJsonSchema(userTaskClassStream).forEach(this::writeGeneratedFile);
         } catch (Exception e) {
             throw new MojoExecutionException("Error during processing model classes", e);
         }

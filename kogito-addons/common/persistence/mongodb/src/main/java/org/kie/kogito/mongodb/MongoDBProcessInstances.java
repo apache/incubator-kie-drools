@@ -25,7 +25,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.kie.kogito.Model;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
@@ -58,10 +58,10 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     private org.kie.kogito.process.Process<?> process;
     private ProcessInstanceMarshallerService marshaller;
     private final MongoCollection<Document> collection;
-    private MongoDBTransactionManager transactionManager;
+    private AbstractTransactionManager transactionManager;
     private final boolean lock;
 
-    public MongoDBProcessInstances(MongoClient mongoClient, org.kie.kogito.process.Process<?> process, String dbName, MongoDBTransactionManager transactionManager, boolean lock) {
+    public MongoDBProcessInstances(MongoClient mongoClient, org.kie.kogito.process.Process<?> process, String dbName, AbstractTransactionManager transactionManager, boolean lock) {
         this.process = process;
         this.collection = getCollection(mongoClient, process.id(), dbName);
         this.marshaller = ProcessInstanceMarshallerService.newBuilder()

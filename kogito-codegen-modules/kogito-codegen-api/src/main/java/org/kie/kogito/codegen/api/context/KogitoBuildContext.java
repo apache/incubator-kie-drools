@@ -47,6 +47,8 @@ public interface KogitoBuildContext {
 
     boolean hasClassAvailable(String fqcn);
 
+    boolean hasImplementationClassAvailable(Class<?> clazz);
+
     /**
      * Return DependencyInjectionAnnotator if available or null
      */
@@ -193,6 +195,8 @@ public interface KogitoBuildContext {
         Builder withAddonsConfig(AddonsConfig addonsConfig);
 
         Builder withClassAvailabilityResolver(Predicate<String> classAvailabilityResolver);
+
+        Builder withClassSubTypeAvailabilityResolver(Predicate<Class<?>> classSubTypeAvailabilityResolver);
 
         Builder withClassLoader(ClassLoader classLoader);
 

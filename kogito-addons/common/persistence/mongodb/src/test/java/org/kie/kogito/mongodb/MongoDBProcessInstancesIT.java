@@ -34,9 +34,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
+import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.mongodb.utils.DocumentConstants;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
@@ -92,11 +91,7 @@ class MongoDBProcessInstancesIT {
 
     @Test
     void test() {
-        MongoDBTransactionManager transactionManager = new MongoDBTransactionManager(mongoClient) {
-            @Override
-            public boolean enabled() {
-                return false;
-            }
+        AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, false) {
         };
 
         test(transactionManager);
@@ -104,11 +99,7 @@ class MongoDBProcessInstancesIT {
 
     @Test
     void testWithTransaction() {
-        MongoDBTransactionManager transactionManager = new MongoDBTransactionManager(mongoClient) {
-            @Override
-            public boolean enabled() {
-                return true;
-            }
+        AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, true) {
         };
 
         transactionManager.onBeforeStartEvent(new UnitOfWorkStartEvent(null));
@@ -116,7 +107,7 @@ class MongoDBProcessInstancesIT {
         transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
     }
 
-    private void test(MongoDBTransactionManager transactionManager) {
+    private void test(AbstractTransactionManager transactionManager) {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
         process.configure();
@@ -188,11 +179,7 @@ class MongoDBProcessInstancesIT {
 
     @Test
     void testFindByIdReadMode() {
-        MongoDBTransactionManager transactionManager = new MongoDBTransactionManager(mongoClient) {
-            @Override
-            public boolean enabled() {
-                return false;
-            }
+        AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, false) {
         };
 
         testFindByIdReadMode(transactionManager);
@@ -200,11 +187,7 @@ class MongoDBProcessInstancesIT {
 
     @Test
     void testFindByIdReadModeWithTransaction() {
-        MongoDBTransactionManager transactionManager = new MongoDBTransactionManager(mongoClient) {
-            @Override
-            public boolean enabled() {
-                return true;
-            }
+        AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, true) {
         };
 
         transactionManager.onBeforeStartEvent(new UnitOfWorkStartEvent(null));
@@ -212,7 +195,7 @@ class MongoDBProcessInstancesIT {
         transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
     }
 
-    void testFindByIdReadMode(MongoDBTransactionManager transactionManager) {
+    void testFindByIdReadMode(AbstractTransactionManager transactionManager) {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
         for (Node node : ((WorkflowProcess) process.get()).getNodes()) {
@@ -257,11 +240,7 @@ class MongoDBProcessInstancesIT {
 
     @Test
     void testValuesReadMode() {
-        MongoDBTransactionManager transactionManager = new MongoDBTransactionManager(mongoClient) {
-            @Override
-            public boolean enabled() {
-                return false;
-            }
+        AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, false) {
         };
 
         testValuesReadMode(transactionManager);
@@ -269,11 +248,7 @@ class MongoDBProcessInstancesIT {
 
     @Test
     void testValuesReadModeWithTransaction() {
-        MongoDBTransactionManager transactionManager = new MongoDBTransactionManager(mongoClient) {
-            @Override
-            public boolean enabled() {
-                return true;
-            }
+        AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, true) {
         };
 
         transactionManager.onBeforeStartEvent(new UnitOfWorkStartEvent(null));
@@ -281,7 +256,7 @@ class MongoDBProcessInstancesIT {
         transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
     }
 
-    void testValuesReadMode(MongoDBTransactionManager transactionManager) {
+    void testValuesReadMode(AbstractTransactionManager transactionManager) {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
         process.configure();
@@ -298,28 +273,11 @@ class MongoDBProcessInstancesIT {
         assertThat(instances.size()).isZero();
     }
 
-    private class MongoDBProcessInstancesFactory extends KogitoProcessInstancesFactory {
+    private class MongoDBProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
-        private MongoDBTransactionManager transactionManager;
-
-        public MongoDBProcessInstancesFactory(MongoClient mongoClient, MongoDBTransactionManager transactionManager) {
-            super(mongoClient);
-            this.transactionManager = transactionManager;
+        public MongoDBProcessInstancesFactory(MongoClient mongoClient, AbstractTransactionManager transactionManager) {
+            super(mongoClient, DB_NAME, false, transactionManager);
         }
 
-        @Override
-        public String dbName() {
-            return DB_NAME;
-        }
-
-        @Override
-        public MongoDBTransactionManager transactionManager() {
-            return transactionManager;
-        }
-
-        @Override
-        public boolean lock() {
-            return false;
-        }
     }
 }

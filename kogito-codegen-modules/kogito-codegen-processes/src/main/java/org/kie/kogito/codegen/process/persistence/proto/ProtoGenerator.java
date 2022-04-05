@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
@@ -39,15 +38,6 @@ public interface ProtoGenerator {
     Proto protoOfDataClasses(String packageName, String... headers);
 
     Collection<GeneratedFile> generateProtoFiles();
-
-    Set<String> getProcessIds();
-
-    /**
-     * Returns params of first constructor of persistence class
-     *
-     * @return
-     */
-    Collection<String> getPersistenceClassParams();
 
     default String applicabilityByType(String type) {
         if (type.equals("Collection") || type.equals("Array")) {
@@ -120,8 +110,6 @@ public interface ProtoGenerator {
     }
 
     interface Builder<E, T extends ProtoGenerator> {
-
-        Builder<E, T> withPersistenceClass(E persistenceClass);
 
         Builder<E, T> withDataClasses(Collection<E> dataClasses);
 

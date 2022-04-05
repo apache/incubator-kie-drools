@@ -16,6 +16,7 @@
 package org.kie.kogito.maven.plugin;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
@@ -23,6 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -36,7 +38,6 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
-import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
 import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
@@ -45,6 +46,8 @@ import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 
@@ -81,6 +84,8 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(property = "kogito.codegen.predictions", defaultValue = "true")
     protected String generatePredictions;
 
+    private Reflections reflections;
+
     protected void setSystemProperties(Map<String, String> properties) {
 
         if (properties != null) {
@@ -96,9 +101,9 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         AppPaths appPaths = AppPaths.fromProjectDir(projectDir.toPath(), outputDirectory.toPath());
         KogitoBuildContext context = contextBuilder()
                 .withClassAvailabilityResolver(this::hasClassOnClasspath)
+                .withClassSubTypeAvailabilityResolver(classSubTypeAvailabilityResolver())
                 .withApplicationProperties(appPaths.getResourceFiles())
                 .withPackageName(appPackageName())
-                .withAddonsConfig(AddonsConfigDiscovery.discover(this::hasClassOnClasspath))
                 .withClassLoader(classLoader)
                 .withAppPaths(appPaths)
                 .withGAV(new KogitoGAV(project.getGroupId(), project.getArtifactId(), project.getVersion()))
@@ -106,6 +111,28 @@ public abstract class AbstractKieMojo extends AbstractMojo {
 
         additionalProperties(context);
         return context;
+    }
+
+    protected Reflections getReflections() throws MojoExecutionException {
+        if (reflections == null) {
+            URLClassLoader classLoader = (URLClassLoader) projectClassLoader();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.addUrls(classLoader.getURLs());
+            builder.addClassLoader(classLoader);
+            reflections = new Reflections(builder);
+        }
+        return reflections;
+    }
+
+    protected Predicate<Class<?>> classSubTypeAvailabilityResolver() {
+        return clazz -> {
+            try {
+                return getReflections().getSubTypesOf(clazz).stream()
+                        .anyMatch(c -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()));
+            } catch (MojoExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 
     protected ClassLoader projectClassLoader() throws MojoExecutionException {

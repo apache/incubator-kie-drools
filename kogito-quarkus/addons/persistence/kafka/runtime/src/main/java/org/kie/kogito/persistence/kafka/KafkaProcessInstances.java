@@ -20,11 +20,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.kie.kogito.process.MutableProcessInstances;
@@ -37,6 +39,7 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.lang.String.format;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.topicName;
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
@@ -53,7 +56,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
 
     public KafkaProcessInstances(Process<?> process, KafkaProducer<String, byte[]> producer) {
         this.process = process;
-        this.topic = topicName(process.id());
+        this.topic = topicName();
         this.producer = producer;
         setMarshaller(ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build());
     }
@@ -97,18 +100,30 @@ public class KafkaProcessInstances implements MutableProcessInstances {
 
     @Override
     public boolean exists(String id) {
-        return getStore().get(id) != null;
+        return getProcessInstanceById(id) != null;
+    }
+
+    protected byte[] getProcessInstanceById(String id) {
+        return getStore().get(getKeyForProcessInstance(id));
+    }
+
+    protected String getKeyForProcessInstance(String id) {
+        return format("%s-%s", getProcess().id(), id);
+    }
+
+    protected void sendKafkaRecord(String id, byte[] data) throws ExecutionException, InterruptedException {
+        producer.send(new ProducerRecord<>(topic, getKeyForProcessInstance(id), data)).get();
     }
 
     @Override
     public void create(String id, ProcessInstance instance) {
         if (isActive(instance)) {
-            if (getStore().get(id) != null) {
+            if (getProcessInstanceById(id) != null) {
                 throw new ProcessInstanceDuplicatedException(id);
             }
             byte[] data = marshaller.marshallProcessInstance(instance);
             try {
-                producer.send(new ProducerRecord<>(topic, id, data)).get();
+                sendKafkaRecord(id, data);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to persist process instance id: " + id, e);
             }
@@ -120,7 +135,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
         if (isActive(instance)) {
             byte[] data = marshaller.marshallProcessInstance(instance);
             try {
-                producer.send(new ProducerRecord<>(topic, id, data)).get();
+                sendKafkaRecord(id, data);
                 disconnect(instance);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to update process instance id: " + id, e);
@@ -131,7 +146,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     @Override
     public void remove(String id) {
         try {
-            producer.send(new ProducerRecord<>(topic, id, null)).get();
+            sendKafkaRecord(id, null);
         } catch (Exception e) {
             throw new RuntimeException("Unable to remove process instance id: " + id, e);
         }
@@ -139,7 +154,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
 
     @Override
     public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        byte[] data = getStore().get(id);
+        byte[] data = getProcessInstanceById(id);
         if (data == null) {
             return Optional.empty();
         }
@@ -150,7 +165,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     @Override
     public Collection<ProcessInstance> values(ProcessInstanceReadMode mode) {
         final List<ProcessInstance> instances = new ArrayList<>();
-        try (final KeyValueIterator<String, byte[]> iterator = getStore().all()) {
+        try (final KeyValueIterator<String, byte[]> iterator = getStore().prefixScan(getProcess().id(), Serdes.String().serializer())) {
             while (iterator.hasNext()) {
                 instances.add(mode == MUTABLE ? marshaller.unmarshallProcessInstance(iterator.next().value, process) : marshaller.unmarshallReadOnlyProcessInstance(iterator.next().value, process));
             }
@@ -162,11 +177,18 @@ public class KafkaProcessInstances implements MutableProcessInstances {
 
     @Override
     public Integer size() {
-        return (int) getStore().approximateNumEntries();
+        int size = 0;
+        try (KeyValueIterator<String, byte[]> iterator = getStore().prefixScan(getProcess().id(), Serdes.String().serializer())) {
+            while (iterator.hasNext()) {
+                size++;
+                iterator.next();
+            }
+        }
+        return size;
     }
 
     protected void disconnect(ProcessInstance instance) {
-        Supplier<byte[]> supplier = () -> getStore().get(instance.id());
+        Supplier<byte[]> supplier = () -> getProcessInstanceById(instance.id());
         ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
 }
