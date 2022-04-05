@@ -38,7 +38,7 @@
     <!-- currently required for integration test only -->
     <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
 
-    <version.org.openapitools>5.0.1</version.org.openapitools>
+    <version.org.openapitools>5.1.0</version.org.openapitools>
     <version.org.openapitools.jackson.databind.nullable>0.2.0</version.org.openapitools.jackson.databind.nullable>
 
     <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
