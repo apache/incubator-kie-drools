@@ -10,7 +10,17 @@
     <description>An opinionated JSR-223 binding for jq, for use in Drools DMN Engine.</description>
     <properties>
         <java.module.name>org.kie.dmn.core.jsr223.jq</java.module.name>
+        <version.net.thisptr.jackson.jq>1.0.0-preview.20210928</version.net.thisptr.jackson.jq>
     </properties>
+    <dependencyManagement>
+        <dependencies>         
+          <dependency>
+            <groupId>net.thisptr</groupId>
+            <artifactId>jackson-jq</artifactId>
+            <version>${version.net.thisptr.jackson.jq}</version>
+          </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>net.thisptr</groupId>
