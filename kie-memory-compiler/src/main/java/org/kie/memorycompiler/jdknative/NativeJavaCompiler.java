@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
-
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.Diagnostic;
@@ -47,7 +46,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
+
 import org.kie.memorycompiler.AbstractJavaCompiler;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
@@ -59,8 +58,18 @@ import org.kie.memorycompiler.resources.ResourceStore;
 
 public class NativeJavaCompiler extends AbstractJavaCompiler {
 
+    private JavaCompilerFinder javaCompilerFinder;
+
     public JavaCompilerSettings createDefaultSettings() {
         return new JavaCompilerSettings();
+    }
+
+    public NativeJavaCompiler() {
+        this(new NativeJavaCompilerFinder());
+    }
+
+    NativeJavaCompiler(JavaCompilerFinder javaCompilerFinder) {
+        this.javaCompilerFinder = javaCompilerFinder;
     }
 
     @Override
@@ -70,7 +79,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       ClassLoader pClassLoader,
                                       JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        javax.tools.JavaCompiler compiler = javaCompilerFinder.getJavaCompiler();
         if (compiler == null) {
             throw new KieMemoryCompilerException("Cannot find the System's Java compiler. Please use JDK instead of JRE or add drools-ecj dependency to use in memory Eclipse compiler");
         }
