@@ -1,0 +1,18 @@
+[id='agenda-filters-con_{context}']
+
+= Agenda evaluation filters
+
+ifdef::DROOLS,JBPM,OP[]
+.AgendaFilters
+image::rule-engine/AgendaFilter.png[align="center"]
+endif::[]
+
+The {RULE_ENGINE} supports an `AgendaFilter` object in the filter interface that you can use to allow or deny the evaluation of specified rules during agenda evaluation. You can specify an agenda filter as part of a `fireAllRules()` call.
+
+The following example code permits only rules ending with the string `"Test"` to be evaluated and executed. All other rules are filtered out of the {RULE_ENGINE} agenda.
+
+.Example agenda filter definition
+[source,java]
+----
+ksession.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );
+----
