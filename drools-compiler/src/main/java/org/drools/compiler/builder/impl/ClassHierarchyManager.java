@@ -47,14 +47,14 @@ import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAn
 
 public class ClassHierarchyManager {
 
-    protected final KnowledgeBuilderImpl kbuilder;
+    protected final TypeDeclarationContext tdContext;
 
     protected List<AbstractClassTypeDeclarationDescr> sortedDescriptors;
     protected Map<QualifiedName, Collection<QualifiedName>> taxonomy;
 
-    public ClassHierarchyManager(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, KnowledgeBuilderImpl kbuilder) {
-        this.kbuilder = kbuilder;
-        this.sortedDescriptors = sortByHierarchy(unsortedDescrs, kbuilder);
+    public ClassHierarchyManager(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext tdContext) {
+        this.tdContext = tdContext;
+        this.sortedDescriptors = sortByHierarchy(unsortedDescrs, tdContext);
     }
 
     public List<AbstractClassTypeDeclarationDescr> getSortedDescriptors() {
@@ -68,7 +68,7 @@ public class ClassHierarchyManager {
      * resulting collection. This ensures that superclasses are processed before
      * their subclasses
      */
-    protected List<AbstractClassTypeDeclarationDescr> sortByHierarchy(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, KnowledgeBuilderImpl kbuilder) {
+    protected List<AbstractClassTypeDeclarationDescr> sortByHierarchy(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext tdContext) {
 
         taxonomy = new HashMap<>();
         Map<QualifiedName, AbstractClassTypeDeclarationDescr> cache = new HashMap<>();
@@ -85,7 +85,7 @@ public class ClassHierarchyManager {
                 supers = new ArrayList<>();
                 taxonomy.put(name, supers);
             } else {
-                kbuilder.addBuilderResult(new TypeDeclarationError(tdescr,
+                tdContext.addBuilderResult(new TypeDeclarationError(tdescr,
                                                                    "Found duplicate declaration for type " + tdescr.getType()));
             }
 
@@ -98,7 +98,7 @@ public class ClassHierarchyManager {
                         }
                     } else {
                         circular = true;
-                        kbuilder.addBuilderResult(new TypeDeclarationError(tdescr,
+                        tdContext.addBuilderResult(new TypeDeclarationError(tdescr,
                                                                            "Found circular dependency for type " + tdescr.getTypeName()));
                         break;
                     }
@@ -248,7 +248,7 @@ public class ClassHierarchyManager {
 
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<>();
 
-        PackageRegistry registry = kbuilder.getPackageRegistry(superTypePackageName);
+        PackageRegistry registry = tdContext.getPackageRegistry(superTypePackageName);
         InternalKnowledgePackage pack = null;
         if (registry != null) {
             pack = registry.getPackage();
@@ -309,7 +309,7 @@ public class ClassHierarchyManager {
                 String type2 = typeDescr.getFields().get(fieldName).getPattern().getObjectType();
                 if (type2.lastIndexOf(".") < 0) {
                     try {
-                        TypeResolver typeResolver = kbuilder.getPackageRegistry(typeDescr.getNamespace()).getTypeResolver();
+                        TypeResolver typeResolver = tdContext.getPackageRegistry(typeDescr.getNamespace()).getTypeResolver();
                         type1 = typeResolver.resolveType(type1).getName();
                         type2 = typeResolver.resolveType(type2).getName();
                         // now that we are at it... this will be needed later anyway
@@ -337,7 +337,7 @@ public class ClassHierarchyManager {
                     }
                 }
                 if (clash) {
-                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                    tdContext.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                        "Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2));
                     typeDescr.setType(null, null);
                     return;

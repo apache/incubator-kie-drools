@@ -64,10 +64,10 @@ import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAn
 
 public class ClassDefinitionFactory {
 
-    protected KnowledgeBuilderImpl kbuilder;
+    protected TypeDeclarationContext context;
 
-    public ClassDefinitionFactory(KnowledgeBuilderImpl kbuilder) {
-        this.kbuilder = kbuilder;
+    public ClassDefinitionFactory(TypeDeclarationContext context) {
+        this.context = context;
     }
 
     /**
@@ -101,7 +101,7 @@ public class ClassDefinitionFactory {
         if (type.getKind().equals(TypeDeclaration.Kind.CLASS)) {
             TypeDeclarationDescr tdescr = (TypeDeclarationDescr) typeDescr;
             if (tdescr.getSuperTypes().size() > 1) {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Declared class " + fullName + "  - has more than one supertype;"));
+                context.addBuilderResult(new TypeDeclarationError(typeDescr, "Declared class " + fullName + "  - has more than one supertype;"));
                 return null;
             } else if (tdescr.getSuperTypes().isEmpty()) {
                 tdescr.addSuperType("java.lang.Object");
@@ -165,7 +165,7 @@ public class ClassDefinitionFactory {
                                                                                            resolver);
                     def.addAnnotation(annotationDefinition);
                 } catch (NoSuchMethodException nsme) {
-                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                    context.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                        "Annotated type " + typeDescr.getType().getFullName() +
                                                                                "  - undefined property in @annotation " +
                                                                                annotationDescr.getName() + ": " +
@@ -208,7 +208,7 @@ public class ClassDefinitionFactory {
                 }
             }
 
-            List<FieldDefinition> fieldDefs = sortFields(typeDescr.getFields(), pkgRegistry.getTypeResolver(), kbuilder);
+            List<FieldDefinition> fieldDefs = sortFields(typeDescr.getFields(), pkgRegistry.getTypeResolver(), context);
             int i = 0;
             for (FieldDefinition fieldDef : fieldDefs) {
                 fieldDef.setIndex(i++);
@@ -220,14 +220,14 @@ public class ClassDefinitionFactory {
 
     private static List<FieldDefinition> sortFields(Map<String, TypeFieldDescr> fields,
                                                     TypeResolver typeResolver,
-                                                    KnowledgeBuilderImpl kbuilder) {
+                                                    TypeDeclarationContext tdContext) {
         List<FieldDefinition> fieldDefs = new ArrayList<>(fields.size());
         int maxDeclaredPos = 0;
         BitSet occupiedPositions = new BitSet(fields.size());
 
         for (TypeFieldDescr field : fields.values()) {
             GenericTypeDefinition genericType = field.getPattern().getGenericType()
-                    .map( type -> TypeDeclarationUtils.toBuildableType(type, kbuilder != null ? kbuilder.getRootClassLoader() : null) );
+                    .map( type -> TypeDeclarationUtils.toBuildableType(type, tdContext != null ? tdContext.getRootClassLoader() : null) );
 
             FieldDefinition fieldDef = new FieldDefinition(field.getFieldName(), genericType);
             fieldDefs.add(fieldDef);
@@ -263,7 +263,7 @@ public class ClassDefinitionFactory {
             for (AnnotationDescr annotationDescr : field.getAnnotations()) {
                 if (annotationDescr.getFullyQualifiedName() == null) {
                     if (annotationDescr.isStrict()) {
-                        kbuilder.addBuilderResult(new TypeDeclarationError(field,
+                        tdContext.addBuilderResult(new TypeDeclarationError(field,
                                                                            "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName()));
                     } else {
                         // Annotation is custom metadata
@@ -279,14 +279,14 @@ public class ClassDefinitionFactory {
                                                                                                typeResolver);
                         fieldDef.addAnnotation(annotationDefinition);
                     } catch (Exception e) {
-                        kbuilder.addBuilderResult(new TypeDeclarationError(field,
+                        tdContext.addBuilderResult(new TypeDeclarationError(field,
                                                                            "Annotated field " + field.getFieldName() +
                                                                                    "  - undefined property in @annotation " +
                                                                                    annotationDescr.getName() + ": " + e.getMessage() + ";"));
                     }
                 } else {
                     if (annotationDescr.isStrict()) {
-                        kbuilder.addBuilderResult(new TypeDeclarationError(field,
+                        tdContext.addBuilderResult(new TypeDeclarationError(field,
                                                                            "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName()));
                     }
                 }

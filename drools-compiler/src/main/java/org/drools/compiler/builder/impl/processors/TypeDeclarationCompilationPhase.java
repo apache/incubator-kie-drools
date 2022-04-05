@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class TypeDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
+public class TypeDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
     private final TypeDeclarationBuilder typeBuilder;
 
     public TypeDeclarationCompilationPhase(PackageDescr packageDescr, TypeDeclarationBuilder typeBuilder, PackageRegistry pkgRegistry) {

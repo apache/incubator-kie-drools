@@ -45,13 +45,13 @@ public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
         traitRegistry = ((TraitKnowledgePackageImpl)pkgRegistry.getPackage()).getTraitRegistry();
         if ( typeDescr.hasAnnotation(Traitable.class )
                 || ( ! type.getKind().equals(TypeDeclaration.Kind.TRAIT ) &&
-                kbuilder.getPackageRegistry().containsKey(def.getSuperClass() ) &&
+                context.getPackageRegistry().containsKey(def.getSuperClass() ) &&
                 traitRegistry.getTraitables().containsKey( def.getSuperClass() )
         )) {
             // traitable
             if ( type.isNovel() ) {
                 try {
-                    PackageRegistry reg = kbuilder.getPackageRegistry(typeDescr.getNamespace() );
+                    PackageRegistry reg = context.getPackageRegistry(typeDescr.getNamespace() );
                     String availableName = typeDescr.getType().getFullName();
                     Class<?> resolvedType = reg.getTypeResolver().resolveType( availableName );
                     updateTraitDefinition(type,
@@ -67,12 +67,12 @@ public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
             // trait
             if ( ! type.isNovel() ) {
                 try {
-                    PackageRegistry reg = kbuilder.getPackageRegistry(typeDescr.getNamespace());
+                    PackageRegistry reg = context.getPackageRegistry(typeDescr.getNamespace());
                     String availableName = typeDescr.getType().getFullName();
                     Class<?> resolvedType = reg.getTypeResolver().resolveType(availableName);
                     if (!Thing.class.isAssignableFrom(resolvedType)) {
                         if ( ! resolvedType.isInterface() ) {
-                            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Unable to redeclare concrete class " + resolvedType.getName() + " as a trait." ) );
+                            context.addBuilderResult(new TypeDeclarationError(typeDescr, "Unable to redeclare concrete class " + resolvedType.getName() + " as a trait." ) );
                             return;
                         }
                         updateTraitDefinition(type,
@@ -120,7 +120,7 @@ public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
                                                    tempDef );
 
                         } catch (ClassNotFoundException cnfe) {
-                            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                            context.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                                "Internal Trait extension Class '" + target +
                                                                                         "' could not be generated correctly'" ) );
                         } finally {

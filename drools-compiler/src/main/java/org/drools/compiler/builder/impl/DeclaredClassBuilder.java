@@ -30,9 +30,9 @@ import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
 public class DeclaredClassBuilder {
 
-    protected final KnowledgeBuilderImpl kbuilder;
+    protected final TypeDeclarationContext kbuilder;
 
-    public DeclaredClassBuilder(KnowledgeBuilderImpl kbuilder) {
+    public DeclaredClassBuilder(TypeDeclarationContext kbuilder) {
         this.kbuilder = kbuilder;
     }
 

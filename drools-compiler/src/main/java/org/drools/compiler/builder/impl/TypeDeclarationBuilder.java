@@ -41,7 +41,7 @@ import org.kie.internal.builder.ResourceChange;
 
 public class TypeDeclarationBuilder {
 
-    protected final KnowledgeBuilderImpl kbuilder;
+    protected final TypeDeclarationContext context;
 
     protected final Set<String> generatedTypes = new HashSet<>();
 
@@ -52,14 +52,14 @@ public class TypeDeclarationBuilder {
     protected TypeDeclarationConfigurator typeDeclarationConfigurator;
     protected DeclaredClassBuilder declaredClassBuilder;
 
-    public TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder) {
-        this.kbuilder = kbuilder;
-        this.classDeclarationExtractor = new TypeDeclarationCache( kbuilder );
-        this.typeDeclarationNameResolver = new TypeDeclarationNameResolver( kbuilder );
-        this.typeDeclarationFactory = new TypeDeclarationFactory( kbuilder );
-        this.classDefinitionFactory = new ClassDefinitionFactory( kbuilder );
-        this.typeDeclarationConfigurator = new TypeDeclarationConfigurator( kbuilder );
-        this.declaredClassBuilder = new DeclaredClassBuilder( kbuilder );
+    public TypeDeclarationBuilder(TypeDeclarationContext context) {
+        this.context = context;
+        this.classDeclarationExtractor = new TypeDeclarationCache(context);
+        this.typeDeclarationNameResolver = new TypeDeclarationNameResolver(context);
+        this.typeDeclarationFactory = new TypeDeclarationFactory(context);
+        this.classDefinitionFactory = new ClassDefinitionFactory(context);
+        this.typeDeclarationConfigurator = new TypeDeclarationConfigurator(context);
+        this.declaredClassBuilder = new DeclaredClassBuilder(context);
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
@@ -100,7 +100,7 @@ public class TypeDeclarationBuilder {
                                          List<TypeDefinition> unresolvedTypes,
                                          Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
 
-        packageDescrs.forEach( kbuilder::getOrCreatePackageRegistry );
+        packageDescrs.forEach( context::getOrCreatePackageRegistry );
         packageDescrs.forEach( this::setResourcesInDescriptors );
 
         // ensure all names are fully qualified before continuing
@@ -138,7 +138,7 @@ public class TypeDeclarationBuilder {
         unsortedDescrs = compactDefinitionsAndDeclarations( unsortedDescrs, unprocesseableDescrs );
 
         // now sort declarations by mutual dependencies
-        ClassHierarchyManager classHierarchyManager = new ClassHierarchyManager( unsortedDescrs, kbuilder );
+        ClassHierarchyManager classHierarchyManager = new ClassHierarchyManager( unsortedDescrs, context);
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : classHierarchyManager.getSortedDescriptors() ) {
             PackageRegistry pkgReg = getPackageRegistry( pkgRegistry, packageDescr, typeDescr );
@@ -152,16 +152,16 @@ public class TypeDeclarationBuilder {
                 TypeDeclaration type = pkg.getTypeDeclaration( typeDescr.getType().getName() );
                 typeDeclarationConfigurator.wireFieldAccessors( pkgReg, typeDescr, type );
 
-                if (kbuilder.getKnowledgeBase() != null) {
+                if (context.getKnowledgeBase() != null) {
                     // in case of incremental compilatoin (re)register the new type declaration on the existing kbase
-                    kbuilder.getKnowledgeBase().registerTypeDeclaration( type, pkg );
+                    context.getKnowledgeBase().registerTypeDeclaration( type, pkg );
                 }
             }
         }
     }
 
     private PackageRegistry getPackageRegistry( PackageRegistry pkgRegistry, PackageDescr packageDescr, AbstractClassTypeDeclarationDescr typeDescr ) {
-        return pkgRegistry != null && typeDescr.getNamespace().equals( packageDescr.getName() ) ? pkgRegistry : kbuilder.getPackageRegistry( typeDescr.getNamespace() );
+        return pkgRegistry != null && typeDescr.getNamespace().equals( packageDescr.getName() ) ? pkgRegistry : context.getPackageRegistry( typeDescr.getNamespace() );
     }
 
     private Collection<AbstractClassTypeDeclarationDescr> compactDefinitionsAndDeclarations( Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, Map<String, AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
@@ -172,7 +172,7 @@ public class TypeDeclarationBuilder {
                 boolean res = mergeTypeDescriptors( prev, descr );
                 if ( ! res ) {
                     unprocesseableDescrs.put( prev.getType().getFullName(), prev );
-                    kbuilder.addBuilderResult( new TypeDeclarationError( prev,
+                    context.addBuilderResult( new TypeDeclarationError( prev,
                                                                          "Found duplicate declaration for type " + prev.getType().getFullName() + ", unable to reconcile " ) );
                 }
             } else {
@@ -222,7 +222,7 @@ public class TypeDeclarationBuilder {
     private void setResourcesInDescriptors( PackageDescr packageDescr ) {
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
             if ( typeDescr.getResource() == null ) {
-                typeDescr.setResource( kbuilder.getCurrentResource() );
+                typeDescr.setResource( context.getCurrentResource() );
             }
         }
     }
@@ -239,7 +239,7 @@ public class TypeDeclarationBuilder {
         }
 
         TypeDeclaration type = typeDeclarationFactory.processTypeDeclaration( pkgRegistry, typeDescr );
-        boolean success = ! kbuilder.hasErrors();
+        boolean success = ! context.hasErrors();
 
         try {
             // the type declaration is generated in any case (to be used by subclasses, if any)
@@ -259,12 +259,12 @@ public class TypeDeclarationBuilder {
                 }
 
             }
-            success = ( def != null ) && ( ! kbuilder.hasErrors() );
+            success = ( def != null ) && ( ! context.hasErrors() );
 
             if(success) {
                 this.postGenerateDeclaredBean(typeDescr, type, def, pkgRegistry);
             }
-            success = ! kbuilder.hasErrors();
+            success = ! context.hasErrors();
 
             if ( success ) {
                 ClassBuilder classBuilder = RuntimeComponentFactory.get().getClassBuilderFactory().getClassBuilder(type);
@@ -273,7 +273,7 @@ public class TypeDeclarationBuilder {
                                                                 pkgRegistry,
                                                                 def, classBuilder);
             }
-            success = ! kbuilder.hasErrors();
+            success = ! context.hasErrors();
 
             if ( success ) {
                 Class<?> clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
@@ -284,11 +284,11 @@ public class TypeDeclarationBuilder {
                 type.setValid( false );
             }
 
-            typeDeclarationConfigurator.finalizeConfigurator(type, typeDescr, pkgRegistry, kbuilder.getPackageRegistry(), hierarchyManager );
+            typeDeclarationConfigurator.finalizeConfigurator(type, typeDescr, pkgRegistry, context.getPackageRegistry(), hierarchyManager );
 
         } catch ( final ClassNotFoundException e ) {
             unprocesseableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
-            kbuilder.addBuilderResult(new TypeDeclarationError( typeDescr,
+            context.addBuilderResult(new TypeDeclarationError( typeDescr,
                                                                 "Class '" + type.getTypeClassName() +
                                                                 "' not found for type declaration of '" +
                                                                 type.getTypeName() + "'" ) );
@@ -309,7 +309,7 @@ public class TypeDeclarationBuilder {
         Map<String, PackageDescr> foreignPackages = null;
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
-            if ( kbuilder.filterAccepts( ResourceChange.Type.DECLARATION, typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
+            if ( context.filterAccepts( ResourceChange.Type.DECLARATION, typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
 
                 if ( ! typeDescr.getNamespace().equals( packageDescr.getNamespace() ) ) {
                     // If the type declaration is for a different namespace, process that separately.
@@ -337,7 +337,7 @@ public class TypeDeclarationBuilder {
                         altDescr.addImport(imp);
                     }
 
-                    kbuilder.getOrCreatePackageRegistry( altDescr );
+                    context.getOrCreatePackageRegistry( altDescr );
                 }
             }
         }

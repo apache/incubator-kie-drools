@@ -45,11 +45,11 @@ import static org.drools.core.util.Drools.hasMvel;
 
 public class TypeDeclarationCache {
 
-    private final KnowledgeBuilderImpl kbuilder;
+    private final TypeDeclarationContext context;
     private final Map<String, TypeDeclaration> cacheTypes = new HashMap<>();
 
-    TypeDeclarationCache( KnowledgeBuilderImpl kbuilder ) {
-        this.kbuilder = kbuilder;
+    TypeDeclarationCache( TypeDeclarationContext context ) {
+        this.context = context;
         if ( hasMvel() ) {
             initBuiltinTypeDeclarations();
         }
@@ -107,7 +107,7 @@ public class TypeDeclarationCache {
     private void registerTypeDeclaration( String packageName,
                                           TypeDeclaration typeDeclaration ) {
         if (typeDeclaration.getNature() == TypeDeclaration.Nature.DECLARATION || packageName.equals( typeDeclaration.getTypeClass().getPackage().getName() )) {
-            PackageRegistry packageRegistry = kbuilder.getOrCreatePackageRegistry(new PackageDescr(packageName, ""));
+            PackageRegistry packageRegistry = context.getOrCreatePackageRegistry(new PackageDescr(packageName, ""));
             packageRegistry.getPackage().addTypeDeclaration(typeDeclaration);
         }
     }
@@ -134,7 +134,7 @@ public class TypeDeclarationCache {
 
     private TypeDeclaration getExistingTypeDeclaration(Class<?> cls) {
         TypeDeclaration typeDeclaration = null;
-        PackageRegistry pkgReg = kbuilder.getPackageRegistry( ClassUtils.getPackage( cls ) );
+        PackageRegistry pkgReg = context.getPackageRegistry( ClassUtils.getPackage( cls ) );
         if (pkgReg != null) {
             String className = cls.getName();
             String typeName = className.substring(className.lastIndexOf( "." ) + 1 );
@@ -213,12 +213,12 @@ public class TypeDeclarationCache {
             Position pos = fld.getAnnotation(Position.class);
             if (pos != null) {
                 if (pos.value() < 0 || pos.value() >= fields.size()) {
-                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDeclaration,
+                    context.addBuilderResult(new TypeDeclarationError(typeDeclaration,
                                                                        "Out of range position " + pos.value() + " for field '" + fld.getName() + "' on class " + cls.getName()));
                     continue;
                 }
                 if (orderedFields[pos.value()] != null) {
-                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDeclaration,
+                    context.addBuilderResult(new TypeDeclarationError(typeDeclaration,
                                                                        "Duplicated position " + pos.value() + " for field '" + fld.getName() + "' on class " + cls.getName()));
                     continue;
                 }
@@ -240,12 +240,12 @@ public class TypeDeclarationCache {
 
     private TypeDeclaration createTypeDeclarationForBean(Class<?> cls) {
         Annotated annotated = new Annotated.ClassAdapter(cls);
-        TypeDeclaration typeDeclaration = TypeDeclaration.createTypeDeclarationForBean(cls, annotated, kbuilder.getBuilderConfiguration().getPropertySpecificOption());
+        TypeDeclaration typeDeclaration = TypeDeclaration.createTypeDeclarationForBean(cls, annotated, context.getBuilderConfiguration().getPropertySpecificOption());
 
         String namespace = ClassUtils.getPackage( cls );
-        PackageRegistry pkgRegistry = kbuilder.getOrCreatePackageRegistry( new PackageDescr(namespace) );
+        PackageRegistry pkgRegistry = context.getOrCreatePackageRegistry( new PackageDescr(namespace) );
 
-        processMvelBasedAccessors( kbuilder, pkgRegistry, annotated, typeDeclaration );
+        processMvelBasedAccessors(context, pkgRegistry, annotated, typeDeclaration );
         return typeDeclaration;
     }
 
@@ -276,7 +276,7 @@ public class TypeDeclarationCache {
 
         TypeDeclaration tdecl = this.cacheTypes.get((cls.getName()));
         if (tdecl == null) {
-            pkgReg = kbuilder.getPackageRegistry(ClassUtils.getPackage(cls));
+            pkgReg = context.getPackageRegistry(ClassUtils.getPackage(cls));
             if (pkgReg != null) {
                 tdecl = pkgReg.getPackage().getTypeDeclaration(cls.getSimpleName());
             }
@@ -289,7 +289,7 @@ public class TypeDeclarationCache {
 
         Class<?>[] intfs = cls.getInterfaces();
         for (Class<?> intf : intfs) {
-            pkgReg = kbuilder.getPackageRegistry(ClassUtils.getPackage(intf));
+            pkgReg = context.getPackageRegistry(ClassUtils.getPackage(intf));
             if (pkgReg != null) {
                 tdecl = pkgReg.getPackage().getTypeDeclaration(intf.getSimpleName());
             }

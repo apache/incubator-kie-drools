@@ -17,6 +17,7 @@ package org.drools.compiler.builder.impl;
 
 import java.util.Map;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.Dialect;
@@ -37,10 +38,10 @@ import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
 
 public class TypeDeclarationConfigurator {
 
-    protected final KnowledgeBuilderImpl kbuilder;
+    protected final TypeDeclarationContext context;
 
-    public TypeDeclarationConfigurator( KnowledgeBuilderImpl kbuilder ) {
-        this.kbuilder = kbuilder;
+    public TypeDeclarationConfigurator( TypeDeclarationContext context) {
+        this.context = context;
     }
 
     public void finalizeConfigurator(TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry, Map<String, PackageRegistry> pkgRegistryMap, ClassHierarchyManager hierarchyManager ) {
@@ -83,7 +84,7 @@ public class TypeDeclarationConfigurator {
             try {
                 pkgRegistry.getPackage().buildFieldAccessors( type );
             } catch ( Throwable e ) {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                context.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error creating field accessors for TypeDeclaration '" + type.getTypeName() +
                                                                    "' for type '" +
                                                                    type.getTypeName() +
@@ -94,17 +95,17 @@ public class TypeDeclarationConfigurator {
         }
 
         Annotated annotatedType = toAnnotated(typeDescr);
-        processMvelBasedAccessors( kbuilder, pkgRegistry, annotatedType, type );
-        processTypeAnnotations( type, annotatedType, kbuilder.getBuilderConfiguration().getPropertySpecificOption());
+        processMvelBasedAccessors(context, pkgRegistry, annotatedType, type );
+        processTypeAnnotations( type, annotatedType, context.getBuilderConfiguration().getPropertySpecificOption());
         return true;
     }
 
-    static void processMvelBasedAccessors( KnowledgeBuilderImpl kbuilder, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
-        wireTimestampAccessor( kbuilder, annotated, type, pkgRegistry );
-        wireDurationAccessor( kbuilder, annotated, type, pkgRegistry );
+    static void processMvelBasedAccessors(TypeDeclarationContext context, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
+        wireTimestampAccessor(context, annotated, type, pkgRegistry );
+        wireDurationAccessor(context, annotated, type, pkgRegistry );
     }
 
-    private static void wireTimestampAccessor( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+    private static void wireTimestampAccessor(TypeDeclarationContext context, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
         Timestamp timestamp = annotated.getTypedAnnotation(Timestamp.class);
         if ( timestamp != null ) {
             BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
@@ -112,24 +113,24 @@ public class TypeDeclarationConfigurator {
             try {
                 timestampField = timestamp.value();
             } catch (Exception e) {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                context.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
                 return;
             }
             type.setTimestampAttribute( timestampField );
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-            AnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, timestampField, pkg );
+            AnalysisResult results = getMvelAnalysisResult(context, typeDescr, type, pkgRegistry, timestampField, pkg );
             if (results != null) {
                 type.setTimestampExtractor(pkg.getFieldExtractor( type, timestampField, results.getReturnType() ));
             } else {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                context.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error creating field accessors for timestamp field '" + timestamp +
                                                                    "' for type '" + type.getTypeName() + "'"));
             }
         }
     }
 
-    private static void wireDurationAccessor( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+    private static void wireDurationAccessor(TypeDeclarationContext context, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
         Duration duration = annotated.getTypedAnnotation(Duration.class);
         if (duration != null) {
             BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
@@ -137,32 +138,33 @@ public class TypeDeclarationConfigurator {
             try {
                 durationField = duration.value();
             } catch (Exception e) {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                context.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
                 return;
             }
             type.setDurationAttribute(durationField);
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-            AnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, durationField, pkg );
+            AnalysisResult results = getMvelAnalysisResult(context, typeDescr, type, pkgRegistry, durationField, pkg );
             if (results != null) {
                 type.setDurationExtractor(pkg.getFieldExtractor( type, durationField, results.getReturnType() ));
             } else {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+                context.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error processing @duration for TypeDeclaration '" + type.getFullName() +
                                                                    "': cannot access the field '" + durationField + "'"));
             }
         }
     }
 
-    private static AnalysisResult getMvelAnalysisResult( KnowledgeBuilderImpl kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
+    private static AnalysisResult getMvelAnalysisResult(TypeDeclarationContext tdContext, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
-        PackageBuildContext context = new PackageBuildContext();
-        context.init(kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
+        PackageBuildContext pkgContext = new PackageBuildContext();
+        pkgContext.init((DroolsAssemblerContext) tdContext, // this cast still breaks encapsulation https://issues.redhat.com/browse/DROOLS-6887
+                pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
         if (!type.isTypesafe()) {
-            context.setTypesafe(false);
+            pkgContext.setTypesafe(false);
         }
 
-        return context.getDialect().analyzeExpression( context,
+        return pkgContext.getDialect().analyzeExpression( pkgContext,
                                                        typeDescr,
                                                        durationField,
                                                        new BoundIdentifiers( type.getTypeClass() ) );
