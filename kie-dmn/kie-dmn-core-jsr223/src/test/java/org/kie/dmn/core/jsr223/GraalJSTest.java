@@ -16,8 +16,9 @@
 
 package org.kie.dmn.core.jsr223;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -30,10 +31,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GraalJSTest {
     private static final Logger LOG = LoggerFactory.getLogger( GraalJSTest.class );
+    private static final String POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY = "polyglot.engine.WarnInterpreterOnly";
+    private String warnFlag;
 
-    @Before
+    @BeforeEach
     public void init() {
-        System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
+        warnFlag = System.getProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY);
+        System.setProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY, "false");
+    }
+    
+    @AfterEach
+    public void end() {
+        if (warnFlag != null) {
+            System.setProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY, warnFlag);
+        } else {
+            System.clearProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY);
+        }
     }
     
     @Test

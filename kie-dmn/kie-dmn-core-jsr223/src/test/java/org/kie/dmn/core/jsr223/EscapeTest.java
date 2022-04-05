@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.jsr223;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.jsr223.JSR223Utils.escapeIdentifierForBinding;

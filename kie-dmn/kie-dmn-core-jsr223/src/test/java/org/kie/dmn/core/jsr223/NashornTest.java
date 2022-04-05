@@ -16,8 +16,9 @@
 
 package org.kie.dmn.core.jsr223;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -30,10 +31,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NashornTest {
     private static final Logger LOG = LoggerFactory.getLogger( NashornTest.class );
+    private static final String NASHORN_ARGS = "nashorn.args";
+    private String nashornArgsFromSys;
     
-    @Before
+    @BeforeEach
     public void init() {
-        System.setProperty("nashorn.args", "--language=es6"); // TODO document: anyway is a partial ES6 support.
+        nashornArgsFromSys = System.getProperty(NASHORN_ARGS);
+        System.setProperty(NASHORN_ARGS, "--language=es6"); // TODO document: anyway is a partial ES6 support.
+    }
+    
+    @AfterEach
+    public void end() {
+        if (nashornArgsFromSys != null) {
+            System.setProperty(NASHORN_ARGS, nashornArgsFromSys);
+        } else {
+            System.clearProperty(NASHORN_ARGS);
+        }
     }
 
     @Test

@@ -24,8 +24,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class BasicTest {
     
     private ScriptEngine engine;
 
-    @Before
+    @BeforeEach
     public void init() {
         engine = SEMANAGER.getEngineByName("jq");        
     }
