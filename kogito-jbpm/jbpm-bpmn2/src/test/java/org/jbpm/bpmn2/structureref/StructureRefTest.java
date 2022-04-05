@@ -15,17 +15,20 @@
  */
 package org.jbpm.bpmn2.structureref;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-
-import com.thoughtworks.xstream.XStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -107,9 +110,15 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testObjectStructureRef() throws Exception {
-
-        String personAsXml = "<org.jbpm.bpmn2.objects.Person><id>1</id><name>john</name></org.jbpm.bpmn2.objects.Person>";
-        TypeConverterRegistry.get().register("org.jbpm.bpmn2.objects.Person", (s) -> new XStream().fromXML(s));
+        JAXBContext context = JAXBContext.newInstance(Person.class);
+        String personAsXml = "<person><id>1</id><name>john</name></person>";
+        TypeConverterRegistry.get().register("org.jbpm.bpmn2.objects.Person", (s) -> {
+            try {
+                return context.createUnmarshaller().unmarshal(new StringReader(s));
+            } catch (JAXBException e) {
+                throw new RuntimeException(e);
+            }
+        });
         kruntime = createKogitoProcessRuntime("BPMN2-ObjectStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();

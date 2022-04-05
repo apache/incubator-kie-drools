@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "person")
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 5L;
