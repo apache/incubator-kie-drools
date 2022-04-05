@@ -21,22 +21,25 @@
           <groupId>org.openjdk.nashorn</groupId>
           <artifactId>nashorn-core</artifactId>
           <version>${nashorn.version}</version>
+          <scope>test</scope>
       </dependency>
       <dependency>
           <groupId>org.graalvm.js</groupId>
           <artifactId>js</artifactId>
           <version>${graalvm.version}</version>
-          <scope>runtime</scope>
+          <scope>test</scope>
       </dependency>
       <dependency>
           <groupId>org.graalvm.js</groupId>
           <artifactId>js-scriptengine</artifactId>
           <version>${graalvm.version}</version>
+          <scope>test</scope>
       </dependency>
         <dependency>
           <groupId>org.kie</groupId>
           <artifactId>kie-dmn-core-jsr223-jq</artifactId>
           <version>${project.version}</version>
+          <scope>test</scope>
         </dependency>
     </dependencies>
      <!-- /test-only scope dependencies -->
