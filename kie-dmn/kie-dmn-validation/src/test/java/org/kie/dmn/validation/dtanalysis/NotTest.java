@@ -29,9 +29,9 @@ import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class NotTest extends AbstractDTAnalysisTest {
@@ -98,6 +98,18 @@ public class NotTest extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps(), hasSize(0));
 
+    }
+    
+    @Test
+    public void testNotStringVowel() {
+        List<DMNMessage> validate = validator.validate(getReader("NotStringVowel.dmn"), ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_406133D7-96FE-4237-8726-44D839F400D6");
+
+        // assert GAPS count
+        assertThat(analysis.getGaps(), hasSize(0));
+
+        // assert OVERLAPs count.
+        assertThat(analysis.getOverlaps(), hasSize(0));
     }
 
     @Test
