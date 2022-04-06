@@ -154,7 +154,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private int parallelRulesBuildThreshold;
 
-    private final Map<String, Class<?>> globals = new HashMap<>();
+    private final GlobalVariableContext globals = new GlobalVariableContextImpl();
 
     private Resource resource;
 
@@ -968,7 +968,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 } else {
                     pkg.addGlobal(identifier, type);
                     // this isn't a package merge, it's adding to the rulebase, but I've put it here for convenience
-                    this.globals.put(identifier, type );
+                    this.globals.addGlobal(identifier, type );
                 }
             }
         }
@@ -1137,11 +1137,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public Map<String, Class<?>> getGlobals() {
-        return this.globals;
+        return this.globals.getGlobals();
     }
 
     public void addGlobal(String name, Class<?> type) {
-        globals.put(name, type);
+        this.globals.addGlobal(name, type);
     }
 
     /**
@@ -1476,9 +1476,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         packages,
                         pkgRegistryManager,
                         typeBuilder,
-                        this, // as GlobalVariableContext
+                        globals,
                         this, // as DroolsAssemblerContext
-                        this, // as BuildResultAccumulator: we need to propagate messages for each phase
+                        results,
                         kBase,
                         configuration);
         compositePackageCompilationPhase.process();
@@ -1499,7 +1499,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
                     pkgRegistry,
                     packageDescr,
-                    this,
+                    globals,
                     this,
                     kBase,
                     configuration,
