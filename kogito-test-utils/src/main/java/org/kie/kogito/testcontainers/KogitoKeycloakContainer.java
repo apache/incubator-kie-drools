@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.testcontainers;
 
-import java.time.Duration;
-
 import org.kie.kogito.test.resources.TestResource;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -43,7 +41,7 @@ public class KogitoKeycloakContainer extends KogitoGenericContainer<KogitoKeyclo
         withEnv("KEYCLOAK_PASSWORD", PASSWORD);
         withEnv("KEYCLOAK_IMPORT", REALM_FILE);
         withClasspathResourceMapping("testcontainers/keycloak/kogito-realm.json", REALM_FILE, BindMode.READ_ONLY);
-        waitingFor(Wait.forHttp("/auth").withStartupTimeout(Duration.ofMinutes(5)));
+        waitingFor(Wait.forHttp("/auth"));
     }
 
     @Override
