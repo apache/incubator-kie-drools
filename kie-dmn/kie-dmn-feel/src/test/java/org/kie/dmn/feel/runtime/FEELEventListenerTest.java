@@ -16,13 +16,12 @@
 
 package org.kie.dmn.feel.runtime;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
 
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FEELEventListenerTest {
 
@@ -44,12 +43,12 @@ public class FEELEventListenerTest {
     @Test
     public void testParserError() {
         feel.evaluate( "10 + / 5" );
-        Assert.assertThat(testVariable, is(LISTENER_OUTPUT));
+        assertThat(testVariable).isEqualTo(LISTENER_OUTPUT);
     }
     
     @Test
     public void testSomeBuiltinFunctions() {
         System.out.println( feel.evaluate("append( null, 1, 2 )") );
-        Assert.assertThat(testVariable, is(LISTENER_OUTPUT));
+        assertThat(testVariable).isEqualTo(LISTENER_OUTPUT);
     }
 }

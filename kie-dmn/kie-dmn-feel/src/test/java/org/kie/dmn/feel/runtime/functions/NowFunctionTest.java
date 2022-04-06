@@ -25,6 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.functions.extended.NowFunction;
 
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class NowFunctionTest {
 
     private NowFunction nowFunction;
@@ -42,10 +45,10 @@ public class NowFunctionTest {
         // at the exact moment when the year is flipped to the next one, we cannot guarantee the year will be the same.
 
         final FEELFnResult<TemporalAccessor> nowResult = nowFunction.invoke();
-        Assert.assertThat(nowResult.isRight(), Matchers.is(true));
+        assertThat(nowResult.isRight()).isTrue();
         final TemporalAccessor result = nowResult.cata(left -> null, right -> right);
-        Assert.assertThat(result, Matchers.notNullValue());
-        Assert.assertThat(result.getClass(), Matchers.typeCompatibleWith(ZonedDateTime.class));
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOfAny(ZonedDateTime.class);
     }
 
 }
