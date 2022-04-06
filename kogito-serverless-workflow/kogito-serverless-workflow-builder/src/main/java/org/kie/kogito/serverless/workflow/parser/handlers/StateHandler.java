@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,9 +38,6 @@ import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SupportsAction;
 import org.jbpm.workflow.core.node.Join;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
@@ -51,8 +46,6 @@ import org.kie.kogito.serverless.workflow.suppliers.DataInputSchemaActionSupplie
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.MergeActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -68,10 +61,9 @@ import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.transitions.Transition;
 
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.processResourceFile;
 
 public abstract class StateHandler<S extends State> {
-
-    private static final Logger logger = LoggerFactory.getLogger(StateHandler.class);
 
     protected final S state;
     protected final Workflow workflow;
@@ -105,24 +97,13 @@ public abstract class StateHandler<S extends State> {
             startNodeFactory = parserContext.factory().startNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_START_NAME);
             DataInputSchema inputSchema = workflow.getDataInputSchema();
             if (inputSchema != null) {
-                // TODO when all uris included auth ref, replace the null byt authref
-                processResourceFile(URI.create(inputSchema.getSchema()), null);
+                // TODO when all uris included auth ref, include authref
+                processResourceFile(workflow, parserContext, inputSchema.getSchema());
                 startNodeFactory =
                         connect(startNodeFactory, factory.actionNode(parserContext.newId())
                                 .action(new DataInputSchemaActionSupplier(inputSchema.getSchema(), inputSchema.isFailOnValidationErrors())));
             }
             startNodeFactory.done();
-        }
-    }
-
-    protected final void processResourceFile(URI uri, String authRef) {
-        try {
-            parserContext.addGeneratedFile(
-                    new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(),
-                            URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.buildLoader(uri, parserContext.getContext().getClassLoader(), workflow, authRef))));
-        } catch (IOException io) {
-            // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime) 
-            logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);
         }
     }
 

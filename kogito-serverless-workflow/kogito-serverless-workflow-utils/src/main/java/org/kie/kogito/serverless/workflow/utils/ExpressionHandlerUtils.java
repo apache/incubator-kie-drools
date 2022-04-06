@@ -17,6 +17,7 @@ package org.kie.kogito.serverless.workflow.utils;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
+import io.serverlessworkflow.api.workflow.Constants;
 
 public class ExpressionHandlerUtils {
 
@@ -51,10 +53,6 @@ public class ExpressionHandlerUtils {
         return context.isPresent() ? replaceMagic(expr, CONTEXT_MAGIC, key -> KogitoProcessContextResolver.get().readKey(context.get(), key)) : expr;
     }
 
-    public static String prepareExpr(String expr, Workflow workflow) {
-        return replaceMagic(replaceMagic(expr, SECRET_MAGIC, ExpressionHandlerUtils::getSecret), CONST_MAGIC, key -> getConstant(key, workflow.getConstants().getConstantsDef()));
-    }
-
     public static Collection<String> getMagicWords() {
         return MAGIC_WORDS;
     }
@@ -63,8 +61,9 @@ public class ExpressionHandlerUtils {
         return ConfigResolverHolder.getConfigResolver().getConfigProperty(key, String.class, null);
     }
 
-    private static Object getConstant(String key, JsonNode node) {
-        JsonNode result = node;
+    private static Object getConstant(String key, Constants constants) {
+        Objects.requireNonNull(constants, "Constants has not been specified, key " + key + "cannot be replaced");
+        JsonNode result = constants.getConstantsDef();
         for (String name : key.split("\\.")) {
             result = result.get(name);
         }
@@ -129,7 +128,7 @@ public class ExpressionHandlerUtils {
                                 .map(FunctionDefinition::getOperation)
                                 .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName)));
             }
-            return replaceMagic(candidate, CONST_MAGIC, key -> getConstant(key, workflow.getConstants().getConstantsDef()));
+            return replaceMagic(candidate, CONST_MAGIC, key -> getConstant(key, workflow.getConstants()));
         }
         return expr;
     }

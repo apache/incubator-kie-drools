@@ -15,15 +15,23 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.ast.expr.Expression;
 
+import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
@@ -150,4 +158,22 @@ public class ServerlessWorkflowUtils {
     public static String getServiceName(String uri) {
         return uri.substring(uri.lastIndexOf('/') + 1).toLowerCase().replaceFirst(REGEX_NO_EXT, "").replaceAll(ONLY_CHARS, "");
     }
+
+    public static final Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr) {
+        return processResourceFile(workflow, parserContext, uriStr, null);
+    }
+
+    public static final Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
+        URI uri = URI.create(uriStr);
+        try {
+            byte[] bytes = URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.buildLoader(uri, parserContext.getContext().getClassLoader(), workflow, authRef));
+            parserContext.addGeneratedFile(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(), bytes));
+            return Optional.of(bytes);
+        } catch (IOException io) {
+            // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime) 
+            logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);
+        }
+        return Optional.empty();
+    }
+
 }
