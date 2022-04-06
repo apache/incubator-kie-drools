@@ -1159,7 +1159,11 @@ public class KiePackagesBuilder {
     private Optional<org.drools.core.spi.Constraint> createConstraint( RuleContext ctx, Pattern pattern, Constraint constraint ) {
         if (constraint.getType() == Constraint.Type.SINGLE) {
             SingleConstraint singleConstraint = (SingleConstraint) constraint;
-            return singleConstraint.getVariables().length > 0 ? Optional.of( createSingleConstraint( ctx, pattern, singleConstraint ) ) : Optional.empty();
+            if (singleConstraint.getVariables().length > 0 || singleConstraint.equals(SingleConstraint.FALSE)) {
+                return Optional.of(createSingleConstraint(ctx, pattern, singleConstraint));
+            } else {
+                return Optional.empty(); // SingleConstraint.TRUE is used for non-constraint
+            }
         } else {
             List<AbstractConstraint> constraints = constraint.getChildren().stream().map( child -> createConstraint( ctx, pattern, child ) )
                     .filter( Optional::isPresent ).map( Optional::get ).map( AbstractConstraint.class::cast ).collect( toList() );
