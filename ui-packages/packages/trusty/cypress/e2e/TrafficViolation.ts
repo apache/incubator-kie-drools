@@ -45,6 +45,8 @@ describe('Traffic Violation', () => {
   });
 
   it('open Audit Details', () => {
+    const plus3DaysShift = new Date().getTime() + 3*60*60*24*1000; 
+    cy.clock(plus3DaysShift);
     cy.visit('/');
     cy.ouiaId(reqId, 'PF4/TableRow', {timeout: 15000}).within(() => {
       cy.ouiaId('status', 'execution-status').should('have.text', 'Completed');
