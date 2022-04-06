@@ -469,7 +469,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifExists_1Join0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);

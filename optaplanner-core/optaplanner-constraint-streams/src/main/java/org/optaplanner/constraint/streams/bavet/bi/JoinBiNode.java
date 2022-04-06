@@ -42,7 +42,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
      */
     private final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
-     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#retractAB(BiTuple)} and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
     private final int outputStoreSize;
@@ -70,8 +70,8 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertA(UniTuple<A> tupleA) {
         if (tupleA.store[inputStoreIndexA] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleA.factA + ") was already added in the joinStore.");
+            throw new IllegalStateException("Impossible state: the input for the fact ("
+                    + tupleA.factA + ") was already added in the tupleStore.");
         }
         Object[] indexProperties = mappingA.apply(tupleA.factA);
         tupleA.store[inputStoreIndexA] = indexProperties;
@@ -118,18 +118,18 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertB(UniTuple<B> tupleB) {
         if (tupleB.store[inputStoreIndexB] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleB.factA + ") was already added in the joinStore.");
+            throw new IllegalStateException("Impossible state: the input for the fact ("
+                    + tupleB.factA + ") was already added in the tupleStore.");
         }
         Object[] indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
-        Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerA.get(indexProperties);
+        Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapA = indexerA.get(indexProperties);
         // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
-        Set<BiTuple<A, B>> tupleABSetB = new LinkedHashSet<>(Math.max(16, tupleABSetMapB.size()));
+        Set<BiTuple<A, B>> tupleABSetB = new LinkedHashSet<>(Math.max(16, tupleABSetMapA.size()));
         indexerB.put(indexProperties, tupleB, tupleABSetB);
 
-        tupleABSetMapB.forEach((tupleA, tupleABSetA) -> {
+        tupleABSetMapA.forEach((tupleA, tupleABSetA) -> {
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, outputStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetB.add(tupleAB);
@@ -213,7 +213,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.state + ").");
                 default:
-                    throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
+                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in an unexpected state (" + tuple.state + ").");
             }
         });

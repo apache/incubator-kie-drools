@@ -21,11 +21,14 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraint;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
@@ -74,6 +77,26 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     public abstract ConstraintStream getTupleSource();
 
     public abstract <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper);
+
+    // ************************************************************************
+    // Helper methods
+    // ************************************************************************
+
+    protected <A> BavetAbstractUniConstraintStream<Solution_, A> assertBavetUniConstraintStream(
+            UniConstraintStream<A> otherStream) {
+        if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
+            throw new IllegalStateException("The streams (" + this + ", " + otherStream
+                    + ") are not built from the same " + ConstraintFactory.class.getSimpleName() + ".");
+        }
+        BavetAbstractUniConstraintStream<Solution_, A> other = (BavetAbstractUniConstraintStream<Solution_, A>) otherStream;
+        if (constraintFactory != other.getConstraintFactory()) {
+            throw new IllegalStateException("The streams (" + this + ", " + other
+                    + ") are built from different constraintFactories (" + constraintFactory + ", "
+                    + other.getConstraintFactory()
+                    + ").");
+        }
+        return other;
+    }
 
     // ************************************************************************
     // Getters/setters

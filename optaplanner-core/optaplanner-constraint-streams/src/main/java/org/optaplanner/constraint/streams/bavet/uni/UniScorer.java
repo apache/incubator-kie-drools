@@ -42,9 +42,9 @@ public final class UniScorer<A> extends AbstractScorer {
 
     public void insert(UniTuple<A> tupleA) {
         if (tupleA.store[inputStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
+            throw new IllegalStateException("Impossible state: the input for the fact ("
                     + tupleA.factA
-                    + ") was already added in the scorerStore.");
+                    + ") was already added in the tupleStore.");
         }
         UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleA.factA);
         tupleA.store[inputStoreIndex] = undoScoreImpacter;

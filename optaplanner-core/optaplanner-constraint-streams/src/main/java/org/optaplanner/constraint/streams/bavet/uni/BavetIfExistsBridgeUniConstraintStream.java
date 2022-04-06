@@ -20,28 +20,25 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
-public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
-        extends BavetAbstractUniConstraintStream<Solution_, A> {
+public final class BavetIfExistsBridgeUniConstraintStream<Solution_, A, B>
+        extends BavetAbstractUniConstraintStream<Solution_, B> {
 
-    private final BavetAbstractUniConstraintStream<Solution_, A> parent;
-    private final boolean isLeftBridge;
+    private final BavetAbstractUniConstraintStream<Solution_, B> parent;
 
-    private BavetJoinConstraintStream<Solution_> joinStream;
+    private BavetIfExistsUniConstraintStream<Solution_, A, B> ifExistsStream;
 
-    public BavetJoinBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent, boolean isLeftBridge) {
+    public BavetIfExistsBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractUniConstraintStream<Solution_, B> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        this.isLeftBridge = isLeftBridge;
     }
 
-    public void setJoinStream(BavetJoinConstraintStream<Solution_> joinStream) {
-        this.joinStream = joinStream;
+    public void setIfExistsStream(BavetIfExistsUniConstraintStream<Solution_, A, B> ifExistsStream) {
+        this.ifExistsStream = ifExistsStream;
     }
 
     @Override
@@ -66,18 +63,16 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        // Do nothing. BavetJoinBiConstraintStream, BavetJoinTriConstraintStream, etc build everything.
+        // Do nothing. BavetIfExistsUniConstraintStream, BavetIfExistsBiConstraintStream, etc build everything.
     }
 
     // ************************************************************************
     // Equality for node sharing
     // ************************************************************************
 
-    // TODO, must include isLeftBridge in equality
-
     @Override
     public String toString() {
-        return "JoinBridge()";
+        return "IfExistsBridge()";
     }
 
     // ************************************************************************

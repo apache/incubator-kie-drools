@@ -45,7 +45,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
      */
     private final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
-     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#retractAB(BiTuple)} and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
     private final int outputStoreSize;
@@ -95,8 +95,9 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
 
     public void insertAB(BiTuple<OldA, OldB> tupleOldAB) {
         if (tupleOldAB.store[groupStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleOldAB.factA + ", " + tupleOldAB.factB + ") was already added in the groupStore.");
+            throw new IllegalStateException("Impossible state: the input for the fact ("
+                    + tupleOldAB.factA + ", " + tupleOldAB.factB
+                    + ") was already added in the tupleStore.");
         }
         A groupKey = groupKeyMapping.apply(tupleOldAB.factA, tupleOldAB.factB);
         Group group = groupMap.computeIfAbsent(groupKey, k -> new Group(groupKey, supplier.get()));

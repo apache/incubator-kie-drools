@@ -119,7 +119,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.state + ").");
                 default:
-                    throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
+                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in an unexpected state (" + tuple.state + ").");
             }
         });

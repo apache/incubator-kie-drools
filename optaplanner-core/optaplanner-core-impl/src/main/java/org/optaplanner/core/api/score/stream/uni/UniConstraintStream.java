@@ -554,7 +554,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default UniConstraintStream<A> ifExistsOther(Class<A> otherClass, BiJoiner<A, A>... joiners) {
         BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
-        BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
+        BiJoiner<A, A>[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifExists(otherClass, allJoiners);
     }
@@ -653,7 +653,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default UniConstraintStream<A> ifExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A>... joiners) {
         BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
-        BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
+        BiJoiner<A, A>[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifExistsIncludingNullVars(otherClass, allJoiners);
     }
@@ -928,7 +928,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default UniConstraintStream<A> ifNotExistsOther(Class<A> otherClass, BiJoiner<A, A>... joiners) {
         BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
-        BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
+        BiJoiner<A, A>[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifNotExists(otherClass, allJoiners);
     }
@@ -1027,7 +1027,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default UniConstraintStream<A> ifNotExistsOtherIncludingNullVars(Class<A> otherClass, BiJoiner<A, A>... joiners) {
         BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !Objects.equals(a, b));
-        BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
+        BiJoiner<A, A>[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifNotExistsIncludingNullVars(otherClass, allJoiners);
     }

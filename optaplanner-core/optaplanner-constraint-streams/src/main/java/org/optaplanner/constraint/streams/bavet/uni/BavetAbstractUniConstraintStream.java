@@ -36,7 +36,6 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.uni.InnerUniConstraintStream;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
@@ -84,17 +83,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     @Override
     public <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream,
             DefaultBiJoiner<A, B>... joiners) {
-        if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
-            throw new IllegalStateException("The streams (" + this + ", " + otherStream
-                    + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
-        }
-        BavetAbstractUniConstraintStream<Solution_, B> other = (BavetAbstractUniConstraintStream<Solution_, B>) otherStream;
-        if (constraintFactory != other.getConstraintFactory()) {
-            throw new IllegalStateException("The streams (" + this + ", " + other
-                    + ") are build from different constraintFactories (" + constraintFactory + ", "
-                    + other.getConstraintFactory()
-                    + ").");
-        }
+        BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
         DefaultBiJoiner<A, B> mergedJoiner = DefaultBiJoiner.merge(joiners);
         IndexerFactory indexerFactory = new IndexerFactory(mergedJoiner);
         Function<A, Object[]> leftMapping = JoinerUtils.combineLeftMappings(mergedJoiner);
@@ -128,25 +117,79 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        throw new UnsupportedOperationException();
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifExists(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return ifExists(constraintFactory.from(otherClass), joiners);
+        }
     }
 
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        throw new UnsupportedOperationException();
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifExists(constraintFactory.forEachIncludingNullVars(otherClass), joiners);
+        } else {
+            return ifExists(constraintFactory.fromUnfiltered(otherClass), joiners);
+        }
+    }
+
+    @SafeVarargs
+    public final <B> UniConstraintStream<A> ifExists(UniConstraintStream<B> otherStream, BiJoiner<A, B>... joiners) {
+        return ifExistsOrNot(true, otherStream, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        throw new UnsupportedOperationException();
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifNotExists(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return ifNotExists(constraintFactory.from(otherClass), joiners);
+        }
     }
 
     @SafeVarargs
     @Override
     public final <B> UniConstraintStream<A> ifNotExistsIncludingNullVars(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        throw new UnsupportedOperationException();
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifNotExists(constraintFactory.forEachIncludingNullVars(otherClass), joiners);
+        } else {
+            return ifNotExists(constraintFactory.fromUnfiltered(otherClass), joiners);
+        }
+    }
+
+    @SafeVarargs
+    public final <B> UniConstraintStream<A> ifNotExists(UniConstraintStream<B> otherStream, BiJoiner<A, B>... joiners) {
+        return ifExistsOrNot(false, otherStream, joiners);
+    }
+
+    private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, UniConstraintStream<B> otherStream,
+            BiJoiner<A, B>[] joiners) {
+        // TODO support FilteringBiJoiner like join() which probably should do it either?
+        BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
+
+        if (joiners.length != 1) {
+            throw new UnsupportedOperationException();
+        }
+        BiJoiner<A, B> joiner = joiners[0];
+        if (!(joiner instanceof DefaultBiJoiner)) {
+            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
+        }
+        DefaultBiJoiner<A, B> castedJoiner = (DefaultBiJoiner<A, B>) joiner;
+        IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
+        Function<A, Object[]> leftMapping = JoinerUtils.combineLeftMappings(castedJoiner);
+        Function<B, Object[]> rightMapping = JoinerUtils.combineRightMappings(castedJoiner);
+        BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB = other.shareAndAddChild(
+                new BavetIfExistsBridgeUniConstraintStream<>(constraintFactory, other));
+        return constraintFactory.share(
+                new BavetIfExistsUniConstraintStream<>(constraintFactory, this, parentBridgeB,
+                        shouldExist,
+                        leftMapping, rightMapping, indexerFactory),
+                ifExistsStream_ -> {
+                    childStreamList.add(ifExistsStream_);
+                    parentBridgeB.setIfExistsStream(ifExistsStream_);
+                });
     }
 
     // ************************************************************************

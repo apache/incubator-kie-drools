@@ -71,8 +71,8 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
     public void insertAB(BiTuple<A, B> tupleAB) {
         if (tupleAB.store[inputStoreIndexAB] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleAB.factA + ", " + tupleAB.factB + ") was already added in the joinStore.");
+            throw new IllegalStateException("Impossible state: the input for the fact ("
+                    + tupleAB.factA + ", " + tupleAB.factB + ") was already added in the tupleStore.");
         }
         Object[] indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
         tupleAB.store[inputStoreIndexAB] = indexProperties;
@@ -120,8 +120,8 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
     public void insertC(UniTuple<C> tupleC) {
         if (tupleC.store[inputStoreIndexC] != null) {
-            throw new IllegalStateException("Impossible state: the tuple for the fact ("
-                    + tupleC.factA + ") was already added in the joinStore.");
+            throw new IllegalStateException("Impossible state: the input for the fact ("
+                    + tupleC.factA + ") was already added in the tupleStore.");
         }
         Object[] indexProperties = mappingC.apply(tupleC.factA);
         tupleC.store[inputStoreIndexC] = indexProperties;
@@ -216,7 +216,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.state + ").");
                 default:
-                    throw new IllegalStateException("Impossible state: Tuple (" + tuple + ") in node (" +
+                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in an unexpected state (" + tuple.state + ").");
             }
         });

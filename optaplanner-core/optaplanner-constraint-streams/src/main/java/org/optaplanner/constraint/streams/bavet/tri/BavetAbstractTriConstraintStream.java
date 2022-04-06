@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
@@ -99,26 +100,61 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        throw new UnsupportedOperationException();
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifExists(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return ifExists(constraintFactory.from(otherClass), joiners);
+        }
     }
 
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifExistsIncludingNullVars(Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
-        throw new UnsupportedOperationException();
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifExists(constraintFactory.forEachIncludingNullVars(otherClass), joiners);
+        } else {
+            return ifExists(constraintFactory.fromUnfiltered(otherClass), joiners);
+        }
+    }
+
+    @SafeVarargs
+    public final <D> TriConstraintStream<A, B, C> ifExists(UniConstraintStream<D> otherStream,
+            QuadJoiner<A, B, C, D>... joiners) {
+        return ifExistsOrNot(true, otherStream, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifNotExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        throw new UnsupportedOperationException();
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifNotExists(constraintFactory.forEach(otherClass), joiners);
+        } else {
+            return ifNotExists(constraintFactory.from(otherClass), joiners);
+        }
     }
 
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifNotExistsIncludingNullVars(Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return ifNotExists(constraintFactory.forEachIncludingNullVars(otherClass), joiners);
+        } else {
+            return ifNotExists(constraintFactory.fromUnfiltered(otherClass), joiners);
+        }
+    }
+
+    @SafeVarargs
+    public final <D> TriConstraintStream<A, B, C> ifNotExists(UniConstraintStream<D> otherStream,
+            QuadJoiner<A, B, C, D>... joiners) {
+        return ifExistsOrNot(false, otherStream, joiners);
+    }
+
+    private final <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, UniConstraintStream<D> otherStream,
+            QuadJoiner<A, B, C, D>[] joiners) {
+        BavetAbstractUniConstraintStream<Solution_, D> other = assertBavetUniConstraintStream(otherStream);
+
         throw new UnsupportedOperationException();
     }
 
