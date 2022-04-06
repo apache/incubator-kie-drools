@@ -64,8 +64,9 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     public void linkVariableListeners() {
         notificationQueuesAreEmpty = true;
         scoreDirector.getSolutionDescriptor().getEntityDescriptors().stream()
-                .flatMap(entityDescriptor -> entityDescriptor.getDeclaredShadowVariableDescriptors().stream())
-                .filter(descriptor -> descriptor.hasVariableListener(scoreDirector))
+                .map(EntityDescriptor::getDeclaredShadowVariableDescriptors)
+                .flatMap(Collection::stream)
+                .filter(ShadowVariableDescriptor::hasVariableListener)
                 .sorted(Comparator.comparingInt(ShadowVariableDescriptor::getGlobalShadowOrder))
                 .forEach(this::processShadowVariableDescriptor);
     }

@@ -74,7 +74,7 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
      */
     public abstract Demand<Solution_, ?> getProvidedDemand();
 
-    public boolean hasVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public boolean hasVariableListener() {
         return true;
     }
 

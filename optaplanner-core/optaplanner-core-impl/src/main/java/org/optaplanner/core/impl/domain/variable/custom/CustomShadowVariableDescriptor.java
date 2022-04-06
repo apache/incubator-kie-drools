@@ -222,7 +222,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public boolean hasVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public boolean hasVariableListener() {
         return refVariableDescriptor == null;
     }
 
