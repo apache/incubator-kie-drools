@@ -36,12 +36,12 @@ import org.drools.model.project.codegen.GeneratedFileType;
 import org.drools.model.project.codegen.context.DroolsModelBuildContext;
 import org.kie.api.io.Resource;
 
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.createDroolsBuildContext;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.dumpFilesToDisk;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.registerResources;
+import static org.drools.drl.quarkus.util.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
+import static org.drools.drl.quarkus.util.DroolsQuarkusResourceUtils.compileGeneratedSources;
+import static org.drools.drl.quarkus.util.DroolsQuarkusResourceUtils.createDroolsBuildContext;
+import static org.drools.drl.quarkus.util.DroolsQuarkusResourceUtils.dumpFilesToDisk;
+import static org.drools.drl.quarkus.util.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
+import static org.drools.drl.quarkus.util.DroolsQuarkusResourceUtils.registerResources;
 import static org.drools.model.project.codegen.RuleCodegen.ofResources;
 
 public class DroolsAssetsProcessor {

@@ -1,7 +1,6 @@
-package org.drools.drl.quarkus.runtime;
+package org.kie.api.runtime;
 
 import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
 
 public interface KieRuntimeBuilder {
     KieBase getKieBase();

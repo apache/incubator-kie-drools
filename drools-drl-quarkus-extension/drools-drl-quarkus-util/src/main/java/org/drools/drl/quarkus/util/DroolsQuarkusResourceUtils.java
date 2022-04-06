@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.drl.quarkus.deployment;
+package org.drools.drl.quarkus.util;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -41,7 +41,6 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.model.project.codegen.context.AppPaths.BuildTool.findBuildTool;
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
 
 /**
@@ -52,7 +51,7 @@ public class DroolsQuarkusResourceUtils {
     static final String HOT_RELOAD_SUPPORT_PACKAGE = "org.kie.kogito.app";
     static final String HOT_RELOAD_SUPPORT_CLASS = "HotReloadSupportClass";
     static final String HOT_RELOAD_SUPPORT_FQN = HOT_RELOAD_SUPPORT_PACKAGE + "." + HOT_RELOAD_SUPPORT_CLASS;
-    static final String HOT_RELOAD_SUPPORT_PATH = HOT_RELOAD_SUPPORT_FQN.replace('.', '/');
+    public static final String HOT_RELOAD_SUPPORT_PATH = HOT_RELOAD_SUPPORT_FQN.replace('.', '/');
 
     private DroolsQuarkusResourceUtils() {
         // utility class
@@ -71,7 +70,7 @@ public class DroolsQuarkusResourceUtils {
 
     public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {
         // scan and parse paths
-        AppPaths.BuildTool buildTool = findBuildTool();
+        AppPaths.BuildTool buildTool = AppPaths.BuildTool.findBuildTool();
         AppPaths appPaths = AppPaths.fromQuarkus(outputTarget, paths, buildTool);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
@@ -188,7 +187,7 @@ public class DroolsQuarkusResourceUtils {
         return sourceName.replace('/', '.').replace('\\', '.');
     }
 
-    static String getHotReloadSupportSource() {
+    public static String getHotReloadSupportSource() {
         return "package " + HOT_RELOAD_SUPPORT_PACKAGE + ";\n" +
                 "@io.quarkus.runtime.Startup()\n" +
                 "public class " + HOT_RELOAD_SUPPORT_CLASS + " {\n" +

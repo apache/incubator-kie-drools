@@ -27,7 +27,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionPseudoClock;
-import org.drools.drl.quarkus.runtime.KieRuntimeBuilder;
+import org.kie.api.runtime.KieRuntimeBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

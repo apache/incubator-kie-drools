@@ -19,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieRuntimeBuilder;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.drl.quarkus.runtime.KieRuntimeBuilder;
 
 public class ProjectRuntime implements KieRuntimeBuilder {
 

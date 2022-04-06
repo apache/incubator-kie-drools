@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-extension</artifactId>
+        <version>8.20.0-SNAPSHOT</version>
+    </parent>
+
+    <name>Drools :: Quarkus Extension :: Util</name>
+    <artifactId>drools-drl-quarkus-util</artifactId>
+
+    <properties>
+        <java.module.name>org.drools.drl.quarkus.util</java.module.name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-xml-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-model-project-codegen</artifactId>
+        </dependency>
+
+        <!-- quarkus -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-core-deployment</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc-deployment</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-vertx-http-deployment-spi</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>
