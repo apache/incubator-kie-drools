@@ -65,7 +65,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
-import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -821,7 +820,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     protected void compileRete(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         if (!hasErrors() && this.kBase != null) {
-            ReteCompiler reteCompiler = new ReteCompiler(pkgRegistry, packageDescr, kBase, this::filterAccepts);
+            ReteCompiler reteCompiler = new ReteCompiler(pkgRegistry, packageDescr, kBase, assetFilter);
             reteCompiler.process();
         }
     }
@@ -859,11 +858,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     public boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
         return assetFilter == null || !AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
     }
-
-    public boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
-        return assetFilter != null && AssetFilter.Action.REMOVE.equals(assetFilter.accept(type, namespace, name));
-    }
-
 
     private String getPackageDialect(PackageDescr packageDescr) {
         String dialectName = this.defaultDialect;
@@ -1482,7 +1476,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         packages,
                         pkgRegistryManager,
                         typeBuilder,
-                        this,   // as GlobalVariableContext
+                        this, // as GlobalVariableContext
                         this, // as DroolsAssemblerContext
                         this, // as BuildResultAccumulator: we need to propagate messages for each phase
                         kBase,
@@ -1490,46 +1484,12 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         compositePackageCompilationPhase.process();
     }
 
-    public void _buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
-        initPackageRegistries(packages);
-        packages.forEach(packageDescr -> normalizeTypeDeclarationAnnotations(packageDescr, getOrCreatePackageRegistry(packageDescr).getTypeResolver()));
-        buildTypeDeclarations(packages);
-        packages.forEach(packageDescr -> processEntryPointDeclarations(getPackageRegistry(packageDescr.getNamespace()), packageDescr));
-        buildOtherDeclarations(packages);
-        packages.forEach(packageDescr -> normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver()));
-    }
-
-
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         for ( CompositePackageDescr packageDescr : packages ) {
             if ( StringUtils.isEmpty(packageDescr.getName()) ) {
                 packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
             }
             getOrCreatePackageRegistry( packageDescr );
-        }
-    }
-
-    protected void buildEntryPoints( Collection<CompositePackageDescr> packages ) {
-        for (CompositePackageDescr packageDescr : packages) {
-            processEntryPointDeclarations(getPackageRegistry( packageDescr.getNamespace() ), packageDescr);
-        }
-    }
-
-    protected void buildTypeDeclarations( Collection<CompositePackageDescr> packages ) {
-        Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<>();
-        List<TypeDefinition> unresolvedTypes = new ArrayList<>();
-        List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<>();
-        for (CompositePackageDescr packageDescr : packages) {
-            unsortedDescrs.addAll(packageDescr.getTypeDeclarations());
-            unsortedDescrs.addAll(packageDescr.getEnumDeclarations());
-        }
-
-        getTypeBuilder().processTypeDeclarations( packages, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
-
-        for ( CompositePackageDescr packageDescr : packages ) {
-            for ( ImportDescr importDescr : packageDescr.getImports() ) {
-                getPackageRegistry( packageDescr.getNamespace() ).addImport( importDescr );
-            }
         }
     }
 

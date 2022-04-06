@@ -57,7 +57,6 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.ResourceChange;
 
 import java.io.IOException;
 import java.util.List;
@@ -138,7 +137,7 @@ public class ExplicitCompilerTest {
                 new FunctionCompiler(packageDescr, packageRegistry, null, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
                         null, attributesForPackage, resource, assemblerContext),
-                new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts),
+                new ReteCompiler(packageRegistry, packageDescr, kBase, null),
                 new ConsequenceCompilationPhase(packageRegistryManager)
         );
 
@@ -169,11 +168,4 @@ public class ExplicitCompilerTest {
 
     }
 
-    private boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
-        return true;
-    }
-
-    private boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
-        return false;
-    }
 }

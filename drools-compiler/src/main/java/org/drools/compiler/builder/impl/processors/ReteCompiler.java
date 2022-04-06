@@ -1,5 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -12,13 +13,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class ReteCompiler extends AbstractPackageCompilationPhase {
-    private final FilterCondition filter;
+    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
     private RuleBase kBase;
 
-    public ReteCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, RuleBase kBase, FilterCondition filter) {
+    public ReteCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, RuleBase kBase, KnowledgeBuilderImpl.AssetFilter assetFilter) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
-        this.filter = filter;
+        this.assetFilter = assetFilter;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class ReteCompiler extends AbstractPackageCompilationPhase {
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
             Collection<RuleImpl> rulesToBeAdded = new ArrayList<>();
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if (filter.accepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
+                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
                     rulesToBeAdded.add(pkg.getRule(ruleDescr.getName()));
                 }
             }
@@ -36,4 +37,9 @@ public class ReteCompiler extends AbstractPackageCompilationPhase {
             }
         }
     }
+
+    private boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
+        return assetFilter == null || !KnowledgeBuilderImpl.AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
+    }
+
 }
