@@ -147,6 +147,51 @@ public class ExisistentialTest extends BaseModelTest {
     }
 
     @Test
+    public void testForallSingleConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  forall( Person( name.length == 5 ) )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario"));
+        ksession.insert(new Person("Edson"));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("ok", results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testForallEmptyConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  forall( Person() )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario"));
+        ksession.insert(new Person("Mark"));
+        ksession.insert(new Person("Edson"));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("ok", results.iterator().next().getValue());
+    }
+
+    @Test
     public void testExistsEmptyPredicate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
