@@ -74,7 +74,7 @@ public class ValidatorTest extends AbstractValidatorTest {
 
         List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
-        assertThat(messages).withFailMessage(messages.toString()).hasSizeGreaterThan(0);
+        assertThat(messages).as(messages.toString()).hasSize(0);
     }
 
     @Test
@@ -466,7 +466,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void test_dttyperef() {
         List<DMNMessage> validate = validator.validate(getReader("wrongxml/dttyperef.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(0);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
         DMNMessage v0 = validate.get(0);
         assertThat(v0.getLevel()).isEqualTo(Level.ERROR);
         assertThat(v0.getMessageType()).isEqualTo(DMNMessageType.MISSING_TYPE_REF);
