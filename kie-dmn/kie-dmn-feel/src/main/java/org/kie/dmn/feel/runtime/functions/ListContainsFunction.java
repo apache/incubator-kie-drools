@@ -42,7 +42,12 @@ public class ListContainsFunction
                 ListIterator<?> it = list.listIterator();
                 while (it.hasNext() && !found) {
                     Object next = EvalHelper.coerceNumber(it.next());
-                    found = e.equals(next);
+                    if (e instanceof String) {
+                        found = e.equals(next);
+                    } else {
+                        Boolean dmnEqual = EvalHelper.isEqual(e, next, null);
+                        found = dmnEqual != null ? dmnEqual : false;
+                    }
                 }
                 return FEELFnResult.ofResult(found);
             }
