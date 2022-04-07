@@ -150,7 +150,8 @@ public class PersistenceUtil {
             if (jdbcUrl.startsWith("jdbc:h2:") && !jdbcUrl.contains("tcp://") && !jdbcUrl.contains("mem:")) {
                 dsProps.put("url", jdbcUrl + "tcp://localhost/target/./persistence-test");
             }
-            h2Server.start();
+
+            h2Server.start(dsProps.getProperty("h2Args"));
         }
         return DataSourceFactory.setupPoolingDataSource(datasourceName, dsProps);
     }
@@ -236,23 +237,35 @@ public class PersistenceUtil {
     }
 
     /**
-     * An class responsible for starting and stopping the H2 database (tcp)
+     * A class responsible for starting and stopping the H2 database (tcp)
      * server
      */
     private static class H2Server {
         private Server realH2Server;
 
-        public void start() {
+        /**
+         * Starts the H2 server in the TCP mode.
+         * @param h2Args startup arguments separated by white chars; if {@code null} or empty, no arguments are passed
+         */
+        public void start(String h2Args) {
             System.out.println("running H2 server");
             if (realH2Server == null || !realH2Server.isRunning(false)) {
                 try {
                     DeleteDbFiles.execute("", "JPADroolsFlow", true);
-                    realH2Server = Server.createTcpServer(new String[0]);
+                    realH2Server = Server.createTcpServer(parseArgs(h2Args));
                     realH2Server.start();
                 } catch (SQLException e) {
                     throw new RuntimeException("Can't start h2 server db", e);
                 }
             }
+        }
+
+        private String [] parseArgs(String args) {
+            if (args == null || args.trim().isEmpty()) {
+                return new String[0];
+            }
+
+            return args.trim().split("\\s+");
         }
 
         @Override
