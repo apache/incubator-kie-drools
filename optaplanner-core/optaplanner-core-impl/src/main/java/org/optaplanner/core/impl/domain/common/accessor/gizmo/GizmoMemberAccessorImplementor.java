@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
@@ -54,7 +55,7 @@ public class GizmoMemberAccessorImplementor {
      * A custom classloader that looks for the class in
      * classNameToBytecode
      */
-    private static ClassLoader gizmoClassLoader = new ClassLoader() {
+    private static final ClassLoader GIZMO_CLASS_LOADER = new ClassLoader() {
         // getName() is an abstract method in Java 11 but not in Java 8
         @Override
         public String getName() {
@@ -78,35 +79,55 @@ public class GizmoMemberAccessorImplementor {
     final static String ANNOTATED_ELEMENT_FIELD = "annotatedElement";
 
     /**
-     * Generates the constructor and implementations of MemberAccessor
-     * methods for the given MemberDescriptor using the given ClassCreator
+     * Generates the constructor and implementations of {@link AbstractGizmoMemberAccessor} methods for the given
+     * {@link Member}.
      *
-     * @param classCreator ClassCreator to write output to
-     * @param member Member to generate MemberAccessor methods implementation for
-     * @param annotationClass The annotation it was annotated with (used for
-     *        error reporting)
+     * @param className never null
+     * @param classOutput never null, defines how to write the bytecode
+     * @param memberInfo never null, member to generate MemberAccessor methods implementation for
      */
-    public static void defineAccessorFor(ClassCreator classCreator, GizmoMemberDescriptor member,
-            Class<? extends Annotation> annotationClass) {
-        classCreator.getFieldCreator("genericType", Type.class)
-                .setModifiers(Modifier.FINAL);
-        classCreator.getFieldCreator("annotatedElement", AnnotatedElement.class)
-                .setModifiers(Modifier.FINAL);
+    public static void defineAccessorFor(String className, ClassOutput classOutput, GizmoMemberInfo memberInfo) {
+        Class<? extends AbstractGizmoMemberAccessor> superClass = getCorrectSuperclass(memberInfo);
+        try (ClassCreator classCreator = ClassCreator.builder()
+                .className(className)
+                .superClass(superClass)
+                .classOutput(classOutput)
+                .setFinal(true)
+                .build()) {
+            classCreator.getFieldCreator("genericType", Type.class)
+                    .setModifiers(Modifier.FINAL);
+            classCreator.getFieldCreator("annotatedElement", AnnotatedElement.class)
+                    .setModifiers(Modifier.FINAL);
 
-        GizmoMemberInfo memberInfo = new GizmoMemberInfo(member, annotationClass);
-        // ************************************************************************
-        // MemberAccessor methods
-        // ************************************************************************
-        createConstructor(classCreator, memberInfo);
-        createGetDeclaringClass(classCreator, memberInfo);
-        createGetType(classCreator, memberInfo);
-        createGetGenericType(classCreator);
-        createGetName(classCreator, memberInfo);
-        createGetSpeedNote(classCreator);
-        createSupportSetter(classCreator, memberInfo);
-        createExecuteGetter(classCreator, memberInfo);
-        createExecuteSetter(classCreator, memberInfo);
-        createGetAnnotation(classCreator);
+            // ************************************************************************
+            // MemberAccessor methods
+            // ************************************************************************
+            createConstructor(classCreator, memberInfo);
+            createGetDeclaringClass(classCreator, memberInfo);
+            createGetType(classCreator, memberInfo);
+            createGetGenericType(classCreator);
+            createGetName(classCreator, memberInfo);
+            createExecuteGetter(classCreator, memberInfo);
+            if (superClass == AbstractReadWriteGizmoMemberAccessor.class) {
+                createExecuteSetter(classCreator, memberInfo);
+            }
+            createGetAnnotation(classCreator);
+        }
+    }
+
+    private static Class<? extends AbstractGizmoMemberAccessor> getCorrectSuperclass(GizmoMemberInfo memberInfo) {
+        AtomicBoolean supportsSetter = new AtomicBoolean();
+        memberInfo.getDescriptor().whenIsMethod(method -> {
+            supportsSetter.set(memberInfo.getDescriptor().getSetter().isPresent());
+        });
+        memberInfo.getDescriptor().whenIsField(field -> {
+            supportsSetter.set(true);
+        });
+        if (supportsSetter.get()) {
+            return AbstractReadWriteGizmoMemberAccessor.class;
+        } else {
+            return AbstractReadOnlyGizmoMemberAccessor.class;
+        }
     }
 
     /**
@@ -130,17 +151,8 @@ public class GizmoMemberAccessorImplementor {
         ClassOutput classOutput = (path, byteCode) -> {
             classBytecodeHolder[0] = byteCode;
         };
-        try (ClassCreator classCreator = ClassCreator.builder()
-                .className(className)
-                .interfaces(MemberAccessor.class)
-                .superClass(Object.class)
-                .classOutput(classOutput)
-                .setFinal(true)
-                .build()) {
-
-            GizmoMemberDescriptor memberDescriptor = new GizmoMemberDescriptor(member);
-            defineAccessorFor(classCreator, memberDescriptor, annotationClass);
-        }
+        GizmoMemberInfo memberInfo = new GizmoMemberInfo(new GizmoMemberDescriptor(member), annotationClass);
+        defineAccessorFor(className, classOutput, memberInfo);
         byte[] classBytecode = classBytecodeHolder[0];
 
         classNameToBytecode.put(className, classBytecode);
@@ -149,7 +161,7 @@ public class GizmoMemberAccessorImplementor {
 
     private static MemberAccessor createInstance(String className) {
         try {
-            return (MemberAccessor) gizmoClassLoader.loadClass(className)
+            return (MemberAccessor) GIZMO_CLASS_LOADER.loadClass(className)
                     .getConstructor().newInstance();
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException
                 | NoSuchMethodException e) {
@@ -177,7 +189,7 @@ public class GizmoMemberAccessorImplementor {
         ResultHandle thisObj = methodCreator.getThis();
 
         // Invoke Object's constructor
-        methodCreator.invokeSpecialMethod(MethodDescriptor.ofConstructor(Object.class), thisObj);
+        methodCreator.invokeSpecialMethod(MethodDescriptor.ofConstructor(classCreator.getSuperClass()), thisObj);
 
         ResultHandle declaringClass = methodCreator.loadClass(memberInfo.getDescriptor().getDeclaringClassName());
         memberInfo.getDescriptor().whenMetadataIsOnField(fd -> {
@@ -374,38 +386,6 @@ public class GizmoMemberAccessorImplementor {
     /**
      * Generates the following code:
      *
-     * For a field or a getter method that also have a corresponding setter
-     *
-     * <pre>
-     * boolean supportSetter() {
-     *     return true;
-     * }
-     * </pre>
-     *
-     * For a read method or a getter method without a setter
-     *
-     * <pre>
-     * boolean supportSetter() {
-     *     return false;
-     * }
-     * </pre>
-     */
-    private static void createSupportSetter(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
-        MethodCreator methodCreator = getMethodCreator(classCreator, "supportSetter");
-        memberInfo.getDescriptor().whenIsMethod(method -> {
-            boolean supportSetter = memberInfo.getDescriptor().getSetter().isPresent();
-            ResultHandle out = methodCreator.load(supportSetter);
-            methodCreator.returnValue(out);
-        });
-        memberInfo.getDescriptor().whenIsField(field -> {
-            ResultHandle out = methodCreator.load(true);
-            methodCreator.returnValue(out);
-        });
-    }
-
-    /**
-     * Generates the following code:
-     *
      * For a field
      *
      * <pre>
@@ -444,21 +424,6 @@ public class GizmoMemberAccessorImplementor {
         }
     }
 
-    /**
-     * Generates the following code:
-     *
-     * <pre>
-     * String getSpeedNote() {
-     *     return "Fast access with generated bytecode";
-     * }
-     * </pre>
-     */
-    private static void createGetSpeedNote(ClassCreator classCreator) {
-        MethodCreator methodCreator = getMethodCreator(classCreator, "getSpeedNote");
-        ResultHandle out = methodCreator.load("Fast access with generated bytecode");
-        methodCreator.returnValue(out);
-    }
-
     private static MethodCreator getAnnotationMethodCreator(ClassCreator classCreator, String methodName,
             Class<?>... parameters) {
         return classCreator.getMethodCreator(getAnnotationMethod(methodName, parameters));
@@ -471,11 +436,6 @@ public class GizmoMemberAccessorImplementor {
             throw new IllegalStateException("No such method: " + methodName, e);
         }
     }
-
-    // These methods all delegate to an AnnotatedElement we store in
-    // gizmoMemberAccessorNameToAnnotatedElement
-
-    // getAnnotatedElementGetter() simply returns the method descriptor for getAnnotatedElementFor
 
     /**
      * Generates the following code:
@@ -506,21 +466,4 @@ public class GizmoMemberAccessorImplementor {
 
     }
 
-    private static class GizmoMemberInfo {
-        private final GizmoMemberDescriptor descriptor;
-        private final Class<? extends Annotation> annotationClass;
-
-        public GizmoMemberInfo(GizmoMemberDescriptor descriptor, Class<? extends Annotation> annotationClass) {
-            this.descriptor = descriptor;
-            this.annotationClass = annotationClass;
-        }
-
-        public GizmoMemberDescriptor getDescriptor() {
-            return descriptor;
-        }
-
-        public Class<? extends Annotation> getAnnotationClass() {
-            return annotationClass;
-        }
-    }
 }

@@ -42,8 +42,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
 
     private List<AbstractNode> reversedNodeList;
 
-    public NodeBuildHelper(Set<? extends ConstraintStream> activeStreamSet,
-            Map<Constraint, Score_> constraintWeightMap,
+    public NodeBuildHelper(Set<? extends ConstraintStream> activeStreamSet, Map<Constraint, Score_> constraintWeightMap,
             AbstractScoreInliner<Score_> scoreInliner) {
         this.activeStreamSet = activeStreamSet;
         insertMap = new HashMap<>(Math.max(16, activeStreamSet.size()));

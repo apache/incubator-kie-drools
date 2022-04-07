@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ public class GizmoMemberAccessorFactory {
     }
 
     public static MemberAccessor buildGizmoMemberAccessor(Member member, Class<? extends Annotation> annotationClass) {
-        String gizmoMemberAccessorClassName = getGeneratedClassName(member);
         try {
             // Check if Gizmo on the classpath by verifying we can access one of its classes
             Class.forName("io.quarkus.gizmo.ClassCreator", false,

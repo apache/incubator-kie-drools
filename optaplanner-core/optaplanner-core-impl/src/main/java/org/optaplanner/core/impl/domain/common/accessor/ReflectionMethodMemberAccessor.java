@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.util.Arrays;
  * A {@link MemberAccessor} based on a single read {@link Method}.
  * Do not confuse with {@link ReflectionBeanPropertyMemberAccessor} which is richer.
  */
-public final class ReflectionMethodMemberAccessor implements MemberAccessor {
+public final class ReflectionMethodMemberAccessor extends AbstractMemberAccessor {
 
     private final Class<?> returnType;
     private final String methodName;

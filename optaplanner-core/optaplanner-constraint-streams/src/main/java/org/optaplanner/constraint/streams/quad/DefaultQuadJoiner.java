@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.quad;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.AbstractJoiner;
@@ -85,4 +86,24 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> imple
         }
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DefaultQuadJoiner)) {
+            return false;
+        }
+        DefaultQuadJoiner<?, ?, ?, ?> other = (DefaultQuadJoiner<?, ?, ?, ?>) o;
+        return Arrays.equals(joinerTypes, other.joinerTypes)
+                && Arrays.equals(leftMappings, other.leftMappings)
+                && Arrays.equals(rightMappings, other.rightMappings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(joinerTypes), Arrays.hashCode(leftMappings), Arrays.hashCode(rightMappings));
+    }
+
 }

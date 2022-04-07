@@ -109,8 +109,7 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
                     + PlanningId.class.getSimpleName() + " annotation,"
                     + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
         }
-        // TODO In Bavet breaks node sharing + involves unneeded indirection
-        Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        Function<A, Comparable> planningIdGetter = planningIdMemberAccessor.getGetterFunction();
         // Bavet requires that Joiner.lessThan() be last.
         return forEach(sourceClass)
                 .join(sourceClass, DefaultBiJoiner.merge(joiner), lessThan(planningIdGetter));
@@ -156,8 +155,7 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
                     + PlanningId.class.getSimpleName() + " annotation,"
                     + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
         }
-        // TODO In Bavet breaks node sharing + involves unneeded indirection
-        Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        Function<A, Comparable> planningIdGetter = planningIdMemberAccessor.getGetterFunction();
         // Bavet requires that Joiner.lessThan() be last.
         return from(fromClass)
                 .join(fromClass, DefaultBiJoiner.merge(joiners), lessThan(planningIdGetter));

@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.tri;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -84,6 +85,25 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implement
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DefaultTriJoiner)) {
+            return false;
+        }
+        DefaultTriJoiner<?, ?, ?> other = (DefaultTriJoiner<?, ?, ?>) o;
+        return Arrays.equals(joinerTypes, other.joinerTypes)
+                && Arrays.equals(leftMappings, other.leftMappings)
+                && Arrays.equals(rightMappings, other.rightMappings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(joinerTypes), Arrays.hashCode(leftMappings), Arrays.hashCode(rightMappings));
     }
 
 }

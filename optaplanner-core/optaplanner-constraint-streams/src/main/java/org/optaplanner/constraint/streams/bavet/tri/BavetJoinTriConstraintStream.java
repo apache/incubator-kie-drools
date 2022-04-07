@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,22 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
+import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.bi.BavetAbstractBiConstraintStream;
+import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBridgeBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
-import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -38,24 +39,19 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
         implements BavetJoinConstraintStream<Solution_> {
 
-    private final BavetAbstractBiConstraintStream<Solution_, A, B> leftParent;
-    private final BavetAbstractUniConstraintStream<Solution_, C> rightParent;
+    private final BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftParent;
+    private final BavetJoinBridgeUniConstraintStream<Solution_, C> rightParent;
 
-    private final BiFunction<A, B, Object[]> leftMapping;
-    private final Function<C, Object[]> rightMapping;
-    private final IndexerFactory indexerFactory;
+    private final DefaultTriJoiner<A, B, C> joiner;
 
     public BavetJoinTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractBiConstraintStream<Solution_, A, B> leftParent,
-            BavetAbstractUniConstraintStream<Solution_, C> rightParent,
-            BiFunction<A, B, Object[]> leftMapping, Function<C, Object[]> rightMapping,
-            IndexerFactory indexerFactory) {
+            BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftParent,
+            BavetJoinBridgeUniConstraintStream<Solution_, C> rightParent,
+            DefaultTriJoiner<A, B, C> joiner) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
-        this.leftMapping = leftMapping;
-        this.rightMapping = rightMapping;
-        this.indexerFactory = indexerFactory;
+        this.joiner = joiner;
     }
 
     @Override
@@ -86,12 +82,12 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
+        IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
-        JoinTriNode<A, B, C> node = new JoinTriNode<>(
-                leftMapping, rightMapping, inputStoreIndexAB, inputStoreIndexC,
-                insert, retract, outputStoreSize,
-                indexerAB, indexerC);
+        JoinTriNode<A, B, C> node = new JoinTriNode<>(JoinerUtils.combineLeftMappings(joiner),
+                JoinerUtils.combineRightMappings(joiner), inputStoreIndexAB, inputStoreIndexC, insert, retract,
+                outputStoreSize, indexerAB, indexerC);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertAB, node::retractAB);
         buildHelper.putInsertRetract(rightParent, node::insertC, node::retractC);
@@ -101,7 +97,29 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
     // Equality for node sharing
     // ************************************************************************
 
-    // TODO
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BavetJoinTriConstraintStream<?, ?, ?, ?> other = (BavetJoinTriConstraintStream<?, ?, ?, ?>) o;
+        /*
+         * Bridge streams do not implement equality because their equals() would have to point back to this stream,
+         * resulting in StackOverflowError.
+         * Therefore we need to check bridge parents to see where this join node comes from.
+         */
+        return Objects.equals(leftParent.getParent(), other.leftParent.getParent())
+                && Objects.equals(rightParent.getParent(), other.rightParent.getParent())
+                && Objects.equals(joiner, other.joiner);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner);
+    }
 
     @Override
     public String toString() {

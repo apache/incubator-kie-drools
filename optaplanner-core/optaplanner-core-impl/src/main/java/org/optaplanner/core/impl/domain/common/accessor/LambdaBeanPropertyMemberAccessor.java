@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,6 +135,11 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
     @Override
     public Object executeGetter(Object bean) {
         return getterFunction.apply(bean);
+    }
+
+    @Override
+    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
+        return getterFunction;
     }
 
     @Override

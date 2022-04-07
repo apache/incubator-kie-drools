@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +58,7 @@ public class LookUpStrategyResolver {
 
     public LookUpStrategyResolver(DomainAccessType domainAccessType,
             LookUpStrategyType lookUpStrategyType) {
-        this(domainAccessType, Collections.emptyMap(), lookUpStrategyType);
+        this(domainAccessType, new HashMap<>(), lookUpStrategyType);
     }
 
     public LookUpStrategyResolver(DomainAccessType domainAccessType,

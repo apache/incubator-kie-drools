@@ -84,21 +84,23 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream,
             DefaultBiJoiner<A, B>... joiners) {
         BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
-        DefaultBiJoiner<A, B> mergedJoiner = DefaultBiJoiner.merge(joiners);
-        IndexerFactory indexerFactory = new IndexerFactory(mergedJoiner);
-        Function<A, Object[]> leftMapping = JoinerUtils.combineLeftMappings(mergedJoiner);
-        BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge = shareAndAddChild(
-                new BavetJoinBridgeUniConstraintStream<>(constraintFactory, this, true));
-        Function<B, Object[]> rightMapping = JoinerUtils.combineRightMappings(mergedJoiner);
-        BavetJoinBridgeUniConstraintStream<Solution_, B> rightBridge = other.shareAndAddChild(
-                new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false));
-        return constraintFactory.share(
+
+        BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge =
+                new BavetJoinBridgeUniConstraintStream<>(constraintFactory, this, true);
+        BavetJoinBridgeUniConstraintStream<Solution_, B> rightBridge =
+                new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
+
+        BavetJoinBiConstraintStream<Solution_, A, B> newJoinStream =
                 new BavetJoinBiConstraintStream<>(constraintFactory, leftBridge, rightBridge,
-                        leftMapping, rightMapping, indexerFactory),
-                joinStream_ -> {
-                    leftBridge.setJoinStream(joinStream_);
-                    rightBridge.setJoinStream(joinStream_);
-                });
+                        DefaultBiJoiner.merge(joiners));
+        leftBridge.setJoinStream(newJoinStream);
+        rightBridge.setJoinStream(newJoinStream);
+
+        return constraintFactory.share(newJoinStream, joinStream_ -> {
+            // Connect the bridges upstream, as it is an actual new join.
+            getChildStreamList().add(leftBridge);
+            other.getChildStreamList().add(rightBridge);
+        });
     }
 
     @Override

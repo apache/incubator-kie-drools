@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
                 constraintMatchEnabled);
 
         Score_ zeroScore = scoreDefinition.getZeroScore();
-        Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet = new LinkedHashSet<>(constraintList.size() * 10);
+        Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet = new LinkedHashSet<>();
         Map<Constraint, Score_> constraintWeightMap = new HashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
             Score_ constraintWeight = constraint.extractConstraintWeight(workingSolution);

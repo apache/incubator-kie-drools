@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.optaplanner.constraint.streams.penta;
+
+import java.util.Objects;
 
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
@@ -37,4 +39,20 @@ public final class FilteringPentaJoiner<A, B, C, D, E> implements PentaJoiner<A,
         return filter;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FilteringPentaJoiner)) {
+            return false;
+        }
+        FilteringPentaJoiner<?, ?, ?, ?, ?> other = (FilteringPentaJoiner<?, ?, ?, ?, ?>) o;
+        return Objects.equals(filter, other.filter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(filter);
+    }
 }

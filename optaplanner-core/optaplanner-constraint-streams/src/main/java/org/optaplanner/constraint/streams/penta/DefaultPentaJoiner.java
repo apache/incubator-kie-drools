@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.penta;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.AbstractJoiner;
@@ -73,5 +74,24 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> i
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DefaultPentaJoiner)) {
+            return false;
+        }
+        DefaultPentaJoiner<?, ?, ?, ?, ?> other = (DefaultPentaJoiner<?, ?, ?, ?, ?>) o;
+        return Arrays.equals(joinerTypes, other.joinerTypes)
+                && Arrays.equals(leftMappings, other.leftMappings)
+                && Arrays.equals(rightMappings, other.rightMappings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(joinerTypes), Arrays.hashCode(leftMappings), Arrays.hashCode(rightMappings));
     }
 }

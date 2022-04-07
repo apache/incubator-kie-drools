@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorImplementor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberInfo;
 import org.optaplanner.core.impl.domain.solution.cloner.DeepCloningUtils;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
@@ -178,41 +179,33 @@ public class GizmoMemberAccessorEntityEnhancer {
                 Thread.currentThread().getContextClassLoader());
         Field fieldMember = declaringClass.getDeclaredField(fieldInfo.name());
         String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(fieldMember);
-        try (ClassCreator classCreator = ClassCreator
-                .builder()
-                .className(generatedClassName)
-                .interfaces(MemberAccessor.class)
-                .classOutput(classOutput)
-                .setFinal(true)
-                .build()) {
+        GizmoMemberDescriptor member;
 
-            GizmoMemberDescriptor member;
+        FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
+        String name = fieldInfo.name();
 
-            FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
-            String name = fieldInfo.name();
-
-            if (Modifier.isFinal(fieldMember.getModifiers())) {
-                makeFieldNonFinal(fieldMember, transformers);
-            }
-
-            if (Modifier.isPublic(fieldInfo.flags())) {
-                member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
-            } else {
-                addVirtualFieldGetter(classInfo, fieldInfo, transformers);
-                String methodName = getVirtualGetterName(true, fieldInfo.name());
-                MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
-                        methodName,
-                        fieldInfo.type().name().toString());
-                MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
-                        getVirtualSetterName(true, fieldInfo.name()),
-                        "void",
-                        fieldInfo.type().name().toString());
-                member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
-            }
-            GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
-                    (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
-                            Thread.currentThread().getContextClassLoader()));
+        if (Modifier.isFinal(fieldMember.getModifiers())) {
+            makeFieldNonFinal(fieldMember, transformers);
         }
+
+        if (Modifier.isPublic(fieldInfo.flags())) {
+            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
+        } else {
+            addVirtualFieldGetter(classInfo, fieldInfo, transformers);
+            String methodName = getVirtualGetterName(true, fieldInfo.name());
+            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
+                    methodName,
+                    fieldInfo.type().name().toString());
+            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
+                    getVirtualSetterName(true, fieldInfo.name()),
+                    "void",
+                    fieldInfo.type().name().toString());
+            member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
+        }
+        GizmoMemberInfo memberInfo = new GizmoMemberInfo(member,
+                (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
+                        Thread.currentThread().getContextClassLoader()));
+        GizmoMemberAccessorImplementor.defineAccessorFor(generatedClassName, classOutput, memberInfo);
         return generatedClassName;
     }
 
@@ -254,35 +247,27 @@ public class GizmoMemberAccessorEntityEnhancer {
                 Thread.currentThread().getContextClassLoader());
         Method methodMember = declaringClass.getDeclaredMethod(methodInfo.name());
         String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(methodMember);
-        try (ClassCreator classCreator = ClassCreator
-                .builder()
-                .className(generatedClassName)
-                .interfaces(MemberAccessor.class)
-                .classOutput(classOutput)
-                .setFinal(true)
-                .build()) {
+        GizmoMemberDescriptor member;
+        String name = getMemberName(methodMember);
+        Optional<MethodDescriptor> setterDescriptor = getSetterDescriptor(classInfo, methodInfo, name);
 
-            GizmoMemberDescriptor member;
-            String name = getMemberName(methodMember);
-            Optional<MethodDescriptor> setterDescriptor = getSetterDescriptor(classInfo, methodInfo, name);
+        MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
 
-            MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
-
-            if (Modifier.isPublic(methodInfo.flags())) {
-                member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass,
-                        setterDescriptor.orElse(null));
-            } else {
-                setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
-                String methodName = getVirtualGetterName(false, name);
-                MethodDescriptor newMethodDescriptor =
-                        MethodDescriptor.ofMethod(declaringClass, methodName, memberDescriptor.getReturnType());
-                member = new GizmoMemberDescriptor(name, newMethodDescriptor, memberDescriptor, declaringClass,
-                        setterDescriptor.orElse(null));
-            }
-            GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
-                    (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
-                            Thread.currentThread().getContextClassLoader()));
+        if (Modifier.isPublic(methodInfo.flags())) {
+            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass,
+                    setterDescriptor.orElse(null));
+        } else {
+            setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
+            String methodName = getVirtualGetterName(false, name);
+            MethodDescriptor newMethodDescriptor =
+                    MethodDescriptor.ofMethod(declaringClass, methodName, memberDescriptor.getReturnType());
+            member = new GizmoMemberDescriptor(name, newMethodDescriptor, memberDescriptor, declaringClass,
+                    setterDescriptor.orElse(null));
         }
+        GizmoMemberInfo memberInfo = new GizmoMemberInfo(member,
+                (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
+                        Thread.currentThread().getContextClassLoader()));
+        GizmoMemberAccessorImplementor.defineAccessorFor(generatedClassName, classOutput, memberInfo);
         return generatedClassName;
     }
 

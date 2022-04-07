@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,10 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
         constraintStreamSet.add(this);
     }
 
+    public BavetAbstractBiConstraintStream<Solution_, A, B> getParent() {
+        return parent;
+    }
+
     @Override
     public ConstraintStream getTupleSource() {
         return parent.getTupleSource();
@@ -68,12 +72,6 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         // Do nothing. BavetJoinTriConstraintStream, etc build everything.
     }
-
-    // ************************************************************************
-    // Equality for node sharing
-    // ************************************************************************
-
-    // TODO, must include isLeftBridge in equality
 
     @Override
     public String toString() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ public class SolutionDescriptor<Solution_> {
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(DomainAccessType domainAccessType,
             Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap,
             Map<String, SolutionCloner> solutionClonerMap, List<Class<?>> entityClassList) {
-        memberAccessorMap = Objects.requireNonNullElse(memberAccessorMap, Collections.emptyMap());
+        memberAccessorMap = Objects.requireNonNullElse(memberAccessorMap, new HashMap<>());
         solutionClonerMap = Objects.requireNonNullElse(solutionClonerMap, Collections.emptyMap());
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         descriptorPolicy.setDomainAccessType(domainAccessType);
