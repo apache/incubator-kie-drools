@@ -16,9 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +41,9 @@ import org.kie.api.time.SessionPseudoClock;
 import org.kie.test.testcategory.TurtleTestCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Reproducer for BZ 1181584, by Mike Wilson.

@@ -16,6 +16,11 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+
+import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.EQUALS;
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.LIST_OF_CONDITION;
@@ -28,11 +33,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-
-import org.junit.Test;
 
 public class BaseExpressionOperatorTest {
 

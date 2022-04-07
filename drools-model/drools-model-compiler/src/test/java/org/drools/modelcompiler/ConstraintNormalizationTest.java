@@ -16,10 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +33,10 @@ import org.drools.modelcompiler.domain.Toy;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ConstraintNormalizationTest extends BaseModelTest {
 

@@ -15,10 +15,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +32,10 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class FunctionsTest {

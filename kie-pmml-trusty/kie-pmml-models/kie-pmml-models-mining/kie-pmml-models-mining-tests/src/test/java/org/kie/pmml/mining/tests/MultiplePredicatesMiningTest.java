@@ -16,10 +16,6 @@
 
 package org.kie.pmml.mining.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.pmml.api.enums.ResultCode.FAIL;
-import static org.kie.pmml.api.enums.ResultCode.OK;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +28,10 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.pmml.api.enums.ResultCode.FAIL;
+import static org.kie.pmml.api.enums.ResultCode.OK;
 
 @RunWith(Parameterized.class)
 public class MultiplePredicatesMiningTest extends AbstractPMMLTest {

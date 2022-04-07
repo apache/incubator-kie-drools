@@ -15,9 +15,6 @@
  */
 package org.drools.xml.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.utll.xml.XStreamUtils.createTrustingXStream;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.thoughtworks.xstream.XStream;
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
@@ -48,7 +46,8 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import com.thoughtworks.xstream.XStream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.utll.xml.XStreamUtils.createTrustingXStream;
 
 public class XStreamXMLTest {
 

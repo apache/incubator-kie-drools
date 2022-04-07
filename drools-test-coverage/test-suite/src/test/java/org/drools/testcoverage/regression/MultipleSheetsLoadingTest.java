@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +40,8 @@ import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests loading decision tables from several worksheets in a XLS file.

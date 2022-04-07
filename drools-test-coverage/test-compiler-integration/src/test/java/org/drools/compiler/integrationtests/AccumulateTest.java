@@ -15,15 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
@@ -75,6 +66,15 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
 public class AccumulateTest {

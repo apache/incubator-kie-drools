@@ -16,8 +16,6 @@
 
 package org.kie.dmn.core.stronglytyped;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -26,6 +24,8 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.util.Arrays;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -39,8 +39,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AnnotationsTest extends BaseVariantTest {
 

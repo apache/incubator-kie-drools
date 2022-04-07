@@ -16,8 +16,9 @@
 
 package org.kie.dmn.feel.runtime.functions.interval;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 // ScratchPad to support discussion on https://issues.omg.org/browse/DMN14-125
 public class FormulasTest {

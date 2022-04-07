@@ -15,12 +15,6 @@
 
 package org.drools.mvel.compiler.compiler.xml.rules;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -46,6 +40,12 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.DrlDumper;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class XmlPackageReaderTest extends CommonTestMethodBase {
 

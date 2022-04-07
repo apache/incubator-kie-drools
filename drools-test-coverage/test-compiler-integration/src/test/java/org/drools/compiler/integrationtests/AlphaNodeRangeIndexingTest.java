@@ -16,11 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +49,11 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class AlphaNodeRangeIndexingTest {

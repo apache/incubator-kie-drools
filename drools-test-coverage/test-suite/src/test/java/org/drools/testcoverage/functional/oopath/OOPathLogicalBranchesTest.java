@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional.oopath;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +33,8 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests usage of OOPath expressions resulting in multiple conditional branches (e.g. OR operator).

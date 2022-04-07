@@ -15,9 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -34,6 +31,9 @@ import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class CepJavaTypeTest {

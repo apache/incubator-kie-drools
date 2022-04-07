@@ -16,10 +16,10 @@
 
 package org.kie.dmn.model.api.dmndi;
 
+import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
-import org.junit.Test;
 
 public class KnownColorTest {
 

@@ -16,9 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +29,9 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class IncrementalCompilationTest extends BaseModelTest {
 

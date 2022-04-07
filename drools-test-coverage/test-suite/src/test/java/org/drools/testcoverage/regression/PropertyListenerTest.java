@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -39,6 +37,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Bugfix regression test for:

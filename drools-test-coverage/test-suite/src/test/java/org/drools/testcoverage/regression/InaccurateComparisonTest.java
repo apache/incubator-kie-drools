@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.model.Message;
@@ -31,6 +29,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests problems with large numbers to String conversion. See DROOLS-167.

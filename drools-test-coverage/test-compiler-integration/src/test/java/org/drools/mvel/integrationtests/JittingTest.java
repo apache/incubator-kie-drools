@@ -16,9 +16,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +35,9 @@ import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class JittingTest {

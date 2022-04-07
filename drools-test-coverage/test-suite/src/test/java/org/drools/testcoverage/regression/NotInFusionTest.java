@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.KieSessionTest;
@@ -30,6 +28,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 // BZ 1009348
 public class NotInFusionTest extends KieSessionTest {

@@ -16,13 +16,6 @@
 
 package org.kie.dmn.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -48,6 +41,13 @@ import org.kie.dmn.core.v1_3.DMN13specificTest;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class ValidatorTest extends AbstractValidatorTest {
 

@@ -16,34 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.after;
-import static org.drools.model.DSL.and;
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.execute;
-import static org.drools.model.DSL.globalOf;
-import static org.drools.model.DSL.not;
-import static org.drools.model.DSL.on;
-import static org.drools.model.DSL.or;
-import static org.drools.model.DSL.reactiveFrom;
-import static org.drools.model.DSL.supply;
-import static org.drools.model.DSL.valueOf;
-import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.pattern;
-import static org.drools.model.PatternDSL.query;
-import static org.drools.model.PatternDSL.reactOn;
-import static org.drools.model.PatternDSL.rule;
-import static org.drools.model.PatternDSL.when;
-import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,6 +68,34 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.after;
+import static org.drools.model.DSL.and;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.execute;
+import static org.drools.model.DSL.globalOf;
+import static org.drools.model.DSL.not;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.or;
+import static org.drools.model.DSL.reactiveFrom;
+import static org.drools.model.DSL.supply;
+import static org.drools.model.DSL.valueOf;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.query;
+import static org.drools.model.PatternDSL.reactOn;
+import static org.drools.model.PatternDSL.rule;
+import static org.drools.model.PatternDSL.when;
+import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class PatternDSLTest {
 

@@ -15,8 +15,6 @@
 
 package org.drools.mvel.compiler.kie.builder.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -28,6 +26,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.memorycompiler.resources.KiePath;
 import org.mockito.Mock;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemoryKieModuleResourceProviderTest {
 

@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -31,6 +29,8 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.api.event.kiebase.KieBaseEventListener;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MultipleKieBaseListenersTest {

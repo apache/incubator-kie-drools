@@ -15,8 +15,6 @@
 
 package org.drools.template;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +28,8 @@ import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DataProviderCompilerTest {
 

@@ -16,9 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +26,9 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class NullSafeDereferencingTest extends BaseModelTest {
 

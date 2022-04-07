@@ -17,9 +17,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -36,6 +33,9 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Tests correct behavior of KieContainer in specific cases, not covered by other tests.

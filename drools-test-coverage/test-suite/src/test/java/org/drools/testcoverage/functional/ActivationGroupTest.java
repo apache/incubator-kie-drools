@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +33,8 @@ import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ActivationGroupTest {

@@ -16,11 +16,11 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.v1_3.TDecisionTable;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNDTAnalysisExceptionTest {
 

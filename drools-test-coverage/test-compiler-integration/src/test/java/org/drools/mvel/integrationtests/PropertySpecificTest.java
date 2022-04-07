@@ -15,15 +15,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,6 +52,15 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class PropertySpecificTest {

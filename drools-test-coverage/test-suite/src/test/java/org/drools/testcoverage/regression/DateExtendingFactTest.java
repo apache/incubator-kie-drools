@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 import java.util.Date;
 
@@ -29,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
 * Tests compilation of facts extending java.util.Date (BZ 1072629).

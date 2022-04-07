@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -37,6 +35,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Reproducer for BZ 1205666, BZ 1205671 (DROOLS-749).

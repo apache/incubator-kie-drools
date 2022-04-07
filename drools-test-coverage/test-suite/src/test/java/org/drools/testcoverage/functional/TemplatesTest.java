@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -46,6 +44,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests templates - providers, generating rules, performance.

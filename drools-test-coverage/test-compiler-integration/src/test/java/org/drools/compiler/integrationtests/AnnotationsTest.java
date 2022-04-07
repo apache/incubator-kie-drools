@@ -16,12 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -43,6 +37,12 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class AnnotationsTest {

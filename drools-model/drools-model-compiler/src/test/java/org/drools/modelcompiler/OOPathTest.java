@@ -16,9 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.modelcompiler.domain.Employee.createEmployee;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +28,9 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.modelcompiler.domain.Employee.createEmployee;
 
 public class OOPathTest extends BaseModelTest {
 

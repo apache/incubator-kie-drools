@@ -16,8 +16,6 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +26,8 @@ import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.Domain;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntervalTest {
 

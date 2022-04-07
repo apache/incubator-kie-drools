@@ -16,14 +16,6 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,10 +24,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.drools.scenariosimulation.backend.model.ListMapClass;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.node.TextNode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class BaseExpressionEvaluatorTest {
 

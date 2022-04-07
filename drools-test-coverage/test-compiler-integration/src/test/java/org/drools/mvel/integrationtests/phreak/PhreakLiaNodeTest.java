@@ -15,8 +15,6 @@
 
 package org.drools.mvel.integrationtests.phreak;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +28,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PhreakLiaNodeTest {

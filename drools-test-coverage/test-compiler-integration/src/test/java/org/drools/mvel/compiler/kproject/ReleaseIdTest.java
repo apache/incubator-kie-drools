@@ -15,11 +15,6 @@
  */
 package org.drools.mvel.compiler.kproject;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertSame;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +23,11 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.ReleaseIdComparator;
 import org.kie.util.maven.support.ReleaseIdImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertSame;
+import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
+import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
 
 public class ReleaseIdTest {
 

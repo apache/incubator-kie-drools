@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +29,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests handling a variable binding in LHS with OR (BZ 1136424).

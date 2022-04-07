@@ -16,8 +16,6 @@
 
 package org.kie.dmn.pmml;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Map;
 
 import org.junit.Test;
@@ -29,6 +27,8 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class DMNNaiveBayesPMMLTest {
     private static final Logger LOG = LoggerFactory.getLogger(DMNNaiveBayesPMMLTest.class);

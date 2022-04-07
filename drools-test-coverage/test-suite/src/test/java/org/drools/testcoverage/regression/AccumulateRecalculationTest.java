@@ -16,14 +16,14 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.drools.testcoverage.common.model.MyFact;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * BZ 1190923 reproducer by Hisao Furuich.

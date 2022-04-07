@@ -16,11 +16,6 @@
 
 package org.drools.compiler.integrationtests.drl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +54,11 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class PatternTest {

@@ -16,12 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.modelcompiler.domain.Employee.createEmployee;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +25,12 @@ import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.modelcompiler.domain.Employee.createEmployee;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class OrTest extends BaseModelTest {
 

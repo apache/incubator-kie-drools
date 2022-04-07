@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -30,6 +28,8 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Simple reproducer for BZ 1193600 - serialization of rules with collect.

@@ -16,8 +16,6 @@
 
 package org.kie.pmml.models.tree.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +29,8 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(Parameterized.class)
 public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
 
@@ -43,7 +43,7 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
     private double input2;
     private double input3;
     private String expectedResult;
-
+	
     public SimpleSetPredicateTreeTest(double input1, double input2, double input3, String expectedResult) {
         this.input1 = input1;
         this.input2 = input2;

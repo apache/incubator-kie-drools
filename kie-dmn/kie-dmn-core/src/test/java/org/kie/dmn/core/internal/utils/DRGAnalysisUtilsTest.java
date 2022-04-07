@@ -16,12 +16,6 @@
 
 package org.kie.dmn.core.internal.utils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -34,6 +28,12 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.v1_3.DMN13specificTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DRGAnalysisUtilsTest {
 

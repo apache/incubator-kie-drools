@@ -16,14 +16,14 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public final class AddRemoveTestCases {
 

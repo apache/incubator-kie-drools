@@ -16,16 +16,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -143,6 +133,16 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Run all the tests with the ReteOO engine implementation

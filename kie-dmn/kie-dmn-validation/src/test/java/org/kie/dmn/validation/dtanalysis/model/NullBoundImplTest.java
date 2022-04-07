@@ -16,14 +16,14 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-
 import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 public class NullBoundImplTest {
 

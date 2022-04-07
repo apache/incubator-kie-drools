@@ -15,12 +15,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
-import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
@@ -52,6 +46,12 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
+import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class KieContainerTest {

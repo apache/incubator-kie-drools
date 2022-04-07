@@ -16,9 +16,6 @@
 
 package org.drools.testcoverage.regression.mvel;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +23,9 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 /**
  * Tests handling a collision of identifer and dynamic package import (BZ 1321281).

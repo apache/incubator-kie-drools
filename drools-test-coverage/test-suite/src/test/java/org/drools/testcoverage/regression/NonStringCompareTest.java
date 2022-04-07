@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -33,6 +31,8 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NonStringCompareTest {

@@ -15,8 +15,6 @@
 
 package org.drools.mvel.compiler.oopath;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +27,8 @@ import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OOPathBenchmarkTest {
 

@@ -1,7 +1,5 @@
 package org.drools.testcoverage.kieci.withdomain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.drools.testcoverage.domain.Customer;
 import org.drools.testcoverage.domain.Drink;
 import org.drools.testcoverage.domain.Order;
@@ -13,6 +11,8 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests loading a KJAR with non-trivial pom.xml (with dependencies, parent pom, ...).

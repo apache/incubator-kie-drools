@@ -16,8 +16,6 @@
 
 package org.kie.pmml.regression.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +28,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLTest {

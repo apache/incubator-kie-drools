@@ -15,10 +15,10 @@
 
 package org.drools.core.util.index;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.drools.core.test.model.Person;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RangeIndexTest {
 

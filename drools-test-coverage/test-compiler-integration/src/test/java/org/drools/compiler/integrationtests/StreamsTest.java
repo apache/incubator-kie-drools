@@ -15,17 +15,6 @@
  */
 package org.drools.compiler.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +34,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -59,6 +47,17 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests related to the stream support features

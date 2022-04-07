@@ -16,12 +16,12 @@
 
 package org.drools.ancompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LargeAlphaNetworkTest extends BaseModelTest {
 

@@ -15,16 +15,6 @@
  */
 package org.drools.persistence.kie.persistence.session;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,6 +61,16 @@ import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.command.CommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {

@@ -16,9 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.testcoverage.common.util.KieUtil.getServices;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,6 +37,9 @@ import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.testcoverage.common.util.KieUtil.getServices;
 
 public class LogicalInsertionsSerializationTest extends KieSessionTest {
 

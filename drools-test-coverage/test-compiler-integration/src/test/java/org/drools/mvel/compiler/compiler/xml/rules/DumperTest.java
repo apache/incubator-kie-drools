@@ -15,10 +15,6 @@
 
 package org.drools.mvel.compiler.compiler.xml.rules;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.drl.parser.DrlParser;
@@ -26,6 +22,10 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.mvel.DrlDumper;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test the dump/convert format utilities.

@@ -1,7 +1,5 @@
 package org.drools.core.io.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ByteArrayResourceSerializationTest {
 

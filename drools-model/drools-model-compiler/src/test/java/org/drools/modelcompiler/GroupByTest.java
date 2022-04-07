@@ -14,12 +14,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.model.DSL.from;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,6 +64,12 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.model.DSL.from;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class GroupByTest {
 

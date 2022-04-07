@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +28,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Bugfix test for bz#724655 'NPE in AbstractCompositionRestriction when using

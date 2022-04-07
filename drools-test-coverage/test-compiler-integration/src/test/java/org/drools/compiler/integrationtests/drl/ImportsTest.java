@@ -16,10 +16,6 @@
 
 package org.drools.compiler.integrationtests.drl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +40,10 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 @RunWith(Parameterized.class)
 public class ImportsTest {

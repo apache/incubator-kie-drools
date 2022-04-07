@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -34,6 +32,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests bad using and accessing to livequeries.

@@ -16,8 +16,6 @@
 
 package org.drools.mvel.integrationtests.concurrency;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +40,8 @@ import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentTest {

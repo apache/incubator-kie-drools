@@ -16,8 +16,6 @@
 
 package org.drools.mvel.integrationtests.concurrency;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,6 +38,8 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractConcurrentTest {
 

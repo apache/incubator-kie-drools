@@ -15,6 +15,15 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
+import java.util.List;
+import java.util.Map;
+
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.imports.Import;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
@@ -33,15 +42,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-
-import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.model.imports.Import;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 public class ScenarioSimulationXMLPersistenceTest {
 

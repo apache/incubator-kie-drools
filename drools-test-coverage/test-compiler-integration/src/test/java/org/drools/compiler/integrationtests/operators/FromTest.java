@@ -16,11 +16,6 @@
 
 package org.drools.compiler.integrationtests.operators;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -70,6 +65,11 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class FromTest {

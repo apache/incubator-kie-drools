@@ -16,10 +16,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
-
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Date;
@@ -45,6 +41,10 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
 @RunWith(Parameterized.class)
 public class ExpirationTest {

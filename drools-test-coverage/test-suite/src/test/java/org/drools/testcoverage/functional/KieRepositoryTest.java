@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.IOException;
 
 import org.drools.testcoverage.common.util.TestConstants;
@@ -29,6 +27,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests correct behavior of KieRepository, such as adding/removing KieModules.

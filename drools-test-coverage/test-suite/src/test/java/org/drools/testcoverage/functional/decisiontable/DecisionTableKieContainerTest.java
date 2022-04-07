@@ -1,13 +1,13 @@
 package org.drools.testcoverage.functional.decisiontable;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.drools.testcoverage.common.model.Record;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DecisionTableKieContainerTest {
 

@@ -15,15 +15,6 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.core.util.DroolsTestUtil.rulestoMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +50,15 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.core.util.DroolsTestUtil.rulestoMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class AddRemoveRulesTest {

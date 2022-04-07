@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +31,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.kie.internal.command.CommandFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test verifies that bug #843284 is fixed. Bug is about Mvel not choosing

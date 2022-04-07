@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,6 +30,8 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test to verify BRMS-312 (Allow escaping characters in metadata value) is

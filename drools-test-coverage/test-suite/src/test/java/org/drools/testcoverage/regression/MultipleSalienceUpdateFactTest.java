@@ -16,9 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.testcoverage.common.util.KieUtil.getCommands;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +34,9 @@ import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 
 /**
  * Test to verify that BRMS-580 is fixed. NPE when trying to update fact with

@@ -16,10 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +38,10 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * This test class enables CheckNonExternalisedLambda option

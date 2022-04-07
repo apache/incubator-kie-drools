@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +43,8 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests Drools engine capabilities regarding Unicode characters

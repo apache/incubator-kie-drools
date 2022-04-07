@@ -16,10 +16,6 @@
 
 package org.kie.dmn.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +32,10 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest {
 

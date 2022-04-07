@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.StringReader;
 import java.util.Collection;
 
@@ -36,6 +34,8 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.DecisionTableInputType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests loading of different types of resources (DRL, DSL, DRF, BPMN2, DTABLE).

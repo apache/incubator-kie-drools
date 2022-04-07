@@ -16,9 +16,6 @@
 
 package org.drools.mvel.compiler.oopath;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,6 +36,9 @@ import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(Parameterized.class)
 public class OOPathCastTest {

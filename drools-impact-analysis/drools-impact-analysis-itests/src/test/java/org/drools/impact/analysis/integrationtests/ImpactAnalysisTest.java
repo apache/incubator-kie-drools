@@ -16,11 +16,6 @@
 
 package org.drools.impact.analysis.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.impact.analysis.graph.TextReporter.INDENT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +28,11 @@ import org.drools.impact.analysis.integrationtests.domain.Order;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.impact.analysis.graph.TextReporter.INDENT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ImpactAnalysisTest extends AbstractGraphTest {
 

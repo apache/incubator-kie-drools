@@ -16,9 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 
 import org.drools.core.base.UndefinedCalendarExcption;
@@ -32,6 +29,9 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarExceptionTest {

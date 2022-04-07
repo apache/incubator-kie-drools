@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +26,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.kie.api.runtime.KieSession;
 import org.kie.test.testcategory.TurtleTestCategory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests adding and removing rules with advanced operators.

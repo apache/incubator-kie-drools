@@ -16,8 +16,6 @@
 
 package org.kie.dmn.feel.jandex;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -43,6 +41,8 @@ import org.junit.Test;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractJandexTest {
 

@@ -16,13 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.fail;
-import static org.drools.testcoverage.common.util.KieUtil.getCommands;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +35,13 @@ import org.kie.api.io.Resource;
 import org.mockito.exceptions.verification.WantedButNotInvoked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.fail;
+import static org.drools.testcoverage.common.util.KieUtil.getCommands;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test suite for processing of facts imported using a "star" import and

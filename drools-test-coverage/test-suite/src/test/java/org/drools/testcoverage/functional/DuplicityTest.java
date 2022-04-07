@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.fail;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -29,6 +27,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Testing of duplicities in rule files.

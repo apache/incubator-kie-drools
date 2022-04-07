@@ -16,8 +16,6 @@
 
 package org.drools.mvel.integrationtests.concurrency;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +33,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.runtime.KieSession;
 import org.kie.test.testcategory.TurtleTestCategory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)

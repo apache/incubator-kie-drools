@@ -16,10 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.model.Person;
@@ -35,6 +31,10 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests bad using and accessing to queries.

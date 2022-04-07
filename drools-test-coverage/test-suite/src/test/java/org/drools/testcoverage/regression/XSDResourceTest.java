@@ -16,11 +16,11 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests KIE package compilation when there is a XSD resource (BZ 1120972).

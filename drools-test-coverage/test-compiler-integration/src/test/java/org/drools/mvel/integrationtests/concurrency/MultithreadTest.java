@@ -16,9 +16,6 @@
 
 package org.drools.mvel.integrationtests.concurrency;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,6 +53,9 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * This is a test case for multi-thred issues

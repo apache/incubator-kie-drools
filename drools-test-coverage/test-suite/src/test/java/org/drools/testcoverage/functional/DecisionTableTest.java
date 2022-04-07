@@ -16,9 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -47,6 +44,9 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.DecisionTableInputType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests all features which can be used in decision tables.

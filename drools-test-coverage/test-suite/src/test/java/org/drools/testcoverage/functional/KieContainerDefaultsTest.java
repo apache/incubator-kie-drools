@@ -16,9 +16,6 @@
 
 package org.drools.testcoverage.functional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import java.io.IOException;
 
 import org.drools.core.impl.InternalKieContainer;
@@ -35,6 +32,9 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * This class's purpose is to test obtaining default KieSessions and default KieBases from KieContainer. It tests

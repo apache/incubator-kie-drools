@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -48,6 +46,8 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test to verify BRMS-582 (use of 'after' and 'before' operators ends with NPE)

@@ -15,11 +15,11 @@
 
 package org.drools.mvel.compiler.lang.descr;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.drools.drl.ast.descr.ConnectiveDescr;
 import org.drools.drl.ast.descr.ConnectiveDescr.RestrictionConnectiveType;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConnectiveDescrTest {
 

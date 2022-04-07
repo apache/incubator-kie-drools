@@ -16,8 +16,6 @@
 
 package org.drools.testcoverage.functional.oopath;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import org.drools.testcoverage.common.model.Address;
@@ -36,6 +34,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests basic usage of OOPath expressions.

@@ -16,7 +16,8 @@
 
 package org.drools.testcoverage.common.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Collection;
+
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.process.ProcessEventListener;
@@ -27,7 +28,7 @@ import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Convenient class to help generalizing drools StatelessKnowledgeSession and

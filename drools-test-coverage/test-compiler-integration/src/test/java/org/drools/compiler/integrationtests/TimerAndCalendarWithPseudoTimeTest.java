@@ -16,11 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,6 +57,11 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarWithPseudoTimeTest {

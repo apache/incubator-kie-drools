@@ -16,8 +16,6 @@
 
 package org.kie.dmn.openapi;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +24,8 @@ import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.openapi.impl.FEELSchemaEnum;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FEELSchemaEnumTest extends BaseDMNOASTest {
 

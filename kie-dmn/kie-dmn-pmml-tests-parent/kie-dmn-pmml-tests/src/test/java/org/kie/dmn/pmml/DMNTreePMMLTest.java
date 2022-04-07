@@ -16,8 +16,6 @@
 
 package org.kie.dmn.pmml;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -27,6 +25,8 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class DMNTreePMMLTest {
 

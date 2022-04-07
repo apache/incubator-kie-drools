@@ -18,15 +18,15 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 import java.util.Map;
 
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.drools.core.util.MethodUtils;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CoercedExpressionTest {
 

@@ -15,10 +15,6 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +25,10 @@ import org.junit.runner.RunWith;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNSimulationUtilsTest {

@@ -15,10 +15,6 @@
 
 package org.drools.mvel.compiler.compiler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +36,10 @@ import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class DrlParserTest {

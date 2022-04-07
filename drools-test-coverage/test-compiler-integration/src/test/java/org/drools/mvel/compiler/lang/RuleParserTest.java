@@ -16,9 +16,6 @@
 
 package org.drools.mvel.compiler.lang;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.drl.parser.DRLFactory.buildParser;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -28,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
@@ -69,7 +67,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.drl.parser.DRLFactory.buildParser;
 
 public class RuleParserTest extends TestCase {
 

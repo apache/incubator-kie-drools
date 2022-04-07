@@ -15,9 +15,6 @@
 
 package org.drools.mvel.compiler.compiler.xml.rules;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -29,6 +26,9 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.mvel.DrlDumper;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Helper Class for both xml and drl Dump Tests

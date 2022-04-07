@@ -16,12 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static java.math.BigDecimal.valueOf;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -40,6 +34,12 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static java.math.BigDecimal.valueOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MvelDialectTest extends BaseModelTest {
 

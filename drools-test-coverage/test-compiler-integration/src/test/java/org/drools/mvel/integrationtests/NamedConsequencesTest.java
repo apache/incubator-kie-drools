@@ -15,11 +15,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,6 +38,11 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class NamedConsequencesTest {
