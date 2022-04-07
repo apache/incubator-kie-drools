@@ -99,7 +99,6 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
                 numSamples = maxSamples;
             }
         }
-
         ShapDataCarrier sdc = new ShapDataCarrier();
 
         // add data statistics to data carrier
@@ -154,12 +153,13 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
      */
     private void setVaryingFeatureGroups(PredictionInput input, ShapDataCarrier sdc) {
         List<Integer> varyingFeatureGroups = new ArrayList<>();
-        RealVector inputVector = MatrixUtilsExtensions.vectorFromPredictionInput(input);
+        RealVector inputVector = MatrixUtilsExtensions.vectorFromPredictionInput(config.getOneHotter().oneHotEncode(input, true));
         RealVector columnFeatures = MatrixUtils.createRealVector(new double[sdc.getRows() + 1]);
         for (int col = 0; col < sdc.getCols(); col++) {
             columnFeatures.setSubVector(0, this.config.getBackgroundMatrix().getColumnVector(col));
             columnFeatures.setEntry(sdc.getRows(), inputVector.getEntry(col));
             long uniques = Arrays.stream(columnFeatures.toArray()).distinct().count();
+
             if (uniques > 1) {
                 varyingFeatureGroups.add(col);
             }
@@ -213,7 +213,12 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
             previousSample.incrementWeight();
             return false;
         } else {
-            ShapSyntheticDataSample sample = new ShapSyntheticDataSample(pi, mask, this.config.getBackgroundMatrix(), weight, fixed);
+            ShapSyntheticDataSample sample = new ShapSyntheticDataSample(
+                    config.getOneHotter().oneHotEncode(pi, true),
+                    mask,
+                    this.config.getBackgroundMatrix(),
+                    weight,
+                    fixed);
             // map index in the samplesAdded list to the unique hash of this mask
             sdc.addMask(maskHash, sdc.getSamplesAddedSize());
             sdc.addSample(sample);
@@ -356,7 +361,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
             // run the wlr model over the synthetic data results
             return output.thenCompose(o -> this.solveSystem(expectations, poVector, sdc)
                     .thenApply(wo -> saliencyFromMatrix(wo[0], wo[1], pi, po)))
-                    .thenCombine(sdc.getFnull(), ShapResults::new);
+                    .thenCombine(sdc.getLinkNull(), ShapResults::new);
         }
     }
 
@@ -570,7 +575,7 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
                     List<PredictionInput> batch = IntStream.range(i, Math.min(sdc.getSamplesAddedSize(), i + batchSize))
                             .mapToObj(b -> sdc.getSamplesAdded(b).getSyntheticData())
                             .collect(ArrayList::new, List::addAll, List::addAll);
-                    expectations = sdc.getModel().predictAsync(batch)
+                    expectations = sdc.getModel().predictAsync(config.getOneHotter().oneHotDecode(batch, true))
                             .thenApply(MatrixUtilsExtensions::matrixFromPredictionOutput)
                             .thenApply(ops -> MatrixUtilsExtensions.batchRowMean(ops, sdc.getRows()))
                             .thenCombine(expectations, (expSlices, exps) -> {
@@ -587,7 +592,8 @@ public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
 
                 //in theory all of these can happen in parallel
                 for (int i = 0; i < sdc.getSamplesAddedSize(); i++) {
-                    List<PredictionInput> pis = sdc.getSamplesAdded(i).getSyntheticData();
+                    List<PredictionInput> pis = config.getOneHotter().oneHotDecode(
+                            sdc.getSamplesAdded(i).getSyntheticData(), true);
                     expectationSlices.put(i,
                             sdc.getModel().predictAsync(pis)
                                     .thenApply(MatrixUtilsExtensions::matrixFromPredictionOutput)

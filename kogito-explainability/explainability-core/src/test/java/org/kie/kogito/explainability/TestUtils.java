@@ -233,6 +233,45 @@ public class TestUtils {
         });
     }
 
+    public static PredictionProvider getCategoricalRegressor() {
+        return inputs -> supplyAsync(() -> {
+            List<PredictionOutput> outputs = new LinkedList<>();
+            for (PredictionInput input : inputs) {
+                int calories = 0;
+                int fruitsEaten = 0;
+                for (Feature f : input.getFeatures()) {
+                    if (!f.getType().equals(Type.CATEGORICAL)) {
+                        throw new IllegalArgumentException("Prediction Inputs are not categorical");
+                    }
+                    switch (f.getValue().asString()) {
+                        case "avocado":
+                            calories += 322;
+                            fruitsEaten += 1;
+                            break;
+                        case "banana":
+                            calories += 105;
+                            fruitsEaten += 1;
+                            break;
+                        case "carrot":
+                            calories += 25;
+                            fruitsEaten += 1;
+                            break;
+                        case "dragonfruit":
+                            calories += 61;
+                            fruitsEaten += 1;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                Output outputCal = new Output("calories", Type.NUMBER, new Value(calories), 1d);
+                Output outputFE = new Output("fruit_eaten", Type.NUMBER, new Value(fruitsEaten), 1d);
+                outputs.add(new PredictionOutput(List.of(outputCal, outputFE)));
+            }
+            return outputs;
+        });
+    }
+
     public static PredictionProvider getSymbolicArithmeticModel() {
         return inputs -> supplyAsync(() -> {
             List<PredictionOutput> predictionOutputs = new LinkedList<>();

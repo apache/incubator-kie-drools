@@ -26,6 +26,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
+import org.kie.kogito.explainability.utils.OneHotter;
 
 public class ShapConfig {
     public enum LinkType {
@@ -51,6 +52,7 @@ public class ShapConfig {
     private final int batchSize;
     private final List<PredictionInput> background;
     private final RealMatrix backgroundMatrix;
+    private final OneHotter onehotter;
 
     /**
      * Create a ShapConfig instance. This sets the configuration of the SHAP explainer.
@@ -73,10 +75,12 @@ public class ShapConfig {
      * @param nRegularizationFeatures: If desired, the exact number of top regularization features can be specified
      */
     protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor,
-            Integer nSamples, Integer batchSize, double confidence, RegularizerType regularizerType, Integer nRegularizationFeatures) {
+            Integer nSamples, Integer batchSize, double confidence, RegularizerType regularizerType,
+            Integer nRegularizationFeatures) {
         this.link = link;
         this.background = background;
-        this.backgroundMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(background);
+        this.onehotter = new OneHotter(background, pc);
+        this.backgroundMatrix = MatrixUtilsExtensions.matrixFromPredictionInput(onehotter.oneHotEncode(background, true));
         this.pc = pc;
         this.executor = executor;
         this.nSamples = nSamples;
@@ -257,7 +261,8 @@ public class ShapConfig {
                 throw new IllegalArgumentException("Background data list cannot be empty.");
             }
             return new ShapConfig(this.builderLink, this.builderBackground, this.builderPC, this.builderExecutor,
-                    this.builderNSamples, this.builderBatchSize, this.builderConfidence, this.builderRegularizerType, this.builderNRegularizerFeatures);
+                    this.builderNSamples, this.builderBatchSize, this.builderConfidence, this.builderRegularizerType,
+                    this.builderNRegularizerFeatures);
         }
     }
 
@@ -302,5 +307,9 @@ public class ShapConfig {
 
     public Integer getNRegularizationFeatures() {
         return this.nRegularizationFeatures;
+    }
+
+    public OneHotter getOneHotter() {
+        return this.onehotter;
     }
 }

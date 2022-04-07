@@ -45,6 +45,8 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
+import org.kie.kogito.explainability.model.Type;
+import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.MatrixUtilsExtensions;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -53,10 +55,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShapKernelExplainerTest {
-    public String pythonPrint(String s) {
-        return "[" + s.replace(";", ",").substring(1, s.length() - 1) + "]";
-    }
-
     double[][] backgroundRaw = {
             { 1., 2., 3., -4., 5. },
             { 10., 11., 12., -4., 13. },
@@ -591,27 +589,29 @@ class ShapKernelExplainerTest {
             { 0.31856895, 0.66741038, 0.13179786, 0.7163272, 0.28940609, 0.18319136, 0.58651293, 0.02010755, 0.82894003 },
     };
 
-    ShapConfig sk0 = testConfig
-            .withBackground(createPIFromMatrix(backgroundRegTests))
-            .withRegularizer(ShapConfig.RegularizerType.AIC)
-            .build();
-    ShapConfig sk1 = testConfig
-            .withBackground(createPIFromMatrix(backgroundRegTests))
-            .withRegularizer(ShapConfig.RegularizerType.BIC)
-            .build();
-    ShapConfig sk2 = testConfig
-            .withBackground(createPIFromMatrix(backgroundRegTests))
-            .withRegularizer(4)
-            .build();
-    ShapConfig sk3 = testConfig
-            .withBackground(createPIFromMatrix(backgroundRegTests))
-            .withRegularizer(7)
-            .build();
-    ShapConfig sk4 = testConfig
-            .withBackground(createPIFromMatrix(backgroundRegTests))
-            .withRegularizer(ShapConfig.RegularizerType.AUTO)
-            .build();
-    List<ShapConfig> sks = List.of(sk0, sk1, sk2, sk3, sk4);
+    private List<ShapConfig> getSks() {
+        ShapConfig sk0 = testConfig
+                .withBackground(createPIFromMatrix(backgroundRegTests))
+                .withRegularizer(ShapConfig.RegularizerType.AIC)
+                .build();
+        ShapConfig sk1 = testConfig
+                .withBackground(createPIFromMatrix(backgroundRegTests))
+                .withRegularizer(ShapConfig.RegularizerType.BIC)
+                .build();
+        ShapConfig sk2 = testConfig
+                .withBackground(createPIFromMatrix(backgroundRegTests))
+                .withRegularizer(4)
+                .build();
+        ShapConfig sk3 = testConfig
+                .withBackground(createPIFromMatrix(backgroundRegTests))
+                .withRegularizer(7)
+                .build();
+        ShapConfig sk4 = testConfig
+                .withBackground(createPIFromMatrix(backgroundRegTests))
+                .withRegularizer(ShapConfig.RegularizerType.AUTO)
+                .build();
+        return List.of(sk0, sk1, sk2, sk3, sk4);
+    }
 
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2, 3 })
@@ -622,7 +622,7 @@ class ShapKernelExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
         RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
         Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
-        ShapConfig skConfig = sks.get(config);
+        ShapConfig skConfig = getSks().get(config);
         ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
         ShapResults shapResults = ske.explainAsync(p, model).get();
         Saliency[] saliencies = shapResults.getSaliencies();
@@ -725,7 +725,6 @@ class ShapKernelExplainerTest {
         RealMatrix data = MatrixUtils.createRealMatrix(generateN(101, 50, "8629"));
         List<PredictionInput> toExplain = createPIFromMatrix(data.getRowMatrix(100).getData());
         List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
-        RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
         Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
         List<PredictionInput> bg = createPIFromMatrix(new double[100][50]);
 
@@ -747,7 +746,6 @@ class ShapKernelExplainerTest {
         RealMatrix data = MatrixUtils.createRealMatrix(generateN(101, 10, "8629"));
         List<PredictionInput> toExplain = createPIFromMatrix(data.getRowMatrix(100).getData());
         List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
-        RealVector predictionOutputVector = MatrixUtilsExtensions.vectorFromPredictionOutput(predictionOutputs.get(0));
         Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
         List<PredictionInput> bg = createPIFromMatrix(new double[100][10]);
 
@@ -766,4 +764,91 @@ class ShapKernelExplainerTest {
         ShapResults shapResultsB = skeB.explainAsync(p, model).get();
         assertEquals(shapResultsNB, shapResultsB);
     }
+
+    @Test
+    void testCategorical() throws ExecutionException, InterruptedException {
+        List<Value> fruits = List.of(
+                new Value("avocado"),
+                new Value("banana"),
+                new Value("carrot"),
+                new Value("dragonfruit"),
+                new Value(""));
+        Random rn = new Random(101);
+
+        List<PredictionInput> data = new ArrayList<>();
+        for (int i = 0; i < 101; i++) {
+            List<Feature> fs = new ArrayList<>();
+            for (int j = 0; j < 8; j++) {
+                fs.add(new Feature(String.format("Fruit %d", j), Type.CATEGORICAL, fruits.get(rn.nextInt(5))));
+            }
+            data.add(new PredictionInput(fs));
+        }
+
+        List<PredictionInput> nulldata = new ArrayList<>();
+        List<Feature> fs = new ArrayList<>();
+        for (int j = 0; j < 8; j++) {
+            fs.add(new Feature(String.format("Fruit %d", j), Type.CATEGORICAL, fruits.get(4)));
+        }
+        nulldata.add(new PredictionInput(fs));
+        List<PredictionInput> bg = nulldata;
+        List<PredictionInput> toExplain = data.subList(100, 101);
+        PredictionProvider model = TestUtils.getCategoricalRegressor();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+        ShapConfig sk = testConfig.copy()
+                .withBackground(bg)
+                .withNSamples(5000)
+                .build();
+        ShapKernelExplainer ske = new ShapKernelExplainer(sk);
+        ShapResults shapResults = ske.explainAsync(p, model).get();
+
+        assertEquals(25, shapResults.getSaliencies()[0].getPerFeatureImportance().get(0).getScore(), 1e-6);
+        assertEquals(61, shapResults.getSaliencies()[0].getPerFeatureImportance().get(1).getScore(), 1e-6);
+        assertEquals(1, shapResults.getSaliencies()[1].getPerFeatureImportance().get(0).getScore(), 1e-6);
+        assertEquals(1, shapResults.getSaliencies()[1].getPerFeatureImportance().get(1).getScore(), 1e-6);
+    }
+
+    @Test
+    void testCategoricalCollisions() throws ExecutionException, InterruptedException {
+        List<Value> fruits = List.of(
+                new Value("avocado"),
+                new Value("banana"),
+                new Value("carrot"),
+                new Value("dragonfruit"),
+                new Value(""));
+        Random rn = new Random(101);
+
+        List<PredictionInput> data = new ArrayList<>();
+        for (int i = 0; i < 101; i++) {
+            List<Feature> fs = new ArrayList<>();
+            for (int j = 0; j < 8; j++) {
+                fs.add(new Feature(String.format("Fruit_OHE_%d", j), Type.CATEGORICAL, fruits.get(rn.nextInt(5))));
+            }
+            data.add(new PredictionInput(fs));
+        }
+
+        List<PredictionInput> nulldata = new ArrayList<>();
+        List<Feature> fs = new ArrayList<>();
+        for (int j = 0; j < 8; j++) {
+            fs.add(new Feature(String.format("Fruit_OHE_%d", j), Type.CATEGORICAL, fruits.get(4)));
+        }
+        nulldata.add(new PredictionInput(fs));
+        List<PredictionInput> bg = nulldata;
+        List<PredictionInput> toExplain = data.subList(100, 101);
+        PredictionProvider model = TestUtils.getCategoricalRegressor();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+        Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+        ShapConfig sk = testConfig.copy()
+                .withBackground(bg)
+                .withNSamples(5000)
+                .build();
+        ShapKernelExplainer ske = new ShapKernelExplainer(sk);
+        ShapResults shapResults = ske.explainAsync(p, model).get();
+
+        assertEquals(25, shapResults.getSaliencies()[0].getPerFeatureImportance().get(0).getScore(), 1e-6);
+        assertEquals(61, shapResults.getSaliencies()[0].getPerFeatureImportance().get(1).getScore(), 1e-6);
+        assertEquals(1, shapResults.getSaliencies()[1].getPerFeatureImportance().get(0).getScore(), 1e-6);
+        assertEquals(1, shapResults.getSaliencies()[1].getPerFeatureImportance().get(1).getScore(), 1e-6);
+    }
+
 }
