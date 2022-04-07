@@ -41,7 +41,7 @@ public abstract class AbstractProcessSvgService implements ProcessSvgService {
     public static final String DEFAULT_ACTIVE_BORDER_COLOR = "#FF0000";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractProcessSvgService.class);
-    private static Path svgDir = Paths.get("META-INF", "processSVG");
+    private static final String SVG_RELATIVE_PATH = "META-INF/processSVG/";
     protected DataIndexClient dataIndexClient;
     protected Optional<String> svgResourcesPath;
     protected String completedColor;
@@ -83,8 +83,7 @@ public abstract class AbstractProcessSvgService implements ProcessSvgService {
     }
 
     protected Optional<String> readFileContentFromClassPath(String fileName) {
-        Path svgFile = svgDir.resolve(fileName);
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(svgFile.toString())) {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(SVG_RELATIVE_PATH + fileName)) {
             if (is == null) {
                 return Optional.empty();
             }
