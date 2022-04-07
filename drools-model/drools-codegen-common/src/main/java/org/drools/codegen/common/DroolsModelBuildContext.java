@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.model.project.codegen.context;
+package org.drools.codegen.common;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
-
-import org.drools.model.project.codegen.template.TemplatedGenerator;
 
 public interface DroolsModelBuildContext {
 
@@ -39,6 +37,10 @@ public interface DroolsModelBuildContext {
         return false;
     }
 
+    default String applicationComponentType() {
+        throw new UnsupportedOperationException();
+    }
+
     Optional<String> getApplicationProperty(String property);
 
     Collection<String> getApplicationProperties();
@@ -51,10 +53,6 @@ public interface DroolsModelBuildContext {
 
     AppPaths getAppPaths();
 
-    /**
-     * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions
-     * (see {@link TemplatedGenerator})
-     */
     String name();
 
     interface Builder {

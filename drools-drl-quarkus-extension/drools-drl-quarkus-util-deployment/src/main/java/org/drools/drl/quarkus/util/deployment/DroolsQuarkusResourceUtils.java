@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.drl.quarkus.util;
+package org.drools.drl.quarkus.util.deployment;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -29,11 +29,11 @@ import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
-import org.drools.model.project.codegen.GeneratedFile;
-import org.drools.model.project.codegen.GeneratedFileType;
-import org.drools.model.project.codegen.context.AppPaths;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
-import org.drools.model.project.codegen.context.impl.QuarkusDroolsModelBuildContext;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
+import org.drools.codegen.common.AppPaths;
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.model.project.codegen.context.QuarkusDroolsModelBuildContext;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;

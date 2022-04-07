@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.model.project.codegen.context.impl;
+package org.drools.model.project.codegen.context;
 
 public class SpringBootDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
 
@@ -28,6 +28,11 @@ public class SpringBootDroolsModelBuildContext extends AbstractDroolsModelBuildC
     @Override
     public boolean hasDI() {
         return true;
+    }
+
+    @Override
+    public String applicationComponentType() {
+        return "org.springframework.stereotype.Component";
     }
 
     public static Builder builder() {

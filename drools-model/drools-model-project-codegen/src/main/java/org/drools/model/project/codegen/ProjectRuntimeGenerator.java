@@ -28,8 +28,8 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
-import org.drools.model.project.codegen.context.impl.JavaDroolsModelBuildContext;
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.model.project.codegen.context.JavaDroolsModelBuildContext;
 import org.drools.model.project.codegen.template.InvalidTemplateException;
 import org.drools.model.project.codegen.template.TemplatedGenerator;
 import org.drools.modelcompiler.builder.ModelSourceClass;
@@ -61,7 +61,7 @@ public class ProjectRuntimeGenerator {
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Compilation unit doesn't contain a class or interface declaration!"));
 
         if (context.hasDI()) {
-            clazz.addAnnotation("javax.enterprise.context.ApplicationScoped");
+            clazz.addAnnotation(context.applicationComponentType());
         }
 
         writeInitKieBasesMethod(clazz);

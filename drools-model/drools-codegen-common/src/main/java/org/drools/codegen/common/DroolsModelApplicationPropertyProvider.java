@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.model.project.codegen.context;
+package org.drools.codegen.common;
 
 import java.util.Collection;
 import java.util.Optional;

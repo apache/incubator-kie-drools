@@ -17,7 +17,7 @@ package org.drools.model.project.codegen.template;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.codegen.common.DroolsModelBuildContext;
 
 import java.io.InputStream;
 import java.text.MessageFormat;

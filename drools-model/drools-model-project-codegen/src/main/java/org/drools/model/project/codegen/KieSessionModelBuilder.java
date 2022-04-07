@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.kie.api.builder.model.KieBaseModel;
 
