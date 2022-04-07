@@ -115,6 +115,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
     }
 
     private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt, Set<Validation> flags) {
+        LOG.debug("Starting analsysis for DT with id: {}", dt.getId());
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);
@@ -156,6 +157,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             List<PosNegBlock> selectedBlocks = new MCDCAnalyser(ddtaTable, dt).compute();
             analysis.setMCDCSelectedBlocks(selectedBlocks);
         }
+        LOG.debug("Finished analsysis for DT with id: {}", dt.getId());
         return analysis;
     }
 
