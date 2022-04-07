@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,11 +25,9 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,7 +48,6 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
@@ -522,7 +517,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void assertShadowVariablesAreNotStale(Score_ expectedWorkingScore, Object completedAction) {
-        String violationMessage = createShadowVariablesViolationMessage();
+        String violationMessage = variableListenerSupport.createShadowVariablesViolationMessage();
         if (violationMessage != null) {
             throw new IllegalStateException(
                     VariableListener.class.getSimpleName() + " corruption after completedAction ("
@@ -550,7 +545,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
      * @return never null
      */
     protected String buildShadowVariableAnalysis(boolean predicted) {
-        String violationMessage = createShadowVariablesViolationMessage();
+        String violationMessage = variableListenerSupport.createShadowVariablesViolationMessage();
         String workingLabel = predicted ? "working" : "corrupted";
         if (violationMessage == null) {
             return "Shadow variable corruption in the " + workingLabel + " scoreDirector:\n"
@@ -560,66 +555,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 + violationMessage
                 + "  Maybe there is a bug in the " + VariableListener.class.getSimpleName()
                 + " of those shadow variable(s).";
-    }
-
-    /**
-     * @return null if there are no violations
-     */
-    protected String createShadowVariablesViolationMessage() {
-        Map<ShadowVariableDescriptor<Solution_>, List<String>> violationListMap = new TreeMap<>(
-                comparing(ShadowVariableDescriptor::getGlobalShadowOrder));
-        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        Map<Object, Map<ShadowVariableDescriptor<Solution_>, Object>> entityToShadowVariableValuesMap = new IdentityHashMap<>();
-        solutionDescriptor.visitAllEntities(workingSolution, entity -> {
-            EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-            Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor
-                    .getShadowVariableDescriptors();
-            Map<ShadowVariableDescriptor<Solution_>, Object> shadowVariableValuesMap =
-                    new HashMap<>(shadowVariableDescriptors.size());
-            for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : shadowVariableDescriptors) {
-                Object value = shadowVariableDescriptor.getValue(entity);
-                shadowVariableValuesMap.put(shadowVariableDescriptor, value);
-            }
-            entityToShadowVariableValuesMap.put(entity, shadowVariableValuesMap);
-        });
-        variableListenerSupport.forceTriggerAllVariableListeners();
-        solutionDescriptor.visitAllEntities(workingSolution, entity -> {
-            EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-            Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor
-                    .getShadowVariableDescriptors();
-            Map<ShadowVariableDescriptor<Solution_>, Object> shadowVariableValuesMap =
-                    entityToShadowVariableValuesMap.get(entity);
-            for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : shadowVariableDescriptors) {
-                Object newValue = shadowVariableDescriptor.getValue(entity);
-                Object originalValue = shadowVariableValuesMap.get(shadowVariableDescriptor);
-                if (!Objects.equals(originalValue, newValue)) {
-                    List<String> violationList = violationListMap.computeIfAbsent(shadowVariableDescriptor,
-                            k -> new ArrayList<>());
-                    violationList.add("    The entity (" + entity
-                            + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
-                            + ")'s corrupted value (" + originalValue + ") changed to uncorrupted value (" + newValue
-                            + ") after all " + VariableListener.class.getSimpleName()
-                            + "s were triggered without changes to the genuine variables.\n"
-                            + "      Maybe the " + VariableListener.class.getSimpleName() + " class ("
-                            + shadowVariableDescriptor.getVariableListenerClass().getSimpleName()
-                            + ") for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
-                            + ") forgot to update it when one of its sources changed.\n");
-                }
-            }
-        });
-        if (violationListMap.isEmpty()) {
-            return null;
-        }
-        final int SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT = 3;
-        StringBuilder message = new StringBuilder();
-        violationListMap.forEach((shadowVariableDescriptor, violationList) -> {
-            violationList.stream().limit(SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT).forEach(message::append);
-            if (violationList.size() >= SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT) {
-                message.append("  ... ").append(violationList.size() - SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT)
-                        .append(" more\n");
-            }
-        });
-        return message.toString();
     }
 
     @Override
