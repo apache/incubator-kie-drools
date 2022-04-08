@@ -20,10 +20,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class RuleUnitDescriptionTest {
 
@@ -36,24 +38,24 @@ public class RuleUnitDescriptionTest {
 
     @Test
     public void getRuleUnitClass() {
-        Assertions.assertThat(ruleUnitDescr.getRuleUnitClass()).isEqualTo(TestRuleUnit.class);
+        assertThat(ruleUnitDescr.getRuleUnitClass()).isEqualTo(TestRuleUnit.class);
     }
 
     @Test
     public void getRuleUnitName() {
-        Assertions.assertThat(ruleUnitDescr.getRuleUnitName()).isEqualTo(TestRuleUnit.class.getName());
+        assertThat(ruleUnitDescr.getRuleUnitName()).isEqualTo(TestRuleUnit.class.getName());
     }
 
     @Test
     public void getRuleUnitVariable() {
-        Assertions.assertThat(ruleUnitDescr.getVar("number")).isNotNull();
-        Assertions.assertThatThrownBy(() -> ruleUnitDescr.getVar("undefinedField")).isInstanceOf(UndefinedRuleUnitVariableException.class);
+        assertThat(ruleUnitDescr.getVar("number")).isNotNull();
+        assertThatThrownBy(() -> ruleUnitDescr.getVar("undefinedField")).isInstanceOf(UndefinedRuleUnitVariableException.class);
     }
 
     @Test
     public void getEntryPointId() {
         final String entryPointId = ruleUnitDescr.getEntryPointName("nonexisting");
-        Assertions.assertThat(entryPointId).isNotNull();
+        assertThat(entryPointId).isNotNull();
 
         assertEntryPointIdExists("numbersArray");
         assertEntryPointIdExists("number");
@@ -64,7 +66,7 @@ public class RuleUnitDescriptionTest {
     @Test
     public void getDatasourceType() {
         final Optional<Class<?>> dataSourceType = ruleUnitDescr.getDatasourceType("nonexisting");
-        Assertions.assertThat(dataSourceType).isNotPresent();
+        assertThat(dataSourceType).isNotPresent();
 
         assertDataSourceType("strings", String.class);
     }
@@ -72,7 +74,7 @@ public class RuleUnitDescriptionTest {
     @Test
     public void getVarType() {
         final Optional<Class<?>> varType = ruleUnitDescr.getVarType("nonexisting");
-        Assertions.assertThat(varType).isNotPresent();
+        assertThat(varType).isNotPresent();
 
         assertVarType("number", BigDecimal.class);
         assertVarType("numbersArray", Integer[].class);
@@ -82,54 +84,54 @@ public class RuleUnitDescriptionTest {
 
     @Test
     public void hasVar() {
-        Assertions.assertThat(ruleUnitDescr.hasVar("nonexisting")).isFalse();
-        Assertions.assertThat(ruleUnitDescr.hasVar("numbers")).isFalse();
-        Assertions.assertThat(ruleUnitDescr.hasVar("number")).isTrue();
-        Assertions.assertThat(ruleUnitDescr.hasVar("numbersArray")).isTrue();
-        Assertions.assertThat(ruleUnitDescr.hasVar("stringList")).isTrue();
-        Assertions.assertThat(ruleUnitDescr.hasVar("simpleFactList")).isTrue();
+        assertThat(ruleUnitDescr.hasVar("nonexisting")).isFalse();
+        assertThat(ruleUnitDescr.hasVar("numbers")).isFalse();
+        assertThat(ruleUnitDescr.hasVar("number")).isTrue();
+        assertThat(ruleUnitDescr.hasVar("numbersArray")).isTrue();
+        assertThat(ruleUnitDescr.hasVar("stringList")).isTrue();
+        assertThat(ruleUnitDescr.hasVar("simpleFactList")).isTrue();
     }
 
     @Test
     public void getUnitVars() {
         final Collection<String> unitVars = ruleUnitDescr.getUnitVars();
-        Assertions.assertThat(unitVars).isNotEmpty();
-        Assertions.assertThat(unitVars).hasSize(6);
-        Assertions.assertThat(unitVars).containsExactlyInAnyOrder("strings", "bound", "number", "numbersArray", "stringList", "simpleFactList");
+        assertThat(unitVars).isNotEmpty();
+        assertThat(unitVars).hasSize(6);
+        assertThat(unitVars).containsExactlyInAnyOrder("strings", "bound", "number", "numbersArray", "stringList", "simpleFactList");
     }
 
     @Test
     public void getUnitVarAccessors() {
         final Collection<? extends RuleUnitVariable> unitVarAccessors = ruleUnitDescr.getUnitVarDeclarations();
-        Assertions.assertThat(unitVarAccessors).isNotEmpty();
-        Assertions.assertThat(unitVarAccessors).hasSize(6);
-        Assertions.assertThat(unitVarAccessors)
+        assertThat(unitVarAccessors).isNotEmpty();
+        assertThat(unitVarAccessors).hasSize(6);
+        assertThat(unitVarAccessors)
                 .extracting("name", String.class)
                 .containsExactlyInAnyOrder("strings", "bound", "number", "numbersArray", "stringList", "simpleFactList");
     }
 
     @Test
     public void hasDataSource() {
-        Assertions.assertThat(ruleUnitDescr.hasDataSource("nonexisting")).isFalse();
-        Assertions.assertThat(ruleUnitDescr.hasDataSource("numbers")).isFalse();
-        Assertions.assertThat(ruleUnitDescr.hasDataSource("strings")).isTrue();
+        assertThat(ruleUnitDescr.hasDataSource("nonexisting")).isFalse();
+        assertThat(ruleUnitDescr.hasDataSource("numbers")).isFalse();
+        assertThat(ruleUnitDescr.hasDataSource("strings")).isTrue();
     }
 
     private void assertEntryPointIdExists(final String entryPointIdName) {
         final String entryPointId = ruleUnitDescr.getEntryPointName(entryPointIdName);
-        Assertions.assertThat(entryPointId).isNotNull();
-        Assertions.assertThat(TestRuleUnit.class.getName() + "." + entryPointIdName).isEqualTo(entryPointId);
+        assertThat(entryPointId).isNotNull();
+        assertThat(TestRuleUnit.class.getName() + "." + entryPointIdName).isEqualTo(entryPointId);
     }
 
     private void assertDataSourceType(final String dataSourceName, final Class<?> expectedType) {
         final Optional<Class<?>> dataSourceType = ruleUnitDescr.getDatasourceType(dataSourceName);
-        Assertions.assertThat(dataSourceType).isPresent();
-        Assertions.assertThat(expectedType).isEqualTo(dataSourceType.get());
+        assertThat(dataSourceType).isPresent();
+        assertThat(expectedType).isEqualTo(dataSourceType.get());
     }
 
     private void assertVarType(final String varName, final Class<?> expectedType) {
         final Optional<Class<?>> variableTable = ruleUnitDescr.getVarType(varName);
-        Assertions.assertThat(variableTable).isPresent();
-        Assertions.assertThat(expectedType).isEqualTo(variableTable.get());
+        assertThat(variableTable).isPresent();
+        assertThat(expectedType).isEqualTo(variableTable.get());
     }
 }

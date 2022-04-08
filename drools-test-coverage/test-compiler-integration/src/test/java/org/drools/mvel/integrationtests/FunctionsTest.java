@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -34,6 +33,7 @@ import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -84,7 +84,7 @@ public class FunctionsTest {
             ksession.fireAllRules();
             fail( "Should throw an Exception from the Function" );
         } catch ( final Exception e ) {
-            Assertions.assertThat(e.getCause().getMessage()).contains("this should throw an exception");
+            assertThat(e.getCause().getMessage()).contains("this should throw an exception");
         }
     }
 

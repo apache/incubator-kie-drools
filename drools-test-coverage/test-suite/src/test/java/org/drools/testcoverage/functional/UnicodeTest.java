@@ -16,8 +16,12 @@
 
 package org.drools.testcoverage.functional;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
-import org.assertj.core.api.Assertions;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
@@ -40,10 +44,7 @@ import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.utils.KieHelper;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests Drools engine capabilities regarding Unicode characters
@@ -86,9 +87,9 @@ public class UnicodeTest {
         commands.add(kieServices.getCommands().newFireAllRules("firedRulesCount"));
         final ExecutionResults results = ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(results.getValue("firedRulesCount")).isEqualTo(2);
-        Assertions.assertThat(一覧.size()).isEqualTo(1);
-        Assertions.assertThat(一覧.iterator().next().getの名前()).isEqualTo("横綱");
+        assertThat(results.getValue("firedRulesCount")).isEqualTo(2);
+        assertThat(一覧.size()).isEqualTo(1);
+        assertThat(一覧.iterator().next().getの名前()).isEqualTo("横綱");
     }
 
     @Test
@@ -108,15 +109,15 @@ public class UnicodeTest {
         commands.add(kieServices.getCommands().newFireAllRules());
         ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "příliš žluťoučký kůň úpěl ďábelské ódy")).isNotNull();
+        assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "příliš žluťoučký kůň úpěl ďábelské ódy")).isNotNull();
 
         final Map<String, Object> metaData = kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL,
                                                            "příliš žluťoučký kůň úpěl ďábelské ódy").getMetaData();
-        Assertions.assertThat(metaData.get("PrávníPožadavek")).isEqualTo("Osoba starší osmnácti let");
+        assertThat(metaData.get("PrávníPožadavek")).isEqualTo("Osoba starší osmnácti let");
 
-        Assertions.assertThat(lidé.size()).isEqualTo(2);
-        Assertions.assertThat(lidé.get(0).getJméno()).isEqualTo("Řehoř");
-        Assertions.assertThat(lidé.get(1).getJméno()).isEqualTo("Oldřiška");
+        assertThat(lidé.size()).isEqualTo(2);
+        assertThat(lidé.get(0).getJméno()).isEqualTo("Řehoř");
+        assertThat(lidé.get(1).getJméno()).isEqualTo("Oldřiška");
     }
 
     @Test
@@ -137,10 +138,10 @@ public class UnicodeTest {
         commands.add(kieServices.getCommands().newFireAllRules());
         ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "pokusné doménově specifické pravidlo")).isNotNull();
+        assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "pokusné doménově specifické pravidlo")).isNotNull();
 
-        Assertions.assertThat(dospělí.size()).isEqualTo(1);
-        Assertions.assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
+        assertThat(dospělí.size()).isEqualTo(1);
+        assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
     }
 
     @Test
@@ -160,10 +161,10 @@ public class UnicodeTest {
         commands.add(kieServices.getCommands().newFireAllRules());
 
         ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
-        Assertions.assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "přidej k dospělým")).isNotNull();
+        assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "přidej k dospělým")).isNotNull();
 
-        Assertions.assertThat(dospělí.size()).isEqualTo(1);
-        Assertions.assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
+        assertThat(dospělí.size()).isEqualTo(1);
+        assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
     }
 
     @Test
@@ -186,10 +187,10 @@ public class UnicodeTest {
         commands.add(kieServices.getCommands().newFireAllRules());
         ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "pokusné pravidlo rozhodovací tabulky")).isNotNull();
+        assertThat(kbase.getRule(TestConstants.PACKAGE_FUNCTIONAL, "pokusné pravidlo rozhodovací tabulky")).isNotNull();
 
-        Assertions.assertThat(dospělí.size()).isEqualTo(1);
-        Assertions.assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
+        assertThat(dospělí.size()).isEqualTo(1);
+        assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
     }
 
     // test queries in Czech language
@@ -250,11 +251,11 @@ public class UnicodeTest {
         }
 
         // items in the office should be the following
-        Assertions.assertThat(l.size()).isEqualTo(4);
-        Assertions.assertThat(l.contains("stůl")).isTrue();
-        Assertions.assertThat(l.contains("svítilna")).isTrue();
-        Assertions.assertThat(l.contains("obálka")).isTrue();
-        Assertions.assertThat(l.contains("klíč")).isTrue();
+        assertThat(l.size()).isEqualTo(4);
+        assertThat(l.contains("stůl")).isTrue();
+        assertThat(l.contains("svítilna")).isTrue();
+        assertThat(l.contains("obálka")).isTrue();
+        assertThat(l.contains("klíč")).isTrue();
     }
 
     // japanese person
@@ -330,6 +331,6 @@ public class UnicodeTest {
 
         kieSession.insert( "Hello" );
         final int fired = kieSession.fireAllRules();
-        Assertions.assertThat( fired ).isEqualTo( 1 );
+        assertThat( fired ).isEqualTo( 1 );
     }
 }

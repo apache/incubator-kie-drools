@@ -41,16 +41,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.drl.parser.DrlParser;
-import org.drools.drl.parser.DroolsParserException;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
@@ -61,13 +53,14 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
 import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -75,6 +68,12 @@ import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Salience;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.builder.MVELDialectConfiguration;
 import org.drools.mvel.compiler.Address;
@@ -136,6 +135,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -395,7 +395,7 @@ public class Misc2Test {
         final FactHandle mary = ksession.insert(mary33Years);
         final FactHandle elizabeth = ksession.insert(elizabeth35Years);
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(3);
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     private Address producePeopleInCity(final KieSession ksession, final String city, final int countOfPeople) {

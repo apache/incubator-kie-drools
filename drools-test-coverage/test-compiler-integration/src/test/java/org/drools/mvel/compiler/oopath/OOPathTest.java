@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveSet;
 import org.drools.mvel.compiler.oopath.model.Adult;
@@ -54,6 +53,7 @@ import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -142,7 +142,7 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("ball");
+        assertThat(list).containsExactlyInAnyOrder("ball");
     }
 
     @Test
@@ -180,7 +180,7 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
+        assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
     }
 
     @Test
@@ -216,7 +216,7 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).hasSize(4);
+        assertThat(list).hasSize(4);
         Assert.assertEquals( Arrays.asList(new String[] {"t2:12:t2", "t1:12:t1", "t4:8:t4", "t3:8:t3"}),list);
     }
     

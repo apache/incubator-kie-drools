@@ -16,17 +16,18 @@
 package org.drools.mvel.compiler.kie.builder.impl;
 
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
-import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.io.memory.MemoryFolder;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.wiring.api.ResourceProvider;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.memorycompiler.resources.KiePath;
 import org.mockito.Mock;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemoryKieModuleResourceProviderTest {
 
@@ -44,7 +45,7 @@ public class MemoryKieModuleResourceProviderTest {
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
         String folderContents = IOUtils.toString(resourceProvider.getResource("src/main/java").openStream());
-        Assertions.assertThat(folderContents).isEmpty();
+        assertThat(folderContents).isEmpty();
     }
 
     @Test
@@ -58,7 +59,7 @@ public class MemoryKieModuleResourceProviderTest {
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
         String folderContents = IOUtils.toString(resourceProvider.getResource("src/main/java").openStream());
-        Assertions.assertThat(folderContents).hasLineCount(2).contains("com", "org");
+        assertThat(folderContents).hasLineCount(2).contains("com", "org");
     }
 
     @Test
@@ -74,7 +75,7 @@ public class MemoryKieModuleResourceProviderTest {
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
         String folderContents = IOUtils.toString(resourceProvider.getResource("src/main/java").openStream());
-        Assertions.assertThat(folderContents).hasLineCount(4).contains("com", "org", "my-file1", "my-file2");
+        assertThat(folderContents).hasLineCount(4).contains("com", "org", "my-file1", "my-file2");
     }
 
     @Test
@@ -86,7 +87,7 @@ public class MemoryKieModuleResourceProviderTest {
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
         String folderContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/resources/my-file1"));
-        Assertions.assertThat(folderContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
+        assertThat(folderContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
     }
 
     @Test
@@ -100,7 +101,7 @@ public class MemoryKieModuleResourceProviderTest {
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
         String folderContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/java"));
-        Assertions.assertThat(folderContents).hasLineCount(2).contains("com", "org");
+        assertThat(folderContents).hasLineCount(2).contains("com", "org");
     }
 
     @Test
@@ -112,10 +113,10 @@ public class MemoryKieModuleResourceProviderTest {
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
         String noTrailingSlashContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/resources/my-file1"));
-        Assertions.assertThat(noTrailingSlashContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
+        assertThat(noTrailingSlashContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
 
         String withTrailingSlashContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/resources/my-file1/"));
-        Assertions.assertThat(withTrailingSlashContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
+        assertThat(withTrailingSlashContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
     }
 
 }

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
@@ -40,6 +39,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RuleTemplateTest {
@@ -82,7 +83,7 @@ public class RuleTemplateTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
         final Collection<KiePackage> pkgs = kbase.getKiePackages();
 
-        Assertions.assertThat(pkgs.size()).isEqualTo(2);
+        assertThat(pkgs.size()).isEqualTo(2);
 
         final ArrayList<String> names = new ArrayList<String>();
 
@@ -90,12 +91,12 @@ public class RuleTemplateTest {
             names.add(kp.getName());
         }
 
-        Assertions.assertThat(names.contains(TestConstants.PACKAGE_FUNCTIONAL)).isTrue();
-        Assertions.assertThat(names.contains(TestConstants.PACKAGE_TESTCOVERAGE_MODEL)).isTrue();
+        assertThat(names.contains(TestConstants.PACKAGE_FUNCTIONAL)).isTrue();
+        assertThat(names.contains(TestConstants.PACKAGE_TESTCOVERAGE_MODEL)).isTrue();
 
         final KiePackage kiePackage = (KiePackage) pkgs.toArray()[names.indexOf(TestConstants.PACKAGE_FUNCTIONAL)];
 
-        Assertions.assertThat(kiePackage.getRules().size()).isEqualTo(2);
+        assertThat(kiePackage.getRules().size()).isEqualTo(2);
 
         final KieSession ksession = kbase.newKieSession();
 

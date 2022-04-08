@@ -16,7 +16,8 @@
 
 package org.drools.testcoverage.functional;
 
-import org.assertj.core.api.Assertions;
+import java.io.IOException;
+
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests correct behavior of KieRepository, such as adding/removing KieModules.
@@ -71,7 +72,7 @@ public class KieRepositoryTest {
         final KieRepository kieRepository = kieServices.getRepository();
 
         this.createKieModule(releaseId);
-        Assertions.assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should be in KieRepository").isNotNull();
+        assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should be in KieRepository").isNotNull();
     }
 
     /**
@@ -98,11 +99,11 @@ public class KieRepositoryTest {
         final KieRepository kieRepository = kieServices.getRepository();
 
         this.createKieModule(releaseId);
-        Assertions.assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should be in KieRepository").isNotNull();
+        assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should be in KieRepository").isNotNull();
 
 
         kieRepository.removeKieModule(releaseId);
-        Assertions.assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should NOT be in KieRepository").isNull();
+        assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should NOT be in KieRepository").isNull();
     }
 
     /**

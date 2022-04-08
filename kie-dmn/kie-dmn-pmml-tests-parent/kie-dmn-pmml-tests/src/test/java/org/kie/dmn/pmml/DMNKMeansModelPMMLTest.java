@@ -16,7 +16,8 @@
 
 package org.kie.dmn.pmml;
 
-import org.assertj.core.api.Assertions;
+import java.util.Map;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -27,7 +28,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class DMNKMeansModelPMMLTest {
     private static final Logger LOG = LoggerFactory.getLogger(DMNKMeansModelPMMLTest.class);
@@ -42,13 +43,13 @@ public abstract class DMNKMeansModelPMMLTest {
                                                                       "test_kmeans.pmml");
 
         dmnModel = runtime.getModel("https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456", "KMeansDMN");
-        Assertions.assertThat(dmnModel).isNotNull();
-        Assertions.assertThat(dmnModel.hasErrors()).isFalse();
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
 
-        Assertions.assertThat(findCluster(5, 5)).isEqualTo("4");
-        Assertions.assertThat(findCluster(5, -5)).isEqualTo("1");
-        Assertions.assertThat(findCluster(-5, 5)).isEqualTo("3");
-        Assertions.assertThat(findCluster(-5, -5)).isEqualTo("2");
+        assertThat(findCluster(5, 5)).isEqualTo("4");
+        assertThat(findCluster(5, -5)).isEqualTo("1");
+        assertThat(findCluster(-5, 5)).isEqualTo("3");
+        assertThat(findCluster(-5, -5)).isEqualTo("2");
     }
 
     private String findCluster(final int x, final int y) {
@@ -58,8 +59,8 @@ public abstract class DMNKMeansModelPMMLTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        Assertions.assertThat(dmnResult.hasErrors()).isFalse();
-        Assertions.assertThat(dmnResult.getDecisionResultByName("Decision1").getResult()).isNotNull();
+        assertThat(dmnResult.hasErrors()).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Decision1").getResult()).isNotNull();
         final Map<String, Object> decisionResult = (Map<String, Object>) dmnResult.getDecisionResultByName("Decision1").getResult();
         final String clusterName = (String) decisionResult.get("predictedValue");
 

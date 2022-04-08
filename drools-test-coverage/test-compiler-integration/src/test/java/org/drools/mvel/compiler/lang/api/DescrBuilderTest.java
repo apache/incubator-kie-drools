@@ -24,18 +24,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.drl.ast.dsl.DescrFactory;
-import org.drools.drl.ast.dsl.PackageDescrBuilder;
-import org.drools.drl.ast.descr.AttributeDescr;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.dsl.DescrFactory;
+import org.drools.drl.ast.dsl.PackageDescrBuilder;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.DrlDumper;
 import org.drools.mvel.compiler.Cheese;
@@ -53,6 +52,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -274,7 +274,7 @@ public class DescrBuilderTest {
                       pkg.getRules().size() );
 
         String drl = new DrlDumper().dump( pkg );
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
 
         KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.mvel.compiler",

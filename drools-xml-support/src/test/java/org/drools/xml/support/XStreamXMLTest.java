@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
@@ -47,6 +46,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.utll.xml.XStreamUtils.createTrustingXStream;
 
 public class XStreamXMLTest {
@@ -381,7 +381,7 @@ public class XStreamXMLTest {
                           "  </org.drools.xml.support.XStreamXMLTest_-Message>\n" +
                           "  <modifiedProperty value=\"msg\"/>\n" +
                           "</update>";
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
+        assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
 
         UpdateCommand cmd2 = (UpdateCommand) xstream.fromXML(xmlString);
         Assert.assertEquals(factHandle.toExternalForm(), cmd2.getHandle().toExternalForm());
@@ -400,7 +400,7 @@ public class XStreamXMLTest {
                           "    <accept>true</accept>\n" +
                           "  </agendaFilter>\n" +
                           "</fire-all-rules>";
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
+        assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
 
         FireAllRulesCommand cmd2 = (FireAllRulesCommand) xstream.fromXML(xmlString);
         Assert.assertEquals(100, cmd2.getMax());

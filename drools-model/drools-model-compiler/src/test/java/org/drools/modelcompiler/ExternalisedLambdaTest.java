@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.modelcompiler.builder.RuleWriter;
 import org.drools.modelcompiler.domain.Child;
@@ -40,6 +39,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -119,7 +119,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.insert(me);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Mario");
+        assertThat(list).containsExactlyInAnyOrder("Mario");
     }
 
     @Test
@@ -148,7 +148,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.insert(me);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Mario");
+        assertThat(list).containsExactlyInAnyOrder("Mario");
     }
 
     @Test
@@ -178,7 +178,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.insert(new Person("John", 44));
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(43);
+        assertThat(list).containsExactlyInAnyOrder(43);
     }
 
     @Test
@@ -244,7 +244,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.insert(bob);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+        assertThat(list).containsExactlyInAnyOrder("Charles");
     }
 
     @Test
@@ -316,7 +316,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.insert( carl );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+        assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
     @Test

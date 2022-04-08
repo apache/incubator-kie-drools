@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.common.EventSupport;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.event.DefaultRuleRuntimeEventListener;
@@ -56,6 +55,7 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -448,9 +448,9 @@ public class SessionsPoolTest {
         }
         ksession = pool.newKieSession();
         try {
-            Assertions.assertThat(ksession.getAgendaEventListeners()).hasSize(0);
-            Assertions.assertThat(ksession.getRuleRuntimeEventListeners()).hasSize(0);
-            Assertions.assertThat(((EventSupport) ksession).getRuleEventSupport().getEventListeners()).hasSize(0);
+            assertThat(ksession.getAgendaEventListeners()).hasSize(0);
+            assertThat(ksession.getRuleRuntimeEventListeners()).hasSize(0);
+            assertThat(((EventSupport) ksession).getRuleEventSupport().getEventListeners()).hasSize(0);
         } finally {
             ksession.dispose();
         }

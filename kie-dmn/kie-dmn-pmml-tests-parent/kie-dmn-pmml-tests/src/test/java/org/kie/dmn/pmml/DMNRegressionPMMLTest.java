@@ -16,7 +16,8 @@
 
 package org.kie.dmn.pmml;
 
-import org.assertj.core.api.Assertions;
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -27,7 +28,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class DMNRegressionPMMLTest {
 
@@ -38,17 +39,17 @@ public abstract class DMNRegressionPMMLTest {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLRegression.dmn",
                                                                                        DMNRegressionPMMLTest.class,
                                                                                        "test_regression.pmml");
-        Assertions.assertThat(runtime).isNotNull();
-        Assertions.assertThat(evaluateRegressionDecision(runtime, 0.0,0.0, "x")).isEqualTo(BigDecimal.valueOf(-2.5));
-        Assertions.assertThat(evaluateRegressionDecision(runtime, 0.0,0.0, "y")).isEqualTo(BigDecimal.valueOf(3.5));
-        Assertions.assertThat(evaluateRegressionDecision(runtime, 3.0,2.0, "y")).isEqualTo(BigDecimal.valueOf(52.5));
-        Assertions.assertThat(evaluateRegressionDecision(runtime, 5.0,-1.0, "x")).isEqualTo(BigDecimal.valueOf(120.5));
+        assertThat(runtime).isNotNull();
+        assertThat(evaluateRegressionDecision(runtime, 0.0,0.0, "x")).isEqualTo(BigDecimal.valueOf(-2.5));
+        assertThat(evaluateRegressionDecision(runtime, 0.0,0.0, "y")).isEqualTo(BigDecimal.valueOf(3.5));
+        assertThat(evaluateRegressionDecision(runtime, 3.0,2.0, "y")).isEqualTo(BigDecimal.valueOf(52.5));
+        assertThat(evaluateRegressionDecision(runtime, 5.0,-1.0, "x")).isEqualTo(BigDecimal.valueOf(120.5));
     }
 
     private BigDecimal evaluateRegressionDecision(final DMNRuntime runtime, final Double fld1, final Double fld2, final String fld3) {
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456", "TestRegressionDMN");
-        Assertions.assertThat(dmnModel).isNotNull();
-        Assertions.assertThat(dmnModel.hasErrors()).isFalse();
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
 
         final DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("fld1", fld1);
@@ -57,11 +58,11 @@ public abstract class DMNRegressionPMMLTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        Assertions.assertThat(dmnResult.hasErrors()).isFalse();
+        assertThat(dmnResult.hasErrors()).isFalse();
 
         final DMNContext resultContext = dmnResult.getContext();
-        Assertions.assertThat(resultContext).isNotNull();
-        Assertions.assertThat(resultContext.get("Decision")).isInstanceOf(BigDecimal.class);
+        assertThat(resultContext).isNotNull();
+        assertThat(resultContext.get("Decision")).isInstanceOf(BigDecimal.class);
         final BigDecimal result = (BigDecimal) resultContext.get("Decision");
 
         return result;

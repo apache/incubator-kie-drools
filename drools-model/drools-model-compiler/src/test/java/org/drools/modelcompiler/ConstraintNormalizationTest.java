@@ -22,12 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Toy;
@@ -35,6 +34,7 @@ import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -446,7 +446,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         ksession.insert(p3);
 
         assertEquals(4, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
+        assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
     }
 
     @Test
@@ -486,7 +486,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         ksession.insert(p3);
 
         assertEquals(4, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
+        assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
     }
 
     @Test

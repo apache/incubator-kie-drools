@@ -16,7 +16,11 @@
 
 package org.kie.pmml.models.drools.tree.tests;
 
-import org.assertj.core.api.Assertions;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,10 +29,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PlanActivityTreeTest extends AbstractPMMLTest {
@@ -79,7 +80,7 @@ public class PlanActivityTreeTest extends AbstractPMMLTest {
 
         Object result = pmml4Result.getResultVariables().get(TARGET_FIELD);
 
-        Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result).isEqualTo(activity);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(activity);
     }
 }

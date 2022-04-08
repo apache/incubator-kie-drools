@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +30,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
@@ -109,31 +109,31 @@ public class MixedMiningTest extends AbstractPMMLTest {
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isEqualTo(expectedResult);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_OCCUPATION)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_OCCUPATION)).isEqualTo(occupation);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isEqualTo(residenceState);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isEqualTo(CONSTANT_OCCUPATION);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+        assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isEqualTo(expectedResult);
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_OCCUPATION)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_OCCUPATION)).isEqualTo(occupation);
+        assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isEqualTo(residenceState);
+        assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isEqualTo(CONSTANT_OCCUPATION);
+        assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
         if (occupation.equals("SKYDIVER")) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("1.0");
+            assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("1.0");
         } else {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("0.0");
+            assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo("0.0");
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
         if (age > 4.2 && age < 30.5) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
         } else if (age >= 114 && age < 250) {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
         } else {
-            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+            assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
         String expected;
         switch (categoricalX) {
             case "red":
@@ -154,9 +154,9 @@ public class MixedMiningTest extends AbstractPMMLTest {
             default:
                 throw new Exception("Unexpected categoricalX " + categoricalX);
         }
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
+        assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
     }
 
     @Test(expected = KiePMMLException.class)

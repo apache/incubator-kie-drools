@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
@@ -31,6 +30,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class IncrementalCompilationTest extends BaseModelTest {
@@ -355,7 +355,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("John"));
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -369,7 +369,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("Paul"));
 
         assertEquals(2, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -378,7 +378,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("George"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("Good bye George");
+        assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
     @Test
@@ -420,7 +420,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("John"));
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -434,7 +434,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("Paul"));
 
         assertEquals(2, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -443,7 +443,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("George"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("Good bye George");
+        assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
     @Test
@@ -491,7 +491,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("John"));
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -506,7 +506,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("Paul"));
 
         assertEquals(2, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -515,7 +515,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("George"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("Good bye George");
+        assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
     @Test
@@ -563,7 +563,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("John"));
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -579,7 +579,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession.insert(new Person("Paul"));
 
         assertEquals(2, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
+        assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -588,7 +588,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("George"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("Good bye George");
+        assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
     @Test
@@ -631,7 +631,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John");
+        assertThat(list).containsExactlyInAnyOrder("John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -647,7 +647,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // re-fire
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
+        assertThat(list).containsExactlyInAnyOrder("John", "John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -656,7 +656,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("John"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("John");
+        assertThat(list2).containsExactlyInAnyOrder("John");
     }
 
     @Test
@@ -699,7 +699,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John");
+        assertThat(list).containsExactlyInAnyOrder("John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -715,7 +715,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // re-fire
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
+        assertThat(list).containsExactlyInAnyOrder("John", "John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -724,7 +724,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("John"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("John");
+        assertThat(list2).containsExactlyInAnyOrder("John");
     }
 
     @Test
@@ -775,7 +775,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John");
+        assertThat(list).containsExactlyInAnyOrder("John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -793,7 +793,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // re-fire
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
+        assertThat(list).containsExactlyInAnyOrder("John", "John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -802,7 +802,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("John"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("John");
+        assertThat(list2).containsExactlyInAnyOrder("John");
     }
 
     @Test
@@ -853,7 +853,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John");
+        assertThat(list).containsExactlyInAnyOrder("John");
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -871,7 +871,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // re-fire
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
+        assertThat(list).containsExactlyInAnyOrder("John", "John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -880,6 +880,6 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.insert(new Person("John"));
 
         assertEquals(1, ksession2.fireAllRules());
-        Assertions.assertThat(list2).containsExactlyInAnyOrder("John");
+        assertThat(list2).containsExactlyInAnyOrder("John");
     }
 }

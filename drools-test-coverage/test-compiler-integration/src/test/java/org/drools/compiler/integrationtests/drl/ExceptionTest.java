@@ -18,7 +18,6 @@ package org.drools.compiler.integrationtests.drl;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -28,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(Parameterized.class)
 public class ExceptionTest {
@@ -71,7 +72,7 @@ public class ExceptionTest {
         try {
             final Cheese brie = new Cheese("brie", 12);
 
-            Assertions.assertThatThrownBy(() -> {
+            assertThatThrownBy(() -> {
                 ksession.insert(brie);
                 ksession.fireAllRules();
             }).hasRootCauseInstanceOf(TestException.class);

@@ -18,13 +18,13 @@ package org.drools.mvel.compiler.kproject;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.ReleaseIdComparator;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertSame;
 import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
 import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
@@ -115,12 +115,12 @@ public class ReleaseIdTest {
     @Test
     public void testResolveVersionPomModelNull() {
         final ReleaseIdImpl releaseId = new ReleaseIdImpl("groupId", "artifactId", "${project.version}");
-        Assertions.assertThat(releaseId.getVersion()).isEqualTo("${project.version}");
+        assertThat(releaseId.getVersion()).isEqualTo("${project.version}");
     }
 
     @Test
     public void testResolveVersionNoProperty() {
         final ReleaseIdImpl releaseId = new ReleaseIdImpl("groupId", "artifactId", "1.0.0");
-        Assertions.assertThat(releaseId.getVersion()).isEqualTo("1.0.0");
+        assertThat(releaseId.getVersion()).isEqualTo("1.0.0");
     }
 }

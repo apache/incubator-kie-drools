@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.FunctionsTest.Pojo;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
@@ -42,6 +41,7 @@ import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -105,7 +105,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+        assertThat(list).containsExactlyInAnyOrder("Charles");
     }
 
     @Test
@@ -138,7 +138,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+        assertThat(list).containsExactlyInAnyOrder("Charles");
     }
 
     @Test
@@ -197,7 +197,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert("Hello World!");
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello World!");
+        assertThat(list).containsExactlyInAnyOrder("received long message: Hello World!");
     }
 
     @Test
@@ -223,7 +223,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert(4);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello!");
+        assertThat(list).containsExactlyInAnyOrder("received long message: Hello!");
     }
 
     @Test
@@ -422,7 +422,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert(john);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(2);
+        assertThat(list).containsExactlyInAnyOrder(2);
     }
 
     @Test
@@ -451,7 +451,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert(john);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Julian", "Sean");
+        assertThat(list).containsExactlyInAnyOrder("Julian", "Sean");
     }
 
     @Test
@@ -501,7 +501,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert(john);
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Dummy");
+        assertThat(list).containsExactlyInAnyOrder("Dummy");
     }
 
     @Test
@@ -522,7 +522,7 @@ public class FromTest extends BaseModelTest {
         ksession.setGlobal("list", list);
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Dummy");
+        assertThat(list).containsExactlyInAnyOrder("Dummy");
     }
 
     @Test
@@ -546,7 +546,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert("John");
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("DummyJohn");
+        assertThat(list).containsExactlyInAnyOrder("DummyJohn");
     }
 
     public static class MyPerson {
@@ -668,7 +668,7 @@ public class FromTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).contains("Toystore1");
+        assertThat(list).contains("Toystore1");
     }
 
     public static class Measurement {
@@ -1036,7 +1036,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert( "B" );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("AA", "AB", "BA", "BB");
+        assertThat(list).containsExactlyInAnyOrder("AA", "AB", "BA", "BB");
     }
 
     @Test

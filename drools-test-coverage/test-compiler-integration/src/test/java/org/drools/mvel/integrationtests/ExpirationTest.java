@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfigurationImpl;
@@ -43,6 +42,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
@@ -496,9 +496,9 @@ public class ExpirationTest {
 
         clock.advanceTime(100, TimeUnit.MILLISECONDS);
 
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
         clock.advanceTime(10, TimeUnit.MILLISECONDS);
-        Assertions.assertThat(kieSession.getObjects()).isEmpty();
+        assertThat(kieSession.getObjects()).isEmpty();
     }
 
     @Test
@@ -560,7 +560,7 @@ public class ExpirationTest {
         kieSession.insert(new DummyEvent(1, currentTime));
         kieSession.insert(new DummyEvent(2, (expired ? currentTime - Duration.ofHours(8).toMillis() : currentTime + Duration.ofHours(8).toMillis())));
 
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     public interface ApplicationEvent { }
@@ -736,7 +736,7 @@ public class ExpirationTest {
         kieSession.insert(new DummyEvent(1, currentTime));
         kieSession.insert(new DummyEvent(2, currentTime - Duration.ofHours(8).toMillis()));
 
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(2);
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -795,7 +795,7 @@ public class ExpirationTest {
         kieSession.insert(event1);
         kieSession.insert(event2);
 
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1016,8 +1016,8 @@ public class ExpirationTest {
 
         kieSession.insert(new DummyEvent(10, currentTime));
 
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(2);
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(0);
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
+        assertThat(kieSession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1065,7 +1065,7 @@ public class ExpirationTest {
 
         kieSession.insert(dummyEvent);
 
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(kieSession.getFactCount()).isEqualTo(0);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.getFactCount()).isEqualTo(0);
     }
 }
