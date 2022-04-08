@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
@@ -63,12 +63,21 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
     }
 
     @Override
-    public Map<Tuple_, Value_> get(Object[] indexProperties) {
+    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
         Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
         if (tupleMap == null) {
-            return Collections.emptyMap();
+            return;
         }
-        return tupleMap;
+        tupleValueMapVisitor.accept(tupleMap);
+    }
+
+    @Override
+    public int countValues(Object[] indexProperties) {
+        Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
+        if (tupleMap == null) {
+            return 0;
+        }
+        return tupleMap.size();
     }
 
 }

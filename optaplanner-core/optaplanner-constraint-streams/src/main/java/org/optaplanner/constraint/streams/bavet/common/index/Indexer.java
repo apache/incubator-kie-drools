@@ -17,6 +17,8 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
@@ -65,8 +67,22 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
 
     /**
      * @param indexProperties never null
-     * @return never null
+     * @param tupleValueMapEntryVisitor never null
      */
-    Map<Tuple_, Value_> get(Object[] indexProperties);
+    default void visit(Object[] indexProperties, BiConsumer<Tuple_, Value_> tupleValueMapEntryVisitor) {
+        visit(indexProperties, map -> map.forEach(tupleValueMapEntryVisitor));
+    }
+
+    /**
+     * @param indexProperties never null
+     * @param tupleValueMapVisitor never null
+     */
+    void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor);
+
+    /**
+     * @param indexProperties never null
+     * @return number of values across all tuples
+     */
+    int countValues(Object[] indexProperties);
 
 }

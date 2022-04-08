@@ -17,13 +17,13 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.core.impl.score.stream.JoinerType;
@@ -87,12 +87,12 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
     }
 
     @Override
-    public Map<Tuple_, Value_> get(Object[] indexProperties) {
+    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
         int indexPropertyCount = indexProperties.length;
         IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexPropertyCount - 1);
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
         if (comparisonMap == null) {
-            return Collections.emptyMap();
+            return;
         }
         Object comparisonIndexProperty = indexProperties[indexPropertyCount - 1];
         NavigableMap<Object, Map<Tuple_, Value_>> selectedComparisonMap;
@@ -114,13 +114,16 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
                         + ") is not one of the 4 comparison types.");
         }
         if (selectedComparisonMap.isEmpty()) {
-            return Collections.emptyMap();
+            return;
         }
-        Map<Tuple_, Value_> result = new LinkedHashMap<>();
-        for (Map<Tuple_, Value_> map : selectedComparisonMap.values()) {
-            result.putAll(map);
-        }
-        return result;
+        selectedComparisonMap.values().forEach(tupleValueMapVisitor);
+    }
+
+    @Override
+    public int countValues(Object[] indexProperties) {
+        int[] count = new int[1];
+        visit(indexProperties, map -> count[0] += map.size());
+        return count[0];
     }
 
 }

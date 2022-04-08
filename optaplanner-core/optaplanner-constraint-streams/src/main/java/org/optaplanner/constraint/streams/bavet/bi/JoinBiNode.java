@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -76,12 +75,9 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         Object[] indexProperties = mappingA.apply(tupleA.factA);
         tupleA.store[inputStoreIndexA] = indexProperties;
 
-        Map<UniTuple<B>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerB.get(indexProperties);
-        // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
-        Set<BiTuple<A, B>> tupleABSetA = new LinkedHashSet<>(Math.max(16, tupleABSetMapB.size()));
+        Set<BiTuple<A, B>> tupleABSetA = new LinkedHashSet<>();
         indexerA.put(indexProperties, tupleA, tupleABSetA);
-
-        tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
+        indexerB.visit(indexProperties, (tupleB, tupleABSetB) -> {
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, outputStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetA.add(tupleAB);
@@ -100,8 +96,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
         Set<BiTuple<A, B>> tupleABSetA = indexerA.remove(indexProperties, tupleA);
         // Remove tupleABs from the other side
-        Map<UniTuple<B>, Set<BiTuple<A, B>>> tupleABSetMapB = indexerB.get(indexProperties);
-        tupleABSetMapB.forEach((tupleB, tupleABSetB) -> {
+        indexerB.visit(indexProperties, (tupleB, tupleABSetB) -> {
             // TODO Performance: if tupleAB would contain tupleB, do this faster code instead:
             // for (tupleAB : tupleABSetA { tupleABSetMapB.get(tupleAB.tupleB).remove(tupleAB); }
             boolean changed = tupleABSetB.removeAll(tupleABSetA);
@@ -124,12 +119,9 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         Object[] indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
-        Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapA = indexerA.get(indexProperties);
-        // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
-        Set<BiTuple<A, B>> tupleABSetB = new LinkedHashSet<>(Math.max(16, tupleABSetMapA.size()));
+        Set<BiTuple<A, B>> tupleABSetB = new LinkedHashSet<>();
         indexerB.put(indexProperties, tupleB, tupleABSetB);
-
-        tupleABSetMapA.forEach((tupleA, tupleABSetA) -> {
+        indexerA.visit(indexProperties, (tupleA, tupleABSetA) -> {
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, outputStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABSetB.add(tupleAB);
@@ -148,8 +140,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
         Set<BiTuple<A, B>> tupleABSetB = indexerB.remove(indexProperties, tupleB);
         // Remove tupleABs from the other side
-        Map<UniTuple<A>, Set<BiTuple<A, B>>> tupleABSetMapA = indexerA.get(indexProperties);
-        tupleABSetMapA.forEach((tupleA, tupleABSetA) -> {
+        indexerA.visit(indexProperties, (tupleA, tupleABSetA) -> {
             // TODO Performance: if tupleAB would contain tupleA, do this faster code instead:
             // for (tupleAB : tupleABSetB { tupleABSetMapA.get(tupleAB.tupleA).remove(tupleAB); }
             boolean changed = tupleABSetA.removeAll(tupleABSetB);

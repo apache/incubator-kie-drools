@@ -48,8 +48,8 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
     private final int outputStoreSize;
 
-    private final Map<A, Group> groupMap;
-    private final Queue<Group> dirtyGroupQueue;
+    private final Map<A, Group<A, B, ResultContainer_>> groupMap;
+    private final Queue<Group<A, B, ResultContainer_>> dirtyGroupQueue;
 
     public GroupUniToBiNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
             UniConstraintCollector<OldA, ResultContainer_, B> collector,
@@ -67,7 +67,7 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
         dirtyGroupQueue = new ArrayDeque<>(1000);
     }
 
-    private final class Group {
+    private static final class Group<A, B, ResultContainer_> {
         A groupKey;
         ResultContainer_ resultContainer;
         int parentCount = 0;
@@ -81,11 +81,11 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
         }
     }
 
-    private final class GroupPart {
-        Group group;
+    private static final class GroupPart<A, B, ResultContainer_> {
+        Group<A, B, ResultContainer_> group;
         Runnable undoAccumulator;
 
-        public GroupPart(Group group, Runnable undoAccumulator) {
+        public GroupPart(Group<A, B, ResultContainer_> group, Runnable undoAccumulator) {
             this.group = group;
             this.undoAccumulator = undoAccumulator;
         }
@@ -97,11 +97,11 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
                     + tupleOldA.factA + ") was already added in the tupleStore.");
         }
         A groupKey = groupKeyMapping.apply(tupleOldA.factA);
-        Group group = groupMap.computeIfAbsent(groupKey, k -> new Group(groupKey, supplier.get()));
+        Group<A, B, ResultContainer_> group = groupMap.computeIfAbsent(groupKey, k -> new Group<>(k, supplier.get()));
         group.parentCount++;
 
         Runnable undoAccumulator = accumulator.apply(group.resultContainer, tupleOldA.factA);
-        GroupPart groupPart = new GroupPart(group, undoAccumulator);
+        GroupPart<A, B, ResultContainer_> groupPart = new GroupPart<>(group, undoAccumulator);
         tupleOldA.store[groupStoreIndex] = groupPart;
         if (!group.dirty) {
             group.dirty = true;
@@ -110,17 +110,17 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
     }
 
     public void retractA(UniTuple<OldA> tupleOldA) {
-        GroupPart groupPart = (GroupPart) tupleOldA.store[groupStoreIndex];
+        GroupPart<A, B, ResultContainer_> groupPart = (GroupPart<A, B, ResultContainer_>) tupleOldA.store[groupStoreIndex];
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
         tupleOldA.store[groupStoreIndex] = null;
-        Group group = groupPart.group;
+        Group<A, B, ResultContainer_> group = groupPart.group;
         group.parentCount--;
         groupPart.undoAccumulator.run();
         if (group.parentCount == 0) {
-            Group old = groupMap.remove(group.groupKey);
+            Group<A, B, ResultContainer_> old = groupMap.remove(group.groupKey);
             if (old == null) {
                 throw new IllegalStateException("Impossible state: the group for the groupKey ("
                         + group.groupKey + ") doesn't exist in the groupMap.");

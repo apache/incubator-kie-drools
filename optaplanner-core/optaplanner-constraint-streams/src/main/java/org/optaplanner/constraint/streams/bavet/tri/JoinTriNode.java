@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -77,12 +76,9 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         Object[] indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
         tupleAB.store[inputStoreIndexAB] = indexProperties;
 
-        Map<UniTuple<C>, Set<TriTuple<A, B, C>>> tupleABCSetMapC = indexerC.get(indexProperties);
-        // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
-        Set<TriTuple<A, B, C>> tupleABCSetAB = new LinkedHashSet<>(Math.max(16, tupleABCSetMapC.size()));
+        Set<TriTuple<A, B, C>> tupleABCSetAB = new LinkedHashSet<>();
         indexerAB.put(indexProperties, tupleAB, tupleABCSetAB);
-
-        tupleABCSetMapC.forEach((tupleC, tupleABCSetC) -> {
+        indexerC.visit(indexProperties, (tupleC, tupleABCSetC) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
                     outputStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
@@ -102,8 +98,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
         Set<TriTuple<A, B, C>> tupleABCSetAB = indexerAB.remove(indexProperties, tupleAB);
         // Remove tupleABCs from the other side
-        Map<UniTuple<C>, Set<TriTuple<A, B, C>>> tupleABCSetMapB = indexerC.get(indexProperties);
-        tupleABCSetMapB.forEach((tupleC, tupleABCSetC) -> {
+        indexerC.visit(indexProperties, (tupleC, tupleABCSetC) -> {
             // TODO Performance: if tupleABC would contain tupleC, do this faster code instead:
             // for (tupleABC : tupleABCSetAB { tupleABCSetMapB.get(tupleABC.tupleC).remove(tupleABC); }
             boolean changed = tupleABCSetC.removeAll(tupleABCSetAB);
@@ -126,12 +121,9 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         Object[] indexProperties = mappingC.apply(tupleC.factA);
         tupleC.store[inputStoreIndexC] = indexProperties;
 
-        Map<BiTuple<A, B>, Set<TriTuple<A, B, C>>> tupleABCSetMapAB = indexerAB.get(indexProperties);
-        // Use standard initial capacity (16) to grow into, unless we already know more is probably needed
-        Set<TriTuple<A, B, C>> tupleABCSetC = new LinkedHashSet<>(Math.max(16, tupleABCSetMapAB.size()));
+        Set<TriTuple<A, B, C>> tupleABCSetC = new LinkedHashSet<>();
         indexerC.put(indexProperties, tupleC, tupleABCSetC);
-
-        tupleABCSetMapAB.forEach((tupleAB, tupleABCSetAB) -> {
+        indexerAB.visit(indexProperties, (tupleAB, tupleABCSetAB) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
                     outputStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
@@ -151,8 +143,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
         Set<TriTuple<A, B, C>> tupleABCSetC = indexerC.remove(indexProperties, tupleC);
         // Remove tupleABCs from the other side
-        Map<BiTuple<A, B>, Set<TriTuple<A, B, C>>> tupleABCSetMapA = indexerAB.get(indexProperties);
-        tupleABCSetMapA.forEach((tupleAB, tupleABCSetAB) -> {
+        indexerAB.visit(indexProperties, (tupleAB, tupleABCSetAB) -> {
             // TODO Performance: if tupleABC would contain tupleAB, do this faster code instead:
             // for (tupleABC : tupleABCSetC { tupleABCSetMapA.get(tupleABC.tupleAB).remove(tupleABC); }
             boolean changed = tupleABCSetAB.removeAll(tupleABCSetC);

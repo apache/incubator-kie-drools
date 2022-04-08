@@ -22,19 +22,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-class NoneIndexerTest {
+class NoneIndexerTest extends AbstractIndexerTest {
 
     @Test
     void getEmpty() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
-        assertThat(indexer.get(new Object[] {})).isEmpty();
+        assertThat(getTupleMap(indexer)).isEmpty();
     }
 
     @Test
     void putTwice() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[] {}, annTuple, "Ann value");
+        indexer.put(new Object[0], annTuple, "Ann value");
         assertThatThrownBy(() -> indexer.put(new Object[] {}, annTuple, "Ann value"))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -43,27 +43,28 @@ class NoneIndexerTest {
     void removeTwice() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[] {}, annTuple, "Ann value");
+        indexer.put(new Object[0], annTuple, "Ann value");
 
         UniTuple<String> ednaTuple = newTuple("Edna-F-40");
-        assertThatThrownBy(() -> indexer.remove(new Object[] {}, ednaTuple))
+        assertThatThrownBy(() -> indexer.remove(new Object[0], ednaTuple))
                 .isInstanceOf(IllegalStateException.class);
-        assertThat(indexer.remove(new Object[] {}, annTuple))
+        assertThat(indexer.remove(new Object[0], annTuple))
                 .isEqualTo("Ann value");
-        assertThatThrownBy(() -> indexer.remove(new Object[] {}, annTuple))
+        assertThatThrownBy(() -> indexer.remove(new Object[0], annTuple))
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    void get() {
+    void visit() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
 
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[] {}, annTuple, "Ann value");
+        indexer.put(new Object[0], annTuple, "Ann value");
         UniTuple<String> bethTuple = newTuple("Beth-F-30");
-        indexer.put(new Object[] {}, bethTuple, "Beth value");
+        indexer.put(new Object[0], bethTuple, "Beth value");
 
-        assertThat(indexer.get(new Object[] {})).containsOnlyKeys(annTuple, bethTuple);
+        assertThat(getTupleMap(indexer)).containsOnlyKeys(annTuple, bethTuple);
+        assertThat(indexer.countValues(new Object[0])).isEqualTo(2);
     }
 
     private static UniTuple<String> newTuple(String factA) {
