@@ -16,11 +16,16 @@
 
 package org.kie.kogito.jobs.messaging.quarkus.deployment;
 
+import org.kie.kogito.jobs.api.event.CancelJobRequestEvent;
+import org.kie.kogito.jobs.api.event.CreateProcessInstanceJobRequestEvent;
+import org.kie.kogito.jobs.api.event.JobCloudEvent;
+import org.kie.kogito.jobs.api.event.ProcessInstanceContextJobCloudEvent;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
 
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
 class KogitoAddOnJobsMessagingProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
@@ -34,4 +39,17 @@ class KogitoAddOnJobsMessagingProcessor extends RequireCapabilityKogitoAddOnProc
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
     }
+
+    @BuildStep
+    public ReflectiveClassBuildItem eventsApiReflection() {
+        return new ReflectiveClassBuildItem(true,
+                true,
+                true,
+                JobCloudEvent.class.getName(),
+                ProcessInstanceContextJobCloudEvent.class.getName(),
+                CreateProcessInstanceJobRequestEvent.class.getName(),
+                CancelJobRequestEvent.class.getName(),
+                CancelJobRequestEvent.JobId.class.getName());
+    }
+
 }

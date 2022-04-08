@@ -19,6 +19,14 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
     </dependency>
     <dependency>
@@ -80,7 +88,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.jobs.management.events</provides>
+                <provides>org.kie.kogito.addons.jobs.messaging.events</provides>
               </capabilities>
             </configuration>
           </execution>
