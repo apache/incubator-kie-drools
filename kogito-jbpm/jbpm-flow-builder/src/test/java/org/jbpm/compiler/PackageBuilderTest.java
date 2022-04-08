@@ -74,47 +74,6 @@ public class PackageBuilderTest extends AbstractBaseTest {
     }
 
     @Test
-    public void testRuleFlowUpgrade() throws Exception {
-        // Set the system property so that automatic conversion can happen
-        System.setProperty("drools.ruleflow.port",
-                "true");
-
-        InputStream in = this.getClass().getResourceAsStream("/org/jbpm/integrationtests/ruleflow40.rfm");
-        assertNotNull(in);
-
-        builder.addPackage(new PackageDescr("com.sample"));
-
-        builder.addRuleFlow(new InputStreamReader(in));
-        InternalKnowledgePackage pkg = builder.getPackage("com.sample");
-        assertNotNull(pkg);
-
-        Map<String, Process> flows = pkg.getRuleFlows();
-        assertNotNull(flows);
-        assertEquals(1,
-                flows.size());
-
-        assertTrue(flows.containsKey("0"));
-
-        Process p = (Process) flows.get("0");
-        assertTrue(p instanceof WorkflowProcessImpl);
-
-        //now serialization
-        InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn(DroolsStreamUtils.streamOut(pkg));
-        assertNotNull(pkg2);
-
-        flows = pkg2.getRuleFlows();
-        assertNotNull(flows);
-        assertEquals(1,
-                flows.size());
-        assertTrue(flows.containsKey("0"));
-        p = (Process) flows.get("0");
-        assertTrue(p instanceof WorkflowProcessImpl);
-        // Reset the system property so that automatic conversion should not happen
-        System.setProperty("drools.ruleflow.port",
-                "false");
-    }
-
-    @Test
     public void testPackageRuleFlows() throws Exception {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("boo");
         Process rf = new MockRuleFlow("1");

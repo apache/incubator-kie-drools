@@ -151,40 +151,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
-    public void testRuleFlowUpgrade() throws Exception {
-        // Set the system property so that automatic conversion can happen
-        System.setProperty("drools.ruleflow.port",
-                "true");
-
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow40.rfm")));
-
-        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
-        final List<String> list = new ArrayList<String>();
-        kruntime.getKieSession().setGlobal("list",
-                list);
-
-        kruntime.getKieSession().fireAllRules();
-        assertEquals(0,
-                list.size());
-
-        final KogitoProcessInstance processInstance = kruntime.startProcess("0");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                processInstance.getState());
-        assertEquals(4,
-                list.size());
-        assertEquals("Rule1",
-                list.get(0));
-        list.subList(1, 2).contains("Rule2");
-        list.subList(1, 2).contains("Rule3");
-        assertEquals("Rule4",
-                list.get(3));
-        // Reset the system property so that automatic conversion should not happen
-        System.setProperty("drools.ruleflow.port",
-                "false");
-    }
-
-    @Test
     public void testRuleFlowClear() throws Exception {
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("test_ruleflowClear.drl")));
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("test_ruleflowClear.rfm")));

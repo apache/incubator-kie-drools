@@ -42,7 +42,6 @@ import org.drools.mvel.java.JavaDialect;
 import org.jbpm.assembler.DuplicateProcess;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
-import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessNodeBuilder;
 import org.jbpm.process.builder.ProcessNodeBuilderRegistry;
@@ -275,14 +274,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         List<Process> processes = null;
 
         try {
-            String portRuleFlow = System.getProperty("drools.ruleflow.port", "false");
-            Reader portedReader = null;
-            if (portRuleFlow.equalsIgnoreCase("true")) {
-                portedReader = portToCurrentVersion(reader);
-            } else {
-                portedReader = reader;
-            }
-            processes = xmlReader.read(portedReader);
+            processes = xmlReader.read(reader);
             if (processes != null) {
                 // it is possible an xml file could not be parsed, so we need to
                 // stop null pointers
@@ -305,34 +297,6 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         }
 
         return processes;
-    }
-
-    /*************************************************************************
-     * Converts a drools version 4 .rf or .rfm ruleflow to a version 5 .rf.
-     * Version 5 .rf ruleflows are allowed, but are not migrated.
-     * 
-     * @param reader containing any drools 4 .rf or .rfm ruleflow, or a
-     *        version 5 .rf
-     * @return reader containing the input reader in the latest (5) .rf format
-     * @throws Exception
-     ************************************************************************/
-    private Reader portToCurrentVersion(final Reader reader) throws Exception {
-        //Migrate v4 ruleflows to v5
-        String xml = RuleFlowMigrator.convertReaderToString(reader);
-
-        if (RuleFlowMigrator.needToMigrateRFM(xml) || RuleFlowMigrator.needToMigrateRF(xml)) {
-            // Not a current version RFM or RF convert it.
-            xml = RuleFlowMigrator.portRFMToCurrentVersion(xml);
-        }
-        //
-        // Note that we have also return any input v5 ruleflow as
-        // a StringReader since the act of checking it using
-        // convertReaderToString will have read the reader making it
-        // appear empty if read later. As reset is not guaranteed on
-        // all Reader implementation, it is safest to convert the v5
-        // ruleflow string representation to a StringReader as well.
-        //
-        return new StringReader(xml);
     }
 
     private String generateRules(final Process process) {
