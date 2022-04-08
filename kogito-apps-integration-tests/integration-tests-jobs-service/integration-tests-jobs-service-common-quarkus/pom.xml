@@ -10,10 +10,10 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>integration-tests-jobs-service-common</artifactId>
+  <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
 
-  <name>Kogito Apps :: Integration Tests :: Jobs Service :: Common</name>
-  <description>Processes and common classes for integration tests</description>
+  <name>Kogito Apps :: Integration Tests :: Jobs Service :: Common :: Quarkus</name>
+  <description>Common classes for the Quarkus based integration tests</description>
 
   <properties>
     <sonar.exclusions>**/it/*.java,**/test/resources/*.java,**/testcontainers/*.java</sonar.exclusions>
@@ -21,24 +21,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>compile</scope>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>integration-tests-jobs-service-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-test-utils</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -46,15 +34,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-test-utils</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>compile</scope>
     </dependency>
   </dependencies>
-
 </project>

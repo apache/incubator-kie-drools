@@ -9,6 +9,12 @@
   </parent>
   <artifactId>integration-tests-jobs-service-quarkus</artifactId>
   <name>Kogito Apps :: Integration Tests :: Jobs Service :: Quarkus</name>
+  <packaging>pom</packaging>
+
+  <properties>
+    <common.test.resources.skip>true</common.test.resources.skip>
+    <failsafe.include>**/*IT.java</failsafe.include>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -27,11 +33,19 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-jobs-management</artifactId>
+      <artifactId>kogito-addons-quarkus-messaging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -44,6 +58,11 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-jobs-service-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -62,6 +81,11 @@
     </dependency>
   </dependencies>
 
+  <modules>
+    <module>integration-tests-jobs-service-quarkus-management</module>
+    <module>integration-tests-jobs-service-quarkus-messaging</module>
+  </modules>
+
   <build>
     <plugins>
       <plugin>
@@ -73,12 +97,14 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>${common.test.resources.skip}</skip>
               <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.parent.basedir}/integration-tests-jobs-service-common/src/main/resources</directory>
+                  <directory>${common.test.resources.dir}</directory>
                   <includes>
                     <include>**/*.bpmn</include>
+                    <include>**/*.sw.json</include>
                   </includes>
                 </resource>
               </resources>
@@ -91,7 +117,7 @@
         <configuration>
           <filesets>
             <fileset>
-              <directory>${project.basedir}/src/main/resources/kogito/</directory>
+              <directory>${project.basedir}/src/main/resources/org</directory>
               <includes>
                 <include>**</include>
               </includes>

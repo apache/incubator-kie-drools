@@ -1,0 +1,87 @@
+{
+  "id": "switch_state_timeouts",
+  "name": "Switch State Timeouts Test",
+  "version": "1.0",
+  "start": "ChooseOnEvent",
+  "events": [
+    {
+      "name": "visaApprovedEvent",
+      "source": "",
+      "type": "visa_approved_in"
+    },
+    {
+      "name": "visaDeniedEvent",
+      "source": "",
+      "type": "visa_denied_in"
+    },
+    {
+      "name": "sendProcessResultEvent",
+      "kind": "produced",
+      "type": "process_result_event"
+    }
+  ],
+  "states": [
+    {
+      "name": "ChooseOnEvent",
+      "type": "switch",
+      "eventConditions": [
+        {
+          "eventRef": "visaApprovedEvent",
+          "transition": "ApprovedVisa"
+        },
+        {
+          "eventRef": "visaDeniedEvent",
+          "transition": "DeniedVisa"
+        }
+      ],
+      "defaultCondition": {
+        "transition": "HandleNoVisaDecision"
+      },
+      "timeouts": {
+        "eventTimeout": "PT5S"
+      }
+    },
+    {
+      "name": "ApprovedVisa",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "sendApprovedVisaResult",
+          "eventRef": {
+            "triggerEventRef": "sendProcessResultEvent",
+            "data": "{decision: \"Approved\"}"
+          }
+        }
+      ],
+      "end": true
+    },
+    {
+      "name": "DeniedVisa",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "sendDeniedVisaResult",
+          "eventRef": {
+            "triggerEventRef": "sendProcessResultEvent",
+            "data": "{decision: \"Denied\"}"
+          }
+        }
+      ],
+      "end": true
+    },
+    {
+      "name": "HandleNoVisaDecision",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "sendNoDecisionResult",
+          "eventRef": {
+            "triggerEventRef": "sendProcessResultEvent",
+            "data": "{decision: \"NoDecision\"}"
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

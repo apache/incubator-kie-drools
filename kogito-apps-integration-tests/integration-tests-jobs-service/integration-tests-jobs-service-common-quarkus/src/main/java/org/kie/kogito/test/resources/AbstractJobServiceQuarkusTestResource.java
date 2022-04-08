@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.test.resources;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.singletonMap;
+public abstract class AbstractJobServiceQuarkusTestResource<T extends AbstractJobServiceResource> extends ConditionalQuarkusTestResource<T> {
 
-public class KogitoServiceRandomPortSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoServiceRandomPortTestResource> {
+    protected final String serviceUrlProperty;
 
-    public static final String SPRINGBOOT_SERVICE_HTTP_PORT = "server.port";
-
-    public KogitoServiceRandomPortSpringBootTestResource() {
-        super(new KogitoServiceRandomPortTestResource());
+    protected AbstractJobServiceQuarkusTestResource(String serviceUrlProperty, T jobServiceResource) {
+        super(jobServiceResource);
+        this.serviceUrlProperty = serviceUrlProperty;
     }
 
     @Override
     protected Map<String, String> getProperties() {
-        return singletonMap(SPRINGBOOT_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
+        Map<String, String> properties = new HashMap<>();
+        properties.put(serviceUrlProperty, "http://localhost:" + getTestResource().getMappedPort());
+        properties.putAll(getTestResource().getProperties());
+        return properties;
     }
-
 }

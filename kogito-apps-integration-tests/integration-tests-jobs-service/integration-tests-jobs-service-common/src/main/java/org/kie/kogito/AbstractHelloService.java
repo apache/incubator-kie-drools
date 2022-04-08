@@ -31,4 +31,9 @@ public abstract class AbstractHelloService {
         LOGGER.info("Executing {}.bye(\"{}\")", getClass().getName(), input);
         return "Bye " + input;
     }
+
+    public String helloJson(String input) {
+        LOGGER.info("Executing {}.helloJson(\"{}\")", getClass().getName(), input);
+        return "{\"answer\" : \"Hello " + input + "\"}";
+    }
 }

@@ -12,6 +12,7 @@
 
   <modules>
     <module>integration-tests-jobs-service-common</module>
+    <module>integration-tests-jobs-service-common-quarkus</module>
     <module>integration-tests-jobs-service-quarkus</module>
     <module>integration-tests-jobs-service-springboot</module>
   </modules>
@@ -21,6 +22,11 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>integration-tests-jobs-service-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -60,6 +66,7 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
             <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
+            <container.image.kafka>${container.image.kafka}</container.image.kafka>
           </systemPropertyVariables>
           <classesDirectory>${project.build.outputDirectory}</classesDirectory>
         </configuration>

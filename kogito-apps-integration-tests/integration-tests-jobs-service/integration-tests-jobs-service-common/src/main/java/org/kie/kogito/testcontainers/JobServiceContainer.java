@@ -18,9 +18,6 @@ package org.kie.kogito.testcontainers;
 import org.kie.kogito.test.resources.TestResource;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-/**
- * This container wraps Infinispan container
- */
 public class JobServiceContainer extends KogitoGenericContainer<JobServiceContainer> implements TestResource {
 
     public static final String NAME = "jobs-service";
@@ -30,6 +27,8 @@ public class JobServiceContainer extends KogitoGenericContainer<JobServiceContai
         super(NAME);
         addExposedPort(PORT);
         waitingFor(Wait.forLogMessage(".*Listening on:.*", 1));
+        addEnv("QUARKUS_HTTP_PORT", Integer.toString(PORT));
+        addEnv("QUARKUS_LOG_CATEGORY__ORG_KIE_KOGITO_JOBS_SERVICE__LEVEL", "DEBUG");
     }
 
     @Override
@@ -42,4 +41,11 @@ public class JobServiceContainer extends KogitoGenericContainer<JobServiceContai
         return NAME;
     }
 
+    public void setKafkaURL(String kafkaURL) {
+        addEnv("KAFKA_BOOTSTRAP_SERVERS", kafkaURL);
+    }
+
+    public void setQuarkusProfile(String profile) {
+        addEnv("QUARKUS_PROFILE", profile);
+    }
 }
