@@ -29,14 +29,14 @@ import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
-import org.drools.codegen.common.GeneratedFile;
-import org.drools.codegen.common.GeneratedFileType;
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
-import org.drools.model.project.codegen.context.QuarkusDroolsModelBuildContext;
-import org.drools.modelcompiler.builder.JavaParserCompiler;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
+import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
+import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,7 +142,7 @@ public class DroolsQuarkusResourceUtils {
     }
 
     private static JavaCompilerSettings createJavaCompilerSettings(DroolsModelBuildContext context, Collection<ResolvedDependency> dependencies, boolean useDebugSymbols) {
-        JavaCompilerSettings compilerSettings = JavaParserCompiler.getCompiler().createDefaultSettings();
+        JavaCompilerSettings compilerSettings = JavaCompiler.getCompiler().createDefaultSettings();
         compilerSettings.addOption("-proc:none"); // force disable annotation processing
         if (useDebugSymbols) {
             compilerSettings.addOption("-g");

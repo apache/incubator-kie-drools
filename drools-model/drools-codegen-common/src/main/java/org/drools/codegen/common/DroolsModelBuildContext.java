@@ -28,19 +28,6 @@ public interface DroolsModelBuildContext {
     String KOGITO_GENERATE_REST = "kogito.generate.rest";
     String KOGITO_GENERATE_DI = "kogito.generate.di";
 
-    /**
-     * Method to check if dependency injection is available and enabled.
-     * This is platform/classpath specific (e.g. Quarkus) but it can also be explicitly disabled using
-     * kogito.generate.di property
-     */
-    default boolean hasDI() {
-        return false;
-    }
-
-    default String applicationComponentType() {
-        throw new UnsupportedOperationException();
-    }
-
     Optional<String> getApplicationProperty(String property);
 
     Collection<String> getApplicationProperties();

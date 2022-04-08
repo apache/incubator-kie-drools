@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.model.project.codegen.context;
+package org.drools.codegen.common.context;
 
 public class QuarkusDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
 
@@ -23,16 +23,6 @@ public class QuarkusDroolsModelBuildContext extends AbstractDroolsModelBuildCont
 
     protected QuarkusDroolsModelBuildContext(QuarkusKogitoBuildContextBuilder builder) {
         super(builder, /*new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(),  */ CONTEXT_NAME);
-    }
-
-    @Override
-    public boolean hasDI() {
-        return true;
-    }
-
-    @Override
-    public String applicationComponentType() {
-        return "javax.enterprise.context.ApplicationScoped";
     }
 
     public static Builder builder() {
