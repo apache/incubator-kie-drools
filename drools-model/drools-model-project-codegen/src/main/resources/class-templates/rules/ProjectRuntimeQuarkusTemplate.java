@@ -22,6 +22,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 
+@javax.enterprise.context.ApplicationScoped
 public class ProjectRuntime implements KieRuntimeBuilder {
 
     private static final ProjectModel model = new ProjectModel();

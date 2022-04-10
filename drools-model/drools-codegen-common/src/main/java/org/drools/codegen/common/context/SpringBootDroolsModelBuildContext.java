@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.model.project.codegen.context.impl;
+package org.drools.codegen.common.context;
 
 public class SpringBootDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
 
@@ -23,11 +23,6 @@ public class SpringBootDroolsModelBuildContext extends AbstractDroolsModelBuildC
 
     protected SpringBootDroolsModelBuildContext(SpringBootKogitoBuildContextBuilder builder) {
         super(builder, /* new SpringDependencyInjectionAnnotator(), new SpringRestAnnotator(),*/ CONTEXT_NAME);
-    }
-
-    @Override
-    public boolean hasDI() {
-        return true;
     }
 
     public static Builder builder() {

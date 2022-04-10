@@ -49,11 +49,11 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
     }
 
     public static JavaCompiler createNativeCompiler() {
-        return JavaCompilerFactory.loadCompiler(CompilerType.NATIVE, DEFAULT_JAVA_VERSION, "src/main/java/");
+        return JavaCompiler.createNativeCompiler(DEFAULT_JAVA_VERSION);
     }
 
     public static JavaCompiler createEclipseCompiler() {
-        return JavaCompilerFactory.loadCompiler(CompilerType.ECLIPSE, DEFAULT_JAVA_VERSION, "src/main/java/");
+        return JavaCompiler.createEclipseCompiler(DEFAULT_JAVA_VERSION);
     }
 
     @Override

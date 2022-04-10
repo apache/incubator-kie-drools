@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.parser.DroolsError;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;

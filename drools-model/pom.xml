@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>drools-codegen-common</module>
     <module>drools-canonical-model</module>
     <module>drools-model-compiler</module>
     <module>drools-model-project-codegen</module>

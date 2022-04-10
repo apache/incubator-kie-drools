@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>drools-drl-quarkus-util-deployment</module>
     <module>drools-drl-quarkus</module>
     <module>drools-drl-quarkus-deployment</module>
     <module>drools-drl-quarkus-integration-test</module>

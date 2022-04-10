@@ -15,10 +15,6 @@
  */
 package org.drools.model.project.codegen;
 
-import org.drools.modelcompiler.builder.ModelSourceClass;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
-import org.kie.api.builder.model.KieBaseModel;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.modelcompiler.builder.ModelSourceClass;
+import org.kie.api.builder.model.KieBaseModel;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,7 +45,7 @@ public class KieSessionModelBuilder {
         this.modelByKBase = getModelByKBase(packageSources, this.kieBaseModels);
     }
 
-    List<GeneratedFile> generate() {
+    public List<GeneratedFile> generate() {
 
         ModelSourceClass modelSourceClass =
                 new ModelSourceClass(DroolsModelBuilder.DUMMY_RELEASE_ID, kieBaseModels, modelByKBase);

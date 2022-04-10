@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.model.project.codegen.context.impl;
+package org.drools.codegen.common.context;
 
-import org.drools.model.project.codegen.context.AppPaths;
-import org.drools.model.project.codegen.context.DroolsModelApplicationPropertyProvider;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,6 +27,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
+import javax.lang.model.SourceVersion;
+
+import org.drools.codegen.common.AppPaths;
+import org.drools.codegen.common.DroolsModelApplicationPropertyProvider;
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuildContext {
 

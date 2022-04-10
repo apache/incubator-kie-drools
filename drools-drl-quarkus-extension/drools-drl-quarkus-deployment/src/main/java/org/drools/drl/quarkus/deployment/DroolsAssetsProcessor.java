@@ -31,17 +31,17 @@ import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
-import org.drools.model.project.codegen.GeneratedFile;
-import org.drools.model.project.codegen.GeneratedFileType;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.kie.api.io.Resource;
 
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.createDroolsBuildContext;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.dumpFilesToDisk;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.registerResources;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.createDroolsBuildContext;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.dumpFilesToDisk;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.registerResources;
 import static org.drools.model.project.codegen.RuleCodegen.ofResources;
 
 public class DroolsAssetsProcessor {

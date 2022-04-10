@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.drl.quarkus.deployment;
+package org.drools.drl.quarkus.util.deployment;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -21,8 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import org.drools.model.project.codegen.GeneratedFile;
-import org.drools.model.project.codegen.GeneratedFileType;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 
 public class GeneratedFileWriter {
 

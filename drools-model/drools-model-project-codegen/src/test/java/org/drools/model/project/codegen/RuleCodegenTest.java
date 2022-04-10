@@ -24,13 +24,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.DecisionTableProvider;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
-import org.drools.model.project.codegen.context.impl.JavaDroolsModelBuildContext;
-import org.drools.model.project.codegen.context.impl.QuarkusDroolsModelBuildContext;
-import org.drools.model.project.codegen.context.impl.SpringBootDroolsModelBuildContext;
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
+import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
+import org.drools.codegen.common.context.SpringBootDroolsModelBuildContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

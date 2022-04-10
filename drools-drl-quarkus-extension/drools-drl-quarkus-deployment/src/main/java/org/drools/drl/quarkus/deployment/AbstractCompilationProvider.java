@@ -28,8 +28,8 @@ import io.quarkus.deployment.dev.JavaCompilationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
-import static org.drools.drl.quarkus.deployment.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
 
 public abstract class AbstractCompilationProvider extends JavaCompilationProvider {
 

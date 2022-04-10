@@ -18,7 +18,7 @@ package org.drools.model.project.codegen;
 import java.util.NoSuchElementException;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.codegen.common.DroolsModelBuildContext;
 
 public class KogitoKnowledgeBuilderConfigurationImpl extends KnowledgeBuilderConfigurationImpl {
 

@@ -22,6 +22,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 
+@org.springframework.stereotype.Component
 public class ProjectRuntime implements KieRuntimeBuilder {
 
     private static final ProjectModel model = new ProjectModel();

@@ -19,8 +19,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.extensions.DecisionTableFactory;
-import org.drools.model.project.codegen.context.DroolsModelBuildContext;
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
