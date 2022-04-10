@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.codegen.rules;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.rules.SingletonStore;
 
 import com.github.javaparser.ast.CompilationUnit;

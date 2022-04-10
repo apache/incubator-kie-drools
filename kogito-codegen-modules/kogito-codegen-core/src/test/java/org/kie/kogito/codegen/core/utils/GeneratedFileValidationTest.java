@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 
 class GeneratedFileValidationTest {
 

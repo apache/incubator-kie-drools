@@ -26,13 +26,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
 import org.kie.kogito.codegen.VariableInfo;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

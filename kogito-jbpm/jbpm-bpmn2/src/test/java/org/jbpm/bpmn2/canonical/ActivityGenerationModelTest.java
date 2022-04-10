@@ -435,7 +435,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     @Test
     public void testBusinessRuleTaskProcess() throws Exception {
         // This is a workaround to make it compile. A process that includes rules will never execute without a full Kogito context
-        MockClassLoader classLoader = new MockClassLoader("org.kie.kogito.legacy.rules.KieRuntimeBuilder");
+        MockClassLoader classLoader = new MockClassLoader("org.kie.api.runtime.KieRuntimeBuilder");
 
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-BusinessRuleTask.bpmn2")).get(0);
 

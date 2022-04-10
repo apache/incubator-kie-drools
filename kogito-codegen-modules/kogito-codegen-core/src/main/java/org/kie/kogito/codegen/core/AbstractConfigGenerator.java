@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.codegen.core;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.kie.kogito.codegen.api.ConfigGenerator;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 

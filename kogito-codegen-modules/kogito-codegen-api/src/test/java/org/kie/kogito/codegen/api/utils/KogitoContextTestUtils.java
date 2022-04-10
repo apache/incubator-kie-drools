@@ -63,7 +63,7 @@ public class KogitoContextTestUtils {
 
     public static KogitoBuildContext.Builder withLegacyApi(KogitoBuildContext.Builder contextBuilder) {
         return contextBuilder
-                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton("org.kie.kogito.legacy.rules.KieRuntimeBuilder"), emptyList()));
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton("org.kie.api.runtime.KieRuntimeBuilder"), emptyList()));
     }
 
 }

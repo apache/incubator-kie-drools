@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.infinispan.protostream.annotations.ProtoEnumValue;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
@@ -37,7 +38,6 @@ import org.jboss.jandex.Type.Kind;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.Generated;
 import org.kie.kogito.codegen.VariableInfo;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.process.persistence.proto.AbstractProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoEnum;

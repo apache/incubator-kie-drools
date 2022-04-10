@@ -23,12 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.model.project.codegen.KieSessionModelBuilder;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.ApplicationSection;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
@@ -138,13 +139,11 @@ public class RuleCodegen extends AbstractGenerator {
             if (!ruleUnitCodegen.errors().isEmpty()) {
                 throw new RuleCodegenError(ruleUnitCodegen.errors());
             }
-        } else if (context().hasClassAvailable("org.kie.kogito.legacy.rules.KieRuntimeBuilder")) {
+        } else {
+            LOGGER.info("No rule unit is present: generate KieRuntimeBuilder implementation.");
             KieSessionModelBuilder kieSessionModelBuilder =
                     new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
             generatedFiles.addAll(kieSessionModelBuilder.generate());
-
-        } else if (hasRuleFiles()) { // this additional check is necessary because also properties or java files can be loaded
-            throw new IllegalStateException("Found DRL files using legacy API, add org.kie.kogito:kogito-legacy-api dependency to enable it");
         }
 
         return generatedFiles;
@@ -153,10 +152,6 @@ public class RuleCodegen extends AbstractGenerator {
     public RuleCodegen withHotReloadMode() { // fixme this is currently only used in test cases. Drop?
         this.hotReloadMode = true;
         return this;
-    }
-
-    private boolean hasRuleFiles() {
-        return resources.stream().anyMatch(RuleCodegen::isRuleFile);
     }
 
     private static boolean isRuleFile(Resource resource) {

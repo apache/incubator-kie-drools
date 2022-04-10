@@ -18,8 +18,8 @@ package org.kie.kogito.codegen.rules;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;

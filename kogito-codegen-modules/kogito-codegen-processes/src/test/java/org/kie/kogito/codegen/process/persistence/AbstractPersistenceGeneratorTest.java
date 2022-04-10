@@ -20,12 +20,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.AddonsConfig;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshallerGenerator;

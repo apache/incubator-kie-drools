@@ -18,6 +18,8 @@ package org.kie.kogito.codegen.api;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 /**

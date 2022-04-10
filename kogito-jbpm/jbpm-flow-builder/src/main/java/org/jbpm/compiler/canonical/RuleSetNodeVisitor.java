@@ -25,6 +25,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.RuleSetNodeFactory;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.decision.DecisionModels;
@@ -34,8 +35,10 @@ import org.kie.kogito.rules.SingletonStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -44,8 +47,10 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
 
 import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_DECISION;
@@ -87,9 +92,6 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         NameExpr methodScope = new NameExpr(getNodeId(node));
         MethodCallExpr m;
         if (ruleType.isRuleFlowGroup()) {
-            if (!hasClass("org.kie.kogito.legacy.rules.KieRuntimeBuilder")) {
-                throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: the usage of RuleFlowGroup requires org.kie.kogito:kogito-legacy-api dependency");
-            }
             m = handleRuleFlowGroup(ruleType);
         } else if (ruleType.isRuleUnit()) {
             m = handleRuleUnit(variableScope, metadata, node, nodeName, ruleType);
@@ -184,11 +186,20 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
                 new MethodCallExpr(new NameExpr("app"), "config"), "get")
                         .addArgument(new ClassExpr().setType(RuleConfig.class.getCanonicalName()));
 
+        VariableDeclarationExpr configVar = new VariableDeclarationExpr(new ClassOrInterfaceType(null, RuleConfig.class.getCanonicalName()), "ruleConfig");
+        actionBody.addStatement(new AssignExpr(configVar, ruleConfig, AssignExpr.Operator.ASSIGN));
+
         MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(
                 new NameExpr("org.drools.project.model.ProjectRuntime.INSTANCE"), "newKieSession",
-                NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"),
-                        ruleConfig));
-        actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
+                NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession")));
+
+        VariableDeclarationExpr sessionVar = new VariableDeclarationExpr(new ClassOrInterfaceType(null, KieSession.class.getCanonicalName()), "ksession");
+        actionBody.addStatement(new AssignExpr(sessionVar, ruleRuntimeSupplier, AssignExpr.Operator.ASSIGN));
+
+        actionBody.addStatement(new JavaParser().parseStatement("ruleConfig.ruleEventListeners().agendaListeners().forEach(ksession::addEventListener);").getResult().get());
+        actionBody.addStatement(new JavaParser().parseStatement("ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach(ksession::addEventListener);").getResult().get());
+
+        actionBody.addStatement(new ReturnStmt("ksession"));
 
         return new MethodCallExpr("ruleFlowGroup")
                 .addArgument(new StringLiteralExpr(ruleType.getName()))

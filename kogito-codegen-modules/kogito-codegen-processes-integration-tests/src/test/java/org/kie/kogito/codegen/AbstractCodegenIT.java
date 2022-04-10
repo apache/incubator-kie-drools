@@ -30,10 +30,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.api.AddonsConfig;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
@@ -89,7 +89,7 @@ public class AbstractCodegenIT {
                     "import org.drools.modelcompiler.builder.KieBaseBuilder;\n" +
                     "\n" +
                     "\n" +
-                    "public class ProjectRuntime implements org.kie.kogito.legacy.rules.KieRuntimeBuilder {\n" +
+                    "public class ProjectRuntime implements org.kie.api.runtime.KieRuntimeBuilder {\n" +
                     "\n" +
                     "    public static final ProjectRuntime INSTANCE = new ProjectRuntime();\n" +
                     "\n" +
@@ -112,12 +112,6 @@ public class AbstractCodegenIT {
                     "    public KieSession newKieSession(String sessionName) {\n" +
                     "        return null;\n" +
                     "    }\n" +
-                    "\n" +
-                    "    @Override\n" +
-                    "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
-                    "        return null;\n" +
-                    "    }\n" +
-                    "\n" +
                     "}";
 
     static {

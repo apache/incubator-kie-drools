@@ -32,11 +32,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.infinispan.protostream.annotations.ProtoEnumValue;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.Generated;
 import org.kie.kogito.codegen.VariableInfo;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.process.persistence.ExclusionTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

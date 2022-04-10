@@ -21,8 +21,8 @@ import java.util.Properties;
 import java.util.function.Consumer;
 
 import org.assertj.core.api.Assertions;
+import org.drools.codegen.common.GeneratedFile;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 

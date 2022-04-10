@@ -18,6 +18,8 @@ package org.kie.kogito.codegen.api;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.codegen.common.GeneratedFile;
+
 /**
  * A wrapper that allows a generator to return a core information structure, like process, plus an additional
  * set of files to be generated

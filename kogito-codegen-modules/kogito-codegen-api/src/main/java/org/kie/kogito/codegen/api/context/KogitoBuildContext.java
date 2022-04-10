@@ -16,7 +16,6 @@
 package org.kie.kogito.codegen.api.context;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -24,22 +23,17 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.drools.codegen.common.AppPaths;
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.api.rest.RestAnnotator;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.kie.kogito.codegen.api.utils.KogitoCodeGenConstants;
 
-public interface KogitoBuildContext {
-
-    String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
-    String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
-    String KOGITO_GENERATE_REST = "kogito.generate.rest";
-    String KOGITO_GENERATE_DI = "kogito.generate.di";
+public interface KogitoBuildContext extends DroolsModelBuildContext {
 
     static String generateRESTConfigurationKeyForResource(String generatorType) {
         return String.format("%s.%s", KOGITO_GENERATE_REST, generatorType);
@@ -128,21 +122,9 @@ public interface KogitoBuildContext {
         return hasClassAvailable(KogitoCodeGenConstants.OPENAPI_SPEC_CLASS);
     }
 
-    Optional<String> getApplicationProperty(String property);
-
     <T> Optional<T> getApplicationProperty(String property, Class<T> clazz);
 
-    Collection<String> getApplicationProperties();
-
-    void setApplicationProperty(String key, String value);
-
-    String getPackageName();
-
     AddonsConfig getAddonsConfig();
-
-    ClassLoader getClassLoader();
-
-    AppPaths getAppPaths();
 
     /**
      * <strong>Note: This method is on experimental phase. Can disappear in future releases.</strong>
@@ -166,12 +148,6 @@ public interface KogitoBuildContext {
      * @see ContextAttributesConstants for a list of possible attributes
      */
     <T> T getContextAttribute(String key, Class<T> asClass);
-
-    /**
-     * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions
-     * (see {@link TemplatedGenerator})
-     */
-    String name();
 
     Optional<KogitoGAV> getGAV();
 

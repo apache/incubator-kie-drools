@@ -12,7 +12,24 @@
     <artifactId>kogito-quarkus-common-deployment</artifactId>
     <name>Kogito :: Quarkus Extension Common :: Deployment</name>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>kogito-kie-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-drl-quarkus-util-deployment</artifactId>
+        </dependency>
 
         <!-- kogito -->
         <dependency>

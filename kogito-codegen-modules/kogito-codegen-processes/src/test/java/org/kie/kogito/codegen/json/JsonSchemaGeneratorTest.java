@@ -26,13 +26,13 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.jbpm.util.JsonSchemaUtil;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
 import org.kie.kogito.codegen.VariableInfo;
-import org.kie.kogito.codegen.api.GeneratedFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

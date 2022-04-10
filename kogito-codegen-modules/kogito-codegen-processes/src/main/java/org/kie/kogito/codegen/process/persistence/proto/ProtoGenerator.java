@@ -21,8 +21,8 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

@@ -22,21 +22,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.drools.codegen.common.AppPaths;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
 import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.ResourceReader;
@@ -48,7 +47,6 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.maven.dependency.Dependency;
-import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static java.util.stream.Collectors.toList;
@@ -160,32 +158,6 @@ public class KogitoQuarkusResourceUtils {
                 staticResProducer.produce(new AdditionalStaticResourceBuildItem(resoucePath, false));
             }
         }
-    }
-
-    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(
-            KogitoBuildContext context,
-            Collection<ResolvedDependency> dependencies,
-            Collection<GeneratedFile> generatedFiles,
-            boolean useDebugSymbols) throws IOException {
-        Collection<GeneratedFile> javaFiles =
-                generatedFiles.stream()
-                        .filter(f -> f.category() == GeneratedFileType.Category.SOURCE)
-                        .collect(toList());
-
-        if (javaFiles.isEmpty()) {
-            LOGGER.info("No Java source to compile");
-            return Collections.emptyList();
-        }
-
-        InMemoryCompiler inMemoryCompiler =
-                new InMemoryCompiler(
-                        context.getAppPaths().getClassesPaths(),
-                        dependencies,
-                        useDebugSymbols);
-        inMemoryCompiler.compile(javaFiles);
-        return makeBuildItems(
-                context.getAppPaths(),
-                inMemoryCompiler.getTargetFileSystem());
     }
 
     public static IndexView generateAggregatedIndex(IndexView baseIndex, List<KogitoGeneratedClassesBuildItem> generatedKogitoClasses) {

@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.codegen.rules;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 
 import com.github.javaparser.ast.CompilationUnit;

@@ -17,7 +17,7 @@ package org.kie.kogito.quarkus.common.deployment;
 
 import java.util.Collection;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
+import org.drools.codegen.common.GeneratedFile;
 
 import io.quarkus.builder.item.MultiBuildItem;
 

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
+import org.drools.codegen.common.GeneratedFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

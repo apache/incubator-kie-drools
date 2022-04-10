@@ -30,7 +30,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.kie.kogito.codegen.api.GeneratedFile;
+import org.drools.codegen.common.GeneratedFile;
 import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
 

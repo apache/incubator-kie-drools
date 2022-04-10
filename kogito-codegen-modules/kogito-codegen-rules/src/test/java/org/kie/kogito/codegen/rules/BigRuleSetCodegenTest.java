@@ -18,11 +18,11 @@ package org.kie.kogito.codegen.rules;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.drools.codegen.common.GeneratedFile;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -100,7 +100,17 @@
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
+                <artifactId>drools-codegen-common</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
                 <artifactId>drools-canonical-model</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-model-project-codegen</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
             <dependency>
@@ -141,6 +151,11 @@
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-ruleunits-impl</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-drl-quarkus-util-deployment</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
 

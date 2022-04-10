@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
+import org.drools.codegen.common.GeneratedFile;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 
 import com.github.javaparser.ast.CompilationUnit;

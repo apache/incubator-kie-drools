@@ -32,6 +32,8 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -40,8 +42,6 @@ import org.jboss.jandex.Type;
 import org.kie.kogito.Model;
 import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.ProcessContainerGenerator;
@@ -64,7 +64,6 @@ import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceEventBody;
 import org.kie.kogito.event.process.VariableInstanceDataEvent;
 import org.kie.kogito.event.process.VariableInstanceEventBody;
-import org.kie.kogito.quarkus.common.deployment.InMemoryClassLoader;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedClassesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedSourcesBuildItem;
@@ -98,8 +97,8 @@ import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.compileGeneratedSources;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.dumpFilesToDisk;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.generateAggregatedIndex;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.getTargetClassesPath;
