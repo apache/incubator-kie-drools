@@ -46,6 +46,7 @@ import org.drools.modelcompiler.builder.errors.UnsupportedFeatureError;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
+import org.drools.modelcompiler.builder.processors.DeclaredTypeCompilationPhase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
@@ -113,6 +114,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
+        compileGeneratedPojos( packageModels );
         storeGeneratedPojosInPackages( packages );
         buildOtherDeclarations( packages );
         deregisterTypeDeclarations( packages );
@@ -235,21 +237,27 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            generatePOJOs(packageDescr, pkgRegistry);
+            PackageModel model = getPackageModel(packageDescr, pkgRegistry, packageDescr.getName());
+            new DeclaredTypeCompilationPhase(pkgRegistry, packageDescr, model).process();
+            //generatePOJOs(packageDescr, pkgRegistry);
         }
 
+    }
+
+    private void compileGeneratedPojos(Map<String, PackageModel> packageModels) {
         List<GeneratedClassWithPackage> allGeneratedPojos =
                 packageModels.values().stream()
-                             .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
+                             .flatMap(p -> p.getGeneratedPOJOsSource().stream()
+                                     .map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
                         .collect( Collectors.toList());
 
         Map<String, Class<?>> allCompiledClasses = compileType(this, getBuilderConfiguration().getClassLoader(), allGeneratedPojos);
-        ((CanonicalModelBuildContext) getBuildContext()).registerGeneratedPojos(allGeneratedPojos, allCompiledClasses);
+        getBuildContext().registerGeneratedPojos(allGeneratedPojos, allCompiledClasses);
     }
 
     private void storeGeneratedPojosInPackages(Collection<CompositePackageDescr> packages) {
-        Collection<GeneratedClassWithPackage> allGeneratedPojos = ((CanonicalModelBuildContext) getBuildContext()).getAllGeneratedPojos();
-        Map<String, Class<?>> allCompiledClasses = ((CanonicalModelBuildContext) getBuildContext()).getAllCompiledClasses();
+        Collection<GeneratedClassWithPackage> allGeneratedPojos = getBuildContext().getAllGeneratedPojos();
+        Map<String, Class<?>> allCompiledClasses = getBuildContext().getAllCompiledClasses();
 
         for (CompositePackageDescr packageDescr : packages) {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
@@ -305,4 +313,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected BuildContext createBuildContext() {
         return new CanonicalModelBuildContext();
     }
+
+    @Override
+    public CanonicalModelBuildContext getBuildContext() {
+        return (CanonicalModelBuildContext) super.getBuildContext();
+    }
+
 }

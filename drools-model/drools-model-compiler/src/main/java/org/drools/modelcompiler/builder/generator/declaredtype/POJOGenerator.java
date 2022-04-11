@@ -28,6 +28,7 @@ import java.util.Set;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.drools.compiler.builder.impl.BuildResultAccumulator;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
@@ -57,24 +58,24 @@ public class POJOGenerator {
 
     private final static List<Class<?>> MARKER_INTERFACES = Arrays.asList(GeneratedFact.class, AccessibleFact.class);
 
-    private ModelBuilderImpl builder;
+    private BuildResultAccumulator builder;
     private InternalKnowledgePackage pkg;
     private PackageDescr packageDescr;
     private PackageModel packageModel;
 
     private static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
 
-    public POJOGenerator(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public POJOGenerator(BuildResultAccumulator builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         this.builder = builder;
         this.pkg = pkg;
         this.packageDescr = packageDescr;
         this.packageModel = packageModel;
     }
 
-    public static Map<String, Class<?>> compileType(KnowledgeBuilderImpl kbuilder,
+    public static Map<String, Class<?>> compileType(BuildResultAccumulator resultAccumulator,
                                                     ClassLoader packageClassLoader,
                                                     List<GeneratedClassWithPackage> classesWithPackage) {
-        return compileAll(kbuilder, packageClassLoader, classesWithPackage);
+        return compileAll(resultAccumulator, packageClassLoader, classesWithPackage);
     }
 
     public void findPOJOorGenerate() {

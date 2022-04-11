@@ -72,6 +72,8 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
 
     @Override
     public void process() {
+
+        // initPackageRegistries(packages);
         Map<String, Supplier<AnnotationNormalizer>> annotationNormalizers =
                 initAnnotationNormalizers();
 
