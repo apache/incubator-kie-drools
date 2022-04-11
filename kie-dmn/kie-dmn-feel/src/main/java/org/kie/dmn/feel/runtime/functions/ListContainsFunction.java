@@ -33,20 +33,23 @@ public class ListContainsFunction
     public FEELFnResult<Boolean> invoke(@ParameterName("list") List list, @ParameterName("element") Object element) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
-        } else {
-            if (element == null) {
-                return FEELFnResult.ofResult(list.contains(element));
+        }
+        if (element == null) {
+            return FEELFnResult.ofResult(list.contains(element));
+        }
+        Object e = EvalHelper.coerceNumber(element);
+        boolean found = false;
+        ListIterator<?> it = list.listIterator();
+        while (it.hasNext() && !found) {
+            Object next = EvalHelper.coerceNumber(it.next());
+            if (e instanceof String) {
+                found = e.equals(next);
             } else {
-                Object e = EvalHelper.coerceNumber(element);
-                boolean found = false;
-                ListIterator<?> it = list.listIterator();
-                while (it.hasNext() && !found) {
-                    Object next = EvalHelper.coerceNumber(it.next());
-                    found = e.equals(next);
-                }
-                return FEELFnResult.ofResult(found);
+                Boolean dmnEqual = EvalHelper.isEqual(e, next, null);
+                found = dmnEqual != null && dmnEqual;
             }
         }
+        return FEELFnResult.ofResult(found);
     }
 
 }
