@@ -27,7 +27,9 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
+import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
 import java.util.List;
@@ -115,4 +117,9 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
         return buildResultAccumulator.getErrors();
     }
 
+    @Override
+    public KnowledgeBuilderResults getResults(ResultSeverity... severities) {
+        // this is not really used by TypeDeclarationContext!!
+        return buildResultAccumulator.getResults(severities);
+    }
 }

@@ -57,7 +57,6 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.ResourceChange;
 
 import java.io.IOException;
 import java.util.List;
@@ -131,14 +130,14 @@ public class ExplicitCompilerTest {
                 new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry),
                 new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, assemblerContext),
                 new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
-                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, this::filterAcceptsRemoval),
+                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, null),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
                 /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),
-                new FunctionCompiler(packageDescr, packageRegistry, this::filterAccepts, rootClassLoader),
+                new FunctionCompiler(packageDescr, packageRegistry, null, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        this::filterAccepts, this::filterAcceptsRemoval, attributesForPackage, resource, assemblerContext),
-                new ReteCompiler(packageRegistry, packageDescr, kBase, this::filterAccepts),
+                        null, attributesForPackage, resource, assemblerContext),
+                new ReteCompiler(packageRegistry, packageDescr, kBase, null),
                 new ConsequenceCompilationPhase(packageRegistryManager)
         );
 
@@ -169,11 +168,4 @@ public class ExplicitCompilerTest {
 
     }
 
-    private boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
-        return true;
-    }
-
-    private boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
-        return false;
-    }
 }

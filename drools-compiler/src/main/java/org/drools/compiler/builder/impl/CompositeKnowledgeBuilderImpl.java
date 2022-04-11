@@ -234,19 +234,25 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void registerPackageDescr(ResourceDescr resourceDescr, Map<String, CompositePackageDescr> packages, Resource resource, PackageDescr packageDescr) {
-        if (packageDescr != null) {
-            CompositePackageDescr compositePackageDescr = packages.get(packageDescr.getNamespace());
-            if (compositePackageDescr == null) {
-                compositePackageDescr = packageDescr instanceof CompositePackageDescr ?
-                        ( (CompositePackageDescr) packageDescr ) :
-                        new CompositePackageDescr(resource, packageDescr);
-                packages.put(packageDescr.getNamespace(), compositePackageDescr);
-            } else {
-                compositePackageDescr.addPackageDescr(resource, packageDescr);
-            }
-            compositePackageDescr.addFilter( resourceDescr.getFilter() );
+    private void registerPackageDescr(
+            ResourceDescr resourceDescr, Map<String, CompositePackageDescr> packages, Resource resource, PackageDescr packageDescr) {
+        if (packageDescr == null) { return; }
+        CompositePackageDescr compositePackageDescr = packages.get(packageDescr.getNamespace());
+        if (compositePackageDescr == null) {
+            compositePackageDescr = makeCompositePackageDescr(resource, packageDescr);
+            packages.put(packageDescr.getNamespace(), compositePackageDescr);
+        } else {
+            compositePackageDescr.addPackageDescr(resource, packageDescr);
         }
+        compositePackageDescr.addFilter( resourceDescr.getFilter() );
+    }
+
+    private CompositePackageDescr makeCompositePackageDescr(Resource resource, PackageDescr packageDescr) {
+        CompositePackageDescr compositePackageDescr;
+        compositePackageDescr = packageDescr instanceof CompositePackageDescr ?
+                ( (CompositePackageDescr) packageDescr) :
+                new CompositePackageDescr(resource, packageDescr);
+        return compositePackageDescr;
     }
 
     private static class ResourceDescr {

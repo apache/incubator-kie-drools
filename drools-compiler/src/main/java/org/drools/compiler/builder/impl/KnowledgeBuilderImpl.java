@@ -20,6 +20,7 @@ import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
+import org.drools.compiler.builder.impl.processors.CompositePackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
@@ -64,7 +65,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
-import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -154,7 +154,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private int parallelRulesBuildThreshold;
 
-    private final Map<String, Class<?>> globals = new HashMap<>();
+    private final GlobalVariableContext globals = new GlobalVariableContextImpl();
 
     private Resource resource;
 
@@ -795,9 +795,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         List<CompilationPhase> phases = asList(
                 new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
-                new FunctionCompiler(packageDescr, pkgRegistry, this::filterAccepts, rootClassLoader),
+                new FunctionCompiler(packageDescr, pkgRegistry, assetFilter, rootClassLoader),
                 new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        this::filterAccepts, this::filterAcceptsRemoval, packageAttributes, resource, this));
+                        assetFilter, packageAttributes, resource, this));
         phases.forEach(CompilationPhase::process);
         phases.forEach(p -> this.results.addAll(p.getResults()));
     }
@@ -820,7 +820,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     protected void compileRete(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         if (!hasErrors() && this.kBase != null) {
-            ReteCompiler reteCompiler = new ReteCompiler(pkgRegistry, packageDescr, kBase, this::filterAccepts);
+            ReteCompiler reteCompiler = new ReteCompiler(pkgRegistry, packageDescr, kBase, assetFilter);
             reteCompiler.process();
         }
     }
@@ -858,11 +858,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     public boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
         return assetFilter == null || !AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
     }
-
-    private boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
-        return assetFilter != null && AssetFilter.Action.REMOVE.equals(assetFilter.accept(type, namespace, name));
-    }
-
 
     private String getPackageDialect(PackageDescr packageDescr) {
         String dialectName = this.defaultDialect;
@@ -973,7 +968,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 } else {
                     pkg.addGlobal(identifier, type);
                     // this isn't a package merge, it's adding to the rulebase, but I've put it here for convenience
-                    this.globals.put(identifier, type );
+                    this.globals.addGlobal(identifier, type );
                 }
             }
         }
@@ -1017,7 +1012,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         kBase,
                         configuration,
                         typeBuilder,
-                        this::filterAcceptsRemoval,
+                        assetFilter,
                         pkgRegistry,
                         packageDescr);
         packageProcessor.process();
@@ -1025,19 +1020,21 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(this,
+        OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
+                pkgRegistry,
+                packageDescr,
+                globals,
+                this,
                 kBase,
                 configuration,
-                this::filterAcceptsRemoval,
-                pkgRegistry,
-                packageDescr);
+                assetFilter);
         otherDeclarationProcessor.process();
         this.results.addAll(otherDeclarationProcessor.getResults());
     }
 
     protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         GlobalCompilationPhase globalProcessor =
-                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, this, this::filterAcceptsRemoval);
+                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, this, assetFilter);
         globalProcessor.process();
         this.results.addAll(globalProcessor.getResults());
     }
@@ -1153,11 +1150,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public Map<String, Class<?>> getGlobals() {
-        return this.globals;
+        return this.globals.getGlobals();
     }
 
     public void addGlobal(String name, Class<?> type) {
-        globals.put(name, type);
+        this.globals.addGlobal(name, type);
     }
 
     /**
@@ -1487,12 +1484,17 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     protected void doSecondBuildStep( Collection<CompositePackageDescr> packages ) { }
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
-        initPackageRegistries(packages);
-        packages.forEach(packageDescr -> normalizeTypeDeclarationAnnotations(packageDescr, getOrCreatePackageRegistry(packageDescr).getTypeResolver()));
-        buildTypeDeclarations(packages);
-        packages.forEach(packageDescr -> processEntryPointDeclarations(getPackageRegistry(packageDescr.getNamespace()), packageDescr));
-        buildOtherDeclarations(packages);
-        packages.forEach(packageDescr -> normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver()));
+        CompositePackageCompilationPhase compositePackageCompilationPhase =
+                new CompositePackageCompilationPhase(
+                        packages,
+                        pkgRegistryManager,
+                        typeBuilder,
+                        globals,
+                        this, // as DroolsAssemblerContext
+                        results,
+                        kBase,
+                        configuration);
+        compositePackageCompilationPhase.process();
     }
 
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
@@ -1504,34 +1506,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    protected void buildEntryPoints( Collection<CompositePackageDescr> packages ) {
-        for (CompositePackageDescr packageDescr : packages) {
-            processEntryPointDeclarations(getPackageRegistry( packageDescr.getNamespace() ), packageDescr);
-        }
-    }
-
-    protected void buildTypeDeclarations( Collection<CompositePackageDescr> packages ) {
-        Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<>();
-        List<TypeDefinition> unresolvedTypes = new ArrayList<>();
-        List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<>();
-        for (CompositePackageDescr packageDescr : packages) {
-            unsortedDescrs.addAll(packageDescr.getTypeDeclarations());
-            unsortedDescrs.addAll(packageDescr.getEnumDeclarations());
-        }
-
-        getTypeBuilder().processTypeDeclarations( packages, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
-
-        for ( CompositePackageDescr packageDescr : packages ) {
-            for ( ImportDescr importDescr : packageDescr.getImports() ) {
-                getPackageRegistry( packageDescr.getNamespace() ).addImport( importDescr );
-            }
-        }
-    }
-
     protected void buildOtherDeclarations(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
-            setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            setAssetFilter(packageDescr.getFilter());
             processOtherDeclarations( pkgRegistry, packageDescr );
             setAssetFilter(null);
         }
