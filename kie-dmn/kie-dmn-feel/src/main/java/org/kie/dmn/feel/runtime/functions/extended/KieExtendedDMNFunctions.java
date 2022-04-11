@@ -70,6 +70,7 @@ public class KieExtendedDMNFunctions {
                                                                         NNSumFunction.INSTANCE,
 
                                                                         StringJoinFunction.INSTANCE,
+                                                                        RangeFunction.INSTANCE,
 
     };
 
