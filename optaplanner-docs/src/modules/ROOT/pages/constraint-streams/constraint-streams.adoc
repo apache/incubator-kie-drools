@@ -265,6 +265,11 @@ the score.
 The penalty or reward score impact is the constraint weight multiplied by the match weight.
 The default value is `1`.
 
+[NOTE]
+====
+Constraints with zero constraint weight are automatically disabled and do not impose any performance penalty.
+====
+
 The ConstraintStreams API supports many different types of penalties.
 Browse the API in your IDE for the full list of method overloads.
 Here are some examples:
@@ -283,7 +288,6 @@ every matching `Shift` in the constraint stream.
 
 By replacing the keyword `penalize` by `reward` in the name of these building blocks, you get operations that
 affect score in the opposite direction.
-
 
 [[constraintStreamsFilter]]
 === Filtering
@@ -846,7 +850,6 @@ See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> fo
 Constraint streams include the Constraint Verifier unit testing harness.
 To use it, first add a test scoped dependency to the `optaplanner-test` JAR.
 
-
 [[constraintStreamsTestingIsolatedConstraints]]
 === Testing constraints in isolation
 
@@ -933,6 +936,13 @@ Alternatively, you can use a `rewardsWith(...)` call to check for rewards instea
 The method to use here depends on whether the constraint stream in question is terminated with a `penalize` or a
 `reward` building block.
 
+[NOTE]
+====
+`ConstraintVerifier` does not trigger variable listeners.
+It will neither set nor update shadow variables.
+If the tested constraints depend on shadow variables,
+it is your responsibility to assign the correct values beforehand.
+====
 
 [[constraintStreamsTestingAllConstraints]]
 === Testing all constraints together
@@ -962,6 +972,16 @@ from the given facts.
 
 Using this method, you ensure that the constraint provider does not miss any constraints and that the scoring function
 remains consistent as your code base evolves.
+It is therefore necessary for the `given(...)` method to list all planning entities and problem facts,
+or provide the entire planning solution instead.
+
+[NOTE]
+====
+`ConstraintVerifier` does not trigger variable listeners.
+It will neither set nor update shadow variables.
+If the tested constraints depend on shadow variables,
+it is your responsibility to assign the correct values beforehand.
+====
 
 [[constraintStreamsTestingQuarkus]]
 === Testing in Quarkus

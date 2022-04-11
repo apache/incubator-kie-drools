@@ -416,7 +416,8 @@ After five seconds, the `main()` method loads the problem, solves it, and prints
         printTimetable(solution);
 ----
 
-The `solve()` method doesn't return instantl. It runs for five seconds before returning the best solution.
+The `solve()` method doesn't return instantly.
+It runs for five seconds before returning the best solution.
 
 OptaPlanner returns _the best solution_ found in the available termination time.
 Due to xref:optimization-algorithms/optimization-algorithms.adoc#doesPlannerFindTheOptimalSolution[the nature of NP-hard problems],
@@ -541,6 +542,8 @@ Notice how `ConstraintVerifier` ignores the constraint weight during testing - e
 if those constraint weights are hard coded in the `ConstraintProvider` - because
 constraints weights change regularly before going into production.
 This way, constraint weight tweaking does not break the unit tests.
+
+For more, see xref:constraint-streams/constraint-streams.adoc#constraintStreamsTesting[Testing Constraint Streams].
 
 === Logging
 
