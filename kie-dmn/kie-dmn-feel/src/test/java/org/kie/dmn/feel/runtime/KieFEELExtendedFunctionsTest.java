@@ -114,6 +114,18 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "time(10, 20, 30)", LocalTime.of(10, 20, 30), null },
                 { "date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},
                 { "date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},
+                { "range(\"[1..10]\")", Range.class, null },
+                { "range(\"[1..10]\").start included", true, null },
+                { "range(\"[1..10]\").end included", true, null },
+                { "range(\"[1..10]\").start", new BigDecimal("1"), null },
+                { "range(\"[1..10]\").end", new BigDecimal("10"), null },
+                { "range(\"(1..10]\").start included", false, null },
+                { "range(\"]1..10]\").start included", false, null },
+                { "range(\"[1..10)\").end included", false, null },
+                { "range(\"[1..10[\").end included", false, null },
+                { "range(\"[date(\\\"2022-01-01\\\")..date(\\\"2023-01-01\\\"))\")", Range.class, null },
+                { "range(\"[date(\\\"2022-01-01\\\")..date(\\\"2023-01-01\\\"))\").end included", false, null },
+                { "range(\"[date(\\\"2022-01-01\\\")..date(\\\"2023-01-01\\\"))\").end.year", new BigDecimal("2023"), null },
         };
         return addAdditionalParameters(cases, true);
     }
