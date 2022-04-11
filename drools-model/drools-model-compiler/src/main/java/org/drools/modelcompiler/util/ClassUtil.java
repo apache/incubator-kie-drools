@@ -19,6 +19,8 @@ package org.drools.modelcompiler.util;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,25 @@ import org.drools.core.util.MethodUtils;
 public class ClassUtil {
 
     private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = Collections.synchronizedMap( new WeakHashMap<>() );
+    private static final Map<Class<?>, List<String>> PRIMITIVE_WRAPPER_PROPS_CACHE = Collections.synchronizedMap( new WeakHashMap<>() );
+
+    static {
+        List<String> numberValueMethods = new ArrayList<>();
+        numberValueMethods.add("byteValue");
+        numberValueMethods.add("shortValue");
+        numberValueMethods.add("intValue");
+        numberValueMethods.add("longValue");
+        numberValueMethods.add("floatValue");
+        numberValueMethods.add("doubleValue");
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Integer.class, numberValueMethods);
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Long.class, numberValueMethods);
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Double.class, numberValueMethods);
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Float.class, numberValueMethods);
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Short.class, numberValueMethods);
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Byte.class, numberValueMethods);
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Character.class, Arrays.asList("charValue"));
+        PRIMITIVE_WRAPPER_PROPS_CACHE.put(Boolean.class, Arrays.asList("booleanValue"));
+    }
 
     public static String asJavaSourceName( Class<?> clazz ) {
         return clazz.getCanonicalName().replace( '.', '_' );
@@ -38,8 +59,33 @@ public class ClassUtil {
         return getAccessibleProperties( clazz ).contains( prop );
     }
 
+    // Used for property reactivity. Primitive wrapper class doesn't return immutable property (e.g. "intValue")
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
         return ACCESSIBLE_PROPS_CACHE.computeIfAbsent( clazz, org.drools.core.util.ClassUtils::getAccessibleProperties );
+    }
+
+    public static boolean isAccessiblePropertiesIncludingPrimitiveWrapper( Class<?> clazz, String prop ) {
+        return getAccessiblePropertiesIncludingPrimitiveWrapper( clazz ).contains( prop );
+    }
+
+    // Used for DomainClassMetadata and index. Primitive wrapper class' immutable property (e.g. "intValue") can be indexed
+    public static List<String> getAccessiblePropertiesIncludingPrimitiveWrapper( Class<?> clazz ) {
+        if (isPrimitiveWrapper(clazz)) {
+            return PRIMITIVE_WRAPPER_PROPS_CACHE.get(clazz);
+        } else {
+            return getAccessibleProperties(clazz);
+        }
+    }
+
+    private static boolean isPrimitiveWrapper(Class<?> clazz) {
+        return clazz == Integer.class ||
+               clazz == Long.class ||
+               clazz == Double.class ||
+               clazz == Float.class ||
+               clazz == Short.class ||
+               clazz == Byte.class ||
+               clazz == Character.class ||
+               clazz == Boolean.class;
     }
 
     public static Type boxTypePrimitive(Type type) {
