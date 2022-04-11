@@ -102,7 +102,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_O
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
-import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.getReadableProperties;
 
 public class PackageModel {
 
@@ -873,8 +873,8 @@ public class PackageModel {
         );
         for (Class<?> domainClass : domainClasses) {
             String domainClassSourceName = asJavaSourceName( domainClass );
-            List<String> accessibleProperties = getAccessibleProperties( domainClass );
-            accessibleProperties = accessibleProperties.stream().distinct().collect(Collectors.toList());
+            List<String> readableProperties = getReadableProperties( domainClass );
+            readableProperties = readableProperties.stream().distinct().collect(Collectors.toList());
             sb.append( "    public static final " + DomainClassMetadata.class.getCanonicalName() + " " + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE + " = new " + domainClassSourceName+ "_Metadata();\n" );
             sb.append( "    private static class " + domainClassSourceName + "_Metadata implements " + DomainClassMetadata.class.getCanonicalName() + " {\n\n" );
             sb.append(
@@ -885,14 +885,14 @@ public class PackageModel {
                     "\n" +
                     "        @Override\n" +
                     "        public int getPropertiesSize() {\n" +
-                    "            return " + accessibleProperties.size() + ";\n" +
+                    "            return " + readableProperties.size() + ";\n" +
                     "        }\n\n" +
                     "        @Override\n" +
                     "        public int getPropertyIndex( String name ) {\n" +
                     "            switch(name) {\n"
             );
-            for (int i = 0; i < accessibleProperties.size(); i++) {
-                sb.append( "                case \"" + accessibleProperties.get(i) + "\": return " + i + ";\n" );
+            for (int i = 0; i < readableProperties.size(); i++) {
+                sb.append( "                case \"" + readableProperties.get(i) + "\": return " + i + ";\n" );
             }
             sb.append(
                     "             }\n" +

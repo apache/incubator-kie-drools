@@ -29,6 +29,7 @@ import org.drools.core.util.MethodUtils;
 public class ClassUtil {
 
     private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = Collections.synchronizedMap( new WeakHashMap<>() );
+    private static final Map<Class<?>, List<String>> READABLE_PROPS_CACHE = Collections.synchronizedMap( new WeakHashMap<>() );
 
     public static String asJavaSourceName( Class<?> clazz ) {
         return clazz.getCanonicalName().replace( '.', '_' );
@@ -40,6 +41,14 @@ public class ClassUtil {
 
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
         return ACCESSIBLE_PROPS_CACHE.computeIfAbsent( clazz, org.drools.core.util.ClassUtils::getAccessibleProperties );
+    }
+
+    public static boolean isReadableProperties( Class<?> clazz, String prop ) {
+        return getReadableProperties( clazz ).contains( prop );
+    }
+
+    public static List<String> getReadableProperties( Class<?> clazz ) {
+        return READABLE_PROPS_CACHE.computeIfAbsent( clazz, org.drools.core.util.ClassUtils::getReadableProperties );
     }
 
     public static Type boxTypePrimitive(Type type) {

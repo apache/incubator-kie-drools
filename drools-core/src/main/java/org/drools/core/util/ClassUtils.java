@@ -74,6 +74,8 @@ public final class ClassUtils {
 
     private static final Map<String, Class<?>> primitiveNameToType;
 
+    private static final Set<String> numberValueMethodNames;
+
     static {
         final Map<String, String> m = new HashMap<>();
         m.put("int", "I");
@@ -101,6 +103,15 @@ public final class ClassUtils {
         m2.put("double", double.class);
         m2.put("char", char.class);
         primitiveNameToType = Collections.unmodifiableMap(m2);
+
+        final Set<String> methodNames = new HashSet<>();
+        methodNames.add("byteValue");
+        methodNames.add("shortValue");
+        methodNames.add("intValue");
+        methodNames.add("longValue");
+        methodNames.add("floatValue");
+        methodNames.add("doubleValue");
+        numberValueMethodNames = Collections.unmodifiableSet(methodNames);
     }
 
     static {
@@ -425,6 +436,7 @@ public final class ClassUtils {
         return null;
     }
 
+    // Used by property reactivity
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
         Set<PropertyInClass> props = new TreeSet<>();
         for (Method m : clazz.getMethods()) {
@@ -449,6 +461,24 @@ public final class ClassUtils {
             accessibleProperties.add(setter.setter);
         }
         return accessibleProperties;
+    }
+
+    // Used by DomainClassMetadata and exec-model index
+    public static List<String> getReadableProperties(Class<?> clazz) {
+        List<String> readableProperties = new ArrayList<>();
+
+        if (Number.class.isAssignableFrom(clazz) && !clazz.equals(Number.class)) {
+            // subclasses of Number
+            for (Method m : clazz.getMethods()) {
+                String methodName = m.getName();
+                if (numberValueMethodNames.contains(methodName)) {
+                    readableProperties.add(methodName);
+                }
+            }
+            return readableProperties;
+        } else {
+            return getAccessibleProperties(clazz);
+        }
     }
 
     public static Field getField(Class<?> clazz, String field) {
