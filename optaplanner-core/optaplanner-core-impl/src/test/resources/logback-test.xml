@@ -12,8 +12,6 @@
   <logger name="org.drools" level="${logback.level.org.drools:-warn}"/>
   <!-- To override the info log level from the command line, use the VM option "-Dlogback.level.org.optaplanner=trace" -->
   <logger name="org.optaplanner" level="${logback.level.org.optaplanner:-info}"/>
-  <!-- TODO This logback-test.xml accidentally overwrites optaplanner-examples' logback-test.xml file
-      because there is test-jar dependency from optaplanner-examples to optaplanner-core -->
   <!-- Don't pollute the test log with a stacktrace -->
   <logger name="org.optaplanner.benchmark.impl.DefaultPlannerBenchmark.singleBenchmarkRunnerException" level="error"/>
 

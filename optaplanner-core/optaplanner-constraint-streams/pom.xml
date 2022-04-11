@@ -22,7 +22,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <java.module.name>org.optaplanner.constraint.drl</java.module.name>
+    <java.module.name>org.optaplanner.constraint.streams</java.module.name>
   </properties>
 
   <dependencies>

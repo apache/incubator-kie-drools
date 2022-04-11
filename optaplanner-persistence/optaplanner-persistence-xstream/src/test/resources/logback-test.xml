@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  In an IDE build, this file may conflict on the classpath with logback-test.xml from optaplanner-core-impl test-jar.
+  In a direct Maven build, we exclude these files from our JARs, and therefore this will not be an issue.
+-->
 <configuration>
 
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
