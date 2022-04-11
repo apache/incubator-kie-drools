@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -237,5 +238,22 @@ public class DynamicDMNContextBuilderTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("A").getResult(), is("inBinC"));
+    }
+    
+    @Test
+    public void testFloatFromREST() throws Exception {
+        final DMNRuntime runtime = createRuntime("numberRESTinLIST.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_91CAD4BC-859F-465A-9294-300EABF4EC8A", "numberRESTinLIST");
+        Assertions.assertThat(dmnModel).isNotNull();
+        Assertions.assertThat(dmnModel.hasErrors()).describedAs(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        DMNContext context = runtime.newContext();
+        final String JSON = "{ \"a number\": 3.0 }";
+        new DynamicDMNContextBuilder(context, dmnModel).populateContextWith(readJSON(JSON));
+        
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        Assertions.assertThat(dmnResult.hasErrors()).describedAs(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        Assertions.assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).isEqualTo("OK");
     }
 }

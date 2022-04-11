@@ -18,7 +18,6 @@ package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.Period;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -230,6 +229,8 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "{a: -2, r: -sum( 1, -a, 3 )}.r", BigDecimal.valueOf( -6 ) , null},
                 { "{a: -2, r: 0-sum( 1, -abs(a), 3 )}.r", BigDecimal.valueOf( -2 ) , null},
                 { "{a: -2, r: -sum( 1, -abs(a), 3 )}.r", BigDecimal.valueOf( -2 ) , null},
+                { "if list contains ([2.2, 3.0, 4.0], 3) then \"OK\" else \"NOT_OK\"", "OK" , null},
+                { "if list contains ([2.2, 3, 4], 3.000) then \"OK\" else \"NOT_OK\"", "OK" , null},
         };
         return addAdditionalParameters(cases, false);
     }
