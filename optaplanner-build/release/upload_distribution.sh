@@ -3,7 +3,7 @@
 function display_help() {
   readonly script_name="./$(basename "$0")"
 
-  echo "This script uploads the documentation and javadocs to the filemgmt.jboss.org."
+  echo "This script uploads the documentation and javadocs to the filemgmt-prod.jboss.org."
   echo "Make sure the OptaPlanner project has been build with the full profile enabled before calling this script."
   echo
   echo "Usage:"
@@ -42,7 +42,7 @@ if [[ $# -ne 2 ]]; then
   exit 1
 fi
 
-readonly remote_optaplanner_docs=optaplanner@filemgmt.jboss.org:/docs_htdocs/optaplanner
+readonly remote_optaplanner_docs=optaplanner@filemgmt-prod-sync.jboss.org:/docs_htdocs/optaplanner
 
 readonly version=$1
 readonly optaplanner_ssh_key=$2
@@ -72,6 +72,6 @@ mkdir -p "$local_optaplanner_docs/$version/optaplanner-javadoc"
 cp -r "$optaplanner_docs_build_dir/optaplanner-docs-$version"/* "$local_optaplanner_docs/$version/optaplanner-docs"
 cp -r "$optaplanner_javadoc_build_dir/aggregated-javadocs/apidocs"/* "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
-readonly remote_shell="ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -i $optaplanner_ssh_key"
+readonly remote_shell="ssh -p 2222 -i $optaplanner_ssh_key"
 create_latest_symlinks "$local_optaplanner_docs" "$version"
 rsync -a -r -e "$remote_shell" --protocol=28 "$local_optaplanner_docs/.." "$remote_optaplanner_docs"
