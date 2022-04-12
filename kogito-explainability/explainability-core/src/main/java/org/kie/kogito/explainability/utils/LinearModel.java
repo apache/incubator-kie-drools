@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.utils;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,19 +30,22 @@ import org.slf4j.LoggerFactory;
 public class LinearModel {
 
     private static final Logger logger = LoggerFactory.getLogger(LinearModel.class);
-    private static final double GOOD_LOSS_THRESHOLD = 0.1;
-    private static final int MAX_NO_EPOCHS = 15;
-    private static final double INITIAL_LEARNING_RATE = 0.01;
-    private static final double DECAY_RATE = 0.01;
+    private static final double GOOD_LOSS_THRESHOLD = 1e-2;
+    private static final int MAX_NO_EPOCHS = 50;
+    private static final double INITIAL_LEARNING_RATE = 1e-1;
+    private static final double DECAY_RATE = 1e-5;
 
     private final double[] weights;
     private final boolean classification;
     private double bias;
 
-    public LinearModel(int size, boolean classification) {
+    public LinearModel(int size, boolean classification, Random random) {
         this.bias = 0;
-        this.weights = new double[size];
         this.classification = classification;
+        this.weights = new double[size];
+        for (int i = 0; i < size; i++) {
+            this.weights[i] = random.nextGaussian();
+        }
     }
 
     public double fit(Collection<Pair<double[], Double>> trainingSet) {
@@ -54,6 +58,7 @@ public class LinearModel {
         double finalLoss = Double.NaN;
         if (trainingSet.isEmpty()) {
             logger.warn("fitting an empty training set");
+            Arrays.fill(weights, 0);
             return finalLoss;
         }
         double lr = INITIAL_LEARNING_RATE;

@@ -352,7 +352,7 @@ public class TestUtils {
     public static Feature getMockedNumericFeature(double d) {
         Feature f = mock(Feature.class);
         when(f.getType()).thenReturn(Type.NUMBER);
-        when(f.getName()).thenReturn("f-num");
+        when(f.getName()).thenReturn("f-num-" + d);
         Value value = mock(Value.class);
         when(value.getUnderlyingObject()).thenReturn(d);
         when(value.asNumber()).thenReturn(d);

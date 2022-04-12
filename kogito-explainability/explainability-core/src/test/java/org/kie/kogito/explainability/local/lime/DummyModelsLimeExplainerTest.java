@@ -333,10 +333,6 @@ class DummyModelsLimeExplainerTest {
         for (Saliency saliency : saliencyMap.values()) {
             assertNotNull(saliency);
             List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
-            assertEquals(3, topFeatures.size());
-            for (FeatureImportance featureImportance : topFeatures) {
-                assertEquals(0, featureImportance.getScore());
-            }
             assertEquals(0d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
         }
         int topK = 1;

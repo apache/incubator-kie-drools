@@ -43,7 +43,7 @@ class LimeConfigTest {
         assertThat(config.isNormalizeWeights()).isTrue();
 
         config = new LimeConfig();
-        assertThat(config.isNormalizeWeights()).isTrue();
+        assertThat(config.isNormalizeWeights()).isFalse();
     }
 
     @Test

@@ -159,7 +159,6 @@ class PmmlCompoundScorecardLimeExplainerTest {
         Random random = new Random();
         PerturbationContext perturbationContext = new PerturbationContext(seed, random, 1);
         LimeConfig initialConfig = new LimeConfig()
-                .withSamples(10)
                 .withPerturbationContext(perturbationContext);
         LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
         assertThat(optimizedConfig).isNotSameAs(initialConfig);

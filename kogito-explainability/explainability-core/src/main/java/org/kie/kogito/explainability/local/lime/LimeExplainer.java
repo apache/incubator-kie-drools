@@ -226,7 +226,8 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
             proximityFilter.apply(trainingSet, sampleWeights);
         }
 
-        LinearModel linearModel = new LinearModel(linearizedTargetInputFeatures.size(), limeInputs.isClassification());
+        LinearModel linearModel = new LinearModel(linearizedTargetInputFeatures.size(), limeInputs.isClassification(),
+                executionConfig.getPerturbationContext().getRandom());
 
         double loss = linearModel.fit(trainingSet, sampleWeights);
         if (!Double.isNaN(loss)) {

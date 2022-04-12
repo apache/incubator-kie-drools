@@ -142,14 +142,14 @@ class DatasetEncoderTest {
         for (int i = 0; i < 10; i++) {
             List<Feature> inputFeatures = new LinkedList<>();
             for (int j = 0; j < 3; j++) {
-                inputFeatures.add(TestUtils.getMockedNumericFeature());
+                inputFeatures.add(TestUtils.getMockedNumericFeature(i + j));
             }
             perturbedInputs.add(new PredictionInput(inputFeatures));
         }
 
         List<Feature> features = new LinkedList<>();
         for (int i = 0; i < 3; i++) {
-            features.add(TestUtils.getMockedNumericFeature());
+            features.add(TestUtils.getMockedNumericFeature(i));
         }
         PredictionInput originalInput = new PredictionInput(features);
         assertEncode(perturbedInputs, originalInput);

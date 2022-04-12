@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.utils;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.stream.DoubleStream;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -28,10 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class LinearModelTest {
 
+    private static final Random random = new Random();
+
     @Test
     void testEmptyFitClassificationDoesNothing() {
         int size = 10;
-        LinearModel linearModel = new LinearModel(size, true);
+        LinearModel linearModel = new LinearModel(size, true, random);
         Collection<Pair<double[], Double>> trainingSet = new LinkedList<>();
         linearModel.fit(trainingSet);
         assertArrayEquals(new double[size], linearModel.getWeights());
@@ -40,7 +43,7 @@ class LinearModelTest {
     @Test
     void testEmptyFitRegressionDoesNothing() {
         int size = 10;
-        LinearModel linearModel = new LinearModel(size, false);
+        LinearModel linearModel = new LinearModel(size, false, random);
         Collection<Pair<double[], Double>> trainingSet = new LinkedList<>();
         linearModel.fit(trainingSet);
         assertArrayEquals(new double[size], linearModel.getWeights());
@@ -49,7 +52,7 @@ class LinearModelTest {
     @Test
     void testRegressionFit() {
         int size = 10;
-        LinearModel linearModel = new LinearModel(size, false);
+        LinearModel linearModel = new LinearModel(size, false, random);
         Collection<Pair<double[], Double>> trainingSet = new LinkedList<>();
         for (int i = 0; i < 100; i++) {
             double[] x = new double[size];
@@ -65,7 +68,7 @@ class LinearModelTest {
     @Test
     void testClassificationFit() {
         int size = 10;
-        LinearModel linearModel = new LinearModel(size, true);
+        LinearModel linearModel = new LinearModel(size, true, random);
         Collection<Pair<double[], Double>> trainingSet = new LinkedList<>();
         for (int i = 0; i < 100; i++) {
             double[] x = new double[size];

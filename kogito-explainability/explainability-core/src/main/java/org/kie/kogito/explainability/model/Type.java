@@ -171,11 +171,12 @@ public enum Type {
             }
             double originalValue = Double.isNaN(target.asNumber()) ? 0 : target.asNumber();
             doubles[valueIndex] = originalValue; // include target number in feature scaling
-            double min = DoubleStream.of(doubles).min().orElse(Double.MIN_VALUE);
-            double max = DoubleStream.of(doubles).max().orElse(Double.MAX_VALUE);
 
-            // feature scaling
-            List<Double> scaledValues = DoubleStream.of(doubles).map(d -> (d - min) / (max - min)).boxed().collect(Collectors.toList());
+            double mean = DataUtils.getMean(doubles);
+            double stdDev = DataUtils.getStdDev(doubles, mean);
+
+            // feature standardization
+            List<Double> scaledValues = DoubleStream.of(doubles).map(d -> (d - mean) / stdDev).boxed().collect(Collectors.toList());
             double scaledOriginalValue = scaledValues.remove(valueIndex); // extract the scaled original value (it must not appear in encoded values)
 
             // kernel based clustering

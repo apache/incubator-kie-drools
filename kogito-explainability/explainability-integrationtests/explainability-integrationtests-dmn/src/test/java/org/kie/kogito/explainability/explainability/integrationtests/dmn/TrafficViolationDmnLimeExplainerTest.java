@@ -154,7 +154,7 @@ class TrafficViolationDmnLimeExplainerTest {
         Random random = new Random();
 
         LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer()
-                .withDeterministicExecution(true).withSampling(false).withWeightedStability(0.4, 0.6)
+                .withDeterministicExecution(true).withWeightedStability(0.4, 0.6)
                 .withStepCountLimit(20);
 
         PerturbationContext perturbationContext = new PerturbationContext(seed, random, 2);
