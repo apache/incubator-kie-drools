@@ -37,7 +37,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-public class ProcessTest {
+public class ProcessTest extends BaseRestTest {
 
     @Test
     void testProcessSchema() throws IOException {

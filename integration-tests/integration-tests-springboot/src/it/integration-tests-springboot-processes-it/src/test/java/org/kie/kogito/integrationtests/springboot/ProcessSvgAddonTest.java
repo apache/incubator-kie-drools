@@ -36,7 +36,7 @@ import static org.hamcrest.Matchers.equalTo;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = DataIndexWireMockSpringBootTestResource.class)
-public class ProcessSvgAddonTest extends BaseRestTest{
+public class ProcessSvgAddonTest extends BaseRestTest {
 
     public static String readFileContent(String file) throws URISyntaxException, IOException {
         Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());

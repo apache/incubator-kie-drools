@@ -37,10 +37,6 @@ import static org.hamcrest.CoreMatchers.hasItems;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 class MultiInstanceTaskTest extends BaseRestTest {
 
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
     @Test
     void testStartProcess() {
         String processId = given()
