@@ -28,7 +28,7 @@ public class TypeDeclarationCompilationPhase extends AbstractPackageCompilationP
         unsortedDescrs.addAll(packageDescr.getEnumDeclarations());
         typeBuilder.processTypeDeclarations(packageDescr, pkgRegistry, unsortedDescrs, unresolvedTypes, unprocesseableDescrs);
         for (AbstractClassTypeDeclarationDescr descr : unprocesseableDescrs.values()) {
-            this.results.add(new TypeDeclarationError(descr, "Unable to process type " + descr.getTypeName()));
+            this.results.addBuilderResult(new TypeDeclarationError(descr, "Unable to process type " + descr.getTypeName()));
         }
     }
 }

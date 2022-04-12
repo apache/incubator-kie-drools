@@ -46,7 +46,7 @@ import org.drools.modelcompiler.builder.errors.UnsupportedFeatureError;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
-import org.drools.modelcompiler.builder.processors.DeclaredTypeCompilationPhase;
+import org.drools.modelcompiler.builder.processors.TypeDeclarationRegistrationPhase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
@@ -111,7 +111,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     @Override
     protected void doSecondBuildStep( Collection<CompositePackageDescr> compositePackages ) {
         Collection<CompositePackageDescr> packages = findPackages(compositePackages);
-        initPackageRegistries(packages);
+//        initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
         compileGeneratedPojos( packageModels );
@@ -155,58 +155,65 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
-        for ( CompositePackageDescr packageDescr : packages ) {
-            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
-                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
-            }
-
-            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
-            if (pkgRegistry == null) {
-                getOrCreatePackageRegistry( packageDescr );
-            } else {
-                for (ImportDescr importDescr : packageDescr.getImports()) {
-                    pkgRegistry.registerImport(importDescr.getTarget());
-                }
-            }
-        }
+        // all handled within PackageRegistryManagerImpl#getOrCreatePackageRegistry()
+//        for ( CompositePackageDescr packageDescr : packages ) {
+//            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
+//                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
+//            }
+//
+//            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
+//            if (pkgRegistry == null) {
+//                getOrCreatePackageRegistry( packageDescr );
+//            } else {
+//                for (ImportDescr importDescr : packageDescr.getImports()) {
+//                    pkgRegistry.registerImport(importDescr.getTarget());
+//                }
+//            }
+//        }
     }
 
     private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+
+
         for (CompositePackageDescr packageDescr : packages) {
-            InternalKnowledgePackage pkg = getOrCreatePackageRegistry(packageDescr).getPackage();
-            for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
-                processTypeDeclarationDescr(pkg, typeDescr);
-            }
-            for (EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations()) {
-                processTypeDeclarationDescr(pkg, enumDeclarationDescr);
-            }
+            TypeDeclarationRegistrationPhase typeDeclarationRegistrationPhase = new TypeDeclarationRegistrationPhase(getOrCreatePackageRegistry(packageDescr), packageDescr);
+            typeDeclarationRegistrationPhase.process();
+            typeDeclarationRegistrationPhase.getResults().forEach(this::addBuilderResult);
+
+//            InternalKnowledgePackage pkg = getOrCreatePackageRegistry(packageDescr).getPackage();
+//            for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
+//                processTypeDeclarationDescr(pkg, typeDescr);
+//            }
+//            for (EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations()) {
+//                processTypeDeclarationDescr(pkg, enumDeclarationDescr);
+//            }
         }
     }
 
-    private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
-        normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
-        try {
-            Class<?> typeClass = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
-            String typePkg = typeClass.getPackage().getName();
-            String typeName = typeClass.getName().substring( typePkg.length() + 1 );
-            TypeDeclaration type = new TypeDeclaration(typeName );
-            type.setTypeClass( typeClass );
-            type.setResource( typeDescr.getResource() );
-            if (hasMvel()) {
-                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
-            }
-            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-            if (!type.isTypesafe()) {
-                addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
-            }
-            getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
-        } catch (ClassNotFoundException e) {
-            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-            type.setResource( typeDescr.getResource() );
-            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-            pkg.addTypeDeclaration( type );
-        }
-    }
+//    private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
+//        normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
+//        try {
+//            Class<?> typeClass = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+//            String typePkg = typeClass.getPackage().getName();
+//            String typeName = typeClass.getName().substring( typePkg.length() + 1 );
+//            TypeDeclaration type = new TypeDeclaration(typeName );
+//            type.setTypeClass( typeClass );
+//            type.setResource( typeDescr.getResource() );
+//            if (hasMvel()) {
+//                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
+//            }
+//            TypeDeclarationFactory.processAnnotations(typeDescr, type);
+//            if (!type.isTypesafe()) {
+//                addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
+//            }
+//            getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
+//        } catch (ClassNotFoundException e) {
+//            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
+//            type.setResource( typeDescr.getResource() );
+//            TypeDeclarationFactory.processAnnotations(typeDescr, type);
+//            pkg.addTypeDeclaration( type );
+//        }
+//    }
 
     private void deregisterTypeDeclarations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
@@ -237,9 +244,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            PackageModel model = getPackageModel(packageDescr, pkgRegistry, packageDescr.getName());
-            new DeclaredTypeCompilationPhase(pkgRegistry, packageDescr, model).process();
-            //generatePOJOs(packageDescr, pkgRegistry);
+            generatePOJOs(packageDescr, pkgRegistry);
         }
 
     }
@@ -285,7 +290,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
         model.addImports(pkg.getTypeResolver().getImports());
-        new POJOGenerator(this, pkg, packageDescr, model).findPOJOorGenerate();
+        new POJOGenerator(this, pkg, packageDescr, model).process();
     }
 
     @Override

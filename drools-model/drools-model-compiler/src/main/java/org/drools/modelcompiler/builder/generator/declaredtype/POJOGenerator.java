@@ -30,6 +30,7 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.builder.impl.BuildResultAccumulator;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -45,6 +46,8 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.DuplicatedDeclarationError;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
 
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -54,7 +57,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.ANNOTATI
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.TYPE_META_DATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
-public class POJOGenerator {
+public class POJOGenerator implements CompilationPhase {
 
     private final static List<Class<?>> MARKER_INTERFACES = Arrays.asList(GeneratedFact.class, AccessibleFact.class);
 
@@ -106,6 +109,16 @@ public class POJOGenerator {
                 addTypeMetadata(enumDescr.getTypeName());
             }
         }
+    }
+
+    @Override
+    public void process() {
+        findPOJOorGenerate();
+    }
+
+    @Override
+    public Collection<? extends KnowledgeBuilderResult> getResults() {
+        return builder.getResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR);
     }
 
     static class SafeTypeResolver implements org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver {
