@@ -19,6 +19,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 
+import java.util.Collection;
+
 /**
  * Holds build processing info, warnings and errors.
  */
@@ -38,4 +40,17 @@ public interface BuildResultAccumulator {
      */
     KnowledgeBuilderResults getResults(ResultSeverity... severities);
 
+    default KnowledgeBuilderResults getAllResults() {
+        return getResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR);
+    }
+
+    default void add(KnowledgeBuilderResult result) {
+        addBuilderResult(result);
+    }
+
+    default void addAll(Collection<? extends KnowledgeBuilderResult> results) {
+        for (KnowledgeBuilderResult result : results) {
+            add(result);
+        }
+    }
 }
