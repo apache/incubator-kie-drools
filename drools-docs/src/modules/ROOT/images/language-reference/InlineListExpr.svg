@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="156" height="50"
+     viewBox="0 0 156 52">
+<title>InlineListExpr</title>
+<rect x='10.5' y='34.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='16' y='44.43'>[</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 27.40 41.5 L 32.4 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30.40 39.5 L 32.4 41.5 L 30.4 43.5'/>
+<rect x='47.9' y='21.5' width='65.5' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='ExpressionList.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='54.5' x='53.40' y='30.83'>ExpressionList</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 45.40 26.5 L 47.4 28.5 L 45.4 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 32.40 41.5 L 128.4 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 32.40 41.5 A 5 5 0 0 0 37.40 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 37.40 33.5 A 5 5 0 0 1 42.40 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 42.40 28.5 L 47.4 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 128.40 41.5 A 5 5 0 0 1 123.40 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 123.40 33.5 A 5 5 0 0 0 118.40 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 113.40 28.5 L 118.4 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 37.40 36.5 L 37.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 123.40 36.5 L 123.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 128.40 41.5 L 133.4 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 131.40 39.5 L 133.4 41.5 L 131.4 43.5'/>
+<rect x='133.9' y='34.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='139.40' y='44.43'>]</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 150.80 41.5 L 155.8 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 153.80 39.5 L 155.8 41.5 L 153.8 43.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='InlineListExpr' x='0' y='8.33'>InlineListExpr</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 41.5 L 10 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 39.5 L 10 41.5 L 8 43.5'/>
+</svg>

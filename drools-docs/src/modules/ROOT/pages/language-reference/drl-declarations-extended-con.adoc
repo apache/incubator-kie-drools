@@ -1,0 +1,23 @@
+[id='drl-declarations-extended-con_{context}']
+= Extended type declarations in DRL
+
+DRL supports type declaration inheritance in the format `declare <factType1> extends <factType2>`. To extend a type declared in Java by a subtype declared in DRL, you repeat the parent type in a declaration statement without any fields.
+
+For example, the following type declarations extend a `Student` type from a top-level `Person` type, and a `LongTermStudent` type from the `Student` subtype:
+
+.Example extended type declarations
+[source]
+----
+import org.people.Person
+
+declare Person end
+
+declare Student extends Person
+    school : String
+end
+
+declare LongTermStudent extends Student
+    years : int
+    course : String
+end
+----

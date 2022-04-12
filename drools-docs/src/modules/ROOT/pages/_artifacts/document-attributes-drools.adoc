@@ -1,0 +1,45 @@
+// Do NOT delete repeated or superfluous variables unless the same can be deleted from all other attributes docs (for DM, PAM, jBPM, etc.). All attributes here are in use in product docs at this time, and as we single source, we need those same variables to render appropriately for Drools. But do please correct and add info where necessary. (Stetson, 2 Aug 2018)
+
+:PRODUCT: Drools
+:PRODUCT_SHORT: Drools
+:PRODUCT_INIT: drools
+:PRODUCT_INIT_CAP: DROOLS
+:PRODUCT_INIT_BA: drools
+:PRODUCT_INIT_CAP_BA: DROOLS
+
+:PLANNER: OptaPlanner
+:PLANNER_SHORT: Planner
+
+:CONTEXTUAL_BPMSUITE: jBPM
+:CONTEXTUAL_BPMSUITE_SHORT: jBPM
+
+:PRODUCT_OLD: Drools
+:URL_COMPONENT_PRODUCT_OLD: drools
+
+:PRODUCT_VERSION: {COMMUNITY_VERSION}
+:PRODUCT_VERSION_LONG: {COMMUNITY_VERSION_LONG}
+:PRODUCT_FILE: {PRODUCT_INIT}-{COMMUNITY_VERSION_LONG}
+:PRODUCT_FILE_BA: {PRODUCT_INIT_BA}-{COMMUNITY_VERSION_LONG}
+
+:URL_COMPONENT_PRODUCT: drools
+
+:URL_BASE_GITHUB: {URL_BASE_GITHUB_DM}
+
+:PROJECT: Mortgages
+
+:RULE_ENGINE: Drools engine
+:RULE_ENGINE_CAP: Drools engine
+:PROCESS_ENGINE: jBPM engine
+:PROCESS_ENGINE_CAP: jBPM engine
+:PLANNING_ENGINE: Planner engine
+:PLANNING_ENGINE_CAP: Planner engine
+:URL_COMPONENT_DECISION_ENGINE: drools-engine
+:URL_COMPONENT_PROCESS_ENGINE: jbpm-engine
+:URL_COMPONENT_PLANNING_ENGINE: optaplanner-engine
+
+// Different in RHDM, and thus specified in each product attributes. The truly global CENTRAL attributes remain in document-attributes.adoc.
+:URL_COMPONENT_CENTRAL: business-central
+:CENTRAL_CAPITAL_UNDER: BUSINESS_CENTRAL
+:CENTRAL_ONEWORD: businesscentral
+
+:KAFKA_PRODUCT: Apache Kafka

@@ -1,0 +1,603 @@
+[id='drl-rule-units-con_{context}']
+
+= Rule units in DRL rule sets
+
+WARNING: Rule units are experimental in Drools 7. Only supported in {KOGITO}.
+
+Rule units are groups of data sources, global variables, and DRL rules that function together for a specific purpose. You can use rule units to partition a rule set into smaller units, bind different data sources to those units, and then execute the individual unit. Rule units are an enhanced alternative to rule-grouping DRL attributes such as rule agenda groups or activation groups for execution control.
+
+Rule units are helpful when you want to coordinate rule execution so that the complete execution of one rule unit triggers the start of another rule unit and so on. For example, assume that you have a set of rules for data enrichment, another set of rules that processes that data, and another set of rules that extract the output from the processed data. If you add these rule sets into three distinct rule units, you can coordinate those rule units so that complete execution of the first unit triggers the start of the second unit and the complete execution of the second unit triggers the start of third unit.
+
+To define a rule unit, implement the `RuleUnit` interface as shown in the following example:
+
+.Example rule unit class
+[source,java]
+----
+package org.mypackage.myunit;
+
+public static class AdultUnit implements RuleUnit {
+    private int adultAge;
+    private DataSource<Person> persons;
+
+    public AdultUnit( ) { }
+
+    public AdultUnit( DataSource<Person> persons, int age ) {
+        this.persons = persons;
+        this.age = age;
+    }
+
+    // A data source of `Persons` in this rule unit:
+    public DataSource<Person> getPersons() {
+        return persons;
+    }
+
+    // A global variable in this rule unit:
+    public int getAdultAge() {
+        return adultAge;
+    }
+
+    // Life-cycle methods:
+    @Override
+    public void onStart() {
+        System.out.println("AdultUnit started.");
+    }
+
+    @Override
+    public void onEnd() {
+        System.out.println("AdultUnit ended.");
+    }
+}
+----
+
+In this example, `persons` is a source of facts of type `Person`. A rule unit data source is a source of the data processed by a given rule unit and represents the entry point that the {DECISION_ENGINE} uses to evaluate the rule unit. The `adultAge` global variable is accessible from all the rules belonging to this rule unit. The last two methods are part of the rule unit life cycle and are invoked by the {DECISION_ENGINE}.
+
+The {DECISION_ENGINE} supports the following optional life-cycle methods for rule units:
+
+[cols="2", options="header"]
+.Rule unit life-cycle methods
+|===
+|Method
+|Invoked when
+
+|`onStart()`
+|Rule unit execution starts
+
+|`onEnd()`
+|Rule unit execution ends
+
+|`onSuspend()`
+|Rule unit execution is suspended (used only with `runUntilHalt()`)
+
+|`onResume()`
+|Rule unit execution is resumed (used only with `runUntilHalt()`)
+
+|`onYield(RuleUnit other)`
+|The consequence of a rule in the rule unit triggers the execution of a different rule unit
+|===
+
+You can add one or more rules to a rule unit. By default, all the rules in a DRL file are automatically associated with a rule unit that follows the naming convention of the DRL file name. If the DRL file is in the same package and has the same name as a class that implements the `RuleUnit` interface, then all of the rules in that DRL file implicitly belong to that rule unit. For example, all the rules in the `AdultUnit.drl` file in the `org.mypackage.myunit` package are automatically part of the rule unit `org.mypackage.myunit.AdultUnit`.
+
+To override this naming convention and explicitly declare the rule unit that the rules in a DRL file belong to, use the `unit` keyword in the DRL file. The `unit` declaration must immediately follow the package declaration and contain the name of the class in that package that the rules in the DRL file are part of.
+
+.Example rule unit declaration in a DRL file
+[source]
+----
+package org.mypackage.myunit
+unit AdultUnit
+
+rule Adult
+  when
+    $p : Person(age >= adultAge) from persons
+  then
+    System.out.println($p.getName() + " is adult and greater than " + adultAge);
+end
+----
+
+WARNING: Do not mix rules with and without a rule unit in the same KIE base. Mixing two rule paradigms in a KIE base results in a compilation error.
+
+You can also rewrite the same pattern in a more convenient way using OOPath notation, as shown in the following example:
+
+.Example rule unit declaration in a DRL file that uses OOPath notation
+[source]
+----
+package org.mypackage.myunit
+unit AdultUnit
+
+rule Adult
+  when
+    $p : /persons[age >= adultAge]
+  then
+    System.out.println($p.getName() + " is adult and greater than " + adultAge);
+end
+----
+
+NOTE: OOPath is an object-oriented syntax extension of XPath that is designed for browsing graphs of objects in DRL rule condition constraints. OOPath uses the compact notation from XPath for navigating through related elements while handling collections and filtering constraints, and is specifically useful for graphs of objects.
+
+In this example, any matching facts in the rule conditions are retrieved from the `persons` data source defined in the `DataSource` definition in the rule unit class. The rule condition and action use the `adultAge` variable in the same way that a global variable is defined at the DRL file level.
+
+To execute one or more rule units defined in a KIE base, create a new `RuleUnitExecutor` class bound to the KIE base, create the rule unit from the relevant data source, and run the rule unit executer:
+
+.Example rule unit execution
+[source,java]
+----
+// Create a `RuleUnitExecutor` class and bind it to the KIE base:
+KieBase kbase = kieContainer.getKieBase();
+RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+// Create the `AdultUnit` rule unit using the `persons` data source and run the executor:
+RuleUnit adultUnit = new AdultUnit(persons, 18);
+executor.run( adultUnit );
+----
+
+Rules are executed by the `RuleUnitExecutor` class. The `RuleUnitExecutor` class creates KIE sessions and adds the required `DataSource` objects to those sessions, and then executes the rules based on the `RuleUnit` that is passed as a parameter to the `run()` method.
+
+The example execution code produces the following output when the relevant `Person` facts are inserted in the `persons` data source:
+
+.Example rule unit execution output
+[source]
+----
+org.mypackage.myunit.AdultUnit started.
+Jane is adult and greater than 18
+John is adult and greater than 18
+org.mypackage.myunit.AdultUnit ended.
+----
+
+Instead of explicitly creating the rule unit instance, you can register the rule unit variables in the executor and pass to the executor the rule unit class that you want to run, and then the executor creates an instance of the rule unit. You can then set the `DataSource` definition and other variables as needed before running the rule unit.
+
+.Alternate rule unit execution option with registered variables
+[source,java]
+----
+executor.bindVariable( "persons", persons );
+        .bindVariable( "adultAge", 18 );
+executor.run( AdultUnit.class );
+----
+
+The name that you pass to the `RuleUnitExecutor.bindVariable()` method is used at run time to bind the variable to the field of the rule unit class with the same name. In the previous example, the `RuleUnitExecutor` inserts into the new rule unit the data source bound to the `"persons"` name and inserts the value `18` bound to the String `"adultAge"` into the fields with the corresponding names inside the `AdultUnit` class.
+
+To override this default variable-binding behavior, use the `@UnitVar` annotation to explicitly define a logical binding name for each field of the rule unit class. For example, the field bindings in the following class are redefined with alternative names:
+
+.Example code to modify variable binding names with `@UnitVar`
+[source,java]
+----
+package org.mypackage.myunit;
+
+public static class AdultUnit implements RuleUnit {
+    @UnitVar("minAge")
+    private int adultAge = 18;
+
+    @UnitVar("data")
+    private DataSource<Person> persons;
+}
+----
+
+You can then bind the variables to the executor using those alternative names and run the rule unit:
+
+.Example rule unit execution with modified variable names
+[source,java]
+----
+executor.bindVariable( "data", persons );
+        .bindVariable( "minAge", 18 );
+executor.run( AdultUnit.class );
+----
+
+You can execute a rule unit in _passive mode_ by using the `run()` method (equivalent to invoking `fireAllRules()` on a KIE session)
+or in _active mode_ using the `runUntilHalt()` method (equivalent to invoking `fireUntilHalt()` on a KIE session). By default, the {DECISION_ENGINE} runs in _passive mode_ and evaluates rule units only when a user or an application explicitly calls `run()` (or `fireAllRules()` for standard rules). If a user or application calls `runUntilHalt()` for rule units (or `fireUntilHalt()` for standard rules), the {DECISION_ENGINE} starts in _active mode_ and evaluates rule units continually until the user or application explicitly calls `halt()`.
+
+If you use the `runUntilHalt()` method, invoke the method on a separate execution thread to avoid blocking the main thread:
+
+.Example rule unit execution with `runUntilHalt()` on a separate thread
+[source,java]
+----
+new Thread( () -> executor.runUntilHalt( adultUnit ) ).start();
+----
+
+== Data sources for rule units
+
+A rule unit data source is a source of the data processed by a given rule unit and represents the entry point that the {DECISION_ENGINE} uses to evaluate the rule unit. A rule unit can have zero or more data sources and each `DataSource` definition declared inside a rule unit can correspond to a different entry point into the rule unit executor. Multiple rule units can share a single data source, but each rule unit must use different entry points through which the same objects are inserted.
+
+You can create a `DataSource` definition with a fixed set of data in a rule unit class, as shown in the following example:
+
+.Example data source definition
+[source,java]
+----
+DataSource<Person> persons = DataSource.create( new Person( "John", 42 ),
+                                                new Person( "Jane", 44 ),
+                                                new Person( "Sally", 4 ) );
+----
+
+Because a data source represents the entry point of the rule unit, you can insert, update, or delete facts in a rule unit:
+
+.Example code to insert, modify, and delete a fact in a rule unit
+[source,java]
+----
+// Insert a fact:
+Person john = new Person( "John", 42 );
+FactHandle johnFh = persons.insert( john );
+
+// Modify the fact and optionally specify modified properties (for property reactivity):
+john.setAge( 43 );
+persons.update( johnFh, john, "age" );
+
+// Delete the fact:
+persons.delete( johnFh );
+----
+
+== Rule unit execution control
+
+Rule units are helpful when you want to coordinate rule execution so that the execution of one rule unit triggers the start of another rule unit and so on.
+
+To facilitate rule unit execution control, the {DECISION_ENGINE} supports the following rule unit methods that you can use in DRL rule actions to coordinate the execution of rule units:
+
+* `drools.run()`: Triggers the execution of a specified rule unit class. This method imperatively interrupts the execution of the rule unit and activates the other specified rule unit.
+* `drools.guard()`: Prevents (guards) a specified rule unit class from being executed until the associated rule condition is met. This method declaratively schedules the execution of the other specified rule unit. When the {DECISION_ENGINE} produces at least one match for the condition in the guarding rule, the guarded rule unit is considered active. A rule unit can contain multiple guarding rules.
+
+As an example of the `drools.run()` method, consider the following DRL rules that each belong to a specified rule unit. The `NotAdult` rule uses the `drools.run( AdultUnit.class )` method to trigger the execution of the `AdultUnit` rule unit:
+
+.Example DRL rules with controlled execution using `drools.run()`
+[source]
+----
+package org.mypackage.myunit
+unit AdultUnit
+
+rule Adult
+  when
+    Person(age >= 18, $name : name) from persons
+  then
+    System.out.println($name + " is adult");
+end
+----
+
+[source]
+----
+package org.mypackage.myunit
+unit NotAdultUnit
+
+rule NotAdult
+  when
+    $p : Person(age < 18, $name : name) from persons
+  then
+    System.out.println($name + " is NOT adult");
+    modify($p) { setAge(18); }
+    drools.run( AdultUnit.class );
+end
+----
+
+The example also uses a `RuleUnitExecutor` class created from the KIE base that was built from these rules and a `DataSource` definition of `persons` bound to it:
+
+.Example rule executor and data source definitions
+[source,java]
+----
+RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+DataSource<Person> persons = executor.newDataSource( "persons",
+                                                     new Person( "John", 42 ),
+                                                     new Person( "Jane", 44 ),
+                                                     new Person( "Sally", 4 ) );
+----
+
+In this case, the example creates the `DataSource` definition directly from the `RuleUnitExecutor` class and binds it to the `"persons"` variable in a single statement.
+
+The example execution code produces the following output when the relevant `Person` facts are inserted in the `persons` data source:
+
+.Example rule unit execution output
+[source]
+----
+Sally is NOT adult
+John is adult
+Jane is adult
+Sally is adult
+----
+
+The `NotAdult` rule detects a match when evaluating the person `"Sally"`, who is under 18 years old. The rule then modifies
+her age to `18` and uses the `drools.run( AdultUnit.class )` method to trigger the execution of the `AdultUnit` rule unit. The `AdultUnit` rule unit contains a rule that can now be executed for all of the 3 `persons` in the `DataSource` definition.
+
+As an example of the `drools.guard()` method, consider the following `BoxOffice` class and `BoxOfficeUnit` rule unit class:
+
+.Example `BoxOffice` class
+[source,java]
+----
+public class BoxOffice {
+    private boolean open;
+
+    public BoxOffice( boolean open ) {
+        this.open = open;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen( boolean open ) {
+        this.open = open;
+    }
+}
+----
+
+.Example `BoxOfficeUnit` rule unit class
+[source,java]
+----
+public class BoxOfficeUnit implements RuleUnit {
+    private DataSource<BoxOffice> boxOffices;
+
+    public DataSource<BoxOffice> getBoxOffices() {
+        return boxOffices;
+    }
+}
+----
+
+The example also uses the following `TicketIssuerUnit` rule unit class to keep selling box office tickets for the event as long as at least one box office is open. This rule unit uses `DataSource` definitions of `persons` and `tickets`:
+
+.Example `TicketIssuerUnit` rule unit class
+[source,java]
+----
+public class TicketIssuerUnit implements RuleUnit {
+    private DataSource<Person> persons;
+    private DataSource<AdultTicket> tickets;
+
+    private List<String> results;
+
+    public TicketIssuerUnit() { }
+
+    public TicketIssuerUnit( DataSource<Person> persons, DataSource<AdultTicket> tickets ) {
+        this.persons = persons;
+        this.tickets = tickets;
+    }
+
+    public DataSource<Person> getPersons() {
+        return persons;
+    }
+
+    public DataSource<AdultTicket> getTickets() {
+        return tickets;
+    }
+
+    public List<String> getResults() {
+        return results;
+    }
+}
+----
+
+The `BoxOfficeUnit` rule unit contains a `BoxOfficeIsOpen` DRL rule that uses the `drools.guard( TicketIssuerUnit.class )` method to guard the execution of the `TicketIssuerUnit` rule unit that distributes the event tickets, as shown in the following DRL rule examples:
+
+
+.Example DRL rules with controlled execution using `drools.guard()`
+[source]
+----
+package org.mypackage.myunit;
+unit TicketIssuerUnit;
+
+rule IssueAdultTicket when
+    $p: /persons[ age >= 18 ]
+then
+    tickets.insert(new AdultTicket($p));
+end
+rule RegisterAdultTicket when
+    $t: /tickets
+then
+    results.add( $t.getPerson().getName() );
+end
+----
+
+[source]
+----
+package org.mypackage.myunit;
+unit BoxOfficeUnit;
+
+rule BoxOfficeIsOpen
+  when
+    $box: /boxOffices[ open ]
+  then
+    drools.guard( TicketIssuerUnit.class );
+end
+----
+
+In this example, so long as at least one box office is `open`, the guarded `TicketIssuerUnit` rule unit is active and distributes event tickets. When no more box offices are in `open` state, the guarded `TicketIssuerUnit` rule unit is prevented from being executed.
+
+The following example class illustrates a more complete box office scenario:
+
+.Example class for the box office scenario
+[source,java]
+----
+DataSource<Person> persons = executor.newDataSource( "persons" );
+DataSource<BoxOffice> boxOffices = executor.newDataSource( "boxOffices" );
+DataSource<AdultTicket> tickets = executor.newDataSource( "tickets" );
+
+List<String> list = new ArrayList<>();
+executor.bindVariable( "results", list );
+
+// Two box offices are open:
+BoxOffice office1 = new BoxOffice(true);
+FactHandle officeFH1 = boxOffices.insert( office1 );
+BoxOffice office2 = new BoxOffice(true);
+FactHandle officeFH2 = boxOffices.insert( office2 );
+
+persons.insert(new Person("John", 40));
+
+// Execute `BoxOfficeIsOpen` rule, run `TicketIssuerUnit` rule unit, and execute `RegisterAdultTicket` rule:
+executor.run(BoxOfficeUnit.class);
+
+assertEquals( 1, list.size() );
+assertEquals( "John", list.get(0) );
+list.clear();
+
+persons.insert(new Person("Matteo", 30));
+
+// Execute `RegisterAdultTicket` rule:
+executor.run(BoxOfficeUnit.class);
+
+assertEquals( 1, list.size() );
+assertEquals( "Matteo", list.get(0) );
+list.clear();
+
+// One box office is closed, the other is open:
+office1.setOpen(false);
+boxOffices.update(officeFH1, office1);
+persons.insert(new Person("Mark", 35));
+executor.run(BoxOfficeUnit.class);
+
+assertEquals( 1, list.size() );
+assertEquals( "Mark", list.get(0) );
+list.clear();
+
+// All box offices are closed:
+office2.setOpen(false);
+boxOffices.update(officeFH2, office2); // Guarding rule is no longer true.
+persons.insert(new Person("Edson", 35));
+executor.run(BoxOfficeUnit.class); // No execution
+
+assertEquals( 0, list.size() );
+----
+
+== Rule unit identity conflicts
+
+In rule unit execution scenarios with guarded rule units, a rule can guard multiple rule units and at the same time a rule unit can be guarded and then activated by multiple rules. For these two-way guarding scenarios, rule units must have a clearly defined identity to avoid identity conflicts.
+
+By default, the identity of a rule unit is the rule unit class name and is treated as a singleton class by the `RuleUnitExecutor`. This identification behavior is encoded in the `getUnitIdentity()` default method of the `RuleUnit` interface:
+
+.Default identity method in the `RuleUnit` interface
+[source,java]
+----
+default Identity getUnitIdentity() {
+    return new Identity( getClass() );
+}
+----
+
+In some cases, you may need to override this default identification behavior to avoid conflicting identities between rule units.
+
+For example, the following `RuleUnit` class contains a `DataSource` definition that accepts any kind of object:
+
+.Example `Unit0` rule unit class
+[source,java]
+----
+public class Unit0 implements RuleUnit {
+    private DataSource<Object> input;
+
+    public DataSource<Object> getInput() {
+        return input;
+    }
+}
+----
+
+This rule unit contains the following DRL rule that guards another rule unit based on two conditions (in OOPath notation):
+
+.Example `GuardAgeCheck` DRL rule in the rule unit
+[source]
+----
+package org.mypackage.myunit
+unit Unit0
+
+rule GuardAgeCheck
+  when
+    $i: /input#Integer
+    $s: /input#String
+  then
+    drools.guard( new AgeCheckUnit($i) );
+    drools.guard( new AgeCheckUnit($s.length()) );
+end
+----
+
+The guarded `AgeCheckUnit` rule unit verifies the age of a set of `persons`. The `AgeCheckUnit` contains a `DataSource` definition of the `persons` to check, a `minAge` variable that it verifies against, and a `List` for gathering the results:
+
+.Example `AgeCheckUnit` rule unit
+[source,java]
+----
+public class AgeCheckUnit implements RuleUnit {
+    private final int minAge;
+    private DataSource<Person> persons;
+    private List<String> results;
+
+    public AgeCheckUnit( int minAge ) {
+        this.minAge = minAge;
+    }
+
+    public DataSource<Person> getPersons() {
+        return persons;
+    }
+
+    public int getMinAge() {
+        return minAge;
+    }
+
+    public List<String> getResults() {
+        return results;
+    }
+}
+----
+
+The `AgeCheckUnit` rule unit contains the following DRL rule that performs the verification of the `persons` in the data source:
+
+.Example `CheckAge` DRL rule in the rule unit
+[source]
+----
+package org.mypackage.myunit
+unit AgeCheckUnit
+
+rule CheckAge
+  when
+    $p : /persons{ age > minAge }
+  then
+    results.add($p.getName() + ">" + minAge);
+end
+----
+
+This example creates a `RuleUnitExecutor` class, binds the class to the KIE base that contains these two rule units, and creates
+the two `DataSource` definitions for the same rule units:
+
+.Example executor and data source definitions
+[source,java]
+----
+RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+DataSource<Object> input = executor.newDataSource( "input" );
+DataSource<Person> persons = executor.newDataSource( "persons",
+                                                     new Person( "John", 42 ),
+                                                     new Person( "Sally", 4 ) );
+
+List<String> results = new ArrayList<>();
+executor.bindVariable( "results", results );
+----
+
+You can now insert some objects into the input data source and execute the `Unit0` rule unit:
+
+.Example rule unit execution with inserted objects
+[source,java]
+----
+ds.insert("test");
+ds.insert(3);
+ds.insert(4);
+executor.run(Unit0.class);
+----
+
+.Example results list from the execution
+[source,java]
+----
+[Sally>3, John>3]
+----
+
+In this example, the rule unit named `AgeCheckUnit` is considered a singleton class and then executed only once, with the `minAge`
+variable set to `3`. Both the String `"test"` and the Integer `4` inserted into the input data source can also trigger a second execution with the `minAge` variable set to `4`. However, the second execution does not occur because another rule unit with the same identity has already been evaluated.
+
+To resolve this rule unit identity conflict, override the `getUnitIdentity()` method in the `AgeCheckUnit` class to include also the `minAge` variable in the rule unit identity:
+
+.Modified `AgeCheckUnit` rule unit to override the `getUnitIdentity()` method
+[source,java]
+----
+public class AgeCheckUnit implements RuleUnit {
+
+    ...
+
+    @Override
+    public Identity getUnitIdentity() {
+        return new Identity(getClass(), minAge);
+    }
+}
+----
+
+With this override in place, the previous example rule unit execution produces the following output:
+
+.Example results list from executing the modified rule unit
+[source,java]
+----
+[John>4, Sally>3, John>3]
+----
+
+The rule units with `minAge` set to `3` and `4` are now considered two different rule units and both are executed.

@@ -1,5 +1,7 @@
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
 [[ruleengine]]
-= {RULE_ENGINE}
 
 :context: rule-engine
 

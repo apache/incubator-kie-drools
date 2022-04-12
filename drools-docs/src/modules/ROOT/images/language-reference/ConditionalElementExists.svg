@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="194" height="58"
+     viewBox="0 0 194 60">
+<title>ConditionalElementExists</title>
+<rect x='10.5' y='32' rx='7.75' ry='7.75' width='43.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='exists.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='32.9' x='16' y='41.93'>exists</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 54.40 39 L 59.4 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 37 L 59.4 39 L 57.4 41'/>
+<rect x='69.9' y='21.5' width='66' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='BindingPattern.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='55' x='75.40' y='30.83'>BindingPattern</text>
+</a>
+<rect x='69.9' y='42.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='75.40' y='52.43'>(</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 86.80 49.5 L 91.8 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 89.80 47.5 L 91.8 49.5 L 89.8 51.5'/>
+<rect x='92.3' y='42.5' width='63.5' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='ConditionalOr.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='52.5' x='97.80' y='51.83'>ConditionalOr</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 155.80 49.5 L 160.8 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 158.80 47.5 L 160.8 49.5 L 158.8 51.5'/>
+<rect x='161.3' y='42.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='166.80' y='52.43'>)</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 59.40 39 L 64.4 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 183.20 39 L 188.2 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 64.40 33.5 A 5 5 0 0 1 69.40 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 69.40 49.5 A 5 5 0 0 1 64.40 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 64.40 44.5 L 64.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 183.20 33.5 A 5 5 0 0 0 178.20 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 178.20 49.5 A 5 5 0 0 0 183.20 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 183.20 44.5 L 183.2 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 135.90 28.5 L 178.2 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 178.20 49.5 L 178.2 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 188.20 39 L 193.2 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 191.20 37 L 193.2 39 L 191.2 41'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='ConditionalElementExists' x='0' y='8.33'>ConditionalElementExists</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 39 L 10 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 37 L 10 39 L 8 41'/>
+</svg>

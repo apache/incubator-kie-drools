@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="219" height="50"
+     viewBox="0 0 219 52">
+<title>AccumulateInit</title>
+<rect x='10.5' y='34.5' rx='7.75' ry='7.75' width='33.1' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='init.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='22.1' x='16' y='44.43'>init</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 43.60 41.5 L 48.6 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 46.60 39.5 L 48.6 41.5 L 46.6 43.5'/>
+<rect x='49.1' y='34.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='54.60' y='44.43'>(</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 66 41.5 L 71 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 69 39.5 L 71 41.5 L 69 43.5'/>
+<rect x='81.5' y='21.5' width='47.5' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Statement.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='36.5' x='87' y='30.83'>Statement</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 131 26.5 L 129 28.5 L 131 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 71 41.5 L 139 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 81 41.5 A 5 5 0 0 1 76 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 76 33.5 A 5 5 0 0 1 81 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 129 41.5 A 5 5 0 0 0 134 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 134 33.5 A 5 5 0 0 0 129 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 76 36.5 L 76 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 134 36.5 L 134 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 139 41.5 L 144 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 142 39.5 L 144 41.5 L 142 43.5'/>
+<rect x='144.5' y='34.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='150' y='44.43'>)</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 161.40 41.5 L 166.4 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 164.40 39.5 L 166.4 41.5 L 164.4 43.5'/>
+<rect x='181.9' y='21.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='187.40' y='31.43'>,</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 179.40 26.5 L 181.4 28.5 L 179.4 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 166.40 41.5 L 213.8 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 166.40 41.5 A 5 5 0 0 0 171.40 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 171.40 33.5 A 5 5 0 0 1 176.40 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 176.40 28.5 L 181.4 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 213.80 41.5 A 5 5 0 0 1 208.80 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 208.80 33.5 A 5 5 0 0 0 203.80 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 198.80 28.5 L 203.8 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 171.40 36.5 L 171.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 208.80 36.5 L 208.8 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 213.80 41.5 L 218.8 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 216.80 39.5 L 218.8 41.5 L 216.8 43.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='AccumulateInit' x='0' y='8.33'>AccumulateInit</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 41.5 L 10 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 39.5 L 10 41.5 L 8 43.5'/>
+</svg>

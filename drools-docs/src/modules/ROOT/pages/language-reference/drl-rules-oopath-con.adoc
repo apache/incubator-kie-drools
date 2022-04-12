@@ -1,0 +1,158 @@
+[id='drl-rules-oopath-con_{context}']
+
+= OOPath syntax with graphs of objects in DRL rule conditions
+
+OOPath is an object-oriented syntax extension of XPath that is designed for browsing graphs of objects in DRL rule condition constraints. OOPath uses the compact notation from XPath for navigating through related elements while handling collections and filtering constraints, and is specifically useful for graphs of objects.
+
+When the field of a fact is a collection, you can use the `from` condition element (keyword) to bind and reason over all the items in that collection one by one. If you need to browse a graph of objects in the rule condition constraints, the extensive use of the `from` condition element results in a verbose and repetitive syntax, as shown in the following example:
+
+.Example rule that browses a graph of objects with `from`
+[source]
+----
+rule "Find all grades for Big Data exam"
+  when
+    $student: Student( $plan: plan )
+    $exam: Exam( course == "Big Data" ) from $plan.exams
+    $grade: Grade() from $exam.grades
+  then
+    // Actions
+end
+----
+
+In this example, the domain model contains a `Student` object with a `Plan` of study. The `Plan` can have zero or more `Exam` instances and an `Exam` can have zero or more `Grade` instances. Only the root object of the graph, the `Student` in this case, needs to be in the working memory of the {DECISION_ENGINE} for this rule setup to function.
+
+As a more efficient alternative to using extensive `from` statements, you can use the abbreviated OOPath syntax, as shown in the following example:
+
+.Example rule that browses a graph of objects with OOPath syntax
+[source]
+----
+rule "Find all grades for Big Data exam"
+  when
+    Student( $grade: /plan/exams[course == "Big Data"]/grades )
+  then
+    // Actions
+end
+----
+
+Formally, the core grammar of an OOPath expression is defined in extended Backus-Naur form (EBNF) notation in the following way:
+
+.EBNF notation for OOPath expressions
+[source]
+----
+OOPExpr = [ID ( ":" | ":=" )] ( "/" | "?/" ) OOPSegment { ( "/" | "?/" | "." ) OOPSegment } ;
+OOPSegment = ID ["#" ID] ["[" ( Number | Constraints ) "]"]
+----
+
+In practice, an OOPath expression has the following features and capabilities:
+
+* Starts with a forward slash `/` or with a question mark and forward slash `?/` if it is a non-reactive OOPath expression (described later in this section).
+* Can dereference a single property of an object with the period `.` operator.
+* Can dereference multiple properties of an object with the forward slash `/` operator. If a collection is returned, the expression iterates over the values in the collection.
+* Can filter out traversed objects that do not satisfy one or more constraints. The constraints are written as predicate expressions between square brackets, as shown in the following example:
++
+.Constraints as a predicate expression
+[source]
+----
+Student( $grade: /plan/exams[ course == "Big Data" ]/grades )
+----
+* Can downcast a traversed object to a subclass of the class declared in the generic collection. Subsequent constraints can also safely access the properties declared only in that subclass, as shown in the following example. Objects that are not instances of the class specified in this inline cast are automatically filtered out.
++
+.Constraints with downcast objects
+[source]
+----
+Student( $grade: /plan/exams#AdvancedExam[ course == "Big Data", level > 3 ]/grades )
+----
+* Can backreference an object of the graph that was traversed before the currently iterated graph. For example, the following OOPath expression matches only the grades that are above the average for the passed exam:
++
+.Constraints with backreferenced object
+[source]
+----
+Student( $grade: /plan/exams/grades[ result > ../averageResult ] )
+----
+* Can recursively be another OOPath expression, as shown in the following example:
++
+.Recursive constraint expression
+[source]
+----
+Student( $exam: /plan/exams[ /grades[ result > 20 ] ] )
+----
+* Can access objects by their index between square brackets `[]`, as shown in the following example. To adhere to Java convention, OOPath indexes are 0-based, while XPath indexes are 1-based.
++
+.Constraints with access to objects by index
+[source]
+----
+Student( $grade: /plan/exams[0]/grades )
+----
+
+OOPath expressions can be reactive or non-reactive. The {DECISION_ENGINE} does not react to updates involving a deeply nested object that is traversed during the evaluation of an OOPath expression.
+
+To make these objects reactive to changes, modify the objects to extend the class `org.drools.core.phreak.ReactiveObject`. After you modify an object to extend the `ReactiveObject` class, the domain object invokes the inherited method `notifyModification` to notify the {DECISION_ENGINE} when one of the fields has been updated, as shown in the following example:
+
+.Example object method to notify the {DECISION_ENGINE} that an exam has been moved to a different course
+[source,java]
+----
+public void setCourse(String course) {
+        this.course = course;
+        notifyModification(this);
+        }
+----
+
+With the following corresponding OOPath expression, when an exam is moved to a different course, the rule is re-executed and the list of grades matching the rule is recomputed:
+
+.Example OOPath expression from "Big Data" rule
+[source]
+----
+Student( $grade: /plan/exams[ course == "Big Data" ]/grades )
+----
+
+You can also use the `?/` separator instead of the `/` separator to disable reactivity in only one sub-portion of an OOPath expression, as shown in the following example:
+
+.Example OOPath expression that is partially non-reactive
+[source]
+----
+Student( $grade: /plan/exams[ course == "Big Data" ]?/grades )
+----
+
+With this example, the {DECISION_ENGINE} reacts to a change made to an exam or if an exam is added to the plan, but not if a new grade is added to an existing exam.
+
+If an OOPath portion is non-reactive, all remaining portions of the OOPath expression also become non-reactive. For example, the following OOPath expression is completely non-reactive:
+
+.Example OOPath expression that is completely non-reactive
+[source]
+----
+Student( $grade: ?/plan/exams[ course == "Big Data" ]/grades )
+----
+
+For this reason, you cannot use the `?/` separator more than once in the same OOPath expression. For example, the following expression causes a compilation error:
+
+.Example OOPath expression with duplicate non-reactivity markers
+[source]
+----
+Student( $grade: /plan?/exams[ course == "Big Data" ]?/grades )
+----
+
+Another alternative for enabling OOPath expression reactivity is to use the dedicated implementations for `List` and `Set` interfaces in {PRODUCT}. These implementations are the `ReactiveList` and `ReactiveSet` classes. A `ReactiveCollection` class is also available. The implementations also provide reactive support for performing mutable operations through the `Iterator` and `ListIterator` classes.
+
+The following example class uses these classes to configure OOPath expression reactivity:
+
+.Example Java class to configure OOPath expression reactivity
+[source,java]
+----
+public class School extends AbstractReactiveObject {
+    private String name;
+    private final List<Child> children = new ReactiveList<Child>(); // <1>
+
+    public void setName(String name) {
+        this.name = name;
+        notifyModification(); // <2>
+    }
+
+    public void addChild(Child child) {
+        children.add(child); // <3>
+        // No need to call `notifyModification()` here
+    }
+  }
+----
+<1> Uses the `ReactiveList` instance for reactive support over the standard Java `List` instance.
+<2> Uses the required `notifyModification()` method for when a field is changed in reactive support.
+<3> The `children` field is a `ReactiveList` instance, so the `notifyModification()` method call is not required. The notification is handled automatically, like all other mutating operations performed over the `children` field.

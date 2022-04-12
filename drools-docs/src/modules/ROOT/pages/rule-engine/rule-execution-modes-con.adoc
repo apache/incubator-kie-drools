@@ -63,9 +63,6 @@ This example calls `fireUntilHalt()` from a dedicated execution thread to preven
 --
 
 Although you should avoid using both `fireAllRules()` and `fireUntilHalt()` calls, especially from different threads, the {RULE_ENGINE} can handle such situations safely using thread-safety logic and an internal state machine. If a `fireAllRules()` call is in progress and you call `fireUntilHalt()`, the {RULE_ENGINE} continues to run in passive mode until the `fireAllRules()` operation is complete and then starts in active mode in response to the `fireUntilHalt()` call. However, if the {RULE_ENGINE} is running in active mode following a `fireUntilHalt()` call and you call `fireAllRules()`, the `fireAllRules()` call is ignored and the {RULE_ENGINE} continues to run in active mode until you call `halt()`.
-ifdef::DROOLS,JBPM,OP[]
-For more details about thread-safety and the internal state machine, see <<_improved_multi_threading_behaviour>>.
-endif::[]
 
 For added thread safety in active mode, the {RULE_ENGINE} supports a `submit()` method that you can use to group and perform operations on a KIE session in a thread-safe, atomic action:
 
