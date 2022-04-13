@@ -40,7 +40,7 @@ public interface BuildResultAccumulator {
      */
     KnowledgeBuilderResults getResults(ResultSeverity... severities);
 
-    default KnowledgeBuilderResults getAllResults() {
+    default Collection<? extends KnowledgeBuilderResult> getAllResults() {
         return getResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR);
     }
 

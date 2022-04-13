@@ -54,7 +54,7 @@ public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
         return !getErrorList().isEmpty();
     }
 
-    public Collection<KnowledgeBuilderResult> getInternalResultCollection() {
+    public Collection<KnowledgeBuilderResult> getAllResults() {
         return results;
     }
 

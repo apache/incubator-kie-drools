@@ -1,0 +1,47 @@
+package org.drools.modelcompiler.builder.processors;
+
+import org.drools.compiler.builder.impl.BuildResultAccumulator;
+import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
+import org.drools.compiler.builder.impl.processors.CompilationPhase;
+import org.drools.modelcompiler.builder.CanonicalModelBuildContext;
+import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
+
+public class GeneratedPojoCompilationPhase implements CompilationPhase {
+    private final Map<String, PackageModel> packageModels;
+    private final CanonicalModelBuildContext buildContext;
+    private final BuildResultAccumulator results = new BuildResultAccumulatorImpl();
+    private final ClassLoader classLoader;
+
+    public GeneratedPojoCompilationPhase(Map<String, PackageModel> packageModels, CanonicalModelBuildContext buildContext, ClassLoader classLoader) {
+        this.packageModels = packageModels;
+        this.buildContext = buildContext;
+        this.classLoader = classLoader;
+    }
+
+    @Override
+    public void process() {
+
+        List<GeneratedClassWithPackage> allGeneratedPojos =
+                packageModels.values().stream()
+                        .flatMap(p -> p.getGeneratedPOJOsSource().stream()
+                                .map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
+                        .collect( Collectors.toList());
+
+        Map<String, Class<?>> allCompiledClasses = compileType(results, classLoader, allGeneratedPojos);
+        buildContext.registerGeneratedPojos(allGeneratedPojos, allCompiledClasses);
+    }
+
+    @Override
+    public Collection<? extends KnowledgeBuilderResult> getResults() {
+        return results.getAllResults();
+    }
+}

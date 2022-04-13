@@ -788,6 +788,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results.addBuilderResult(result);
     }
 
+    protected BuildResultAccumulator getBuildResultAccumulator() {
+        return this.results;
+    }
+
     @Override
     public <T extends ResourceTypePackage<?>> T computeIfAbsent(
             ResourceType resourceType,
@@ -838,7 +842,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void updateResults() {
         // some of the rules and functions may have been redefined
-        updateResults(new ArrayList<>(this.results.getInternalResultCollection()));
+        updateResults(new ArrayList<>(this.results.getAllResults()));
     }
 
     public void updateResults(List<KnowledgeBuilderResult> results) {
@@ -1216,14 +1220,14 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
 
         if (results != null) {
-            results.getInternalResultCollection().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
+            results.getAllResults().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
         }
 
         if (processBuilder != null && processBuilder.getErrors() != null) {
             processBuilder.getErrors().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
         }
 
-        if (results != null && results.getInternalResultCollection().size() == 0) {
+        if (results != null && results.getAllResults().size() == 0) {
             // TODO Error attribution might be bugged
             for (PackageRegistry packageRegistry : this.pkgRegistryManager.getPackageRegistry().values()) {
                 packageRegistry.getPackage().resetErrors();

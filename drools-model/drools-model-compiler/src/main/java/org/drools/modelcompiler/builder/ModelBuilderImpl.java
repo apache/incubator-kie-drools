@@ -19,16 +19,13 @@ package org.drools.modelcompiler.builder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.TypeDeclarationFactory;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -39,24 +36,22 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.util.StringUtils;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.core.util.StringUtils;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.ast.descr.TypeDeclarationDescr;
-import org.drools.modelcompiler.builder.errors.UnsupportedFeatureError;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
+import org.drools.modelcompiler.builder.processors.GeneratedPojoCompilationPhase;
 import org.drools.modelcompiler.builder.processors.TypeDeclarationRegistrationPhase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
 import static com.github.javaparser.StaticJavaParser.parseImport;
 import static java.util.Collections.emptyList;
-import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
-import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
 
@@ -181,41 +176,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                     new TypeDeclarationRegistrationPhase(pkgRegistry, packageDescr, pkgRegistryManager);
             typeDeclarationRegistrationPhase.process();
             typeDeclarationRegistrationPhase.getResults().forEach(this::addBuilderResult);
-
-//            InternalKnowledgePackage pkg = getOrCreatePackageRegistry(packageDescr).getPackage();
-//            for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
-//                processTypeDeclarationDescr(pkg, typeDescr);
-//            }
-//            for (EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations()) {
-//                processTypeDeclarationDescr(pkg, enumDeclarationDescr);
-//            }
         }
     }
 
-    private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
-        normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
-        try {
-            Class<?> typeClass = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
-            String typePkg = typeClass.getPackage().getName();
-            String typeName = typeClass.getName().substring( typePkg.length() + 1 );
-            TypeDeclaration type = new TypeDeclaration(typeName );
-            type.setTypeClass( typeClass );
-            type.setResource( typeDescr.getResource() );
-            if (hasMvel()) {
-                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
-            }
-            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-            if (!type.isTypesafe()) {
-                addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
-            }
-            getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
-        } catch (ClassNotFoundException e) {
-            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-            type.setResource( typeDescr.getResource() );
-            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-            pkg.addTypeDeclaration( type );
-        }
-    }
 
     private void deregisterTypeDeclarations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
@@ -245,21 +208,22 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
-            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            generatePOJOs(packageDescr, pkgRegistry);
+            PackageRegistry pkgRegistry = this.getPackageRegistryManager().getPackageRegistry(packageDescr.getNamespace());
+            InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+            PackageModel model = this.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
+            model.addImports(pkg.getTypeResolver().getImports());
+            new POJOGenerator(this, pkg, packageDescr, model).process();
         }
 
     }
 
     private void compileGeneratedPojos(Map<String, PackageModel> packageModels) {
-        List<GeneratedClassWithPackage> allGeneratedPojos =
-                packageModels.values().stream()
-                             .flatMap(p -> p.getGeneratedPOJOsSource().stream()
-                                     .map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
-                        .collect( Collectors.toList());
+        GeneratedPojoCompilationPhase generatedPojoCompilationPhase =
+                new GeneratedPojoCompilationPhase(
+                        packageModels, this.getBuildContext(), this.getBuilderConfiguration().getClassLoader());
 
-        Map<String, Class<?>> allCompiledClasses = compileType(this, getBuilderConfiguration().getClassLoader(), allGeneratedPojos);
-        getBuildContext().registerGeneratedPojos(allGeneratedPojos, allCompiledClasses);
+        generatedPojoCompilationPhase.process();
+        this.getBuildResultAccumulator().addAll(generatedPojoCompilationPhase.getResults());
     }
 
     private void storeGeneratedPojosInPackages(Collection<CompositePackageDescr> packages) {
@@ -286,13 +250,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     public static void registerType( TypeResolver typeResolver, Class<?> clazz) {
         typeResolver.registerClass(clazz.getCanonicalName(), clazz);
         typeResolver.registerClass(clazz.getSimpleName(), clazz);
-    }
-
-    protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-        model.addImports(pkg.getTypeResolver().getImports());
-        new POJOGenerator(this, pkg, packageDescr, model).process();
     }
 
     @Override
