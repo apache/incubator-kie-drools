@@ -19,7 +19,7 @@ rule "Find all grades for Big Data exam"
 end
 ----
 
-In this example, the domain model contains a `Student` object with a `Plan` of study. The `Plan` can have zero or more `Exam` instances and an `Exam` can have zero or more `Grade` instances. Only the root object of the graph, the `Student` in this case, needs to be in the working memory of the {DECISION_ENGINE} for this rule setup to function.
+In this example, the domain model contains a `Student` object with a `Plan` of study. The `Plan` can have zero or more `Exam` instances and an `Exam` can have zero or more `Grade` instances. Only the root object of the graph, the `Student` in this case, needs to be in the working memory of the {RULE_ENGINE} for this rule setup to function.
 
 As a more efficient alternative to using extensive `from` statements, you can use the abbreviated OOPath syntax, as shown in the following example:
 
@@ -84,11 +84,11 @@ Student( $exam: /plan/exams[ /grades[ result > 20 ] ] )
 Student( $grade: /plan/exams[0]/grades )
 ----
 
-OOPath expressions can be reactive or non-reactive. The {DECISION_ENGINE} does not react to updates involving a deeply nested object that is traversed during the evaluation of an OOPath expression.
+OOPath expressions can be reactive or non-reactive. The {RULE_ENGINE} does not react to updates involving a deeply nested object that is traversed during the evaluation of an OOPath expression.
 
-To make these objects reactive to changes, modify the objects to extend the class `org.drools.core.phreak.ReactiveObject`. After you modify an object to extend the `ReactiveObject` class, the domain object invokes the inherited method `notifyModification` to notify the {DECISION_ENGINE} when one of the fields has been updated, as shown in the following example:
+To make these objects reactive to changes, modify the objects to extend the class `org.drools.core.phreak.ReactiveObject`. After you modify an object to extend the `ReactiveObject` class, the domain object invokes the inherited method `notifyModification` to notify the {RULE_ENGINE} when one of the fields has been updated, as shown in the following example:
 
-.Example object method to notify the {DECISION_ENGINE} that an exam has been moved to a different course
+.Example object method to notify the {RULE_ENGINE} that an exam has been moved to a different course
 [source,java]
 ----
 public void setCourse(String course) {
@@ -113,7 +113,7 @@ You can also use the `?/` separator instead of the `/` separator to disable reac
 Student( $grade: /plan/exams[ course == "Big Data" ]?/grades )
 ----
 
-With this example, the {DECISION_ENGINE} reacts to a change made to an exam or if an exam is added to the plan, but not if a new grade is added to an existing exam.
+With this example, the {RULE_ENGINE} reacts to a change made to an exam or if an exam is added to the plan, but not if a new grade is added to an existing exam.
 
 If an OOPath portion is non-reactive, all remaining portions of the OOPath expression also become non-reactive. For example, the following OOPath expression is completely non-reactive:
 

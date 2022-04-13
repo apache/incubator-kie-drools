@@ -1,7 +1,7 @@
 [id='drl-rules-THEN-methods-ref_{context}']
 = Supported rule action methods in DRL
 
-DRL supports the following rule action methods that you can use in DRL rule actions. You can use these methods to modify the working memory of the {DECISION_ENGINE} without having to first reference a working memory instance. These methods act as shortcuts to the methods provided by the `RuleContext` class in your {PRODUCT} distribution.
+DRL supports the following rule action methods that you can use in DRL rule actions. You can use these methods to modify the working memory of the {RULE_ENGINE} without having to first reference a working memory instance. These methods act as shortcuts to the methods provided by the `RuleContext` class in your {PRODUCT} distribution.
 
 For all rule action methods,
 ifdef::DM,PAM[]
@@ -29,7 +29,7 @@ $application.setExplanation( "has been bankrupt" );
 --
 
 `modify`::
-Use this to specify fields to be modified for a fact and to notify the {DECISION_ENGINE} of the change. This method provides a structured approach to fact updates. It combines the `update` operation with setter calls to change object fields.
+Use this to specify fields to be modified for a fact and to notify the {RULE_ENGINE} of the change. This method provides a structured approach to fact updates. It combines the `update` operation with setter calls to change object fields.
 +
 --
 [source]
@@ -52,12 +52,12 @@ modify( LoanApplication ) {
 --
 
 `update`::
-Use this to specify fields and the entire related fact to be updated and to notify the {DECISION_ENGINE} of the change. After a fact has changed, you must call `update` before changing another fact that might be affected by the updated values. To avoid this added step, use the `modify` method instead.
+Use this to specify fields and the entire related fact to be updated and to notify the {RULE_ENGINE} of the change. After a fact has changed, you must call `update` before changing another fact that might be affected by the updated values. To avoid this added step, use the `modify` method instead.
 +
 --
 [source,subs="attributes+"]
 ----
-update ( <object, <handle> )  // Informs the {DECISION_ENGINE} that an object has changed
+update ( <object, <handle> )  // Informs the {RULE_ENGINE} that an object has changed
 
 update ( <object> )  // Causes `KieSession` to search for a fact handle of the object
 ----
@@ -80,7 +80,7 @@ endif::[]
 --
 
 `insert`::
-Use this to insert a `new` fact into the working memory of the {DECISION_ENGINE} and to define resulting fields and values as needed for the fact.
+Use this to insert a `new` fact into the working memory of the {RULE_ENGINE} and to define resulting fields and values as needed for the fact.
 +
 --
 [source,subs="attributes+"]
@@ -96,7 +96,7 @@ insert( new Applicant() );
 --
 
 `insertLogical`::
-Use this to insert a `new` fact logically into the {DECISION_ENGINE}. The {DECISION_ENGINE} is responsible for logical decisions on insertions and retractions of facts. After regular or stated insertions, facts must be retracted explicitly. After logical insertions, the facts that were inserted are automatically retracted when the conditions in the rules that inserted the facts are no longer true.
+Use this to insert a `new` fact logically into the {RULE_ENGINE}. The {RULE_ENGINE} is responsible for logical decisions on insertions and retractions of facts. After regular or stated insertions, facts must be retracted explicitly. After logical insertions, the facts that were inserted are automatically retracted when the conditions in the rules that inserted the facts are no longer true.
 +
 --
 [source]
@@ -112,7 +112,7 @@ insertLogical( new Applicant() );
 --
 
 `delete`::
-Use this to remove an object from the {DECISION_ENGINE}. The keyword `retract` is also supported in DRL and executes the same action, but `delete` is typically preferred in DRL code for consistency with the keyword `insert`.
+Use this to remove an object from the {RULE_ENGINE}. The keyword `retract` is also supported in DRL and executes the same action, but `delete` is typically preferred in DRL code for consistency with the keyword `insert`.
 +
 --
 [source]

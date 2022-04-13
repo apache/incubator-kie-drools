@@ -12,12 +12,12 @@ But there are also DSL and DSLR editors, both in the IDE as well as in the web b
 == When to Use a DSL
 
 
-DSLs can serve as a layer of separation between rule authoring (and rule authors) and the technical intricacies resulting from the modelling of domain object and the {DECISION_ENGINE}'s native language and methods.
+DSLs can serve as a layer of separation between rule authoring (and rule authors) and the technical intricacies resulting from the modelling of domain object and the {RULE_ENGINE}'s native language and methods.
 If your rules need to be read and validated by domain experts (such as business analysts, for instance) who are not programmers, you should consider  using a DSL; it hides implementation details and focuses on the rule logic proper.
 DSL sentences can also act as "templates" for conditional elements and consequence actions that are used repeatedly in your rules, possibly with minor variations.
 You may define DSL sentences as being mapped to these repeated phrases, with parameters providing a means for accommodating those variations.
 
-DSLs have no impact on the {DECISION_ENGINE} at runtime, they are just a compile time feature, requiring a special parser and transformer.
+DSLs have no impact on the {RULE_ENGINE} at runtime, they are just a compile time feature, requiring a special parser and transformer.
 
 == DSL Basics
 

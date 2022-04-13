@@ -7,7 +7,7 @@ ifdef::DROOLS,JBPM,OP[]
 = {RULE_ENGINE_CAP}
 endif::[]
 
-The {RULE_ENGINE} is the rules engine in {PRODUCT}. The {RULE_ENGINE} stores, processes, and evaluates data to execute the business rules or decision models that you define. The basic function of the {RULE_ENGINE} is to match incoming data, or _facts_, to the conditions of rules and determine whether and how to execute the rules.
+The {RULE_ENGINE} stores, processes, and evaluates data to execute the business rules or decision models that you define. The basic function of the {RULE_ENGINE} is to match incoming data, or _facts_, to the conditions of rules and determine whether and how to execute the rules.
 
 The {RULE_ENGINE} operates using the following basic components:
 

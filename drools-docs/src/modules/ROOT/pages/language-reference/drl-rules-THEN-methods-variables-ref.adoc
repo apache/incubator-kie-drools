@@ -1,7 +1,7 @@
 [id='drl-rules-THEN-methods-variables-ref_{context}']
 = Other rule action methods from `drools` variable
 
-In addition to the standard rule action methods, the {DECISION_ENGINE} supports methods in conjunction with the predefined `drools` variable that you can also use in rule actions.
+In addition to the standard rule action methods, the {RULE_ENGINE} supports methods in conjunction with the predefined `drools` variable that you can also use in rule actions.
 
 You can use the `drools` variable to call methods from the `org.kie.api.runtime.rule.RuleContext` class in your {PRODUCT} distribution, which is also the class that the standard rule action methods are based on. For all `drools` rule action options,
 ifdef::DM,PAM[]
@@ -18,7 +18,7 @@ The `drools` variable contains methods that provide information about the firing
 
 From the `drools` variable, you can also obtain a reference to the `KieRuntime` providing useful methods to interact with the running session, for example:
 
-* `drools.getKieRuntime().halt()`: Terminates rule execution if a user or application previously called `fireUntilHalt()`. When a user or application calls `fireUntilHalt()` method, the {DECISION_ENGINE} starts in `active` mode and evaluates rules until the user or application explicitly calls `halt()` method. Otherwise, by default, the {DECISION_ENGINE} runs in `passive` mode and evaluates rules only when a user or an application explicitly calls `fireAllRules()` method.
+* `drools.getKieRuntime().halt()`: Terminates rule execution if a user or application previously called `fireUntilHalt()`. When a user or application calls `fireUntilHalt()` method, the {RULE_ENGINE} starts in `active` mode and evaluates rules until the user or application explicitly calls `halt()` method. Otherwise, by default, the {RULE_ENGINE} runs in `passive` mode and evaluates rules only when a user or an application explicitly calls `fireAllRules()` method.
 * `drools.getKieRuntime().getAgenda()`: Returns a reference to the KIE session `Agenda`, and in turn provides access to rule activation groups, rule agenda groups, and ruleflow groups.
 
 .Example call to access agenda group "CleanUp" and set the focus

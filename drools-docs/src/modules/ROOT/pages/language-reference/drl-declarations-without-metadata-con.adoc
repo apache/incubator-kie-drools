@@ -1,7 +1,7 @@
 [id='drl-declarations-without-metadata-con_{context}']
 = Type declarations without metadata in DRL
 
-A declaration of a new fact does not require any metadata, but must include a list of attributes or fields. If a type declaration does not include identifying attributes, the {DECISION_ENGINE} searches for an existing fact class in the classpath and raises an error if the class is missing.
+A declaration of a new fact does not require any metadata, but must include a list of attributes or fields. If a type declaration does not include identifying attributes, the {RULE_ENGINE} searches for an existing fact class in the classpath and raises an error if the class is missing.
 
 The following example is a declaration of a new fact type `Person` with no metadata in a DRL file:
 
@@ -40,7 +40,7 @@ declare Person
 end
 ----
 
-When you declare a new fact type, the {DECISION_ENGINE} generates at compile time a Java class representing the fact type. The generated Java class is a one-to-one JavaBeans mapping of the type definition.
+When you declare a new fact type, the {RULE_ENGINE} generates at compile time a Java class representing the fact type. The generated Java class is a one-to-one JavaBeans mapping of the type definition.
 
 For example, the following Java class is generated from the example `Person` type declaration:
 

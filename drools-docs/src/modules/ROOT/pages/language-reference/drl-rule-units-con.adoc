@@ -49,9 +49,9 @@ public static class AdultUnit implements RuleUnit {
 }
 ----
 
-In this example, `persons` is a source of facts of type `Person`. A rule unit data source is a source of the data processed by a given rule unit and represents the entry point that the {DECISION_ENGINE} uses to evaluate the rule unit. The `adultAge` global variable is accessible from all the rules belonging to this rule unit. The last two methods are part of the rule unit life cycle and are invoked by the {DECISION_ENGINE}.
+In this example, `persons` is a source of facts of type `Person`. A rule unit data source is a source of the data processed by a given rule unit and represents the entry point that the {RULE_ENGINE} uses to evaluate the rule unit. The `adultAge` global variable is accessible from all the rules belonging to this rule unit. The last two methods are part of the rule unit life cycle and are invoked by the {RULE_ENGINE}.
 
-The {DECISION_ENGINE} supports the following optional life-cycle methods for rule units:
+The {RULE_ENGINE} supports the following optional life-cycle methods for rule units:
 
 [cols="2", options="header"]
 .Rule unit life-cycle methods
@@ -181,7 +181,7 @@ executor.run( AdultUnit.class );
 ----
 
 You can execute a rule unit in _passive mode_ by using the `run()` method (equivalent to invoking `fireAllRules()` on a KIE session)
-or in _active mode_ using the `runUntilHalt()` method (equivalent to invoking `fireUntilHalt()` on a KIE session). By default, the {DECISION_ENGINE} runs in _passive mode_ and evaluates rule units only when a user or an application explicitly calls `run()` (or `fireAllRules()` for standard rules). If a user or application calls `runUntilHalt()` for rule units (or `fireUntilHalt()` for standard rules), the {DECISION_ENGINE} starts in _active mode_ and evaluates rule units continually until the user or application explicitly calls `halt()`.
+or in _active mode_ using the `runUntilHalt()` method (equivalent to invoking `fireUntilHalt()` on a KIE session). By default, the {RULE_ENGINE} runs in _passive mode_ and evaluates rule units only when a user or an application explicitly calls `run()` (or `fireAllRules()` for standard rules). If a user or application calls `runUntilHalt()` for rule units (or `fireUntilHalt()` for standard rules), the {RULE_ENGINE} starts in _active mode_ and evaluates rule units continually until the user or application explicitly calls `halt()`.
 
 If you use the `runUntilHalt()` method, invoke the method on a separate execution thread to avoid blocking the main thread:
 
@@ -193,7 +193,7 @@ new Thread( () -> executor.runUntilHalt( adultUnit ) ).start();
 
 == Data sources for rule units
 
-A rule unit data source is a source of the data processed by a given rule unit and represents the entry point that the {DECISION_ENGINE} uses to evaluate the rule unit. A rule unit can have zero or more data sources and each `DataSource` definition declared inside a rule unit can correspond to a different entry point into the rule unit executor. Multiple rule units can share a single data source, but each rule unit must use different entry points through which the same objects are inserted.
+A rule unit data source is a source of the data processed by a given rule unit and represents the entry point that the {RULE_ENGINE} uses to evaluate the rule unit. A rule unit can have zero or more data sources and each `DataSource` definition declared inside a rule unit can correspond to a different entry point into the rule unit executor. Multiple rule units can share a single data source, but each rule unit must use different entry points through which the same objects are inserted.
 
 You can create a `DataSource` definition with a fixed set of data in a rule unit class, as shown in the following example:
 
@@ -226,10 +226,10 @@ persons.delete( johnFh );
 
 Rule units are helpful when you want to coordinate rule execution so that the execution of one rule unit triggers the start of another rule unit and so on.
 
-To facilitate rule unit execution control, the {DECISION_ENGINE} supports the following rule unit methods that you can use in DRL rule actions to coordinate the execution of rule units:
+To facilitate rule unit execution control, the {RULE_ENGINE} supports the following rule unit methods that you can use in DRL rule actions to coordinate the execution of rule units:
 
 * `drools.run()`: Triggers the execution of a specified rule unit class. This method imperatively interrupts the execution of the rule unit and activates the other specified rule unit.
-* `drools.guard()`: Prevents (guards) a specified rule unit class from being executed until the associated rule condition is met. This method declaratively schedules the execution of the other specified rule unit. When the {DECISION_ENGINE} produces at least one match for the condition in the guarding rule, the guarded rule unit is considered active. A rule unit can contain multiple guarding rules.
+* `drools.guard()`: Prevents (guards) a specified rule unit class from being executed until the associated rule condition is met. This method declaratively schedules the execution of the other specified rule unit. When the {RULE_ENGINE} produces at least one match for the condition in the guarding rule, the guarded rule unit is considered active. A rule unit can contain multiple guarding rules.
 
 As an example of the `drools.run()` method, consider the following DRL rules that each belong to a specified rule unit. The `NotAdult` rule uses the `drools.run( AdultUnit.class )` method to trigger the execution of the `AdultUnit` rule unit:
 

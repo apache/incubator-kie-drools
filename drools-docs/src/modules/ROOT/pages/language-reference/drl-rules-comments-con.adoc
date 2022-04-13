@@ -2,7 +2,7 @@
 
 = Comments in DRL files
 
-DRL supports single-line comments prefixed with a double forward slash `//` and multi-line comments enclosed with a forward slash and asterisk `/* ... */`. You can use DRL comments to annotate rules or any related components in DRL files. DRL comments are ignored by the {DECISION_ENGINE} when the DRL file is processed.
+DRL supports single-line comments prefixed with a double forward slash `//` and multi-line comments enclosed with a forward slash and asterisk `/* ... */`. You can use DRL comments to annotate rules or any related components in DRL files. DRL comments are ignored by the {RULE_ENGINE} when the DRL file is processed.
 
 .Example rule with comments
 [source]

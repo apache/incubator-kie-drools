@@ -13,7 +13,7 @@ The `when` part of a DRL rule (also known as the _Left Hand Side (LHS)_ of the r
 
 NOTE: DRL uses `when` instead of `if` because `if` is typically part of a procedural execution flow during which a condition is checked at a specific point in time. In contrast, `when` indicates that the condition evaluation is not limited to a specific evaluation sequence or point in time, but instead occurs continually at any time. Whenever the condition is met, the actions are executed.
 
-If the `when` section is empty, then the conditions are considered to be true and the actions in the `then` section are executed the first time a `fireAllRules()` call is made in the {DECISION_ENGINE}. This is useful if you want to use rules to set up the {DECISION_ENGINE} state.
+If the `when` section is empty, then the conditions are considered to be true and the actions in the `then` section are executed the first time a `fireAllRules()` call is made in the {RULE_ENGINE}. This is useful if you want to use rules to set up the {RULE_ENGINE} state.
 
 The following example rule uses empty conditions to insert a fact every time the rule is executed:
 
@@ -63,7 +63,7 @@ end
 
 == Patterns and constraints
 
-A _pattern_ in a DRL rule condition is the segment to be matched by the {DECISION_ENGINE}. A pattern can potentially match each fact that is inserted into the working memory of the {DECISION_ENGINE}. A pattern can also contain _constraints_ to further define the facts to be matched.
+A _pattern_ in a DRL rule condition is the segment to be matched by the {RULE_ENGINE}. A pattern can potentially match each fact that is inserted into the working memory of the {RULE_ENGINE}. A pattern can also contain _constraints_ to further define the facts to be matched.
 
 ifdef::DROOLS,JBPM,OP[]
 The railroad diagram below shows the syntax for this:
@@ -72,7 +72,7 @@ The railroad diagram below shows the syntax for this:
 image::language-reference/Pattern.png[align="center"]
 endif::[]
 
-In the simplest form, with no constraints, a pattern matches a fact of the given type. In the following example, the type is `Person`, so the pattern will match against all `Person` objects in the working memory of the {DECISION_ENGINE}:
+In the simplest form, with no constraints, a pattern matches a fact of the given type. In the following example, the type is `Person`, so the pattern will match against all `Person` objects in the working memory of the {RULE_ENGINE}:
 
 .Example pattern for a single fact type
 [source]
@@ -80,7 +80,7 @@ In the simplest form, with no constraints, a pattern matches a fact of the given
 Person()
 ----
 
-The type does not need to be the actual class of some fact object. Patterns can refer to superclasses or even interfaces, potentially matching facts from many different classes. For example, the following pattern matches all objects in the working memory of the {DECISION_ENGINE}:
+The type does not need to be the actual class of some fact object. Patterns can refer to superclasses or even interfaces, potentially matching facts from many different classes. For example, the following pattern matches all objects in the working memory of the {RULE_ENGINE}:
 
 .Example pattern for all objects
 [source]
@@ -110,11 +110,11 @@ Person( age == 50 )
 Person( getAge() == 50 )
 ----
 
-{PRODUCT} uses the standard JDK `Introspector` class to achieve this mapping, so it follows the standard JavaBeans specification. For optimal {DECISION_ENGINE} performance, use the property access format, such as `age`, instead of using getters explicitly, such as `getAge()`.
+{PRODUCT} uses the standard JDK `Introspector` class to achieve this mapping, so it follows the standard JavaBeans specification. For optimal {RULE_ENGINE} performance, use the property access format, such as `age`, instead of using getters explicitly, such as `getAge()`.
 
 [WARNING]
 ====
-Do not use property accessors to change the state of the object in a way that might affect the rules because the {DECISION_ENGINE} caches the results of the match between invocations for higher efficiency.
+Do not use property accessors to change the state of the object in a way that might affect the rules because the {RULE_ENGINE} caches the results of the match between invocations for higher efficiency.
 
 For example, do not use property accessors in the following ways:
 
@@ -149,7 +149,7 @@ Person( age == 50 )
 Person( age() == 50 )
 ----
 
-You can also nest access properties in patterns, as shown in the following example. Nested properties are indexed by the {DECISION_ENGINE}.
+You can also nest access properties in patterns, as shown in the following example. Nested properties are indexed by the {RULE_ENGINE}.
 
 .Example pattern with nested property access
 [source]
@@ -161,7 +161,7 @@ Person( address.houseNumber == 50 )
 Person( getAddress().getHouseNumber() == 50 )
 ----
 
-WARNING: In stateful KIE sessions, use nested accessors carefully because the working memory of the {DECISION_ENGINE} is not aware of any of the nested values and does not detect when they change. Either consider the nested values immutable while any of their parent references are inserted into the working memory, or, if you want to modify a nested value, mark all of the outer facts as updated. In the previous example, when the `houseNumber` property changes, any `Person` with that `Address` must be marked as updated.
+WARNING: In stateful KIE sessions, use nested accessors carefully because the working memory of the {RULE_ENGINE} is not aware of any of the nested values and does not detect when they change. Either consider the nested values immutable while any of their parent references are inserted into the working memory, or, if you want to modify a nested value, mark all of the outer facts as updated. In the previous example, when the `houseNumber` property changes, any `Person` with that `Address` must be marked as updated.
 
 You can use any Java expression that returns a `boolean` value as a constraint inside the parentheses of a pattern. Java expressions can be mixed with other expression enhancements, such as property access:
 
@@ -189,7 +189,7 @@ Person( Math.round( weight / ( height * height ) ) < 25.0 )
 
 [WARNING]
 ====
-Do not use constraints to change the state of the object in a way that might affect the rules because the {DECISION_ENGINE} caches the results of the match between invocations for higher efficiency. Any method that is executed on a fact in the rule conditions must be a read-only method. Also, the state of a fact should not change between rule invocations unless those facts are marked as updated in the working memory on every change.
+Do not use constraints to change the state of the object in a way that might affect the rules because the {RULE_ENGINE} caches the results of the match between invocations for higher efficiency. Any method that is executed on a fact in the rule conditions must be a read-only method. Also, the state of a fact should not change between rule invocations unless those facts are marked as updated in the working memory on every change.
 
 For example, do not use a pattern constraint in the following ways:
 
@@ -210,7 +210,7 @@ The `==` operator uses null-safe `equals()` semantics instead of the usual `same
 
 The `!=` operator uses null-safe `!equals()` semantics instead of the usual `not same` semantics. For example, the pattern `Person( firstName != "John" )` is similar to `!java.util.Objects.equals(person.getFirstName(), "John")`.
 
-If the field and the value of a constraint are of different types, the {DECISION_ENGINE} uses type coercion to resolve the conflict and reduce compilation errors. For instance, if `"ten"` is provided as a string in a numeric evaluator, a compilation error occurs, whereas `"10"` is coerced to a numeric 10. In coercion, the field type always takes precedence over the value type:
+If the field and the value of a constraint are of different types, the {RULE_ENGINE} uses type coercion to resolve the conflict and reduce compilation errors. For instance, if `"ten"` is provided as a string in a numeric evaluator, a compilation error occurs, whereas `"10"` is coerced to a numeric 10. In coercion, the field type always takes precedence over the value type:
 
 .Example constraint with a value that is coerced
 [source]
@@ -230,7 +230,7 @@ Person( age > 50, weight > 80 )
 Person( age > 50, weight > 80, height > 2 )
 ----
 
-NOTE: Although the `&&` and `,` operators have the same semantics, they are resolved with different priorities. The `&&` operator precedes the `||` operator, and both the `&&` and `||` operators together precede the `,` operator. Use the comma operator at the top-level constraint for optimal {DECISION_ENGINE} performance and human readability.
+NOTE: Although the `&&` and `,` operators have the same semantics, they are resolved with different priorities. The `&&` operator precedes the `||` operator, and both the `&&` and `||` operators together precede the `,` operator. Use the comma operator at the top-level constraint for optimal {RULE_ENGINE} performance and human readability.
 
 You cannot embed a comma operator in a composite constraint expression, such as in parentheses:
 
@@ -299,7 +299,7 @@ Person( $a : (age * 2) )
 ----
 ====
 
-The {DECISION_ENGINE} does not support bindings to the same declaration, but does support _unification_ of arguments across several properties. While positional arguments are always processed with unification, the unification symbol `:=` exists for named arguments.
+The {RULE_ENGINE} does not support bindings to the same declaration, but does support _unification_ of arguments across several properties. While positional arguments are always processed with unification, the unification symbol `:=` exists for named arguments.
 
 The following example patterns unify the `age` property across two `Person` facts:
 
@@ -360,7 +360,7 @@ If an inline cast is not possible (for example, if `instanceof` returns `false`)
 
 == Date literal in constraints
 
-By default, the {DECISION_ENGINE} supports the date format `dd-mmm-yyyy`. You can customize the date format, including a time format mask if needed, by providing an alternative format mask with the system property `drools.dateformat="dd-mmm-yyyy hh:mm"`. You can also customize the date format by changing the language locale with the `drools.defaultlanguage` and `drools.defaultcountry` system properties (for example, the locale of Thailand is set as `drools.defaultlanguage=th` and `drools.defaultcountry=TH`).
+By default, the {RULE_ENGINE} supports the date format `dd-mmm-yyyy`. You can customize the date format, including a time format mask if needed, by providing an alternative format mask with the system property `drools.dateformat="dd-mmm-yyyy hh:mm"`. You can also customize the date format by changing the language locale with the `drools.defaultlanguage` and `drools.defaultcountry` system properties (for example, the locale of Thailand is set as `drools.defaultlanguage=th` and `drools.defaultcountry=TH`).
 
 .Example pattern with a date literal restriction
 [source]

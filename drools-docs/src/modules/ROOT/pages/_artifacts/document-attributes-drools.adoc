@@ -7,12 +7,6 @@
 :PRODUCT_INIT_BA: drools
 :PRODUCT_INIT_CAP_BA: DROOLS
 
-:PLANNER: OptaPlanner
-:PLANNER_SHORT: Planner
-
-:CONTEXTUAL_BPMSUITE: jBPM
-:CONTEXTUAL_BPMSUITE_SHORT: jBPM
-
 :PRODUCT_OLD: Drools
 :URL_COMPONENT_PRODUCT_OLD: drools
 
@@ -25,21 +19,6 @@
 
 :URL_BASE_GITHUB: {URL_BASE_GITHUB_DM}
 
-:PROJECT: Mortgages
+:RULE_ENGINE: Drools rule engine
+:RULE_ENGINE_CAP: Drools rule engine
 
-:RULE_ENGINE: Drools engine
-:RULE_ENGINE_CAP: Drools engine
-:PROCESS_ENGINE: jBPM engine
-:PROCESS_ENGINE_CAP: jBPM engine
-:PLANNING_ENGINE: Planner engine
-:PLANNING_ENGINE_CAP: Planner engine
-:URL_COMPONENT_DECISION_ENGINE: drools-engine
-:URL_COMPONENT_PROCESS_ENGINE: jbpm-engine
-:URL_COMPONENT_PLANNING_ENGINE: optaplanner-engine
-
-// Different in RHDM, and thus specified in each product attributes. The truly global CENTRAL attributes remain in document-attributes.adoc.
-:URL_COMPONENT_CENTRAL: business-central
-:CENTRAL_CAPITAL_UNDER: BUSINESS_CENTRAL
-:CENTRAL_ONEWORD: businesscentral
-
-:KAFKA_PRODUCT: Apache Kafka
