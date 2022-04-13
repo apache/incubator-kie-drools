@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationFactory;
@@ -156,27 +157,28 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         // all handled within PackageRegistryManagerImpl#getOrCreatePackageRegistry()
-//        for ( CompositePackageDescr packageDescr : packages ) {
-//            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
-//                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
-//            }
-//
-//            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
-//            if (pkgRegistry == null) {
-//                getOrCreatePackageRegistry( packageDescr );
-//            } else {
-//                for (ImportDescr importDescr : packageDescr.getImports()) {
-//                    pkgRegistry.registerImport(importDescr.getTarget());
-//                }
-//            }
-//        }
+        for ( CompositePackageDescr packageDescr : packages ) {
+            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
+                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
+            }
+
+            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
+            if (pkgRegistry == null) {
+                getOrCreatePackageRegistry( packageDescr );
+            } else {
+                for (ImportDescr importDescr : packageDescr.getImports()) {
+                    pkgRegistry.registerImport(importDescr.getTarget());
+                }
+            }
+        }
     }
 
     private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
-
-
         for (CompositePackageDescr packageDescr : packages) {
-            TypeDeclarationRegistrationPhase typeDeclarationRegistrationPhase = new TypeDeclarationRegistrationPhase(getOrCreatePackageRegistry(packageDescr), packageDescr);
+            PackageRegistryManager pkgRegistryManager = this.getPackageRegistryManager();
+            PackageRegistry pkgRegistry = pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
+            TypeDeclarationRegistrationPhase typeDeclarationRegistrationPhase =
+                    new TypeDeclarationRegistrationPhase(pkgRegistry, packageDescr, pkgRegistryManager);
             typeDeclarationRegistrationPhase.process();
             typeDeclarationRegistrationPhase.getResults().forEach(this::addBuilderResult);
 
@@ -190,30 +192,30 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         }
     }
 
-//    private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
-//        normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
-//        try {
-//            Class<?> typeClass = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
-//            String typePkg = typeClass.getPackage().getName();
-//            String typeName = typeClass.getName().substring( typePkg.length() + 1 );
-//            TypeDeclaration type = new TypeDeclaration(typeName );
-//            type.setTypeClass( typeClass );
-//            type.setResource( typeDescr.getResource() );
-//            if (hasMvel()) {
-//                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
-//            }
-//            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-//            if (!type.isTypesafe()) {
-//                addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
-//            }
-//            getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
-//        } catch (ClassNotFoundException e) {
-//            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-//            type.setResource( typeDescr.getResource() );
-//            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-//            pkg.addTypeDeclaration( type );
-//        }
-//    }
+    private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
+        normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
+        try {
+            Class<?> typeClass = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+            String typePkg = typeClass.getPackage().getName();
+            String typeName = typeClass.getName().substring( typePkg.length() + 1 );
+            TypeDeclaration type = new TypeDeclaration(typeName );
+            type.setTypeClass( typeClass );
+            type.setResource( typeDescr.getResource() );
+            if (hasMvel()) {
+                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
+            }
+            TypeDeclarationFactory.processAnnotations(typeDescr, type);
+            if (!type.isTypesafe()) {
+                addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
+            }
+            getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
+        } catch (ClassNotFoundException e) {
+            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
+            type.setResource( typeDescr.getResource() );
+            TypeDeclarationFactory.processAnnotations(typeDescr, type);
+            pkg.addTypeDeclaration( type );
+        }
+    }
 
     private void deregisterTypeDeclarations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {

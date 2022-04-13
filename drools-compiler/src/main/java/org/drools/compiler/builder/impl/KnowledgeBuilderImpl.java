@@ -35,6 +35,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
@@ -806,6 +807,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void registerPackage(PackageDescr packageDescr) {
         this.pkgRegistryManager.registerPackage(packageDescr);
+    }
+
+    protected PackageRegistryManager getPackageRegistryManager() {
+        return pkgRegistryManager;
     }
 
     public static class ForkJoinPoolHolder {

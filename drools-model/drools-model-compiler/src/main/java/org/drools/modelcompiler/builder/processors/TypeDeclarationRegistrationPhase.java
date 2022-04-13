@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.processors;
 
+import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.TypeDeclarationFactory;
 import org.drools.compiler.builder.impl.processors.AbstractPackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
@@ -19,8 +20,11 @@ import static org.drools.core.util.Drools.hasMvel;
 
 public class TypeDeclarationRegistrationPhase extends AbstractPackageCompilationPhase {
 
-    public TypeDeclarationRegistrationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    private final PackageRegistryManager pkgRegistryManager;
+
+    public TypeDeclarationRegistrationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, PackageRegistryManager pkgRegistryManager) {
         super(pkgRegistry, packageDescr);
+        this.pkgRegistryManager = pkgRegistryManager;
     }
 
     @Override
@@ -33,7 +37,6 @@ public class TypeDeclarationRegistrationPhase extends AbstractPackageCompilation
         }
 
     }
-
 
     private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
         normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
@@ -51,8 +54,8 @@ public class TypeDeclarationRegistrationPhase extends AbstractPackageCompilation
             if (!type.isTypesafe()) {
                 results.addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
             }
-            // getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
-            pkgRegistry.getPackage().addTypeDeclaration(type );
+            pkgRegistryManager.getOrCreatePackageRegistry(
+                    new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
         } catch (ClassNotFoundException e) {
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
             type.setResource( typeDescr.getResource() );
@@ -60,7 +63,6 @@ public class TypeDeclarationRegistrationPhase extends AbstractPackageCompilation
             pkg.addTypeDeclaration( type );
         }
     }
-
 
     protected void normalizeAnnotations(AnnotatedBaseDescr annotationsContainer, TypeResolver typeResolver, boolean isStrict) {
         AnnotationNormalizer annotationNormalizer =
