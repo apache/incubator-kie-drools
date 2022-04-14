@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.io.impl.DescrResource;
+import org.drools.util.io.DescrResource;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

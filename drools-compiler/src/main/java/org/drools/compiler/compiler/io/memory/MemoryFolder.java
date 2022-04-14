@@ -23,21 +23,21 @@ import java.util.Objects;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.FileSystemItem;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 public class MemoryFolder implements Folder, Serializable {
 
     private final MemoryFileSystem mfs;
 
-    private final KiePath          path;
+    private final PortablePath path;
     
     private MemoryFolder     pFolder;
 
     public MemoryFolder(MemoryFileSystem mfs, String path) {
-        this(mfs, KiePath.of(path) );
+        this(mfs, PortablePath.of(path) );
     }
 
-    public MemoryFolder(MemoryFileSystem mfs, KiePath path) {
+    public MemoryFolder(MemoryFileSystem mfs, PortablePath path) {
         this.mfs = mfs;
         this.path = path;
     }
@@ -46,7 +46,7 @@ public class MemoryFolder implements Folder, Serializable {
         return path.getFileName();
     }
 
-    public KiePath getPath() {
+    public PortablePath getPath() {
         return path;
     }
 

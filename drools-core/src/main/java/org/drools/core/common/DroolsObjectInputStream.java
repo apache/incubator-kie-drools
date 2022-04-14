@@ -31,7 +31,7 @@ import org.drools.core.base.AccessorKey;
 import org.drools.core.base.ReadAccessorSupplier;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 
 public class DroolsObjectInputStream extends ObjectInputStream
     implements

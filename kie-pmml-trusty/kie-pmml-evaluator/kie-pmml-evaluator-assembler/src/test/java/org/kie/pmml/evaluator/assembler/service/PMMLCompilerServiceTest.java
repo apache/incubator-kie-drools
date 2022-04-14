@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.drools.core.io.impl.FileSystemResource;
+import org.drools.util.io.FileSystemResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -37,7 +37,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModelWithSources;
 
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.util.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

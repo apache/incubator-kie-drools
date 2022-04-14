@@ -10,7 +10,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import org.kie.internal.utils.ChainedProperties;
 
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.util.ClassUtils.convertFromPrimitiveType;
 
 public class AccumulateUtil {
 

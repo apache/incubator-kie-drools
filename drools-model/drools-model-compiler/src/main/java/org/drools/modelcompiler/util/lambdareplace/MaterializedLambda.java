@@ -46,7 +46,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.model.functions.HashedExpression;
 
-import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.util.StringUtils.md5Hash;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;

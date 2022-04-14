@@ -14,7 +14,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.junit.Test;
 

@@ -73,9 +73,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         this.resourceProvider = resourceProvider;
     }
 
-    public static ClassLoader getClassLoader(final ClassLoader classLoader,
-                                             final Class< ? > cls,
-                                             final boolean enableCache) {
+    public static ClassLoader getClassLoader(ClassLoader classLoader, Class< ? > cls) {
         ProjectClassLoader projectClassLoader = createProjectClassLoader(classLoader);
         if (cls != null) {
             projectClassLoader.setDroolsClassLoader(cls.getClassLoader());

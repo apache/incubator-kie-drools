@@ -26,7 +26,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 

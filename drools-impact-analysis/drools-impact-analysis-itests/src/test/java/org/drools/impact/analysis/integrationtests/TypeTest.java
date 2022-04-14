@@ -19,7 +19,7 @@ package org.drools.impact.analysis.integrationtests;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.ReactivityType;

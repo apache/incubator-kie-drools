@@ -31,7 +31,7 @@ import java.util.function.BiPredicate;
 
 import org.drools.core.base.CoercionUtil;
 import org.drools.core.time.TimeUtils;
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetBitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;

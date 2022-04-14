@@ -1,7 +1,7 @@
 package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.compiler.AnnotationDeclarationError;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 
 public abstract class AnnotationNormalizer {
     protected final TypeResolver typeResolver;

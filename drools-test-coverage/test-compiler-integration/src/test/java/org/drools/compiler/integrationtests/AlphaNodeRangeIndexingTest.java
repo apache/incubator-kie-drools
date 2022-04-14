@@ -26,7 +26,7 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.MyComparable;

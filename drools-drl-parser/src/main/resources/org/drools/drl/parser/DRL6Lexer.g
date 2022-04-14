@@ -14,7 +14,7 @@ tokens {
 
     import org.kie.internal.builder.conf.LanguageLevelOption;
     import org.drools.compiler.compiler.DroolsParserException;
-    import org.drools.core.util.StringUtils;
+    import org.drools.util.StringUtils;
 }
  
 @members {

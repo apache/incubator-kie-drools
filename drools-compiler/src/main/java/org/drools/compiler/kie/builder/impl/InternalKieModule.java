@@ -34,7 +34,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.util.io.InternalResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.wiring.api.ResourceProvider;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
@@ -53,7 +53,7 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
 import org.slf4j.Logger;
@@ -99,7 +99,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     boolean isAvailable( final String pResourceName );
     
     byte[] getBytes( final String pResourceName );
-    default byte[] getBytes( final KiePath resourcePath ) {
+    default byte[] getBytes( final PortablePath resourcePath ) {
         return getBytes(resourcePath.asString());
     }
 

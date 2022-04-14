@@ -34,8 +34,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.ClassTypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -53,7 +53,8 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
+import org.drools.core.util.CloneUtil;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
@@ -810,7 +811,7 @@ public class KnowledgePackageImpl
             }
         }
 
-        KnowledgePackageImpl clonedPkg = ClassUtils.deepClone(this, classLoader, cloningResources);
+        KnowledgePackageImpl clonedPkg = CloneUtil.deepClone(this, classLoader, cloningResources);
         clonedPkg.setClassLoader( classLoader );
 
         if (ruleUnitDescriptionLoader != null) {

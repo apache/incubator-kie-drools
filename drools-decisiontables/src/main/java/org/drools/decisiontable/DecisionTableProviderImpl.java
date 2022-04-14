@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.drl.extensions.DecisionTableProvider;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.template.parser.DecisionTableParseException;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;

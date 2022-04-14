@@ -33,10 +33,10 @@ import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.io.ResourceConfigurationImpl;
+import org.drools.util.io.InternalResource;
+import org.drools.util.IoUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -60,7 +60,7 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
@@ -69,7 +69,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.Drools.hasXmlSupport;
-import static org.drools.core.util.StringUtils.codeAwareIndexOf;
+import static org.drools.util.StringUtils.codeAwareIndexOf;
 
 public class KieBuilderImpl
         implements
@@ -85,7 +85,7 @@ public class KieBuilderImpl
     private static final String RESOURCES_ROOT_DOT_SEPARATOR = RESOURCES_ROOT.replace( '/', '.' );
     private static final String SPRING_BOOT_ROOT = "BOOT-INF.classes.";
 
-    private static final KiePath POM_PATH = KiePath.of("pom.xml");
+    private static final PortablePath POM_PATH = PortablePath.of("pom.xml");
 
     private static final String[] SUPPORTED_RESOURCES_ROOTS = new String[] { RESOURCES_ROOT_DOT_SEPARATOR, SPRING_BOOT_ROOT };
 
@@ -296,19 +296,19 @@ public class KieBuilderImpl
     }
 
     private void addKBasesFilesToTrg() {
-        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+        for ( PortablePath filePath : srcMfs.getFilePaths() ) {
             if ( filePath.startsWith( RESOURCES_ROOT ) ) {
                 copySourceToTarget( filePath );
             }
         }
     }
 
-    String copySourceToTarget( KiePath filePath ) {
+    String copySourceToTarget( PortablePath filePath ) {
         if ( !filePath.startsWith( RESOURCES_ROOT ) ) {
             return null;
         }
         Resource resource = getResource( srcMfs, filePath );
-        KiePath trgFileName = filePath.substring( RESOURCES_ROOT.length() );
+        PortablePath trgFileName = filePath.substring( RESOURCES_ROOT.length() );
         if ( resource != null ) {
             trgMfs.write( trgFileName, resource, true );
         } else {
@@ -339,7 +339,7 @@ public class KieBuilderImpl
     }
 
     private void addMetaInfBuilder() {
-        for ( KiePath filePath : srcMfs.getFilePaths()) {
+        for ( PortablePath filePath : srcMfs.getFilePaths()) {
             if ( filePath.startsWith( RESOURCES_ROOT ) && !isKieExtension( filePath.asString() ) ) {
                 trgMfs.write( filePath.substring( RESOURCES_ROOT.length() ),
                               getResource( srcMfs, filePath ),
@@ -687,7 +687,7 @@ public class KieBuilderImpl
 
     private void compileJavaClasses( ClassLoader classLoader, Predicate<String> classFilter ) {
         List<String> classFiles = new ArrayList<>();
-        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+        for ( PortablePath filePath : srcMfs.getFilePaths() ) {
             if ( filePath.endsWith( ".class" ) ) {
                 trgMfs.write( filePath,
                               getResource( srcMfs, filePath ),
@@ -698,7 +698,7 @@ public class KieBuilderImpl
 
         List<String> javaFiles = new ArrayList<>();
         List<String> javaTestFiles = new ArrayList<>();
-        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+        for ( PortablePath filePath : srcMfs.getFilePaths() ) {
             String fileName = filePath.asString();
             if ( isJavaSourceFile( fileName )
                     && noClassFileForGivenSourceFile( classFiles, fileName )
@@ -819,7 +819,7 @@ public class KieBuilderImpl
         return new KieBuilderSetImpl( this ).build();
     }
 
-    private static Resource getResource( ResourceReader resourceReader, KiePath pResourceName ) {
+    private static Resource getResource( ResourceReader resourceReader, PortablePath pResourceName ) {
         if (resourceReader instanceof MemoryFileSystem) {
             return (( MemoryFileSystem ) resourceReader).getResource( pResourceName );
         }

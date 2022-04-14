@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 
 public class FactTemplateFieldExtractor
     implements

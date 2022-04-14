@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 
 /**
  * A helper class with utility methods for

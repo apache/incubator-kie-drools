@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceStore;
 
 public class PackageStore
@@ -41,7 +41,7 @@ public class PackageStore
         this.javaDialectRuntimeData = javaDialectRuntimeData;
     }
 
-    public void write(final KiePath resourceName,
+    public void write(final PortablePath resourceName,
                       final byte[] clazzData) {
         try {
             this.javaDialectRuntimeData.write( resourceName.asString(),
@@ -52,13 +52,13 @@ public class PackageStore
         }
     }
 
-    public void write(final KiePath resourceName,
+    public void write(final PortablePath resourceName,
                       final byte[] clazzData,
                       boolean createFolder) {
         write(resourceName, clazzData);
     }
 
-    public byte[] read(final KiePath resourceName) {
+    public byte[] read(final PortablePath resourceName) {
         byte[] clazz = null;
         try {
             clazz = this.javaDialectRuntimeData.read( resourceName.asString() );
@@ -68,7 +68,7 @@ public class PackageStore
         return clazz;
     }
 
-    public void remove(final KiePath resourceName) {
+    public void remove(final PortablePath resourceName) {
         try {
             this.javaDialectRuntimeData.remove( resourceName.asString() );
         } catch ( final Exception e ) {

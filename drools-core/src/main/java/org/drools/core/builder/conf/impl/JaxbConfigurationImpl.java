@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.drools.util.io.ResourceConfigurationImpl;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.JaxbConfiguration;
 import org.slf4j.Logger;

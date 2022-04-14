@@ -33,14 +33,14 @@ import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.rule.Annotated;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.Match;
 
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.compiler.builder.impl.TypeDeclarationConfigurator.processMvelBasedAccessors;
-import static org.drools.core.util.BitMaskUtil.isSet;
+import static org.drools.util.BitMaskUtil.isSet;
 import static org.drools.core.util.Drools.hasMvel;
 
 public class TypeDeclarationCache {

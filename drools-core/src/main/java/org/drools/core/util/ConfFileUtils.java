@@ -24,7 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.IoUtils;
+import org.drools.util.PortablePath;
 
 public class ConfFileUtils {
    
@@ -38,7 +39,7 @@ public class ConfFileUtils {
         URL url = null;
         
         // User home 
-        String userHome = KiePath.of( System.getProperty( "user.home" ) ).asString();
+        String userHome = PortablePath.of( System.getProperty( "user.home" ) ).asString();
         if ( userHome.endsWith( "/" ) ) {
             url = getURLForFile( userHome + confName );
         } else {

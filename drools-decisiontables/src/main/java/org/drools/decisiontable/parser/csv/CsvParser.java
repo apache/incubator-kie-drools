@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;

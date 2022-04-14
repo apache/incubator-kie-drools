@@ -27,15 +27,14 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.spi.ObjectType;
-import org.drools.mvel.accessors.ClassFieldReader;
-import org.drools.core.base.DroolsQuery;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -52,6 +51,7 @@ import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.TupleValueExtractor;
@@ -67,6 +67,7 @@ import org.drools.mvel.ConditionAnalyzer.FieldAccessInvocation;
 import org.drools.mvel.ConditionAnalyzer.Invocation;
 import org.drools.mvel.ConditionAnalyzer.MethodInvocation;
 import org.drools.mvel.ConditionAnalyzer.SingleCondition;
+import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.extractors.MVELObjectClassFieldReader;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
@@ -82,14 +83,13 @@ import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
-import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.util.ClassUtils.getter2property;
 import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MessageUtils.defaultToEmptyString;
-import static org.drools.core.util.StringUtils.codeAwareIndexOf;
-import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.skipBlanks;
+import static org.drools.util.StringUtils.codeAwareIndexOf;
+import static org.drools.util.StringUtils.equalsIgnoreSpaces;
+import static org.drools.util.StringUtils.extractFirstIdentifier;
+import static org.drools.util.StringUtils.skipBlanks;
 
 public class MVELConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
     protected static final boolean TEST_JITTING = false;
@@ -775,7 +775,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
     private boolean equalsExpressionTokensInBothImports(String expression, Map<String, Object> thisImports, Map<String, Object> otherImports) {
         for (String token : splitExpression(expression)) {
-            if (!areNullSafeEquals(thisImports.get(token), otherImports.get(token))) {
+            if (!Objects.equals(thisImports.get(token), otherImports.get(token))) {
                 return false;
             }
         }

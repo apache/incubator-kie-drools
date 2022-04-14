@@ -1,7 +1,7 @@
 package org.drools.compiler.builder.impl.resources;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.core.io.impl.DescrResource;
+import org.drools.util.io.DescrResource;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;

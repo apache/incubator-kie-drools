@@ -16,6 +16,7 @@
 
 package org.drools.core.util;
 
+import org.drools.util.ClassUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

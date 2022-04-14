@@ -64,7 +64,7 @@ import org.drools.xml.support.containers.RowItemContainer;
 import org.drools.xml.support.containers.WorkItemResultsContainer;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.command.Setter;

@@ -17,7 +17,7 @@ package org.drools.core.base;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.core.util.MathUtils;
+import org.drools.util.MathUtils;
 
 public class CoercionUtil {
 

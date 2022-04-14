@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

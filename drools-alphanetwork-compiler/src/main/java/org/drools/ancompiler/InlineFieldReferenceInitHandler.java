@@ -47,7 +47,7 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.ancompiler.AbstractCompilerHandler.getVariableName;
 import static org.drools.ancompiler.AbstractCompilerHandler.getVariableType;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 
 /**
  * This handler is used to inline the creation of a constraint and a ResultCollectorSink

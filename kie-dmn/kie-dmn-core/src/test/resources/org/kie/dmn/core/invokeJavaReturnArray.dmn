@@ -10,7 +10,7 @@
         <dmn:contextEntry>
           <dmn:variable id="_653DFD60-75DF-4331-8AD3-76CF2131CCB7" name="class" typeRef="string"/>
           <dmn:literalExpression id="_904ED492-E06E-4710-ABA6-DC25FF715EE6">
-            <dmn:text>"org.drools.core.util.StringUtils"</dmn:text>
+            <dmn:text>"org.drools.util.StringUtils"</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
         <dmn:contextEntry>

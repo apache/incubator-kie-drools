@@ -42,7 +42,7 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatefulSessionPool;
@@ -81,7 +81,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+import static org.drools.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.Drools.isJndiAvailable;
 
 public class KieContainerImpl

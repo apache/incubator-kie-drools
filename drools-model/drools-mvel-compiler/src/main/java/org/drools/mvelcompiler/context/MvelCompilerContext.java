@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ast.RootTypeThisExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
 
-import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.util.StringUtils.isEmpty;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
 public class MvelCompilerContext {

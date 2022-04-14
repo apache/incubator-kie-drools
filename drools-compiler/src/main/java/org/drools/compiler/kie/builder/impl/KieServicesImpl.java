@@ -30,7 +30,7 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.io.impl.ResourceFactoryServiceImpl;
+import org.drools.util.io.ResourceFactoryServiceImpl;
 import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;

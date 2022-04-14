@@ -35,7 +35,7 @@ import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Wireable;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;

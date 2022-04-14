@@ -22,18 +22,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.base.XMLSupport;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 public class KieModuleModelImpl implements KieModuleModel {
 
     public static final String KMODULE_FILE_NAME = "kmodule.xml";
-    public static final KiePath KMODULE_INFO_JAR_PATH = KiePath.of("META-INF/kmodule.info");
-    public static final KiePath KMODULE_JAR_PATH = KiePath.of("META-INF").resolve(KMODULE_FILE_NAME);
-    public static final KiePath KMODULE_SPRING_JAR_PATH = KiePath.of("META-INF/kmodule-spring.xml");
-    public static final KiePath KMODULE_SRC_PATH = KiePath.of("src/main/resources").resolve(KMODULE_JAR_PATH);
+    public static final PortablePath KMODULE_INFO_JAR_PATH = PortablePath.of("META-INF/kmodule.info");
+    public static final PortablePath KMODULE_JAR_PATH = PortablePath.of("META-INF").resolve(KMODULE_FILE_NAME);
+    public static final PortablePath KMODULE_SPRING_JAR_PATH = PortablePath.of("META-INF/kmodule-spring.xml");
+    public static final PortablePath KMODULE_SRC_PATH = PortablePath.of("src/main/resources").resolve(KMODULE_JAR_PATH);
 
     private Map<String, String> confProps = new HashMap<String, String>();
     private Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();

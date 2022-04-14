@@ -28,9 +28,9 @@ import org.drools.core.base.FieldNameSupplier;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 
-import static org.drools.core.util.StringUtils.lcFirstForBean;
+import static org.drools.util.StringUtils.lcFirstForBean;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.

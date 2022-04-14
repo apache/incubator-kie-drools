@@ -19,7 +19,7 @@ package org.drools.verifier.components;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Cause;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 public class Field extends VerifierComponent<BaseDescr>
     implements
@@ -46,7 +46,7 @@ public class Field extends VerifierComponent<BaseDescr>
     
     @Override
     public String getPath() {
-        return KiePath.of( String.format( "%s/field[@name='%s']", getObjectTypePath(), getName() ) ).asString();
+        return PortablePath.of( String.format( "%s/field[@name='%s']", getObjectTypePath(), getName() ) ).asString();
     }
 
     public VerifierComponentType getVerifierComponentType() {

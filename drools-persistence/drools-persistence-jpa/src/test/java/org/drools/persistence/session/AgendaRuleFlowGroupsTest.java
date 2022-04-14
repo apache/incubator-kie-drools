@@ -24,7 +24,7 @@ import java.util.Map;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.common.InternalAgenda;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;

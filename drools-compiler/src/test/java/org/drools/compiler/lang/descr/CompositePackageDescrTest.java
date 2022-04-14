@@ -16,12 +16,12 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.util.io.ByteArrayResource;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.util.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;

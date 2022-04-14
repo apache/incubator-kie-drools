@@ -25,27 +25,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.util.IoUtils.readBytesFromInputStream;
 
 public class DiskResourceReader implements ResourceReader {
     private final File root;
-    private final KiePath rootPath;
+    private final PortablePath rootPath;
 
-    private Map<KiePath, Integer> filesHashing;
+    private Map<PortablePath, Integer> filesHashing;
 
     public DiskResourceReader( final File root ) {
         this.root = root;
-        this.rootPath = KiePath.of(root.getAbsolutePath());
+        this.rootPath = PortablePath.of(root.getAbsolutePath());
     }
     
-    public boolean isAvailable( KiePath resourcePath ) {
+    public boolean isAvailable( PortablePath resourcePath ) {
         return new File(root, resourcePath.asString()).exists();
     }
 
-    public byte[] getBytes( KiePath resourcePath ) {
+    public byte[] getBytes( PortablePath resourcePath ) {
         try {
             return readBytesFromInputStream(new FileInputStream(new File(root, resourcePath.asString())));
         } catch(Exception e) {
@@ -53,8 +53,8 @@ public class DiskResourceReader implements ResourceReader {
         }
     }
     
-    public Collection<KiePath> getFilePaths() {
-        List<KiePath> list = new ArrayList<>();
+    public Collection<PortablePath> getFilePaths() {
+        List<PortablePath> list = new ArrayList<>();
         list(root, list);        
         return list;
     }
@@ -65,14 +65,14 @@ public class DiskResourceReader implements ResourceReader {
 
     public Collection<String> getModifiedResourcesSinceLastMark() {
         Set<String> modifiedResources = new HashSet<String>();
-        Map<KiePath, Integer> newHashing = hashFiles();
-        for (Map.Entry<KiePath, Integer> entry : newHashing.entrySet()) {
+        Map<PortablePath, Integer> newHashing = hashFiles();
+        for (Map.Entry<PortablePath, Integer> entry : newHashing.entrySet()) {
             Integer oldHashing = filesHashing.get(entry.getKey());
             if (oldHashing == null || !oldHashing.equals(entry.getValue())) {
                 modifiedResources.add(entry.getKey().asString());
             }
         }
-        for (KiePath oldFile : filesHashing.keySet()) {
+        for (PortablePath oldFile : filesHashing.keySet()) {
             if (!newHashing.containsKey(oldFile)) {
                 modifiedResources.add(oldFile.asString());
             }
@@ -80,9 +80,9 @@ public class DiskResourceReader implements ResourceReader {
         return modifiedResources;
     }
 
-    private Map<KiePath, Integer> hashFiles() {
-        Map<KiePath, Integer> hashing = new HashMap<>();
-        for (KiePath filePath : getFilePaths()) {
+    private Map<PortablePath, Integer> hashFiles() {
+        Map<PortablePath, Integer> hashing = new HashMap<>();
+        for (PortablePath filePath : getFilePaths()) {
             byte[] bytes = getBytes( filePath );
             if ( bytes != null ) {
                 hashing.put(filePath, Arrays.hashCode(bytes));
@@ -91,14 +91,14 @@ public class DiskResourceReader implements ResourceReader {
         return hashing;
     }
 
-    private void list( final File pFile, final List<KiePath> pFiles ) {
+    private void list( final File pFile, final List<PortablePath> pFiles ) {
         if (pFile.isDirectory()) {
             final File[] directoryFiles = pFile.listFiles();
             for (int i = 0; i < directoryFiles.length; i++) {
                 list(directoryFiles[i], pFiles);
             }
         } else {
-            pFiles.add( KiePath.of( pFile.getAbsolutePath().substring(rootPath.asString().length()+1) ) );
+            pFiles.add( PortablePath.of( pFile.getAbsolutePath().substring(rootPath.asString().length()+1) ) );
         }
     }   
     

@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.drools.core.test.model.Person;
+import org.drools.util.MethodUtils;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

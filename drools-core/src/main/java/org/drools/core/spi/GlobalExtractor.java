@@ -26,7 +26,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.facttemplates.Fact;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 
 /**
  * This is a global variable extractor used to get a global variable value

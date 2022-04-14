@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import static org.drools.core.util.StringUtils.lcFirstForBean;
+import static org.drools.util.StringUtils.lcFirstForBean;
 
 public class AccessorKey implements Externalizable {
 

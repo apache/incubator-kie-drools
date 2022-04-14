@@ -61,11 +61,11 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.GeneratedFact;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.util.io.InternalResource;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.util.Drools;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.IoUtils;
+import org.drools.util.StringUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
@@ -94,7 +94,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
 
@@ -836,7 +836,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public byte[] getBytes(KiePath resourcePath) {
+    public byte[] getBytes(PortablePath resourcePath) {
         return internalKieModule.getBytes(resourcePath);
     }
 

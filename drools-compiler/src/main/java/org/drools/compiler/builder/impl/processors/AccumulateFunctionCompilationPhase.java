@@ -1,7 +1,7 @@
 package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.runtime.rule.AccumulateFunction;

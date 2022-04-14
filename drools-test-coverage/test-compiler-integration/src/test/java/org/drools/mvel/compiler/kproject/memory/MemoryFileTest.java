@@ -22,7 +22,7 @@ import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

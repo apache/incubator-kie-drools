@@ -58,8 +58,8 @@ import org.slf4j.LoggerFactory;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
-import static org.drools.core.util.ClassUtils.getAccessor;
-import static org.drools.core.util.ClassUtils.getSetter;
+import static org.drools.util.ClassUtils.getAccessor;
+import static org.drools.util.ClassUtils.getSetter;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**

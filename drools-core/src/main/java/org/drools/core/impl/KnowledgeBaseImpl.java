@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -85,9 +86,8 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.BitMaskUtil.isSet;
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.BitMaskUtil.isSet;
 
 public class KnowledgeBaseImpl implements RuleBase {
 
@@ -599,13 +599,13 @@ public class KnowledgeBaseImpl implements RuleBase {
     private void mergeTypeDeclarations( TypeDeclaration existingDecl,
                                         TypeDeclaration newDecl ) {
 
-        if ( ! areNullSafeEquals( existingDecl.getFormat(),
+        if ( ! Objects.equals( existingDecl.getFormat(),
                                   newDecl.getFormat() ) ||
-             ! areNullSafeEquals( existingDecl.getObjectType(),
+             ! Objects.equals( existingDecl.getObjectType(),
                                   newDecl.getObjectType() ) ||
-             ! areNullSafeEquals( existingDecl.getTypeClassName(),
+             ! Objects.equals( existingDecl.getTypeClassName(),
                                   newDecl.getTypeClassName() ) ||
-             ! areNullSafeEquals( existingDecl.getTypeName(),
+             ! Objects.equals( existingDecl.getTypeName(),
                                   newDecl.getTypeName() ) ) {
 
             throw new RuntimeException( "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() + "'" );
@@ -688,7 +688,7 @@ public class KnowledgeBaseImpl implements RuleBase {
                              T rightVal,
                              boolean override ) {
         T newValue = leftVal;
-        if ( ! areNullSafeEquals( leftVal, rightVal ) ) {
+        if ( ! Objects.equals( leftVal, rightVal ) ) {
             if ( leftVal == null ) {
                 newValue = rightVal;
             } else if ( rightVal != null ) {

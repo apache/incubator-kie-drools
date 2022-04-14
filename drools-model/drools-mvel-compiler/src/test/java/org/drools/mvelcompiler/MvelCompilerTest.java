@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.Person;
-import org.drools.core.util.MethodUtils;
+import org.drools.util.MethodUtils;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

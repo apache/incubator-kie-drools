@@ -31,11 +31,11 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+import static org.drools.util.ClassUtils.convertResourceToClassName;
 
 public class ProjectJavaCompiler {
 
@@ -98,22 +98,22 @@ public class ProjectJavaCompiler {
         }
 
         @Override
-        public void write(KiePath resourcePath, byte[] pResourceData) {
+        public void write(PortablePath resourcePath, byte[] pResourceData) {
             projectClassLoader.defineClass(convertResourceToClassName(resourcePath.asString()), resourcePath.asString(), pResourceData);
         }
 
         @Override
-        public void write(KiePath resourcePath, final byte[] clazzData, boolean createFolder) {
+        public void write(PortablePath resourcePath, final byte[] clazzData, boolean createFolder) {
             write(resourcePath.asString(), clazzData);
         }
 
         @Override
-        public byte[] read(KiePath resourcePath) {
+        public byte[] read(PortablePath resourcePath) {
             return projectClassLoader.getBytecode(resourcePath.asString());
         }
 
         @Override
-        public void remove(KiePath resourcePath) {
+        public void remove(PortablePath resourcePath) {
             throw new UnsupportedOperationException("org.drools.compiler.compiler.ProjectJavaCompiler.ProjectResourceStore.remove -> TODO");
         }
     }

@@ -43,9 +43,9 @@ import org.kie.maven.integration.ArtifactResolver;
 import org.kie.maven.integration.DependencyDescriptor;
 import org.kie.util.maven.support.DependencyFilter;
 
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.IoUtils.UTF8_CHARSET;
-import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+import static org.drools.util.ClassUtils.convertResourceToClassName;
+import static org.drools.util.IoUtils.UTF8_CHARSET;
+import static org.drools.util.IoUtils.readBytesFromZipEntry;
 import static org.kie.maven.integration.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {

@@ -32,7 +32,7 @@ import java.util.Set;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.io.impl.BaseResource;
+import org.drools.util.io.BaseResource;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
@@ -45,7 +45,7 @@ import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 import static java.util.Arrays.asList;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
@@ -111,7 +111,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         kieBuilder.cloneKieModuleForIncrementalCompilation();
         for (String file : srcFiles) {
             if ( !file.endsWith( ".properties" ) ) {
-                String trgFile = kieBuilder.copySourceToTarget(KiePath.of(file));
+                String trgFile = kieBuilder.copySourceToTarget(PortablePath.of(file));
                 if (trgFile != null) {
                     filesToBuild.add(trgFile);
                 }

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;

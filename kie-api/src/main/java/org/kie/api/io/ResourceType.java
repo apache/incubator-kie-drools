@@ -170,12 +170,6 @@ public class ResourceType implements Serializable {
                                                                      "src/main/resources",
                                                                      "brl");
 
-    /** Change Set */
-    public static final ResourceType CHANGE_SET = addResourceTypeToRegistry("CHANGE_SET",
-                                                                            "Change Set",
-                                                                            "src/main/resources",
-                                                                            "xcs");
-
     /** XSD */
     public static final ResourceType XSD = addResourceTypeToRegistry("XSD",
                                                                      "XSD",

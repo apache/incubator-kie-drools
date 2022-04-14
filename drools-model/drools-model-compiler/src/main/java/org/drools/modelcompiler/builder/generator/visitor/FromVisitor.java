@@ -52,7 +52,7 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
-import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.util.StringUtils.splitArgumentsList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;

@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
-import org.drools.core.io.impl.FileSystemResource;
+import org.drools.util.io.FileSystemResource;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.DecisionTableProvider;
 import org.drools.codegen.common.DroolsModelBuildContext;

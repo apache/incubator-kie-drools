@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;

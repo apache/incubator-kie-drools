@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 
-import static org.drools.core.util.ClassUtils.findCommonSuperClass;
+import static org.drools.util.ClassUtils.findCommonSuperClass;
 
 public class GroupElement extends ConditionalElement
     implements

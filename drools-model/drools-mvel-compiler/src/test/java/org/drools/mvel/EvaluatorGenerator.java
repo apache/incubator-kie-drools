@@ -38,7 +38,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.CompiledResult;
 import org.slf4j.Logger;

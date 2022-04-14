@@ -57,7 +57,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 import org.drools.core.util.TimeIntervalParser;
 import org.drools.kiesession.audit.WorkingMemoryFileLogger;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;

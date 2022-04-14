@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -48,10 +49,9 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.util.ClassUtils.convertFromPrimitiveType;
 
 public class XpathConstraint extends MutableTypeConstraint {
 
@@ -467,7 +467,7 @@ public class XpathConstraint extends MutableTypeConstraint {
                    iterate == other.iterate &&
                    lazy == other.lazy &&
                    array == other.array &&
-                   areNullSafeEquals(declaration, other.declaration);
+                   Objects.equals(declaration, other.declaration);
         }
 
         @Override
@@ -548,7 +548,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             XpathDataProvider other = (XpathDataProvider) obj;
 
             return xpathEvaluator.equals( other.xpathEvaluator ) &&
-                   areNullSafeEquals(declaration, other.declaration);
+                   Objects.equals(declaration, other.declaration);
         }
 
         @Override

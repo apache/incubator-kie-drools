@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.base.ClassFieldInspector;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MethodUtils;
+import org.drools.util.ClassUtils;
+import org.drools.util.MethodUtils;
 import org.drools.drl.parser.MessageImpl;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.InternalMessage;
@@ -47,7 +47,7 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import static org.drools.core.util.StringUtils.lcFirstForBean;
+import static org.drools.util.StringUtils.lcFirstForBean;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 

@@ -54,7 +54,7 @@ import org.drools.core.spi.Salience;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.drools.core.time.impl.Timer;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.rule.InternalRule;

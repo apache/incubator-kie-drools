@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 import org.drools.testcoverage.common.model.Alarm;
 import org.drools.testcoverage.common.model.FactA;
 import org.drools.testcoverage.common.model.FactB;

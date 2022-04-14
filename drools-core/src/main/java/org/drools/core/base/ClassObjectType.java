@@ -28,7 +28,7 @@ import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Match;
 

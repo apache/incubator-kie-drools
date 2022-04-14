@@ -41,7 +41,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefiniti
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedConstructor;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class EnumGenerator {

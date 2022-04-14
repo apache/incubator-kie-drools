@@ -1,7 +1,7 @@
 package org.drools.modelcompiler;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.util.io.ByteArrayResource;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;

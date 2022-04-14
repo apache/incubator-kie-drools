@@ -34,7 +34,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.util.ClassUtils;
+import org.drools.core.util.PropertyReactivityUtil;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
@@ -144,7 +144,7 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
         if ( knowledgeBase != null ) {
             return PropertySpecificUtil.getAccessibleProperties( knowledgeBase, o.getClass() );
         } else {
-            return ClassUtils.getAccessibleProperties( o.getClass() );
+            return PropertyReactivityUtil.getAccessibleProperties( o.getClass() );
         }
     }
 

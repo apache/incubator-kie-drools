@@ -24,7 +24,7 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.util.IoUtils.readBytesFromInputStream;
 
 /**
  * The purpose of this utility it to check if 2 method implementations are equivalent, by comparing the bytecode.

@@ -20,7 +20,7 @@
  */
 package org.drools.template.parser;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.runtime.KieSession;
 
 import java.util.Map;

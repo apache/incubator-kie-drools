@@ -37,7 +37,7 @@ import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.ClassUtils.convertClassToResourcePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;

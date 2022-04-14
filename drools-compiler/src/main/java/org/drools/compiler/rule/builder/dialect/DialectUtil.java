@@ -30,7 +30,7 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaCatchBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaTryBlockDescr;
 
-import static org.drools.core.util.ClassUtils.findClass;
+import static org.drools.util.ClassUtils.findClass;
 
 public final class DialectUtil {
 

@@ -14,28 +14,30 @@
 
 package org.kie.memorycompiler.resources;
 
+import org.drools.util.PortablePath;
+
 /**
  * A Store is where the compilers are storing the results
  */
 public interface ResourceStore {
 
-    void write( KiePath resourcePath, byte[] pResourceData );
+    void write(PortablePath resourcePath, byte[] pResourceData );
     default void write( String resourceName, byte[] pResourceData ) {
-        write( KiePath.of(resourceName), pResourceData );
+        write( PortablePath.of(resourceName), pResourceData );
     }
 
-    void write( KiePath resourcePath, byte[] pResourceData, boolean createFolder );
+    void write(PortablePath resourcePath, byte[] pResourceData, boolean createFolder );
     default void write( String resourceName, byte[] pResourceData, boolean createFolder ) {
-        write( KiePath.of(resourceName), pResourceData, createFolder );
+        write( PortablePath.of(resourceName), pResourceData, createFolder );
     }
 
-    byte[] read( KiePath resourcePath );
+    byte[] read( PortablePath resourcePath );
     default byte[] read( String resourceName ) {
-        return read( KiePath.of(resourceName) );
+        return read( PortablePath.of(resourceName) );
     }
 
-    void remove( KiePath resourcePath );
+    void remove( PortablePath resourcePath );
     default void remove( String resourceName ) {
-        remove( KiePath.of(resourceName) );
+        remove( PortablePath.of(resourceName) );
     }
 }

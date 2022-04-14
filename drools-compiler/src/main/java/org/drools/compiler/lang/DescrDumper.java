@@ -32,8 +32,8 @@ import org.drools.drl.parser.impl.Operator;
 import org.drools.core.rule.XpathBackReference;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
-import static org.drools.core.util.ClassUtils.findClass;
-import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
+import static org.drools.util.ClassUtils.findClass;
+import static org.drools.util.StringUtils.indexOfOutOfQuotes;
 
 public class DescrDumper extends ReflectiveVisitor implements ExpressionRewriter {
 

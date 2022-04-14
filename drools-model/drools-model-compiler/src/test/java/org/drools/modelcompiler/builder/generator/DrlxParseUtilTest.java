@@ -15,9 +15,9 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.addon.TypeResolver;
-import org.drools.core.util.MethodUtils;
+import org.drools.util.ClassTypeResolver;
+import org.drools.util.TypeResolver;
+import org.drools.util.MethodUtils;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
 import org.junit.Test;
 

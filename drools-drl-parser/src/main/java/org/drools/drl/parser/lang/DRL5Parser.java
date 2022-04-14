@@ -66,7 +66,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.util.ArrayList;

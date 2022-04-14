@@ -20,28 +20,30 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.util.PortablePath;
+
 /**
  * A memory based reader to compile from memory
  */
 public class MemoryResourceReader implements ResourceReader {
     
-    private final Map<KiePath, byte[]> resources = new ConcurrentHashMap<>();
+    private final Map<PortablePath, byte[]> resources = new ConcurrentHashMap<>();
 
     private Set<String> modifiedResourcesSinceLastMark;
 
-    public boolean isAvailable( KiePath path ) {
+    public boolean isAvailable( PortablePath path ) {
         return resources.containsKey(path);
     }
     
     public void add( final String resourceName, final byte[] pContent ) {
-        KiePath normalizedName = KiePath.of(resourceName);
+        PortablePath normalizedName = PortablePath.of(resourceName);
         resources.put(normalizedName, pContent);
         if (modifiedResourcesSinceLastMark != null) {
             modifiedResourcesSinceLastMark.add(normalizedName.asString());
         }
     }
     
-    public void remove( KiePath path ) {
+    public void remove( PortablePath path ) {
         resources.remove(path);
     }
 
@@ -53,11 +55,11 @@ public class MemoryResourceReader implements ResourceReader {
         return modifiedResourcesSinceLastMark;
     }
 
-    public byte[] getBytes( KiePath path ) {
+    public byte[] getBytes( PortablePath path ) {
         return resources.get(path);
     }
 
-    public Collection<KiePath> getFilePaths() {
+    public Collection<PortablePath> getFilePaths() {
         return resources.keySet();
     }
 }

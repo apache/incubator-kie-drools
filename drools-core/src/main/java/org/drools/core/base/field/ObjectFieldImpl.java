@@ -26,7 +26,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 
 import org.drools.core.spi.FieldValue;
-import org.drools.core.util.MathUtils;
+import org.drools.util.MathUtils;
 
 public class ObjectFieldImpl
     implements

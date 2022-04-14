@@ -20,7 +20,7 @@ import java.io.InputStream;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
-import org.drools.core.io.impl.InputStreamResource;
+import org.drools.util.io.InputStreamResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;

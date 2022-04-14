@@ -23,7 +23,7 @@ import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +41,7 @@ public class KieFileSystemImplTest {
     public void testClone() {
         KieFileSystem clonedKieFileSystem = kieFileSystem.clone();
         MemoryFileSystem clonedMfs = ( (KieFileSystemImpl) clonedKieFileSystem ).getMfs();
-        Collection<KiePath> clonedFileNames = clonedMfs.getFilePaths();
+        Collection<PortablePath> clonedFileNames = clonedMfs.getFilePaths();
 
         assertTrue( kieFileSystem != clonedKieFileSystem );
         assertTrue( kieFileSystem.getMfs() != clonedMfs );

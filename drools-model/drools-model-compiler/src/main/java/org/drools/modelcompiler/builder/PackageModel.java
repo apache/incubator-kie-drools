@@ -61,11 +61,12 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationUtils;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.util.StringUtils;
+import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.model.DomainClassMetadata;
 import org.drools.model.Global;
 import org.drools.model.Model;
@@ -94,7 +95,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.drools.kiesession.session.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
-import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -171,7 +171,7 @@ public class PackageModel {
     }
 
     public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(gav, name));
+        this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, StringUtils.getPkgUUID(gav, name));
     }
 
     private PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
@@ -198,6 +198,17 @@ public class PackageModel {
         packageModel.setInternalKnowledgePackage( pkg );
         new WindowReferenceGenerator( packageModel, typeResolver ).addWindowReferences( kbuilder, packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions( packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
+    }
+
+    /**
+     * Retrieve a package unique identifier. It uses both <b>releaseId</b> and <b>packageName</b>
+     * if the former is not null and not a <b>Snapshot</b>; otherwise a <b>randomly</b> generated one
+     * @param releaseId
+     * @param packageName
+     * @return
+     */
+    public static String getPkgUUID(ReleaseId releaseId, String packageName) {
+        return (releaseId != null && !releaseId.isSnapshot()) ? StringUtils.getPkgUUID(releaseId.toString(), packageName) : StringUtils.generateUUID();
     }
 
     public Map<String, CreatedClass> getLambdaClasses() {
@@ -497,7 +508,7 @@ public class PackageModel {
 
         BodyDeclaration<?> dateFormatter = parseBodyDeclaration(
                 "public final static java.time.format.DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD +
-                        " = new java.time.format.DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(org.drools.core.util.DateUtils.getDateFormatMask()).toFormatter(java.util.Locale.ENGLISH);\n");
+                        " = new java.time.format.DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(org.drools.util.DateUtils.getDateFormatMask()).toFormatter(java.util.Locale.ENGLISH);\n");
         rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> getNameMethod = parseBodyDeclaration(

@@ -12,7 +12,7 @@ import org.kie.internal.builder.ResourceChange;
 import java.util.List;
 
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
-import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.util.StringUtils.isEmpty;
 
 public class FunctionCompiler extends AbstractPackageCompilationPhase {
 

@@ -30,9 +30,9 @@ import java.util.Map;
 import org.drools.core.WorkingMemory;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.util.ClassUtils;
-import org.drools.mvel.MVELSafeHelper;
+import org.drools.core.util.PropertyReactivityUtil;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.mvel.MVELSafeHelper;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
@@ -61,7 +61,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
     }
 
     public void registerField( Class domainKlass, String name, Class rangeKlass, Object value, String initial ) {
-        short pos = (short) ClassUtils.getAccessibleProperties( domainKlass ).indexOf( name );
+        short pos = (short) PropertyReactivityUtil.getAccessibleProperties( domainKlass ).indexOf( name );
         TraitFieldImpl fld = new TraitFieldImpl(getKlass(rangeKlass ), value, initial != null ? MVELSafeHelper.getEvaluator().eval(initial, rangeKlass ) : null, pos );
         fieldTMS.put( name, fld );
     }

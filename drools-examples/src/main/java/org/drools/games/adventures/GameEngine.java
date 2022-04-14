@@ -16,13 +16,12 @@
 package org.drools.games.adventures;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.drools.games.adventures.model.Command;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.mvel2.MVEL;
 import org.mvel2.util.ParseTools;
-import org.mvel2.util.ReflectionUtil;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -26,7 +26,7 @@ public class MemoryUtil {
     private MemoryUtil() { }
 
     static {
-        if (!hasPermGen() || ClassUtils.isAndroid() || isGAE()) {
+        if (!hasPermGen() || isGAE()) {
             permGenStats = new DummyMemoryStats();
         } else {
             MemoryPoolMXBean permGenBean = null;

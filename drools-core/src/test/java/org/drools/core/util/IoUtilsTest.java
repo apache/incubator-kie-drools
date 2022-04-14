@@ -16,7 +16,8 @@
 
 package org.drools.core.util;
 
-import org.drools.core.io.impl.ReaderInputStream;
+import org.drools.util.io.ReaderInputStream;
+import org.drools.util.IoUtils;
 import org.junit.Test;
 
 import java.io.IOException;

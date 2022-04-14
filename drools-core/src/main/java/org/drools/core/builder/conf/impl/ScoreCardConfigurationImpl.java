@@ -18,6 +18,7 @@ package org.drools.core.builder.conf.impl;
 
 import java.util.Properties;
 
+import org.drools.util.io.ResourceConfigurationImpl;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.slf4j.Logger;

@@ -28,30 +28,28 @@ import java.util.Set;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
-import org.drools.drl.parser.DrlParser;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
-import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.StringUtils;
-import org.drools.core.xml.ChangeSetSemanticModule;
 import org.drools.core.xml.DefaultSemanticModule;
 import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;
 import org.drools.core.xml.WrapperSemanticModule;
+import org.drools.drl.parser.DrlParser;
+import org.drools.util.ClassUtils;
+import org.drools.util.StringUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
-import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.DefaultPackageNameOption;
 import org.kie.internal.builder.conf.DumpDirOption;
@@ -129,7 +127,6 @@ public class KnowledgeBuilderConfigurationImpl
     private File                              dumpDirectory;
 
     private boolean                           processStringEscapes                  = true;
-    private boolean                           classLoaderCache                      = true;
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
 
@@ -177,7 +174,7 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     private void init(Properties properties, ClassLoader classLoader) {
-        this.classLoader = ProjectClassLoader.getClassLoader(classLoader, getClass(), isClassLoaderCacheEnabled());
+        this.classLoader = ProjectClassLoader.getClassLoader(classLoader, getClass());
         init(properties);
     }
 
@@ -199,10 +196,6 @@ public class KnowledgeBuilderConfigurationImpl
         if (properties != null) {
             this.chainedProperties.addProperties(properties);
         }
-
-        setProperty(ClassLoaderCacheOption.PROPERTY_NAME,
-                    this.chainedProperties.getProperty(ClassLoaderCacheOption.PROPERTY_NAME,
-                                                       "true"));
 
         setProperty( TrimCellsInDTableOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(TrimCellsInDTableOption.PROPERTY_NAME,
@@ -288,8 +281,6 @@ public class KnowledgeBuilderConfigurationImpl
             setDefaultPackageName(value);
         } else if (name.equals(ProcessStringEscapesOption.PROPERTY_NAME)) {
             setProcessStringEscapes(Boolean.parseBoolean(value));
-        } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
-            setClassLoaderCacheEnabled(Boolean.parseBoolean(value));
         } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
             setTrimCellsInDTable(Boolean.parseBoolean(value));
         } else if (name.equals(GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME)) {
@@ -351,8 +342,6 @@ public class KnowledgeBuilderConfigurationImpl
             return this.dumpDirectory != null ? this.dumpDirectory.toString() : null;
         } else if (name.equals(ProcessStringEscapesOption.PROPERTY_NAME)) {
             return String.valueOf(isProcessStringEscapes());
-        } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
-            return String.valueOf(isClassLoaderCacheEnabled());
         } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
             return String.valueOf(isTrimCellsInDTable());
         } else if (name.equals(GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME)) {
@@ -450,7 +439,6 @@ public class KnowledgeBuilderConfigurationImpl
 
         this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.0", ruleModule));
         this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.2", ruleModule));
-        this.semanticModules.addSemanticModule(new ChangeSetSemanticModule());
 
         // split on each space
         String locations[] = this.chainedProperties.getProperty("semanticModules", "").split("\\s");
@@ -634,16 +622,6 @@ public class KnowledgeBuilderConfigurationImpl
         this.processStringEscapes = processStringEscapes;
     }
 
-    @Deprecated
-    public boolean isClassLoaderCacheEnabled() {
-        return classLoaderCache;
-    }
-
-    @Deprecated
-    public void setClassLoaderCacheEnabled(boolean classLoaderCacheEnabled) {
-        this.classLoaderCache = classLoaderCacheEnabled;
-    }
-
     public boolean isTrimCellsInDTable() {
         return trimCellsInDTable;
     }
@@ -726,8 +704,6 @@ public class KnowledgeBuilderConfigurationImpl
             return (T) (this.processStringEscapes ? ProcessStringEscapesOption.YES : ProcessStringEscapesOption.NO);
         } else if (DefaultPackageNameOption.class.equals(option)) {
             return (T) DefaultPackageNameOption.get(this.defaultPackageName);
-        } else if (ClassLoaderCacheOption.class.equals(option)) {
-            return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if (TrimCellsInDTableOption.class.equals(option)) {
             return (T) (this.trimCellsInDTable ? TrimCellsInDTableOption.ENABLED : TrimCellsInDTableOption.DISABLED);
         } else if (GroupDRLsInKieBasesByFolderOption.class.equals(option)) {
@@ -789,8 +765,6 @@ public class KnowledgeBuilderConfigurationImpl
             this.processStringEscapes = ((ProcessStringEscapesOption) option).isProcessStringEscapes();
         } else if (option instanceof DefaultPackageNameOption) {
             setDefaultPackageName(((DefaultPackageNameOption) option).getPackageName());
-        } else if (option instanceof ClassLoaderCacheOption) {
-            setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
         } else if (option instanceof TrimCellsInDTableOption) {
             setTrimCellsInDTable(((TrimCellsInDTableOption) option).isTrimCellsInDTable());
         } else if (option instanceof GroupDRLsInKieBasesByFolderOption) {

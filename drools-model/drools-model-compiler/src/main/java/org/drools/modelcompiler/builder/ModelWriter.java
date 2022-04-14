@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
 import org.kie.api.builder.ReleaseId;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.getGeneratedClassNamesFile;
@@ -34,14 +34,14 @@ import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 
 public class ModelWriter {
 
-    private final KiePath basePath;
+    private final PortablePath basePath;
 
     public ModelWriter() {
         this("src/main/java");
     }
 
     public ModelWriter(String basePath) {
-        this.basePath = KiePath.of(basePath);
+        this.basePath = PortablePath.of(basePath);
     }
 
     public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageSources> packageSources) {
@@ -55,7 +55,7 @@ public class ModelWriter {
 
         List<String> sourceFiles = new ArrayList<>();
         for (GeneratedFile generatedFile : generatedFiles) {
-            KiePath path = basePath.resolve(generatedFile.getKiePath());
+            PortablePath path = basePath.resolve(generatedFile.getKiePath());
             sourceFiles.add(path.asString());
             srcMfs.write(path, generatedFile.getData());
         }
@@ -63,7 +63,7 @@ public class ModelWriter {
         return new Result(sourceFiles, modelFiles);
     }
 
-    public KiePath getBasePath() {
+    public PortablePath getBasePath() {
         return basePath;
     }
 

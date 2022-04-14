@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+import org.drools.util.io.ReaderResource;
 import org.junit.Test;
 
 public class ReaderResourceTest {

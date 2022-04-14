@@ -25,7 +25,7 @@ import java.util.Set;
 
 import com.github.javaparser.ast.expr.Expression;
 
-import static org.drools.core.util.StringUtils.lcFirstForBean;
+import static org.drools.util.StringUtils.lcFirstForBean;
 
 public class ExpressionTyperContext {
 

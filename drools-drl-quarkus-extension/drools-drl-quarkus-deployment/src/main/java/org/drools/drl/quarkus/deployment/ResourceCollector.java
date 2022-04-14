@@ -29,15 +29,15 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.util.io.ByteArrayResource;
+import org.drools.util.io.FileSystemResource;
+import org.drools.util.io.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 
 public class ResourceCollector {

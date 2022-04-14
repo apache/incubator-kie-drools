@@ -18,7 +18,7 @@ package org.kie.pmml.models.drools.ast.factories;
 import java.util.List;
 
 import org.dmg.pmml.CompoundPredicate;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;

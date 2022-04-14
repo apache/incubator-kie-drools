@@ -48,9 +48,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.drools.core.io.impl.BaseResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.core.io.impl.ReaderResource;
+import org.drools.util.io.BaseResource;
+import org.drools.util.io.FileSystemResource;
+import org.drools.util.io.ReaderResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.command.BatchExecutionCommand;

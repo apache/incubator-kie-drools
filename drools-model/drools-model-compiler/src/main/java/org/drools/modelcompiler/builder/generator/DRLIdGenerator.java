@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.util.StringUtils.md5Hash;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 
