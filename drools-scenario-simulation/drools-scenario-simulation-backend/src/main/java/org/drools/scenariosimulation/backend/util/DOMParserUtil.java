@@ -33,9 +33,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -340,8 +343,9 @@ public class DOMParserUtil {
     }
 
     public static Document getDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", null);
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // REQUIRED - prevents XXE attack
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // REQUIRED - prevents XXE attack        
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder dBuilder = factory.newDocumentBuilder();
         try (InputStream inputStream = new ByteArrayInputStream(xml.getBytes())) {
@@ -350,17 +354,25 @@ public class DOMParserUtil {
     }
 
     public static String getString(Document toRead) throws TransformerException {
-        DOMSource domSource = new DOMSource(toRead);
-        TransformerFactory factory = TransformerFactory.newInstance();
-        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        Transformer transformer = factory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        Source domSource = new DOMSource(toRead);
+        Transformer transformer = createTransformer();
         StringWriter sw = new StringWriter();
         StreamResult sr = new StreamResult(sw);
         transformer.transform(domSource, sr);
         return sw.toString();
     }
+
+    public static Transformer createTransformer()
+			throws TransformerFactoryConfigurationError, TransformerConfigurationException {
+		TransformerFactory factory = TransformerFactory.newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
+		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // required to keep SonarQube quiet
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // required to keep SonarQube quiet
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        Transformer transformer = factory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+		return transformer;
+	}
 
     /**
      * Recursively populate the given <code>Map</code>
