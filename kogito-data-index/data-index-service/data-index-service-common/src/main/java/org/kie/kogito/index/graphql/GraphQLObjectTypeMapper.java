@@ -94,7 +94,9 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
                     default:
                         type = getGraphQLType(field, schema, additionalTypes, allTypes);
                 }
-                builder.field(newFieldDefinition().name(field.getName()).type(type));
+                if (type != null) {
+                    builder.field(newFieldDefinition().name(field.getName()).type(type));
+                }
             }
         });
     }
@@ -103,7 +105,19 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
         String typeName = getTypeName(attribute.getTypeName());
         GraphQLType type = schema.getType(typeName);
         if (type == null) {
-            type = additionalTypes.computeIfAbsent(typeName, k -> new GraphQLObjectTypeMapper(schema, additionalTypes, allTypes).apply(allTypes.get(typeName)));
+            if (!additionalTypes.containsKey(typeName)) {
+                DomainDescriptor domain = allTypes.get(typeName);
+                if (domain != null) {
+                    type = new GraphQLObjectTypeMapper(schema, additionalTypes, allTypes).apply(domain);
+                    if (type != null) {
+                        additionalTypes.put(typeName, type);
+                    } else {
+                        LOGGER.warn("GraphQL type mapping returned null for the typeName: {}", typeName);
+                    }
+                }
+            } else {
+                type = additionalTypes.get(typeName);
+            }
         }
         return (GraphQLOutputType) type;
     }
