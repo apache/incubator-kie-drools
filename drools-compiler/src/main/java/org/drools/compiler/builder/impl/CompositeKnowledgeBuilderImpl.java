@@ -30,10 +30,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.internal.builder.ChangeType;
-import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.ResourceChange;
-import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.*;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
@@ -331,11 +328,45 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     @FunctionalInterface
     private interface ResourceToPkgDescrMapper {
         PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception;
-
-        ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.drlToPackageDescr(resourceDescr.resource);
-        ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.templateToPackageDescr( resourceDescr.resource);
-        ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.dslrToPackageDescr(resourceDescr.resource);
-        ResourceToPkgDescrMapper XML_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.xmlToPackageDescr(resourceDescr.resource);
-        ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
+        // Drools-6847
+        //ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.drlToPackageDescr(resourceDescr.resource);
+        ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> {
+            ProcessorDrl processor = new ProcessorDrl(kBuilder.getBuilderConfiguration());
+            PackageDescr pkg = processor.process(resourceDescr.resource);
+            processor.getResults().forEach(kBuilder::addBuilderResult); // method reference syntax
+            return pkg;
+        };
+        // Drools-6847
+        //ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.templateToPackageDescr( resourceDescr.resource);
+        ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) ->{
+            ProcessorTemplate processor = new ProcessorTemplate(kBuilder.getBuilderConfiguration(), kBuilder.getReleaseId());
+            PackageDescr pkg = processor.process(resourceDescr.resource);
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
+        // Drools-6847
+        //ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.dslrToPackageDescr(resourceDescr.resource);
+        ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = ( kBuilder, resourceDescr ) ->{
+            ProcessorDslr processor = new ProcessorDslr(kBuilder.getBuilderConfiguration());
+            PackageDescr pkg = processor.process(resourceDescr.resource);
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
+        // Drools-6847
+        //ResourceToPkgDescrMapper XML_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.xmlToPackageDescr(resourceDescr.resource);
+        ResourceToPkgDescrMapper XML_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> {
+            ProcessorXml processor = new ProcessorXml(kBuilder.getBuilderConfiguration());
+            PackageDescr pkg = processor.process(resourceDescr.resource);
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
+        // // Drools-6847
+        //ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
+        ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> {
+            ProcessorDecisionTable processor = new ProcessorDecisionTable(kBuilder.getBuilderConfiguration(), kBuilder.getReleaseId());
+            PackageDescr pkg = processor.process(resourceDescr.resource);
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
     }
 }
