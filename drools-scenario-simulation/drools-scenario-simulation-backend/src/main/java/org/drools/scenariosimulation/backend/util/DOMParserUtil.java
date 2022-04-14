@@ -343,15 +343,19 @@ public class DOMParserUtil {
     }
 
     public static Document getDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", null);
-        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // REQUIRED - prevents XXE attack
-        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // REQUIRED - prevents XXE attack        
-        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        DocumentBuilder dBuilder = factory.newDocumentBuilder();
+        DocumentBuilder dBuilder = createBuilder();
         try (InputStream inputStream = new ByteArrayInputStream(xml.getBytes())) {
             return dBuilder.parse(inputStream);
         }
     }
+
+	static DocumentBuilder createBuilder() throws ParserConfigurationException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", null);
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // REQUIRED - prevents XXE attack
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // REQUIRED - prevents XXE attack        
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        return factory.newDocumentBuilder();
+	}
 
     public static String getString(Document toRead) throws TransformerException {
         Source domSource = new DOMSource(toRead);
@@ -362,8 +366,7 @@ public class DOMParserUtil {
         return sw.toString();
     }
 
-    public static Transformer createTransformer()
-			throws TransformerFactoryConfigurationError, TransformerConfigurationException {
+    static Transformer createTransformer() throws TransformerFactoryConfigurationError, TransformerConfigurationException {
 		TransformerFactory factory = TransformerFactory.newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
 		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // required to keep SonarCloud quiet
         factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // required to keep SonarCloud quiet

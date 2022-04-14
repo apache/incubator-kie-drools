@@ -16,8 +16,6 @@
 package org.drools.scenariosimulation.backend.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
@@ -25,10 +23,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -38,8 +34,6 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import static com.github.javaparser.utils.Utils.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -459,9 +453,9 @@ public class DOMParserUtilTest {
     
     @Test(expected = org.xml.sax.SAXParseException.class)
     public void getDocument_XXE_Vulnerability() throws Exception {
-    	String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    			+ "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///\"> ]>\n"
-    			+ "<stocklevel><ProductID>&xxe;</ProductID></stocklevel>";
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///\"> ]>\n"
+                + "<stocklevel><ProductID>&xxe;</ProductID></stocklevel>";
         Document retrieved = DOMParserUtil.getDocument(xml);
         
         Transformer transformer = DOMParserUtil.createTransformer();
@@ -485,9 +479,9 @@ public class DOMParserUtilTest {
     
     @Test(expected = javax.xml.transform.TransformerException.class)
     public void createTransformer_XXE_Vulnerability() throws Exception {
-    	String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    			+ "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///\"> ]>\n"
-    			+ "<stocklevel><ProductID>&xxe;</ProductID></stocklevel>";
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///\"> ]>\n"
+                + "<stocklevel><ProductID>&xxe;</ProductID></stocklevel>";
         StreamSource source = new StreamSource(new ByteArrayInputStream(xml.getBytes()));
         
         Transformer transformer = DOMParserUtil.createTransformer();
