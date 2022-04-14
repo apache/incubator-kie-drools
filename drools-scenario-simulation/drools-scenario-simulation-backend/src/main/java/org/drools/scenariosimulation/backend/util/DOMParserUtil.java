@@ -365,8 +365,8 @@ public class DOMParserUtil {
     public static Transformer createTransformer()
 			throws TransformerFactoryConfigurationError, TransformerConfigurationException {
 		TransformerFactory factory = TransformerFactory.newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
-		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // required to keep SonarQube quiet
-        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // required to keep SonarQube quiet
+		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // required to keep SonarCloud quiet
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // required to keep SonarCloud quiet
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         Transformer transformer = factory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
