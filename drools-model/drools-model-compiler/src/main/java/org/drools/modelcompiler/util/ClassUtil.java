@@ -34,6 +34,11 @@ public class ClassUtil {
         return clazz.getCanonicalName().replace( '.', '_' );
     }
 
+    public static Class<?> javaSourceNameToClass(String javaSourceName) throws ClassNotFoundException {
+        String fqcn = javaSourceName.replace('_', '.');
+        return Class.forName(fqcn);
+    }
+
     public static boolean isAccessibleProperties( Class<?> clazz, String prop ) {
         return getAccessibleProperties( clazz ).contains( prop );
     }

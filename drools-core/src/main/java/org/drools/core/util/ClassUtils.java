@@ -430,6 +430,9 @@ public final class ClassUtils {
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 0) {
                 String propName = getter2property(m.getName());
+                if (propName == null) {
+                    propName = filterNonGetterValueMethod(m);
+                }
                 if (propName != null && !propName.equals( "class" )) {
                     props.add( new PropertyInClass( propName, m.getDeclaringClass() ) );
                 }
@@ -449,6 +452,15 @@ public final class ClassUtils {
             accessibleProperties.add(setter.setter);
         }
         return accessibleProperties;
+    }
+
+    private static String filterNonGetterValueMethod(Method m) {
+        String methodName = m.getName();
+        if (!m.getReturnType().equals(void.class) && methodName != "toString" && methodName != "hashCode") {
+            return m.getName(); // e.g. Person.calcAge(), Integer.intValue()
+        } else {
+            return null;
+        }
     }
 
     public static Field getField(Class<?> clazz, String field) {
