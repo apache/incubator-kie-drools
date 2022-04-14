@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.process;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
+import org.jbpm.ruleflow.core.Metadata;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
@@ -46,6 +47,7 @@ public class ModelClassGenerator {
 
         modelMetaData.setSupportsValidation(context.isValidationSupported());
         modelMetaData.setSupportsOpenApiGeneration(context.isOpenApiSpecSupported());
+        modelMetaData.setModelSchemaRef((String) workFlowProcess.getMetaData().get(Metadata.DATA_INPUT_SCHEMA_REF));
 
         return modelMetaData;
     }

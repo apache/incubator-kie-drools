@@ -116,7 +116,7 @@ public class ServerlessWorkflowUtils {
         return builder.create(getPropKey(prefix, metadataKey), clazz, defaultValue);
     }
 
-    public static interface ExpressionBuilder<T> {
+    public interface ExpressionBuilder<T> {
         Supplier<Expression> create(String key, Class<T> clazz, T defaultValue);
     }
 
@@ -159,18 +159,24 @@ public class ServerlessWorkflowUtils {
         return uri.substring(uri.lastIndexOf('/') + 1).toLowerCase().replaceFirst(REGEX_NO_EXT, "").replaceAll(ONLY_CHARS, "");
     }
 
-    public static final Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr) {
+    public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr) {
         return processResourceFile(workflow, parserContext, uriStr, null);
     }
 
-    public static final Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
-        URI uri = URI.create(uriStr);
+    public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
+        final URI uri = URI.create(uriStr);
+        final Optional<byte[]> bytes = loadResourceFile(workflow, parserContext, uriStr, authRef);
+        bytes.ifPresent(value -> parserContext.addGeneratedFile(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(), value)));
+        return bytes;
+    }
+
+    public static Optional<byte[]> loadResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
+        final URI uri = URI.create(uriStr);
         try {
-            byte[] bytes = URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.buildLoader(uri, parserContext.getContext().getClassLoader(), workflow, authRef));
-            parserContext.addGeneratedFile(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(), bytes));
+            final byte[] bytes = URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.buildLoader(uri, parserContext.getContext().getClassLoader(), workflow, authRef));
             return Optional.of(bytes);
         } catch (IOException io) {
-            // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime) 
+            // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime)
             logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);
         }
         return Optional.empty();

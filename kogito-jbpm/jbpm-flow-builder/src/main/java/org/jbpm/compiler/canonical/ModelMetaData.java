@@ -77,6 +77,8 @@ public class ModelMetaData {
     private boolean supportsValidation;
     private boolean supportsOpenApiGeneration;
 
+    private String modelSchemaRef;
+
     public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden) {
         this(processId, packageName, modelClassSimpleName, visibility, variableScope, hidden, "/class-templates/ModelTemplate.java");
     }
@@ -210,6 +212,7 @@ public class ModelMetaData {
 
             applyValidation(fd, tags);
             applyOpenApiSchemaForJsonNodeModel(fd);
+            applyOpenApiSchemaAnnotation(fd);
 
             fd.createGetter();
             fd.createSetter();
@@ -244,8 +247,20 @@ public class ModelMetaData {
      * @see <a href="https://github.com/smallrye/smallrye-open-api/issues/1048">Jackson's JsonNode class is being incorrectly rendered in the spec file</a>
      */
     private void applyOpenApiSchemaForJsonNodeModel(final FieldDeclaration modelFieldDeclaration) {
-        if (this.supportsOpenApiGeneration && JsonNode.class.getCanonicalName().equals(modelFieldDeclaration.getElementType().asString())) {
-            modelFieldDeclaration.addAndGetAnnotation(Schema.class).addPair("implementation", new ClassExpr().setType(Object.class.getCanonicalName()));
+        if (this.modelSchemaRef == null &&
+                this.supportsOpenApiGeneration &&
+                JsonNode.class.getCanonicalName().equals(modelFieldDeclaration.getElementType().asString())) {
+            modelFieldDeclaration.addAndGetAnnotation(Schema.class).addPair("implementation",
+                    new ClassExpr().setType(Object.class.getCanonicalName()));
+        }
+    }
+
+    private void applyOpenApiSchemaAnnotation(final FieldDeclaration modelFieldDeclaration) {
+        if (this.supportsOpenApiGeneration && this.modelSchemaRef != null) {
+            final NormalAnnotationExpr schemaAnnotation = new NormalAnnotationExpr();
+            schemaAnnotation.setName(new Name(Schema.class.getCanonicalName()));
+            schemaAnnotation.addPair("ref", new StringLiteralExpr(this.modelSchemaRef));
+            modelFieldDeclaration.addAnnotation(schemaAnnotation);
         }
     }
 
@@ -279,6 +294,10 @@ public class ModelMetaData {
 
     public void setSupportsOpenApiGeneration(boolean supportsOpenApiGeneration) {
         this.supportsOpenApiGeneration = supportsOpenApiGeneration;
+    }
+
+    public void setModelSchemaRef(String modelSchemaRef) {
+        this.modelSchemaRef = modelSchemaRef;
     }
 
     @Override

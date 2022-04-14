@@ -27,8 +27,8 @@
       <artifactId>jackson-datatype-json-org</artifactId>
      </dependency>
     <dependency>
-       <groupId>org.everit.json</groupId>
-       <artifactId>org.everit.json.schema</artifactId>
+      <groupId>com.github.erosb</groupId>
+      <artifactId>everit-json-schema</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
