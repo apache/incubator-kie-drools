@@ -22,10 +22,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
         </dependency>

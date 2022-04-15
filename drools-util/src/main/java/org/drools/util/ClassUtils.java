@@ -830,4 +830,12 @@ public final class ClassUtils {
                getCanonicalSimpleName(enclosingClass) + separator + c.getSimpleName() :
                c.getSimpleName();
     }
+
+    public static ClassLoader findParentClassLoader(Class<?> invokingClass) {
+        ClassLoader parent = Thread.currentThread().getContextClassLoader();
+        if (parent == null) {
+            parent = ClassLoader.getSystemClassLoader();
+        }
+        return parent != null ? parent : invokingClass.getClassLoader();
+    }
 }

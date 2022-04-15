@@ -36,6 +36,8 @@ import org.drools.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
+import static org.drools.util.ClassUtils.findParentClassLoader;
+
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
  *
@@ -112,7 +114,7 @@ public class ClassPathResource extends BaseResource implements InternalResource,
         this.path = path;
         this.encoding = encoding;
         this.clazz = clazz;
-        this.classLoader = classLoader != null ? classLoader : getClass().getClassLoader();
+        this.classLoader = classLoader != null ? classLoader : findParentClassLoader(getClass());
         setSourcePath( path );
         setResourceType( ResourceType.determineResourceType( path ) );
     }
@@ -207,7 +209,7 @@ public class ClassPathResource extends BaseResource implements InternalResource,
                 return resources;
             }
         } catch ( Exception e ) {
-            // swollow as we'll throw an exception anyway            
+            // swallow as we'll throw an exception anyway
         }
 
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );

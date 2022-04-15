@@ -19,7 +19,6 @@ package org.kie.api.io;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.URL;
 
 import org.kie.api.definition.KieDescr;
 import org.kie.api.internal.utils.KieService;
@@ -28,16 +27,6 @@ import org.kie.api.internal.utils.KieService;
  * KieResources is a factory that provides Resource implementations for the desired IO resource
  */
 public interface KieResources extends KieService {
-
-    Resource newUrlResource(URL url);
-
-    Resource newUrlResource(URL url,
-                            String encoding);
-
-    Resource newUrlResource(String path);
-
-    Resource newUrlResource(String path,
-                            String encoding);
 
     Resource newFileSystemResource(File file);
 

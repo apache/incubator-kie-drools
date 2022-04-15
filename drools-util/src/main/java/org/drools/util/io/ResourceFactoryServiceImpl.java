@@ -19,7 +19,6 @@ package org.drools.util.io;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.URL;
 
 import org.kie.api.definition.KieDescr;
 import org.kie.api.io.KieResources;
@@ -110,24 +109,6 @@ public class ResourceFactoryServiceImpl implements KieResources {
                                       String encoding) {
         return new ReaderResource( reader,
                                    encoding );
-    }
-
-    public Resource newUrlResource(URL url) {
-        return new UrlResource( url );
-    }
-
-    public Resource newUrlResource(URL url,
-                                   String encoding) {
-        return new UrlResource( url, encoding );
-    }
-
-    public Resource newUrlResource(String path) {
-        return new UrlResource( path );
-    }
-
-    public Resource newUrlResource(String path,
-                                   String encoding) {
-        return new UrlResource( path, encoding );
     }
 
     public Resource newDescrResource( KieDescr descr ) {
