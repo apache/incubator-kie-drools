@@ -311,7 +311,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         try {
             URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
             pmmlResource = resolveRelativeURI.isAbsolute() ?
-                    ResourceFactory.newFileResource(resolveRelativeURI.toString()) :
+                    ResourceFactory.newFileResource(resolveRelativeURI.getPath()) :
                     ResourceFactory.newClassPathResource(resolveRelativeURI.getPath(), classLoader);
         } catch (URISyntaxException | IOException e) {
             new PMMLImportErrConsumer(model, i, node).accept(e);
