@@ -15,6 +15,7 @@
  */
 package org.optaplanner.constraint.streams.bi;
 
+import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 import static org.optaplanner.constraint.streams.common.ScoreImpactType.MIXED;
 import static org.optaplanner.constraint.streams.common.ScoreImpactType.PENALTY;
 import static org.optaplanner.constraint.streams.common.ScoreImpactType.REWARD;
@@ -24,16 +25,17 @@ import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
+import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> {
+
+    RetrievalSemantics getRetrievalSemantics();
 
     /**
      * This method will return true if the constraint stream is guaranteed to only produce distinct tuples.
@@ -44,13 +46,13 @@ public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> 
     boolean guaranteesDistinct();
 
     @Override
-    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C>... joiners) {
-        BiConstraintStreamHelper<A, B, C> helper = new BiConstraintStreamHelper<>(this);
-        return helper.join(otherStream, joiners);
+    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        if (getRetrievalSemantics() == STANDARD) {
+            return join(getConstraintFactory().forEach(otherClass), joiners);
+        } else {
+            return join(getConstraintFactory().from(otherClass), joiners);
+        }
     }
-
-    <C> TriConstraintStream<A, B, C> actuallyJoin(UniConstraintStream<C> otherStream,
-            DefaultTriJoiner<A, B, C>... joiners);
 
     @Override
     default BiConstraintStream<A, B> distinct() {

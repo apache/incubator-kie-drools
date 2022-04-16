@@ -39,7 +39,7 @@ import org.optaplanner.constraint.streams.drools.tri.DroolsJoinTriConstraintStre
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
-import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
+import org.optaplanner.constraint.streams.tri.TriJoinerComber;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -67,22 +67,19 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public <C> TriConstraintStream<A, B, C> actuallyJoin(UniConstraintStream<C> otherStream,
-            DefaultTriJoiner<A, B, C>... joiners) {
+    @SafeVarargs
+    public final <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream,
+            TriJoiner<A, B, C>... joiners) {
+        TriJoinerComber<A, B, C> joinerComber = TriJoinerComber.comb(joiners);
         DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsJoinTriConstraintStream<>(constraintFactory, this,
                         (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream,
-                        DefaultTriJoiner.merge(joiners));
+                        joinerComber.getMergedJoiner());
         addChildStream(stream);
-        return stream;
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        if (getRetrievalSemantics() == STANDARD) {
-            return join(constraintFactory.forEach(otherClass), joiners);
+        if (joinerComber.getMergedFiltering() == null) {
+            return stream;
         } else {
-            return join(constraintFactory.from(otherClass), joiners);
+            return stream.filter(joinerComber.getMergedFiltering());
         }
     }
 

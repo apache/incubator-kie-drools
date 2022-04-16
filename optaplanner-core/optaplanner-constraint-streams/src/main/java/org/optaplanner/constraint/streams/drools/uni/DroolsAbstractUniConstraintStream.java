@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.bi.BiJoinerComber;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
@@ -64,23 +64,26 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream,
-            DefaultBiJoiner<A, B>... joiners) {
-        DroolsAbstractUniConstraintStream<Solution_, B> castOtherStream =
-                (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream;
-        DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
-                this, castOtherStream, DefaultBiJoiner.merge(joiners));
-        addChildStream(stream);
-        castOtherStream.addChildStream(stream);
-        return stream;
+    @SafeVarargs
+    public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream,
+            BiJoiner<A, B>... joiners) {
+        BiJoinerComber<A, B> joinerComber = BiJoinerComber.comb(joiners);
+        return join(otherStream, joinerComber);
     }
 
     @Override
-    public <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        if (getRetrievalSemantics() == STANDARD) {
-            return join(constraintFactory.forEach(otherClass), joiners);
+    public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream,
+            BiJoinerComber<A, B> joinerComber) {
+        DroolsAbstractUniConstraintStream<Solution_, B> castOtherStream =
+                (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream;
+        DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
+                this, castOtherStream, joinerComber.getMergedJoiner());
+        addChildStream(stream);
+        castOtherStream.addChildStream(stream);
+        if (joinerComber.getMergedFiltering() == null) {
+            return stream;
         } else {
-            return join(constraintFactory.from(otherClass), joiners);
+            return stream.filter(joinerComber.getMergedFiltering());
         }
     }
 

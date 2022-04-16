@@ -33,7 +33,7 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraint
 import org.optaplanner.constraint.streams.bi.InnerBiConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
+import org.optaplanner.constraint.streams.tri.TriJoinerComber;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -81,34 +81,31 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     @Override
-    public <C> TriConstraintStream<A, B, C> actuallyJoin(UniConstraintStream<C> otherStream,
-            DefaultTriJoiner<A, B, C>... joiners) {
+    @SafeVarargs
+    public final <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream,
+            TriJoiner<A, B, C>... joiners) {
         BavetAbstractUniConstraintStream<Solution_, C> other = assertBavetUniConstraintStream(otherStream);
+        TriJoinerComber<A, B, C> joinerComber = TriJoinerComber.comb(joiners);
 
         BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftBridge =
                 new BavetJoinBridgeBiConstraintStream<>(constraintFactory, this, true);
         BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
-
-        BavetJoinTriConstraintStream<Solution_, A, B, C> newJoinStream =
+        BavetJoinTriConstraintStream<Solution_, A, B, C> joinStream =
                 new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge,
-                        DefaultTriJoiner.merge(joiners));
-        leftBridge.setJoinStream(newJoinStream);
-        rightBridge.setJoinStream(newJoinStream);
+                        joinerComber.getMergedJoiner());
+        leftBridge.setJoinStream(joinStream);
+        rightBridge.setJoinStream(joinStream);
 
-        return constraintFactory.share(newJoinStream, joinStream_ -> {
+        joinStream = constraintFactory.share(joinStream, joinStream_ -> {
             // Connect the bridges upstream, as it is an actual new join.
             getChildStreamList().add(leftBridge);
             other.getChildStreamList().add(rightBridge);
         });
-    }
-
-    @Override
-    public <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
-            return join(constraintFactory.forEach(otherClass), joiners);
+        if (joinerComber.getMergedFiltering() == null) {
+            return joinStream;
         } else {
-            return join(constraintFactory.from(otherClass), joiners);
+            return joinStream.filter(joinerComber.getMergedFiltering());
         }
     }
 
@@ -122,7 +119,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
             return ifExists(constraintFactory.forEach(otherClass), joiners);
         } else {
-            return ifExists(constraintFactory.from(otherClass), joiners);
+            // Calls fromUnfiltered() for backward compatibility only
+            return ifExists(constraintFactory.fromUnfiltered(otherClass), joiners);
         }
     }
 
@@ -147,7 +145,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
             return ifNotExists(constraintFactory.forEach(otherClass), joiners);
         } else {
-            return ifNotExists(constraintFactory.from(otherClass), joiners);
+            // Calls fromUnfiltered() for backward compatibility only
+            return ifNotExists(constraintFactory.fromUnfiltered(otherClass), joiners);
         }
     }
 

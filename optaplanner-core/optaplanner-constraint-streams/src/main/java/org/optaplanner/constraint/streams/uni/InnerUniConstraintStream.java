@@ -20,18 +20,22 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.bi.BiJoinerComber;
+import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
 
+    RetrievalSemantics getRetrievalSemantics();
+
     /**
-     * This method will return true if the constraint stream is guaranteed to only produce distinct tuples.
+     * This method returns true if the constraint stream is guaranteed to only produce distinct tuples.
      * See {@link #distinct()} for details.
      *
      * @return true if the guarantee of distinct tuples is provided
@@ -39,12 +43,23 @@ public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
     boolean guaranteesDistinct();
 
     @Override
-    default <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B>... joiners) {
-        UniConstraintStreamHelper<A, B> helper = new UniConstraintStreamHelper<>(this);
-        return helper.join(otherStream, joiners);
+    default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return join(getConstraintFactory().forEach(otherClass), joiners);
+        } else {
+            return join(getConstraintFactory().from(otherClass), joiners);
+        }
     }
 
-    <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream, DefaultBiJoiner<A, B>... joiners);
+    /**
+     * Allows {@link ConstraintFactory#forEachUniquePair(Class)} to reuse the joiner combing logic.
+     * 
+     * @param otherStream never null
+     * @param joinerComber never null
+     * @param <B>
+     * @return never null
+     */
+    <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoinerComber<A, B> joinerComber);
 
     @Override
     default UniConstraintStream<A> distinct() {

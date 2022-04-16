@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -31,7 +32,6 @@ import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 
 public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
 
-    private final boolean shouldExist;
     private final Function<A, Object[]> mappingA;
     private final Function<B, Object[]> mappingB;
     private final int inputStoreIndexA;
@@ -48,13 +48,14 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
 
     private final Indexer<UniTuple<A>, Counter<A>> indexerA;
     private final Indexer<UniTuple<B>, Set<Counter<A>>> indexerB;
+    private final BiPredicate<A, B> filtering;
     private final Queue<Counter<A>> dirtyCounterQueue;
 
-    public IfExistsUniWithUniNode(boolean shouldExist, Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
+    public IfExistsUniWithUniNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-            Indexer<UniTuple<A>, Counter<A>> indexerA, Indexer<UniTuple<B>, Set<Counter<A>>> indexerB) {
-        this.shouldExist = shouldExist;
+            Indexer<UniTuple<A>, Counter<A>> indexerA, Indexer<UniTuple<B>, Set<Counter<A>>> indexerB,
+            BiPredicate<A, B> filtering) {
         this.mappingA = mappingA;
         this.mappingB = mappingB;
         this.inputStoreIndexA = inputStoreIndexA;
@@ -63,6 +64,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         this.nextNodesRetract = nextNodesRetract;
         this.indexerA = indexerA;
         this.indexerB = indexerB;
+        this.filtering = filtering;
         dirtyCounterQueue = new ArrayDeque<>(1000);
     }
 
@@ -77,10 +79,15 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         Counter<A> counter = new Counter<>(tupleA);
         indexerA.put(indexProperties, tupleA, counter);
 
-        counter.countB = indexerB.countValues(indexProperties);
-        if (shouldExist ? counter.countB > 0 : counter.countB == 0) {
+        counter.countB = 0;
+        indexerB.visit(indexProperties, (tupleB, counterSetB) -> {
+            if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
+                counter.countB++;
+                counterSetB.add(counter);
+            }
+        });
+        if (counter.countB > 0) {
             counter.state = BavetTupleState.CREATING;
-            indexerB.visit(indexProperties, (tuple, counterSetB) -> counterSetB.add(counter));
             dirtyCounterQueue.add(counter);
         }
     }
@@ -94,15 +101,16 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         tupleA.store[inputStoreIndexA] = null;
 
         Counter<A> counter = indexerA.remove(indexProperties, tupleA);
-        indexerB.visit(indexProperties, (tuple, counterSet) -> {
-            boolean changed = counterSet.remove(counter);
-            if (!changed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
-                        + ") with indexProperties (" + Arrays.toString(indexProperties)
-                        + ") has a counter on the A side that doesn't exist on the B side.");
-            }
-        });
-        if (shouldExist ? counter.countB > 0 : counter.countB == 0) {
+        if (counter.countB > 0) {
+            indexerB.visit(indexProperties, (tupleB, counterSet) -> {
+                boolean changed = counterSet.remove(counter);
+                // If filtering is active, not all counterSets contain the counter and we don't track which ones do
+                if (!changed && filtering == null) {
+                    throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
+                            + ") with indexProperties (" + Arrays.toString(indexProperties)
+                            + ") has a counter on the A side that doesn't exist on the B side.");
+                }
+            });
             retractCounter(counter);
         }
     }
@@ -115,25 +123,27 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         Object[] indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
+        // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
         Set<Counter<A>> counterSetB = new LinkedHashSet<>();
         indexerB.put(indexProperties, tupleB, counterSetB);
-        indexerA.visit(indexProperties, (tuple, counter) -> {
-            if (counter.countB == 0) {
-                if (shouldExist) {
-                    if (counter.state != BavetTupleState.DEAD) {
-                        // TODO what if it was retracted before this insert with no calculateScore()?
-                        throw new UnsupportedOperationException();
-                    }
-                    counter.state = BavetTupleState.CREATING;
+        indexerA.visit(indexProperties, (tupleA, counter) -> {
+            if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
+                if (counter.countB == 0) {
                     counterSetB.add(counter);
-                    dirtyCounterQueue.add(counter);
-                } else {
-                    throw new UnsupportedOperationException();
-                    //                    counterSetB.remove(counter);
-                    //                    retractCounter(counter);
+                    if (counter.state == BavetTupleState.DEAD) {
+                        counter.state = BavetTupleState.CREATING;
+                        dirtyCounterQueue.add(counter);
+                    } else if (counter.state == BavetTupleState.DYING) {
+                        counter.state = BavetTupleState.UPDATING;
+                    } else {
+                        throw new IllegalStateException("Impossible state: the counter for facts ("
+                                + tupleA.factA + ", " + tupleB.factA
+                                + ") with indexProperties (" + Arrays.toString(indexProperties)
+                                + ") has an impossible state (" + counter.state + ").");
+                    }
                 }
+                counter.countB++;
             }
-            counter.countB++;
         });
     }
 
@@ -148,11 +158,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         for (Counter<A> counter : counterSetB) {
             counter.countB--;
             if (counter.countB == 0) {
-                if (shouldExist) {
-                    retractCounter(counter);
-                } else {
-                    throw new UnsupportedOperationException();
-                }
+                retractCounter(counter);
             }
         }
     }

@@ -17,8 +17,8 @@ package org.optaplanner.constraint.streams.tri;
 
 import java.math.BigDecimal;
 
+import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -27,9 +27,10 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A, B, C> {
+
+    RetrievalSemantics getRetrievalSemantics();
 
     /**
      * This method will return true if the constraint stream is guaranteed to only produce distinct tuples.
@@ -40,13 +41,13 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
     boolean guaranteesDistinct();
 
     @Override
-    default <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D>... joiners) {
-        TriConstraintStreamHelper<A, B, C, D> helper = new TriConstraintStreamHelper<>(this);
-        return helper.join(otherStream, joiners);
+    default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
+        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
+            return join(getConstraintFactory().forEach(otherClass), joiners);
+        } else {
+            return join(getConstraintFactory().from(otherClass), joiners);
+        }
     }
-
-    <D> QuadConstraintStream<A, B, C, D> actuallyJoin(UniConstraintStream<D> otherStream,
-            DefaultQuadJoiner<A, B, C, D>... joiners);
 
     @Override
     default TriConstraintStream<A, B, C> distinct() {

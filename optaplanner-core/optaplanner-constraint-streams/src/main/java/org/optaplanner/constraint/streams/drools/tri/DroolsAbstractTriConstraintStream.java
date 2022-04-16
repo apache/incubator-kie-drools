@@ -35,7 +35,7 @@ import org.optaplanner.constraint.streams.drools.quad.DroolsJoinQuadConstraintSt
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
+import org.optaplanner.constraint.streams.quad.QuadJoinerComber;
 import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -67,22 +67,19 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public <D> QuadConstraintStream<A, B, C, D> actuallyJoin(UniConstraintStream<D> otherStream,
-            DefaultQuadJoiner<A, B, C, D>... joiners) {
+    @SafeVarargs
+    public final <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream,
+            QuadJoiner<A, B, C, D>... joiners) {
+        QuadJoinerComber<A, B, C, D> joinerComber = QuadJoinerComber.comb(joiners);
         DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsJoinQuadConstraintStream<>(constraintFactory, this,
                         (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream,
-                        DefaultQuadJoiner.merge(joiners));
+                        joinerComber.getMergedJoiner());
         addChildStream(stream);
-        return stream;
-    }
-
-    @Override
-    public <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        if (getRetrievalSemantics() == STANDARD) {
-            return join(constraintFactory.forEach(otherClass), joiners);
+        if (joinerComber.getMergedFiltering() == null) {
+            return stream;
         } else {
-            return join(constraintFactory.from(otherClass), joiners);
+            return stream.filter(joinerComber.getMergedFiltering());
         }
     }
 

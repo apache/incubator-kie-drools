@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.tri;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -44,12 +45,11 @@ public final class DefaultTriJoiner<A, B, C> extends AbstractJoiner<C> implement
         this.leftMappings = leftMappings;
     }
 
-    public static <A, B, C> DefaultTriJoiner<A, B, C> merge(DefaultTriJoiner<A, B, C>... joiners) {
-        if (joiners.length == 1) {
-            return joiners[0];
+    public static <A, B, C> DefaultTriJoiner<A, B, C> merge(List<DefaultTriJoiner<A, B, C>> joinerList) {
+        if (joinerList.size() == 1) {
+            return joinerList.get(0);
         }
-        return Arrays.stream(joiners)
-                .reduce(NONE, DefaultTriJoiner::and);
+        return joinerList.stream().reduce(NONE, DefaultTriJoiner::and);
     }
 
     @Override

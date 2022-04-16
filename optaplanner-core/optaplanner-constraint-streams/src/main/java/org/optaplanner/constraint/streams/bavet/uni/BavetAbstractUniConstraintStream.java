@@ -28,9 +28,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
-import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.bi.BiJoinerComber;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.uni.InnerUniConstraintStream;
@@ -81,34 +79,36 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public <B> BiConstraintStream<A, B> actuallyJoin(UniConstraintStream<B> otherStream,
-            DefaultBiJoiner<A, B>... joiners) {
+    @SafeVarargs
+    public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream,
+            BiJoiner<A, B>... joiners) {
+        BiJoinerComber<A, B> joinerComber = BiJoinerComber.comb(joiners);
+        return join(otherStream, joinerComber);
+    }
+
+    @Override
+    public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoinerComber<A, B> joinerComber) {
         BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
 
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, this, true);
         BavetJoinBridgeUniConstraintStream<Solution_, B> rightBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
-
-        BavetJoinBiConstraintStream<Solution_, A, B> newJoinStream =
+        BavetJoinBiConstraintStream<Solution_, A, B> joinStream =
                 new BavetJoinBiConstraintStream<>(constraintFactory, leftBridge, rightBridge,
-                        DefaultBiJoiner.merge(joiners));
-        leftBridge.setJoinStream(newJoinStream);
-        rightBridge.setJoinStream(newJoinStream);
+                        joinerComber.getMergedJoiner());
+        leftBridge.setJoinStream(joinStream);
+        rightBridge.setJoinStream(joinStream);
 
-        return constraintFactory.share(newJoinStream, joinStream_ -> {
+        joinStream = constraintFactory.share(joinStream, joinStream_ -> {
             // Connect the bridges upstream, as it is an actual new join.
             getChildStreamList().add(leftBridge);
             other.getChildStreamList().add(rightBridge);
         });
-    }
-
-    @Override
-    public <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
-            return join(constraintFactory.forEach(otherClass), joiners);
+        if (joinerComber.getMergedFiltering() == null) {
+            return joinStream;
         } else {
-            return join(constraintFactory.from(otherClass), joiners);
+            return joinStream.filter(joinerComber.getMergedFiltering());
         }
     }
 
@@ -122,7 +122,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
             return ifExists(constraintFactory.forEach(otherClass), joiners);
         } else {
-            return ifExists(constraintFactory.from(otherClass), joiners);
+            // Calls fromUnfiltered() for backward compatibility only
+            return ifExists(constraintFactory.fromUnfiltered(otherClass), joiners);
         }
     }
 
@@ -147,7 +148,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
             return ifNotExists(constraintFactory.forEach(otherClass), joiners);
         } else {
-            return ifNotExists(constraintFactory.from(otherClass), joiners);
+            // Calls fromUnfiltered() for backward compatibility only
+            return ifNotExists(constraintFactory.fromUnfiltered(otherClass), joiners);
         }
     }
 
@@ -168,26 +170,13 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, UniConstraintStream<B> otherStream,
             BiJoiner<A, B>[] joiners) {
-        // TODO support FilteringBiJoiner like join() which probably should do it either?
         BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
-
-        if (joiners.length != 1) {
-            throw new UnsupportedOperationException();
-        }
-        BiJoiner<A, B> joiner = joiners[0];
-        if (!(joiner instanceof DefaultBiJoiner)) {
-            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-        }
-        DefaultBiJoiner<A, B> castedJoiner = (DefaultBiJoiner<A, B>) joiner;
-        IndexerFactory indexerFactory = new IndexerFactory(castedJoiner);
-        Function<A, Object[]> leftMapping = JoinerUtils.combineLeftMappings(castedJoiner);
-        Function<B, Object[]> rightMapping = JoinerUtils.combineRightMappings(castedJoiner);
+        BiJoinerComber<A, B> joinerComber = BiJoinerComber.comb(joiners);
         BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB = other.shareAndAddChild(
                 new BavetIfExistsBridgeUniConstraintStream<>(constraintFactory, other));
         return constraintFactory.share(
                 new BavetIfExistsUniConstraintStream<>(constraintFactory, this, parentBridgeB,
-                        shouldExist,
-                        leftMapping, rightMapping, indexerFactory),
+                        shouldExist, joinerComber.getMergedJoiner(), joinerComber.getMergedFiltering()),
                 ifExistsStream_ -> {
                     childStreamList.add(ifExistsStream_);
                     parentBridgeB.setIfExistsStream(ifExistsStream_);

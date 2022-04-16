@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.quad;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -44,12 +45,11 @@ public final class DefaultQuadJoiner<A, B, C, D> extends AbstractJoiner<D> imple
         this.leftMappings = leftMappings;
     }
 
-    public static <A, B, C, D> QuadJoiner<A, B, C, D> merge(QuadJoiner<A, B, C, D>... joiners) {
-        if (joiners.length == 1) {
-            return joiners[0];
+    public static <A, B, C, D> DefaultQuadJoiner<A, B, C, D> merge(List<DefaultQuadJoiner<A, B, C, D>> joinerList) {
+        if (joinerList.size() == 1) {
+            return joinerList.get(0);
         }
-        return Arrays.stream(joiners)
-                .reduce(NONE, QuadJoiner::and);
+        return joinerList.stream().reduce(NONE, DefaultQuadJoiner::and);
     }
 
     @Override
