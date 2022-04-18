@@ -947,13 +947,12 @@ public class DrlxParseUtil {
         return ruleBlock.findFirst(expr.getClass(), expr::equals).isPresent();
     }
 
-    public static Expression stripEnclosedExpr(EnclosedExpr eExpr) {
-        Expression inner = eExpr.getInner();
-        if (inner instanceof EnclosedExpr) {
-            return stripEnclosedExpr((EnclosedExpr) inner);
-        } else {
-            return inner;
+    public static Expression stripEnclosedExpr(Expression expr) {
+        if (!(expr instanceof EnclosedExpr)) {
+            return expr;
         }
+        Expression inner = ((EnclosedExpr) expr).getInner();
+        return stripEnclosedExpr(inner);
     }
 
     private DrlxParseUtil() {
