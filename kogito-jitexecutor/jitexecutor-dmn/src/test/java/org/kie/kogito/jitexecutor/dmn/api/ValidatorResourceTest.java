@@ -19,7 +19,7 @@ package org.kie.kogito.jitexecutor.dmn.api;
 import java.io.IOException;
 import java.util.List;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage;

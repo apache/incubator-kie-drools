@@ -18,7 +18,7 @@ package org.kie.kogito.jitexecutor.dmn.api;
 
 import java.io.IOException;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;

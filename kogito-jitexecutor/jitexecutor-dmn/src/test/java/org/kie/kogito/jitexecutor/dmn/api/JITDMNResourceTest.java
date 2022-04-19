@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jitexecutor.dmn.requests.JITDMNPayload;
