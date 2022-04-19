@@ -186,7 +186,7 @@ public class TypedExpression {
     @Override
     public String toString() {
         return "TypedExpression{" +
-                "expression=" + expression +
+                "expression=" + PrintUtil.printNode(expression) +
                 ", jpType=" + (expression == null ? "" : expression.getClass().getSimpleName()) +
                 ", type=" + type +
                 ", fieldName='" + fieldName + '\'' +
