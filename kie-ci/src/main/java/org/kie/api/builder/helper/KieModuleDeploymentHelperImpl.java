@@ -30,7 +30,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -45,7 +45,7 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.util.IoUtils.readBytesFromInputStream;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 /**

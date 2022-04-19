@@ -30,7 +30,7 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.right.ConsequenceAction;
 import org.drools.impact.analysis.model.right.InsertAction;
@@ -42,7 +42,7 @@ import org.drools.modelcompiler.builder.generator.Consequence;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralString;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralValue;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.isLiteral;

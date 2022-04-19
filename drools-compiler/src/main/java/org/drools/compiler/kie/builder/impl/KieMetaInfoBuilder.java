@@ -30,7 +30,7 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeMetaInfo;
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;

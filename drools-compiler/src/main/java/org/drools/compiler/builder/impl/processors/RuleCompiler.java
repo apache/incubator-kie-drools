@@ -10,7 +10,7 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 import static org.drools.compiler.rule.builder.RuleBuildContext.descrToRule;
-import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.util.StringUtils.isEmpty;
 
 public class RuleCompiler extends AbstractPackageCompilationPhase {
 

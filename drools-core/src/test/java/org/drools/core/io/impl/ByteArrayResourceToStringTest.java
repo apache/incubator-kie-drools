@@ -17,6 +17,7 @@
 package org.drools.core.io.impl;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.drools.util.io.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

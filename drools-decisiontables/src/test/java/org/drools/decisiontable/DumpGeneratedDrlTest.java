@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import org.apache.commons.io.FileUtils;
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

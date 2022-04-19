@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.util.StringUtils.splitArgumentsList;
 
 /**
  * This utility class exists to convert rule script snippets to actual code. The

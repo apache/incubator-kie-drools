@@ -27,8 +27,8 @@ import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
-import static org.drools.core.util.StringUtils.generateUUID;
-import static org.drools.core.util.StringUtils.getPkgUUID;
+import static org.drools.util.StringUtils.generateUUID;
+import static org.drools.modelcompiler.builder.PackageModel.getPkgUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

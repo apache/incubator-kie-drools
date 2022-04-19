@@ -36,10 +36,10 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.util.StringUtils;
+import org.drools.util.io.ByteArrayResource;
+import org.drools.util.StringUtils;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -49,9 +49,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl.DEFAULT_PACKAGE;
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.ClassUtils.convertResourceToClassName;
+import static org.drools.util.StringUtils.isEmpty;
 
 public class ChangeSetBuilder {
     

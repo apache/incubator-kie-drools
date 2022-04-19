@@ -26,7 +26,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -55,7 +54,7 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.kie.memorycompiler.StoreClassLoader;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -95,7 +94,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             try (MemoryFileManager fileManager = new MemoryFileManager( jFileManager, pClassLoader )) {
                 final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
                 for (final String sourcePath : pResourcePaths) {
-                    units.add( new CompilationUnit( KiePath.of(sourcePath), pReader ) );
+                    units.add( new CompilationUnit( PortablePath.of(sourcePath), pReader ) );
                 }
 
                 Iterable<String> options = new NativeJavaCompilerSettings( pSettings ).toOptionsList();
@@ -146,12 +145,12 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
         private final String content;
 
-        CompilationUnit(KiePath path, String content) {
+        CompilationUnit(PortablePath path, String content) {
             super(URI.create("memo:///" + path.asString()), Kind.SOURCE);
             this.content = content;
         }
 
-        CompilationUnit(KiePath name, ResourceReader pReader) {
+        CompilationUnit(PortablePath name, ResourceReader pReader) {
             this(name, new String(pReader.getBytes(name), UTF8_CHARSET));
         }
 

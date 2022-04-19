@@ -16,7 +16,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.template.model.Condition;
 import org.drools.template.model.Rule;
 import org.drools.template.model.SnippetBuilder;

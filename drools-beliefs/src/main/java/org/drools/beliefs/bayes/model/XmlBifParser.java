@@ -33,7 +33,7 @@ import org.drools.beliefs.bayes.assembler.BayesNetworkAssemblerError;
 import org.drools.beliefs.graph.GraphNode;
 import org.drools.beliefs.graph.impl.EdgeImpl;
 import org.drools.drl.parser.ParserError;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.util.io.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderError;
 

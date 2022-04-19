@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.jar.JarInputStream;
 
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.Field;

@@ -44,11 +44,11 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.ClassUtils;
+import org.drools.util.StringUtils;
 
 import static org.drools.core.rule.LogicTransformer.toIntArray;
-import static org.drools.core.util.StringUtils.isDereferencingIdentifier;
+import static org.drools.util.StringUtils.isDereferencingIdentifier;
 
 public class QueryElementBuilder
     implements

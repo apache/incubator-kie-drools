@@ -28,7 +28,7 @@ import org.drools.core.spi.WriteAccessor;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 
-import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
+import static org.drools.util.ClassUtils.convertPrimitiveNameToType;
 
 public class ClassFieldAccessorCache {
 

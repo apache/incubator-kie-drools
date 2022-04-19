@@ -62,9 +62,9 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.util.NullType;
 
 import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.util.ClassUtils.convertToPrimitiveType;
+import static org.drools.util.StringUtils.generateUUID;
 import static org.drools.mvel.ConditionAnalyzer.isFixed;
 import static org.drools.mvel.asm.GeneratorHelper.matchDeclarationsToTuple;
 import static org.mvel2.asm.Opcodes.AALOAD;

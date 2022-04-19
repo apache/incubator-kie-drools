@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.drools.model.functions.Function1;
 
 import static org.drools.core.util.Drools.hasMvel;

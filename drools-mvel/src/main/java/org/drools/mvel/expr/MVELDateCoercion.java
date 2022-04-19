@@ -16,7 +16,7 @@ package org.drools.mvel.expr;
 
 import java.util.Date;
 
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 import org.mvel2.ConversionHandler;
 
 public class MVELDateCoercion implements ConversionHandler {

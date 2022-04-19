@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 
 import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 

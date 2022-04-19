@@ -24,8 +24,8 @@ import java.util.function.Consumer;
 
 import org.drools.Gender;
 import org.drools.Person;
-import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.ClassTypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.hamcrest.MatcherAssert;
 

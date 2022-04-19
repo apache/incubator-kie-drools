@@ -29,7 +29,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.io.impl.DescrResource;
+import org.drools.util.io.DescrResource;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
@@ -54,7 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
-import static org.drools.core.util.StringUtils.getPkgUUID;
+import static org.drools.modelcompiler.builder.PackageModel.getPkgUUID;
 import static org.kie.pmml.commons.Constants.EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 

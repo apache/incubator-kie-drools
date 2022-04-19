@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;

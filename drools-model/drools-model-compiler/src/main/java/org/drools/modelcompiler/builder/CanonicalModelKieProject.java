@@ -37,14 +37,14 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 import static java.util.stream.Collectors.groupingBy;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
@@ -101,7 +101,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         srcMfs.write(projectSourcePath, modelSourceClass.generate().getBytes());
         sourceFiles.add( projectSourcePath );
 
-        Set<KiePath> origFileNames = new HashSet<>(trgMfs.getFilePaths());
+        Set<PortablePath> origFileNames = new HashSet<>(trgMfs.getFilePaths());
 
         String[] sources = sourceFiles.toArray(new String[sourceFiles.size()]);
         if (sources.length != 0) {
@@ -123,10 +123,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         }
 
         if (ProjectClassLoader.isEnableStoreFirst()) {
-            Set<KiePath> generatedClassPaths = new HashSet<>(trgMfs.getFilePaths());
+            Set<PortablePath> generatedClassPaths = new HashSet<>(trgMfs.getFilePaths());
             generatedClassPaths.removeAll(origFileNames);
             Set<String> generatedClassNames = generatedClassPaths.stream()
-                    .map(KiePath::asString)
+                    .map(PortablePath::asString)
                     .map(ClassUtils::convertResourceToClassName)
                     .collect(Collectors.toSet());
             modelWriter.writeGeneratedClassNamesFile(generatedClassNames, trgMfs, getInternalKieModule().getReleaseId());

@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.kproject.models.RuleTemplateModelImpl;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.RuleTemplateModel;
 import org.kie.api.conf.BetaRangeIndexOption;

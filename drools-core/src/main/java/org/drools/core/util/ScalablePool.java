@@ -23,12 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ScalablePool<T> {
-
-    private static final Logger log = LoggerFactory.getLogger(ScalablePool.class);
 
     private final java.util.Queue<T> pool = new ConcurrentLinkedQueue<T>();
     private final List<T> resources = Collections.synchronizedList( new ArrayList<>() );

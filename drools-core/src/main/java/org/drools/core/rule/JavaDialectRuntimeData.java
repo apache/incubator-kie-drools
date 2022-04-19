@@ -43,13 +43,13 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+import static org.drools.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.ClassUtils.convertResourceToClassName;
 
 public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizable {
 

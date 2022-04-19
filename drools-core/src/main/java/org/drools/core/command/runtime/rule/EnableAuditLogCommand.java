@@ -10,7 +10,7 @@ import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 
 @XmlRootElement
 @XmlAccessorType( XmlAccessType.NONE )
@@ -22,14 +22,14 @@ public class EnableAuditLogCommand implements ExecutableCommand<Void> {
     private String directory;
     @XmlAttribute( required = true )
     private String filename;
-    private KiePath auditLogFile;
+    private PortablePath auditLogFile;
 
     public EnableAuditLogCommand( String directory, String filename ) {
         this.directory = directory;
         this.filename = filename;
 
         if ( directory != null ) {
-            auditLogFile = KiePath.of(directory + '/' + filename);
+            auditLogFile = PortablePath.of(directory + '/' + filename);
         }
 
     }

@@ -16,7 +16,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

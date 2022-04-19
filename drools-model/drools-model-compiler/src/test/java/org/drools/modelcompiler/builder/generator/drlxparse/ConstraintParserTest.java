@@ -21,8 +21,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.expr.Expression;
-import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.ClassTypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.domain.Person;

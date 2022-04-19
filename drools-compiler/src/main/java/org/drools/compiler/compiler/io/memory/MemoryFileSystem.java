@@ -44,18 +44,18 @@ import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystem;
 import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.io.ByteArrayResource;
+import org.drools.util.io.InternalResource;
+import org.drools.util.IoUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.io.Resource;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.memorycompiler.resources.KiePath.ROOT_PATH;
+import static org.drools.util.PortablePath.ROOT_PATH;
 
 public class MemoryFileSystem
     implements
@@ -68,11 +68,11 @@ public class MemoryFileSystem
 
     private final MemoryFolder               folder;
 
-    private final Map<KiePath, Set<FileSystemItem>> folders = new HashMap<>();
+    private final Map<PortablePath, Set<FileSystemItem>> folders = new HashMap<>();
 
-    private final Map<KiePath, Folder>        folderMap = new HashMap<>();
+    private final Map<PortablePath, Folder>        folderMap = new HashMap<>();
 
-    private final Map<KiePath, InternalResource> fileContents = new HashMap<>();
+    private final Map<PortablePath, InternalResource> fileContents = new HashMap<>();
 
     private Set<String>                      modifiedFilesSinceLastMark;
 
@@ -85,13 +85,13 @@ public class MemoryFileSystem
         return folder;
     }
 
-    public Collection<KiePath> getFilePaths() {
+    public Collection<PortablePath> getFilePaths() {
         return fileContents.keySet();
     }
 
-    public Map<KiePath, byte[]> getMap() {
-        Map<KiePath, byte[]> bytesMap = new HashMap<>();
-        for (Entry<KiePath, InternalResource> kv : fileContents.entrySet() ) {
+    public Map<PortablePath, byte[]> getMap() {
+        Map<PortablePath, byte[]> bytesMap = new HashMap<>();
+        for (Entry<PortablePath, InternalResource> kv : fileContents.entrySet() ) {
             bytesMap.put( kv.getKey(), resourceToBytes( kv.getValue() ) );
         }
         return bytesMap;
@@ -101,13 +101,13 @@ public class MemoryFileSystem
         return resource != null ? (( InternalResource )resource).getBytes() : null;
     }
     
-    public File getFile(KiePath path) {
-        KiePath parent = path.getParent();
+    public File getFile(PortablePath path) {
+        PortablePath parent = path.getParent();
         return new MemoryFile( this, path.getFileName(), parent != null ? getFolder( parent ) : getRootFolder() );
     }
 
     @Override
-    public Folder getFolder(KiePath path) {
+    public Folder getFolder(PortablePath path) {
         return folderMap.computeIfAbsent(path, p -> new MemoryFolder( this, p ));
     }
 
@@ -132,7 +132,7 @@ public class MemoryFileSystem
             createFolder( (MemoryFolder) file.getFolder() );
         }
 
-        KiePath filePath = file.getPath();
+        PortablePath filePath = file.getPath();
         if (modifiedFilesSinceLastMark != null) {
             byte[] contents = resourceToBytes( resource );
             byte[] oldContent = resourceToBytes( fileContents.get( filePath ) );
@@ -157,11 +157,11 @@ public class MemoryFileSystem
         return existsFolder( folder.getPath() );
     }
 
-    public boolean existsFolder(KiePath path) {
+    public boolean existsFolder(PortablePath path) {
         return folders.get(path) != null;
     }
 
-    public boolean existsFile(KiePath path) {
+    public boolean existsFile(PortablePath path) {
         return fileContents.containsKey(path);
     }
 
@@ -196,7 +196,7 @@ public class MemoryFileSystem
             if ( res instanceof Folder ) {
                 remove( folders.get( res.getPath() ) );
             } else {
-                KiePath filePath = res.getPath();
+                PortablePath filePath = res.getPath();
                 fileContents.remove( filePath );
                 if (modifiedFilesSinceLastMark != null) {
                     modifiedFilesSinceLastMark.add( filePath.asString() );
@@ -208,7 +208,7 @@ public class MemoryFileSystem
 
     public boolean remove(File file) {
         if ( file.exists() ) {
-            KiePath filePath = file.getPath();
+            PortablePath filePath = file.getPath();
             fileContents.remove( filePath );
             if (modifiedFilesSinceLastMark != null) {
                 modifiedFilesSinceLastMark.add( filePath.asString() );
@@ -329,37 +329,37 @@ public class MemoryFileSystem
     }
 
     @Override
-    public boolean isAvailable(KiePath resourcePath) {
+    public boolean isAvailable(PortablePath resourcePath) {
         return existsFile( resourcePath );
     }
 
     @Override
-    public byte[] getBytes(KiePath resourcePath) {
+    public byte[] getBytes(PortablePath resourcePath) {
         return getFileContents((MemoryFile) getFile(resourcePath));
     }
 
-    public InternalResource getResource(KiePath resourcePath) {
+    public InternalResource getResource(PortablePath resourcePath) {
         return getResource((MemoryFile) getFile(resourcePath));
     }
 
     @Override
-    public void write(KiePath resourcePath, byte[] pResourceData) {
+    public void write(PortablePath resourcePath, byte[] pResourceData) {
         write( resourcePath, pResourceData, false );
     }
 
     @Override
-    public void write(KiePath resourcePath, byte[] pResourceData, boolean createFolder) {
+    public void write(PortablePath resourcePath, byte[] pResourceData, boolean createFolder) {
         write( resourcePath, new ByteArrayResource( pResourceData ), createFolder );
     }
 
-    public void write(KiePath resourcePath, Resource resource) {
+    public void write(PortablePath resourcePath, Resource resource) {
         write( resourcePath, resource, false );
     }
 
-    public void write(KiePath resourcePath, Resource resource, boolean createFolder) {
+    public void write(PortablePath resourcePath, Resource resource, boolean createFolder) {
         MemoryFile memoryFile = (MemoryFile) getFile( resourcePath );
         if ( createFolder ) {
-            KiePath folderPath = memoryFile.getFolder().getPath();
+            PortablePath folderPath = memoryFile.getFolder().getPath();
             if ( !existsFolder( folderPath ) ) {
                 memoryFile.getFolder().create();
             }
@@ -372,12 +372,12 @@ public class MemoryFileSystem
     }
 
     @Override
-    public byte[] read(KiePath resourcePath) {
+    public byte[] read(PortablePath resourcePath) {
         return getBytes( resourcePath );
     }
 
     @Override
-    public void remove(KiePath resourcePath) {
+    public void remove(PortablePath resourcePath) {
         remove(getFile(resourcePath));
     }
 
@@ -479,7 +479,7 @@ public class MemoryFileSystem
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
                 int separator = entry.getName().lastIndexOf( '/' );
-                KiePath path = separator > 0 ? KiePath.of( entry.getName().substring( 0, separator ) ) : ROOT_PATH;
+                PortablePath path = separator > 0 ? PortablePath.of( entry.getName().substring( 0, separator ) ) : ROOT_PATH;
                 String name = entry.getName().substring( separator + 1 );
 
                 Folder folder = mfs.getFolder( path );
@@ -521,7 +521,7 @@ public class MemoryFileSystem
     }
 
     public String findPomProperties() {
-        for( Entry<KiePath, InternalResource> content : fileContents.entrySet() ) {
+        for( Entry<PortablePath, InternalResource> content : fileContents.entrySet() ) {
             if ( content.getKey().endsWith( "pom.properties" ) && content.getKey().startsWith( "META-INF/maven/" ) ) {
                 try (InputStream resourceStream = content.getValue().getInputStream()) {
                     return StringUtils.readFileAsString( new InputStreamReader( resourceStream, IoUtils.UTF8_CHARSET ) );
@@ -535,7 +535,7 @@ public class MemoryFileSystem
 
     public MemoryFileSystem clone() {
         MemoryFileSystem clone = new MemoryFileSystem();
-        for (Map.Entry<KiePath, InternalResource> entry : fileContents.entrySet()) {
+        for (Map.Entry<PortablePath, InternalResource> entry : fileContents.entrySet()) {
             clone.write(entry.getKey(), entry.getValue());
         }
         return clone;

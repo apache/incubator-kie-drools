@@ -34,7 +34,7 @@ import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.util.io.InternalResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
@@ -43,7 +43,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,11 +74,11 @@ public class MemoryKieModule extends AbstractKieModule
 
     @Override
     public boolean isAvailable(String path) {
-        return isAvailable( KiePath.of(path) );
+        return isAvailable( PortablePath.of(path) );
     }
 
     @Override
-    public boolean isAvailable(KiePath path) {
+    public boolean isAvailable(PortablePath path) {
         return mfs.existsFile( path );
     }
 
@@ -88,27 +88,27 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     @Override
-    public byte[] getBytes(KiePath path) {
+    public byte[] getBytes(PortablePath path) {
         return mfs.getBytes( path );
     }
 
     @Override
     public InternalResource getResource( String fileName) {
-        return getResource( KiePath.of(fileName) );
+        return getResource( PortablePath.of(fileName) );
     }
 
-    public InternalResource getResource( KiePath path) {
+    public InternalResource getResource( PortablePath path) {
         return mfs.getResource( path );
     }
 
     @Override
-    public Collection<KiePath> getFilePaths() {
+    public Collection<PortablePath> getFilePaths() {
         return mfs.getFilePaths();
     }
 
     @Override
     public Collection<String> getFileNames() {
-        return getFilePaths().stream().map(KiePath::asString).collect(Collectors.toList());
+        return getFilePaths().stream().map(PortablePath::asString).collect(Collectors.toList());
     }
 
     public MemoryFileSystem getMemoryFileSystem() {
@@ -201,12 +201,12 @@ public class MemoryKieModule extends AbstractKieModule
 
         @Override
         public URL getResource(String name) {
-            KiePath kiePath = KiePath.of(name);
+            PortablePath portablePath = PortablePath.of(name);
             try {
-                if (mfs.existsFile(kiePath)) {
-                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFileURLStreamHandler(mfs.getFile(kiePath)));
-                } else if (mfs.existsFolder(kiePath)) {
-                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFolderURLStreamHandler(mfs.getFolder(kiePath)));
+                if (mfs.existsFile(portablePath)) {
+                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFileURLStreamHandler(mfs.getFile(portablePath)));
+                } else if (mfs.existsFolder(portablePath)) {
+                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFolderURLStreamHandler(mfs.getFolder(portablePath)));
                 } else {
                     return null;
                 }
@@ -226,11 +226,11 @@ public class MemoryKieModule extends AbstractKieModule
 
         @Override
         public InputStream getResourceAsStream(String name) throws IOException {
-            KiePath kiePath = KiePath.of(name);
-            if (mfs.existsFile(kiePath)) {
-                return mfs.getFile(kiePath).getContents();
-            } else if (mfs.existsFolder(kiePath)) {
-                return new FolderMembersInputStream(mfs.getFolder(kiePath));
+            PortablePath portablePath = PortablePath.of(name);
+            if (mfs.existsFile(portablePath)) {
+                return mfs.getFile(portablePath).getContents();
+            } else if (mfs.existsFolder(portablePath)) {
+                return new FolderMembersInputStream(mfs.getFolder(portablePath));
             } else {
                 return null;
             }

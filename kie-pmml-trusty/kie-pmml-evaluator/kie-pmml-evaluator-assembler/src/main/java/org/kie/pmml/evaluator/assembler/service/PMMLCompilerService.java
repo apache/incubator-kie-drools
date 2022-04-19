@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.HasRule;
@@ -181,6 +181,6 @@ public class PMMLCompilerService {
     }
 
     static String getFileName(final String fullPath) {
-        return KiePath.of(fullPath).getFileName();
+        return PortablePath.of(fullPath).getFileName();
     }
 }

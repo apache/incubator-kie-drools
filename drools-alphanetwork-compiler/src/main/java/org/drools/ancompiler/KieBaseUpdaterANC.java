@@ -31,7 +31,7 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.MapUtils.mapValues;
+import static org.drools.ancompiler.MapUtils.mapValues;
 
 public class KieBaseUpdaterANC implements KieBaseUpdater {
 

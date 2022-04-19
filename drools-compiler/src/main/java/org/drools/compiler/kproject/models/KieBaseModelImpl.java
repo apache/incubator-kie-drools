@@ -39,7 +39,7 @@ import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.ResourceType;
 
-import static org.drools.core.util.IoUtils.recursiveListFile;
+import static org.drools.util.IoUtils.recursiveListFile;
 
 public class KieBaseModelImpl
         implements

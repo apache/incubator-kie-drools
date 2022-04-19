@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,11 +40,10 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.drools.core.io.impl.FileSystemResource;
+import org.drools.util.io.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -301,24 +299,25 @@ public class DMNCompilerImpl implements DMNCompiler {
             Reader reader = relativeResolver.apply(i.getLocationURI());
             return ResourceFactory.newReaderResource(reader);
         } else if (model.getResource() != null) {
-            URL pmmlURL = pmmlImportURL(classLoader, model, i, node);
-            return ResourceFactory.newUrlResource(pmmlURL);
+            return pmmlImportResource(classLoader, model, i, node);
         }
         throw new UnsupportedOperationException("Unable to determine relative Resource for import named: " + i.getName());
     }
 
-    protected static URL pmmlImportURL(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
+    protected static Resource pmmlImportResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
         String locationURI = i.getLocationURI();
         logger.trace("locationURI: {}", locationURI);
-        URL pmmlURL = null;
+        Resource pmmlResource = null;
         try {
             URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
-            pmmlURL = resolveRelativeURI.isAbsolute() ? resolveRelativeURI.toURL() : classLoader.getResource(resolveRelativeURI.getPath());
+            pmmlResource = resolveRelativeURI.isAbsolute() ?
+                    ResourceFactory.newFileResource(resolveRelativeURI.getPath()) :
+                    ResourceFactory.newClassPathResource(resolveRelativeURI.getPath(), classLoader);
         } catch (URISyntaxException | IOException e) {
             new PMMLImportErrConsumer(model, i, node).accept(e);
         }
-        logger.trace("pmmlURL: {}", pmmlURL);
-        return pmmlURL;
+        logger.trace("pmmlResource: {}", pmmlResource);
+        return pmmlResource;
     }
 
     protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException, IOException {

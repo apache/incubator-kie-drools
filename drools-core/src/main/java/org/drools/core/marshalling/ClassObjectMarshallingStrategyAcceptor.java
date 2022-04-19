@@ -19,7 +19,7 @@ package org.drools.core.marshalling;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 public class ClassObjectMarshallingStrategyAcceptor implements ObjectMarshallingStrategyAcceptor {

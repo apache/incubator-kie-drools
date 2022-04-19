@@ -22,21 +22,15 @@ import java.util.List;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierConfigurationImpl;
-import org.drools.verifier.report.VerifierReportConfiguration;
-import org.drools.verifier.report.VerifierReportConfigurationImpl;
 
 public class VerifierBuilderImpl
     implements
     VerifierBuilder {
 
-    private List<VerifierBuilderError> errors = new ArrayList<VerifierBuilderError>();
+    private List<VerifierBuilderError> errors = new ArrayList<>();
 
     public VerifierConfiguration newVerifierConfiguration() {
         return new VerifierConfigurationImpl();
-    }
-
-    public VerifierReportConfiguration newVerifierReportConfiguration() {
-        return new VerifierReportConfigurationImpl();
     }
 
     public Verifier newVerifier() {

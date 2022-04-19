@@ -27,8 +27,8 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.ClassUtils;
+import org.drools.util.StringUtils;
 
 public class ArrayElementReader
     implements

@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.jar.JarInputStream;
 
 import com.google.common.collect.TreeMultimap;
-import org.drools.core.addon.ClassTypeResolver;
+import org.drools.util.ClassTypeResolver;
 import org.drools.mvel.asm.ClassFieldInspectorImpl;
 
 public class PackageHeaderLoader {

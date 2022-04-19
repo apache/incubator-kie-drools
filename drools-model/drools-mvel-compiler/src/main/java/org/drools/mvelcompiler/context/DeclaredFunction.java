@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.drools.core.addon.TypeResolver;
-import org.drools.core.util.StreamUtils;
+import org.drools.util.TypeResolver;
+import org.drools.mvelcompiler.util.StreamUtils;
 
 public class DeclaredFunction {
 

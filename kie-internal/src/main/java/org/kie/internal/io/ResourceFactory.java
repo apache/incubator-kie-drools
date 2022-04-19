@@ -19,7 +19,6 @@ package org.kie.internal.io;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.URL;
 
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.KieResources;
@@ -45,14 +44,6 @@ import org.kie.internal.definition.KnowledgeDescr;
  */
 public class ResourceFactory {
     private static KieResources factoryService;
-
-    public static Resource newUrlResource(URL url) {
-        return getFactoryService().newUrlResource( url );
-    }
-
-    public static Resource newUrlResource(String path) {
-        return getFactoryService().newUrlResource( path );
-    }
 
     public static Resource newFileResource(File file) {
         return getFactoryService().newFileSystemResource( file );

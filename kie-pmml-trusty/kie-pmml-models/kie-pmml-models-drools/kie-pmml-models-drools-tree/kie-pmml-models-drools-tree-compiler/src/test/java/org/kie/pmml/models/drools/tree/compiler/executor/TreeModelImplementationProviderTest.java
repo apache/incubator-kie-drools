@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.util.ClassUtils;
+import org.drools.core.util.CloneUtil;
 import org.junit.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
@@ -89,6 +89,6 @@ public class TreeModelImplementationProviderTest {
         assertTrue(toVerify instanceof Serializable);
         ExternalizableMock externalizableMock = new ExternalizableMock();
         externalizableMock.setKiePMMLComponent(toVerify);
-        ClassUtils.deepClone(externalizableMock);
+        CloneUtil.deepClone(externalizableMock);
     }
 }

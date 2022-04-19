@@ -22,15 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.addon.TypeResolver;
-import org.drools.core.util.TimeIntervalParser;
+import org.drools.util.TypeResolver;
 import org.drools.core.factmodel.AccessibleFact;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
+import org.drools.core.util.PropertyReactivityUtil;
+import org.drools.core.util.TimeIntervalParser;
 import org.drools.model.AnnotationValue;
 import org.drools.model.TypeMetaData;
 import org.drools.modelcompiler.constraints.LambdaFieldReader;
@@ -120,7 +121,7 @@ public class TypeDeclarationUtil {
 
     private static void wireFields(Class<?> typeClass, TypeDeclaration typeDeclaration) {
         ClassDefinitionForModel typeClassDef = (ClassDefinitionForModel) typeDeclaration.getTypeClassDef();
-        List<String> properties = ClassUtils.getAccessibleProperties(typeClass);
+        List<String> properties = PropertyReactivityUtil.getAccessibleProperties(typeClass);
         for (String property : properties) {
             typeClassDef.getField(property); // populates fields
         }

@@ -32,7 +32,7 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.BetaRangeIndexOption;
@@ -48,7 +48,6 @@ import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
-import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
@@ -148,7 +147,6 @@ public class RuleBaseConfiguration
     private AssertBehaviour assertBehaviour;
     private String          consequenceExceptionHandler;
     private String          ruleBaseUpdateHandler;
-    private boolean         classLoaderCacheEnabled;
     private boolean         mutabilityEnabled;
 
     private boolean declarativeAgenda;
@@ -213,7 +211,6 @@ public class RuleBaseConfiguration
         out.writeBoolean(multithread);
         out.writeInt(maxThreads);
         out.writeObject(eventProcessingMode);
-        out.writeBoolean(classLoaderCacheEnabled);
         out.writeBoolean(declarativeAgenda);
         out.writeInt(sessionPoolSize);
         out.writeBoolean(mutabilityEnabled);
@@ -246,7 +243,6 @@ public class RuleBaseConfiguration
         multithread = in.readBoolean();
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
-        classLoaderCacheEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         sessionPoolSize = in.readInt();
         mutabilityEnabled = in.readBoolean();
@@ -343,8 +339,6 @@ public class RuleBaseConfiguration
             setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( StringUtils.isEmpty( value ) ? "cloud" : value));
         } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
             setMBeansEnabled( MBeansOption.isEnabled(value));
-        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
-            setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
         } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
             setMutabilityEnabled( StringUtils.isEmpty( value ) ? true : KieBaseMutabilityOption.determineMutability(value) == KieBaseMutabilityOption.ALLOWED );
         }
@@ -402,8 +396,6 @@ public class RuleBaseConfiguration
             return getEventProcessingMode().getMode();
         } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
             return isMBeansEnabled() ? "enabled" : "disabled";
-        } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isClassLoaderCacheEnabled() );
         } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
             return isMutabilityEnabled() ? "ALLOWED" : "DISABLED";
         }
@@ -493,9 +485,6 @@ public class RuleBaseConfiguration
         setMBeansEnabled( MBeansOption.isEnabled( this.chainedProperties.getProperty( MBeansOption.PROPERTY_NAME,
                                                                                       "disabled" ) ) );
 
-        setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
-                                                                                         "true" ) ) );
-        
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );
 
@@ -777,15 +766,6 @@ public class RuleBaseConfiguration
         return this.maxThreads;
     }
 
-    public boolean isClassLoaderCacheEnabled() {
-        return this.classLoaderCacheEnabled;
-    }
-
-    public void setClassLoaderCacheEnabled(final boolean classLoaderCacheEnabled) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.classLoaderCacheEnabled = classLoaderCacheEnabled;
-    }
-    
     public boolean isDeclarativeAgenda() {
         return this.declarativeAgenda;
     }
@@ -884,9 +864,7 @@ public class RuleBaseConfiguration
     }
 
     public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
-                                                              getClass(),
-                                                              isClassLoaderCacheEnabled());
+        this.classLoader = ProjectClassLoader.getClassLoader( classLoader, getClass() );
     }
 
     /**
@@ -1092,8 +1070,6 @@ public class RuleBaseConfiguration
             return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
         } else if (MBeansOption.class.equals(option)) {
             return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
-        } else if (ClassLoaderCacheOption.class.equals(option)) {
-            return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         } else if (KieBaseMutabilityOption.class.equals(option)) {
@@ -1146,12 +1122,10 @@ public class RuleBaseConfiguration
             setMultithreadEvaluation( ( (MultithreadEvaluationOption) option ).isMultithreadEvaluation());
         } else if (option instanceof MBeansOption) {
             setMBeansEnabled( ( (MBeansOption) option ).isEnabled());
-        } else if (option instanceof ClassLoaderCacheOption) {
-            setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         } else if (option instanceof KieBaseMutabilityOption) {
-            setMutabilityEnabled(((KieBaseMutabilityOption) option) == KieBaseMutabilityOption.ALLOWED);
+            setMutabilityEnabled(option == KieBaseMutabilityOption.ALLOWED);
         }
 
     }

@@ -17,7 +17,7 @@ package org.drools.ruleunits.impl;
 
 import java.util.function.Function;
 
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.drools.ruleunits.api.RuleUnitConfig;
 

@@ -29,7 +29,7 @@ import org.drools.wiring.dynamic.PackageClassLoader;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Test;
 
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
 /**
  * @version $Id$

@@ -16,21 +16,12 @@
 
 package org.drools.verifier;
 
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
-import org.drools.verifier.components.Field;
-import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierReport;
-import org.drools.verifier.report.components.Severity;
-import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.jar.JarInputStream;
 
 import static org.junit.Assert.*;
 

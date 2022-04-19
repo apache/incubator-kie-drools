@@ -28,7 +28,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.core.util.MethodUtils;
+import org.drools.util.MethodUtils;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 

@@ -24,14 +24,15 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.util.TimeIntervalParser;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
+import org.drools.core.util.PropertyReactivityUtil;
+import org.drools.core.util.TimeIntervalParser;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Expires.Policy;
@@ -500,7 +501,7 @@ public class TypeDeclaration
 
     public List<String> getAccessibleProperties() {
         if ( accessibleProperties == null ) {
-            accessibleProperties = propertyReactive ? ClassUtils.getAccessibleProperties( getTypeClass() ) : Collections.emptyList();
+            accessibleProperties = propertyReactive ? PropertyReactivityUtil.getAccessibleProperties( getTypeClass() ) : Collections.emptyList();
         }
         return accessibleProperties;
     }

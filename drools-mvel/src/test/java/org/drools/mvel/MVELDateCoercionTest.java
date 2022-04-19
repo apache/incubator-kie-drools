@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 import org.drools.mvel.expr.MVELDateCoercion;
 import org.junit.Test;
 

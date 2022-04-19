@@ -19,11 +19,9 @@ package org.drools.serialization.protobuf.marshalling;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStrategyStore {
 

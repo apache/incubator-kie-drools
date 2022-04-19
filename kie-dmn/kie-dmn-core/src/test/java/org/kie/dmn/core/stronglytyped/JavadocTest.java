@@ -24,7 +24,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNModel;

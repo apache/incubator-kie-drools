@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
@@ -35,8 +36,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.TupleList;
-
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends LeftTupleSource
     implements
@@ -121,7 +120,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
 
         return this.leftInput.getId() == other.leftInput.getId() &&
                dataProvider.equals( other.dataProvider ) &&
-               areNullSafeEquals(send.getResultPattern(), other.send.getResultPattern() ) &&
+               Objects.equals(send.getResultPattern(), other.send.getResultPattern() ) &&
                Arrays.equals( alphaConstraints, other.alphaConstraints ) &&
                betaConstraints.equals( other.betaConstraints );
     }

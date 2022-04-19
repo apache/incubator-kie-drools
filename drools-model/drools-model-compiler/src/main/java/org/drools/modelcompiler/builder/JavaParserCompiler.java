@@ -41,12 +41,12 @@ import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createDefaultCompiler;
-import static org.drools.core.util.ClassUtils.isJboss;
+import static org.drools.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
 
@@ -110,7 +110,7 @@ public class JavaParserCompiler {
 
     private static List<String> getClassNames(ClassLoader classLoader, MemoryFileSystem trgMfs) {
         List<String> classNames = new ArrayList<>();
-        for (Map.Entry<KiePath, byte[]> entry : trgMfs.getMap().entrySet()) {
+        for (Map.Entry<PortablePath, byte[]> entry : trgMfs.getMap().entrySet()) {
             String className = entry.getKey().asClassName();
             classNames.add(className);
             if (classLoader instanceof ProjectClassLoader && ((ProjectClassLoader) classLoader).isDynamic()) {

@@ -17,8 +17,7 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
-import org.drools.core.util.BitMaskUtil;
-import org.kie.api.runtime.rule.FactHandle;
+import org.drools.util.BitMaskUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

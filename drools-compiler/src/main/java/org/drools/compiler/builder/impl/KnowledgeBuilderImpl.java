@@ -15,6 +15,25 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
+import java.util.UUID;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Supplier;
+
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
@@ -45,7 +64,7 @@ import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -53,18 +72,14 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.io.impl.BaseResource;
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.ReaderResource;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.util.io.BaseResource;
+import org.drools.util.io.ReaderResource;
+import org.drools.util.io.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
-import org.drools.core.xml.XmlChangeSetReader;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -83,6 +98,8 @@ import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.util.IoUtils;
+import org.drools.util.StringUtils;
 import org.drools.wiring.api.ComponentsFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -96,7 +113,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
@@ -108,25 +124,6 @@ import org.kie.internal.builder.ResultSeverity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
-import java.util.UUID;
-import java.util.concurrent.ForkJoinPool;
-import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 
@@ -626,8 +623,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 addPackageFromDecisionTable(resource, configuration);
             } else if (ResourceType.PKG.equals(type)) {
                 addPackageFromInputStream(resource);
-            } else if (ResourceType.CHANGE_SET.equals(type)) {
-                addPackageFromChangeSet(resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
@@ -666,43 +661,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     void addPackageFromXSD(Resource resource, ResourceConfiguration configuration) throws IOException {
         if (configuration != null) {
             ComponentsFactory.addPackageFromXSD( this, resource, configuration );
-        }
-    }
-
-    void addPackageFromChangeSet(Resource resource) throws SAXException,
-            IOException {
-        XmlChangeSetReader reader = new XmlChangeSetReader(this.configuration.getSemanticModules());
-        if (resource instanceof ClassPathResource) {
-            reader.setClassLoader(((ClassPathResource) resource).getClassLoader(),
-                                  ((ClassPathResource) resource).getClazz());
-        } else {
-            reader.setClassLoader(this.configuration.getClassLoader(),
-                                  null);
-        }
-        try (Reader resourceReader = resource.getReader()) {
-            ChangeSet changeSet = reader.read(resourceReader);
-            if (changeSet == null) {
-                throw new RuntimeException("ChangeSet cannot be read! " + resource);
-            } else {
-                for (Resource nestedResource : changeSet.getResourcesAdded()) {
-                    InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-                    if (iNestedResourceResource.isDirectory()) {
-                        for (Resource childResource : iNestedResourceResource.listResources()) {
-                            if (((InternalResource) childResource).isDirectory()) {
-                                continue; // ignore sub directories
-                            }
-                            ((InternalResource) childResource).setResourceType(iNestedResourceResource.getResourceType());
-                            addKnowledgeResource(childResource,
-                                                 iNestedResourceResource.getResourceType(),
-                                                 iNestedResourceResource.getConfiguration());
-                        }
-                    } else {
-                        addKnowledgeResource(iNestedResourceResource,
-                                             iNestedResourceResource.getResourceType(),
-                                             iNestedResourceResource.getConfiguration());
-                    }
-                }
-            }
         }
     }
 
@@ -1223,22 +1181,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return this.rootClassLoader;
     }
 
-
-    private ChangeSet parseChangeSet(Resource resource) throws IOException, SAXException {
-        XmlChangeSetReader reader = new XmlChangeSetReader(this.configuration.getSemanticModules());
-        if (resource instanceof ClassPathResource) {
-            reader.setClassLoader(((ClassPathResource) resource).getClassLoader(),
-                                  ((ClassPathResource) resource).getClazz());
-        } else {
-            reader.setClassLoader(this.configuration.getClassLoader(),
-                                  null);
-        }
-
-        try (Reader resourceReader = resource.getReader()) {
-            return reader.read(resourceReader);
-        }
-    }
-
     public void registerBuildResource(final Resource resource, ResourceType type) {
         InternalResource ires = (InternalResource) resource;
         if (ires.getResourceType() == null) {
@@ -1246,30 +1188,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         } else if (ires.getResourceType() != type) {
             addBuilderResult(new ResourceTypeDeclarationWarning(resource, ires.getResourceType(), type));
         }
-        if (ResourceType.CHANGE_SET == type) {
-            try {
-                ChangeSet changeSet = parseChangeSet(resource);
-                List<Resource> resources = new ArrayList<>();
-                resources.add(resource);
-                resources.addAll(changeSet.getResourcesAdded());
-                resources.addAll(changeSet.getResourcesModified());
-                resources.addAll(changeSet.getResourcesRemoved());
-                buildResources.push(resources);
-            } catch (Exception e) {
-                results.addBuilderResult(new DroolsError() {
-
-                    public String getMessage() {
-                        return "Unable to register changeset resource " + resource;
-                    }
-
-                    public int[] getLines() {
-                        return new int[0];
-                    }
-                });
-            }
-        } else {
-            buildResources.push(Collections.singletonList(resource));
-        }
+        buildResources.push(Collections.singletonList(resource));
     }
 
     public void registerBuildResources(List<Resource> resources) {

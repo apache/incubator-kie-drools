@@ -39,7 +39,7 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.IntervalTimer;
-import org.drools.core.util.DateUtils;
+import org.drools.util.DateUtils;
 import org.drools.mvel.MVELConstraint;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;

@@ -80,7 +80,7 @@ import org.mvel2.optimizers.impl.refl.nodes.StaticVarAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ThisValueAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.VariableAccessor;
 
-import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
+import static org.drools.util.ClassUtils.convertToPrimitiveType;
 import static org.mvel2.asm.Opcodes.IADD;
 import static org.mvel2.asm.Opcodes.IAND;
 import static org.mvel2.asm.Opcodes.IDIV;

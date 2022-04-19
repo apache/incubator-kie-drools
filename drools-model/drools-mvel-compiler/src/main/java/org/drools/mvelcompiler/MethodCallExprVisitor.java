@@ -27,10 +27,7 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.PatternExpr;
-import com.github.javaparser.ast.expr.TextBlockLiteralExpr;
-import com.github.javaparser.ast.stmt.YieldStmt;
-import org.drools.core.util.MethodUtils;
+import org.drools.util.MethodUtils;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -38,7 +35,7 @@ import org.drools.mvelcompiler.context.DeclaredFunction;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
-import static org.drools.core.util.StreamUtils.optionalToStream;
+import static org.drools.mvelcompiler.util.StreamUtils.optionalToStream;
 
 public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 

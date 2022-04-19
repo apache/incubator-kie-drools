@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
@@ -56,7 +57,6 @@ import org.slf4j.LoggerFactory;
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public abstract class BetaNode extends LeftTupleSource
         implements
@@ -576,8 +576,8 @@ public abstract class BetaNode extends LeftTupleSource
         return this.getClass() == other.getClass() &&
                this.constraints.equals( other.constraints ) &&
                this.rightInputIsPassive == other.rightInputIsPassive &&
-               areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
-               areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties) &&
+               Objects.equals(this.leftListenedProperties, other.leftListenedProperties) &&
+               Objects.equals(this.rightListenedProperties, other.rightListenedProperties) &&
                this.leftInput.getId() == other.leftInput.getId() &&
                this.rightInput.getId() == other.rightInput.getId();
     }

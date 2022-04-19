@@ -619,7 +619,7 @@ public class KieHelloWorldTest {
 
         final KieFileSystem fs = kieServices.newKieFileSystem();
 
-        fs.write( ResourceFactory.newUrlResource("file:/tmp/t%20tt/one.drl"));
+        fs.write( ResourceFactory.newFileResource("/tmp/t tt/one.drl"));
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, fs, false);
         KieModule kieModule = kieBuilder.getKieModule();

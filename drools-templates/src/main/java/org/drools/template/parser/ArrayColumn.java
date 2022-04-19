@@ -16,7 +16,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 
 /**
  * A column in a decision table that represents an array (comma-delimited)

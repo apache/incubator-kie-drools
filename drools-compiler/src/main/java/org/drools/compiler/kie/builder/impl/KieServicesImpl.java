@@ -30,8 +30,8 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.io.impl.ResourceFactoryServiceImpl;
 import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
+import org.drools.util.io.ResourceFactoryServiceImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -53,7 +53,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
-import static org.drools.wiring.api.classloader.ProjectClassLoader.findParentClassLoader;
+import static org.drools.util.ClassUtils.findParentClassLoader;
 
 public class KieServicesImpl implements InternalKieServices {
     private volatile KieContainer classpathKContainer;
@@ -75,7 +75,7 @@ public class KieServicesImpl implements InternalKieServices {
      * Returns KieContainer for the classpath
      */
     public KieContainer getKieClasspathContainer() {
-        return getKieClasspathContainer( null, findParentClassLoader() );
+        return getKieClasspathContainer( null, findParentClassLoader(getClass()) );
     }
     
     public KieContainer getKieClasspathContainer(ClassLoader classLoader) {
@@ -83,7 +83,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieContainer getKieClasspathContainer(String containerId) {
-        return getKieClasspathContainer( containerId, findParentClassLoader() );
+        return getKieClasspathContainer( containerId, findParentClassLoader(getClass()) );
     }
 
     public KieContainer getKieClasspathContainer(String containerId, ClassLoader classLoader) {
@@ -114,7 +114,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieContainer newKieClasspathContainer() {
-        return newKieClasspathContainer( null, findParentClassLoader() );
+        return newKieClasspathContainer( null, findParentClassLoader(getClass()) );
     }
     
     public KieContainer newKieClasspathContainer(ClassLoader classLoader) {
@@ -122,7 +122,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieContainer newKieClasspathContainer(String containerId) {
-        return newKieClasspathContainer( containerId, findParentClassLoader() );
+        return newKieClasspathContainer( containerId, findParentClassLoader(getClass()) );
     }
 
     public KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader) {

@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
-import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.util.StringUtils.isEmpty;
 
 public class PackageRegistryManagerImpl implements PackageRegistryManager, PackageRegistryCompiler, PackageDescrManager {
     private final KnowledgeBuilderConfigurationImpl configuration;

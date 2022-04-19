@@ -34,7 +34,7 @@ import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.AccessibleFact;
 import org.drools.core.factmodel.GeneratedFact;

@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.util.io.ByteArrayResource;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;

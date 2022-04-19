@@ -33,7 +33,7 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.util.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

@@ -24,9 +24,9 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
 public class DeclaredClassBuilder {
 

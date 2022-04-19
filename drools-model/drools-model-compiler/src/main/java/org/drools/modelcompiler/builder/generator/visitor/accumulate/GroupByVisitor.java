@@ -35,7 +35,7 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressio
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GROUP_BY_CALL;
 

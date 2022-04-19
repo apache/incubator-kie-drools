@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.mvel2.templates.TemplateRuntime;
 
 abstract class ReportVisitor {

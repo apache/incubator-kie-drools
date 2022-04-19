@@ -21,10 +21,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceStore;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.util.IoUtils.readBytesFromInputStream;
 
 public class DiskResourceStore implements ResourceStore {
 
@@ -35,7 +35,7 @@ public class DiskResourceStore implements ResourceStore {
     }
 
     @Override
-    public void write(KiePath resourcePath, byte[] pResourceData) {
+    public void write(PortablePath resourcePath, byte[] pResourceData) {
         write(resourcePath, pResourceData, false);
     }
 
@@ -45,7 +45,7 @@ public class DiskResourceStore implements ResourceStore {
     }
 
     @Override
-    public void write(KiePath resourcePath, byte[] pResourceData, boolean createFolder) {
+    public void write(PortablePath resourcePath, byte[] pResourceData, boolean createFolder) {
         commonWrite(resourcePath.asString(), pResourceData, createFolder);
     }
 
@@ -55,7 +55,7 @@ public class DiskResourceStore implements ResourceStore {
     }
 
     @Override
-    public byte[] read(KiePath resourcePath) {
+    public byte[] read(PortablePath resourcePath) {
         return commonRead(resourcePath.asString());
     }
 
@@ -65,7 +65,7 @@ public class DiskResourceStore implements ResourceStore {
     }
 
     @Override
-    public void remove(KiePath resourcePath) {
+    public void remove(PortablePath resourcePath) {
         commonRemove(getFilePath(resourcePath.asString()));
     }
 

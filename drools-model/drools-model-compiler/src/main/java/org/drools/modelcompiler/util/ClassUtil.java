@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.drools.core.util.MethodUtils;
+import org.drools.util.MethodUtils;
 
 public class ClassUtil {
 
@@ -39,7 +39,7 @@ public class ClassUtil {
     }
 
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
-        return ACCESSIBLE_PROPS_CACHE.computeIfAbsent( clazz, org.drools.core.util.ClassUtils::getAccessibleProperties );
+        return ACCESSIBLE_PROPS_CACHE.computeIfAbsent( clazz, org.drools.core.util.PropertyReactivityUtil::getAccessibleProperties );
     }
 
     public static Type boxTypePrimitive(Type type) {

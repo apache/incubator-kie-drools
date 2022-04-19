@@ -31,8 +31,8 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.TupleValueExtractor;
 
-import static org.drools.core.util.ClassUtils.canonicalName;
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.util.ClassUtils.canonicalName;
+import static org.drools.util.ClassUtils.convertFromPrimitiveType;
 
 public class Declaration implements Externalizable, AcceptsReadAccessor, TupleValueExtractor {
 

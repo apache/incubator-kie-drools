@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 import static org.drools.wiring.api.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.wiring.api.util.ClassUtils.getter2property;
 

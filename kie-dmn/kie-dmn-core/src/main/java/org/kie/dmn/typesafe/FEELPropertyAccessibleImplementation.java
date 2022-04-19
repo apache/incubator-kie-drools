@@ -44,7 +44,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinitio
 import org.kie.dmn.feel.util.EvalHelper;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 
 public class FEELPropertyAccessibleImplementation {
 

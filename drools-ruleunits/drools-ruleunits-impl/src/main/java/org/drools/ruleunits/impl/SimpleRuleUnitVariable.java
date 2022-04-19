@@ -17,7 +17,7 @@ package org.drools.ruleunits.impl;
 
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 import static org.drools.wiring.api.util.ClassUtils.convertFromPrimitiveType;
 
 public final class SimpleRuleUnitVariable implements RuleUnitVariable {

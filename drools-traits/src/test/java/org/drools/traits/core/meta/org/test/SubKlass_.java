@@ -15,6 +15,12 @@
 
 package org.drools.traits.core.meta.org.test;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
+import org.drools.core.util.PropertyReactivityUtil;
 import org.drools.traits.core.factmodel.AbstractTraitFactory;
 import org.drools.traits.core.metadata.Lit;
 import org.drools.traits.core.metadata.ManyValuedMetaProperty;
@@ -24,12 +30,6 @@ import org.drools.traits.core.metadata.OneValuedMetaProperty;
 import org.drools.traits.core.metadata.ToManyPropertyLiteral;
 import org.drools.traits.core.metadata.ToOnePropertyLiteral;
 import org.drools.traits.core.metadata.With;
-import org.drools.core.util.ClassUtils;
-
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 
 public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializable {
 
@@ -183,7 +183,7 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializ
 
         @Override
         protected void cachePropertyNames() {
-            propertyNames = ClassUtils.getAccessibleProperties( SubKlass.class );
+            propertyNames = PropertyReactivityUtil.getAccessibleProperties( SubKlass.class );
         }
 
         @Override

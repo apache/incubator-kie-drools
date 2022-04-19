@@ -25,7 +25,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.util.ClassUtils;
+import org.drools.core.util.CloneUtil;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -182,6 +182,6 @@ public class MiningModelImplementationProviderTest {
         assertTrue(toVerify instanceof Serializable);
         ExternalizableMock externalizableMock = new ExternalizableMock();
         externalizableMock.setKiePMMLComponent(toVerify);
-        ClassUtils.deepClone(externalizableMock);
+        CloneUtil.deepClone(externalizableMock);
     }
 }

@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.kie.internal.definition.GenericTypeDefinition;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.ClassUtils;
+import org.drools.util.ClassUtils;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;

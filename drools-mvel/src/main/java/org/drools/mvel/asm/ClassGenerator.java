@@ -28,17 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.core.factmodel.ClassBuilderFactory;
-import org.drools.core.util.ClassUtils;
-import org.drools.wiring.api.util.ByteArrayClassLoader;
 import org.kie.memorycompiler.WritableClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
 import static java.lang.reflect.Modifier.isAbstract;
-
 import static org.drools.wiring.api.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.wiring.api.util.ClassUtils.convertPrimitiveNameToType;
 import static org.drools.wiring.api.util.ClassUtils.convertToPrimitiveType;
@@ -148,13 +145,7 @@ public class ClassGenerator {
     private Class<?> generateClass() {
         if (clazz == null) {
             byte[] bytecode = generateBytecode();
-            if (ClassUtils.isAndroid()) {
-                ByteArrayClassLoader cl = (ByteArrayClassLoader)
-                        ClassUtils.instantiateObject("org.drools.android.MultiDexClassLoader", null, writableClassLoader.asClassLoader());
-                clazz = cl.defineClass(className, bytecode, null);
-            } else {
-                clazz = writableClassLoader.writeClass( className, bytecode );
-            }
+            clazz = writableClassLoader.writeClass( className, bytecode );
         }
         return clazz;
     }

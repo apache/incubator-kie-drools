@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
+import org.drools.util.io.InternalResource;
+import org.drools.util.IoUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.util.IoUtils.readBytesFromInputStream;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule, Serializable {
 

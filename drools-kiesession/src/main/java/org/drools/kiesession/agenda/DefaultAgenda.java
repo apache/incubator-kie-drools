@@ -69,7 +69,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.core.util.index.TupleList;
 import org.drools.wiring.api.ComponentsFactory;
 import org.kie.api.conf.EventProcessingOption;

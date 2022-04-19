@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.UUID;
 
+import org.drools.util.StringUtils;
+
 public class FileManager {
     //private Set<File> files;
     private File root;

@@ -39,8 +39,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
-import static org.drools.core.util.ClassUtils.getter2property;
-import static org.drools.core.util.ClassUtils.setter2property;
+import static org.drools.util.ClassUtils.getter2property;
+import static org.drools.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 
 public class AccessibleMethod {

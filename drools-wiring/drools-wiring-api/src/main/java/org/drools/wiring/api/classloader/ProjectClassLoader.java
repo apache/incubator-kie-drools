@@ -39,6 +39,8 @@ import org.kie.internal.utils.KieTypeResolver;
 import org.kie.memorycompiler.StoreClassLoader;
 import org.kie.memorycompiler.WritableClassLoader;
 
+import static org.drools.util.ClassUtils.findParentClassLoader;
+
 public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader, WritableClassLoader {
 
     private static final boolean CACHE_NON_EXISTING_CLASSES = true;
@@ -73,9 +75,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         this.resourceProvider = resourceProvider;
     }
 
-    public static ClassLoader getClassLoader(final ClassLoader classLoader,
-                                             final Class< ? > cls,
-                                             final boolean enableCache) {
+    public static ClassLoader getClassLoader(ClassLoader classLoader, Class< ? > cls) {
         ProjectClassLoader projectClassLoader = createProjectClassLoader(classLoader);
         if (cls != null) {
             projectClassLoader.setDroolsClassLoader(cls.getClassLoader());
@@ -87,19 +87,8 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return typesClassLoader instanceof ClassLoader ? (( ClassLoader ) typesClassLoader) : this;
     }
 
-    public static ClassLoader findParentClassLoader() {
-        ClassLoader parent = Thread.currentThread().getContextClassLoader();
-        if (parent == null) {
-            parent = ClassLoader.getSystemClassLoader();
-        }
-        if (parent == null) {
-            parent = ProjectClassLoader.class.getClassLoader();
-        }
-        return parent;
-    }
-
     public static ProjectClassLoader createProjectClassLoader() {
-        return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), null);
+        return ComponentsFactory.createProjectClassLoader(findParentClassLoader(ProjectClassLoader.class), null);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
@@ -108,7 +97,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         if (parent == null) {
-            return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), resourceProvider);
+            return ComponentsFactory.createProjectClassLoader(findParentClassLoader(ProjectClassLoader.class), resourceProvider);
         }
         return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.createProjectClassLoader(parent, resourceProvider);
     }

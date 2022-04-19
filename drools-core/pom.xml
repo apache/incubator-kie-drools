@@ -45,6 +45,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-wiring-static</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-util</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.antlr</groupId>

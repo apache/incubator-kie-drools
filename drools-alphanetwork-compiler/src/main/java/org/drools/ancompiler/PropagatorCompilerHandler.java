@@ -70,7 +70,7 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.util.StringUtils.md5Hash;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 // As AssertCompiler and ModifyCompiler classes are quite similar except for the method they propagate in the Rete (assert vs modify) they share a common class

@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.Role;
 

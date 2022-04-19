@@ -18,7 +18,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 import java.util.Map;
 
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.core.util.MethodUtils;
+import org.drools.util.MethodUtils;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.junit.Ignore;

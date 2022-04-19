@@ -25,7 +25,7 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;

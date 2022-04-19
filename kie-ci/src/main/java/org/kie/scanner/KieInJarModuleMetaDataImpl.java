@@ -36,8 +36,8 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.IoUtils;
+import org.drools.util.ClassUtils;
+import org.drools.util.IoUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.maven.integration.ArtifactResolver;
@@ -47,8 +47,8 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.enumeration;
 import static java.util.stream.Collectors.toList;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.IoUtils.UTF8_CHARSET;
+import static org.drools.util.ClassUtils.convertResourceToClassName;
+import static org.drools.util.IoUtils.UTF8_CHARSET;
 import static org.kie.maven.integration.ArtifactResolver.getResolverFor;
 
 public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {

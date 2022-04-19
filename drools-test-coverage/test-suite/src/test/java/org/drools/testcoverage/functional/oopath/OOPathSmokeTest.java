@@ -75,7 +75,7 @@ public class OOPathSmokeTest {
 
     @Test
     public void testBuildTwoKieBases() {
-        final Resource drlResource = KIE_SERVICES.getResources().newUrlResource(this.getClass().getResource("oopath.drl"));
+        final Resource drlResource = KIE_SERVICES.getResources().newClassPathResource("oopath.drl", this.getClass());
         KieUtil.getKieModuleFromResources(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
 
         // creating two KieContainers and KieBases may trigger deep cloning

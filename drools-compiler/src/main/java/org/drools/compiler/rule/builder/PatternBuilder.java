@@ -44,7 +44,7 @@ import org.drools.compiler.lang.DescrDumper;
 import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.rule.builder.XpathAnalysis.XpathPart;
 import org.drools.compiler.rule.builder.util.ConstraintUtil;
-import org.drools.core.addon.TypeResolver;
+import org.drools.util.TypeResolver;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldNameSupplier;
 import org.drools.core.base.ValueType;
@@ -80,8 +80,8 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimeUtils;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.ClassUtils;
+import org.drools.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AtomicExprDescr;
@@ -111,7 +111,7 @@ import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAn
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
-import static org.drools.core.util.StringUtils.isIdentifier;
+import static org.drools.util.StringUtils.isIdentifier;
 
 /**
  * A builder for patterns

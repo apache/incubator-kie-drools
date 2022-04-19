@@ -39,13 +39,13 @@ import java.util.zip.ZipInputStream;
 import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.util.IoUtils;
+import org.drools.util.StringUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.memorycompiler.resources.KiePath;
+import org.drools.util.PortablePath;
 import org.kie.util.maven.support.PomModel;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
@@ -107,8 +107,8 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public void discoverKieModules() {
-        KiePath[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
-        for ( KiePath configFile : configFiles) {
+        PortablePath[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
+        for ( PortablePath configFile : configFiles) {
             final Set<URL> resources = new HashSet<>();
             try {
                 ClassLoader currentClassLoader = classLoader;
@@ -458,7 +458,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         String path = null;
         try {
             File f = (File)m.invoke( m2.invoke(null, url.toURI()) );
-            path = KiePath.of(f.getPath()).asString();
+            path = PortablePath.of(f.getPath()).asString();
         } catch (Exception e) {
             log.error( "Error when reading virtual file from " + url.toString(), e );
         }

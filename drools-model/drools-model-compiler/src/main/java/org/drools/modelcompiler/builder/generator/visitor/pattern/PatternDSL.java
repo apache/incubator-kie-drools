@@ -31,12 +31,12 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.core.util.PropertyReactivityUtil;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
-import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.AggregateKey;
@@ -321,7 +321,7 @@ public abstract class PatternDSL implements DSLNode {
 
     Set<String> getSettableWatchedProps() {
         Set<String> settableWatchedProps = new HashSet<>();
-        Collection<String> settableProps = ClassUtils.getAccessibleProperties(patternType);
+        Collection<String> settableProps = PropertyReactivityUtil.getAccessibleProperties(patternType);
 
         List<String> propertiesInWatch = getPatternListenedProperties(pattern);
         propertiesInWatch.stream().forEach(prop -> populateSettableWatchedProps(prop, settableProps, settableWatchedProps, true));

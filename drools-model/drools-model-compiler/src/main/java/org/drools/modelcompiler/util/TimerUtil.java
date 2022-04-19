@@ -25,8 +25,8 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.time.impl.CronExpression;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.DateUtils;
+import org.drools.util.ClassUtils;
+import org.drools.util.DateUtils;
 
 public class TimerUtil {
 

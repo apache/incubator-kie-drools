@@ -34,7 +34,7 @@ import org.drools.compiler.kproject.models.WorkItemHandlerModelImpl;
 import org.drools.core.base.XMLSupport;
 import org.kie.api.builder.model.KieModuleModel;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.util.IoUtils.readBytesFromInputStream;
 import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 
 public class KieModuleMarshaller implements XMLSupport.XmlMarshaller<KieModuleModel> {

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
