@@ -16,27 +16,13 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.util.StringUtils;
-import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.drl.ast.descr.EnumDeclarationDescr;
-import org.drools.core.util.StringUtils;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -46,10 +32,17 @@ import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.drools.modelcompiler.builder.processors.GeneratedPojoCompilationPhase;
 import org.drools.modelcompiler.builder.processors.PojoStoragePhase;
 import org.drools.modelcompiler.builder.processors.TypeDeclarationRegistrationPhase;
+import org.drools.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
-import static com.github.javaparser.StaticJavaParser.parseImport;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+
 import static java.util.Collections.emptyList;
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;

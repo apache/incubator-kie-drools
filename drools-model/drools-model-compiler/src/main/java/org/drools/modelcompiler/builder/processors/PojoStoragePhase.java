@@ -3,11 +3,11 @@ package org.drools.modelcompiler.builder.processors;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.modelcompiler.builder.CanonicalModelBuildContext;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
+import org.drools.util.TypeResolver;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.Collection;

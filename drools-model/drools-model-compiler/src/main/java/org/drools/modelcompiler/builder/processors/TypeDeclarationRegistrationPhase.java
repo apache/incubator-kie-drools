@@ -5,7 +5,6 @@ import org.drools.compiler.builder.impl.TypeDeclarationFactory;
 import org.drools.compiler.builder.impl.processors.AbstractPackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
@@ -14,6 +13,7 @@ import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.modelcompiler.builder.errors.UnsupportedFeatureError;
+import org.drools.util.TypeResolver;
 
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.core.util.Drools.hasMvel;
