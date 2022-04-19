@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.FileSystemResource;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -47,10 +45,11 @@ public abstract class AbstractDrlScoreDirectorFactoryService<Solution_, Score_ e
         } else {
             KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
                     .setClassLoader(classLoader);
-            scoreDrlList.forEach(scoreDrl -> kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader)));
+            scoreDrlList.forEach(scoreDrl -> kieHelper
+                    .addResource(KieServices.get().getResources().newClassPathResource(scoreDrl, classLoader)));
             if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
                 for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                    kieHelper.addResource(new FileSystemResource(scoreDrlFile));
+                    kieHelper.addResource(KieServices.get().getResources().newFileSystemResource(scoreDrlFile));
                 }
             }
             KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(config, KieServices.get());
