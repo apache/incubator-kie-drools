@@ -15,6 +15,8 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,10 @@ import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -443,6 +449,23 @@ public class DOMParserUtilTest {
         assertNotNull(retrieved);
     }
 
+    
+    
+    @Test(expected = org.xml.sax.SAXParseException.class)
+    public void getDocument_XXE_Vulnerability() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///\"> ]>\n"
+                + "<stocklevel><ProductID>&xxe;</ProductID></stocklevel>";
+        Document retrieved = DOMParserUtil.getDocument(xml);
+        
+        Transformer transformer = DOMParserUtil.createTransformer();
+        
+        StringWriter sw = new StringWriter();
+        StreamResult sr = new StreamResult(sw);
+        transformer.transform(new DOMSource(retrieved), sr);
+    }
+    
+    
     @Test
     public void getString() throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -453,6 +476,22 @@ public class DOMParserUtilTest {
         assertNotNull(retrieved);
         assertTrue(retrieved.contains("CREATED"));
     }
+    
+    @Test(expected = javax.xml.transform.TransformerException.class)
+    public void createTransformer_XXE_Vulnerability() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"file:///\"> ]>\n"
+                + "<stocklevel><ProductID>&xxe;</ProductID></stocklevel>";
+        StreamSource source = new StreamSource(new ByteArrayInputStream(xml.getBytes()));
+        
+        Transformer transformer = DOMParserUtil.createTransformer();
+        
+        StringWriter sw = new StringWriter();
+        StreamResult sr = new StreamResult(sw);
+        transformer.transform(source, sr);
+    }
+
+    
 
     @Test
     public void asStream() throws Exception {
