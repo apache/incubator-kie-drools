@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.drools.core.io.impl.FileSystemResource;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
@@ -35,6 +34,7 @@ import org.drools.scenariosimulation.backend.runner.DMNScenarioRunnerHelper;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
+import org.drools.util.io.FileSystemResource;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;

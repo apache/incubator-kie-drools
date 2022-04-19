@@ -85,7 +85,7 @@ public abstract class AbstractDecisionModels implements DecisionModels {
         }
 
         try {
-            byte[] bytes = org.drools.core.util.IoUtils.readBytesFromInputStream(stream);
+            byte[] bytes = org.drools.util.IoUtils.readBytesFromInputStream(stream);
             java.io.ByteArrayInputStream byteArrayInputStream = new java.io.ByteArrayInputStream(bytes);
             return isrWithEncodingOrFallback(byteArrayInputStream, encoding);
         } catch (java.io.IOException e) {

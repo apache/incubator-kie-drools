@@ -72,7 +72,7 @@ public class DMNRestResourceTemplate {
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public String dmn() throws java.io.IOException {
-        return new String(org.drools.core.util.IoUtils.
+        return new String(org.drools.util.IoUtils.
                           readBytesFromInputStream(this.getClass()
                                                    .getResourceAsStream(org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.escapeIdentifier("$modelName$") + 
                                                                         ".dmn_nologic")));

@@ -18,7 +18,7 @@ package org.jbpm.compiler.canonical;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 
 public class NodeValidator {
 

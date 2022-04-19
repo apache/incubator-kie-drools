@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import javax.lang.model.SourceVersion;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.jbpm.process.core.TypeObject;
 import org.jbpm.process.core.ValueObject;
 import org.jbpm.process.core.datatype.DataType;

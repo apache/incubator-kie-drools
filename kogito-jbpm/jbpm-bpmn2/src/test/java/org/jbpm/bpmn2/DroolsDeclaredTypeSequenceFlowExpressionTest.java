@@ -18,8 +18,8 @@ package org.jbpm.bpmn2;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.InputStreamResource;
+import org.drools.util.io.ClassPathResource;
+import org.drools.util.io.InputStreamResource;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;

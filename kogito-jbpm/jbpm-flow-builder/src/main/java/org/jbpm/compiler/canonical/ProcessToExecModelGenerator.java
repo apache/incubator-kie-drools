@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -50,7 +50,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 
 public class ProcessToExecModelGenerator {
 

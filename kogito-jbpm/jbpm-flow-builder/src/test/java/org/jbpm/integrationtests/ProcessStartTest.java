@@ -20,7 +20,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.io.impl.ReaderResource;
+import org.drools.util.io.ReaderResource;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;

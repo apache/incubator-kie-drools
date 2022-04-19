@@ -18,7 +18,7 @@ package org.jbpm.compiler.canonical;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;

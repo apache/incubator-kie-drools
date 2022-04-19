@@ -61,7 +61,7 @@ import com.github.javaparser.ast.type.UnknownType;
 import com.github.javaparser.ast.type.WildcardType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_DONE;

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

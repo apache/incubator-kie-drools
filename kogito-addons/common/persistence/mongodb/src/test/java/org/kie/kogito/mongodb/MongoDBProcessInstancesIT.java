@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowProcess;

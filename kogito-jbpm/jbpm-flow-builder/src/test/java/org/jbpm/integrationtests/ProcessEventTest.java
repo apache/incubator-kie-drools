@@ -18,7 +18,7 @@ package org.jbpm.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.drools.core.io.impl.ReaderResource;
+import org.drools.util.io.ReaderResource;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;

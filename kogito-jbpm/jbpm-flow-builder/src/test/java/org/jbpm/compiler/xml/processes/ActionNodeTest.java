@@ -18,7 +18,7 @@ package org.jbpm.compiler.xml.processes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;

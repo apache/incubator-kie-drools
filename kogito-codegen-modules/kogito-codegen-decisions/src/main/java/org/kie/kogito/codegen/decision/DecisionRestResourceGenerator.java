@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;

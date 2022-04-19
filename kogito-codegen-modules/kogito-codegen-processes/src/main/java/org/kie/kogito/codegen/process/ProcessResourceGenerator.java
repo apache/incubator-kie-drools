@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -53,7 +53,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.util.StringUtils.ucFirst;
 import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
 
 /**

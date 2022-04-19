@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.util.StringUtils;
 import org.drools.drl.ast.descr.ProcessDescr;
+import org.drools.util.StringUtils;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessClassBuilder;
 

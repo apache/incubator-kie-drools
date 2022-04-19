@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;

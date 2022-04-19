@@ -11,6 +11,18 @@
     <artifactId>kogito-codegen-core</artifactId>
     <name>Kogito :: Codegen Core Library</name>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>kogito-kie-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -23,8 +35,8 @@
 
         <!-- required because of CollectedResourceProducer -->
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-drools</artifactId>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-util</artifactId>
         </dependency>
 
         <dependency>

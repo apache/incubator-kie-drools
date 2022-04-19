@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.core.io.impl.ReaderResource;
+import org.drools.util.io.ReaderResource;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNModel;

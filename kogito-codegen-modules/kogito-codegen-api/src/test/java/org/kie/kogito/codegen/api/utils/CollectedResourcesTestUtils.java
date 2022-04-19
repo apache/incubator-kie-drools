@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.drools.core.io.impl.FileSystemResource;
+import org.drools.util.io.FileSystemResource;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 
 public final class CollectedResourcesTestUtils {

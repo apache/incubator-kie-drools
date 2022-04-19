@@ -18,7 +18,7 @@ package org.kie.kogito.addon.cloudevents.quarkus.deployment;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;

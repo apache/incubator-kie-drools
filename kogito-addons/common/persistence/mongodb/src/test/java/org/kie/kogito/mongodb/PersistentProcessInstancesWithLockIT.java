@@ -18,7 +18,7 @@ package org.kie.kogito.mongodb;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.io.ClassPathResource;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.util.PortablePath;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
@@ -37,7 +38,6 @@ import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
-import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,7 +177,7 @@ public class KogitoQuarkusResourceUtils {
     private static Collection<GeneratedBeanBuildItem> makeBuildItems(AppPaths appPaths, ResourceReader resources) throws IOException {
 
         Collection<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
-        for (KiePath path : resources.getFilePaths()) {
+        for (PortablePath path : resources.getFilePaths()) {
             byte[] data = resources.getBytes(path);
             String className = toClassName(path.asString());
 

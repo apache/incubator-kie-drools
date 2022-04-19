@@ -17,7 +17,7 @@ package org.kie.kogito.codegen.process;
 
 import java.util.Optional;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.node.StartNode;

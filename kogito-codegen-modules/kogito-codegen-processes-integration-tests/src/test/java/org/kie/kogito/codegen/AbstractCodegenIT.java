@@ -32,6 +32,7 @@ import java.util.function.BiFunction;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.util.PortablePath;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.Generator;
@@ -48,7 +49,6 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.resources.KiePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -226,11 +226,11 @@ public class AbstractCodegenIT {
 
         private final Map<String, byte[]> extraClassDefs;
 
-        public TestClassLoader(ClassLoader parent, Map<KiePath, byte[]> extraClassDefs) {
+        public TestClassLoader(ClassLoader parent, Map<PortablePath, byte[]> extraClassDefs) {
             super(new URL[0], parent);
             this.extraClassDefs = new HashMap<>();
 
-            for (Entry<KiePath, byte[]> entry : extraClassDefs.entrySet()) {
+            for (Entry<PortablePath, byte[]> entry : extraClassDefs.entrySet()) {
                 this.extraClassDefs.put(entry.getKey().asString().replace('/', '.').replaceFirst("\\.class", ""), entry.getValue());
             }
         }

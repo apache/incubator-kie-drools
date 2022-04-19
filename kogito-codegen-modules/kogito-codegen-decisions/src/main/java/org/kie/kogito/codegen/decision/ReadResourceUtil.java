@@ -21,7 +21,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.drools.core.util.IoUtils;
+import org.drools.util.IoUtils;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 
 import com.github.javaparser.ast.expr.FieldAccessExpr;

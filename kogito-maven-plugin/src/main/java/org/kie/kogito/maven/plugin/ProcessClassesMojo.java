@@ -32,6 +32,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.util.PortablePath;
 import org.kie.kogito.Model;
 import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
@@ -45,7 +46,6 @@ import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.resources.KiePath;
 
 import static java.util.Arrays.asList;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
@@ -127,7 +127,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 throw new MojoFailureException(Arrays.toString(result.getErrors()));
             }
 
-            for (KiePath path : trgMfs.getFilePaths()) {
+            for (PortablePath path : trgMfs.getFilePaths()) {
                 byte[] data = trgMfs.getBytes(path);
                 writeGeneratedFile(new GeneratedFile(GeneratedFileType.COMPILED_CLASS, path.asString(), data));
             }

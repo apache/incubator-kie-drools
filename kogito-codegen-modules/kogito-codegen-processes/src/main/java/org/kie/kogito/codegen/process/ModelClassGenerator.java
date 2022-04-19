@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.codegen.process;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.ruleflow.core.Metadata;

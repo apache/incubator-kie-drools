@@ -19,7 +19,7 @@ import java.net.URLEncoder;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.drools.core.util.StringUtils;
+import org.drools.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;

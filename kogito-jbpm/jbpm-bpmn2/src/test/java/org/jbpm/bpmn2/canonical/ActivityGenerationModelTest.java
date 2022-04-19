@@ -32,7 +32,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.util.PortablePath;
+import org.drools.util.io.ClassPathResource;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.compiler.canonical.ProcessMetaData;
@@ -66,7 +67,6 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.resources.KiePath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -570,11 +570,11 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     private static class TestClassLoader extends URLClassLoader {
         private final Map<String, byte[]> extraClassDefs;
 
-        public TestClassLoader(ClassLoader parent, Map<KiePath, byte[]> extraClassDefs) {
+        public TestClassLoader(ClassLoader parent, Map<PortablePath, byte[]> extraClassDefs) {
             super(new URL[0], parent);
             this.extraClassDefs = new HashMap<>();
 
-            for (Entry<KiePath, byte[]> entry : extraClassDefs.entrySet()) {
+            for (Entry<PortablePath, byte[]> entry : extraClassDefs.entrySet()) {
                 this.extraClassDefs.put(entry.getKey().asString().replace('/', '.').replaceFirst("\\.class", ""), entry.getValue());
             }
         }
