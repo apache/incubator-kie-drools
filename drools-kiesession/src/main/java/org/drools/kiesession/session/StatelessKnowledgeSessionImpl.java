@@ -29,9 +29,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.AbstractRuntime;
@@ -57,9 +54,8 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 
-public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements StatelessKnowledgeSession, StatelessKieSession {
+public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements StatelessKieSession {
 
     private InternalKnowledgeBase kBase;
     private MapGlobalResolver    sessionGlobals = new MapGlobalResolver();
@@ -241,7 +237,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
     public <T> T execute(Command<T> command) {
         StatefulKnowledgeSession ksession = newWorkingMemory();
 
-        RegistryContext context = new ContextImpl().register( KieSession.class, ksession );
+        RegistryContext context = RegistryContext.create().register( KieSession.class, ksession );
 
         try {
             if ( command instanceof BatchExecutionCommand ) {
@@ -250,20 +246,10 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
 
             ((StatefulKnowledgeSessionImpl) ksession).startBatchExecution();
 
-            Object o = ((ExecutableCommand) command).execute( context );
+            ExecutableCommand executableCommand = (ExecutableCommand) command;
+            Object o = executableCommand.execute( context );
             // did the user take control of fireAllRules, if not we will auto execute
-            boolean autoFireAllRules = true;
-            if ( command instanceof FireAllRulesCommand ) {
-                autoFireAllRules = false;
-            } else if ( command instanceof BatchExecutionCommandImpl ) {
-                for ( Command nestedCmd : ((BatchExecutionCommandImpl) command).getCommands() ) {
-                    if ( nestedCmd instanceof FireAllRulesCommand ) {
-                        autoFireAllRules = false;
-                        break;
-                    }
-                }
-            }
-            if ( autoFireAllRules ) {
+            if ( executableCommand.autoFireAllRules() ) {
                 ksession.fireAllRules();
             }
             if ( command instanceof BatchExecutionCommand ) {

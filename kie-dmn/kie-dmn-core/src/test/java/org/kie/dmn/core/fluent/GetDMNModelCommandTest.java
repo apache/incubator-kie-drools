@@ -18,7 +18,7 @@ package org.kie.dmn.core.fluent;
 
 import java.util.UUID;
 
-import org.drools.core.command.impl.ContextImpl;
+import org.drools.commands.impl.ContextImpl;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

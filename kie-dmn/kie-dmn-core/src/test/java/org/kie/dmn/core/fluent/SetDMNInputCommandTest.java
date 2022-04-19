@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.fluent;
 
-import org.drools.core.command.impl.ContextImpl;
+import org.drools.commands.impl.ContextImpl;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.internal.command.RegistryContext;

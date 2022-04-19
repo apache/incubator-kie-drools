@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.command.impl.CommandFactoryServiceImpl;
+import org.drools.commands.impl.CommandFactoryServiceImpl;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;

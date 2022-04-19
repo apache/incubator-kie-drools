@@ -16,7 +16,6 @@
 
 package org.kie.internal.runtime;
 
-import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 
@@ -97,10 +96,6 @@ import org.kie.api.runtime.KieSession;
  *
  * @see org.kie.api.runtime.Globals
  */
-public interface StatefulKnowledgeSession
-    extends
-    KieSession, KieRuntime {
-
-    KieBase getKieBase();
+public interface StatefulKnowledgeSession extends KieSession, KieRuntime {
 
 }

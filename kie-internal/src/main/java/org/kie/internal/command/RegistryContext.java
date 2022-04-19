@@ -36,4 +36,12 @@ public interface RegistryContext extends Context {
     }
 
     ContextManager getContextManager();
+
+    static RegistryContext create() {
+        try {
+            return (RegistryContext) Class.forName( "org.drools.commands.impl.ContextImpl" ).getConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to instance RegistryContext, please add org.drools:drools-commands to your classpath", e);
+        }
+    }
 }

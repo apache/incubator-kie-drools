@@ -29,7 +29,7 @@ public interface ExecutableRunner<C extends Context> extends CommandExecutor {
 
     static ExecutableRunner<RequestContext> create() {
         try {
-            return (ExecutableRunner) Class.forName( "org.drools.core.fluent.impl.PseudoClockRunner" ).newInstance();
+            return (ExecutableRunner) Class.forName( "org.drools.commands.fluent.PseudoClockRunner" ).getConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Unable to instance ExecutableRunner", e);
         }
@@ -37,7 +37,7 @@ public interface ExecutableRunner<C extends Context> extends CommandExecutor {
 
     static ExecutableRunner<RequestContext> create(long startTime) {
         try {
-            return (ExecutableRunner) Class.forName( "org.drools.core.fluent.impl.PseudoClockRunner" ).getConstructor( long.class ).newInstance(startTime);
+            return (ExecutableRunner) Class.forName( "org.drools.commands.fluent.PseudoClockRunner" ).getConstructor( long.class ).newInstance(startTime);
         } catch (Exception e) {
             throw new RuntimeException("Unable to instance ExecutableRunner", e);
         }

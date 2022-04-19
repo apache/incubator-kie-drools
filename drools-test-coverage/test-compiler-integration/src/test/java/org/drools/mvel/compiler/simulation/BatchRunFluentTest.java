@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.drools.core.fluent.impl.ExecutableBuilderImpl;
+import org.drools.commands.fluent.ExecutableBuilderImpl;
 import org.drools.mvel.compiler.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;

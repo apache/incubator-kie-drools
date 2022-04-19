@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.fluent;
 
-import org.drools.core.fluent.impl.BaseBatchFluent;
+import org.drools.commands.fluent.BaseBatchFluent;
 import org.kie.internal.builder.fluent.CommandBasedExecutable;
 import org.kie.internal.builder.fluent.DMNRuntimeFluent;
 import org.kie.internal.builder.fluent.ExecutableBuilder;

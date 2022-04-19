@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.core.common.InternalAgenda;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.util.io.ClassPathResource;
@@ -81,7 +81,7 @@ public class AgendaRuleFlowGroupsTest {
     @Test	
 	public void testRuleFlowGroupOnly() throws Exception {
 		
-		CommandBasedStatefulKnowledgeSession ksession = createSession(-1, "ruleflow-groups.drl");
+		CommandBasedStatefulKnowledgeSessionImpl ksession = createSession(-1, "ruleflow-groups.drl");
 		
 		org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
 		// only main is available
@@ -107,7 +107,7 @@ public class AgendaRuleFlowGroupsTest {
     @Test   
     public void testAgendaGroupOnly() throws Exception {
         
-        CommandBasedStatefulKnowledgeSession ksession = createSession(-1, "agenda-groups.drl");
+        CommandBasedStatefulKnowledgeSessionImpl ksession = createSession(-1, "agenda-groups.drl");
         
         org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // only main is available
@@ -134,7 +134,7 @@ public class AgendaRuleFlowGroupsTest {
     @Test   
     public void testAgendaGroupAndRuleFlowGroup() throws Exception {
         
-        CommandBasedStatefulKnowledgeSession ksession = createSession(-1, "agenda-groups.drl", "ruleflow-groups.drl");
+        CommandBasedStatefulKnowledgeSessionImpl ksession = createSession(-1, "agenda-groups.drl", "ruleflow-groups.drl");
         
         org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // only main is available
@@ -161,15 +161,15 @@ public class AgendaRuleFlowGroupsTest {
     }
     
     private KieSession stripSession(KieSession ksession) {
-        if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            return ((RegistryContext)((CommandBasedStatefulKnowledgeSession) ksession).
+        if (ksession instanceof CommandBasedStatefulKnowledgeSessionImpl) {
+            return ((RegistryContext)((CommandBasedStatefulKnowledgeSessionImpl) ksession).
                     getRunner().createContext()).lookup( KieSession.class );
         }
         
         return ksession;
     }
 	
-	private CommandBasedStatefulKnowledgeSession createSession(long id, String...rules) {
+	private CommandBasedStatefulKnowledgeSessionImpl createSession(long id, String...rules) {
 		
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		for (String rule : rules) {
@@ -188,9 +188,9 @@ public class AgendaRuleFlowGroupsTest {
             env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
         }
         if (id == -1) {
-            return (CommandBasedStatefulKnowledgeSession) JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+            return (CommandBasedStatefulKnowledgeSessionImpl) JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 	    }  else {
-	        return (CommandBasedStatefulKnowledgeSession) JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+	        return (CommandBasedStatefulKnowledgeSessionImpl) JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
 	    }
 	}
 	

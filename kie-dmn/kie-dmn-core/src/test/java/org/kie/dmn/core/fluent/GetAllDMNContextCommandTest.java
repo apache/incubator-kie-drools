@@ -18,7 +18,7 @@ package org.kie.dmn.core.fluent;
 
 import java.util.Map;
 
-import org.drools.core.command.impl.ContextImpl;
+import org.drools.commands.impl.ContextImpl;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.core.impl.DMNContextImpl;

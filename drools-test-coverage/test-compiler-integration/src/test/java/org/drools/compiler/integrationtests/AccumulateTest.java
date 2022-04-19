@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.runtime.rule.InsertElementsCommand;
+import org.drools.commands.runtime.rule.InsertElementsCommand;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;

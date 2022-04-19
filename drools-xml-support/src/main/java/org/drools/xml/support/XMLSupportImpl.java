@@ -15,13 +15,10 @@
 
 package org.drools.xml.support;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.base.XMLSupport;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.commands.runtime.BatchExecutionCommandImpl;
 import org.drools.xml.support.converters.KieModuleMarshaller;
 
 import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
