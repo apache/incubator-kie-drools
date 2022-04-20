@@ -17,8 +17,8 @@ package org.drools.compiler.builder.impl;
 
 import java.util.Properties;
 
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.builder.conf.impl.ScoreCardConfigurationImpl;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
+import org.drools.compiler.builder.conf.ScoreCardConfigurationImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.internal.builder.DecisionTableConfiguration;

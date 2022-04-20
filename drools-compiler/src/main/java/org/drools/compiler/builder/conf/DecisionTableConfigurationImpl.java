@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.builder.conf.impl;
+package org.drools.compiler.builder.conf;
 
 import java.util.ArrayList;
 import java.util.HashSet;
