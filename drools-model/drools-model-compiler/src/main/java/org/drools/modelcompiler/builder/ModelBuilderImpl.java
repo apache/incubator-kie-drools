@@ -152,18 +152,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             }
         }
     }
-//
-//    private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
-//        for (CompositePackageDescr packageDescr : packages) {
-//            PackageRegistryManager pkgRegistryManager = this.getPackageRegistryManager();
-//            PackageRegistry pkgRegistry = pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
-//            TypeDeclarationRegistrationPhase typeDeclarationRegistrationPhase =
-//                    new TypeDeclarationRegistrationPhase(pkgRegistry, packageDescr, pkgRegistryManager);
-//            typeDeclarationRegistrationPhase.process();
-//            this.getBuildResultAccumulator().addAll(typeDeclarationRegistrationPhase.getResults());
-//        }
-//    }
-
 
     private void deregisterTypeDeclarations(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
@@ -190,34 +178,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             }
         }
     }
-
-//    private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
-//        for (CompositePackageDescr packageDescr : packages) {
-//            PackageRegistry pkgRegistry = this.getPackageRegistryManager().getPackageRegistry(packageDescr.getNamespace());
-//            InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-//            PackageModel model = this.packageModels.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-//            model.addImports(pkg.getTypeResolver().getImports());
-//            new POJOGenerator(this, pkg, packageDescr, model).process();
-//        }
-//
-//    }
-
-//    private void compileGeneratedPojos(PackageModelManager packageModels) {
-//        GeneratedPojoCompilationPhase generatedPojoCompilationPhase =
-//                new GeneratedPojoCompilationPhase(
-//                        packageModels, this.getBuildContext(), this.getBuilderConfiguration().getClassLoader());
-//
-//        generatedPojoCompilationPhase.process();
-//        this.getBuildResultAccumulator().addAll(generatedPojoCompilationPhase.getResults());
-//    }
-
-//    private void storeGeneratedPojosInPackages(Collection<CompositePackageDescr> packages) {
-//        PojoStoragePhase pojoStoragePhase =
-//                new PojoStoragePhase(this.getBuildContext(), this.getPackageRegistryManager(), packages);
-//        pojoStoragePhase.process();
-//        this.getBuildResultAccumulator().addAll(pojoStoragePhase.getResults());
-//    }
-
 
     @Override
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
