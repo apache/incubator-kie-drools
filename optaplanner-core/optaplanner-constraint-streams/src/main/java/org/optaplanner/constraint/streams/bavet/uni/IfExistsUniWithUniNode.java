@@ -129,7 +129,6 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         indexerA.visit(indexProperties, (tupleA, counter) -> {
             if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
                 if (counter.countB == 0) {
-                    counterSetB.add(counter);
                     if (counter.state == BavetTupleState.DEAD) {
                         counter.state = BavetTupleState.CREATING;
                         dirtyCounterQueue.add(counter);
@@ -143,6 +142,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
                     }
                 }
                 counter.countB++;
+                counterSetB.add(counter);
             }
         });
     }
