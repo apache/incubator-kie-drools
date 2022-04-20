@@ -966,13 +966,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    protected void validateUniqueRuleNames(final PackageDescr packageDescr) {
-        PackageRegistry packageRegistry = this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
-        RuleValidator ruleValidator = new RuleValidator(packageRegistry, packageDescr, configuration);
-        ruleValidator.process();
-        this.results.addAll(ruleValidator.getResults());
-    }
-
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         PackageCompilationPhase packageProcessor =
                 new PackageCompilationPhase(this,

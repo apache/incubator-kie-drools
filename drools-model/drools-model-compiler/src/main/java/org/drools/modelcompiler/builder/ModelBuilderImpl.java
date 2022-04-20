@@ -19,6 +19,8 @@ package org.drools.modelcompiler.builder;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.processors.CompilationPhase;
+import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -38,8 +40,10 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Arrays.asList;
 import static org.drools.core.util.Drools.hasMvel;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
@@ -207,12 +211,19 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        validateUniqueRuleNames(packageDescr);
+        PackageRegistry packageRegistry = this.getPackageRegistryManager().getPackageRegistry(packageDescr.getNamespace());
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         PackageModel packageModel = this.packageModels.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-        ModelGeneratorPhase modelGeneratorPhase = new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this);
-        modelGeneratorPhase.process();
-        this.getBuildResultAccumulator().addAll(modelGeneratorPhase.getResults());
+
+        List<CompilationPhase> phases = asList(
+                new RuleValidator(packageRegistry, packageDescr, this.getBuilderConfiguration()), // validateUniqueRuleNames
+                new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this));
+
+        for (CompilationPhase phase : phases) {
+            phase.process();
+            this.getBuildResultAccumulator().addAll(phase.getResults());
+        }
+
     }
 
     protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
