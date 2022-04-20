@@ -1,6 +1,7 @@
 package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.PackageRegistryManager;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -28,8 +29,9 @@ public class IteratingPhase implements CompilationPhase {
     @Override
     public void process() {
         for (CompositePackageDescr compositePackageDescr : packages) {
+            PackageRegistry packageRegistry = pkgRegistryManager.getOrCreatePackageRegistry(compositePackageDescr);
             CompilationPhase phase = phaseFactory.create(
-                    pkgRegistryManager.getPackageRegistry(compositePackageDescr.getNamespace()),
+                    packageRegistry,
                     compositePackageDescr);
             phase.process();
             results.addAll(phase.getResults());
