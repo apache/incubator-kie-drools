@@ -99,18 +99,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                 packages);
         declaredTypeCompilationPhase.process();
         getBuildResultAccumulator().addAll(declaredTypeCompilationPhase.getResults());
-        /*
-                OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
-                pkgRegistry,
-                packageDescr,
-                globals,
-                this,
-                kBase,
-                configuration,
-                assetFilter);
-        otherDeclarationProcessor.process();
-        this.results.addAll(otherDeclarationProcessor.getResults());
-         */
         buildOtherDeclarations( packages );
         deregisterTypeDeclarations( packages );
         buildRules(packages);
