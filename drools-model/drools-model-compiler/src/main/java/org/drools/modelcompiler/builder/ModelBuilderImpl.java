@@ -195,17 +195,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                 new PojoStoragePhase(this.getBuildContext(), this.getPackageRegistryManager(), packages);
         pojoStoragePhase.process();
         this.getBuildResultAccumulator().addAll(pojoStoragePhase.getResults());
-
-
-//        Collection<GeneratedClassWithPackage> allGeneratedPojos = getBuildContext().getAllGeneratedPojos();
-//        Map<String, Class<?>> allCompiledClasses = getBuildContext().getAllCompiledClasses();
-//
-//        for (CompositePackageDescr packageDescr : packages) {
-//            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
-//            allGeneratedPojos.stream()
-//                    .filter( pojo -> isInPackage(pkg, pojo) )
-//                    .forEach( pojo -> registerType(pkg.getTypeResolver(), allCompiledClasses.get(pojo.getFullyQualifiedName())) );
-//        }
     }
 
 
