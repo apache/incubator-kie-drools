@@ -52,18 +52,17 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final DRLIdGenerator exprIdGenerator = new DRLIdGenerator();
 
     private final Function<PackageModel, T> sourcesGenerator;
-    private final Map<String, PackageModel> packageModels = new HashMap<>();
-    private final ReleaseId releaseId;
+    private final PackageModelManager packageModels;
     private final boolean oneClassPerRule;
-    private final Map<String, T> packageSources = new HashMap<>();
+    private final PackageSourceManager<T> packageSources = new PackageSourceManager<>();
 
     private Map<String, CompositePackageDescr> compositePackagesMap;
 
     public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean oneClassPerRule) {
         super(configuration);
         this.sourcesGenerator = sourcesGenerator;
-        this.releaseId = releaseId;
         this.oneClassPerRule = oneClassPerRule;
+        this.packageModels = new PackageModelManager(this.getBuilderConfiguration(), releaseId, exprIdGenerator);
     }
 
     @Override
@@ -169,7 +168,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             TypeDeclarationRegistrationPhase typeDeclarationRegistrationPhase =
                     new TypeDeclarationRegistrationPhase(pkgRegistry, packageDescr, pkgRegistryManager);
             typeDeclarationRegistrationPhase.process();
-            typeDeclarationRegistrationPhase.getResults().forEach(this::addBuilderResult);
+            this.getBuildResultAccumulator().addAll(typeDeclarationRegistrationPhase.getResults());
         }
     }
 
@@ -204,14 +203,14 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         for (CompositePackageDescr packageDescr : packages) {
             PackageRegistry pkgRegistry = this.getPackageRegistryManager().getPackageRegistry(packageDescr.getNamespace());
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-            PackageModel model = this.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
+            PackageModel model = this.packageModels.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
             model.addImports(pkg.getTypeResolver().getImports());
             new POJOGenerator(this, pkg, packageDescr, model).process();
         }
 
     }
 
-    private void compileGeneratedPojos(Map<String, PackageModel> packageModels) {
+    private void compileGeneratedPojos(PackageModelManager packageModels) {
         GeneratedPojoCompilationPhase generatedPojoCompilationPhase =
                 new GeneratedPojoCompilationPhase(
                         packageModels, this.getBuildContext(), this.getBuilderConfiguration().getClassLoader());
@@ -243,14 +242,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        PackageModel packageModel = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
+        PackageModel packageModel = this.packageModels.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
         ModelGeneratorPhase modelGeneratorPhase = new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this);
         modelGeneratorPhase.process();
         this.getBuildResultAccumulator().addAll(modelGeneratorPhase.getResults());
-    }
-
-    protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
-        return packageModels.computeIfAbsent(pkgName, s -> PackageModel.createPackageModel(getBuilderConfiguration(), packageDescr, pkgRegistry, pkgName, releaseId, exprIdGenerator));
     }
 
     public Collection<T> getPackageSources() {
