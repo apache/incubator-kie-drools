@@ -38,13 +38,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
-import static java.util.Collections.emptyList;
 import static org.drools.core.util.Drools.hasMvel;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
@@ -56,13 +51,14 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final boolean oneClassPerRule;
     private final PackageSourceManager<T> packageSources = new PackageSourceManager<>();
 
-    private Map<String, CompositePackageDescr> compositePackagesMap;
+    private CompositePackageManager compositePackagesManager;
 
     public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean oneClassPerRule) {
         super(configuration);
         this.sourcesGenerator = sourcesGenerator;
         this.oneClassPerRule = oneClassPerRule;
         this.packageModels = new PackageModelManager(this.getBuilderConfiguration(), releaseId, exprIdGenerator);
+        this.compositePackagesManager = new CompositePackageManager();
     }
 
     @Override
@@ -70,17 +66,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     public void addPackage(final PackageDescr packageDescr) {
-        if (compositePackagesMap == null) {
-            compositePackagesMap = new HashMap<>();
-        }
-
-        CompositePackageDescr pkgDescr = compositePackagesMap.get(packageDescr.getNamespace());
-        if (pkgDescr == null) {
-            compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr( packageDescr.getResource(), packageDescr) );
-        } else {
-            pkgDescr.addPackageDescr( packageDescr.getResource(), packageDescr );
-        }
-
+        compositePackagesManager.register(packageDescr);
         PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         for (final ImportDescr importDescr : packageDescr.getImports()) {
@@ -99,7 +85,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     protected void doSecondBuildStep( Collection<CompositePackageDescr> compositePackages ) {
-        Collection<CompositePackageDescr> packages = findPackages(compositePackages);
+        Collection<CompositePackageDescr> packages = compositePackagesManager.findPackages(compositePackages);
 //        initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
@@ -121,26 +107,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         processGlobals(pkgRegistry, packageDescr);
     }
 
-    private Collection<CompositePackageDescr> findPackages( Collection<CompositePackageDescr> compositePackages ) {
-        if (compositePackages != null && !compositePackages.isEmpty()) {
-            if (compositePackagesMap != null) {
-                compositePackages = new HashSet<>(compositePackages);
-                for (Map.Entry<String, CompositePackageDescr> entry : compositePackagesMap.entrySet()) {
-                    Optional<CompositePackageDescr> optPkg = compositePackages.stream().filter(pkg -> pkg.getNamespace().equals(entry.getKey()) ).findFirst();
-                    if (optPkg.isPresent()) {
-                        optPkg.get().addPackageDescr(entry.getValue().getResource(), entry.getValue());
-                    } else {
-                        compositePackages.add(entry.getValue());
-                    }
-                }
-            }
-            return compositePackages;
-        }
-        if (compositePackagesMap != null) {
-            return compositePackagesMap.values();
-        }
-        return emptyList();
-    }
+
 
     @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
@@ -246,6 +213,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         ModelGeneratorPhase modelGeneratorPhase = new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this);
         modelGeneratorPhase.process();
         this.getBuildResultAccumulator().addAll(modelGeneratorPhase.getResults());
+    }
+
+    protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
+        return packageModels.getPackageModel(packageDescr, pkgRegistry, pkgName);
     }
 
     public Collection<T> getPackageSources() {
