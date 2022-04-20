@@ -90,6 +90,12 @@ if (!Utils.isMainBranch(this)) {
     setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
 }
 
+KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', 'Drools', [
+  modules: [ 'drools-build-parent' ],
+  compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
+  properties: [ 'version.io.quarkus' ],
+])
+
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
