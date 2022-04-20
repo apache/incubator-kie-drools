@@ -23,7 +23,7 @@ public class PackageModelManager {
         this.exprIdGenerator = exprIdGenerator;
     }
 
-    protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
+    public PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
         return packageModels.computeIfAbsent(pkgName, s -> PackageModel.createPackageModel(builderConfiguration, packageDescr, pkgRegistry, pkgName, releaseId, exprIdGenerator));
     }
 
