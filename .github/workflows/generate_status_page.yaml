@@ -4,6 +4,7 @@ on: workflow_dispatch
 
 jobs:
   generate-status-page:
+    if: github.repository == 'kiegroup/optaplanner'
     concurrency:
       group: generate-status-page
       cancel-in-progress: true

@@ -6,6 +6,7 @@ on:
     - cron: '0 * * * *'
 jobs:
   generate-status-page-data:
+    if: github.repository == 'kiegroup/optaplanner'
     concurrency:
       group: generate-status-page-data
       cancel-in-progress: true
