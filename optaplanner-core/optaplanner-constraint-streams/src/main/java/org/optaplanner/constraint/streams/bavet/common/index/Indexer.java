@@ -36,7 +36,8 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
  * to avoid doing the same hash lookup twice in the client.
  * For example {@link JoinBiNode} uses the value to store a set of child tuples justified by the X instance.
  * <p>
- * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of {@link #get(Object[])}.
+ * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of
+ * {@link #visit(IndexProperties, Consumer)}.
  *
  * @param <Tuple_> For example for {@code from(A).join(B)}, the tuple is {@code UniTuple<A>} xor {@code UniTuple<B>}.
  *        For example for {@code Bi<A, B>.join(C)}, the tuple is {@code BiTuple<A, B>} xor {@code UniTuple<C>}.
@@ -53,7 +54,7 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      * @param value never null
      * @throws IllegalStateException if the indexProperties-tuple key already exists
      */
-    void put(Object[] indexProperties, Tuple_ tuple, Value_ value);
+    void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value);
 
     /**
      * Differs from {@link Map#remove(Object)} because it fails if the key does not exist.
@@ -63,13 +64,13 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      * @return never null
      * @throws IllegalStateException if the indexProperties-tuple key didn't exist
      */
-    Value_ remove(Object[] indexProperties, Tuple_ tuple);
+    Value_ remove(IndexProperties indexProperties, Tuple_ tuple);
 
     /**
      * @param indexProperties never null
      * @param tupleValueMapEntryVisitor never null
      */
-    default void visit(Object[] indexProperties, BiConsumer<Tuple_, Value_> tupleValueMapEntryVisitor) {
+    default void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueMapEntryVisitor) {
         visit(indexProperties, map -> map.forEach(tupleValueMapEntryVisitor));
     }
 
@@ -77,12 +78,8 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      * @param indexProperties never null
      * @param tupleValueMapVisitor never null
      */
-    void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor);
+    void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor);
 
-    /**
-     * @param indexProperties never null
-     * @return number of values across all tuples
-     */
-    int countValues(Object[] indexProperties);
+    boolean isEmpty();
 
 }

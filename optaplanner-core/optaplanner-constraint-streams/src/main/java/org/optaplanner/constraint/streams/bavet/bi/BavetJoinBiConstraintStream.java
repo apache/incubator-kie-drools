@@ -19,15 +19,14 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
+import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
@@ -74,8 +73,6 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        Function<A, Object[]> mappingA = JoinerUtils.combineLeftMappings(joiner);
-        Function<B, Object[]> mappingB = JoinerUtils.combineRightMappings(joiner);
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
@@ -85,7 +82,8 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         Indexer<UniTuple<A>, Set<BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
         JoinBiNode<A, B> node = new JoinBiNode<>(
-                mappingA, mappingB, inputStoreIndexA, inputStoreIndexB, insert, retract,
+                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                inputStoreIndexA, inputStoreIndexB, insert, retract,
                 outputStoreSize, indexerA, indexerB);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertA, node::retractA);

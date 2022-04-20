@@ -18,19 +18,17 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBridgeBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
+import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
@@ -79,8 +77,6 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        BiFunction<A, B, Object[]> mappingA = JoinerUtils.combineLeftMappings(joiner);
-        Function<C, Object[]> mappingB = JoinerUtils.combineRightMappings(joiner);
         int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
@@ -90,7 +86,8 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
         JoinTriNode<A, B, C> node = new JoinTriNode<>(
-                mappingA, mappingB, inputStoreIndexAB, inputStoreIndexC, insert, retract,
+                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                inputStoreIndexAB, inputStoreIndexC, insert, retract,
                 outputStoreSize, indexerAB, indexerC);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(leftParent, node::insertAB, node::retractAB);

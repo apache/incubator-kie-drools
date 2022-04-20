@@ -34,8 +34,8 @@ class NoneIndexerTest extends AbstractIndexerTest {
     void putTwice() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[0], annTuple, "Ann value");
-        assertThatThrownBy(() -> indexer.put(new Object[] {}, annTuple, "Ann value"))
+        indexer.put(NoneIndexProperties.INSTANCE, annTuple, "Ann value");
+        assertThatThrownBy(() -> indexer.put(NoneIndexProperties.INSTANCE, annTuple, "Ann value"))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -43,14 +43,14 @@ class NoneIndexerTest extends AbstractIndexerTest {
     void removeTwice() {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[0], annTuple, "Ann value");
+        indexer.put(NoneIndexProperties.INSTANCE, annTuple, "Ann value");
 
         UniTuple<String> ednaTuple = newTuple("Edna-F-40");
-        assertThatThrownBy(() -> indexer.remove(new Object[0], ednaTuple))
+        assertThatThrownBy(() -> indexer.remove(NoneIndexProperties.INSTANCE, ednaTuple))
                 .isInstanceOf(IllegalStateException.class);
-        assertThat(indexer.remove(new Object[0], annTuple))
+        assertThat(indexer.remove(NoneIndexProperties.INSTANCE, annTuple))
                 .isEqualTo("Ann value");
-        assertThatThrownBy(() -> indexer.remove(new Object[0], annTuple))
+        assertThatThrownBy(() -> indexer.remove(NoneIndexProperties.INSTANCE, annTuple))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -59,12 +59,11 @@ class NoneIndexerTest extends AbstractIndexerTest {
         Indexer<UniTuple<String>, String> indexer = new NoneIndexer<>();
 
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[0], annTuple, "Ann value");
+        indexer.put(NoneIndexProperties.INSTANCE, annTuple, "Ann value");
         UniTuple<String> bethTuple = newTuple("Beth-F-30");
-        indexer.put(new Object[0], bethTuple, "Beth value");
+        indexer.put(NoneIndexProperties.INSTANCE, bethTuple, "Beth value");
 
         assertThat(getTupleMap(indexer)).containsOnlyKeys(annTuple, bethTuple);
-        assertThat(indexer.countValues(new Object[0])).isEqualTo(2);
     }
 
     private static UniTuple<String> newTuple(String factA) {

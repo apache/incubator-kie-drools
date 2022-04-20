@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -28,12 +27,13 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
+import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 
 public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
 
-    private final Function<A, Object[]> mappingA;
-    private final Function<B, Object[]> mappingB;
+    private final Function<A, IndexProperties> mappingA;
+    private final Function<B, IndexProperties> mappingB;
     private final int inputStoreIndexA;
     private final int inputStoreIndexB;
     /**
@@ -51,7 +51,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
     private final BiPredicate<A, B> filtering;
     private final Queue<Counter<A>> dirtyCounterQueue;
 
-    public IfExistsUniWithUniNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
+    public IfExistsUniWithUniNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
             Indexer<UniTuple<A>, Counter<A>> indexerA, Indexer<UniTuple<B>, Set<Counter<A>>> indexerB,
@@ -73,7 +73,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
             throw new IllegalStateException("Impossible state: the input for the fact ("
                     + tupleA.factA + ") was already added in the tupleStore.");
         }
-        Object[] indexProperties = mappingA.apply(tupleA.factA);
+        IndexProperties indexProperties = mappingA.apply(tupleA.factA);
         tupleA.store[inputStoreIndexA] = indexProperties;
 
         Counter<A> counter = new Counter<>(tupleA);
@@ -93,7 +93,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
     }
 
     public void retractA(UniTuple<A> tupleA) {
-        Object[] indexProperties = (Object[]) tupleA.store[inputStoreIndexA];
+        IndexProperties indexProperties = (IndexProperties) tupleA.store[inputStoreIndexA];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -107,7 +107,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
                 // If filtering is active, not all counterSets contain the counter and we don't track which ones do
                 if (!changed && filtering == null) {
                     throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
-                            + ") with indexProperties (" + Arrays.toString(indexProperties)
+                            + ") with indexProperties (" + indexProperties
                             + ") has a counter on the A side that doesn't exist on the B side.");
                 }
             });
@@ -120,7 +120,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
             throw new IllegalStateException("Impossible state: the input for the fact ("
                     + tupleB.factA + ") was already added in the tupleStore.");
         }
-        Object[] indexProperties = mappingB.apply(tupleB.factA);
+        IndexProperties indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
         // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
@@ -137,7 +137,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
                     } else {
                         throw new IllegalStateException("Impossible state: the counter for facts ("
                                 + tupleA.factA + ", " + tupleB.factA
-                                + ") with indexProperties (" + Arrays.toString(indexProperties)
+                                + ") with indexProperties (" + indexProperties
                                 + ") has an impossible state (" + counter.state + ").");
                     }
                 }
@@ -148,7 +148,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
     }
 
     public void retractB(UniTuple<B> tupleB) {
-        Object[] indexProperties = (Object[]) tupleB.store[inputStoreIndexB];
+        IndexProperties indexProperties = (IndexProperties) tupleB.store[inputStoreIndexB];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;

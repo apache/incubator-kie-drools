@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -26,14 +25,15 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
+import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public final class JoinBiNode<A, B> extends AbstractNode {
 
-    private final Function<A, Object[]> mappingA;
-    private final Function<B, Object[]> mappingB;
+    private final Function<A, IndexProperties> mappingA;
+    private final Function<B, IndexProperties> mappingB;
     private final int inputStoreIndexA;
     private final int inputStoreIndexB;
     /**
@@ -50,7 +50,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     private final Indexer<UniTuple<B>, Set<BiTuple<A, B>>> indexerB;
     private final Queue<BiTuple<A, B>> dirtyTupleQueue;
 
-    public JoinBiNode(Function<A, Object[]> mappingA, Function<B, Object[]> mappingB,
+    public JoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize,
@@ -72,7 +72,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             throw new IllegalStateException("Impossible state: the input for the fact ("
                     + tupleA.factA + ") was already added in the tupleStore.");
         }
-        Object[] indexProperties = mappingA.apply(tupleA.factA);
+        IndexProperties indexProperties = mappingA.apply(tupleA.factA);
         tupleA.store[inputStoreIndexA] = indexProperties;
 
         Set<BiTuple<A, B>> tupleABSetA = new LinkedHashSet<>();
@@ -87,7 +87,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     }
 
     public void retractA(UniTuple<A> tupleA) {
-        Object[] indexProperties = (Object[]) tupleA.store[inputStoreIndexA];
+        IndexProperties indexProperties = (IndexProperties) tupleA.store[inputStoreIndexA];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -102,7 +102,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             boolean changed = tupleABSetB.removeAll(tupleABSetA);
             if (!changed) {
                 throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
-                        + ") with indexProperties (" + Arrays.toString(indexProperties)
+                        + ") with indexProperties (" + indexProperties
                         + ") has tuples on the A side that didn't exist on the B side.");
             }
         });
@@ -116,7 +116,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             throw new IllegalStateException("Impossible state: the input for the fact ("
                     + tupleB.factA + ") was already added in the tupleStore.");
         }
-        Object[] indexProperties = mappingB.apply(tupleB.factA);
+        IndexProperties indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
         Set<BiTuple<A, B>> tupleABSetB = new LinkedHashSet<>();
@@ -131,7 +131,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     }
 
     public void retractB(UniTuple<B> tupleB) {
-        Object[] indexProperties = (Object[]) tupleB.store[inputStoreIndexB];
+        IndexProperties indexProperties = (IndexProperties) tupleB.store[inputStoreIndexB];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -146,7 +146,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             boolean changed = tupleABSetA.removeAll(tupleABSetB);
             if (!changed) {
                 throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
-                        + ") with indexProperties (" + Arrays.toString(indexProperties)
+                        + ") with indexProperties (" + indexProperties
                         + ") has tuples on the B side that didn't exist on the A side.");
             }
         });

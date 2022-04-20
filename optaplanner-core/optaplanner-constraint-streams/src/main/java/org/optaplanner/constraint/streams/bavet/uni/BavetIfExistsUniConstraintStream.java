@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,13 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
-import org.optaplanner.constraint.streams.bavet.common.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
+import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
@@ -76,8 +75,6 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        Function<A, Object[]> mappingA = JoinerUtils.combineLeftMappings(joiner);
-        Function<B, Object[]> mappingB = JoinerUtils.combineRightMappings(joiner);
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentA.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource());
         Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
@@ -89,7 +86,8 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
             throw new UnsupportedOperationException();
         }
         IfExistsUniWithUniNode<A, B> node = new IfExistsUniWithUniNode<>(
-                mappingA, mappingB, inputStoreIndexA, inputStoreIndexB,
+                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                inputStoreIndexA, inputStoreIndexB,
                 insert, retract,
                 indexerA, indexerB, filtering);
         buildHelper.addNode(node);

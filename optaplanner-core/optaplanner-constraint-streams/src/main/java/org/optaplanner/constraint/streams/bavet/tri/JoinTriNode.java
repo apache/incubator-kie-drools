@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -28,13 +27,14 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
+import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public final class JoinTriNode<A, B, C> extends AbstractNode {
 
-    private final BiFunction<A, B, Object[]> mappingAB;
-    private final Function<C, Object[]> mappingC;
+    private final BiFunction<A, B, IndexProperties> mappingAB;
+    private final Function<C, IndexProperties> mappingC;
     private final int inputStoreIndexAB;
     private final int inputStoreIndexC;
     /**
@@ -51,7 +51,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     private final Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC;
     private final Queue<TriTuple<A, B, C>> dirtyTupleQueue;
 
-    public JoinTriNode(BiFunction<A, B, Object[]> mappingAB, Function<C, Object[]> mappingC,
+    public JoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
             int inputStoreIndexAB, int inputStoreIndexC,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize,
@@ -73,7 +73,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
             throw new IllegalStateException("Impossible state: the input for the fact ("
                     + tupleAB.factA + ", " + tupleAB.factB + ") was already added in the tupleStore.");
         }
-        Object[] indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
+        IndexProperties indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
         tupleAB.store[inputStoreIndexAB] = indexProperties;
 
         Set<TriTuple<A, B, C>> tupleABCSetAB = new LinkedHashSet<>();
@@ -89,7 +89,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     }
 
     public void retractAB(BiTuple<A, B> tupleAB) {
-        Object[] indexProperties = (Object[]) tupleAB.store[inputStoreIndexAB];
+        IndexProperties indexProperties = (IndexProperties) tupleAB.store[inputStoreIndexAB];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -104,7 +104,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
             boolean changed = tupleABCSetC.removeAll(tupleABCSetAB);
             if (!changed) {
                 throw new IllegalStateException("Impossible state: the fact (" + tupleAB.factA
-                        + ") with indexProperties (" + Arrays.toString(indexProperties)
+                        + ") with indexProperties (" + indexProperties
                         + ") has tuples on the AB side that didn't exist on the C side.");
             }
         });
@@ -118,7 +118,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
             throw new IllegalStateException("Impossible state: the input for the fact ("
                     + tupleC.factA + ") was already added in the tupleStore.");
         }
-        Object[] indexProperties = mappingC.apply(tupleC.factA);
+        IndexProperties indexProperties = mappingC.apply(tupleC.factA);
         tupleC.store[inputStoreIndexC] = indexProperties;
 
         Set<TriTuple<A, B, C>> tupleABCSetC = new LinkedHashSet<>();
@@ -134,7 +134,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     }
 
     public void retractC(UniTuple<C> tupleC) {
-        Object[] indexProperties = (Object[]) tupleC.store[inputStoreIndexC];
+        IndexProperties indexProperties = (IndexProperties) tupleC.store[inputStoreIndexC];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -149,7 +149,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
             boolean changed = tupleABCSetAB.removeAll(tupleABCSetC);
             if (!changed) {
                 throw new IllegalStateException("Impossible state: the fact (" + tupleAB.factA + ", " + tupleAB.factB
-                        + ") with indexProperties (" + Arrays.toString(indexProperties)
+                        + ") with indexProperties (" + indexProperties
                         + ") has tuples on the C side that didn't exist on the AB side.");
             }
         });
