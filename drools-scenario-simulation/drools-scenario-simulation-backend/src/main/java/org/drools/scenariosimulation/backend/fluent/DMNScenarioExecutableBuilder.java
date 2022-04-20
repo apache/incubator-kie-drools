@@ -16,17 +16,15 @@
 
 package org.drools.scenariosimulation.backend.fluent;
 
-import java.util.Objects;
-
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.api.runtime.RequestContext;
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.internal.builder.fluent.DMNRuntimeFluent;
-import org.kie.internal.builder.fluent.ExecutableBuilder;
-import org.kie.internal.command.RegistryContext;
 
 public class DMNScenarioExecutableBuilder {
 
@@ -34,15 +32,13 @@ public class DMNScenarioExecutableBuilder {
     public static final String DMN_RESULT = "dmnResult";
     public static final String DMN_MODEL = "dmnModel";
 
-    private final DMNRuntimeFluent dmnRuntimeFluent;
-    private final ExecutableBuilder executableBuilder;
+    private final DMNRuntime dmnRuntime;
+    private final DMNContext dmnContext;
+    private DMNModel dmnModel;
 
     private DMNScenarioExecutableBuilder(KieContainer kieContainer, String applicationName) {
-        executableBuilder = ExecutableBuilder.create();
-
-        dmnRuntimeFluent = executableBuilder.newApplicationContext(applicationName)
-                .setKieContainer(kieContainer)
-                .newDMNRuntime();
+        dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
+        dmnContext = dmnRuntime.newContext();
     }
 
     private DMNScenarioExecutableBuilder(KieContainer kieContainer) {
@@ -58,34 +54,19 @@ public class DMNScenarioExecutableBuilder {
     }
 
     public void setActiveModel(String path) {
-        dmnRuntimeFluent
-                .addCommand(context -> {
-                    RegistryContext registryContext = (RegistryContext) context;
-
-                    DMNRuntime dmnRuntime = registryContext.lookup(DMNRuntime.class);
-                    if (dmnRuntime == null) {
-                        throw new IllegalStateException("There is no DMNRuntime available");
-                    }
-
-                    DMNModel dmnModel = DMNSimulationUtils.extractDMNModel(dmnRuntime, path);
-                    registryContext.register(DMNModel.class, dmnModel);
-                    return dmnModel;
-                })
-                .out(DMN_MODEL);
+        dmnModel = DMNSimulationUtils.extractDMNModel(dmnRuntime, path);
     }
 
     public void setValue(String key, Object value) {
-        dmnRuntimeFluent.setInput(key, value);
+        dmnContext.set(key, value);
     }
 
     public RequestContext run() {
-        Objects.requireNonNull(executableBuilder, "Executable builder is null, please invoke create(KieContainer, )");
-
-        dmnRuntimeFluent
-                .evaluateModel()
-                .out(DMN_RESULT)
-                .end();
-
-        return ExecutableRunner.create().execute(executableBuilder.getExecutable());
+        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
+        RequestContext requestContext = ExecutableRunner.create().createContext();
+        requestContext.setResult(dmnResult);
+        requestContext.setOutput(DMN_MODEL, dmnModel);
+        requestContext.setOutput(DMN_RESULT, dmnResult);
+        return requestContext;
     }
 }
