@@ -18,12 +18,8 @@ package org.drools.modelcompiler.builder;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
-import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
-import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
-import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -40,7 +36,6 @@ import org.drools.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -125,32 +120,13 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        processAccumulateFunctions(pkgRegistry, packageDescr);
-        if (hasMvel()) {
-            processWindowDeclarations(pkgRegistry, packageDescr);
-        }
-        processFunctions(pkgRegistry, packageDescr);
-        processGlobals(pkgRegistry, packageDescr);
+        throw new UnsupportedOperationException("unreachable code");
     }
 
 
     @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
-        // all handled within PackageRegistryManagerImpl#getOrCreatePackageRegistry()
-        for (CompositePackageDescr packageDescr : packages) {
-            if (StringUtils.isEmpty(packageDescr.getName())) {
-                packageDescr.setName(getBuilderConfiguration().getDefaultPackageName());
-            }
-
-            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            if (pkgRegistry == null) {
-                getOrCreatePackageRegistry(packageDescr);
-            } else {
-                for (ImportDescr importDescr : packageDescr.getImports()) {
-                    pkgRegistry.registerImport(importDescr.getTarget());
-                }
-            }
-        }
+        throw new UnsupportedOperationException("unreachable code");
     }
 
     private void deregisterTypeDeclarations(Collection<CompositePackageDescr> packages) {
