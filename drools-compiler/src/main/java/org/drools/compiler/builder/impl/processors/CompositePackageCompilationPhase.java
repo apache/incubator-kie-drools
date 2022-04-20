@@ -31,7 +31,6 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,7 +119,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         return annotationNormalizers;
     }
 
-    private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
+    private IteratingPhase iteratingPhase(IterablePhaseFactory phaseFactory) {
         return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
     }
 
@@ -130,36 +129,3 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     }
 }
 
-interface SinglePackagePhaseFactory {
-    CompilationPhase create(PackageRegistry pkgRegistry, CompositePackageDescr packageDescr);
-}
-
-class IteratingPhase implements CompilationPhase {
-    private final Collection<CompositePackageDescr> packages;
-    private final PackageRegistryManager pkgRegistryManager;
-    private final SinglePackagePhaseFactory phaseFactory;
-
-    private final Collection<KnowledgeBuilderResult> results = new ArrayList<>();
-
-    public IteratingPhase(Collection<CompositePackageDescr> packages, PackageRegistryManager pkgRegistryManager, SinglePackagePhaseFactory phaseFactory) {
-        this.packages = packages;
-        this.pkgRegistryManager = pkgRegistryManager;
-        this.phaseFactory = phaseFactory;
-    }
-
-    @Override
-    public void process() {
-        for (CompositePackageDescr compositePackageDescr : packages) {
-            CompilationPhase phase = phaseFactory.create(
-                    pkgRegistryManager.getPackageRegistry(compositePackageDescr.getNamespace()),
-                    compositePackageDescr);
-            phase.process();
-            results.addAll(phase.getResults());
-        }
-    }
-
-    @Override
-    public Collection<? extends KnowledgeBuilderResult> getResults() {
-        return results;
-    }
-}

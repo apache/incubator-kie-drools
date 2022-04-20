@@ -73,6 +73,7 @@ public class POJOGenerator implements CompilationPhase {
         this.pkg = pkg;
         this.packageDescr = packageDescr;
         this.packageModel = packageModel;
+        packageModel.addImports(pkg.getTypeResolver().getImports());
     }
 
     public static Map<String, Class<?>> compileType(BuildResultAccumulator resultAccumulator,

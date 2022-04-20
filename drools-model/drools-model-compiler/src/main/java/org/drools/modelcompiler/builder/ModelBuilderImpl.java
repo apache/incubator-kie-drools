@@ -31,6 +31,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
+import org.drools.modelcompiler.builder.processors.DeclaredTypeCompilationPhase;
 import org.drools.modelcompiler.builder.processors.GeneratedPojoCompilationPhase;
 import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
 import org.drools.modelcompiler.builder.processors.PojoStoragePhase;
@@ -90,11 +91,26 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     @Override
     protected void doSecondBuildStep( Collection<CompositePackageDescr> compositePackages ) {
         Collection<CompositePackageDescr> packages = compositePackagesManager.findPackages(compositePackages);
-//        initPackageRegistries(packages);
-        registerTypeDeclarations( packages );
-        buildDeclaredTypes( packages );
-        compileGeneratedPojos( packageModels );
-        storeGeneratedPojosInPackages( packages );
+        DeclaredTypeCompilationPhase declaredTypeCompilationPhase = new DeclaredTypeCompilationPhase(
+                packageModels,
+                getPackageRegistryManager(),
+                getBuildContext(),
+                getBuilderConfiguration(),
+                packages);
+        declaredTypeCompilationPhase.process();
+        getBuildResultAccumulator().addAll(declaredTypeCompilationPhase.getResults());
+        /*
+                OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
+                pkgRegistry,
+                packageDescr,
+                globals,
+                this,
+                kBase,
+                configuration,
+                assetFilter);
+        otherDeclarationProcessor.process();
+        this.results.addAll(otherDeclarationProcessor.getResults());
+         */
         buildOtherDeclarations( packages );
         deregisterTypeDeclarations( packages );
         buildRules(packages);
