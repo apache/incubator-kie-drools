@@ -1117,6 +1117,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.globals.addGlobal(name, type);
     }
 
+    protected GlobalVariableContext getGlobalVariableContext() {
+        return globals;
+    }
+
     /**
      * This will return true if there were errors in the package building and
      * compiling phase

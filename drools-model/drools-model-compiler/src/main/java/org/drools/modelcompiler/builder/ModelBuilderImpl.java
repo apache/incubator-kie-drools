@@ -16,11 +16,14 @@
 
 package org.drools.modelcompiler.builder;
 
-import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
+import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
+import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
+import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -30,16 +33,14 @@ import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.drools.modelcompiler.builder.processors.DeclaredTypeCompilationPhase;
-import org.drools.modelcompiler.builder.processors.GeneratedPojoCompilationPhase;
 import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
-import org.drools.modelcompiler.builder.processors.PojoStoragePhase;
-import org.drools.modelcompiler.builder.processors.TypeDeclarationRegistrationPhase;
+import org.drools.modelcompiler.builder.processors.ModelMainCompilationPhase;
 import org.drools.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -67,7 +68,8 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     @Override
-    protected void doFirstBuildStep( Collection<CompositePackageDescr> packages) { }
+    protected void doFirstBuildStep(Collection<CompositePackageDescr> packages) {
+    }
 
     @Override
     public void addPackage(final PackageDescr packageDescr) {
@@ -79,28 +81,44 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         }
         for (GlobalDescr globalDescr : packageDescr.getGlobals()) {
             try {
-                Class<?> globalType = pkg.getTypeResolver().resolveType( globalDescr.getType() );
-                addGlobal( globalDescr.getIdentifier(), globalType );
-                pkg.addGlobal( globalDescr.getIdentifier(), globalType );
+                Class<?> globalType = pkg.getTypeResolver().resolveType(globalDescr.getType());
+                addGlobal(globalDescr.getIdentifier(), globalType);
+                pkg.addGlobal(globalDescr.getIdentifier(), globalType);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException( e );
+                throw new RuntimeException(e);
             }
         }
     }
 
     @Override
-    protected void doSecondBuildStep( Collection<CompositePackageDescr> compositePackages ) {
+    protected void doSecondBuildStep(Collection<CompositePackageDescr> compositePackages) {
         Collection<CompositePackageDescr> packages = compositePackagesManager.findPackages(compositePackages);
-        DeclaredTypeCompilationPhase declaredTypeCompilationPhase = new DeclaredTypeCompilationPhase(
-                packageModels,
-                getPackageRegistryManager(),
-                getBuildContext(),
-                getBuilderConfiguration(),
-                packages);
-        declaredTypeCompilationPhase.process();
-        getBuildResultAccumulator().addAll(declaredTypeCompilationPhase.getResults());
-        buildOtherDeclarations( packages );
-        deregisterTypeDeclarations( packages );
+
+        List<CompilationPhase> phases = asList(
+                new DeclaredTypeCompilationPhase(
+                        this.packageModels,
+                        this.getPackageRegistryManager(),
+                        this.getBuildContext(),
+                        this.getBuilderConfiguration(),
+                        packages),
+                new ModelMainCompilationPhase(
+                        this.getPackageRegistryManager(),
+                        packages,
+                        this.getBuilderConfiguration(),
+                        hasMvel(),
+                        this.getKnowledgeBase(),
+                        this,
+                        this.getGlobalVariableContext()));
+
+        for (CompilationPhase phase : phases) {
+            phase.process();
+            this.getBuildResultAccumulator().addAll(phase.getResults());
+            if (this.getBuildResultAccumulator().hasErrors()) {
+                break;
+            }
+        }
+
+        deregisterTypeDeclarations(packages);
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
     }
@@ -109,25 +127,24 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         processAccumulateFunctions(pkgRegistry, packageDescr);
         if (hasMvel()) {
-            processWindowDeclarations( pkgRegistry, packageDescr );
+            processWindowDeclarations(pkgRegistry, packageDescr);
         }
         processFunctions(pkgRegistry, packageDescr);
         processGlobals(pkgRegistry, packageDescr);
     }
 
 
-
     @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         // all handled within PackageRegistryManagerImpl#getOrCreatePackageRegistry()
-        for ( CompositePackageDescr packageDescr : packages ) {
-            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
-                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
+        for (CompositePackageDescr packageDescr : packages) {
+            if (StringUtils.isEmpty(packageDescr.getName())) {
+                packageDescr.setName(getBuilderConfiguration().getDefaultPackageName());
             }
 
-            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
             if (pkgRegistry == null) {
-                getOrCreatePackageRegistry( packageDescr );
+                getOrCreatePackageRegistry(packageDescr);
             } else {
                 for (ImportDescr importDescr : packageDescr.getImports()) {
                     pkgRegistry.registerImport(importDescr.getTarget());
@@ -148,7 +165,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 //    }
 
 
-    private void deregisterTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+    private void deregisterTypeDeclarations(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
             getOrCreatePackageRegistry(packageDescr).getPackage().getTypeDeclarations().clear();
         }
@@ -166,10 +183,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             compileKnowledgePackages(packageDescr, pkgRegistry);
             setAssetFilter(null);
 
-            PackageModel pkgModel = packageModels.remove( pkgRegistry.getPackage().getName() );
-            pkgModel.setOneClassPerRule( oneClassPerRule );
-            if (getResults( ResultSeverity.ERROR ).isEmpty()) {
-                packageSources.put( pkgModel.getName(), sourcesGenerator.apply( pkgModel ) );
+            PackageModel pkgModel = packageModels.remove(pkgRegistry.getPackage().getName());
+            pkgModel.setOneClassPerRule(oneClassPerRule);
+            if (getResults(ResultSeverity.ERROR).isEmpty()) {
+                packageSources.put(pkgModel.getName(), sourcesGenerator.apply(pkgModel));
             }
         }
     }
