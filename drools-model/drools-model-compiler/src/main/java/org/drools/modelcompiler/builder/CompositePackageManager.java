@@ -4,6 +4,7 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,10 @@ public class CompositePackageManager {
     private Map<String, CompositePackageDescr> compositePackagesMap;
 
     public void register(PackageDescr packageDescr) {
+        if (compositePackagesMap == null) {
+            compositePackagesMap = new HashMap<>();
+        }
+
         CompositePackageDescr pkgDescr = compositePackagesMap.get(packageDescr.getNamespace());
         if (pkgDescr == null) {
             compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr( packageDescr.getResource(), packageDescr) );
