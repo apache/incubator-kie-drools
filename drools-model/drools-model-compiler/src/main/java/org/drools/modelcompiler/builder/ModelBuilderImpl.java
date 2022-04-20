@@ -30,6 +30,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.drools.modelcompiler.builder.processors.GeneratedPojoCompilationPhase;
+import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
 import org.drools.modelcompiler.builder.processors.PojoStoragePhase;
 import org.drools.modelcompiler.builder.processors.TypeDeclarationRegistrationPhase;
 import org.drools.util.StringUtils;
@@ -45,7 +46,6 @@ import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static org.drools.core.util.Drools.hasMvel;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
 
@@ -244,8 +244,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         PackageModel packageModel = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-        PackageModel.initPackageModel( this, pkgRegistry.getPackage(), pkgRegistry.getTypeResolver(), packageDescr, packageModel );
-        generateModel(this, pkg, packageDescr, packageModel);
+        ModelGeneratorPhase modelGeneratorPhase = new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this);
+        modelGeneratorPhase.process();
+        this.getBuildResultAccumulator().addAll(modelGeneratorPhase.getResults());
     }
 
     protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
