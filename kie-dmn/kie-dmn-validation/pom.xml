@@ -85,6 +85,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-commands</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId> <!-- org.drools.modelcompiler.builder.KieBaseBuilder -->
     </dependency>
     <dependency>

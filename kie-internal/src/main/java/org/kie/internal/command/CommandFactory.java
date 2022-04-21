@@ -381,7 +381,11 @@ public class CommandFactory {
 
     private static void loadProvider() {
         try {
-            setCommandFactoryProvider( (ExtendedKieCommands) KieService.load(KieCommands.class) );
+            ExtendedKieCommands commands = (ExtendedKieCommands) KieService.load(KieCommands.class);
+            if (commands == null) {
+                throw new RuntimeException( "Cannot find the CommandFactoryServiceImpl, please add org.drools:drools-commands to your classpath" );
+            }
+            setCommandFactoryProvider( commands );
         } catch ( Exception e ) {
             throw new RuntimeException( "Cannot find the CommandFactoryServiceImpl, please add org.drools:drools-commands to your classpath", e );
         }
