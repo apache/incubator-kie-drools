@@ -430,16 +430,6 @@ public final class ClassUtils {
         return null;
     }
 
-    // Used for exec-model DomainClassMetadata and index
-    public static List<String> getAccessiblePropertiesIncludingNonGetterValueMethod(Class<?> clazz) {
-        List<String> accessibleProperties = getAccessibleProperties(clazz);
-
-        // Add nonGetterValueMethods at last so property reactivity mask index isn't affected
-        accessibleProperties.addAll(getNonGetterValueMethods(clazz, accessibleProperties));
-        return accessibleProperties;
-    }
-
-    // Used for property reactivity
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
         Set<PropertyInClass> props = new TreeSet<>();
         for (Method m : clazz.getMethods()) {
@@ -460,40 +450,10 @@ public final class ClassUtils {
         }
 
         List<String> accessibleProperties = new ArrayList<>();
-        for ( PropertyInClass propInClass : props ) {
-            accessibleProperties.add(propInClass.prop);
+        for ( PropertyInClass setter : props ) {
+            accessibleProperties.add(setter.setter);
         }
         return accessibleProperties;
-    }
-
-    public static List<String> getNonGetterValueMethods(Class<?> clazz, List<String> accessibleProperties) {
-        Set<PropertyInClass> nonGetterValueMethodInClassSet = new TreeSet<>();
-        for (Method m : clazz.getMethods()) {
-            String propName = getter2property(m.getName());
-            if (propName == null) {
-                String methodName = filterNonGetterValueMethod(m);
-                if (methodName != null) {
-                    nonGetterValueMethodInClassSet.add(new PropertyInClass(methodName, m.getDeclaringClass()));
-                }
-            }
-        }
-
-        List<String> nonGetterValueMethods = new ArrayList<>();
-        for (PropertyInClass propInClass : nonGetterValueMethodInClassSet) {
-            if (!accessibleProperties.contains(propInClass.prop)) {
-                nonGetterValueMethods.add(propInClass.prop);
-            }
-        }
-        return nonGetterValueMethods;
-    }
-
-    private static String filterNonGetterValueMethod(Method m) {
-        String methodName = m.getName();
-        if (m.getParameterTypes().length == 0 && !m.getReturnType().equals(void.class) && methodName != "toString" && methodName != "hashCode") {
-            return m.getName(); // e.g. Person.calcAge(), Integer.intValue()
-        } else {
-            return null;
-        }
     }
 
     public static Field getField(Class<?> clazz, String field) {
@@ -754,18 +714,18 @@ public final class ClassUtils {
     }
 
     private static class PropertyInClass implements Comparable {
-        private final String prop;
+        private final String setter;
         private final Class<?> clazz;
 
-        private PropertyInClass( String prop, Class<?> clazz ) {
-            this.prop = prop;
+        private PropertyInClass( String setter, Class<?> clazz ) {
+            this.setter = setter;
             this.clazz = clazz;
         }
 
         public int compareTo(Object o) {
             PropertyInClass other = (PropertyInClass) o;
             if (clazz == other.clazz) {
-                return prop.compareTo(other.prop);
+                return setter.compareTo(other.setter);
             }
             return clazz.isAssignableFrom(other.clazz) ? -1 : 1;
         }
@@ -776,12 +736,12 @@ public final class ClassUtils {
                 return false;
             }
             PropertyInClass other = (PropertyInClass) obj;
-            return clazz == other.clazz && prop.equals(other.prop);
+            return clazz == other.clazz && setter.equals(other.setter);
         }
 
         @Override
         public int hashCode() {
-            return 29 * clazz.hashCode() + 31 * prop.hashCode();
+            return 29 * clazz.hashCode() + 31 * setter.hashCode();
         }
     }
 
