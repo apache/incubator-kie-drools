@@ -251,8 +251,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         }
 
         private void doProblemChange(Employee selectedEmployee, Integer selectedIndex, boolean unassignTask) {
-            SolutionBusiness<TaskAssigningSolution, ?> solutionBusiness =
-                    taskAssigningPanel.getSolutionBusiness();
+            SolutionBusiness<TaskAssigningSolution, ?> solutionBusiness = taskAssigningPanel.getSolutionBusiness();
             if (unassignTask) {
                 solutionBusiness.doProblemChange(
                         (workingSolution, problemChangeDirector) -> problemChangeDirector.changeVariable(selectedEmployee,
@@ -266,13 +265,11 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                                     e -> e.getTasks().add(selectedIndex, task)));
                 } else {
                     solutionBusiness.doProblemChange((workingSolution, problemChangeDirector) -> {
-                        Task removedTask = task.getEmployee().getTasks().get(task.getIndex());
+                        Task workingTask = problemChangeDirector.lookUpWorkingObjectOrFail(task);
                         problemChangeDirector.changeVariable(task.getEmployee(), "tasks",
-                                e -> e.getTasks().remove(task));
-                        if (task.getEmployee() != selectedEmployee) {
-                            problemChangeDirector.changeVariable(selectedEmployee, "tasks",
-                                    e -> e.getTasks().add(selectedIndex, removedTask));
-                        }
+                                e -> e.getTasks().remove(workingTask));
+                        problemChangeDirector.changeVariable(selectedEmployee, "tasks",
+                                e -> e.getTasks().add(selectedIndex, workingTask));
                     });
                 }
             }
