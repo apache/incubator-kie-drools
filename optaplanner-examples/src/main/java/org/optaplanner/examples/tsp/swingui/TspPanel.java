@@ -123,7 +123,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         }
         if (targetStandstill instanceof Visit
                 && (sourceStandstill instanceof Domicile || ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
-            doProblemChange((Visit) targetStandstill, sourceStandstill);
+            changePreviousStandstill((Visit) targetStandstill, sourceStandstill);
         }
         solverAndPersistenceFrame.resetScreen();
     }
@@ -152,26 +152,28 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         return null;
     }
 
-    public void doProblemChange(Visit visit, Standstill toStandstill) {
-        TspSolution tspSolution = getSolution();
+    public void changePreviousStandstill(Visit visit, Standstill toStandstill) {
         doProblemChange((workingSolution, problemChangeDirector) -> {
-            Visit oldTrailingEntity = findNextVisit(tspSolution, visit);
-            Visit newTrailingEntity = findNextVisit(tspSolution, toStandstill);
-            Standstill oldValue = visit.getPreviousStandstill();
+            Visit workingVisit = problemChangeDirector.lookUpWorkingObjectOrFail(visit);
+            Standstill workingToStandstill = problemChangeDirector.lookUpWorkingObjectOrFail(toStandstill);
+            Visit oldNextVisit = findNextVisit(workingSolution, workingVisit);
+            Visit newNextVisit = findNextVisit(workingSolution, workingToStandstill);
+            Standstill oldPreviousStandstill = workingVisit.getPreviousStandstill();
 
             // Close the old chain
-            if (oldTrailingEntity != null) {
+            if (oldNextVisit != null) {
                 problemChangeDirector.changeVariable(
-                        oldTrailingEntity, "previousStandstill", v -> v.setPreviousStandstill(oldValue));
+                        oldNextVisit, "previousStandstill", v -> v.setPreviousStandstill(oldPreviousStandstill));
             }
 
             // Change the entity
-            problemChangeDirector.changeVariable(visit, "previousStandstill", v -> v.setPreviousStandstill(toStandstill));
+            problemChangeDirector.changeVariable(
+                    workingVisit, "previousStandstill", v -> v.setPreviousStandstill(workingToStandstill));
 
             // Reroute the new chain
-            if (newTrailingEntity != null) {
+            if (newNextVisit != null) {
                 problemChangeDirector.changeVariable(
-                        newTrailingEntity, "previousStandstill", v -> v.setPreviousStandstill(visit));
+                        newNextVisit, "previousStandstill", v -> v.setPreviousStandstill(workingVisit));
             }
         });
     }
