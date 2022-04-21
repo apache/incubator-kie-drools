@@ -814,13 +814,13 @@ public class ConstraintParser {
     private SpecialComparisonResult compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
         MethodCallExpr compareMethod = new MethodCallExpr( null, methodName );
-        compareMethod.addArgument( toBigDecimalExpression( left ) );
-        compareMethod.addArgument( toBigDecimalExpression( right ) );
+        compareMethod.addArgument( toBigDecimalExpression( left, context ) );
+        compareMethod.addArgument( toBigDecimalExpression( right, context ) );
         return new SpecialComparisonResult(compareMethod, left, right);
     }
 
     // TODO luca this logic should be moved in Constraint compiler?
-    private Expression toBigDecimalExpression( TypedExpression typedExpression) {
+    public static Expression toBigDecimalExpression( TypedExpression typedExpression, RuleContext context) {
         MethodCallExpr toBigDecimalMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal" );
         Expression arg = typedExpression.getExpression();
 

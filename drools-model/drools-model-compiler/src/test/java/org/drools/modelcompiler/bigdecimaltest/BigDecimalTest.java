@@ -359,4 +359,104 @@ public class BigDecimalTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
     }
+
+    public static class BdHolder {
+
+        private BigDecimal bd1;
+        private BigDecimal bd2;
+
+        public BdHolder(BigDecimal bd1, BigDecimal bd2) {
+            super();
+            this.bd1 = bd1;
+            this.bd2 = bd2;
+        }
+
+        public BigDecimal getBd1() {
+            return bd1;
+        }
+
+        public void setBd1(BigDecimal bd1) {
+            this.bd1 = bd1;
+        }
+
+        public BigDecimal getBd2() {
+            return bd2;
+        }
+
+        public void setBd2(BigDecimal bd2) {
+            this.bd2 = bd2;
+        }
+    }
+
+    @Test
+    public void testMultiply() {
+        testBigDecimalArithmeticOperation("BdHolder(bd2 == bd1 * 10)", "10", "100");
+    }
+
+    @Test
+    public void testMultiplyWithNegativeValue() {
+        testBigDecimalArithmeticOperation("BdHolder(bd2 == bd1 * -1)", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 * 10)", "10", "100");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValue() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 * -1)", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValueEnclosed() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 * (-1))", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValueEnclosedBoth() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == ($bd1 * -1))", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValueEnclosedNest() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == ($bd1 * (-1)))", "10", "-10");
+    }
+
+    @Test
+    public void testAddWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 + 10)", "10", "20");
+    }
+
+    @Test
+    public void testSubtractWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 - 10)", "10", "0");
+    }
+
+    @Test
+    public void testDivideWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 / 10)", "10", "1");
+    }
+
+    @Test
+    public void testModWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 % 10)", "10", "0");
+    }
+
+    private void testBigDecimalArithmeticOperation(String pattern, String bd1, String bd2) {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     pattern + "\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BdHolder holder = new BdHolder(new BigDecimal(bd1), new BigDecimal(bd2));
+        ksession.insert(holder);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
