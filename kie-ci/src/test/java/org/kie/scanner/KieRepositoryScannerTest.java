@@ -28,7 +28,6 @@ import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kie.builder.impl.event.KieScannerStatusChangeEventImpl;
 import org.drools.compiler.kie.builder.impl.event.KieScannerUpdateResultsEventImpl;
 import org.drools.core.util.FileManager;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -51,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -324,8 +323,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         
         scanner.scanNow();
         // Because 1.0.2 does not exist, will perform a scan but will NOT update.
-        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
-        assertThat( events, CoreMatchers.not( CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) )) );
+        assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING));
+        assertThat( events).doesNotContain(new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING));
         events.clear();
         
         repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
@@ -352,8 +351,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, "rule2", "rule3");
         
-        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
-        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) ) );
+        assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING));
+        assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING));
         assertTrue( events.get(2) instanceof KieScannerUpdateResultsEventImpl );
         assertFalse( ((KieScannerUpdateResultsEventImpl)events.get(2)).getResults().hasMessages(Message.Level.ERROR) );
         events.clear();
@@ -399,8 +398,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         
         scanner.scanNow();
         // Because 1.0.2 does not exist, will perform a scan but will NOT update.
-        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
-        assertThat( events, CoreMatchers.not( CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) )) );
+        assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING));
+        assertThat( events).doesNotContain(new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING));
         events.clear();
         
         repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
@@ -445,8 +444,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         // there should be no update performed.
         
-        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
-        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) ) );
+        assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING));
+        assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING));
         assertTrue( events.get(2) instanceof KieScannerUpdateResultsEventImpl );
         assertTrue( ((KieScannerUpdateResultsEventImpl)events.get(2)).getResults().hasMessages(Message.Level.ERROR) );
         events.clear();

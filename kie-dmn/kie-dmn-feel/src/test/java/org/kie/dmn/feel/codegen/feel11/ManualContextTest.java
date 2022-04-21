@@ -23,9 +23,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ManualContextTest {
 
@@ -64,8 +62,8 @@ public class ManualContextTest {
         Object result = compiledExpression.apply(emptyContext);
         LOG.debug("{}", result);
 
-        assertThat(result, is(instanceOf(Map.class)));
-        assertThat(((Map) result).get("street"), is("broadway st"));
+        assertThat(result).isInstanceOf(Map.class);
+        assertThat(((Map<String, String>) result)).containsEntry("street", "broadway st");
     }
 
 }

@@ -35,9 +35,8 @@ import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -116,9 +115,9 @@ public class RuleChainingTest {
             final ArgumentCaptor<AfterMatchFiredEvent> actvs = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
             verify(ael, times(3)).afterMatchFired(actvs.capture());
             final List<AfterMatchFiredEvent> values = actvs.getAllValues();
-            assertThat(values.get(0).getMatch().getRule().getName(), is("init"));
-            assertThat(values.get(1).getMatch().getRule().getName(), is("r1"));
-            assertThat(values.get(2).getMatch().getRule().getName(), is("r2"));
+            assertThat(values.get(0).getMatch().getRule().getName()).isEqualTo("init");
+            assertThat(values.get(1).getMatch().getRule().getName()).isEqualTo("r1");
+            assertThat(values.get(2).getMatch().getRule().getName()).isEqualTo("r2");
 
             verify(ael, never()).matchCancelled(any(org.kie.api.event.rule.MatchCancelledEvent.class));
             verify(wml, times(2)).objectInserted(any(ObjectInsertedEvent.class));

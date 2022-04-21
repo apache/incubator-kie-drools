@@ -29,10 +29,7 @@ import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -44,10 +41,10 @@ public class OverlapsMsgTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis = getAnalysis(validate, "_CA4B40F8-2354-48B6-B323-5C4E4B2CE467");
 
         // Assert GAPs
-        assertThat(analysis.getGaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
 
         // assert OVERLAPs
-        assertThat(analysis.getOverlaps(), hasSize(2));
+        assertThat(analysis.getOverlaps()).hasSize(2);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(3,
@@ -80,11 +77,11 @@ public class OverlapsMsgTest extends AbstractDTAnalysisTest {
                                                                                                                    new Bound(new BigDecimal("0"),
                                                                                                                              RangeBoundary.CLOSED,
                                                                                                                              null))))));
-        assertThat(overlaps, hasSize(2));
+        assertThat(overlaps).hasSize(2);
 
-        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
+        assertThat(analysis.getOverlaps()).containsAll(overlaps);
 
-        assertThat(analysis.getOverlaps().get(0).getOverlap().asHumanFriendly(analysis.getDdtaTable()), is("[ -, >0 ]"));
-        assertThat(analysis.getOverlaps().get(1).getOverlap().asHumanFriendly(analysis.getDdtaTable()), is("[ >47, <=0 ]"));
+        assertThat(analysis.getOverlaps().get(0).getOverlap().asHumanFriendly(analysis.getDdtaTable())).isEqualTo("[ -, >0 ]");
+        assertThat(analysis.getOverlaps().get(1).getOverlap().asHumanFriendly(analysis.getDdtaTable())).isEqualTo("[ >47, <=0 ]");
     }
 }

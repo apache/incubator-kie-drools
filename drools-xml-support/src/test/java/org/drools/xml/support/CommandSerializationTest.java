@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -71,9 +72,7 @@ import org.kie.api.command.Setter;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -162,7 +161,7 @@ public class CommandSerializationTest {
         InsertObjectCommand copyCmd = roundTrip(cmd);
 
         assertNotNull(copyCmd);
-        assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
+        assertThat(copyCmd.getObject()).isInstanceOf(List.class);
         assertEquals( "object", cmd.getObject(), copyCmd.getObject());
     }
 
@@ -176,7 +175,7 @@ public class CommandSerializationTest {
         InsertObjectCommand copyCmd = roundTrip(cmd);
 
         assertNotNull(copyCmd);
-        assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
+        assertThat(copyCmd.getObject()).isInstanceOf(List.class);
         assertEquals( "object", cmd.getObject(), copyCmd.getObject());
 
         // test empty list
@@ -184,7 +183,7 @@ public class CommandSerializationTest {
         copyCmd = roundTrip(cmd);
 
         assertNotNull(copyCmd);
-        assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
+        assertThat(copyCmd.getObject()).isInstanceOf(List.class);
         assertEquals( "object", cmd.getObject(), copyCmd.getObject());
 
     }

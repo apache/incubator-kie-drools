@@ -35,8 +35,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNMessagesAPITest {
 
@@ -53,19 +52,19 @@ public class DMNMessagesAPITest {
         Results verify = kieContainer.verify();
         List<Message> kie_messages = verify.getMessages();
         kie_messages.forEach(m -> LOG.info("{}", m));
-        assertThat(kie_messages.size(), is(3));
-        assertThat(kie_messages.stream().filter(m -> m.getPath().equals("duff.drl")).count(), is(2L));
+        assertThat(kie_messages).hasSize(3);
+        assertThat(kie_messages.stream().filter(m -> m.getPath().equals("duff.drl")).count()).isEqualTo(2L);
 
         List<DMNMessage> dmnMessages = kie_messages.stream()
                                                    .filter(DMNMessage.class::isInstance)
                                                    .map(DMNMessage.class::cast)
                                                    .collect(Collectors.toList());
-        assertThat(dmnMessages.size(), is(1));
+        assertThat(dmnMessages).hasSize(1);
 
         DMNMessage dmnMessage = dmnMessages.get(0);
-        assertThat(dmnMessage.getSourceId(), is("_c990c3b2-e322-4ef9-931d-79bcdac99686"));
-        assertThat(dmnMessage.getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
-        assertThat(dmnMessage.getPath(), is("incomplete_expression.dmn"));
+        assertThat(dmnMessage.getSourceId()).isEqualTo("_c990c3b2-e322-4ef9-931d-79bcdac99686");
+        assertThat(dmnMessage.getMessageType()).isEqualTo(DMNMessageType.ERR_COMPILING_FEEL);
+        assertThat(dmnMessage.getPath()).isEqualTo("incomplete_expression.dmn");
     }
 
     @Test(expected = IllegalStateException.class)

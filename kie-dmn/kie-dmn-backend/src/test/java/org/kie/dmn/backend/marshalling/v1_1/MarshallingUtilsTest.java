@@ -25,8 +25,7 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class MarshallingUtilsTest {
@@ -50,17 +49,17 @@ public class MarshallingUtilsTest {
      */
     private void checkAndRoundTrip(QName qname, String formatQName) {
         String formatted = MarshallingUtils.formatQName(qname);
-        assertThat(formatted, is(formatQName));
+        assertThat(formatted).isEqualTo(formatQName);
 
         QName roundTrip = MarshallingUtils.parseQNameString(formatted);
-        assertThat(roundTrip.getLocalPart(), is(qname.getLocalPart()));
+        assertThat(roundTrip.getLocalPart()).isEqualTo(qname.getLocalPart());
 
         if (roundTrip.getPrefix() != XMLConstants.DEFAULT_NS_PREFIX) {
-            assertThat(roundTrip.getPrefix(), is(qname.getPrefix()));
+            assertThat(roundTrip.getPrefix()).isEqualTo(qname.getPrefix());
         }
 
         if (roundTrip.getNamespaceURI() != XMLConstants.NULL_NS_URI) {
-            assertThat(roundTrip.getNamespaceURI(), is(qname.getNamespaceURI()));
+            assertThat(roundTrip.getNamespaceURI()).isEqualTo(qname.getNamespaceURI());
         }
     }
 

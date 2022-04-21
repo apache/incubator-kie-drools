@@ -35,9 +35,7 @@ import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.parser.feel11.FEELParserTest.assertLocation;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -54,8 +52,8 @@ public class FEELParserSeverityTest {
         String inputExpression = "1 >> 2";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
 
-        assertThat(number, is(instanceOf(InfixOpNode.class)));
-        assertThat(number.getResultType(), is(BuiltInType.BOOLEAN));
+        assertThat(number).isInstanceOf(InfixOpNode.class);
+        assertThat(number.getResultType()).isEqualTo(BuiltInType.BOOLEAN);
         assertLocation(inputExpression, number);
     }
 
@@ -65,8 +63,8 @@ public class FEELParserSeverityTest {
         String inputExpression = "1 >>> 2";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
 
-        assertThat(number, is(instanceOf(InfixOpNode.class)));
-        assertThat(number.getResultType(), is(BuiltInType.BOOLEAN));
+        assertThat(number).isInstanceOf(InfixOpNode.class);
+        assertThat(number.getResultType()).isEqualTo(BuiltInType.BOOLEAN);
         assertLocation(inputExpression, number);
     }
 
@@ -76,8 +74,8 @@ public class FEELParserSeverityTest {
         String inputExpression = "1 == 2";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
 
-        assertThat(number, is(instanceOf(InfixOpNode.class)));
-        assertThat(number.getResultType(), is(BuiltInType.BOOLEAN));
+        assertThat(number).isInstanceOf(InfixOpNode.class);
+        assertThat(number.getResultType()).isEqualTo(BuiltInType.BOOLEAN);
         assertLocation(inputExpression, number);
     }
 
@@ -87,8 +85,8 @@ public class FEELParserSeverityTest {
         String inputExpression = "{ m: <<18 }.m(16)";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
 
-        assertThat(number, is(instanceOf(FunctionInvocationNode.class)));
-        assertThat(number.getResultType(), is(instanceOf(Type.class)));
+        assertThat(number).isInstanceOf(FunctionInvocationNode.class);
+        assertThat(number.getResultType()).isInstanceOf(Type.class);
         assertLocation(inputExpression, number);
     }
 
@@ -103,7 +101,7 @@ public class FEELParserSeverityTest {
 
         final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
         verify(listener, atLeastOnce()).onEvent(captor.capture());
-        assertThat(captor.getValue().getSeverity(), is(severity));
+        assertThat(captor.getValue().getSeverity()).isEqualTo(severity);
 
         return processedExpression.getInterpreted().getASTNode();
     }
