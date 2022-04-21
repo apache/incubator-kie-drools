@@ -102,7 +102,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_O
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
-import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.getAccessiblePropertiesIncludingNonGetterValueMethod;
 
 public class PackageModel {
 
@@ -884,7 +884,7 @@ public class PackageModel {
         );
         for (Class<?> domainClass : domainClasses) {
             String domainClassSourceName = asJavaSourceName( domainClass );
-            List<String> accessibleProperties = getAccessibleProperties( domainClass );
+            List<String> accessibleProperties = getAccessiblePropertiesIncludingNonGetterValueMethod( domainClass );
             accessibleProperties = accessibleProperties.stream().distinct().collect(Collectors.toList());
             sb.append( "    public static final " + DomainClassMetadata.class.getCanonicalName() + " " + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE + " = new " + domainClassSourceName+ "_Metadata();\n" );
             sb.append( "    private static class " + domainClassSourceName + "_Metadata implements " + DomainClassMetadata.class.getCanonicalName() + " {\n\n" );
