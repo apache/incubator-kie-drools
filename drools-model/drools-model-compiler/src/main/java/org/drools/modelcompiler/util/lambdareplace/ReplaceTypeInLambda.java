@@ -100,10 +100,6 @@ public class ReplaceTypeInLambda {
     private static void replaceTypeInIndex(String bindingId, Class accumulateFunctionResultType, Expression expression) {
         expression.findAll(MethodCallExpr.class)
                   .stream()
-                  .map(mce -> {
-                      System.out.println(mce.getName());
-                      return mce;
-                  })
                   .filter(mce -> {
                       String methodName = mce.getName().asString();
                       return (methodName.equals(ALPHA_INDEXED_BY_CALL) || methodName.equals(BETA_INDEXED_BY_CALL));
