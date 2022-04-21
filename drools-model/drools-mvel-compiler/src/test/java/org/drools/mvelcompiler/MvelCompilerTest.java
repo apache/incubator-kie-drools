@@ -441,7 +441,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "System.out.println(l[0]); " +
                      "}",
              "{ " +
-                     "java.util.ArrayList l = new ArrayList(); " +
+                     "java.util.ArrayList l = new java.util.ArrayList(); " +
                      "l.add(\"first\"); " +
                      "System.out.println(l.get(0)); " +
                      "}");
@@ -561,7 +561,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "$p.items = newhashmap;\n" +
                      "}",
              "{ " +
-                     "java.util.Map newhashmap = new HashMap(); \n" +
+                     "java.util.Map newhashmap = new java.util.HashMap(); \n" +
                      "$p.setItems(newhashmap); " +
                      "}");
     }
@@ -575,7 +575,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "System.out.println(m[\"key\"]);\n" +
                      "}",
              "{ " +
-                     "java.util.HashMap m = new HashMap();\n" +
+                     "java.util.HashMap m = new java.util.HashMap();\n" +
                      "m.put(\"key\", 2);\n" +
                      "System.out.println(m.get(\"key\"));\n" +
                      "}");
@@ -593,8 +593,8 @@ public class MvelCompilerTest implements CompilerTest {
                      "    list.add(((ArrayList)m[\"content\"])[0]);\n" +
                      "}",
              "{ " +
-                     "    java.util.HashMap m = new HashMap();\n" +
-                     "    java.util.ArrayList l = new ArrayList();\n" +
+                     "    java.util.HashMap m = new java.util.HashMap();\n" +
+                     "    java.util.ArrayList l = new java.util.ArrayList();\n" +
                      "    l.add(\"first\");\n" +
                      "    m.put(\"content\", l);\n" +
                      "    System.out.println(((java.util.ArrayList) m.get(\"content\")).get(0));\n" +
@@ -760,7 +760,7 @@ public class MvelCompilerTest implements CompilerTest {
     @Test
     public void testWithSemiColon() {
         test("{ with( $l = new ArrayList()) { $l.add(2); }; }",
-             "{ java.util.ArrayList $l = new ArrayList(); $l.add(2); }",
+             "{ java.util.ArrayList $l = new java.util.ArrayList(); $l.add(2); }",
              result -> assertThat(allUsedBindings(result)).isEmpty());
     }
 
@@ -768,7 +768,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testWithWithAssignment() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ with($p = new Person()) { age = $p.age+1 }; }",
-             "{ org.drools.Person $p = new Person(); $p.setAge($p.getAge() + 1); }",
+             "{ org.drools.Person $p = new org.drools.Person(); $p.setAge($p.getAge() + 1); }",
              result -> assertThat(allUsedBindings(result)).isEmpty());
     }
 
@@ -776,7 +776,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testWithInIf() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ if (true) { with($p = new Person()) { age = $p.age+1 }; } }",
-             "{ if (true) { org.drools.Person $p = new Person(); $p.setAge($p.getAge() + 1); } }",
+             "{ if (true) { org.drools.Person $p = new org.drools.Person(); $p.setAge($p.getAge() + 1); } }",
              result -> assertThat(allUsedBindings(result)).isEmpty());
     }
 
@@ -842,10 +842,10 @@ public class MvelCompilerTest implements CompilerTest {
                      "     }",
 
              "{ " +
-                     "org.drools.Person s0 = new Person(); " +
+                     "org.drools.Person s0 = new org.drools.Person(); " +
                      "s0.setAge(0); " +
                      "insertLogical(s0);\n" +
-                     "org.drools.Person s1 = new Person(); " +
+                     "org.drools.Person s1 = new org.drools.Person(); " +
                      "s1.setAge(1);\n" +
                      "insertLogical(s1);\n" +
                      "}");
@@ -864,7 +864,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "}",
 
              "{ " +
-                     "org.drools.Address $newAddress = new Address(); " +
+                     "org.drools.Address $newAddress = new org.drools.Address(); " +
                      "$newAddress.setCity(\"Brno\"); " +
                      "insert($newAddress);\n" +
                      "{ " +
