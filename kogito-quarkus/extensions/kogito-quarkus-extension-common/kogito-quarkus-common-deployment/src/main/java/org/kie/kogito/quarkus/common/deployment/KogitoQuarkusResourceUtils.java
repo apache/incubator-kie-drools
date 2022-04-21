@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.util.PortablePath;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
@@ -47,9 +49,8 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.maven.dependency.Dependency;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Utility class to aggregate and share resource handling in Kogito extensions
@@ -60,6 +61,13 @@ public class KogitoQuarkusResourceUtils {
     static final String HOT_RELOAD_SUPPORT_CLASS = "HotReloadSupportClass";
     static final String HOT_RELOAD_SUPPORT_FQN = HOT_RELOAD_SUPPORT_PACKAGE + "." + HOT_RELOAD_SUPPORT_CLASS;
     static final String HOT_RELOAD_SUPPORT_PATH = HOT_RELOAD_SUPPORT_FQN.replace('.', '/');
+
+    private static boolean shouldDumpFiles = shouldDumpFiles();
+
+    private static boolean shouldDumpFiles() {
+        Optional<Boolean> prop = ConfigProvider.getConfig().getOptionalValue("kogito.quarkus.codegen.dumpFiles", Boolean.class);
+        return prop.orElse(LaunchMode.current().isDevOrTest());
+    }
 
     private KogitoQuarkusResourceUtils() {
         // utility class
@@ -139,9 +147,11 @@ public class KogitoQuarkusResourceUtils {
     }
 
     public static void dumpFilesToDisk(AppPaths appPaths, Collection<GeneratedFile> generatedFiles) {
-        generatedFileWriterBuilder
-                .build(appPaths.getFirstProjectPath())
-                .writeAll(generatedFiles);
+        if (shouldDumpFiles) {
+            generatedFileWriterBuilder
+                    .build(appPaths.getFirstProjectPath())
+                    .writeAll(generatedFiles);
+        }
     }
 
     public static void registerResources(Collection<GeneratedFile> generatedFiles,
@@ -150,7 +160,7 @@ public class KogitoQuarkusResourceUtils {
             BuildProducer<GeneratedResourceBuildItem> genResBI) {
         for (GeneratedFile f : generatedFiles) {
             if (f.category() == GeneratedFileType.Category.INTERNAL_RESOURCE || f.category() == GeneratedFileType.Category.STATIC_HTTP_RESOURCE) {
-                genResBI.produce(new GeneratedResourceBuildItem(f.relativePath(), f.contents(), true));
+                genResBI.produce(new GeneratedResourceBuildItem(f.relativePath(), f.contents(), shouldDumpFiles));
                 resource.produce(new NativeImageResourceBuildItem(f.relativePath()));
             }
             if (f.category() == GeneratedFileType.Category.STATIC_HTTP_RESOURCE) {

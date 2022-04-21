@@ -16,3 +16,5 @@ This repository contains the library to create and customize grafana dashboards.
     ```
 
 - For full customization it is possible to use the class `JGrafana`, that contains all the properties to fully customize a dashboard.
+
+- Kogito might generate json files to populate grafana. If you need these files on production enviromment, please remember to include ```kogito.quarkus.codegen.dumpFiles=true``` either on your application.properties or maven pom file
