@@ -18,7 +18,7 @@ package org.jbpm.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.commands.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DebugProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;

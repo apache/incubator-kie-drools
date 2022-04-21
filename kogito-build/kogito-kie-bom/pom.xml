@@ -85,6 +85,11 @@
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
+                <artifactId>drools-commands</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
                 <artifactId>drools-kiesession</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>

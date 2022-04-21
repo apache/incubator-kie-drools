@@ -402,6 +402,6 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
 
     @Override
     public NodeContainer getNodeContainer() {
-        throw new UnsupportedOperationException();
+        return getParentContainer();
     }
 }

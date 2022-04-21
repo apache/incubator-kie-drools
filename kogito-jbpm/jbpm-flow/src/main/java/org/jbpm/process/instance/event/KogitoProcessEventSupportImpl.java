@@ -19,11 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.event.AbstractEventSupport;
-import org.drools.core.event.MessageEventImpl;
-import org.drools.core.event.ProcessCompletedEventImpl;
-import org.drools.core.event.ProcessStartedEventImpl;
-import org.drools.core.event.SLAViolatedEventImpl;
-import org.drools.core.event.SignalEventImpl;
 import org.kie.api.event.process.MessageEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;

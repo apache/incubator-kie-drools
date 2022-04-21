@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,19 @@
  */
 package org.jbpm.process.instance.event;
 
-import org.drools.core.event.ProcessEvent;
 import org.kie.api.event.process.MessageEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 
-public class KogitoMessageEvent extends ProcessEvent implements MessageEvent {
+public class MessageEventImpl extends ProcessEvent implements MessageEvent {
 
     private static final long serialVersionUID = 1L;
     private NodeInstance nodeInstance;
     private String messageName;
     private Object messageObject;
 
-    public KogitoMessageEvent(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
+    public MessageEventImpl(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
             String messageName, Object messageObject) {
         super(instance, kruntime);
         this.nodeInstance = nodeInstance;
@@ -53,7 +52,7 @@ public class KogitoMessageEvent extends ProcessEvent implements MessageEvent {
 
     @Override
     public String toString() {
-        return "KogitoMessageEvent [nodeInstance=" + nodeInstance + ", messageName=" + messageName + ", messageObject=" +
+        return "MessageEventImpl [nodeInstance=" + nodeInstance + ", messageName=" + messageName + ", messageObject=" +
                 messageObject + "]";
     }
 }

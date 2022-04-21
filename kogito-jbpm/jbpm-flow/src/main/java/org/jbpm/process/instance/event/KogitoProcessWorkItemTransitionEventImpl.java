@@ -15,7 +15,6 @@
  */
 package org.jbpm.process.instance.event;
 
-import org.drools.core.event.ProcessEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;

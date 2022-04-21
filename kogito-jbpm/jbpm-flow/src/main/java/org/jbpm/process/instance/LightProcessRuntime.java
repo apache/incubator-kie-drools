@@ -24,7 +24,6 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.event.EventFilter;
@@ -405,11 +404,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
 
     public void signalEvent(String type, Object event, String processInstanceId) {
         signalManager.signalEvent(processInstanceId, type, event);
-    }
-
-    @Override
-    public void setProcessEventSupport(ProcessEventSupport processEventSupport) {
-        throw new UnsupportedOperationException();
     }
 
     @Override

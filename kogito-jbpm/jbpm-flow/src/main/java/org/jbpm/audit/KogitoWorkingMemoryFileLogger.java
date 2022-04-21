@@ -31,6 +31,7 @@ import org.drools.core.base.XMLSupport;
 import org.drools.kiesession.audit.LogEvent;
 import org.drools.kiesession.audit.WorkingMemoryFileLogger;
 import org.drools.kiesession.audit.WorkingMemoryLog;
+import org.drools.kiesession.audit.WorkingMemoryLogger;
 import org.drools.util.IoUtils;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * if log becomes too large - automatically write updates to file at certain
  * time intervals - ...
  */
-public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger implements KieRuntimeLogger {
+public class KogitoWorkingMemoryFileLogger extends WorkingMemoryLogger implements KieRuntimeLogger {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(WorkingMemoryFileLogger.class);
 

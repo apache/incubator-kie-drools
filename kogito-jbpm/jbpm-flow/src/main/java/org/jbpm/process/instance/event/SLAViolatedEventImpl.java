@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jbpm.process.instance.event;
 
-import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
-public class KogitoProcessNodeTriggeredEventImpl extends ProcessEvent implements ProcessNodeTriggeredEvent {
+public class SLAViolatedEventImpl extends ProcessEvent implements SLAViolatedEvent {
 
     private static final long serialVersionUID = 510l;
-
     private NodeInstance nodeInstance;
 
-    public KogitoProcessNodeTriggeredEventImpl(final NodeInstance nodeInstance, KieRuntime kruntime) {
-        super(nodeInstance.getProcessInstance(), kruntime);
+    public SLAViolatedEventImpl(final ProcessInstance instance, KieRuntime kruntime) {
+        super(instance, kruntime);
+    }
+
+    public SLAViolatedEventImpl(final ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime) {
+        super(instance, kruntime);
         this.nodeInstance = nodeInstance;
     }
 
+    public String toString() {
+        return "==>[SLAViolatedEvent(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
+    }
+
+    @Override
     public NodeInstance getNodeInstance() {
         return nodeInstance;
     }
 
-    public String toString() {
-        return "==>[ProcessNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + ((KogitoNodeInstance) nodeInstance).getStringId()
-                + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
-    }
 }

@@ -29,10 +29,10 @@ import java.util.concurrent.TimeUnit;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.kiesession.audit.LogEvent;
+import org.drools.kiesession.audit.RuleFlowLogEvent;
+import org.drools.kiesession.audit.RuleFlowNodeLogEvent;
 import org.drools.mvel.MVELSafeHelper;
 import org.jbpm.audit.KogitoWorkingMemoryInMemoryLogger;
-import org.jbpm.audit.event.KogitoRuleFlowLogEvent;
-import org.jbpm.audit.event.KogitoRuleFlowNodeLogEvent;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
@@ -259,7 +259,7 @@ public abstract class JbpmBpmn2TestCase {
         LogEvent[] events = workingMemoryLogger.getLogEvents().toArray(new LogEvent[0]);
         for (LogEvent event : events) {
             if (event.getType() == LogEvent.BEFORE_RULEFLOW_CREATED) {
-                if (((KogitoRuleFlowLogEvent) event).getProcessId().equals(processId)) {
+                if (((RuleFlowLogEvent) event).getProcessId().equals(processId)) {
                     counter++;
                 }
             }
@@ -275,8 +275,8 @@ public abstract class JbpmBpmn2TestCase {
 
     private List<String> getNotTriggeredNodes(String... nodeNames) {
         Set<String> triggeredNodes = workingMemoryLogger.getLogEvents().stream()
-                .filter(e -> e instanceof KogitoRuleFlowNodeLogEvent)
-                .map(e -> ((KogitoRuleFlowNodeLogEvent) e).getNodeName())
+                .filter(e -> e instanceof RuleFlowNodeLogEvent)
+                .map(e -> ((RuleFlowNodeLogEvent) e).getNodeName())
                 .collect(toSet());
 
         return Arrays.stream(nodeNames).filter(n -> !triggeredNodes.contains(n)).collect(toList());

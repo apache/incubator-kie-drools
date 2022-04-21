@@ -19,7 +19,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.instance.event.KogitoProcessEventListenerAdapter;
 import org.jbpm.process.instance.event.KogitoProcessEventSupportImpl;
 import org.kie.api.event.process.ProcessEventListener;
@@ -53,11 +52,6 @@ public abstract class AbstractProcessRuntime implements InternalProcessRuntime {
     @Override
     public Application getApplication() {
         return application;
-    }
-
-    @Override
-    public void setProcessEventSupport(ProcessEventSupport processEventSupport) {
-        throw new UnsupportedOperationException();
     }
 
     @Override

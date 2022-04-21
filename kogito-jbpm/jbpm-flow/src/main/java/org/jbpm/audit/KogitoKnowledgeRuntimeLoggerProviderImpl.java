@@ -17,6 +17,7 @@ package org.jbpm.audit;
 
 import org.drools.core.impl.AbstractRuntime;
 import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
+import org.drools.kiesession.audit.WorkingMemoryFileLogger;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;
 
@@ -26,7 +27,7 @@ public class KogitoKnowledgeRuntimeLoggerProviderImpl extends KnowledgeRuntimeLo
     public KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
             String fileName,
             int maxEventsInMemory) {
-        KogitoWorkingMemoryFileLogger logger = new KogitoWorkingMemoryFileLogger(session);
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
         logger.setMaxEventsInMemory(maxEventsInMemory);
         if (fileName != null) {
             logger.setFileName(fileName);
