@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>drools-scenario-simulation</artifactId>
+    <groupId>org.drools</groupId>
+    <version>8.21.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Drools :: Scenario Simulation Integration Test</name>
+  <artifactId>drools-scenario-simulation-integrationtest</artifactId>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-scenario-simulation-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-xml-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-dependencies</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

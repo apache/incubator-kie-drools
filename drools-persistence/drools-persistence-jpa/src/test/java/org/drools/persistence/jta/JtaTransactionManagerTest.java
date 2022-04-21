@@ -25,7 +25,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
 
-import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.PersistableRunner;
@@ -260,7 +260,7 @@ public class JtaTransactionManagerTest {
         KieSession commandKSession = KieServices.get().getStoreServices().newKieSession( kbase, null, env );
 //        StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         commandKSession.getIdentifier(); // initialize CSEM
-        PersistableRunner commandService = (PersistableRunner) ((CommandBasedStatefulKnowledgeSession) commandKSession).getRunner();
+        PersistableRunner commandService = (PersistableRunner) ((CommandBasedStatefulKnowledgeSessionImpl) commandKSession).getRunner();
         JpaPersistenceContextManager jpm = (JpaPersistenceContextManager) getValueOfField("jpm", commandService);
         
         TransactionTestObject mainObject = new TransactionTestObject();

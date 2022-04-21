@@ -20,24 +20,22 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.drools.commands.ChainableRunner;
+import org.drools.commands.EntryPointCreator;
+import org.drools.commands.SingleSessionCommandService;
+import org.drools.commands.fluent.InternalExecutable;
+import org.drools.commands.fluent.PseudoClockRunner;
+import org.drools.commands.impl.AbstractInterceptor;
+import org.drools.commands.impl.CommandBasedEntryPoint;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.EntryPointCreator;
-import org.drools.core.command.SingleSessionCommandService;
-import org.drools.core.command.impl.AbstractInterceptor;
-import org.drools.core.command.impl.CommandBasedEntryPoint;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.fluent.impl.InternalExecutable;
-import org.drools.core.fluent.impl.PseudoClockRunner;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.drools.serialization.protobuf.marshalling.KieSessionInitializer;
-import org.drools.serialization.protobuf.marshalling.MarshallingConfigurationImpl;
-import org.drools.core.runtime.ChainableRunner;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.api.OrderedTransactionSynchronization;
 import org.drools.persistence.api.PersistenceContext;
 import org.drools.persistence.api.PersistenceContextManager;
@@ -49,6 +47,8 @@ import org.drools.persistence.api.TransactionManagerHelper;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
+import org.drools.serialization.protobuf.marshalling.KieSessionInitializer;
+import org.drools.serialization.protobuf.marshalling.MarshallingConfigurationImpl;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -78,7 +78,7 @@ public class PersistableRunner implements SingleSessionCommandService {
 
     private volatile boolean           doRollback;
 
-    private LinkedList<ChainableRunner> interceptors = new LinkedList<ChainableRunner>();
+    private LinkedList<ChainableRunner> interceptors = new LinkedList<>();
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&

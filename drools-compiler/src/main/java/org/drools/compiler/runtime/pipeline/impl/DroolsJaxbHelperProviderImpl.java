@@ -43,22 +43,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
-import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
-import org.drools.core.command.runtime.GetGlobalCommand;
-import org.drools.core.command.runtime.SetGlobalCommand;
-import org.drools.core.command.runtime.process.AbortWorkItemCommand;
-import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
-import org.drools.core.command.runtime.process.SignalEventCommand;
-import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.DeleteCommand;
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.core.command.runtime.rule.GetObjectsCommand;
-import org.drools.core.command.runtime.rule.InsertElementsCommand;
-import org.drools.core.command.runtime.rule.InsertObjectCommand;
-import org.drools.core.command.runtime.rule.ModifyCommand;
-import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
-import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.compiler.builder.conf.JaxbConfigurationImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -81,26 +66,27 @@ public class DroolsJaxbHelperProviderImpl
     implements DroolsJaxbHelperProvider {
 
     public static final String[] JAXB_ANNOTATED_CMD = {
-            BatchExecutionCommandImpl.class.getName(),
-            SetGlobalCommand.class.getName(),
-            GetGlobalCommand.class.getName(),
-            FireAllRulesCommand.class.getName(),
-            InsertElementsCommand.class.getName(),
-            InsertObjectCommand.class.getName(),
-            ModifyCommand.class.getName(),
-            SetterImpl.class.getName(),
-            QueryCommand.class.getName(),
-            DeleteCommand.class.getName(),
-            AbortWorkItemCommand.class.getName(),
-            SignalEventCommand.class.getName(),
-            StartProcessCommand.class.getName(),
-            BatchExecutionCommandImpl.class.getName(),
+            "org.drools.commands.runtime.BatchExecutionCommandImpl",
+            "org.drools.commands.runtime.SetGlobalCommand",
+            "org.drools.commands.runtime.GetGlobalCommand",
+            "org.drools.commands.runtime.rule.FireAllRulesCommand",
+            "org.drools.commands.runtime.rule.InsertElementsCommand",
+            "org.drools.commands.runtime.rule.InsertObjectCommand",
+            "org.drools.commands.runtime.rule.ModifyCommand",
+            "org.drools.commands.runtime.rule.SetterImpl",
+            "org.drools.commands.runtime.rule.QueryCommand",
+            "org.drools.commands.runtime.rule.DeleteCommand",
+            "org.drools.commands.runtime.process.AbortWorkItemCommand",
+            "org.drools.commands.runtime.process.SignalEventCommand",
+            "org.drools.commands.runtime.process.StartProcessCommand",
+            "org.drools.commands.runtime.BatchExecutionCommandImpl",
             ExecutionResultImpl.class.getName(),
             DefaultFactHandle.class.getName(),
             JaxbListWrapper.class.getName(),
             FlatQueryResults.class.getName(),
-            CompleteWorkItemCommand.class.getName(),
-            GetObjectsCommand.class.getName()};
+            "org.drools.commands.runtime.process.CompleteWorkItemCommand",
+            "org.drools.commands.runtime.rule.GetObjectsCommand"
+    };
 
     public static void addPackageFromXSD(KnowledgeBuilder kBuilder,
                                          Resource resource,

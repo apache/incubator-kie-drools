@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;

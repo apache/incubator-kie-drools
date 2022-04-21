@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.commands.runtime.BatchExecutionCommandImpl;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Cheesery;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;

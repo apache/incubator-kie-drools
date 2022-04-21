@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.drools.core.command.impl.ContextImpl;
+import org.drools.commands.impl.ContextImpl;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;

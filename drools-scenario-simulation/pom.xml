@@ -18,6 +18,7 @@
   <modules>
     <module>drools-scenario-simulation-api</module>
     <module>drools-scenario-simulation-backend</module>
+    <module>drools-scenario-simulation-integrationtest</module>
   </modules>
 
 

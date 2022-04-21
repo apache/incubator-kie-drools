@@ -17,15 +17,13 @@ package org.drools.compiler.builder.impl;
 
 import java.util.Properties;
 
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.builder.conf.impl.ScoreCardConfigurationImpl;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
-import org.kie.internal.builder.ScoreCardConfiguration;
 
 public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFactoryService {
 
@@ -42,11 +40,6 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     @Override
     public DecisionTableConfiguration newDecisionTableConfiguration() {
         return new DecisionTableConfigurationImpl();
-    }
-
-    @Override
-    public ScoreCardConfiguration newScoreCardConfiguration() {
-        return new ScoreCardConfigurationImpl();
     }
 
     @Override

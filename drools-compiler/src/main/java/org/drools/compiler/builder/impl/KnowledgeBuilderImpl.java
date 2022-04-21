@@ -66,7 +66,7 @@ import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.util.TypeResolver;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;

@@ -33,10 +33,10 @@ public interface ExecutableBuilder extends TimeFluent<ExecutableBuilder>,
     static ExecutableBuilder create() {
         try {
             return (ExecutableBuilder) ClassLoaderUtil.getClassLoader(null, null, true)
-                    .loadClass("org.drools.core.fluent.impl.ExecutableBuilderImpl")
+                    .loadClass("org.drools.commands.fluent.ExecutableBuilderImpl")
                     .newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Unable to instance ExecutableRunner", e);
+            throw new RuntimeException("Unable to instance ExecutableRunner, please add org.drools:drools-commands to your classpath", e);
         }
     }
 }

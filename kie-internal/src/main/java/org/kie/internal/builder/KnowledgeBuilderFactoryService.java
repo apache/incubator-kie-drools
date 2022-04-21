@@ -56,14 +56,6 @@ public interface KnowledgeBuilderFactoryService extends KieService {
     DecisionTableConfiguration newDecisionTableConfiguration();
 
     /**
-     * Score Cards need to take a configuration of Worksheet name.
-     *
-     * @return
-     *     The ScoreCardConfiguration
-     */
-    ScoreCardConfiguration newScoreCardConfiguration();
-
-    /**
      * Instantiate and return a new KnowledgeBuilder using the default KnowledgeBuilderConfiguration
      *
      * @return

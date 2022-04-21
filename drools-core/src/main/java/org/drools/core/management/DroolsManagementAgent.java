@@ -31,7 +31,7 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.management.KieManagementAgentMBean;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +265,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
             if (mbeansRefs.get(cbsKey) != null) {
                 return (GenericKieSessionMonitoringImpl) mbeansRefs.get(cbsKey);
             } else {
-                if (ksession instanceof StatelessKnowledgeSession) {
+                if (ksession instanceof StatelessKieSession) {
                     synchronized (mbeansRefs) {
                         if (mbeansRefs.get(cbsKey) != null) {
                             return (GenericKieSessionMonitoringImpl) mbeansRefs.get(cbsKey);

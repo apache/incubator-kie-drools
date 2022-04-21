@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -29,7 +30,7 @@ import org.kie.api.runtime.rule.FactHandle;
  * KieCommands is a factory for Commands that can be used by classes that implement CommandExecutor. Typically more than one Command
  * will want to be executed, where is where the BatchExecution comes in, which takes a List of commands, think of it as CompositeCommand.
  */
-public interface KieCommands {
+public interface KieCommands extends KieService {
     Command newInsert(Object object);
 
     Command newDispose();

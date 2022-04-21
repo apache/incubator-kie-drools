@@ -16,7 +16,7 @@
 
 package org.drools.persistence.jpa;
 
-import org.drools.core.command.impl.AbstractInterceptor;
+import org.drools.commands.impl.AbstractInterceptor;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;

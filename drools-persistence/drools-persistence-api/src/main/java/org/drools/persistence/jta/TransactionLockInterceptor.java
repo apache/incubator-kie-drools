@@ -16,7 +16,12 @@
 
 package org.drools.persistence.jta;
 
-import org.drools.core.command.impl.AbstractInterceptor;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.ReentrantLock;
+import javax.transaction.Status;
+
+import org.drools.commands.impl.AbstractInterceptor;
 import org.drools.persistence.api.OrderedTransactionSynchronization;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerHelper;
@@ -26,11 +31,6 @@ import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.transaction.Status;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * ExecutableInterceptor that will lock underlying <code>Runner</code> until transaction completion.

@@ -55,9 +55,9 @@ public interface RequestContext extends Context {
 
     static RequestContext create(ClassLoader classLoader) {
         try {
-            return (RequestContext) Class.forName("org.drools.core.command.RequestContextImpl", true, classLoader).newInstance();
+            return (RequestContext) Class.forName("org.drools.commands.RequestContextImpl", true, classLoader).getConstructor().newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Unable to instance RequestContext", e);
+            throw new RuntimeException("Unable to instance RequestContext, please add org.drools:drools-commands to your classpath", e);
         }
     }
 }
