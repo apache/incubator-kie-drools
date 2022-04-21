@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -320,7 +320,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected XSSFColor extractColor(XSSFCell cell, XSSFColor... acceptableColors) {
             XSSFCellStyle cellStyle = cell.getCellStyle();
-            FillPatternType fillPattern = cellStyle.getFillPatternEnum();
+            FillPatternType fillPattern = cellStyle.getFillPattern();
             if (fillPattern == null || fillPattern == FillPatternType.NO_FILL) {
                 return null;
             }
