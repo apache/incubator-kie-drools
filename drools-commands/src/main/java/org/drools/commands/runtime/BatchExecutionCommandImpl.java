@@ -190,11 +190,6 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
 
     @Override
     public boolean autoFireAllRules() {
-        for ( Command nestedCmd : getCommands() ) {
-            if ( nestedCmd instanceof FireAllRulesCommand ) {
-                return false;
-            }
-        }
-        return true;
+        return getCommands().stream().allMatch(Command::autoFireAllRules);
     }
 }
