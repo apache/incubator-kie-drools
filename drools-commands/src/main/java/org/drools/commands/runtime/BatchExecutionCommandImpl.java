@@ -190,6 +190,6 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
 
     @Override
     public boolean autoFireAllRules() {
-        return getCommands().stream().allMatch(Command::autoFireAllRules);
+        return getCommands().stream().map(ExecutableCommand.class::cast).allMatch(ExecutableCommand::autoFireAllRules);
     }
 }
