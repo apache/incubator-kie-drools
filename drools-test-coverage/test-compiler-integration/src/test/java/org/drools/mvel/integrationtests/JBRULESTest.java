@@ -37,7 +37,6 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -55,13 +54,14 @@ import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 import org.mvel2.MVEL;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 
 @RunWith(Parameterized.class)
 public class JBRULESTest {
@@ -229,13 +229,13 @@ public class JBRULESTest {
         verify(ael, times(2)).afterMatchFired(captor.capture());
         final List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(), is("kickOff"));
-        Assert.assertThat(aafe.get(1).getMatch().getRule().getName(), is("r1"));
+        assertThat(aafe.get(0).getMatch().getRule().getName()).isEqualTo("kickOff");
+        assertThat(aafe.get(1).getMatch().getRule().getName()).isEqualTo("r1");
 
         final Object value = aafe.get(1).getMatch().getDeclarationValue("$t");
         final String name = (String) MVEL.eval("$t.name", Collections.singletonMap("$t", value));
 
-        Assert.assertThat(name, is("one"));
+        assertThat(name).isEqualTo("one");
     }
 
     @Test

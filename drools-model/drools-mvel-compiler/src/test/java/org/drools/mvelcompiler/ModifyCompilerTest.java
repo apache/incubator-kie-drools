@@ -22,11 +22,8 @@ import org.drools.Person;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ModifyCompilerTest implements CompilerTest {
 
@@ -34,7 +31,7 @@ public class ModifyCompilerTest implements CompilerTest {
     public void testUncompiledMethod() {
         test("{modify( (List)$toEdit.get(0) ){ setEnabled( true ) }}",
              "{ { ((List) $toEdit.get(0)).setEnabled(true); } }",
-             result -> assertThat(allUsedBindings(result), is(empty())));
+             result -> assertThat(allUsedBindings(result)).isEmpty());
     }
 
     @Test
@@ -42,7 +39,7 @@ public class ModifyCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{  modify($p) { setCanDrink(true); } }",
              "{ { ($p).setCanDrink(true); } update($p); }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -50,7 +47,7 @@ public class ModifyCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{  modify($p) {  setCanDrinkLambda(() -> true); } }",
              "{ { ($p).setCanDrinkLambda(() -> true); } update($p); }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result ->assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -72,7 +69,7 @@ public class ModifyCompilerTest implements CompilerTest {
                      "  update($fact); " +
                      "} " +
                      "} ",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$fact")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$fact"));
     }
 
     @Override
@@ -81,7 +78,7 @@ public class ModifyCompilerTest implements CompilerTest {
                       String expectedResult,
                       Consumer<CompiledBlockResult> resultAssert) {
         CompiledBlockResult compiled = new ModifyCompiler().compile(inputExpression);
-        assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        assertThat(compiled.resultAsString()).isEqualToIgnoringWhitespace(expectedResult);
         resultAssert.accept(compiled);
     }
 }

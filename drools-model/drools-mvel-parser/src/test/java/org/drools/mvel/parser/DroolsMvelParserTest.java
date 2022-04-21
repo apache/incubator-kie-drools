@@ -57,11 +57,11 @@ import org.junit.Test;
 
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DroolsMvelParserTest {
 
@@ -258,7 +258,7 @@ public class DroolsMvelParserTest {
     public void testDotFreeExprWithArgsNegated() {
         String expr = "this not after[5,8] $a";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertThat(expression, instanceOf(PointFreeExpr.class));
+        assertThat(expression).isInstanceOf(PointFreeExpr.class);
         assertTrue(((PointFreeExpr)expression).isNegated());
         assertEquals("this not after[5ms,8ms] $a", printNode(expression)); // please note the parsed expression once normalized would take the time unit for milliseconds.
     }
@@ -283,7 +283,7 @@ public class DroolsMvelParserTest {
     public void testHalfDotFreeExprWithFourTemporalArgs() {
         String expr = "includes[1s,1m,1h,1d] $a";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertThat(expression, instanceOf(HalfPointFreeExpr.class));
+        assertThat(expression).isInstanceOf(HalfPointFreeExpr.class);
         assertEquals(expr, printNode(expression));
     }
 
@@ -705,7 +705,7 @@ public class DroolsMvelParserTest {
     public void dotFreeWithRegexp() {
         String expr = "name matches \"[a-z]*\"";
         Expression expression = parseExpression( parser, expr ).getExpr();
-        assertThat(expression, instanceOf(PointFreeExpr.class));
+        assertThat(expression).isInstanceOf(PointFreeExpr.class);
         assertEquals("name matches \"[a-z]*\"", printNode(expression));
         PointFreeExpr e = (PointFreeExpr)expression;
         assertEquals("matches", e.getOperator().asString());
@@ -724,7 +724,7 @@ public class DroolsMvelParserTest {
     public void halfPointFreeExpr() {
         String expr = "matches \"[A-Z]*\"";
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertThat(expression, instanceOf(HalfPointFreeExpr.class));
+        assertThat(expression).isInstanceOf(HalfPointFreeExpr.class);
         assertEquals("matches \"[A-Z]*\"", printNode(expression));
     }
 
@@ -732,17 +732,17 @@ public class DroolsMvelParserTest {
     public void halfPointFreeExprNegated() {
         String expr = "not matches \"[A-Z]*\"";
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertThat(expression, instanceOf(HalfPointFreeExpr.class));
+        assertThat(expression).isInstanceOf(HalfPointFreeExpr.class);
         assertEquals("not matches \"[A-Z]*\"", printNode(expression));
     }
 
     @Test
     public void regressionTestHalfPointFree() {
-        assertThat(parseExpression(parser, "getAddress().getAddressName().length() == 5").getExpr(), instanceOf(BinaryExpr.class));
-        assertThat(parseExpression(parser, "isFortyYearsOld(this, true)").getExpr(), instanceOf(MethodCallExpr.class));
-        assertThat(parseExpression(parser, "getName().startsWith(\"M\")").getExpr(), instanceOf(MethodCallExpr.class));
-        assertThat(parseExpression(parser, "isPositive($i.intValue())").getExpr(), instanceOf(MethodCallExpr.class));
-        assertThat(parseExpression(parser, "someEntity.someString in (\"1.500\")").getExpr(), instanceOf(PointFreeExpr.class));
+        assertThat(parseExpression(parser, "getAddress().getAddressName().length() == 5").getExpr()).isInstanceOf(BinaryExpr.class);
+        assertThat(parseExpression(parser, "isFortyYearsOld(this, true)").getExpr()).isInstanceOf(MethodCallExpr.class);
+        assertThat(parseExpression(parser, "getName().startsWith(\"M\")").getExpr()).isInstanceOf(MethodCallExpr.class);
+        assertThat(parseExpression(parser, "isPositive($i.intValue())").getExpr()).isInstanceOf(MethodCallExpr.class);
+        assertThat(parseExpression(parser, "someEntity.someString in (\"1.500\")").getExpr()).isInstanceOf(PointFreeExpr.class);
     }
 
     @Test
@@ -760,7 +760,7 @@ public class DroolsMvelParserTest {
         assertEquals("this str[startsWith] \"M\" || str[startsWith] \"E\"", printNode(expression));
 
         Expression expression2 = parseExpression(parser, "str[startsWith] \"E\"").getExpr();
-        assertThat(expression2, instanceOf(HalfPointFreeExpr.class));
+        assertThat(expression2).isInstanceOf(HalfPointFreeExpr.class);
         assertEquals("str[startsWith] \"E\"", printNode(expression2));
     }
 
@@ -1154,7 +1154,7 @@ public class DroolsMvelParserTest {
     private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {
         String expr = wholeExpression;
         Expression expression = parseExpression(parser, expr ).getExpr();
-        assertThat(expression, instanceOf(PointFreeExpr.class));
+        assertThat(expression).isInstanceOf(PointFreeExpr.class);
         assertEquals(wholeExpression, printNode(expression));
         PointFreeExpr e = (PointFreeExpr)expression;
         assertEquals(operator, e.getOperator().asString());

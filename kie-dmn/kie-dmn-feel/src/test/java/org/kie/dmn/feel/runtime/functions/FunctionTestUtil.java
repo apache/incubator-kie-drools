@@ -20,9 +20,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public final class FunctionTestUtil {
 
@@ -32,57 +32,58 @@ public final class FunctionTestUtil {
         } else {
             assertResultNotError(result);
             final T resultValue = result.cata(left -> null, right -> right);
-            Assert.assertThat(resultValue, Matchers.notNullValue());
-            Assert.assertThat(resultValue, Matchers.equalTo(expectedResult));
+            assertThat(resultValue).isNotNull();
+            assertThat(resultValue).isEqualTo(expectedResult);
         }
     }
 
     public static void assertResultBigDecimal(final FEELFnResult<BigDecimal> result, final BigDecimal expectedResult) {
         assertResultNotError(result);
         final BigDecimal resultValue = result.cata(left -> null, right -> right);
-        Assert.assertThat(resultValue, Matchers.notNullValue());
-        Assert.assertThat(resultValue, Matchers.comparesEqualTo(expectedResult));
+        assertThat(resultValue).isNotNull();
+        assertThat(resultValue).isEqualTo(expectedResult);
     }
 
     public static <T> void assertResultList(final FEELFnResult<List<T>> result, final List<Object> expectedResult) {
         assertResultNotError(result);
         final List<T> resultList = result.cata(left -> null, right -> right);
-        Assert.assertThat(resultList, Matchers.hasSize(expectedResult.size()));
+        assertThat(resultList).hasSize(expectedResult.size());
         if (expectedResult.isEmpty()) {
-            Assert.assertThat(resultList, Matchers.empty());
+            assertThat(resultList).isEmpty();
         } else {
-            Assert.assertThat(resultList, Matchers.contains(expectedResult.toArray(new Object[]{})));
+            assertThat(resultList).containsAll((Iterable<? extends T>) expectedResult);
         }
     }
     
     public static <T> void assertPredicateOnResult(final FEELFnResult<?> result, final Class<T> clazz, final Predicate<T> assertion) {
         assertResultNotError(result);
         final T resultValue = result.cata(left -> null, clazz::cast);
-        Assert.assertThat(resultValue, Matchers.notNullValue());
-        Assert.assertThat(assertion.test(resultValue), Matchers.is(true));
+        assertThat(resultValue).isNotNull();
+        assertThat(assertion.test(resultValue)).isTrue();
     }
 
     public static <T> void assertResultNull(final FEELFnResult<T> result) {
         assertResultNotError(result);
-        Assert.assertThat(result.cata(left -> false, right -> right), Matchers.nullValue());
+        T invokedResult = result.cata(left -> null, right -> right);
+        assertThat(invokedResult).isNull();
     }
 
     public static <T> void assertResultNotError(final FEELFnResult<T> result) {
-        Assert.assertThat(result, Matchers.notNullValue());
-        Assert.assertThat(result.isRight(), Matchers.is(true));
+        assertThat(result).isNotNull();
+        assertThat(result.isRight()).isTrue();
     }
 
     public static <T> void assertResultError(final FEELFnResult<T> result, final Class expectedErrorEventClass) {
-        Assert.assertThat(result, Matchers.notNullValue());
-        Assert.assertThat(result.isLeft(), Matchers.is(true));
+        assertThat(result).isNotNull();
+        assertThat(result.isLeft()).isTrue();
         final FEELEvent resultEvent = result.cata(left -> left, right -> null);
         checkErrorEvent(resultEvent, expectedErrorEventClass);
     }
 
     public static void checkErrorEvent(final FEELEvent errorEvent, final Class errorEventClass) {
-        Assert.assertThat(errorEvent, Matchers.notNullValue());
-        Assert.assertThat(errorEvent.getSeverity(), Matchers.is(FEELEvent.Severity.ERROR));
-        Assert.assertThat(errorEvent, Matchers.instanceOf(errorEventClass));
+        assertThat(errorEvent).isNotNull();
+        assertThat(errorEvent.getSeverity()).isEqualTo(FEELEvent.Severity.ERROR);
+        assertThat(errorEvent).isInstanceOf(errorEventClass);
     }
 
     private FunctionTestUtil() {
