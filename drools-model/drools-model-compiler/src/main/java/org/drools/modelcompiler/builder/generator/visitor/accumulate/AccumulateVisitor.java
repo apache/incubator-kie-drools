@@ -81,7 +81,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
-import static org.drools.modelcompiler.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambda;
+import static org.drools.modelcompiler.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambdaAndIndex;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 public class AccumulateVisitor {
@@ -355,7 +355,7 @@ public class AccumulateVisitor {
 
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
 
-            context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, expression));
+            context.getExpressions().forEach(expression -> replaceTypeInExprLambdaAndIndex(bindingId, accumulateFunctionResultType, expression));
 
             List<String> ids = new ArrayList<>();
             if (singleResult.getPatternBinding() != null) {
@@ -408,7 +408,7 @@ public class AccumulateVisitor {
                 singleResult.setExprBinding(bindExpressionVariable);
 
                 context.addDeclarationReplacing(new DeclarationSpec(singleResult.getPatternBinding(), exprRawClass));
-                context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, exprRawClass, expression));
+                context.getExpressions().forEach(expression -> replaceTypeInExprLambdaAndIndex(bindingId, exprRawClass, expression));
 
                 functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
                 final MethodCallExpr newBindingFromBinary = AccumulateVisitor.this.buildBinding(bindExpressionVariable, singleResult.getUsedDeclarations(), singleResult.getExpr());
@@ -430,7 +430,7 @@ public class AccumulateVisitor {
         functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
         Class accumulateFunctionResultType = accumulateFunction.getResultType();
         context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-        context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, expression));
+        context.getExpressions().forEach(expression -> replaceTypeInExprLambdaAndIndex(bindingId, accumulateFunctionResultType, expression));
     }
 
     private static MethodReferenceExpr createAccSupplierExpr(AccumulateFunction accumulateFunction) {
@@ -475,7 +475,7 @@ public class AccumulateVisitor {
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
             if (context.getExpressions().size() > 1) {
                 // replace the type of the lambda with the one resulting from the accumulate operation only in the pattern immediately before it
-                replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, context.getExpressions().get(context.getExpressions().size()-2));
+                replaceTypeInExprLambdaAndIndex(bindingId, accumulateFunctionResultType, context.getExpressions().get(context.getExpressions().size()-2));
             }
         }
     }
