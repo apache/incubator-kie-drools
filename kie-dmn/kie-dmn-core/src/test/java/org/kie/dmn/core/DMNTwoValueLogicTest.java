@@ -28,15 +28,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
-import static org.kie.dmn.core.util.DynamicTypeUtils.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * The goal of this test case is just test that the functions are wired properly on the
@@ -64,8 +56,8 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
                 "/libs/Two-Value Logic.dmn");
         dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
                 "Two-Value Logic Tests");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).withFailMessage(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         context = DMNFactory.newContext();
     }
 
@@ -73,10 +65,10 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
     private void runTest(String decisionName, Object expected) {
         final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, decisionName);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnModel.hasErrors()).withFailMessage(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get(decisionName), is(expected));
+        assertThat(result.get(decisionName)).isEqualTo(expected);
     }
 
     @Test

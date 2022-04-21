@@ -24,10 +24,7 @@ import org.drools.Person;
 import org.drools.core.util.MethodUtils;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MvelCompilerTest implements CompilerTest {
 
@@ -345,7 +342,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { salary = 50000 }; }",
              "{ { $p.setSalary(new java.math.BigDecimal(50000)); } }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -353,7 +350,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { salary = 50000B }; }",
              "{ { $p.setSalary(new java.math.BigDecimal(\"50000\")); } }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -403,7 +400,7 @@ public class MvelCompilerTest implements CompilerTest {
                          "      { $p.setSalary(new java.math.BigDecimal(50000)); }" +
                          "      list.add(\"after \" + $p + \", money = \" + $p.getSalary()); " +
                          "}\n",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -730,7 +727,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
              "{\n {\n $p.setName(\"Luca\");\n $p.setAge(35);\n }\n }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -741,7 +738,7 @@ public class MvelCompilerTest implements CompilerTest {
              },
              "{ modify ( $p )  { items = $p2.items }; }",
              "{\n {\n $p.setItems($p2.getItems());\n }\n }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -749,7 +746,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { setAge(1); }; }",
              "{ { $p.setAge(1); } }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -757,7 +754,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { age = $p.age+1 }; }",
              "{ { $p.setAge($p.getAge() + 1); } }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
@@ -765,14 +762,14 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { addresses.clear() }; }",
              "{ { $p.getAddresses().clear(); } }",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
     public void testWithSemiColon() {
         test("{ with( $l = new ArrayList()) { $l.add(2); }; }",
              "{ java.util.ArrayList $l = new java.util.ArrayList(); $l.add(2); }",
-             result -> assertThat(allUsedBindings(result), is(empty())));
+             result -> assertThat(allUsedBindings(result)).isEmpty());
     }
 
     @Test
@@ -780,7 +777,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ with($p = new Person()) { age = $p.age+1 }; }",
              "{ org.drools.Person $p = new org.drools.Person(); $p.setAge($p.getAge() + 1); }",
-             result -> assertThat(allUsedBindings(result), is(empty())));
+             result -> assertThat(allUsedBindings(result)).isEmpty());
     }
 
     @Test
@@ -788,7 +785,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ if (true) { with($p = new Person()) { age = $p.age+1 }; } }",
              "{ if (true) { org.drools.Person $p = new org.drools.Person(); $p.setAge($p.getAge() + 1); } }",
-             result -> assertThat(allUsedBindings(result), is(empty())));
+             result -> assertThat(allUsedBindings(result)).isEmpty());
     }
 
     @Test
@@ -835,7 +832,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "      }\n" +
                      "  } " +
                      "}",
-             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
     }
 
     @Test
