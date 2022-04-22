@@ -29,6 +29,7 @@ import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
@@ -110,6 +111,21 @@ public class NotTest extends AbstractDTAnalysisTest {
 
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps(), hasSize(0));
+    }
+    
+    @Test
+    public void testNotStringVowel2() {
+        List<DMNMessage> validate = validator.validate(getReader("NotStringVowel2.dmn"), ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_406133D7-96FE-4237-8726-44D839F400D6");
+
+        // assert GAPS count
+        assertThat(analysis.getGaps()).hasSize(0);
+
+        // assert OVERLAPs count.
+        assertThat(analysis.getOverlaps()).hasSize(0);
+
+        assertThat(validate).hasSize(1);
+        assertThat(validate).anyMatch(m -> m.getText().contains("string values which can be enumerated for the inputs; Gap analysis skipped"));
     }
 
     @Test
