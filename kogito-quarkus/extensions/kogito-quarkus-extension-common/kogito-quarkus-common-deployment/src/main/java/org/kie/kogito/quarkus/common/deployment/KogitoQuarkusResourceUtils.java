@@ -23,7 +23,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -49,7 +48,6 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.maven.dependency.Dependency;
-import io.quarkus.runtime.LaunchMode;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 /**
@@ -62,12 +60,7 @@ public class KogitoQuarkusResourceUtils {
     static final String HOT_RELOAD_SUPPORT_FQN = HOT_RELOAD_SUPPORT_PACKAGE + "." + HOT_RELOAD_SUPPORT_CLASS;
     static final String HOT_RELOAD_SUPPORT_PATH = HOT_RELOAD_SUPPORT_FQN.replace('.', '/');
 
-    private static boolean shouldDumpFiles = shouldDumpFiles();
-
-    private static boolean shouldDumpFiles() {
-        Optional<Boolean> prop = ConfigProvider.getConfig().getOptionalValue("kogito.quarkus.codegen.dumpFiles", Boolean.class);
-        return prop.orElse(LaunchMode.current().isDevOrTest());
-    }
+    private static boolean shouldDumpFiles = ConfigProvider.getConfig().getOptionalValue("kogito.quarkus.codegen.dumpFiles", Boolean.class).orElse(true);
 
     private KogitoQuarkusResourceUtils() {
         // utility class
