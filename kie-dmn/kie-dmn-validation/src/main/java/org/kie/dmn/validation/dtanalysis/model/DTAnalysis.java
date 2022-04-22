@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -482,7 +483,7 @@ public class DTAnalysis {
         }
     }
 
-    private static <T> List<T> listWithoutElement(List<T> coll, T elem) {
+    private static <T> List<T> listWithoutElement(Collection<T> coll, T elem) {
         List<T> others = new ArrayList<>(coll);
         others.remove(elem);
         return others;
@@ -505,7 +506,7 @@ public class DTAnalysis {
             outputEntries.add(curValues);
         }
         for (List<Comparable<?>> curOutputEntry : outputEntries) {
-            List<Integer> rulesWithGivenOutputEntry = new ArrayList<>();
+            Set<Integer> rulesWithGivenOutputEntry = new LinkedHashSet<>();
             for (Integer ruleId : overlap.getRules()) {
                 List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
                 if (curValues.equals(curOutputEntry)) {

@@ -25,10 +25,12 @@ public class DDTAInputEntry {
 
     private final List<BaseNode> uts;
     private final List<Interval> intervals;
+    private final boolean allSingularities;
 
-    public DDTAInputEntry(List<BaseNode> uts, List<Interval> intervals) {
+    public DDTAInputEntry(List<BaseNode> uts, List<Interval> intervals, boolean allSingularities) {
         this.uts = uts;
         this.intervals = intervals;
+        this.allSingularities = allSingularities;
     }
 
     @Override
@@ -44,6 +46,18 @@ public class DDTAInputEntry {
 
     public List<Interval> getIntervals() {
         return intervals;
+    }
+    
+    /**
+     * True when UnaryTests represent singularity/singularities, regardless of negation.
+     * Eg:
+     * "a"
+     * "a", "b"
+     * not("a")
+     * not("a", "b")
+     */
+    public boolean isAllSingularities() {
+        return allSingularities;
     }
 
     public boolean includes(DDTAInputEntry other) {
