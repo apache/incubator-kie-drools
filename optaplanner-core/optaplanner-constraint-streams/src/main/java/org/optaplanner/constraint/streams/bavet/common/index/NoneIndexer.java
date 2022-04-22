@@ -19,11 +19,11 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
     private final Map<Tuple_, Value_> tupleMap = new LinkedHashMap<>();
 
@@ -50,8 +50,10 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
     }
 
     @Override
-    public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
-        tupleValueMapVisitor.accept(tupleMap);
+    public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
+        if (!isEmpty()) {
+            tupleMap.forEach(tupleValueVisitor);
+        }
     }
 
     @Override

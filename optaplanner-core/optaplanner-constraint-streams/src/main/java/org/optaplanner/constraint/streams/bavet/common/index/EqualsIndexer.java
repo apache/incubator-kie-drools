@@ -19,7 +19,7 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -63,12 +63,12 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple
     }
 
     @Override
-    public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
+    public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
         Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexerKeyFunction.apply(indexProperties));
-        if (downstreamIndexer == null) {
+        if (downstreamIndexer == null || downstreamIndexer.isEmpty()) {
             return;
         }
-        downstreamIndexer.visit(indexProperties, tupleValueMapVisitor);
+        downstreamIndexer.visit(indexProperties, tupleValueVisitor);
     }
 
     @Override

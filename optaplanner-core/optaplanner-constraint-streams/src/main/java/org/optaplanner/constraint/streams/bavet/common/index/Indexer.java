@@ -70,15 +70,7 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      * @param indexProperties never null
      * @param tupleValueMapEntryVisitor never null
      */
-    default void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueMapEntryVisitor) {
-        visit(indexProperties, map -> map.forEach(tupleValueMapEntryVisitor));
-    }
-
-    /**
-     * @param indexProperties never null
-     * @param tupleValueMapVisitor never null
-     */
-    void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor);
+    void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueMapEntryVisitor);
 
     boolean isEmpty();
 

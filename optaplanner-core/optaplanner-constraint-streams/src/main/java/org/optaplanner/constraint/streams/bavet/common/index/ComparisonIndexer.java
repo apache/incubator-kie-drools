@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -86,7 +86,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
     }
 
     @Override
-    public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
+    public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
         Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
         Map<Object, Indexer<Tuple_, Value_>> selectedComparisonMap =
                 submapFunction.apply(comparisonMap, comparisonIndexProperty);
@@ -94,7 +94,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
             return;
         }
         for (Indexer<Tuple_, Value_> indexer : selectedComparisonMap.values()) {
-            indexer.visit(indexProperties, tupleValueMapVisitor);
+            indexer.visit(indexProperties, tupleValueVisitor);
         }
     }
 
