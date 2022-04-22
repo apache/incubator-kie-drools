@@ -169,9 +169,13 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 Interval infStringDomain = ddtaTable.getInputs().get(iColIdx).getDomainMinMax();
                 boolean areAllSinglePointOrAll = true;
                 for (int jRowIdx = 0; jRowIdx < dt.getRule().size() && areAllSinglePointOrAll; jRowIdx++) {
-                    List<Interval> r = ddtaTable.getRule().get(jRowIdx).getInputEntry().get(iColIdx).getIntervals();
-                    for (Interval interval : r) {
-                        areAllSinglePointOrAll = areAllSinglePointOrAll && (infStringDomain.equals(interval) || interval.isSingularity());
+                    DDTAInputEntry colRowInputEntry = ddtaTable.getRule().get(jRowIdx).getInputEntry().get(iColIdx);
+                    if (colRowInputEntry.isAllSingularities()) {
+                        LOG.debug("col {} row {} are all singularities, assuming positive `areAllSinglePointOrAll`={} and continue. {}", iColIdx, jRowIdx, areAllSinglePointOrAll, colRowInputEntry.getUts());
+                    } else {
+                        for (Interval interval : colRowInputEntry.getIntervals()) {
+                            areAllSinglePointOrAll = areAllSinglePointOrAll && infStringDomain.equals(interval);
+                        }
                     }
                 }
                 if (areAllSinglePointOrAll) {
@@ -211,7 +215,8 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
 
                 DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
 
-                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), utln.isNegated(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
+                ToIntervals toIntervals = toIntervals(utln.getElements(), utln.isNegated(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1);
+                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals.intervals, toIntervals.allSingularities);
                 for (Interval interval : ddtaInputEntry.getIntervals()) {
                     Interval domainMinMax = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
                     if (!domainMinMax.includes(interval)) {
@@ -499,10 +504,10 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                             0, 0);
     }
 
-    private List<Interval> toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
+    private ToIntervals toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
         if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode) {
-            return Collections.emptyList();
+            return new ToIntervals(Collections.emptyList(), false);
         }
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
             int bitsetLogicalSize = discreteValues.size(); // JDK BitSet size will always be larger.
@@ -540,6 +545,8 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             if (lowerBoundIdx >= 0 && upperBoundIdx >= 0) {
                 results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
             }
+            final boolean allSingularities = results.stream().allMatch(Interval::isSingularity);
+            return new ToIntervals(results, allSingularities);
         } else {
             for (BaseNode n : elements) {
                 if (n instanceof DashNode) {
@@ -548,14 +555,26 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 }
                 UnaryTestNode ut = (UnaryTestNode) n;
                 Interval interval = utnToInterval(ut, minMax, discreteValues, rule, col);
-                if (isNegated) {
-                    results.addAll(Interval.invertOverDomain(interval, minMax));
-                } else {
-                    results.add(interval);
-                }
+                results.add(interval);
             }
+            final boolean allSingularities = results.stream().allMatch(Interval::isSingularity); // intentionally record singularities before negating / not()
+            if (isNegated) {
+                return new ToIntervals(Interval.invertOverDomain(results, minMax), allSingularities);
+            }
+            return new ToIntervals(results, allSingularities);
         }
-        return results;
+    }
+    
+    private static class ToIntervals {
+        public final List<Interval> intervals;
+        public final boolean allSingularities;
+        
+        public ToIntervals(List<Interval> intervals, boolean allSingularities) {
+            this.intervals = intervals;
+            this.allSingularities = allSingularities;
+        }
+        
+
     }
 
     private static Interval createIntervalOfRule(List discreteValues, int rule, int col, int lowerBoundIdx, int upperBoundIdx) {
