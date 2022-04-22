@@ -17,7 +17,6 @@ package org.drools.compiler.builder.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -41,17 +40,14 @@ import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompositePackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
-import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
 import org.drools.compiler.builder.impl.processors.OtherDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
-import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
-import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
@@ -64,22 +60,16 @@ import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.util.TypeResolver;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.util.io.BaseResource;
-import org.drools.util.io.ReaderResource;
-import org.drools.util.io.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -89,7 +79,6 @@ import org.drools.drl.extensions.GuidedRuleTemplateFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateProvider;
 import org.drools.drl.extensions.ResourceConversionResult;
 import org.drools.drl.parser.DrlParser;
-import org.drools.drl.parser.DroolsError;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.ParserError;
 import org.drools.drl.parser.lang.ExpanderException;
@@ -100,6 +89,10 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.util.IoUtils;
 import org.drools.util.StringUtils;
+import org.drools.util.TypeResolver;
+import org.drools.util.io.BaseResource;
+import org.drools.util.io.InternalResource;
+import org.drools.util.io.ReaderResource;
 import org.drools.wiring.api.ComponentsFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -463,30 +456,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.resource = null;
     }
 
-    /**
-     * Load a rule package from XML source.
-     *
-     * @param reader
-     * @throws DroolsParserException
-     * @throws IOException
-     */
-    public void addPackageFromXml(final Reader reader) throws DroolsParserException,
-            IOException {
-        this.resource = new ReaderResource(reader, ResourceType.XDRL);
-        final XmlPackageReader xmlReader = new XmlPackageReader(this.configuration.getSemanticModules());
-        xmlReader.getParser().setClassLoader(this.rootClassLoader);
-
-        try {
-            xmlReader.read(reader);
-        } catch (final SAXException e) {
-            throw new DroolsParserException(e.toString(),
-                                            e.getCause());
-        }
-
-        addPackage(xmlReader.getPackageDescr());
-        this.resource = null;
-    }
-
     public void addPackageFromXml(final Resource resource) throws DroolsParserException,
             IOException {
         this.resource = resource;
@@ -621,8 +590,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 addPackageFromXml(resource);
             } else if (ResourceType.DTABLE.equals(type)) {
                 addPackageFromDecisionTable(resource, configuration);
-            } else if (ResourceType.PKG.equals(type)) {
-                addPackageFromInputStream(resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
@@ -662,69 +629,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         if (configuration != null) {
             ComponentsFactory.addPackageFromXSD( this, resource, configuration );
         }
-    }
-
-    void addPackageFromInputStream(final Resource resource) throws IOException,
-            ClassNotFoundException {
-        InputStream is = resource.getInputStream();
-        Object object = DroolsStreamUtils.streamIn(is, this.configuration.getClassLoader());
-        is.close();
-        if (object instanceof Collection) {
-            // KnowledgeBuilder API
-            Collection<KiePackage> pkgs = (Collection<KiePackage>) object;
-            for (KiePackage kpkg : pkgs) {
-                overrideReSource((KnowledgePackageImpl) kpkg, resource);
-                addPackage((KnowledgePackageImpl) kpkg);
-            }
-        } else if (object instanceof KnowledgePackageImpl) {
-            // KnowledgeBuilder API
-            KnowledgePackageImpl kpkg = (KnowledgePackageImpl) object;
-            overrideReSource(kpkg, resource);
-            addPackage(kpkg);
-        } else {
-            results.addBuilderResult(new DroolsError(resource) {
-
-                @Override
-                public String getMessage() {
-                    return "Unknown binary format trying to load resource " + resource.toString();
-                }
-
-                @Override
-                public int[] getLines() {
-                    return new int[0];
-                }
-            });
-        }
-    }
-
-    private void overrideReSource(InternalKnowledgePackage pkg,
-                                  Resource res) {
-        for (org.kie.api.definition.rule.Rule r : pkg.getRules()) {
-            if (isSwappable(((RuleImpl) r).getResource(), res)) {
-                ((RuleImpl) r).setResource(res);
-            }
-        }
-        for (TypeDeclaration d : pkg.getTypeDeclarations().values()) {
-            if (isSwappable(d.getResource(), res)) {
-                d.setResource(res);
-            }
-        }
-        for (Function f : pkg.getFunctions().values()) {
-            if (isSwappable(f.getResource(), res)) {
-                f.setResource(res);
-            }
-        }
-        for (org.kie.api.definition.process.Process p : pkg.getRuleFlows().values()) {
-            if (isSwappable(p.getResource(), res)) {
-                p.setResource(res);
-            }
-        }
-    }
-
-    private boolean isSwappable(Resource original,
-                                Resource source) {
-        return original == null
-                || (original instanceof ReaderResource && ((ReaderResource) original).getReader() == null);
     }
 
     /**
@@ -1026,14 +930,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return typeBuilder.getAndRegisterTypeDeclaration(cls, packageName);
     }
 
-    void processEntryPointDeclarations(PackageRegistry pkgRegistry,
-                                       PackageDescr packageDescr) {
-        EntryPointDeclarationCompilationPhase entryPointDeclarationProcessor =
-                new EntryPointDeclarationCompilationPhase(pkgRegistry, packageDescr);
-        entryPointDeclarationProcessor.process();
-        this.results.addAll(entryPointDeclarationProcessor.getResults());
-    }
-
     protected void processWindowDeclarations(PackageRegistry pkgRegistry,
                                              PackageDescr packageDescr) {
         WindowDeclarationCompilationPhase windowDeclarationProcessor =
@@ -1321,34 +1217,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return objectType.isTemplate() ?
                 typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) :
                 typeBuilder.getTypeDeclaration(((ClassObjectType) objectType).getClassType());
-    }
-
-    public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {
-        AnnotationNormalizer annotationNormalizer =
-                AnnotationNormalizer.of(
-                        typeResolver,
-                        configuration.getLanguageLevel().useJavaAnnotations());
-
-
-        TypeDeclarationAnnotationNormalizer typeDeclarationAnnotationNormalizer =
-                new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr);
-
-        typeDeclarationAnnotationNormalizer.process();
-
-        this.results.addAll(typeDeclarationAnnotationNormalizer.getResults());
-    }
-
-    public void normalizeRuleAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {
-        AnnotationNormalizer annotationNormalizer =
-                AnnotationNormalizer.of(
-                        typeResolver,
-                        configuration.getLanguageLevel().useJavaAnnotations());
-
-        RuleAnnotationNormalizer ruleAnnotationNormalizer =
-                new RuleAnnotationNormalizer(annotationNormalizer, packageDescr);
-
-        ruleAnnotationNormalizer.process();
-        this.results.addAll(ruleAnnotationNormalizer.getResults());
     }
 
     protected void normalizeAnnotations(AnnotatedBaseDescr annotationsContainer, TypeResolver typeResolver, boolean isStrict) {
