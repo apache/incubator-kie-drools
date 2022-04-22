@@ -62,8 +62,6 @@ import static java.util.stream.Collectors.toList;
 
 public class ProcessInstanceEventBatch implements EventBatch {
 
-    public static final String TRACKED = "tracked";
-
     private final String service;
     private Addons addons;
     private List<ProcessEvent> rawEvents = new ArrayList<>();
@@ -165,7 +163,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected void handleProcessVariableChangedEvent(KogitoProcessVariableChangedEvent variableChangedEvent, Set<VariableInstanceEventBody> variables) {
-        if (variableChangedEvent.hasTag(TRACKED)) {
+        if (!variableChangedEvent.hasTag("internal")) {
             variables.add(create(variableChangedEvent));
         }
     }

@@ -22,7 +22,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
@@ -44,13 +46,14 @@ import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.flexible.ItemDescription.Status;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.kie.kogito.process.flexible.ItemDescription.Status;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PublishEventIT extends AbstractCodegenIT {
 
@@ -124,12 +127,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
         uow.end();
 
-        List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(1);
-
-        DataEvent<?> event = events.get(0);
-        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
-        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
+        ProcessInstanceDataEvent processDataEvent = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).map(ProcessInstanceDataEvent.class::cast).findFirst().orElseThrow();
         assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull();
         assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
@@ -137,7 +135,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
         assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/BusinessRuleTask");
 
-        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "BusinessRuleTask", "Default Process", 2);
+        ProcessInstanceEventBody body = assertProcessInstanceEvent(processDataEvent, "BusinessRuleTask", "Default Process", 2);
 
         assertThat(body.getNodeInstances()).hasSize(3).extractingResultOf("getNodeType").contains("StartNode", "RuleSetNode", "EndNode");
 
@@ -172,11 +170,10 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
 
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(1);
 
-        DataEvent<?> event = events.get(0);
-        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
-        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
+        Optional<DataEvent<?>> event = events.stream().filter(ProcessInstanceDataEvent.class::isInstance).findFirst();
+        assertTrue(event.isPresent(), "There is no process instance event being published");
+        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event.orElseThrow();
         assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull();
         assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
@@ -381,7 +378,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
         assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
 
-        List<DataEvent<?>> events = publisher.extract();
+        List<DataEvent<?>> events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
         assertThat(events).isNotNull().hasSize(2);
 
         DataEvent<?> parent = null;
@@ -478,19 +475,14 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
         uow.end();
 
-        List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(1);
-
-        DataEvent<?> event = events.get(0);
-        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
-        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
+        ProcessInstanceDataEvent processDataEvent = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).map(ProcessInstanceDataEvent.class::cast).findFirst().orElseThrow();
         assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull();
         assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("ExclusiveSplit");
         assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
 
-        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "ExclusiveSplit", "Test", 2);
+        ProcessInstanceEventBody body = assertProcessInstanceEvent(processDataEvent, "ExclusiveSplit", "Test", 2);
 
         assertThat(body.getNodeInstances()).hasSize(6).extractingResultOf("getNodeType").contains("StartNode", "ActionNode", "Split", "Join", "EndNode", "WorkItemNode");
 
@@ -523,7 +515,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ERROR);
-        List<DataEvent<?>> events = publisher.extract();
+        List<DataEvent<?>> events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
         assertThat(events).isNotNull().hasSize(1);
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 5);
@@ -542,7 +534,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         processInstance.updateVariables(m);
         uow.end();
 
-        events = publisher.extract();
+        events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
         assertThat(events).isNotNull().hasSize(1);
         body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 5);
         assertThat(body.getError()).isNotNull();
@@ -556,7 +548,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         }
         uow.end();
 
-        events = publisher.extract();
+        events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
         assertThat(events).isNotNull().hasSize(1);
 
         body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 2);
