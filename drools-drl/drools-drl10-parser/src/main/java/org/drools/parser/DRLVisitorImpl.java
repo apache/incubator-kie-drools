@@ -1,12 +1,18 @@
 package org.drools.parser;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.*;
 
 public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     private final PackageDescr packageDescr = new PackageDescr();
 
-    private RuleDescr ruleDescr;
+    private RuleDescr currentRule;
+    private PatternDescr currentPattern;
 
     @Override
     public Object visitCompilationUnit(DRLParser.CompilationUnitContext ctx) {
@@ -40,32 +46,71 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public Object visitRuledef(DRLParser.RuledefContext ctx) {
-        ruleDescr = new RuleDescr(ctx.name.getText());
-        ruleDescr.setConsequence(ctx.rhs().getText());
-        packageDescr.addRule(ruleDescr);
+        currentRule = new RuleDescr(ctx.name.getText());
+        currentRule.setConsequence(ctx.rhs().getText());
+        packageDescr.addRule(currentRule);
 
         Object result = super.visitRuledef(ctx);
-        ruleDescr = null;
+        currentRule = null;
         return result;
     }
 
     @Override
     public Object visitLhsPatternBind(DRLParser.LhsPatternBindContext ctx) {
         if (ctx.lhsPattern().size() == 1) {
-            PatternDescr patternDescr = new PatternDescr(ctx.lhsPattern(0).objectType.getText());
+            currentPattern = new PatternDescr(ctx.lhsPattern(0).objectType.getText());
             if (ctx.label() != null) {
-                patternDescr.setIdentifier(ctx.label().IDENTIFIER().getText());
+                currentPattern.setIdentifier(ctx.label().IDENTIFIER().getText());
             }
-            ruleDescr.getLhs().addDescr(patternDescr);
+            currentRule.getLhs().addDescr(currentPattern);
         }
-        return super.visitLhsPatternBind(ctx);
+        Object result = super.visitLhsPatternBind(ctx);
+        currentPattern = null;
+        return result;
+    }
+
+    @Override
+    public Object visitConstraint(DRLParser.ConstraintContext ctx) {
+        Object constraint = super.visitConstraint(ctx);
+        ExprConstraintDescr constr = new ExprConstraintDescr( constraint.toString() );
+        constr.setType( ExprConstraintDescr.Type.NAMED );
+        currentPattern.addConstraint( constr );
+        return null;
+    }
+
+    @Override
+    public Object visitExpression(DRLParser.ExpressionContext ctx) {
+        return ctx.children.stream()
+                .map(c -> c instanceof TerminalNode ? c : c.accept(this))
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .collect(Collectors.joining(" "));
+    }
+
+    @Override
+    public Object visitIdentifier(DRLParser.IdentifierContext ctx) {
+        return ctx.IDENTIFIER().getText();
+    }
+
+    @Override
+    public Object visitLiteral(DRLParser.LiteralContext ctx) {
+        ParseTree node = ctx;
+        while (true) {
+            if (node instanceof TerminalNode) {
+                return node.toString();
+            }
+            if (node.getChildCount() != 1) {
+                return super.visitLiteral(ctx);
+            }
+            node = node.getChild(0);
+        }
     }
 
     @Override
     public Object visitDrlAnnotation(DRLParser.DrlAnnotationContext ctx) {
         AnnotationDescr annotationDescr = new AnnotationDescr(ctx.name.getText());
         annotationDescr.setValue(ctx.drlArguments().drlArgument(0).getText());
-        ruleDescr.addAnnotation(annotationDescr);
+        currentRule.addAnnotation(annotationDescr);
         return super.visitDrlAnnotation(ctx);
     }
 
@@ -75,7 +120,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         if (ctx.getChildCount() > 1) {
             attributeDescr.setValue(ctx.getChild(1).getText());
         }
-        ruleDescr.addAttribute(attributeDescr);
+        currentRule.addAttribute(attributeDescr);
         return super.visitAttribute(ctx);
     }
 
