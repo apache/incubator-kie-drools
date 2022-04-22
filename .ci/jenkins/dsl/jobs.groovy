@@ -162,7 +162,7 @@ void setupNativeLTSJob() {
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {
     def jobParams = getJobParams('optaplanner-deploy', jobFolder, "${JENKINS_PATH}/Jenkinsfile.deploy", 'Optaplanner Deploy')
     if (jobType == KogitoJobType.PR) {
-        jobParams.git.branch = '${GIT_BRABUILD_BRANCH_NAMENCH_NAME}'
+        jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
     }
