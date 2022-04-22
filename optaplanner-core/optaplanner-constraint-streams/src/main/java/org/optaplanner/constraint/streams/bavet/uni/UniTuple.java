@@ -34,7 +34,7 @@ public final class UniTuple<A> implements Tuple {
 
     @Override
     public String toString() {
-        return "UniTuple(" + factA + ")";
+        return "{" + factA + "}";
     }
 
 }

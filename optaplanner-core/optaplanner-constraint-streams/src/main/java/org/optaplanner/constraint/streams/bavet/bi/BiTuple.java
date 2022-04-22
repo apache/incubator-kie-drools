@@ -36,7 +36,7 @@ public final class BiTuple<A, B> implements Tuple {
 
     @Override
     public String toString() {
-        return "BiTuple(" + factA + ", " + factB + ")";
+        return "{" + factA + ", " + factB + "}";
     }
 
 }

@@ -82,10 +82,7 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<UniTuple<A>, IfExistsUniWithUniNode.Counter<A>> indexerA = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<B>, Set<IfExistsUniWithUniNode.Counter<A>>> indexerB = indexerFactory.buildIndexer(false);
-        if (!shouldExist) {
-            throw new UnsupportedOperationException();
-        }
-        IfExistsUniWithUniNode<A, B> node = new IfExistsUniWithUniNode<>(
+        IfExistsUniWithUniNode<A, B> node = new IfExistsUniWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 insert, retract,
