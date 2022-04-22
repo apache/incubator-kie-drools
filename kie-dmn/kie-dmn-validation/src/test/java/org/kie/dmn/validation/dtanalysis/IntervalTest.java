@@ -97,7 +97,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
-        assertThat(result).hasSize(3);
+        Assertions.assertThat(result).hasSize(3);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.OPEN, "a", "e", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "e", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
@@ -110,7 +110,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
-        assertThat(result).hasSize(2);
+        Assertions.assertThat(result).hasSize(2);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
     }
@@ -122,7 +122,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
-        assertThat(result).hasSize(3);
+        Assertions.assertThat(result).hasSize(3);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
@@ -136,7 +136,7 @@ public class IntervalTest {
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1, i2), domain);
-        assertThat(result).hasSize(4);
+        Assertions.assertThat(result).hasSize(4);
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.OPEN, "a", "e", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "e", "i", RangeBoundary.OPEN, 9, 8);
