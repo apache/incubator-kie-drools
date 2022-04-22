@@ -203,6 +203,7 @@
                 <skip.ui.build>true</skip.ui.build>
                 <failsafe.include>**/Native*IT.java</failsafe.include>
                 <failsafe.exclude></failsafe.exclude>
+                <quarkus.native.native-image-xmx>8g</quarkus.native.native-image-xmx>
                 <!-- Native building needs a fixed port for tests -->
                 <tests.quarkus.http.port>8080</tests.quarkus.http.port>
             </properties>
