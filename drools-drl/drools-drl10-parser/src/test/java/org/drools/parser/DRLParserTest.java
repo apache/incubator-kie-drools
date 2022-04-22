@@ -1,5 +1,7 @@
 package org.drools.parser;
 
+import java.util.List;
+
 import org.drools.drl.ast.descr.*;
 import org.junit.Test;
 
@@ -14,7 +16,7 @@ public class DRLParserTest {
             "import org.test.model.Person;\n" +
             "global String result;\n" +
             "rule TestRule @Test(true) no-loop salience 15 when \n" +
-            "  $p:Person()\n" +
+            "  $p:Person( age >= 18 )\n" +
             "then\n" +
             "  int a = 4;\n" +
             "  System.out.println($p.getName());\n" +
@@ -53,6 +55,11 @@ public class DRLParserTest {
         assertEquals("$p", patternDescr.getIdentifier());
         assertEquals("Person", patternDescr.getObjectType());
 
+        List<? extends BaseDescr> constraints = patternDescr.getConstraint().getDescrs();
+        assertEquals(1, constraints.size());
+        ExprConstraintDescr expr = (ExprConstraintDescr) constraints.get(0);
+        assertEquals("age >= 18", expr.getExpression());
+
         assertEquals("inta=4;System.out.println($p.getName());", ruleDescr.getConsequence());
     }
 
@@ -75,11 +82,11 @@ public class DRLParserTest {
         assertEquals(7, (int) computeTokenIndex(parser, 2, 1));
         assertEquals(7, (int) computeTokenIndex(parser, 2, 6));
         assertEquals(8, (int) computeTokenIndex(parser, 2, 7));
-        assertEquals(73, (int) computeTokenIndex(parser, 9, 0));
-        assertEquals(74, (int) computeTokenIndex(parser, 9, 1));
-        assertEquals(75, (int) computeTokenIndex(parser, 9, 4));
-        assertEquals(75, (int) computeTokenIndex(parser, 9, 5));
-        assertEquals(75, (int) computeTokenIndex(parser, 10, 0));  // EOF
+        assertEquals(80, (int) computeTokenIndex(parser, 9, 0));
+        assertEquals(81, (int) computeTokenIndex(parser, 9, 1));
+        assertEquals(82, (int) computeTokenIndex(parser, 9, 4));
+        assertEquals(82, (int) computeTokenIndex(parser, 9, 5));
+        assertEquals(82, (int) computeTokenIndex(parser, 10, 0));  // EOF
     }
 
 }
