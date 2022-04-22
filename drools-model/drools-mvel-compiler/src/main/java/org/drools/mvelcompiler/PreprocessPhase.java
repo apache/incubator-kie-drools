@@ -233,19 +233,15 @@ public class PreprocessPhase {
                     }
 
                     return new ExpressionStmt(mcExpr);
-                } else if (rootExpr instanceof DrlNameExpr) {
-                    if (isSameDrlName(rootExpr, scope)) {
-                        // No need to complement
-                    } else {
-                        // Unknown name. Assume a property of the fact
-                        DrlNameExpr originalFieldAccess = (DrlNameExpr) rootExpr;
-                        String propertyName = originalFieldAccess.getName().asString();
-                        result.addUsedBinding(printNode(scope));
-                        FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
-                        rootExpr.getParentNode().filter(MethodCallExpr.class::isInstance)
-                                .map(MethodCallExpr.class::cast)
-                                .ifPresent(mce -> mce.setScope(fieldAccessWithScope));
-                    }
+                } else if (rootExpr instanceof DrlNameExpr && !isSameDrlName(rootExpr, scope)) {
+                    // Unknown name. Assume a property of the fact
+                    DrlNameExpr originalFieldAccess = (DrlNameExpr) rootExpr;
+                    String propertyName = originalFieldAccess.getName().asString();
+                    result.addUsedBinding(printNode(scope));
+                    FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
+                    rootExpr.getParentNode().filter(MethodCallExpr.class::isInstance)
+                            .map(MethodCallExpr.class::cast)
+                            .ifPresent(mce -> mce.setScope(fieldAccessWithScope));
                 }
             }
         }
@@ -253,12 +249,8 @@ public class PreprocessPhase {
     }
 
     private boolean isSameDrlName(Expression rootExpr, Expression scope) {
-        if (rootExpr instanceof DrlNameExpr && scope instanceof DrlNameExpr) {
-            if (((DrlNameExpr) rootExpr).getName().equals(((DrlNameExpr) scope).getName())) {
-                return true;
-            }
-        }
-        return false;
+        return rootExpr instanceof DrlNameExpr && scope instanceof DrlNameExpr &&
+               ((DrlNameExpr) rootExpr).getName().equals(((DrlNameExpr) scope).getName());
     }
 
     private Expression findRootScope(MethodCallExpr mcExpr) {
