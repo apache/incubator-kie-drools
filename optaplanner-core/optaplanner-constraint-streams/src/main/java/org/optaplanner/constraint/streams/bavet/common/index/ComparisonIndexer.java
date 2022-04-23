@@ -16,6 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
@@ -28,17 +29,18 @@ import java.util.function.Supplier;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
-final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>>
+        implements Indexer<Tuple_, Value_> {
 
-    private final BiFunction<NavigableMap<Object, Indexer<Tuple_, Value_>>, Comparable, Map<Object, Indexer<Tuple_, Value_>>> submapFunction;
-    private final Function<IndexProperties, Comparable> comparisonIndexPropertyFunction;
+    private final SubmapBiFunction<Tuple_, Value_, Key_> submapExtractor;
+    private final Function<IndexProperties, Key_> comparisonIndexPropertyFunction;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
-    private final NavigableMap<Object, Indexer<Tuple_, Value_>> comparisonMap = new TreeMap<>();
+    private final NavigableMap<Key_, Indexer<Tuple_, Value_>> comparisonMap = new TreeMap<>(new KeyComparator<>());
 
     public ComparisonIndexer(JoinerType comparisonJoinerType,
-            Function<IndexProperties, Comparable> comparisonIndexPropertyFunction,
+            Function<IndexProperties, Key_> comparisonIndexPropertyFunction,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        this.submapFunction = getSubmapFunction(comparisonJoinerType);
+        this.submapExtractor = getSubmapExtractor(comparisonJoinerType);
         this.comparisonIndexPropertyFunction = Objects.requireNonNull(comparisonIndexPropertyFunction);
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
     }
@@ -46,7 +48,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer =
                 comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> downstreamIndexerSupplier.get());
         downstreamIndexer.put(indexProperties, tuple, value);
@@ -54,7 +56,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(comparisonIndexProperty);
         if (downstreamIndexer == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
@@ -68,8 +70,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
         return value;
     }
 
-    private BiFunction<NavigableMap<Object, Indexer<Tuple_, Value_>>, Comparable, Map<Object, Indexer<Tuple_, Value_>>>
-            getSubmapFunction(JoinerType comparisonJoinerType) {
+    private SubmapBiFunction<Tuple_, Value_, Key_> getSubmapExtractor(JoinerType comparisonJoinerType) {
         switch (comparisonJoinerType) {
             case LESS_THAN:
                 return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, false);
@@ -87,9 +88,9 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
-        Map<Object, Indexer<Tuple_, Value_>> selectedComparisonMap =
-                submapFunction.apply(comparisonMap, comparisonIndexProperty);
+        Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Map<Key_, Indexer<Tuple_, Value_>> selectedComparisonMap =
+                submapExtractor.apply(comparisonMap, comparisonIndexProperty);
         if (selectedComparisonMap.isEmpty()) {
             return;
         }
@@ -101,6 +102,20 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
     @Override
     public boolean isEmpty() {
         return comparisonMap.isEmpty();
+    }
+
+    private static final class KeyComparator<Key_ extends Comparable<Key_>> implements Comparator<Key_> {
+
+        @Override
+        public int compare(Key_ o1, Key_ o2) { // Exists so that the comparison operations can be more easily debugged.
+            return o1.compareTo(o2);
+        }
+
+    }
+
+    private interface SubmapBiFunction<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>>
+            extends BiFunction<NavigableMap<Key_, Indexer<Tuple_, Value_>>, Key_, Map<Key_, Indexer<Tuple_, Value_>>> {
+        // Exists so that the heavily generic code above may be easier to read and less repetitious.
     }
 
 }

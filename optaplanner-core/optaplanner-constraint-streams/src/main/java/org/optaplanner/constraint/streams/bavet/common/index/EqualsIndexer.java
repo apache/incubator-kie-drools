@@ -25,13 +25,13 @@ import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_> implements Indexer<Tuple_, Value_> {
 
-    private final Function<IndexProperties, Object> indexerKeyFunction;
+    private final Function<IndexProperties, Key_> indexerKeyFunction;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
-    private final Map<Object, Indexer<Tuple_, Value_>> downstreamIndexerMap = new HashMap<>();
+    private final Map<Key_, Indexer<Tuple_, Value_>> downstreamIndexerMap = new HashMap<>();
 
-    public EqualsIndexer(Function<IndexProperties, Object> indexerKeyFunction,
+    public EqualsIndexer(Function<IndexProperties, Key_> indexerKeyFunction,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
         this.indexerKeyFunction = Objects.requireNonNull(indexerKeyFunction);
@@ -48,7 +48,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Object oldIndexKey = indexerKeyFunction.apply(indexProperties);
+        Key_ oldIndexKey = indexerKeyFunction.apply(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(oldIndexKey);
         if (downstreamIndexer == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
