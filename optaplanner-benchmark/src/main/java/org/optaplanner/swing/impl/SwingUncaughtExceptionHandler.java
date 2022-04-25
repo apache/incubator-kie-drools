@@ -18,6 +18,8 @@ package org.optaplanner.swing.impl;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -75,7 +77,15 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
         exceptionFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel contentPanel = new JPanel(new BorderLayout(5, 5));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        contentPanel.add(new JLabel("An uncaught exception has occurred: "), BorderLayout.NORTH);
+        JPanel toolsPanel = new JPanel(new BorderLayout());
+        toolsPanel.add(new JLabel("An uncaught exception has occurred: "), BorderLayout.LINE_START);
+        toolsPanel.add(new JButton(new AbstractAction("Copy to clipboard") {
+            @Override
+            public void actionPerformed(ActionEvent e1) {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(trace), null);
+            }
+        }), BorderLayout.LINE_END);
+        contentPanel.add(toolsPanel, BorderLayout.PAGE_START);
         JTextArea stackTraceTextArea = new JTextArea(30, 80);
         stackTraceTextArea.setEditable(false);
         stackTraceTextArea.setTabSize(4);
@@ -100,7 +110,7 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
             }
         });
         buttonPanel.add(exitApplicationButton);
-        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+        contentPanel.add(buttonPanel, BorderLayout.PAGE_END);
         exceptionFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
@@ -111,6 +121,7 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
         exceptionFrame.pack();
         exceptionFrame.setLocationRelativeTo(null);
         exceptionFrame.setVisible(true);
+        stackTraceTextArea.requestFocus();
     }
 
 }
