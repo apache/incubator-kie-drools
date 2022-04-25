@@ -172,15 +172,12 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             BiJoiner<A, B>[] joiners) {
         BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
         BiJoinerComber<A, B> joinerComber = BiJoinerComber.comb(joiners);
-        BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB = other.shareAndAddChild(
+        BavetIfExistsBridgeUniConstraintStream<Solution_, B> parentBridgeB = other.shareAndAddChild(
                 new BavetIfExistsBridgeUniConstraintStream<>(constraintFactory, other));
         return constraintFactory.share(
                 new BavetIfExistsUniConstraintStream<>(constraintFactory, this, parentBridgeB,
                         shouldExist, joinerComber.getMergedJoiner(), joinerComber.getMergedFiltering()),
-                ifExistsStream_ -> {
-                    childStreamList.add(ifExistsStream_);
-                    parentBridgeB.setIfExistsStream(ifExistsStream_);
-                });
+                childStreamList::add);
     }
 
     // ************************************************************************

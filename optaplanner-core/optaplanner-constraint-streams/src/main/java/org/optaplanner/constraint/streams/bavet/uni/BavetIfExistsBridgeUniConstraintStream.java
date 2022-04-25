@@ -24,21 +24,15 @@ import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
-public final class BavetIfExistsBridgeUniConstraintStream<Solution_, A, B>
-        extends BavetAbstractUniConstraintStream<Solution_, B> {
+public final class BavetIfExistsBridgeUniConstraintStream<Solution_, A>
+        extends BavetAbstractUniConstraintStream<Solution_, A> {
 
-    private final BavetAbstractUniConstraintStream<Solution_, B> parent;
-
-    private BavetIfExistsUniConstraintStream<Solution_, A, B> ifExistsStream;
+    private final BavetAbstractUniConstraintStream<Solution_, A> parent;
 
     public BavetIfExistsBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, B> parent) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-    }
-
-    public void setIfExistsStream(BavetIfExistsUniConstraintStream<Solution_, A, B> ifExistsStream) {
-        this.ifExistsStream = ifExistsStream;
     }
 
     @Override
@@ -63,7 +57,7 @@ public final class BavetIfExistsBridgeUniConstraintStream<Solution_, A, B>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        // Do nothing. BavetIfExistsUniConstraintStream, BavetIfExistsBiConstraintStream, etc build everything.
+        // Do nothing. BavetIfExistsUniConstraintStream builds everything.
     }
 
     // ************************************************************************

@@ -29,6 +29,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bi.InnerBiConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
@@ -168,8 +169,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     private final <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, UniConstraintStream<C> otherStream,
             TriJoiner<A, B, C>[] joiners) {
         BavetAbstractUniConstraintStream<Solution_, C> other = assertBavetUniConstraintStream(otherStream);
-
-        throw new UnsupportedOperationException();
+        TriJoinerComber<A, B, C> joinerComber = TriJoinerComber.comb(joiners);
+        BavetIfExistsBridgeUniConstraintStream<Solution_, C> parentBridgeC = other.shareAndAddChild(
+                new BavetIfExistsBridgeUniConstraintStream<>(constraintFactory, other));
+        return constraintFactory.share(
+                new BavetIfExistsBiConstraintStream<>(constraintFactory, this, parentBridgeC,
+                        shouldExist, joinerComber.getMergedJoiner(), joinerComber.getMergedFiltering()),
+                childStreamList::add);
     }
 
     // ************************************************************************

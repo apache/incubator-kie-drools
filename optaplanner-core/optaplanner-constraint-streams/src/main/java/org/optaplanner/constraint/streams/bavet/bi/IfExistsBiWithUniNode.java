@@ -14,147 +14,149 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.uni;
+package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
-import java.util.function.BiPredicate;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
+import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.function.TriPredicate;
 
-public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
+public final class IfExistsBiWithUniNode<A, B, C> extends AbstractNode {
 
     private final boolean shouldExist;
-    private final Function<A, IndexProperties> mappingA;
-    private final Function<B, IndexProperties> mappingB;
-    private final int inputStoreIndexA;
-    private final int inputStoreIndexB;
+    private final BiFunction<A, B, IndexProperties> mappingAB;
+    private final Function<C, IndexProperties> mappingC;
+    private final int inputStoreIndexAB;
+    private final int inputStoreIndexC;
     /**
-     * Calls for example {@link UniScorer#insert(UniTuple)}, {@link JoinBiNode#insertA(UniTuple)} and/or ...
+     * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
      */
-    private final Consumer<UniTuple<A>> nextNodesInsert;
+    private final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
-     * Calls for example {@link UniScorer#retract(UniTuple)}, {@link JoinBiNode#retractA(UniTuple)} and/or ...
+     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#retractAB(BiTuple)} and/or ...
      */
-    private final Consumer<UniTuple<A>> nextNodesRetract;
+    private final Consumer<BiTuple<A, B>> nextNodesRetract;
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
 
-    private final Indexer<UniTuple<A>, Counter<A>> indexerA;
-    private final Indexer<UniTuple<B>, Set<Counter<A>>> indexerB;
-    private final BiPredicate<A, B> filtering;
-    private final Queue<Counter<A>> dirtyCounterQueue;
+    private final Indexer<BiTuple<A, B>, Counter<A, B>> indexerAB;
+    private final Indexer<UniTuple<C>, Set<Counter<A, B>>> indexerC;
+    private final TriPredicate<A, B, C> filtering;
+    private final Queue<Counter<A, B>> dirtyCounterQueue;
 
-    public IfExistsUniWithUniNode(boolean shouldExist,
-            Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
-            int inputStoreIndexA, int inputStoreIndexB,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-            Indexer<UniTuple<A>, Counter<A>> indexerA, Indexer<UniTuple<B>, Set<Counter<A>>> indexerB,
-            BiPredicate<A, B> filtering) {
+    public IfExistsBiWithUniNode(boolean shouldExist,
+            BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
+            int inputStoreIndexAB, int inputStoreIndexC,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            Indexer<BiTuple<A, B>, Counter<A, B>> indexerAB, Indexer<UniTuple<C>, Set<Counter<A, B>>> indexerC,
+            TriPredicate<A, B, C> filtering) {
         this.shouldExist = shouldExist;
-        this.mappingA = mappingA;
-        this.mappingB = mappingB;
-        this.inputStoreIndexA = inputStoreIndexA;
-        this.inputStoreIndexB = inputStoreIndexB;
+        this.mappingAB = mappingAB;
+        this.mappingC = mappingC;
+        this.inputStoreIndexAB = inputStoreIndexAB;
+        this.inputStoreIndexC = inputStoreIndexC;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
-        this.indexerA = indexerA;
-        this.indexerB = indexerB;
+        this.indexerAB = indexerAB;
+        this.indexerC = indexerC;
         this.filtering = filtering;
         dirtyCounterQueue = new ArrayDeque<>(1000);
     }
 
-    public void insertA(UniTuple<A> tupleA) {
-        if (tupleA.store[inputStoreIndexA] != null) {
-            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleA
+    public void insertAB(BiTuple<A, B> tupleAB) {
+        if (tupleAB.store[inputStoreIndexAB] != null) {
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleAB
                     + ") was already added in the tupleStore.");
         }
-        IndexProperties indexProperties = mappingA.apply(tupleA.factA);
-        tupleA.store[inputStoreIndexA] = indexProperties;
+        IndexProperties indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
+        tupleAB.store[inputStoreIndexAB] = indexProperties;
 
-        Counter<A> counter = new Counter<>(tupleA);
-        indexerA.put(indexProperties, tupleA, counter);
+        Counter<A, B> counter = new Counter<>(tupleAB);
+        indexerAB.put(indexProperties, tupleAB, counter);
 
-        counter.countB = 0;
-        indexerB.visit(indexProperties, (tupleB, counterSetB) -> {
-            if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
-                counter.countB++;
-                counterSetB.add(counter);
+        counter.countC = 0;
+        indexerC.visit(indexProperties, (tupleC, counterSetC) -> {
+            if (filtering == null || filtering.test(tupleAB.factA, tupleAB.factB, tupleC.factA)) {
+                counter.countC++;
+                counterSetC.add(counter);
             }
         });
-        if (shouldExist ? counter.countB > 0 : counter.countB == 0) {
+        if (shouldExist ? counter.countC > 0 : counter.countC == 0) {
             counter.state = BavetTupleState.CREATING;
             dirtyCounterQueue.add(counter);
         }
     }
 
-    public void retractA(UniTuple<A> tupleA) {
-        IndexProperties indexProperties = (IndexProperties) tupleA.store[inputStoreIndexA];
+    public void retractAB(BiTuple<A, B> tupleAB) {
+        IndexProperties indexProperties = (IndexProperties) tupleAB.store[inputStoreIndexAB];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleA.store[inputStoreIndexA] = null;
+        tupleAB.store[inputStoreIndexAB] = null;
 
-        Counter<A> counter = indexerA.remove(indexProperties, tupleA);
-        indexerB.visit(indexProperties, (tupleB, counterSetB) -> {
-            boolean changed = counterSetB.remove(counter);
+        Counter<A, B> counter = indexerAB.remove(indexProperties, tupleAB);
+        indexerC.visit(indexProperties, (tupleC, counterSetC) -> {
+            boolean changed = counterSetC.remove(counter);
             // If filtering is active, not all counterSets contain the counter and we don't track which ones do
             if (!changed && filtering == null) {
-                throw new IllegalStateException("Impossible state: the tuple (" + tupleA
+                throw new IllegalStateException("Impossible state: the tuple (" + tupleAB
                         + ") with indexProperties (" + indexProperties
-                        + ") has a counter on the A side that doesn't exist on the B side.");
+                        + ") has a counter on the AB side that doesn't exist on the C side.");
             }
         });
-        if (shouldExist ? counter.countB > 0 : counter.countB == 0) {
+        if (shouldExist ? counter.countC > 0 : counter.countC == 0) {
             retractCounter(counter);
         }
     }
 
-    public void insertB(UniTuple<B> tupleB) {
-        if (tupleB.store[inputStoreIndexB] != null) {
-            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleB
+    public void insertC(UniTuple<C> tupleC) {
+        if (tupleC.store[inputStoreIndexC] != null) {
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleC
                     + ") was already added in the tupleStore.");
         }
-        IndexProperties indexProperties = mappingB.apply(tupleB.factA);
-        tupleB.store[inputStoreIndexB] = indexProperties;
+        IndexProperties indexProperties = mappingC.apply(tupleC.factA);
+        tupleC.store[inputStoreIndexC] = indexProperties;
 
         // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
-        Set<Counter<A>> counterSetB = new LinkedHashSet<>();
-        indexerB.put(indexProperties, tupleB, counterSetB);
-        indexerA.visit(indexProperties, (tupleA, counter) -> {
-            if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
-                if (counter.countB == 0) {
+        Set<Counter<A, B>> counterSetC = new LinkedHashSet<>();
+        indexerC.put(indexProperties, tupleC, counterSetC);
+        indexerAB.visit(indexProperties, (tupleAB, counter) -> {
+            if (filtering == null || filtering.test(tupleAB.factA, tupleAB.factB, tupleC.factA)) {
+                if (counter.countC == 0) {
                     if (shouldExist) {
                         insertCounter(counter);
                     } else {
                         retractCounter(counter);
                     }
                 }
-                counter.countB++;
-                counterSetB.add(counter);
+                counter.countC++;
+                counterSetC.add(counter);
             }
         });
     }
 
-    public void retractB(UniTuple<B> tupleB) {
-        IndexProperties indexProperties = (IndexProperties) tupleB.store[inputStoreIndexB];
+    public void retractC(UniTuple<C> tupleC) {
+        IndexProperties indexProperties = (IndexProperties) tupleC.store[inputStoreIndexC];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleB.store[inputStoreIndexB] = null;
-        Set<Counter<A>> counterSetB = indexerB.remove(indexProperties, tupleB);
-        for (Counter<A> counter : counterSetB) {
-            counter.countB--;
-            if (counter.countB == 0) {
+        tupleC.store[inputStoreIndexC] = null;
+        Set<Counter<A, B>> counterSetC = indexerC.remove(indexProperties, tupleC);
+        for (Counter<A, B> counter : counterSetC) {
+            counter.countC--;
+            if (counter.countC == 0) {
                 if (shouldExist) {
                     retractCounter(counter);
                 } else {
@@ -164,12 +166,12 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         }
     }
 
-    protected static class Counter<A> {
-        public UniTuple<A> tuple;
+    protected static class Counter<A, B> {
+        public BiTuple<A, B> tuple;
         public BavetTupleState state = BavetTupleState.DEAD;
-        public int countB = 0;
+        public int countC = 0;
 
-        public Counter(UniTuple<A> tuple) {
+        public Counter(BiTuple<A, B> tuple) {
             this.tuple = tuple;
         }
 
@@ -179,7 +181,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         }
     }
 
-    private void insertCounter(Counter<A> counter) {
+    private void insertCounter(Counter<A, B> counter) {
         switch (counter.state) {
             case DYING:
                 counter.state = BavetTupleState.UPDATING;
@@ -197,7 +199,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         }
     }
 
-    private void retractCounter(Counter<A> counter) {
+    private void retractCounter(Counter<A, B> counter) {
         switch (counter.state) {
             case CREATING:
                 // Kill it before it propagates
@@ -247,7 +249,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
 
     @Override
     public String toString() {
-        return "IfExistsUniWithUniNode";
+        return "IfExistsBiWithUniNode";
     }
 
 }

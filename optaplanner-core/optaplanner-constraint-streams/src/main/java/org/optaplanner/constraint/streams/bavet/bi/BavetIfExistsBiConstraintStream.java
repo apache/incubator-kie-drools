@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.uni;
+package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
@@ -26,27 +25,31 @@ import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
-public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends BavetAbstractUniConstraintStream<Solution_, A> {
+public final class BavetIfExistsBiConstraintStream<Solution_, A, B, C>
+        extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final BavetAbstractUniConstraintStream<Solution_, A> parentA;
-    private final BavetIfExistsBridgeUniConstraintStream<Solution_, B> parentBridgeB;
+    private final BavetAbstractBiConstraintStream<Solution_, A, B> parentAB;
+    private final BavetIfExistsBridgeUniConstraintStream<Solution_, C> parentBridgeC;
 
     private final boolean shouldExist;
-    private final DefaultBiJoiner<A, B> joiner;
-    private final BiPredicate<A, B> filtering;
+    private final DefaultTriJoiner<A, B, C> joiner;
+    private final TriPredicate<A, B, C> filtering;
 
-    public BavetIfExistsUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parentA,
-            BavetIfExistsBridgeUniConstraintStream<Solution_, B> parentBridgeB,
+    public BavetIfExistsBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractBiConstraintStream<Solution_, A, B> parentAB,
+            BavetIfExistsBridgeUniConstraintStream<Solution_, C> parentBridgeC,
             boolean shouldExist,
-            DefaultBiJoiner<A, B> joiner, BiPredicate<A, B> filtering) {
-        super(constraintFactory, parentA.getRetrievalSemantics());
-        this.parentA = parentA;
-        this.parentBridgeB = parentBridgeB;
+            DefaultTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> filtering) {
+        super(constraintFactory, parentAB.getRetrievalSemantics());
+        this.parentAB = parentAB;
+        this.parentBridgeC = parentBridgeC;
         this.shouldExist = shouldExist;
         this.joiner = joiner;
         this.filtering = filtering;
@@ -54,7 +57,7 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
 
     @Override
     public boolean guaranteesDistinct() {
-        return parentA.guaranteesDistinct();
+        return parentAB.guaranteesDistinct();
     }
 
     // ************************************************************************
@@ -63,33 +66,33 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
 
     @Override
     public void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet) {
-        parentA.collectActiveConstraintStreams(constraintStreamSet);
-        parentBridgeB.collectActiveConstraintStreams(constraintStreamSet);
+        parentAB.collectActiveConstraintStreams(constraintStreamSet);
+        parentBridgeC.collectActiveConstraintStreams(constraintStreamSet);
         constraintStreamSet.add(this);
     }
 
     @Override
     public ConstraintStream getTupleSource() {
-        return parentA.getTupleSource();
+        return parentAB.getTupleSource();
     }
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentA.getTupleSource());
-        int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource());
-        Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
+        int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource());
+        int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource());
+        Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<UniTuple<A>, IfExistsUniWithUniNode.Counter<A>> indexerA = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<B>, Set<IfExistsUniWithUniNode.Counter<A>>> indexerB = indexerFactory.buildIndexer(false);
-        IfExistsUniWithUniNode<A, B> node = new IfExistsUniWithUniNode<>(shouldExist,
+        Indexer<BiTuple<A, B>, IfExistsBiWithUniNode.Counter<A, B>> indexerAB = indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<C>, Set<IfExistsBiWithUniNode.Counter<A, B>>> indexerC = indexerFactory.buildIndexer(false);
+        IfExistsBiWithUniNode<A, B, C> node = new IfExistsBiWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 insert, retract,
-                indexerA, indexerB, filtering);
+                indexerAB, indexerC, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertA, node::retractA);
-        buildHelper.putInsertRetract(parentBridgeB, node::insertB, node::retractB);
+        buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
+        buildHelper.putInsertRetract(parentBridgeC, node::insertC, node::retractC);
     }
 
     // ************************************************************************
