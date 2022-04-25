@@ -25,7 +25,6 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
@@ -351,63 +350,6 @@ public class KnowledgeBuilderTest {
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
         assertEquals( "OK", list.get( 0 ) );
-    }
-
-    @Test
-    public void testAddKPackageSingle() throws Exception {
-        String rule = "package org.drools.mvel.compiler.test\n" +
-                      "import org.drools.mvel.compiler.StockTick\n" +
-                      "rule R1 when\n" +
-                      "   StockTick()\n" +
-                      "then\n" +
-                      "end\n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 2, kpkgs.size() );
-
-        KiePackage kpkg = kpkgs.iterator().next();
-
-        byte[] skpkg = DroolsStreamUtils.streamOut( kpkg );
-
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( skpkg ), ResourceType.PKG );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        kpkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, kpkgs.size() );
-        kpkg = kpkgs.iterator().next();
-        assertEquals( 1, kpkg.getRules().size() );
-    }
-
-    @Test
-    public void testAddKPackageCollection() throws Exception {
-        String rule = "package org.drools.mvel.compiler.test\n" +
-                      "import org.drools.mvel.compiler.StockTick\n" +
-                      "declare StockTick @role(event) end\n" +
-                      "rule R1 when\n" +
-                      "   StockTick()\n" +
-                      "then\n" +
-                      "end\n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 2, kpkgs.size() );
-
-        byte[] skpkg = DroolsStreamUtils.streamOut( kpkgs );
-
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( skpkg ), ResourceType.PKG );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        kpkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 2, kpkgs.size() );
     }
 
     @Test
