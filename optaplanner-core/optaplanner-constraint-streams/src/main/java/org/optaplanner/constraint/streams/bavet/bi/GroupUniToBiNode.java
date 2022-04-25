@@ -93,8 +93,8 @@ public final class GroupUniToBiNode<OldA, A, B, ResultContainer_> extends Abstra
 
     public void insertA(UniTuple<OldA> tupleOldA) {
         if (tupleOldA.store[groupStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleOldA.factA + ") was already added in the tupleStore.");
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleOldA
+                    + ") was already added in the tupleStore.");
         }
         A groupKey = groupKeyMapping.apply(tupleOldA.factA);
         Group<A, B, ResultContainer_> group = groupMap.computeIfAbsent(groupKey, k -> new Group<>(k, supplier.get()));

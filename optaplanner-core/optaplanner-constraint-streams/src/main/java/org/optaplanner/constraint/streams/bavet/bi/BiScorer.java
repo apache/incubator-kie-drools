@@ -42,8 +42,7 @@ public final class BiScorer<A, B> extends AbstractScorer {
 
     public void insert(BiTuple<A, B> tupleAB) {
         if (tupleAB.store[inputStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the input for the facts ("
-                    + tupleAB.factA + ", " + tupleAB.factB
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleAB
                     + ") was already added in the tupleStore.");
         }
         UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleAB.factA, tupleAB.factB);

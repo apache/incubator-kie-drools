@@ -73,8 +73,8 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
 
     public void insertA(UniTuple<A> tupleA) {
         if (tupleA.store[inputStoreIndexA] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleA.factA + ") was already added in the tupleStore.");
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleA
+                    + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingA.apply(tupleA.factA);
         tupleA.store[inputStoreIndexA] = indexProperties;
@@ -108,7 +108,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
             boolean changed = counterSet.remove(counter);
             // If filtering is active, not all counterSets contain the counter and we don't track which ones do
             if (!changed && filtering == null) {
-                throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
+                throw new IllegalStateException("Impossible state: the tuple (" + tupleA
                         + ") with indexProperties (" + indexProperties
                         + ") has a counter on the A side that doesn't exist on the B side.");
             }
@@ -120,8 +120,8 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
 
     public void insertB(UniTuple<B> tupleB) {
         if (tupleB.store[inputStoreIndexB] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleB.factA + ") was already added in the tupleStore.");
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleB
+                    + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;

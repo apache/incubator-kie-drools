@@ -95,8 +95,7 @@ public final class GroupBiToBiNode<OldA, OldB, A, B, ResultContainer_> extends A
 
     public void insertAB(BiTuple<OldA, OldB> tupleOldAB) {
         if (tupleOldAB.store[groupStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleOldAB.factA + ", " + tupleOldAB.factB
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleOldAB
                     + ") was already added in the tupleStore.");
         }
         A groupKey = groupKeyMapping.apply(tupleOldAB.factA, tupleOldAB.factB);

@@ -69,8 +69,8 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertA(UniTuple<A> tupleA) {
         if (tupleA.store[inputStoreIndexA] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleA.factA + ") was already added in the tupleStore.");
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleA
+                    + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingA.apply(tupleA.factA);
         tupleA.store[inputStoreIndexA] = indexProperties;
@@ -101,7 +101,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             // for (tupleAB : tupleABSetA { tupleABSetMapB.get(tupleAB.tupleB).remove(tupleAB); }
             boolean changed = tupleABSetB.removeAll(tupleABSetA);
             if (!changed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
+                throw new IllegalStateException("Impossible state: the tuple (" + tupleA
                         + ") with indexProperties (" + indexProperties
                         + ") has tuples on the A side that didn't exist on the B side.");
             }
@@ -113,8 +113,8 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
     public void insertB(UniTuple<B> tupleB) {
         if (tupleB.store[inputStoreIndexB] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleB.factA + ") was already added in the tupleStore.");
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleB
+                    + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
@@ -145,7 +145,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             // for (tupleAB : tupleABSetB { tupleABSetMapA.get(tupleAB.tupleA).remove(tupleAB); }
             boolean changed = tupleABSetA.removeAll(tupleABSetB);
             if (!changed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
+                throw new IllegalStateException("Impossible state: the tuple (" + tupleA
                         + ") with indexProperties (" + indexProperties
                         + ") has tuples on the B side that didn't exist on the A side.");
             }
@@ -170,8 +170,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
                 case DYING:
                     break;
                 default:
-                    throw new IllegalStateException("Impossible state: The tuple for the facts ("
-                            + tupleAB.factA + ", " + tupleAB.factB
+                    throw new IllegalStateException("Impossible state: The tuple (" + tupleAB
                             + ") has the dirty state (" + tupleAB.state + ").");
             }
         } else {

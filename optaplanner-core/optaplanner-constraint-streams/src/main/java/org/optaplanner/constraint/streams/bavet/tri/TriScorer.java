@@ -41,8 +41,7 @@ public final class TriScorer<A, B, C> extends AbstractScorer {
 
     public void insert(TriTuple<A, B, C> tupleABC) {
         if (tupleABC.store[inputStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the input for the facts ("
-                    + tupleABC.factA + ", " + tupleABC.factB + ", " + tupleABC.factC
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleABC.factA
                     + ") was already added in the tupleStore.");
         }
         UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(tupleABC.factA, tupleABC.factB, tupleABC.factC);

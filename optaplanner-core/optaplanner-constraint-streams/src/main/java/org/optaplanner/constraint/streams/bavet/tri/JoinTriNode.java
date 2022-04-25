@@ -70,8 +70,8 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
     public void insertAB(BiTuple<A, B> tupleAB) {
         if (tupleAB.store[inputStoreIndexAB] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleAB.factA + ", " + tupleAB.factB + ") was already added in the tupleStore.");
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleAB
+                    + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
         tupleAB.store[inputStoreIndexAB] = indexProperties;
@@ -103,7 +103,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
             // for (tupleABC : tupleABCSetAB { tupleABCSetMapB.get(tupleABC.tupleC).remove(tupleABC); }
             boolean changed = tupleABCSetC.removeAll(tupleABCSetAB);
             if (!changed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tupleAB.factA
+                throw new IllegalStateException("Impossible state: the tuple (" + tupleAB
                         + ") with indexProperties (" + indexProperties
                         + ") has tuples on the AB side that didn't exist on the C side.");
             }
@@ -115,8 +115,8 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
     public void insertC(UniTuple<C> tupleC) {
         if (tupleC.store[inputStoreIndexC] != null) {
-            throw new IllegalStateException("Impossible state: the input for the fact ("
-                    + tupleC.factA + ") was already added in the tupleStore.");
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleC
+                    + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingC.apply(tupleC.factA);
         tupleC.store[inputStoreIndexC] = indexProperties;
@@ -148,7 +148,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
             // for (tupleABC : tupleABCSetC { tupleABCSetMapA.get(tupleABC.tupleAB).remove(tupleABC); }
             boolean changed = tupleABCSetAB.removeAll(tupleABCSetC);
             if (!changed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tupleAB.factA + ", " + tupleAB.factB
+                throw new IllegalStateException("Impossible state: the tuple (" + tupleAB
                         + ") with indexProperties (" + indexProperties
                         + ") has tuples on the C side that didn't exist on the AB side.");
             }
@@ -173,8 +173,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
                 case DYING:
                     break;
                 default:
-                    throw new IllegalStateException("Impossible state: The tuple for the facts ("
-                            + tupleABC.factA + ", " + tupleABC.factB + ", " + tupleABC.factC
+                    throw new IllegalStateException("Impossible state: The tuple (" + tupleABC.factA
                             + ") has the dirty state (" + tupleABC.state + ").");
             }
         } else {
