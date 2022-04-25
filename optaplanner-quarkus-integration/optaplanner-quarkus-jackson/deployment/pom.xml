@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-jackson-parent</artifactId>
-    <version>8.21.0-SNAPSHOT</version>
+    <version>8.22.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus-jackson-deployment</artifactId>
