@@ -1511,4 +1511,33 @@ public class MvelDialectTest extends BaseModelTest {
 
         assertEquals(1, fired);
     }
+
+    @Test
+    public void testMVELModifyPropMethodCall() {
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify($p) {\n" +
+                "    age = 20,\n" +
+                "    addresses.clear();\n" +
+                "  }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John");
+        List<Address> addresses = new ArrayList<>();
+        addresses.add(new Address("London"));
+        p.setAddresses(addresses);
+        ksession.insert(p);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(20, p.getAge());
+        assertEquals(0, p.getAddresses().size());
+        assertEquals(1, fired);
+    }
 }
