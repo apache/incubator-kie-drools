@@ -87,7 +87,7 @@ public class POJOGenerator implements CompilationPhase {
         return compileAll(resultAccumulator, packageClassLoader, classesWithPackage);
     }
 
-    public void findPOJOorGenerate() {
+    private void findPOJOorGenerate() {
         TypeResolver typeResolver = pkg.getTypeResolver();
         Set<String> generatedPojos = new HashSet<>();
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {

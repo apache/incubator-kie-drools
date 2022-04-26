@@ -26,8 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Decorates a
- * Iterates on a collection of {@link CompositePackageDescr}
+ * Decorates a {@link CompilationPhase} via its {@link IterablePhaseFactory}.
+ * Iterates over a collection of {@link CompositePackageDescr}
+ * and applies the decorated phase to it.
  *
  */
 public class IteratingPhase implements CompilationPhase {
