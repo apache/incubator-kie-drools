@@ -35,9 +35,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTest {
@@ -120,8 +118,8 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
     private void checkKieContainer1(KieContainer container) throws Exception {
         final DMNRuntime runtime = KieRuntimeFactory.of(container.getKieBase()).get(DMNRuntime.class);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_78BDCBE4-32EA-486E-9D81-CCC0D2378C61", "personCL");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final Object johnDoePerson = container.getClassLoader().loadClass("org.acme.Person").getConstructor(String.class, String.class).newInstance("John", "Doe");
 
@@ -178,8 +176,8 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
     private void checkKieContainer2(KieContainer container2) throws Exception {
         final DMNRuntime runtime2 = KieRuntimeFactory.of(container2.getKieBase()).get(DMNRuntime.class);
         final DMNModel dmnModel2 = runtime2.getModel("ns2", "personCL2");
-        assertThat(dmnModel2, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel2.getMessages()), dmnModel2.hasErrors(), is(false));
+        assertThat(dmnModel2).isNotNull();
+        assertThat(dmnModel2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel2.getMessages())).isFalse();
 
         final Object johnDoePerson2 = container2.getClassLoader().loadClass("org.acme.Person").getConstructor(String.class).newInstance("John Doe");
 
@@ -192,10 +190,10 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
 
         final DMNResult dmnResult2 = runtime2.evaluateAll(dmnModel2, context2);
         LOG.debug("{}", dmnResult2);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages()), dmnResult2.hasErrors(), is(false));
+        assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages())).isFalse();
 
         final DMNContext result = dmnResult2.getContext();
-        assertThat(result.get("Decision-1"), is("Hello, John Doe"));
+        assertThat(result.get("Decision-1")).isEqualTo("Hello, John Doe");
     }
 
 }

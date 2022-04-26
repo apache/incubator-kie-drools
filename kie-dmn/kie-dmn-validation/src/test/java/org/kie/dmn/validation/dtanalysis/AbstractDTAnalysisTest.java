@@ -33,18 +33,14 @@ import org.kie.dmn.validation.dtanalysis.utils.DTAnalysisMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(AbstractDTAnalysisTest.class);
 
     protected static DTAnalysis getAnalysis(List<DMNMessage> dmnMessages, String id) {
-        assertThat("Expected to find DTAnalysis but messages are empty.", dmnMessages, not(empty()));
+        assertThat(dmnMessages).as("Expected to find DTAnalysis but messages are empty.").isNotEmpty();
 
         if (LOG.isDebugEnabled() ) {
             LOG.debug("List<DMNMessage> dmnMessages: \n{}", ValidatorUtil.formatMessages(dmnMessages));
@@ -55,7 +51,7 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
             if (dmnMessage.getSourceId().equals(id) && dmnMessage instanceof DMNDTAnalysisMessage) {
                 DMNDTAnalysisMessage dmndtAnalysisMessage = (DMNDTAnalysisMessage) dmnMessage;
                 if (as.containsKey(id)) {
-                    assertThat("Inconsistency detected", as.get(id), is(dmndtAnalysisMessage.getAnalysis()));
+                    assertThat(as.get(id)).as("Inconsistency detected").isEqualTo(dmndtAnalysisMessage.getAnalysis());
                 } else {
                     as.put(id, dmndtAnalysisMessage.getAnalysis());
                 }
@@ -63,7 +59,7 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
         }
 
         DTAnalysis analysis = as.get(id);
-        assertThat("Null analysis value for key.", analysis, notNullValue());
+        assertThat(analysis).as("Null analysis value for key.").isNotNull();
 
         debugAnalysis(analysis);
 

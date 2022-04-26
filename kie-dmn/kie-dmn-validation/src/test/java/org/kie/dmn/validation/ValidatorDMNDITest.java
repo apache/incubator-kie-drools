@@ -25,8 +25,7 @@ import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -38,7 +37,7 @@ public class ValidatorDMNDITest extends AbstractValidatorTest {
         try (final Reader reader = getReader("dmndi/all-elements.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(0);
         }
     }
 
@@ -47,9 +46,9 @@ public class ValidatorDMNDITest extends AbstractValidatorTest {
         try (final Reader reader = getReader("dmndi/all-elements-with-dmndi-no-dmnshape.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(12));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(12);
             assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING &&
-                                                     p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(12L));
+                                                     p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count()).isEqualTo(12L);
         }
     }
 
@@ -58,11 +57,11 @@ public class ValidatorDMNDITest extends AbstractValidatorTest {
         try (final Reader reader = getReader("dmndi/all-elements-invalid-ref.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(24));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(24);
             assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING &&
-                                                     p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(12L));
+                                                     p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count()).isEqualTo(12L);
             assertThat(validate.stream().filter(p -> p.getLevel() == Level.ERROR &&
-                                                     p.getMessageType().equals(DMNMessageType.DMNDI_UNKNOWN_REF)).count(), is(12L));
+                                                     p.getMessageType().equals(DMNMessageType.DMNDI_UNKNOWN_REF)).count()).isEqualTo(12L);
         }
     }
 }

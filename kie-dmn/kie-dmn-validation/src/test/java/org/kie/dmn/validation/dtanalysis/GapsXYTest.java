@@ -16,13 +16,6 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +27,10 @@ import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
 public class GapsXYTest extends AbstractDTAnalysisTest {
 
@@ -68,7 +65,7 @@ public class GapsXYTest extends AbstractDTAnalysisTest {
     public static void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_ce297a95-b16c-4631-8da5-e739dac9e3c4");
 
-        assertThat(analysis.getGaps(), hasSize(3));
+        assertThat(analysis.getGaps()).hasSize(3);
         
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
@@ -110,12 +107,12 @@ public class GapsXYTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(3));
+        assertThat(gaps).hasSize(3);
 
         // Assert GAPS
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 }

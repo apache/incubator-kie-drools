@@ -31,10 +31,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.runtime.BaseFEELTest.FEEL_TARGET;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public abstract class BaseFEELCompilerTest {
@@ -68,11 +65,11 @@ public abstract class BaseFEELCompilerTest {
         final CompiledExpression compiledExpression = feel.compile(expression, ctx );
 
         if( result == null ) {
-            assertThat( "Evaluating: '" + expression + "'", feel.evaluate( compiledExpression, inputValues ), is( nullValue() ) );
+        	assertThat(feel.evaluate( compiledExpression, inputValues)).as("Evaluating: '" + expression + "'").isNull();
         } else if( result instanceof Class<?> ) {
-            assertThat( "Evaluating: '" + expression + "'", feel.evaluate( compiledExpression, inputValues ), is( instanceOf( (Class<?>) result ) ) );
+        	assertThat(feel.evaluate( compiledExpression, inputValues)).as("Evaluating: '" + expression + "'").isInstanceOf((Class<?>) result);
         } else {
-            assertThat( "Evaluating: '"+expression+"'", feel.evaluate( compiledExpression, inputValues ), is( result ) );
+        	assertThat(feel.evaluate( compiledExpression, inputValues)).as("Evaluating: '" + expression + "'").isEqualTo(result);
         }
     }
 

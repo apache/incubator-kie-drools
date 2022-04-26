@@ -28,8 +28,7 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -43,7 +42,7 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis = getAnalysis(validate, "_3aa68aee-6314-482f-a0be-84c2411d65d7");
 
         debugValidatorMsg(validate);
-        assertThat(analysis.getGaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(1);
         assertTrue(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
     }
 
@@ -67,8 +66,8 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis = getAnalysis(validate, "_3aa68aee-6314-482f-a0be-84c2411d65d7");
 
         debugValidatorMsg(validate);
-        assertThat(analysis.getGaps(), hasSize(0));
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
+        assertThat(analysis.getOverlaps()).hasSize(0);
         return validate;
     }
 
@@ -92,8 +91,8 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis = getAnalysis(validate, "_3aa68aee-6314-482f-a0be-84c2411d65d7");
 
         debugValidatorMsg(validate);
-        assertThat(analysis.getGaps(), hasSize(0));
-        assertThat(analysis.getOverlaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(0);
+        assertThat(analysis.getOverlaps()).hasSize(1);
         return validate;
     }
 
@@ -117,8 +116,8 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis = getAnalysis(validate, "_3aa68aee-6314-482f-a0be-84c2411d65d7");
 
         debugValidatorMsg(validate);
-        assertThat(analysis.getGaps(), hasSize(0));
-        assertThat(analysis.getOverlaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(0);
+        assertThat(analysis.getOverlaps()).hasSize(1);
         return validate;
     }
 }

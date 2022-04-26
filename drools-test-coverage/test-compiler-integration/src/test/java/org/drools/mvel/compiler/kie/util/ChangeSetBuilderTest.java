@@ -37,11 +37,8 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChange.Type;
 import org.kie.internal.builder.ResourceChangeSet;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +63,7 @@ public class ChangeSetBuilderTest {
 
         KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
         
-        assertThat( changes.getChanges().size(), is(0));
+        assertThat(changes.getChanges()).hasSize(0);
     }
 
     @Test
@@ -96,13 +93,13 @@ public class ChangeSetBuilderTest {
         
         String modifiedFile = (String) kieJar2.getFileNames().toArray()[1];
         
-        assertThat( changes.getChanges().size(), is(1));
+        assertThat(changes.getChanges()).hasSize(1);
         ResourceChangeSet cs = changes.getChanges().get( modifiedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.UPDATED ) );
-        assertThat( cs.getChanges().size(), is(2) );
-        assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.ADDED, Type.RULE, "R3") ) );
-        assertThat( cs.getChanges().get( 0 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "R2") ) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.UPDATED);
+        assertThat(cs.getChanges()).hasSize(2);
+        assertThat(cs.getChanges().get(1)).isEqualTo(new ResourceChange(ChangeType.ADDED, Type.RULE, "R3"));
+        assertThat(cs.getChanges().get(0)).isEqualTo(new ResourceChange(ChangeType.REMOVED, Type.RULE, "R2"));
         
 //        ChangeSetBuilder builder = new ChangeSetBuilder();
 //        System.out.println( builder.toProperties( changes ) );
@@ -129,10 +126,10 @@ public class ChangeSetBuilderTest {
 
         String removedFile = (String) kieJar1.getFileNames().toArray()[1];
         
-        assertThat( changes.getChanges().size(), is(1));
+        assertThat(changes.getChanges()).hasSize(1);
         ResourceChangeSet cs = changes.getChanges().get( removedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.REMOVED ) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.REMOVED);
     }
     
     @Test
@@ -189,21 +186,21 @@ public class ChangeSetBuilderTest {
         String addedFile = (String) kieJar2.getFileNames().toArray()[1];
         String removedFile = (String) kieJar1.getFileNames().toArray()[1];
         
-        assertThat( changes.getChanges().size(), is(3));
+        assertThat(changes.getChanges()).hasSize(3);
 
         ResourceChangeSet cs = changes.getChanges().get( removedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.REMOVED) );
-        assertThat( cs.getChanges().size(), is(0) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.REMOVED);
+        assertThat(cs.getChanges()).hasSize(0);
 
         cs = changes.getChanges().get( addedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.ADDED ) );
-        assertThat( cs.getChanges().size(), is(0) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.ADDED);
+        assertThat(cs.getChanges()).hasSize(0);
 
         cs = changes.getChanges().get( modifiedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.UPDATED ) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.UPDATED);
 //        assertThat( cs.getChanges().size(), is(3) );
 //        assertThat( cs.getChanges().get( 0 ), is( new ResourceChange(ChangeType.ADDED, Type.RULE, "An added rule") ) );
 //        assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "A removed rule") ) );

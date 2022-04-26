@@ -17,15 +17,13 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.gt;
 
 public class ManualFilterTest {
@@ -65,7 +63,7 @@ public class ManualFilterTest {
         Object result = compiledExpression.apply(emptyContext);
         LOG.debug("{}", result);
 
-        assertThat(result, is(Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))));
+        assertThat(result).asList().containsExactly(BigDecimal.valueOf(3), BigDecimal.valueOf(4));
     }
 
 }

@@ -41,8 +41,7 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -147,14 +146,14 @@ public class MapConstraintTest {
         final ArgumentCaptor<AfterMatchFiredEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael, times(4)).afterMatchFired(arg.capture());
         org.kie.api.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get(0);
-        assertThat(aaf.getMatch().getRule().getName(), is("1. home != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("1. home != null");
         aaf = arg.getAllValues().get(1);
-        assertThat(aaf.getMatch().getRule().getName(), is("2. not home == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("2. not home == null");
 
         aaf = arg.getAllValues().get(2);
-        assertThat(aaf.getMatch().getRule().getName(), is("7. work == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("7. work == null");
         aaf = arg.getAllValues().get(3);
-        assertThat(aaf.getMatch().getRule().getName(), is("8. not work != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("8. not work != null");
     }
 
     @Test

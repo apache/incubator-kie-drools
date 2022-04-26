@@ -24,9 +24,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNDecisionTableWithSymbolsTest extends BaseDMN1_1VariantTest {
 
@@ -38,7 +36,7 @@ public class DMNDecisionTableWithSymbolsTest extends BaseDMN1_1VariantTest {
     public void testDecisionWithArgumentsOnOutput() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decide with symbols.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_79b16a68-013b-484c-98f5-49ff77808800", "Decide with symbols");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("Person age", 44);
@@ -46,6 +44,6 @@ public class DMNDecisionTableWithSymbolsTest extends BaseDMN1_1VariantTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide with symbol"), is("Hello, Mario"));
+        assertThat(result.get("Decide with symbol")).isEqualTo("Hello, Mario");
     }
 }

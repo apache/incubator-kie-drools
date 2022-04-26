@@ -32,7 +32,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,12 +39,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
-import org.kie.api.runtime.rule.FactHandle;
 
-import static java.util.Arrays.asList;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -227,7 +222,7 @@ public class TimerAndCalendarWithRealTimeTest {
         await().until(agendaIsNotEmpty());
         ksession.fireAllRules();
 
-        await().until(list::size, greaterThanOrEqualTo(1));
+        await().until(() -> list.size() >= 1);
 
         kbase.removeRule("org.drools.compiler.test", "TimerRule");
         ksession.fireAllRules();
@@ -268,7 +263,7 @@ public class TimerAndCalendarWithRealTimeTest {
 
         long start = System.currentTimeMillis();
 
-        await().until(list::size, equalTo(1));
+        await().until(() -> list.size()  == 1);
 
         long end = System.currentTimeMillis();
 

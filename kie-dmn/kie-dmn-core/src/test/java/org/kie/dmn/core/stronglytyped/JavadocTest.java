@@ -35,10 +35,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
@@ -62,8 +59,8 @@ public class JavadocTest extends BaseVariantTest {
         runtime.addListener(DMNRuntimeUtil.createListener());
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9", "dateTime Table 58");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         // Typesafe only test
         Map<String, String> sourceMap = new HashMap<>();
@@ -140,6 +137,6 @@ public class JavadocTest extends BaseVariantTest {
         assertTrue(opt.isPresent());
         Optional<JavadocComment> actual = opt.get().getJavadocComment();
         assertTrue(actual.isPresent());
-        assertThat(actual.get().getContent(), containsString(expectedJavadocComment));
+        assertThat(actual.get().getContent()).contains(expectedJavadocComment);
     }
 }

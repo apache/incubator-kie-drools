@@ -65,8 +65,6 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -368,8 +366,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(38.5)));
-        assertThat(results, hasItem(new Result(77)));
+        assertThat(results).contains(new Result(38.5));
+        assertThat(results).contains(new Result(77));
     }
 
     @Test
@@ -396,8 +394,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(38.5d)));
-        assertThat(results, hasItem(new Result(77)));
+        assertThat(results).contains(new Result(38.5d));
+        assertThat(results).contains(new Result(77));
     }
 
     @Test
@@ -425,8 +423,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(37)));
-        assertThat(results, hasItem(new Result(77)));
+        assertThat(results).contains(new Result(37));
+        assertThat(results).contains(new Result(77));
     }
 
     @Test
@@ -451,7 +449,7 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(43)));
+        assertThat(results).contains(new Result(43));
     }
 
     @Test
@@ -586,7 +584,7 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(1)));
+        assertThat(results).contains(new Result(1));
     }
 
     public static class TestFunction implements AccumulateFunction<Serializable> {
@@ -774,7 +772,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem(112));
+        assertThat(results).contains(112);
 
         if (performReverse) {
             ksession.delete(fh_Mario);
@@ -782,7 +780,7 @@ public class AccumulateTest extends BaseModelTest {
 
             results = getObjectsIntoList(ksession, Integer.class);
             assertEquals(2, results.size());
-            assertThat(results, hasItem(72));
+            assertThat(results).contains(72);
         }
     }
 
@@ -809,14 +807,14 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem(38));
+        assertThat(results).contains(38);
 
         ksession.delete(fh_Mario);
         ksession.fireAllRules();
 
         results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(2, results.size());
-        assertThat(results, hasItem(36));
+        assertThat(results).contains(36);
     }
 
     @Test
@@ -843,14 +841,14 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem(38 + 14));
+        assertThat(results).contains(38 + 14);
 
         ksession.delete(fh_Mario);
         ksession.fireAllRules();
 
         results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(2, results.size());
-        assertThat(results, hasItem(36 + 14));
+        assertThat(results).contains(36 + 14);
     }
 
 
@@ -876,7 +874,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem(8));
+        assertThat(results).contains(8);
     }
 
     @Test
@@ -900,7 +898,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem("Milan"));
+        assertThat(results).contains("Milan");
     }
 
     @Test
@@ -928,7 +926,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
 
-        assertThat(results, hasItem(4));
+        assertThat(results).contains(4);
     }
 
     @Test
@@ -981,7 +979,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem(112));
+        assertThat(results).contains(112);
 
     }
 
@@ -1007,7 +1005,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem(112));
+        assertThat(results).contains(112);
 
     }
 
@@ -4020,14 +4018,14 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
-        assertThat(results, hasItem(38));
+        assertThat(results).contains(38);
 
         ksession.delete(fh_Mario);
         ksession.fireAllRules();
 
         results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(2, results.size());
-        assertThat(results, hasItem(36));
+        assertThat(results).contains(36);
     }
 
     @Test
