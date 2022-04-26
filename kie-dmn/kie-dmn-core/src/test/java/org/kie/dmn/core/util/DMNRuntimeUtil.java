@@ -50,8 +50,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A type-check safe runtime creation helper.
@@ -92,7 +91,7 @@ public final class DMNRuntimeUtil {
                                                    .filter(DMNMessage.class::isInstance)
                                                    .map(DMNMessage.class::cast)
                                                    .collect(Collectors.toList());
-        assertThat(dmnMessages.isEmpty(), is(false));
+        assertThat(dmnMessages).isNotEmpty();;
         return dmnMessages;
     }
 

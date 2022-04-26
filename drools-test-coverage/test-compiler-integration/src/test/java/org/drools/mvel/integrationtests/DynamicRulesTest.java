@@ -62,8 +62,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -1181,14 +1180,14 @@ public class DynamicRulesTest {
         ksession.fireAllRules();
         ArgumentCaptor<AfterMatchFiredEvent> capt = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael, times(1) ).afterMatchFired( capt.capture() );
-        assertThat( "R1", is( capt.getValue().getMatch().getRule().getName() ) );
+        assertThat(capt.getValue().getMatch().getRule().getName()).isEqualTo("R1");
 
         kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, type, r2).getKiePackages();
         kbase.addPackages(kpkgs);
         
         ksession.fireAllRules();
         verify( ael, times(2) ).afterMatchFired( capt.capture() );
-        assertThat( "R2", is( capt.getAllValues().get( 2 ).getMatch().getRule().getName() ) );
+        assertThat(capt.getAllValues().get(2).getMatch().getRule().getName()).isEqualTo("R2");
         
         ksession.dispose();
         

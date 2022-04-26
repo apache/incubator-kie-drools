@@ -29,9 +29,7 @@ import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class RuleOrderDashTest extends AbstractDTAnalysisTest {
@@ -42,10 +40,10 @@ public class RuleOrderDashTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis = getAnalysis(validate, "_eb02106a-cee1-47f5-a9d9-3160c5ac868b");
 
         // Assert GAPS count.
-        assertThat(analysis.getGaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(3));
+        assertThat(analysis.getOverlaps()).hasSize(3);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(3,
@@ -94,9 +92,9 @@ public class RuleOrderDashTest extends AbstractDTAnalysisTest {
                                                                                                                    new Bound(Interval.POS_INF,
                                                                                                                              RangeBoundary.CLOSED,
                                                                                                                              null))))));
-        assertThat(overlaps, hasSize(3));
+        assertThat(overlaps).hasSize(3);
 
         // Assert OVERLAPs same values
-        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
+        assertThat(analysis.getOverlaps()).containsAll(overlaps);
     }
 }

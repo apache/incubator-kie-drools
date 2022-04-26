@@ -22,9 +22,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class NoGapsDomainOnTypeRefTest extends AbstractDTAnalysisTest {
@@ -45,9 +43,9 @@ public class NoGapsDomainOnTypeRefTest extends AbstractDTAnalysisTest {
 
     private void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis1 = getAnalysis(validate, "_E064FD38-56EA-40EB-97B4-F061ACD6F58F");
-        assertThat(analysis1.isError(), is(false));
-        assertThat(analysis1.getGaps(), hasSize(0));
-        assertThat(analysis1.getOverlaps(), hasSize(0));
+        assertThat(analysis1.isError()).isFalse();
+        assertThat(analysis1.getGaps()).hasSize(0);
+        assertThat(analysis1.getOverlaps()).hasSize(0);
     }
 
 }

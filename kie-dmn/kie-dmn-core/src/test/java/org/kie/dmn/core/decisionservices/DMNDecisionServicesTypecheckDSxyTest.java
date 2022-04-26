@@ -34,10 +34,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -72,8 +69,8 @@ public class DMNDecisionServicesTypecheckDSxyTest {
         runtime = DMNRuntimeUtil.createRuntime("DSxy.dmn", this.getClass());
         dmnModel = runtime.getModel("https://kiegroup.org/dmn/_127520A0-364A-4ADA-A012-3AB6A7E3585E", "DSxy");
 
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
     }
 
     @Test
@@ -86,9 +83,9 @@ public class DMNDecisionServicesTypecheckDSxyTest {
 
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is(new BigDecimal(1)));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).isEqualTo(new BigDecimal(1));
     }
     
     @Test
@@ -100,8 +97,8 @@ public class DMNDecisionServicesTypecheckDSxyTest {
 
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getMessages().isEmpty(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), not(is(DecisionEvaluationStatus.SUCCEEDED)));
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isNotEmpty();
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus()).isNotEqualTo(DecisionEvaluationStatus.SUCCEEDED);
     }
 
     @Test
@@ -116,8 +113,8 @@ public class DMNDecisionServicesTypecheckDSxyTest {
 
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
-        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is(new BigDecimal(1)));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).isEqualTo(new BigDecimal(1));
     }
 }

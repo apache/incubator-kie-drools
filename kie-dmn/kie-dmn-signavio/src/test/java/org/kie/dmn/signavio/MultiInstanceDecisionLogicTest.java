@@ -34,11 +34,10 @@ import static java.util.Arrays.asList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiInstanceDecisionLogicTest {
 	
@@ -106,8 +105,8 @@ public class MultiInstanceDecisionLogicTest {
 		
 		// Assert
 		Collection<String> ids = innerNodes.stream().map(DMNNode::getId).collect(toList());
-		assertThat(ids, containsInAnyOrder("A", "B", "C", "I1"));
-		assertThat(ids, hasSize(4));
+		assertThat(ids).contains("A", "B", "C", "I1");
+		assertThat(ids).hasSize(4);
 	}
 	
 }

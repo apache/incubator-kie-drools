@@ -40,8 +40,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
@@ -223,8 +221,8 @@ public class ConsequenceTest {
             final ArgumentCaptor<ObjectDeletedEvent> retracts = ArgumentCaptor.forClass(ObjectDeletedEvent.class);
             verify(wml, times(2)).objectDeleted(retracts.capture());
             final List<ObjectDeletedEvent> values = retracts.getAllValues();
-            assertThat(values.get(0).getFactHandle(), is(personFH));
-            assertThat(values.get(1).getFactHandle(), is(petFH));
+            assertThat(values.get(0).getFactHandle()).isEqualTo(personFH);
+            assertThat(values.get(1).getFactHandle()).isEqualTo(petFH);
         } finally {
             ksession.dispose();
         }
