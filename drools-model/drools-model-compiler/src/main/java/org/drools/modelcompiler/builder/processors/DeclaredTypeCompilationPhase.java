@@ -50,8 +50,7 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
         List<CompilationPhase> phases = asList(
                 iteratingPhase((reg, acc) -> new TypeDeclarationRegistrationPhase(reg, acc, pkgRegistryManager)),
                 iteratingPhase((reg, acc) ->
-                        new POJOGenerator(
-                                results, reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()))),
+                        new POJOGenerator(reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()))),
                 new GeneratedPojoCompilationPhase(
                         packageModelManager, buildContext, buildConfiguration.getClassLoader()),
                 new PojoStoragePhase(buildContext, pkgRegistryManager, packages)
@@ -60,9 +59,7 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
         for (CompilationPhase phase : phases) {
             phase.process();
             this.results.addAll(phase.getResults());
-            if (this.results.hasErrors()) {
-                break;
-            }
+            // should not stop on error: continue.
         }
 
     }

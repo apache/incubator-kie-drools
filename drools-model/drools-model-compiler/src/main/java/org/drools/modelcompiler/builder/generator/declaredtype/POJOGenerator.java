@@ -29,6 +29,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.builder.impl.BuildResultAccumulator;
+import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.drl.ast.descr.AnnotationDescr;
@@ -76,6 +77,10 @@ public class POJOGenerator implements CompilationPhase {
         packageModel.addImports(pkg.getTypeResolver().getImports());
     }
 
+    public POJOGenerator(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+        this(new BuildResultAccumulatorImpl(), pkg, packageDescr, packageModel);
+    }
+
     public static Map<String, Class<?>> compileType(BuildResultAccumulator resultAccumulator,
                                                     ClassLoader packageClassLoader,
                                                     List<GeneratedClassWithPackage> classesWithPackage) {
@@ -119,7 +124,7 @@ public class POJOGenerator implements CompilationPhase {
 
     @Override
     public Collection<? extends KnowledgeBuilderResult> getResults() {
-        return builder.getResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR);
+        return builder.getAllResults();
     }
 
     static class SafeTypeResolver implements org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver {

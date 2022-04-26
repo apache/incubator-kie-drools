@@ -88,6 +88,6 @@ public class TypeDeclarationRegistrationPhase extends AbstractPackageCompilation
                         isStrict);
 
         annotationNormalizer.normalize(annotationsContainer);
-        annotationNormalizer.getResults().forEach(results::addBuilderResult);
+        results.addAll(annotationNormalizer.getResults());
     }
 }
