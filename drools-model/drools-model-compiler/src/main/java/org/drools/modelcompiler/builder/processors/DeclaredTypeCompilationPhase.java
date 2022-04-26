@@ -1,3 +1,20 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.builder.processors;
 
 import org.drools.compiler.builder.PackageRegistryManager;
@@ -72,43 +89,5 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
     public Collection<? extends KnowledgeBuilderResult> getResults() {
         return results.getAllResults();
     }
-
-    //
-//
-//    private void registerTypeDeclarations( ) {
-//        for (CompositePackageDescr packageDescr : packages) {
-//            PackageRegistry pkgRegistry = pkgRegistryManager.getOrCreatePackageRegistry(packageDescr);
-//            TypeDeclarationRegistrationPhase typeDeclarationRegistrationPhase =
-//                    new TypeDeclarationRegistrationPhase(pkgRegistry, packageDescr, pkgRegistryManager);
-//            typeDeclarationRegistrationPhase.process();
-//            this.results.addAll(typeDeclarationRegistrationPhase.getResults());
-//        }
-//    }
-//
-//    private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
-//        for (CompositePackageDescr packageDescr : packages) {
-//            PackageRegistry pkgRegistry = pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
-//            InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-//            PackageModel model = packageModelManager.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-//            model.addImports(pkg.getTypeResolver().getImports());
-//            new POJOGenerator(results, pkg, packageDescr, model).process();
-//        }
-//    }
-//
-//    private void compileGeneratedPojos(PackageModelManager packageModels) {
-//        GeneratedPojoCompilationPhase generatedPojoCompilationPhase =
-//                new GeneratedPojoCompilationPhase(
-//                        packageModels, buildContext, buildConfiguration.getClassLoader());
-//
-//        generatedPojoCompilationPhase.process();
-//        this.results.addAll(generatedPojoCompilationPhase.getResults());
-//    }
-//    private void storeGeneratedPojosInPackages(Collection<CompositePackageDescr> packages) {
-//        PojoStoragePhase pojoStoragePhase =
-//                new PojoStoragePhase(buildContext, pkgRegistryManager, packages);
-//        pojoStoragePhase.process();
-//        results.addAll(pojoStoragePhase.getResults());
-//    }
-
 
 }
