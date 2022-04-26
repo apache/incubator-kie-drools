@@ -92,4 +92,14 @@ public class ConstraintParserTest {
         assertEquals("\"Mark\" == _this.toString() || _this instanceof org.drools.modelcompiler.domain.Person && \"Mark\" == ((org.drools.modelcompiler.domain.Person) _this).getAddress().getCity()",
                      result.getExpr().toString());
     }
+
+    @Test
+    public void testMultiplyStringIntWithBindVariableCompareToBigDecimal() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "money == likes * 10"); // assuming likes contains number String
+
+        System.out.println(result.getExpr().toString());
+
+        assertEquals("org.drools.modelcompiler.util.EvaluationUtil.equals(org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal(_this.getMoney()), org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal(Double.valueOf(_this.getLikes()) * 10))",
+                     result.getExpr().toString());
+    }
 }

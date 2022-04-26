@@ -72,6 +72,7 @@ import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
+import org.drools.modelcompiler.builder.generator.drlxparse.ArithmeticCoercedExpression;
 import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.NativeOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
@@ -212,10 +213,26 @@ public class ExpressionTyper {
             Optional<TypedExpression> optLeft = toTypedExpressionRec(binaryExpr.getLeft());
             Optional<TypedExpression> optRight = toTypedExpressionRec(binaryExpr.getRight());
 
-            return optLeft.flatMap(left -> optRight.flatMap(right -> {
-                final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
-                return of(new TypedExpression(combo, left.getType()));
-            }));
+            if (!optLeft.isPresent() || !optRight.isPresent()) {
+                return empty();
+            }
+
+            TypedExpression left = optLeft.get();
+            TypedExpression right = optRight.get();
+
+            ArithmeticCoercedExpression.ArithmeticCoercedExpressionResult coerced;
+            try {
+                coerced = new ArithmeticCoercedExpression(left, right, operator).coerce();
+            } catch (ArithmeticCoercedExpression.ArithmeticCoercedExpressionException e) {
+                logger.error("Failed to coerce : {}", e.getInvalidExpressionErrorResult());
+                return empty();
+            }
+
+            left = coerced.getCoercedLeft();
+            right = coerced.getCoercedRight();
+
+            final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
+            return of(new TypedExpression(combo, left.getType()));
         }
 
         if (drlxExpr instanceof HalfBinaryExpr) {

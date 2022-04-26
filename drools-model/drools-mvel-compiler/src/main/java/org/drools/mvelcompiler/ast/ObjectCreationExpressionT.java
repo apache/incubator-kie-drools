@@ -20,7 +20,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -45,7 +44,7 @@ public class ObjectCreationExpressionT implements TypedExpression {
     @Override
     public Node toJavaExpression() {
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-        objectCreationExpr.setType(type);
+        objectCreationExpr.setType(type.getCanonicalName());
         List<Expression> arguments = this.constructorArguments.stream()
                 .map(typedExpression -> (Expression)typedExpression.toJavaExpression())
                 .collect(Collectors.toList());
