@@ -20,7 +20,7 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
+import org.drools.commands.runtime.rule.ClearActivationGroupCommand;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.BatchExecutionCommand;

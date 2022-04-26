@@ -28,6 +28,4 @@ public interface KieContainerFluent {
     KieSessionFluent newSession(String sessionName);
 
     KieSessionFluent newSessionCustomized(String sessionName, BiFunction<String, KieContainer, KieSessionConfiguration> kieSessionConfigurationCustomizer);
-
-    DMNRuntimeFluent newDMNRuntime();
 }

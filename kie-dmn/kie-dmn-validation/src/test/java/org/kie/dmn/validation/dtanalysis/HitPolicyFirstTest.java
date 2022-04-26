@@ -23,8 +23,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
@@ -35,8 +34,8 @@ public class HitPolicyFirstTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("DTAnalysisFirst.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_38EB6C20-6DF4-4EA0-A421-206B9F31AF22");
 
-        assertThat(analysis.getGaps(), hasSize(0));
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
+        assertThat(analysis.getOverlaps()).hasSize(0);
         assertTrue("It should contain at least 1 DMNMessage for the type " + DMNMessageType.DECISION_TABLE_1STNFVIOLATION,
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_1STNFVIOLATION)));
     }

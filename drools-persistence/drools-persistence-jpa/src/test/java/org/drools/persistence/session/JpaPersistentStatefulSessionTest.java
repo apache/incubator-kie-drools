@@ -29,11 +29,11 @@ import javax.transaction.UserTransaction;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.FireAllRulesInterceptor;
-import org.drools.core.command.impl.LoggingInterceptor;
+import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
+import org.drools.commands.impl.FireAllRulesInterceptor;
+import org.drools.commands.impl.LoggingInterceptor;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.runtime.ChainableRunner;
+import org.drools.commands.ChainableRunner;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
@@ -273,7 +273,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
-        final PersistableRunner sscs = (PersistableRunner) ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
+        final PersistableRunner sscs = (PersistableRunner) ((CommandBasedStatefulKnowledgeSessionImpl) ksession).getRunner();
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());
@@ -300,7 +300,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
-        final PersistableRunner sscs = (PersistableRunner) ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
+        final PersistableRunner sscs = (PersistableRunner) ((CommandBasedStatefulKnowledgeSessionImpl) ksession).getRunner();
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());

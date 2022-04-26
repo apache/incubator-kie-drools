@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools-scenario-simulation</artifactId>
     <groupId>org.drools</groupId>
-    <version>8.21.0-SNAPSHOT</version>
+    <version>8.22.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -17,10 +17,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-scenario-simulation-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
     </dependency>
 
     <!-- KIE API dependencies -->
@@ -50,6 +46,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-commands</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
     </dependency>
     <dependency>
@@ -72,6 +72,10 @@
     </dependency>
 
     <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

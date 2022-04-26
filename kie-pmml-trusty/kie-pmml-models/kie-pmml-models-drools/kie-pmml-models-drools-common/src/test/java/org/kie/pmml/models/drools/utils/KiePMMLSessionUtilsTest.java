@@ -18,8 +18,8 @@ package org.kie.pmml.models.drools.utils;
 
 import java.util.List;
 
-import org.drools.core.command.runtime.SetGlobalCommand;
-import org.drools.core.command.runtime.rule.InsertObjectCommand;
+import org.drools.commands.runtime.SetGlobalCommand;
+import org.drools.commands.runtime.rule.InsertObjectCommand;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;

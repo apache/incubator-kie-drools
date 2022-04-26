@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.core.command.runtime.rule.InsertElementsCommand;
-import org.drools.core.fluent.impl.Batch;
+import org.drools.commands.fluent.Batch;
+import org.drools.commands.runtime.rule.AgendaGroupSetFocusCommand;
+import org.drools.commands.runtime.rule.FireAllRulesCommand;
+import org.drools.commands.runtime.rule.InsertElementsCommand;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingValue;

@@ -29,9 +29,9 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.FireAllRulesInterceptor;
-import org.drools.core.command.impl.LoggingInterceptor;
+import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
+import org.drools.commands.impl.FireAllRulesInterceptor;
+import org.drools.commands.impl.LoggingInterceptor;
 import org.drools.mvel.compiler.Person;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -311,7 +311,7 @@ public class JpaPersistentStatefulSessionTest {
 
         KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
         PersistableRunner sscs = (PersistableRunner)
-            ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
+            ((CommandBasedStatefulKnowledgeSessionImpl) ksession).getRunner();
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());

@@ -16,16 +16,19 @@
 
 package org.drools.traits.core.factmodel;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import static org.drools.core.factmodel.traits.TraitConstants.FIELDTMS_FIELD_NAME;
+import static org.drools.core.factmodel.traits.TraitConstants.TRAITSET_FIELD_NAME;
 
 @Traitable
 public class MapCore<K> implements TraitableMap {

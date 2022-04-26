@@ -158,18 +158,6 @@ public class ResourceType implements Serializable {
                                                                         "src/main/resources",
                                                                         "drl.xls", "drl.xlsx", "drl.csv");
 
-    /** Binary Package */
-    public static final ResourceType PKG = addResourceTypeToRegistry("PKG",
-                                                                     "Binary Package",
-                                                                     "src/main/resources",
-                                                                     "pkg");
-
-    /** Drools Business Rule Language */
-    public static final ResourceType BRL = addResourceTypeToRegistry("BRL",
-                                                                     "Drools Business Rule Language",
-                                                                     "src/main/resources",
-                                                                     "brl");
-
     /** XSD */
     public static final ResourceType XSD = addResourceTypeToRegistry("XSD",
                                                                      "XSD",

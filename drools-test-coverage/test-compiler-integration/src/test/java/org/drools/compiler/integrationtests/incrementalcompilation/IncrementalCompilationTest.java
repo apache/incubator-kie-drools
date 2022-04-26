@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.commands.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.RuleBase;

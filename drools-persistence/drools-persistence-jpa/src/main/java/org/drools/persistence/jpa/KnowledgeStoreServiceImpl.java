@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
@@ -67,7 +67,7 @@ public class KnowledgeStoreServiceImpl
         ExecutableRunner runner = (ExecutableRunner) buildCommandService( kbase,
                                                                           mergeConfig( configuration ),
                                                                           environment );
-        return new CommandBasedStatefulKnowledgeSession( runner );
+        return new CommandBasedStatefulKnowledgeSessionImpl( runner );
     }
 
     public StatefulKnowledgeSession loadKieSession(int id,
@@ -86,7 +86,7 @@ public class KnowledgeStoreServiceImpl
                                                                           kbase,
                                                                           mergeConfig( configuration ),
                                                                           environment );
-        return new CommandBasedStatefulKnowledgeSession( runner );
+        return new CommandBasedStatefulKnowledgeSessionImpl( runner );
     }
 
     public StatefulKnowledgeSession loadKieSession(Long id,
@@ -105,7 +105,7 @@ public class KnowledgeStoreServiceImpl
                                                                           kbase,
                                                                           mergeConfig( configuration ),
                                                                           environment );
-        return new CommandBasedStatefulKnowledgeSession( runner );
+        return new CommandBasedStatefulKnowledgeSessionImpl( runner );
     }
 
     private CommandExecutor buildCommandService(Long sessionId,
@@ -172,8 +172,8 @@ public class KnowledgeStoreServiceImpl
     }
 
     public long getStatefulKnowledgeSessionId(StatefulKnowledgeSession ksession) {
-        if ( ksession instanceof CommandBasedStatefulKnowledgeSession ) {
-            PersistableRunner commandService = (PersistableRunner) ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
+        if ( ksession instanceof CommandBasedStatefulKnowledgeSessionImpl) {
+            PersistableRunner commandService = (PersistableRunner) ((CommandBasedStatefulKnowledgeSessionImpl) ksession).getRunner();
             return commandService.getSessionId();
         }
         throw new IllegalArgumentException( "StatefulKnowledgeSession must be an a CommandBasedStatefulKnowledgeSession" );

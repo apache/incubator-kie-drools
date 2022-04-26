@@ -51,8 +51,7 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -2814,9 +2813,6 @@ public class CompilerTest extends BaseModelTest {
 
     @Test
     public void testNPEOnConstraint() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]"));
-
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "rule R when\n" +
@@ -2829,14 +2825,12 @@ public class CompilerTest extends BaseModelTest {
         Person me = new Person( "Luca");
         me.setMoney(null);
         ksession.insert( me );
-        ksession.fireAllRules();
-    }
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]");    }
 
     @Test
     public void testSharedPredicateInformation() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl]"));
-
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -2854,13 +2848,14 @@ public class CompilerTest extends BaseModelTest {
         me.setSalary(null);
         me.setMoney(null);
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+        	.isThrownBy(() -> ksession.fireAllRules())
+        	.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl]");
     }
 
     @Test
     public void testSharedPredicateInformationWithNonSharedRule() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R3\" in r0.drl]"));
 
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -2883,13 +2878,15 @@ public class CompilerTest extends BaseModelTest {
         me.setSalary(null);
         me.setMoney(null);
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+    	.isThrownBy(() -> ksession.fireAllRules())
+    	.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R3\" in r0.drl]");
+    	
     }
 
     @Test
     public void testSharedPredicateInformationWithMultipleFiles() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]"));
 
         String str1 =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -2918,14 +2915,15 @@ public class CompilerTest extends BaseModelTest {
         me.setSalary(null);
         me.setMoney(null);
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]");   
+        
     }
 
     @Test
     public void testSharedBetaPredicateInformationWithMultipleFiles() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint '$i < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]"));
-
         String str1 =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -2958,15 +2956,14 @@ public class CompilerTest extends BaseModelTest {
         me.setMoney(null);
         ksession.insert(Integer.valueOf(10));
         ksession.insert(me);
-        ksession.fireAllRules();
+
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessage("Error evaluating constraint '$i < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]");   
     }
 
     @Test
     public void testSharedPredicateInformationExceedMaxRuleDefs() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(containsString("Error evaluating constraint '$i < salary * 20' in "));
-        exceptionRule.expectMessage(containsString(" and in more rules"));
-
         // shared by 11 rules
         String str1 =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -3037,7 +3034,12 @@ public class CompilerTest extends BaseModelTest {
         me.setMoney(null);
         ksession.insert(Integer.valueOf(10));
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessageContaining("Error evaluating constraint '$i < salary * 20' in ")
+    		.withMessageContaining(" and in more rules");       
+        
     }
 
     @Test

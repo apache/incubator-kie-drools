@@ -22,7 +22,9 @@ import java.util.Map;
 
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
+import org.kie.api.command.KieCommands;
 import org.kie.api.command.Setter;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
@@ -345,12 +347,8 @@ public class CommandFactory {
      *     The arguments to be used for the query parameters
      * @return
      */
-    public static Command newQuery(String identifier,
-                                   String name,
-                                   Object[] arguments) {
-        return getCommandFactoryProvider().newQuery( identifier,
-                                                     name,
-                                                     arguments );
+    public static Command newQuery(String identifier, String name, Object[] arguments) {
+        return getCommandFactoryProvider().newQuery( identifier, name, arguments );
     }
 
     /**
@@ -367,8 +365,7 @@ public class CommandFactory {
      * @return
      */
     public static BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup ) {
-        return getCommandFactoryProvider().newBatchExecution( commands,
-                                                              lookup);
+        return getCommandFactoryProvider().newBatchExecution( commands, lookup);
     }
 
     private static synchronized void setCommandFactoryProvider( ExtendedKieCommands provider) {
@@ -384,11 +381,13 @@ public class CommandFactory {
 
     private static void loadProvider() {
         try {
-            Class<ExtendedKieCommands> cls = (Class<ExtendedKieCommands>) Class.forName( "org.drools.core.command.impl.CommandFactoryServiceImpl" );
-            setCommandFactoryProvider( cls.newInstance() );
-        } catch ( Exception e2 ) {
-            throw new RuntimeException( "Provider org.drools.core.command.impl.CommandFactoryServiceImpl could not be set.",
-                                                       e2 );
+            ExtendedKieCommands commands = (ExtendedKieCommands) KieService.load(KieCommands.class);
+            if (commands == null) {
+                throw new RuntimeException( "Cannot find the CommandFactoryServiceImpl, please add org.drools:drools-commands to your classpath" );
+            }
+            setCommandFactoryProvider( commands );
+        } catch ( Exception e ) {
+            throw new RuntimeException( "Cannot find the CommandFactoryServiceImpl, please add org.drools:drools-commands to your classpath", e );
         }
     }
 

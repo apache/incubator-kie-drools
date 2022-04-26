@@ -32,7 +32,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.util.io.ResourceConfigurationImpl;
 import org.drools.util.io.InternalResource;
 import org.drools.util.IoUtils;

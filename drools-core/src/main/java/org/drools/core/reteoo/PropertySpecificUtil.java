@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.TraitConstants;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -88,8 +88,8 @@ public class PropertySpecificUtil {
 
         BitMask mask = getEmptyPropertyReactiveMask(accessibleProperties.size());
 
-        if (listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME )) {
-            if (isPositive && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME ) ) {
+        if (listenedProperties.contains( TraitConstants.TRAITSET_FIELD_NAME )) {
+            if (isPositive && listenedProperties.contains( TraitConstants.TRAITSET_FIELD_NAME ) ) {
                 mask = mask.set(TRAITABLE_BIT);
             }
         }

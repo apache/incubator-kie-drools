@@ -34,7 +34,7 @@ import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.util.io.ResourceConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;

@@ -25,6 +25,9 @@ import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 
+import static org.drools.core.factmodel.traits.TraitConstants.FIELDTMS_FIELD_NAME;
+import static org.drools.core.factmodel.traits.TraitConstants.TRAITSET_FIELD_NAME;
+
 @Traitable
 public interface TraitableMap extends TraitableBean<Map, CoreWrapper<Map>>, Serializable, Map<String,Object>, CoreWrapper<Map> {
 

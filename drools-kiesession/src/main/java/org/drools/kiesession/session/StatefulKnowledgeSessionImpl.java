@@ -65,13 +65,11 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.AbstractRuntime;
-import org.drools.kiesession.entrypoints.NamedEntryPointsManager;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.MarshallerReaderContext;
@@ -100,6 +98,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.kiesession.entrypoints.NamedEntryPointsManager;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
@@ -1638,11 +1637,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public static class DummyInternalProcessRuntime implements InternalProcessRuntime {
         @Override
         public void dispose() { }
-
-        @Override
-        public void setProcessEventSupport( ProcessEventSupport processEventSupport ) {
-            throw new UnsupportedOperationException( );
-        }
 
         @Override
         public void clearProcessInstances() {

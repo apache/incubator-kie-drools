@@ -23,10 +23,6 @@ import java.util.Map;
 
 public interface TraitableBean<K, X extends TraitableBean> {
 
-    String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
-    String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
-    String FIELDTMS_FIELD_NAME = "__$$field_Tms$$";
-
     Map<String,Object> _getDynamicProperties();
 
     void _setDynamicProperties( Map<String,Object> map );

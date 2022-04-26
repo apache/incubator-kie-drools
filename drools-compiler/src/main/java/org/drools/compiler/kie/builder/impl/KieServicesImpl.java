@@ -27,7 +27,6 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
-import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
@@ -249,8 +248,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieCommands getCommands() {
-        // instantiating directly, but we might want to use the service registry instead
-        return new CommandFactoryServiceImpl();
+        return KieService.load( KieCommands.class );
     }
 
     public KieMarshallers getMarshallers() {
