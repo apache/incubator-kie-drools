@@ -76,7 +76,6 @@ public class ModelMainCompilationPhase implements CompilationPhase {
             phases.add(iteratingPhase((reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, assemblerContext)));
         }
         phases.add(iteratingPhase((reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
-        phases.add(iteratingPhase((reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
         phases.add(iteratingPhase((reg, acc) -> new GlobalCompilationPhase(reg, acc, kBase, globalVariableContext, acc.getFilter())));
 
         for (CompilationPhase phase : phases) {
