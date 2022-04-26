@@ -42,6 +42,7 @@ import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.parser.SourceFileServerlessWorkflowBindEvent;
 import org.kie.kogito.serverless.workflow.parser.handlers.openapi.OpenAPIDescriptor;
 import org.kie.kogito.serverless.workflow.parser.handlers.openapi.OpenAPIDescriptorFactory;
 import org.kie.kogito.serverless.workflow.suppliers.ApiKeyAuthDecoratorSupplier;
@@ -360,7 +361,8 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             logger.debug("OpenAPI parser messages {}", result.getMessages());
             OpenAPIDescriptor openAPIDescriptor = OpenAPIDescriptorFactory.of(openAPI, operationId);
             addSecurity(node, openAPIDescriptor, serviceName);
-            return node.workParameter(RestWorkItemHandler.URL,
+
+            WorkItemNodeFactory<T> workItemNodeFactory = node.workParameter(RestWorkItemHandler.URL,
                     runtimeOpenApi(serviceName, "base_path", String.class, OpenAPIDescriptorFactory.getDefaultURL(openAPI, "http://localhost:8080"),
                             (key, clazz, defaultValue) -> new ConfigSuppliedWorkItemSupplier<String>(key, clazz, defaultValue, calculatedKey -> concatPaths(calculatedKey, openAPIDescriptor.getPath()),
                                     new LambdaExpr(new Parameter(new UnknownType(), "calculatedKey"),
@@ -368,9 +370,19 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                                                     .addArgument(new NameExpr("calculatedKey")).addArgument(new StringLiteralExpr(openAPIDescriptor.getPath()))))))
                     .workParameter(RestWorkItemHandler.METHOD, openAPIDescriptor.getMethod())
                     .workParameter(RestWorkItemHandler.PARAMS_DECORATOR, new CollectionParamsDecoratorSupplier(openAPIDescriptor.getHeaderParams(), openAPIDescriptor.getQueryParams()));
+
+            notifySourceFileCodegenBindListeners(uri);
+
+            return workItemNodeFactory;
         } catch (IOException e) {
             throw new IllegalArgumentException("Problem retrieving uri " + uri);
         }
+    }
+
+    private void notifySourceFileCodegenBindListeners(String uri) {
+        parserContext.getContext()
+                .getSourceFileCodegenBindNotifier()
+                .ifPresent(notifier -> notifier.notify(new SourceFileServerlessWorkflowBindEvent(workflow.getId(), uri)));
     }
 
     private ApiKeyAuthDecorator.Location from(In in) {

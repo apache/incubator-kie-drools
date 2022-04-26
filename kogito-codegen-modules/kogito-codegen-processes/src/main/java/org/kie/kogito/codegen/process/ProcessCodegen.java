@@ -119,6 +119,7 @@ public class ProcessCodegen extends AbstractGenerator {
                     if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(resource.getSourcePath()::endsWith)) {
                         try {
                             Collection<Process> p = parseProcessFile(resource);
+                            notifySourceFileCodegenBindListeners(context, resource, p);
                             if (useSvgAddon) {
                                 processSVG(resource, resources, p, processSVGMap);
                             }
@@ -134,7 +135,11 @@ public class ProcessCodegen extends AbstractGenerator {
                         return SUPPORTED_SW_EXTENSIONS.entrySet()
                                 .stream()
                                 .filter(e -> resource.getSourcePath().endsWith(e.getKey()))
-                                .map(e -> parseWorkflowFile(resource, e.getValue(), context));
+                                .map(e -> {
+                                    GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, e.getValue(), context);
+                                    notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
+                                    return generatedInfo;
+                                });
                     }
                 })
                 //Validate parsed processes
@@ -148,6 +153,11 @@ public class ProcessCodegen extends AbstractGenerator {
         handleValidation();
 
         return ofProcesses(context, processes);
+    }
+
+    private static void notifySourceFileCodegenBindListeners(KogitoBuildContext context, Resource resource, Collection<Process> processes) {
+        context.getSourceFileCodegenBindNotifier()
+                .ifPresent(notifier -> processes.forEach(p -> notifier.notify(new SourceFileProcessBindEvent(p.getId(), resource.getSourcePath()))));
     }
 
     private static void handleValidation() {

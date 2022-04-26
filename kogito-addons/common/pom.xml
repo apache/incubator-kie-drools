@@ -42,6 +42,7 @@
         <module>process-svg</module>
         <module>rest-exception-handler</module>
         <module>process-management</module>
+        <module>source-files</module>
       </modules>
     </profile>
   </profiles>

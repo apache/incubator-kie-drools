@@ -20,6 +20,7 @@
     <module>messaging</module>
     <module>monitoring</module>
     <module>common</module>
+    <module>source-files</module>
   </modules>
 
   <profiles>

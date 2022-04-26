@@ -1,0 +1,40 @@
+id: yamlgreet
+version: '1.0'
+name: Greeting workflow
+description: YAML based greeting workflow
+expressionLang: jsonpath
+start: ChooseOnLanguage
+functions:
+  - name: greetFunction
+    type: custom
+    operation: sysout
+states:
+  - name: ChooseOnLanguage
+    type: switch
+    dataConditions:
+      - condition: "{{ $.[?(@.language  == 'English')] }}"
+        transition: GreetInEnglish
+      - condition: "{{ $.[?(@.language  == 'Spanish')] }}"
+        transition: GreetInSpanish
+    defaultCondition:
+      transition: GreetInEnglish
+  - name: GreetInEnglish
+    type: inject
+    data:
+      greeting: 'Hello from YAML Workflow, '
+    transition: GreetPerson
+  - name: GreetInSpanish
+    type: inject
+    data:
+      greeting: 'Saludos desde YAML Workflow, '
+    transition: GreetPerson
+  - name: GreetPerson
+    type: operation
+    actions:
+      - name: greetAction
+        functionRef:
+          refName: greetFunction
+          arguments:
+            message: "$.greeting $.name"
+    end:
+      terminate: true

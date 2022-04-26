@@ -36,6 +36,7 @@ import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.codegen.api.SourceFileCodegenBindNotifier;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
@@ -94,6 +95,7 @@ public class KogitoQuarkusResourceUtils {
                 .withClassSubTypeAvailabilityResolver(classSubTypeAvailabilityResolver(index))
                 .withAppPaths(appPaths)
                 .withGAV(new KogitoGAV(appArtifact.getGroupId(), appArtifact.getArtifactId(), appArtifact.getVersion()))
+                .withSourceFileProcessBindNotifier(new SourceFileCodegenBindNotifier())
                 .build();
 
         if (!context.hasClassAvailable(QuarkusKogitoBuildContext.QUARKUS_REST)) {

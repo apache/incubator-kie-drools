@@ -18,6 +18,7 @@
     <module>integration-tests-quarkus-rules</module>
     <module>integration-tests-quarkus-decisions</module>
     <module>integration-tests-quarkus-predictions</module>
+    <module>integration-tests-quarkus-source-files</module>
     <module>integration-tests-quarkus-resteasy-classic</module>
     <module>integration-tests-quarkus-resteasy-reactive</module>
     <module>integration-tests-springboot</module>

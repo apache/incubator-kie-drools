@@ -37,6 +37,7 @@ import org.drools.codegen.common.AppPaths;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.ApplicationSection;
+import org.kie.kogito.codegen.api.SourceFileCodegenBindNotifier;
 import org.kie.kogito.codegen.api.context.KogitoApplicationPropertyProvider;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
@@ -60,6 +61,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected final String contextName;
     protected final Map<String, Object> contextAttributes;
     protected final KogitoGAV gav;
+    protected final SourceFileCodegenBindNotifier sourceFileCodegenBindNotifier;
     protected Set<ApplicationSection> applicationSections;
 
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
@@ -82,6 +84,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         this.contextName = contextName;
         this.contextAttributes = new HashMap<>();
         this.applicationSections = new HashSet<>();
+        this.sourceFileCodegenBindNotifier = builder.sourceFileCodegenBindNotifier;
     }
 
     protected static Properties load(File... resourcePaths) {
@@ -216,6 +219,11 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     }
 
     @Override
+    public Optional<SourceFileCodegenBindNotifier> getSourceFileCodegenBindNotifier() {
+        return Optional.ofNullable(sourceFileCodegenBindNotifier);
+    }
+
+    @Override
     public String toString() {
         return "KogitoBuildContext{" +
                 "contextName='" + contextName + '\'' +
@@ -226,6 +234,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     }
 
     protected abstract static class AbstractBuilder implements Builder {
+        protected SourceFileCodegenBindNotifier sourceFileCodegenBindNotifier;
 
         protected String packageName = DEFAULT_PACKAGE_NAME;
         protected KogitoApplicationPropertyProvider applicationProperties = KogitoApplicationPropertyProvider.of(new Properties());
@@ -316,6 +325,13 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         public Builder withGAV(KogitoGAV gav) {
             Objects.requireNonNull(gav, "gav cannot be null");
             this.gav = gav;
+            return this;
+        }
+
+        @Override
+        public Builder withSourceFileProcessBindNotifier(SourceFileCodegenBindNotifier sourceFileCodegenBindNotifier) {
+            Objects.requireNonNull(sourceFileCodegenBindNotifier, "sourceFileProcessBindNotifier cannot be null");
+            this.sourceFileCodegenBindNotifier = sourceFileCodegenBindNotifier;
             return this;
         }
 

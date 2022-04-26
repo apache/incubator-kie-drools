@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
@@ -80,7 +81,9 @@ class HttpContentLoader extends FallbackContentLoader {
             HttpURLConnection conn = (HttpURLConnection) u.toURL().openConnection();
             // some http servers required specific accept header (*/* is specified for those we do not care about accept) 
             conn.setRequestProperty("Accept", "application/json,application/yaml,application/yml,application/text,text/*,*/*");
-            workflow.filter(w -> w.getAuth().getName().equals(authRef)).ifPresent(w -> addAuth(conn, w.getAuth()));
+            workflow.map(Workflow::getAuth)
+                    .filter(auth -> Objects.equals(auth.getName(), authRef))
+                    .ifPresent(auth -> addAuth(conn, auth));
             int code = conn.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {
                 try (InputStream is = conn.getInputStream()) {
