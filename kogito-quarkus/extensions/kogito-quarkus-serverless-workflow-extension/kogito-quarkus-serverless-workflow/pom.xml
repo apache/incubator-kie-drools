@@ -91,6 +91,10 @@
       <groupId>io.quarkiverse.jackson-jq</groupId>
       <artifactId>quarkus-jackson-jq</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.openapi.generator</groupId>
+      <artifactId>quarkus-openapi-generator</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

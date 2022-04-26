@@ -35,7 +35,6 @@
           "functionRef": {
             "refName": "subtraction",
             "arguments": "{leftElement: .fahrenheit, rightElement : .subtractValue}"
-            
           }
         },
         {

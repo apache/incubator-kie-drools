@@ -170,11 +170,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-codegen-predictions</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-codegen-openapi</artifactId>
-    </dependency>
-
     <!-- code generation for executable model -->
     <dependency>
       <groupId>com.github.javaparser</groupId>

@@ -42,7 +42,6 @@ import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
-import org.kie.kogito.codegen.openapi.client.OpenApiClientCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.memorycompiler.CompilationResult;
@@ -119,7 +118,6 @@ public class AbstractCodegenIT {
         generatorTypeMap.put(TYPE.RULES, (context, strings) -> RuleCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
         generatorTypeMap.put(TYPE.DECISION, (context, strings) -> DecisionCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
         generatorTypeMap.put(TYPE.JAVA, (context, strings) -> RuleCodegen.ofJavaResources(context, toCollectedResources(TEST_JAVA, strings)));
-        generatorTypeMap.put(TYPE.OPENAPI, (context, strings) -> OpenApiClientCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
     }
 
     private static Collection<CollectedResource> toCollectedResources(String basePath, List<String> strings) {

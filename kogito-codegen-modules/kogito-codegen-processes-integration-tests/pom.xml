@@ -43,18 +43,6 @@
             <artifactId>kogito-codegen-processes</artifactId>
             <scope>test</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-codegen-openapi</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
