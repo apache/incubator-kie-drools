@@ -28,9 +28,7 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -41,7 +39,7 @@ public class GapsCube3Test extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("GapsCube3.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_4b41743d-ff04-4855-bf0b-993d475a9d62");
 
-        assertThat(analysis.getGaps(), hasSize(4));
+        assertThat(analysis.getGaps()).hasSize(4);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(3,
@@ -96,9 +94,9 @@ public class GapsCube3Test extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("1"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(4));
+        assertThat(gaps).hasSize(4);
 
         // Assert GAPS
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
     }
 }

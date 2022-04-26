@@ -28,8 +28,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class PMMLValidatorImportTest extends AbstractValidatorTest {
 
@@ -38,7 +37,7 @@ public abstract class PMMLValidatorImportTest extends AbstractValidatorTest {
         // DROOLS-4187 kie-dmn-validation: Incorrect import detection
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
                 .theseModels(getReader("Invoke_Iris.dmn", PMMLValidatorImportTest.class));
-        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+        assertThat(messages).as(ValidatorUtil.formatMessages(messages)).hasSize(0);
 
     }
 
@@ -60,7 +59,7 @@ public abstract class PMMLValidatorImportTest extends AbstractValidatorTest {
                     Validation.VALIDATE_COMPILATION)
                     .usingImports(resolver)
                     .theseModels(defs);
-            assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+            assertThat(messages).as(ValidatorUtil.formatMessages(messages)).hasSize(0);
         }
     }
 }

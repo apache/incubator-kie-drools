@@ -30,9 +30,7 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultipleModelsTest extends AbstractDTAnalysisTest {
 
@@ -69,7 +67,7 @@ public class MultipleModelsTest extends AbstractDTAnalysisTest {
     private void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_3cde04b9-d5c9-4254-9d27-436889111406");
 
-        assertThat(analysis.getGaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(1);
         
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
@@ -79,12 +77,12 @@ public class MultipleModelsTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound("o",
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(1));
+        assertThat(gaps).hasSize(1);
 
         // Assert GAPS
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 }

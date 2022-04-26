@@ -29,9 +29,7 @@ import org.kie.dmn.validation.dtanalysis.model.Contraction;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class ContractionRulesTest extends AbstractDTAnalysisTest {
@@ -40,11 +38,11 @@ public class ContractionRulesTest extends AbstractDTAnalysisTest {
     public void testContractionRules() {
         List<DMNMessage> validate = validator.validate(getReader("Contraction.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_01d9abb9-b968-49c0-b6ab-909f3e03d8d3");
-        assertThat(analysis.getGaps(), hasSize(0));
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
+        assertThat(analysis.getOverlaps()).hasSize(0);
 
         // Contraction count.
-        assertThat(analysis.getContractions(), hasSize(2));
+        assertThat(analysis.getContractions()).hasSize(2);
         List<Contraction> results = Arrays.asList(new Contraction(4,
                                                                   Arrays.asList(5),
                                                                   2,
@@ -53,10 +51,10 @@ public class ContractionRulesTest extends AbstractDTAnalysisTest {
                                                                   Arrays.asList(6),
                                                                   1,
                                                                   Arrays.asList(new Interval(RangeBoundary.CLOSED, new BigDecimal("600"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))));
-        assertThat(results, hasSize(2));
-        assertThat(analysis.getContractions(), contains(results.toArray()));
-        assertThat("It should contain 2 DMNMessage for the Contraction",
-                   validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_CONTRACTION_RULE)).collect(Collectors.toList()),
-                   hasSize(2));
+        assertThat(results).hasSize(2);
+        assertThat(analysis.getContractions()).containsAll(results);
+        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_CONTRACTION_RULE)).collect(Collectors.toList()))
+        	.as("It should contain 2 DMNMessage for the Contraction")
+        	.hasSize(2);
     }
 }

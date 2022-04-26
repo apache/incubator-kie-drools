@@ -25,8 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExamplesTest
         extends ExamplesBaseTest {
@@ -49,13 +48,13 @@ public class ExamplesTest
         Map applicant = (Map) feel.evaluate( expression );
         System.out.println( printContext( applicant ) );
 
-        assertThat( applicant.size(), is( 5 ) );
+        assertThat(applicant).hasSize(5);
     }
 
     @Test
     public void testLoadExample_10_6_1() {
         System.out.println( printContext( context ) );
-        assertThat( context.size(), is( 6 ) );
+        assertThat(context).hasSize(6);
     }
 
     @Test
@@ -64,7 +63,7 @@ public class ExamplesTest
 
         System.out.println( "Yearly income = " + yearlyIncome );
 
-        assertThat( yearlyIncome, is( new BigDecimal( "120000.00" ) ) );
+        assertThat(yearlyIncome).isEqualTo(new BigDecimal( "120000.00" ) );
     }
 
     @Test
@@ -75,7 +74,7 @@ public class ExamplesTest
 
         System.out.println( "Marital status = " + maritalStatus );
 
-        assertThat( maritalStatus, is( "valid" ) );
+        assertThat(maritalStatus).isEqualTo("valid" );
     }
 
     @Test
@@ -84,7 +83,7 @@ public class ExamplesTest
 
         System.out.println( "Monthly total expenses = " + totalExpenses );
 
-        assertThat( totalExpenses, is( new BigDecimal( "5500.00" ) ) );
+        assertThat(totalExpenses).isEqualTo(new BigDecimal( "5500.00" ) );
     }
 
     @Test
@@ -95,7 +94,7 @@ public class ExamplesTest
 
         System.out.println( "PMT = " + pmt );
 
-        assertThat( pmt, is( new BigDecimal( "3975.982590125552338278440100112431" ) ) );
+        assertThat(pmt).isEqualTo(new BigDecimal( "3975.982590125552338278440100112431" ) );
     }
 
     @Test
@@ -106,7 +105,7 @@ public class ExamplesTest
 
         System.out.println( "Weight = " + total );
 
-        assertThat( total, is( new BigDecimal( "150" ) ) );
+        assertThat(total).isEqualTo(new BigDecimal( "150" ) );
     }
 
     @Test
@@ -117,7 +116,7 @@ public class ExamplesTest
 
         System.out.println( "Is there bankrupcy event? " + bankrupcy );
 
-        assertThat( bankrupcy, is( Boolean.FALSE ) );
+        assertThat(bankrupcy).isFalse();
     }
 
     @Test

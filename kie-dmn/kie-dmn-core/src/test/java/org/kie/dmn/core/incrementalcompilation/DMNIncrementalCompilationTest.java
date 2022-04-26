@@ -33,9 +33,7 @@ import org.kie.dmn.core.util.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest {
 
@@ -80,7 +78,7 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
                                   final String sayHelloAndAgeDecisionResultValue) throws Exception {
         // the Model does NOT change in its NAME or ID, but it does change indeed in the LiteralExpression decision logic.
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7", "20180731-pr1997"); //  // NO change v1.0 -> v1.1
-        assertThat(runtime, notNullValue());
+        assertThat(runtime).isNotNull();
 
         final Object personByReflection = kieContainer.getClassLoader().loadClass("acme.Person").newInstance();
         final Method setFirstNameMethod = personByReflection.getClass().getMethod(methodNameForFirstName, String.class);// change v1.0 -> v1.1
@@ -95,10 +93,10 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Say hello and age"), is(sayHelloAndAgeDecisionResultValue));// change v1.0 -> v1.1
+        assertThat(result.get("Say hello and age")).isEqualTo(sayHelloAndAgeDecisionResultValue);// change v1.0 -> v1.1
     }
 
     @Test

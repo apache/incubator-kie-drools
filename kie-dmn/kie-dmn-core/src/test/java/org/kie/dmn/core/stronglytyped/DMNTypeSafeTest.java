@@ -39,12 +39,9 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -105,14 +102,14 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext result = evaluateAll.getContext();
 
         Map<String, Object> d = (Map<String, Object>) result.get("d");
-        assertThat(d.get("Hello"), is("Hello Mr. x"));
+        assertThat(d.get("Hello")).isEqualTo("Hello Mr. x");
 
         FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)result).getFpa();
 
-        assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(tPersonInstance));
+        assertThat(outputSet.getFEELProperty("p").toOptional().get()).isEqualTo(tPersonInstance);
         Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();
-        assertThat(dContext.get("Hello"), is("Hello Mr. x"));
-        assertThat(dContext.get("the person"), equalTo(tPersonInstance));
+        assertThat(dContext.get("Hello")).isEqualTo("Hello Mr. x");
+        assertThat(dContext.get("the person")).isEqualTo(tPersonInstance);
     }
 
     private FEELPropertyAccessible tAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
@@ -166,14 +163,14 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext result = evaluateAll.getContext();
 
         Map<String, Object> d = (Map<String, Object>) result.get("d");
-        assertThat(d.get("Hello"), is("Hello Mr. x"));
+        assertThat(d.get("Hello")).isEqualTo("Hello Mr. x");
 
         FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)result).getFpa();
 
-        assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(context.getFEELProperty("p").toOptional().get()));
+        assertThat(outputSet.getFEELProperty("p").toOptional().get()).isEqualTo(context.getFEELProperty("p").toOptional().get());
         Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();
-        assertThat(dContext.get("Hello"), is("Hello Mr. x"));
-        assertThat(dContext.get("the person"), equalTo(context.getFEELProperty("p").toOptional().get()));
+        assertThat(dContext.get("Hello")).isEqualTo("Hello Mr. x");
+        assertThat(dContext.get("the person")).isEqualTo(context.getFEELProperty("p").toOptional().get());
     }
 
     @Test
@@ -194,8 +191,8 @@ public class DMNTypeSafeTest extends BaseVariantTest {
     }
 
     private void assertValidDmnModel(DMNModel dmnModel){
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
     }
 
     private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {
