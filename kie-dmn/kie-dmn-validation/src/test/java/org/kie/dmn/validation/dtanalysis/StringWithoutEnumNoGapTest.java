@@ -32,10 +32,7 @@ import org.kie.dmn.validation.dtanalysis.model.MaskedRule;
 import org.kie.dmn.validation.dtanalysis.model.MisleadingRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -46,16 +43,16 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
     @Test
     public void test() {
         List<DMNMessage> validate = validator.validate(getReader("stringWithoutEnumNoGap.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
-        assertThat(validate, hasSize(3)); // no gap but no enum "skip Gap analysis" message, (omit 2 overlaps DROOLS-5363), 2 masked, (omit 2 misleading as redundant with Masked).
+        assertThat(validate).hasSize(3); // no gap but no enum "skip Gap analysis" message, (omit 2 overlaps DROOLS-5363), 2 masked, (omit 2 misleading as redundant with Masked).
         debugValidatorMsg(validate);
         
         DTAnalysis analysis = getAnalysis(validate, "_8b48d1c9-265c-47aa-9378-7f11d55dfe55");
 
-        assertThat(analysis.getGaps(), hasSize(0));
+        assertThat(analysis.getGaps()).hasSize(0);
 
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(2));
+        assertThat(analysis.getOverlaps()).hasSize(2);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(1,
@@ -88,26 +85,26 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
                                                                                                                    new Bound(Interval.POS_INF,
                                                                                                                              RangeBoundary.CLOSED,
                                                                                                                              null))))));
-        assertThat(overlaps, hasSize(2));
+        assertThat(overlaps).hasSize(2);
 
         // Assert OVERLAPs same values
-        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
+        assertThat(analysis.getOverlaps()).containsAll(overlaps);
 
         // MaskedRules count.
-        assertThat(analysis.getMaskedRules(), hasSize(2));
+        assertThat(analysis.getMaskedRules()).hasSize(2);
         List<MaskedRule> maskedRules = Arrays.asList(new MaskedRule(1, 3),
                                                      new MaskedRule(2, 3));
-        assertThat(maskedRules, hasSize(2));
-        assertThat(analysis.getMaskedRules(), contains(maskedRules.toArray()));
+        assertThat(maskedRules).hasSize(2);
+        assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
         assertTrue("It should contain DMNMessage for the MaskedRule",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
 
         // MisleadingRules are duplicate of Masked, so are no longer displayed.
-        assertThat(analysis.getMisleadingRules(), hasSize(2));
+        assertThat(analysis.getMisleadingRules()).hasSize(2);
         List<MisleadingRule> misleadingRules = Arrays.asList(new MisleadingRule(3, 1),
                                                              new MisleadingRule(3, 2));
-        assertThat(misleadingRules, hasSize(2));
-        assertThat(analysis.getMisleadingRules(), containsInAnyOrder(misleadingRules.toArray()));
+        assertThat(misleadingRules).hasSize(2);
+        assertThat(analysis.getMisleadingRules()).containsAll(misleadingRules);
         assertTrue("It should NOT contain DMNMessage for the MisleadingRule",
                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
     }

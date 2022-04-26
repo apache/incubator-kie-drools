@@ -24,8 +24,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ManualBasicFunctionInvocationTest {
 
@@ -56,7 +55,7 @@ public class ManualBasicFunctionInvocationTest {
         Object result = compiledExpression.apply(emptyContext);
         LOG.debug("{}", result);
 
-        assertThat(result, is(BigDecimal.valueOf(3)));
+        assertThat(result).isEqualTo(BigDecimal.valueOf(3));
     }
 
 }

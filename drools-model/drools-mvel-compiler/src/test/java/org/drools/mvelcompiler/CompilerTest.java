@@ -24,13 +24,11 @@ import java.util.function.Consumer;
 
 import org.drools.Gender;
 import org.drools.Person;
+import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.hamcrest.MatcherAssert;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
+import static org.assertj.core.api.Assertions.assertThat;
 
 interface CompilerTest {
 
@@ -57,9 +55,9 @@ interface CompilerTest {
 
     default void verifyBodyWithBetterDiff(Object expected, Object actual) {
         try {
-            MatcherAssert.assertThat(actual.toString(), equalToIgnoringWhiteSpace(expected.toString()));
+            assertThat(actual).asString().isEqualToIgnoringWhitespace(expected.toString());
         } catch (AssertionError e) {
-            MatcherAssert.assertThat(actual, equalTo(expected));
+            assertThat(actual).isEqualTo(expected);
         }
     }
 

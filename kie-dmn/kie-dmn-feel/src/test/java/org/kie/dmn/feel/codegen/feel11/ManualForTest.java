@@ -24,8 +24,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ManualForTest {
     
@@ -65,9 +64,9 @@ public class ManualForTest {
         Object result = compiledExpression.apply(emptyContext);
         LOG.debug("{}", result);
 
-        assertThat(result, is(Arrays.asList(BigDecimal.valueOf(10), BigDecimal.valueOf(20), BigDecimal.valueOf(30),
+        assertThat(result).asList().containsExactly(BigDecimal.valueOf(10), BigDecimal.valueOf(20), BigDecimal.valueOf(30),
                                             BigDecimal.valueOf(20), BigDecimal.valueOf(40), BigDecimal.valueOf(60),
-                                            BigDecimal.valueOf(30), BigDecimal.valueOf(60), BigDecimal.valueOf(90))));
+                                            BigDecimal.valueOf(30), BigDecimal.valueOf(60), BigDecimal.valueOf(90));
     }
 
 }

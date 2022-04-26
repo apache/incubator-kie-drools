@@ -18,9 +18,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FEELStringMarshallerUnmarshallTest {
@@ -94,9 +92,9 @@ public class FEELStringMarshallerUnmarshallTest {
 
     protected void assertResult(Type feelType, String value, Object result ) {
         if( result == null ) {
-            assertThat( "Unmarshalling: '" + value + "'", FEELStringMarshaller.INSTANCE.unmarshall( feelType, value ), is( nullValue() ) );
+        	assertThat(FEELStringMarshaller.INSTANCE.unmarshall( feelType, value )).as("Unmarshalling: '" + value + "'").isNull();
         } else {
-            assertThat( "Unmarshalling: '"+value+"'", FEELStringMarshaller.INSTANCE.unmarshall( feelType, value ), is( result ) );
+        	assertThat(FEELStringMarshaller.INSTANCE.unmarshall( feelType, value )).as("Unmarshalling: '" + value + "'").isEqualTo(result);
         }
     }
 }

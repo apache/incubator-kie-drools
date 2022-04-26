@@ -28,9 +28,7 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -45,7 +43,7 @@ public class PiTest extends AbstractDTAnalysisTest {
     private void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_F32338CF-6F14-4E66-95AE-8BD4276BA75F");
 
-        assertThat(analysis.getGaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(1);
         
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
@@ -55,12 +53,12 @@ public class PiTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("3.1415926535897932384626433832794"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(1));
+        assertThat(gaps).hasSize(1);
 
         // Assert GAPS
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 }

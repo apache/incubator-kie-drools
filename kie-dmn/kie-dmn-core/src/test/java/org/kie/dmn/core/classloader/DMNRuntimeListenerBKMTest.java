@@ -37,9 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DMNRuntimeListenerBKMTest {
 
@@ -77,8 +74,8 @@ public class DMNRuntimeListenerBKMTest {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("sumWithBKM.dmn", this.getClass());
         runtime.addListener(listenerUT);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FD426696-6811-494E-9938-10EE9C58DDEA", "sumWithBKM");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("a", 1);
@@ -86,7 +83,7 @@ public class DMNRuntimeListenerBKMTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).isEqualTo(new BigDecimal(3));
 
         Map<String, Object> expectedParameters = new LinkedHashMap<String, Object>();

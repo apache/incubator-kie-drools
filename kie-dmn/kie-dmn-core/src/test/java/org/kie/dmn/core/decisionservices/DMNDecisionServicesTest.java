@@ -32,14 +32,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -55,8 +48,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
     public void testBasic() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-decision-services.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         checkDSwithInputData(runtime, dmnModel);
 
@@ -72,10 +65,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A only as output knowing D and E");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("A"), is("de"));
+        assertThat(result.get("A")).isEqualTo("de");
     }
 
     private void checkDSwithInputDecision(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -86,10 +79,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("A"), nullValue()); // because B and C are not defined in input.
+        assertThat(result.get("A")).isNull(); // because B and C are not defined in input.
     }
 
     private void checkDSwithInputDecision2(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -102,18 +95,18 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("A"), is("inBinC"));
+        assertThat(result.get("A")).isEqualTo("inBinC");
     }
 
     @Test
     public void testDSInLiteralExpression() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpression.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("D", "d");
@@ -122,18 +115,18 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide based on A and DS"), is("xyde"));
+        assertThat(result.get("Decide based on A and DS")).isEqualTo("xyde");
     }
 
     @Test
     public void testDSInLiteralExpressionWithBKM() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionWithBKM.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("D", "d");
@@ -142,18 +135,18 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide based on A and DS"), is("xydemn"));
+        assertThat(result.get("Decide based on A and DS")).isEqualTo("xydemn");
     }
 
     @Test
     public void testDSInLiteralExpressionWithBKMUsingInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionWithBKMUsingInvocation.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("D", "d");
@@ -162,18 +155,18 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide based on A and DS"), is("xydemn"));
+        assertThat(result.get("Decide based on A and DS")).isEqualTo("xydemn");
     }
 
     @Test
     public void testDSInLiteralExpressionOnlyfromBKMUsingInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionOnlyFromBKMUsingInvocation.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("D", "d");
@@ -182,18 +175,18 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide based on A and DS"), is("demn"));
+        assertThat(result.get("Decide based on A and DS")).isEqualTo("demn");
     }
 
     @Test
     public void testMixtypeDS() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("mixtype-DS.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_c9885563-aa54-4c7b-ae8a-738cfd29b544", "mixtype DS");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("Person name", "John");
@@ -202,27 +195,27 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Greet the Person"), is("Hello, John"));
-        assertThat(result.get("Person age"), is(BigDecimal.valueOf(38)));
-        assertThat(result.get("is Person an adult"), is(true));
+        assertThat(result.get("Greet the Person")).isEqualTo("Hello, John");
+        assertThat(result.get("Person age")).isEqualTo(BigDecimal.valueOf(38));
+        assertThat(result.get("is Person an adult")).isEqualTo(Boolean.TRUE);
 
-        assertThat((Map<String, Object>) result.get("eval DS all"), hasEntry(is("Greet the Person"), is("Hello, ds all")));
-        assertThat((Map<String, Object>) result.get("eval DS all"), hasEntry(is("Person age"), is(BigDecimal.valueOf(18))));
-        assertThat((Map<String, Object>) result.get("eval DS all"), hasEntry(is("is Person an adult"), is(true)));
-        assertThat((Map<String, Object>) result.get("eval DS all"), not(hasEntry(is("hardcoded now"), anything())));
+        assertThat((Map<String, Object>) result.get("eval DS all")).containsEntry("Greet the Person", "Hello, ds all");
+        assertThat((Map<String, Object>) result.get("eval DS all")).containsEntry("Person age", BigDecimal.valueOf(18));
+        assertThat((Map<String, Object>) result.get("eval DS all")).containsEntry("is Person an adult", true);
+        assertThat((Map<String, Object>) result.get("eval DS all")).doesNotContainKey("hardcoded now");
 
-        assertThat((Map<String, Object>) result.get("eval DS encapsulate"), hasEntry(is("Greet the Person"), is("Hello, DS encapsulate")));
-        assertThat((Map<String, Object>) result.get("eval DS encapsulate"), not(hasEntry(is("Person age"), anything())));
-        assertThat((Map<String, Object>) result.get("eval DS encapsulate"), hasEntry(is("is Person an adult"), is(true)));
-        assertThat((Map<String, Object>) result.get("eval DS encapsulate"), not(hasEntry(is("hardcoded now"), anything())));
+        assertThat((Map<String, Object>) result.get("eval DS encapsulate")).containsEntry("Greet the Person", "Hello, DS encapsulate");
+        assertThat((Map<String, Object>) result.get("eval DS encapsulate")).doesNotContainKey("Person age");
+        assertThat((Map<String, Object>) result.get("eval DS encapsulate")).containsEntry("is Person an adult", true);
+        assertThat((Map<String, Object>) result.get("eval DS encapsulate")).doesNotContainKey("hardcoded now");
 
-        assertThat((Map<String, Object>) result.get("eval DS greet adult"), hasEntry(is("Greet the Person"), is("Hello, DS greet adult")));
-        assertThat((Map<String, Object>) result.get("eval DS greet adult"), not(hasEntry(is("Person age"), anything())));
-        assertThat((Map<String, Object>) result.get("eval DS greet adult"), hasEntry(is("is Person an adult"), is(true)));
-        assertThat((Map<String, Object>) result.get("eval DS greet adult"), not(hasEntry(is("hardcoded now"), anything())));
+        assertThat((Map<String, Object>) result.get("eval DS greet adult")).containsEntry("Greet the Person", "Hello, DS greet adult");
+        assertThat((Map<String, Object>) result.get("eval DS greet adult")).doesNotContainKey("Person age");
+        assertThat((Map<String, Object>) result.get("eval DS greet adult")).containsEntry("is Person an adult", true);
+        assertThat((Map<String, Object>) result.get("eval DS greet adult")).doesNotContainKey("hardcoded now");
 
         // additionally check DS one-by-one
         testMixtypeDS_checkDSall(runtime, dmnModel);
@@ -238,13 +231,13 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS all");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.getAll(), hasEntry(is("Greet the Person"), is("Hello, John")));
-        assertThat(result.getAll(), hasEntry(is("Person age"), is(BigDecimal.valueOf(10))));
-        assertThat(result.getAll(), hasEntry(is("is Person an adult"), is(false)));
-        assertThat(result.getAll(), not(hasEntry(is("hardcoded now"), anything())));
+        assertThat(result.getAll()).containsEntry("Greet the Person", "Hello, John");
+        assertThat(result.getAll()).containsEntry("Person age", BigDecimal.valueOf(10));
+        assertThat(result.getAll()).containsEntry("is Person an adult", false);
+        assertThat(result.getAll()).doesNotContainKey("hardcoded now");
     }
 
     private void testMixtypeDS_checkDSencapsulate(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -255,13 +248,13 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS encapsulate");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.getAll(), hasEntry(is("Greet the Person"), is("Hello, John")));
-        assertThat(result.getAll(), not(hasEntry(is("Person age"), anything())));
-        assertThat(result.getAll(), hasEntry(is("is Person an adult"), is(false)));
-        assertThat(result.getAll(), not(hasEntry(is("hardcoded now"), anything())));
+        assertThat(result.getAll()).containsEntry("Greet the Person", "Hello, John");
+        assertThat(result.getAll()).doesNotContainKey("Person age");
+        assertThat(result.getAll()).containsEntry("is Person an adult", false);
+        assertThat(result.getAll()).doesNotContainKey("hardcoded now");
     }
 
     private void testMixtypeDS_checkDSgreetadult(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -272,21 +265,21 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS greet adult");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.getAll(), hasEntry(is("Greet the Person"), is("Hello, John")));
-        assertThat(dmnResult.getDecisionResultByName("Person age"), nullValue());
-        assertThat(result.getAll(), hasEntry(is("is Person an adult"), is(false)));
-        assertThat(result.getAll(), not(hasEntry(is("hardcoded now"), anything())));
+        assertThat(result.getAll()).containsEntry("Greet the Person", "Hello, John");
+        assertThat(dmnResult.getDecisionResultByName("Person age")).isNull();
+        assertThat(result.getAll()).containsEntry("is Person an adult", false);
+        assertThat(result.getAll()).doesNotContainKey("hardcoded now");
     }
 
     @Test
     public void testDSForTypeCheck() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionService20180718.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_6eef3a7c-bb0d-40bb-858d-f9067789c18a", "Decision Service 20180718");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         testDSForTypeCheck_runNormal(runtime, dmnModel);
         testDSForTypeCheck_runAllDecisionsWithWrongTypes(runtime, dmnModel);
@@ -302,12 +295,12 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Greet the person"), is("Hello, John"));
-        assertThat(result.get("is Person at age allowed"), is(true));
-        assertThat(result.get("Final Decision"), is("Hello, John; you are allowed"));
+        assertThat(result.get("Greet the person")).isEqualTo("Hello, John");
+        assertThat(result.get("is Person at age allowed")).isEqualTo(Boolean.TRUE);
+        assertThat(result.get("Final Decision")).isEqualTo("Hello, John; you are allowed");
     }
 
     private void testDSForTypeCheck_runAllDecisionsWithWrongTypes(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -318,7 +311,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
     }
 
     private void testDSForTypeCheck_runDecisionService_Normal(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -329,12 +322,12 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS given inputdata");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.getAll(), not(hasEntry(is("Greet the person"), anything()))); // Decision Service will encapsulate this decision
-        assertThat(result.getAll(), not(hasEntry(is("is Person at age allowed"), anything()))); // Decision Service will encapsulate this decision
-        assertThat(result.get("Final Decision"), is("Hello, John; you are allowed"));
+        assertThat(result.getAll()).doesNotContainKey("Greet the person"); // Decision Service will encapsulate this decision
+        assertThat(result.getAll()).doesNotContainKey("is Person at age allowed"); // Decision Service will encapsulate this decision
+        assertThat(result.get("Final Decision")).isEqualTo("Hello, John; you are allowed");
     }
 
     private void testDSForTypeCheck_runDecisionService_WithWrongTypes(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -345,48 +338,47 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS given inputdata");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
-                   dmnResult.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_cf49add9-84a4-40ac-8306-1eea599ff43c") && m.getLevel() == Level.WARNING),
-                   is(true));
+        assertThat(dmnResult.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_cf49add9-84a4-40ac-8306-1eea599ff43c") && m.getLevel() == Level.WARNING))
+        .as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
     }
 
     @Test
     public void testDSSingletonOrMultipleOutputDecisions() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974", "Decision Services singleton or multiple output decisions");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext emptyContext = DMNFactory.newContext();
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("a Value"), is("a string Value"));
-        assertThat(result.get("a String Value"), is("a String Value"));
-        assertThat(result.get("a Number Value"), is(BigDecimal.valueOf(47)));
-        assertThat(result.get("eval DS with singleton value"), is("a string Value"));
-        assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a String Value"), is("a String Value")));
-        assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a Number Value"), is(BigDecimal.valueOf(47))));
+        assertThat(result.get("a Value")).isEqualTo("a string Value");
+        assertThat(result.get("a String Value")).isEqualTo("a String Value");
+        assertThat(result.get("a Number Value")).isEqualTo(BigDecimal.valueOf(47));
+        assertThat(result.get("eval DS with singleton value")).isEqualTo("a string Value");
+        assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions")).containsEntry("a String Value", "a String Value");
+        assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions")).containsEntry("a Number Value", BigDecimal.valueOf(47));
 
         final DMNResult dmnResultDSSingleton = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
         LOG.debug("{}", dmnResultDSSingleton);
         dmnResultDSSingleton.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages()), dmnResultDSSingleton.hasErrors(), is(false));
-        assertThat(dmnResultDSSingleton.getContext().get("a Value"), is("a string Value"));
-        assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a String Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
-        assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a Number Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+        assertThat(dmnResultDSSingleton.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages())).isFalse();
+        assertThat(dmnResultDSSingleton.getContext().get("a Value")).isEqualTo("a string Value");
+        assertThat(dmnResultDSSingleton.getContext().getAll()).doesNotContainKey("a String Value"); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+        assertThat(dmnResultDSSingleton.getContext().getAll()).doesNotContainKey("a Number Value"); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
 
         final DMNResult dmnResultMultiple = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
         LOG.debug("{}", dmnResultMultiple);
         dmnResultMultiple.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages()), dmnResultMultiple.hasErrors(), is(false));
-        assertThat(dmnResultMultiple.getContext().get("a String Value"), is("a String Value"));
-        assertThat(dmnResultMultiple.getContext().get("a Number Value"), is(BigDecimal.valueOf(47)));
-        assertThat(dmnResultMultiple.getContext().getAll(), not(hasEntry(is("a Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+        assertThat(dmnResultMultiple.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages())).isFalse();
+        assertThat(dmnResultMultiple.getContext().get("a String Value")).isEqualTo("a String Value");
+        assertThat(dmnResultMultiple.getContext().get("a Number Value")).isEqualTo(BigDecimal.valueOf(47));
+        assertThat(dmnResultMultiple.getContext().getAll()).doesNotContainKey("a Value"); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
     }
 
     @Test
@@ -395,45 +387,45 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
             System.setProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME, "false");
             final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
             final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974", "Decision Services singleton or multiple output decisions");
-            assertThat(dmnModel, notNullValue());
-            assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+            assertThat(dmnModel).isNotNull();
+            assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
             final DMNContext emptyContext = DMNFactory.newContext();
 
             final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
             LOG.debug("{}", dmnResult);
             dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+            assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
             final DMNContext result = dmnResult.getContext();
-            assertThat(result.get("a Value"), is("a string Value"));
-            assertThat(result.get("a String Value"), is("a String Value"));
-            assertThat(result.get("a Number Value"), is(BigDecimal.valueOf(47)));
-            assertThat((Map<String, Object>) result.get("eval DS with singleton value"), hasEntry(is("a Value"), is("a string Value"))); // DIFFERENCE with base test
-            assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a String Value"), is("a String Value")));
-            assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a Number Value"), is(BigDecimal.valueOf(47))));
+            assertThat(result.get("a Value")).isEqualTo("a string Value");
+            assertThat(result.get("a String Value")).isEqualTo("a String Value");
+            assertThat(result.get("a Number Value")).isEqualTo(BigDecimal.valueOf(47));
+            assertThat((Map<String, Object>) result.get("eval DS with singleton value")).containsEntry("a Value", "a string Value"); // DIFFERENCE with base test
+            assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions")).containsEntry("a String Value", "a String Value");
+            assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions")).containsEntry("a Number Value", BigDecimal.valueOf(47));
 
             final DMNResult dmnResultDSSingleton = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
             LOG.debug("{}", dmnResultDSSingleton);
             dmnResultDSSingleton.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages()), dmnResultDSSingleton.hasErrors(), is(false));
-            assertThat(dmnResultDSSingleton.getContext().get("a Value"), is("a string Value"));
-            assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a String Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
-            assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a Number Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+            assertThat(dmnResultDSSingleton.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages())).isFalse();
+            assertThat(dmnResultDSSingleton.getContext().get("a Value")).isEqualTo("a string Value");
+            assertThat(dmnResultDSSingleton.getContext().getAll()).doesNotContainKey("a String Value"); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+            assertThat(dmnResultDSSingleton.getContext().getAll()).doesNotContainKey("a Number Value"); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
 
             final DMNResult dmnResultMultiple = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
             LOG.debug("{}", dmnResultMultiple);
             dmnResultMultiple.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages()), dmnResultMultiple.hasErrors(), is(false));
-            assertThat(dmnResultMultiple.getContext().get("a String Value"), is("a String Value"));
-            assertThat(dmnResultMultiple.getContext().get("a Number Value"), is(BigDecimal.valueOf(47)));
-            assertThat(dmnResultMultiple.getContext().getAll(), not(hasEntry(is("a Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+            assertThat(dmnResultMultiple.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages())).isFalse();
+            assertThat(dmnResultMultiple.getContext().get("a String Value")).isEqualTo("a String Value");
+            assertThat(dmnResultMultiple.getContext().get("a Number Value")).isEqualTo(BigDecimal.valueOf(47));
+            assertThat(dmnResultMultiple.getContext().getAll()).doesNotContainKey("a Value"); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
         } catch (final Exception e) {
             LOG.error("{}", e.getLocalizedMessage(), e);
             throw e;
         } finally {
             System.clearProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME);
-            assertNull(System.getProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
+            assertThat(System.getProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME)).isNull();
         }
     }
 
@@ -442,8 +434,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         // DROOLS-2768 DMN Decision Service encapsulate Decision which imports a Decision Service
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("DecisionService20180718.dmn", this.getClass(), "ImportDecisionService20180718.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_0ff3708a-c861-4a96-b85c-7b882f18b7a1", "Import Decision Service 20180718");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         testImportDS_testEvaluateAll(runtime, dmnModel);
         testImportDS_testEvaluateDS(runtime, dmnModel);
@@ -456,12 +448,12 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("invoke imported DS"), is("Hello, L1 Import John; you are allowed"));
-        assertThat(result.get("Prefixing"), is("Hello, L1 Import John"));
-        assertThat(result.get("final Import L1 decision"), is("Hello, L1 Import John the result of invoking the imported DS is: Hello, L1 Import John; you are allowed"));
+        assertThat(result.get("invoke imported DS")).isEqualTo("Hello, L1 Import John; you are allowed");
+        assertThat(result.get("Prefixing")).isEqualTo("Hello, L1 Import John");
+        assertThat(result.get("final Import L1 decision")).isEqualTo("Hello, L1 Import John the result of invoking the imported DS is: Hello, L1 Import John; you are allowed");
     }
 
     private void testImportDS_testEvaluateDS(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -471,12 +463,12 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "Import L1 DS");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.getAll(), not(hasEntry(is("invoke imported DS"), anything()))); // Decision Service will encapsulate this decision
-        assertThat(result.getAll(), not(hasEntry(is("Prefixing"), anything()))); // Decision Service will encapsulate this decision
-        assertThat(result.get("final Import L1 decision"), is("Hello, L1 Import Evaluate DS NAME the result of invoking the imported DS is: Hello, L1 Import Evaluate DS NAME; you are allowed"));
+        assertThat(result.getAll()).doesNotContainKey("invoke imported DS"); // Decision Service will encapsulate this decision
+        assertThat(result.getAll()).doesNotContainKey("Prefixing"); // Decision Service will encapsulate this decision
+        assertThat(result.get("final Import L1 decision")).isEqualTo("Hello, L1 Import Evaluate DS NAME the result of invoking the imported DS is: Hello, L1 Import Evaluate DS NAME; you are allowed");
     }
 
     @Test
@@ -486,8 +478,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
                                                                                        "ImportDecisionService20180718.dmn",
                                                                                        "ImportofImportDecisionService20180718.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_6698dc07-cc43-47ec-8187-8faa7d8c35ba", "Import of Import Decision Service 20180718");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         testTransitiveImportDS_testEvaluateAll(runtime, dmnModel);
         testTransitiveImportDS_testEvaluateDS(runtime, dmnModel);
@@ -500,11 +492,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("L2 Invoking the L1 import"), is("Hello, L2 Bob the result of invoking the imported DS is: Hello, L2 Bob; you are allowed"));
-        assertThat(result.get("Final L2 Decision"), is("The result of invoking the L1 DS was: Hello, L2 Bob the result of invoking the imported DS is: Hello, L2 Bob; you are allowed"));
+        assertThat(result.get("L2 Invoking the L1 import")).isEqualTo("Hello, L2 Bob the result of invoking the imported DS is: Hello, L2 Bob; you are allowed");
+        assertThat(result.get("Final L2 Decision")).isEqualTo("The result of invoking the L1 DS was: Hello, L2 Bob the result of invoking the imported DS is: Hello, L2 Bob; you are allowed");
     }
 
     private void testTransitiveImportDS_testEvaluateDS(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -514,11 +506,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "L2 DS");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.getAll(), not(hasEntry(is("L2 Invoking the L1 import"), anything()))); // Decision Service will encapsulate this decision
-        assertThat(result.get("Final L2 Decision"), is("The result of invoking the L1 DS was: Hello, L2 Bob DS the result of invoking the imported DS is: Hello, L2 Bob DS; you are allowed"));
+        assertThat(result.getAll()).doesNotContainKey("L2 Invoking the L1 import"); // Decision Service will encapsulate this decision
+        assertThat(result.get("Final L2 Decision")).isEqualTo("The result of invoking the L1 DS was: Hello, L2 Bob DS the result of invoking the imported DS is: Hello, L2 Bob DS; you are allowed");
     }
 
     @Test
@@ -526,8 +518,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         // DROOLS-2943 DMN DecisionServiceCompiler not correctly wired for DMNv1.2 format
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServiceABC.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         testDecisionServiceCompiler20180830_testEvaluateDS(runtime, dmnModel);
         testDecisionServiceCompiler20180830_testEvaluateAll(runtime, dmnModel);
@@ -539,11 +531,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("ABC"), is("abc"));
-        assertThat(result.get("Invoking Decision"), is("abc"));
+        assertThat(result.get("ABC")).isEqualTo("abc");
+        assertThat(result.get("Invoking Decision")).isEqualTo("abc");
     }
 
     public static void testDecisionServiceCompiler20180830_testEvaluateDS(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -552,12 +544,12 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "Decision Service ABC");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
         // NOTE: Decision Service "Decision Service ABC" does NOT encapsulate any decision. 
-        assertThat(result.getAll(), not(hasEntry(is("Invoking Decision"), anything()))); // we invoked only the Decision Service, not this other Decision in the model.
-        assertThat(result.get("ABC"), is("abc"));
+        assertThat(result.getAll()).doesNotContainKey("Invoking Decision"); // we invoked only the Decision Service, not this other Decision in the model.
+        assertThat(result.get("ABC")).isEqualTo("abc");
     }
 
     @Test
@@ -567,8 +559,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
                                                                                        this.getClass(),
                                                                                        "DSWithImportRequiredInput20180920-import-1.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_76165d7d-12f8-46d3-b8af-120f1ac8b3fc", "Model B");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         testDecisionService20180920_testEvaluateAll(runtime, dmnModel);
         testDecisionService20180920_testEvaluateDS(runtime, dmnModel);
@@ -581,11 +573,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decision B"), is("input 1 value"));
-        assertThat(result.get("Invoke Decision B DS"), is("A value"));
+        assertThat(result.get("Decision B")).isEqualTo("input 1 value");
+        assertThat(result.get("Invoke Decision B DS")).isEqualTo("A value");
     }
 
     private static void testDecisionService20180920_testEvaluateDS(final DMNRuntime runtime, final DMNModel dmnModel) {
@@ -595,35 +587,35 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "Decision B DS");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.getAll(), not(hasEntry(is("Invoke Decision B DS"), anything()))); // we invoked only the Decision Service, not this other Decision in the model.
-        assertThat(result.get("Decision B"), is("input 1 value"));
+        assertThat(result.getAll()).doesNotContainKey("Invoke Decision B DS"); // we invoked only the Decision Service, not this other Decision in the model.
+        assertThat(result.get("Decision B")).isEqualTo("input 1 value");
     }
 
     @Test
     public void test20190520() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DStypecheck.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6e76b9ca-ce06-426a-91c0-99b70665321a", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext emptyContext = DMNFactory.newContext();
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("my invoke DS1").getResult(), hasEntry(is("outDS1"), is(true)));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("my invoke DS1").getResult()).containsEntry("outDS1", true);
     }
     
     @Test
     public void testImportingBasic() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38", "importing0004");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         assertSupplyingBandC(runtime, dmnModel);
     }
@@ -635,18 +627,18 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decision1"), is("inBinC"));
+        assertThat(result.get("Decision1")).isEqualTo("inBinC");
     }
     
     @Test
     public void testImportingBoxedInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004boxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38", "importing0004");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         assertSupplyingBandC(runtime, dmnModel);
     }
@@ -655,8 +647,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
     public void testImportingBkmBoxedInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004bkmBoxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_0CA8CCDE-106B-4805-B0C1-8D8D740C80F7", "importing0004bkmBoxedInvocation");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         assertSupplyingBandC(runtime, dmnModel);
     }
@@ -665,8 +657,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
     public void testImportingWithSameDSName() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDS.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         assertSupplyingPersonname(runtime, dmnModel);
     }
@@ -677,18 +669,18 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decision1"), is("Hello, John Doe"));
+        assertThat(result.get("Decision1")).isEqualTo("Hello, John Doe");
     }
     
     @Test
     public void testImportingWithSameDSNameBoxedInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDSboxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         assertSupplyingPersonname(runtime, dmnModel);
     }
@@ -697,8 +689,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
     public void testImportingWithSameDSNameBKMBoxedInvocation() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDSbkmBoxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         assertSupplyingPersonname(runtime, dmnModel);
     }

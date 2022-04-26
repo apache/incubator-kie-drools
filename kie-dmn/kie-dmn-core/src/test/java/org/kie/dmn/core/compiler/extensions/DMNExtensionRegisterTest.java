@@ -36,12 +36,10 @@ import org.kie.dmn.model.api.InputData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class DMNExtensionRegisterTest {
@@ -55,8 +53,8 @@ public class DMNExtensionRegisterTest {
             
             final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-input-data-string-with-extensions.dmn", this.getClass() );
             final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
-            assertThat( dmnModel, notNullValue() );
-            assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+            assertThat(dmnModel).isNotNull();
+            assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
             
             assertEquals(3, dmnModel.getDefinitions().getDrgElement().size());
             
@@ -107,8 +105,8 @@ public class DMNExtensionRegisterTest {
         
         final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         
         assertEquals(3, dmnModel.getDefinitions().getDrgElement().size());
         
@@ -152,8 +150,8 @@ public class DMNExtensionRegisterTest {
         
         final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         
         assertEquals(3, dmnModel.getDefinitions().getDrgElement().size());
         final InputData inputData1 = (InputData) dmnModel.getDefinitions().getDrgElement().get(1);

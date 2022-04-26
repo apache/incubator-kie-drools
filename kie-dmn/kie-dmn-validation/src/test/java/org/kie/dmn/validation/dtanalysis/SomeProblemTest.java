@@ -22,9 +22,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class SomeProblemTest extends AbstractDTAnalysisTest {
@@ -34,11 +32,11 @@ public class SomeProblemTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("SomeProblem.dmn"), ANALYZE_DECISION_TABLE);
 
         DTAnalysis analysis1 = getAnalysis(validate, "_a36e37f8-aae0-4118-8267-cbb37c7955cb");
-        assertThat(analysis1.isError(), is(false));
-        assertThat(analysis1.getGaps(), hasSize(0));
-        assertThat(analysis1.getOverlaps(), hasSize(0));
+        assertThat(analysis1.isError()).isFalse();
+        assertThat(analysis1.getGaps()).hasSize(0);
+        assertThat(analysis1.getOverlaps()).hasSize(0);
         
         DTAnalysis analysis2 = getAnalysis(validate, "_2aea80b4-19fa-4831-8829-4db925a128aa");
-        assertThat(analysis2.isError(), is(true));
+        assertThat(analysis2.isError()).isTrue();
     }
 }

@@ -24,8 +24,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertyChangeSupportTest {
 
@@ -94,8 +93,8 @@ public class PropertyChangeSupportTest {
         ksession.insert(fact);
         ksession.fireAllRules(10);
 
-        assertThat(fact.getName(), is("user2"));
+        assertThat(fact.getName()).isEqualTo("user2");
 
-        assertThat(fact.getValue(), is("VAL1"));
+        assertThat(fact.getValue()).isEqualTo("VAL1");
     }
 }

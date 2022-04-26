@@ -31,9 +31,7 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.MaskedRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -54,10 +52,10 @@ public class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
     }
 
     private void verify(List<DMNMessage> validate) {
-        assertThat(validate, hasSize(5));
+        assertThat(validate).hasSize(5);
         DTAnalysis analysis = getAnalysis(validate, "_4771db14-e088-4d5a-8942-211c57ad0b42");
 
-        assertThat(analysis.getGaps(), hasSize(3));
+        assertThat(analysis.getGaps()).hasSize(3);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
@@ -81,13 +79,13 @@ public class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("10"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(3));
+        assertThat(gaps).hasSize(3);
 
         // Assert GAPS
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(2));
+        assertThat(analysis.getOverlaps()).hasSize(2);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(1,
@@ -108,17 +106,17 @@ public class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
                                                                                                                    new Bound(new BigDecimal("7"),
                                                                                                                              RangeBoundary.CLOSED,
                                                                                                                              null))))));
-        assertThat(overlaps, hasSize(2));
+        assertThat(overlaps).hasSize(2);
 
         // Assert OVERLAPs same values
-        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
+        assertThat(analysis.getOverlaps()).containsAll(overlaps);
 
         // MaskedRules count.
-        assertThat(analysis.getMaskedRules(), hasSize(2));
+        assertThat(analysis.getMaskedRules()).hasSize(2);
         List<MaskedRule> maskedRules = Arrays.asList(new MaskedRule(2, 1),
                                                      new MaskedRule(4, 3));
-        assertThat(maskedRules, hasSize(2));
-        assertThat(analysis.getMaskedRules(), contains(maskedRules.toArray()));
+        assertThat(maskedRules).hasSize(2);
+        assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
         assertTrue("It should contain DMNMessage for the MaskedRule",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
     }

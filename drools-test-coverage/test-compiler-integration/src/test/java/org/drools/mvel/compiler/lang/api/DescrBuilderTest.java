@@ -53,8 +53,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -470,8 +468,8 @@ public class DescrBuilderTest {
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(cap.capture());
         
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
+        assertThat(((Number) cap.getValue().getMatch().getDeclarationValue("$sum")).intValue()).isEqualTo(180);
+        assertThat(((Number) cap.getValue().getMatch().getDeclarationValue("$cnt")).intValue()).isEqualTo(2);
     }
     
     @Test

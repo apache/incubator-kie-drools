@@ -12,8 +12,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
@@ -25,9 +24,9 @@ public class FEELProfileTest {
         // Instantiate a new FEEL with the profile to try the method that uses the data cache
         FEEL feel = FEEL.newInstance(Arrays.asList(new TestFEELProfile()));
 
-        assertThat(feel.evaluate("use cache(\"val 1\")"), equalTo("1"));
-        assertThat(feel.evaluate("use cache(\"val 3\")"), equalTo("3"));
-        assertThat(feel.evaluate("use cache(\"val 5\")"), equalTo(null));
+        assertThat(feel.evaluate("use cache(\"val 1\")")).isEqualTo("1");
+        assertThat(feel.evaluate("use cache(\"val 3\")")).isEqualTo("3");
+        assertThat(feel.evaluate("use cache(\"val 5\")")).isNull();
     }
 
     /**

@@ -31,8 +31,7 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
@@ -220,8 +219,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         verify(ael, times(2)).afterMatchFired(captor.capture());
 
         final List<org.kie.api.event.rule.AfterMatchFiredEvent> values = captor.getAllValues();
-        assertThat(values.get(0).getMatch().getObjects().get(0), is(c1));
-        assertThat(values.get(1).getMatch().getObjects().get(0), is(c2));
+        assertThat(values.get(0).getMatch().getObjects().get(0)).isEqualTo(c1);
+        assertThat(values.get(1).getMatch().getObjects().get(0)).isEqualTo(c2);
 
         ksession.dispose();
     }

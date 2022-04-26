@@ -29,9 +29,7 @@ import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
@@ -53,7 +51,7 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
     }
 
     private void checkComplexDTDates(DTAnalysis analysis) {
-        assertThat(analysis.getGaps(), hasSize(2));
+        assertThat(analysis.getGaps()).hasSize(2);
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(java.time.LocalDate.parse("2019-03-31"),
@@ -69,13 +67,13 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(java.time.LocalDate.parse("2019-12-31"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(2));
+        assertThat(gaps).hasSize(2);
 
         // Assert GAPS same values
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(1));
+        assertThat(analysis.getOverlaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
                                                                          3),
@@ -86,9 +84,9 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
                                                                                                                    new Bound(java.time.LocalDate.parse("2019-06-30"),
                                                                                                                              RangeBoundary.CLOSED,
                                                                                                                              null))))));
-        assertThat(overlaps, hasSize(1));
+        assertThat(overlaps).hasSize(1);
         // Assert OVERLAPs same values
-        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
+        assertThat(analysis.getOverlaps()).containsAll(overlaps);
     }
 
     @Test
@@ -96,7 +94,7 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("weirdPosNeg.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_54ae95be-6866-4dc1-8c10-1c5a4dd15c93");
 
-        assertThat(analysis.getGaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
@@ -105,13 +103,13 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(1));
+        assertThat(gaps).hasSize(1);
 
         // Assert GAPS same values
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 
     @Test
@@ -119,7 +117,7 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("weirdYMduration.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_fe7d267b-d770-461e-8300-e09981147341");
 
-        assertThat(analysis.getGaps(), hasSize(1));
+        assertThat(analysis.getGaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(org.kie.dmn.feel.lang.types.impl.ComparablePeriod.parse("P1M"),
@@ -128,12 +126,12 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
                                                                                                           new Bound(org.kie.dmn.feel.lang.types.impl.ComparablePeriod.parse("P1M"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(1));
+        assertThat(gaps).hasSize(1);
 
         // Assert GAPS same values
-        assertThat(analysis.getGaps(), contains(gaps.toArray()));
+        assertThat(analysis.getGaps()).containsAll(gaps);
 
         // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 }

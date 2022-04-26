@@ -26,8 +26,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.AbstractValidatorTest;
 import org.kie.dmn.validation.ValidatorUtil;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
@@ -41,7 +40,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
             assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
         }
@@ -52,7 +51,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
     }
@@ -64,7 +63,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
                                 "https://github.com/kiegroup/kie-dmn",
                                 "KNOWREQ_MISSING_BKM"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
     }
@@ -75,7 +74,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
             assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
         }
@@ -86,7 +85,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
     }
@@ -98,7 +97,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
                                 "https://github.com/kiegroup/kie-dmn",
                                 "KNOWREQ_REQ_DECISION_NOT_BKM"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
     }
