@@ -22,6 +22,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -367,5 +368,106 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( new Person("Sofia", 9) );
 
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testAlphaIndexHashed() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  Person( age == 10 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  Person( age == 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  Person( age == 30 )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        assertHashIndex(ksession, Person.class, 3);
+    }
+
+    @Test
+    public void testAlphaIndexHashedNonGetter() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  Person( calcAge == 10 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  Person( calcAge == 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  Person( calcAge == 30 )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        assertHashIndex(ksession, Person.class, 3);
+    }
+
+    private void assertHashIndex(KieSession ksession, Class<?> factClass, int expectedHashedSinkMapSize) {
+        EntryPointNode epn = ((InternalKnowledgeBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(factClass));
+        CompositeObjectSinkAdapter compositeObjectSinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
+
+        assertNotNull(compositeObjectSinkAdapter.getHashedSinkMap());
+        assertEquals(expectedHashedSinkMapSize, compositeObjectSinkAdapter.getHashedSinkMap().size());
+    }
+
+    @Test
+    public void testAlphaIndexHashedPrimitiveWrapper() {
+        String str =
+                "import " + Integer.class.getCanonicalName() + ";\n" +
+                     "rule R1 when\n" +
+                     "  Integer( intValue == 10 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  Integer( intValue == 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  Integer( intValue == 30 )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        assertHashIndex(ksession, Integer.class, 3);
+    }
+
+    @Test
+    public void testAlphaIndexHashedNumberInterface() {
+        String str =
+                "import " + Integer.class.getCanonicalName() + ";\n" +
+                     "rule R1 when\n" +
+                     "  Number( intValue == 10 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  Number( intValue == 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  Number( intValue == 30 )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        assertHashIndex(ksession, Number.class, 3);
+
+        ksession.insert(10);
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
     }
 }
