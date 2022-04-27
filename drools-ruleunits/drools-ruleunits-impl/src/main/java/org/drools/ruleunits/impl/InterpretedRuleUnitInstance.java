@@ -34,8 +34,7 @@ public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends ReteEva
             for (Field f : workingMemory.getClass().getDeclaredFields()) {
                 f.setAccessible(true);
                 Object v = f.get(workingMemory);
-                String dataSourceName = String.format(
-                        "%s.%s", workingMemory.getClass().getCanonicalName(), f.getName());
+                String dataSourceName = f.getName();
                 if (v instanceof DataSource) {
                     DataSource<?> o = (DataSource<?>) v;
                     EntryPoint ep = reteEvaluator.getEntryPoint(dataSourceName);

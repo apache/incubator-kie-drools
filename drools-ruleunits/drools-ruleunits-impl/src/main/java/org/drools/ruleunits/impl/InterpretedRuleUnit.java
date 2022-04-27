@@ -15,21 +15,23 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.io.InputStream;
-
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.kie.builder.impl.BuildContext;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
-import org.drools.util.io.InputStreamResource;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
-import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilder;
+import org.drools.core.impl.RuleBase;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
+import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
+import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+
+import static org.drools.compiler.kproject.models.KieBaseModelImpl.defaultKieBaseModel;
 
 /**
  * A fully-runtime, reflective implementation of a rule unit, useful for testing
@@ -40,27 +42,39 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
         return new InterpretedRuleUnit<>(type.getCanonicalName());
     }
 
+    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnit) {
+        return of((Class<T>) ruleUnit.getClass()).createInstance(ruleUnit);
+    }
+
     private InterpretedRuleUnit(String id) {
         super(id, DummyRuleUnits.INSTANCE);
     }
 
     @Override
     public RuleUnitInstance<T> internalCreateInstance(T data) {
-        KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl();
-        Class<? extends RuleUnitData> wmClass = data.getClass();
-        String canonicalName = wmClass.getCanonicalName();
+        RuleBase ruleBase = createRuleBase(data);
+        ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
+        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator);
+    }
 
+    private RuleBase createRuleBase(T data) {
         // transform foo.bar.Baz to /foo/bar/Baz.drl
         // this currently only works for single files
-        InputStream resourceAsStream = wmClass.getResourceAsStream(
-                String.format("/%s.drl", canonicalName.replace('.', '/')));
-        kBuilder.add(new InputStreamResource(resourceAsStream), ResourceType.DRL);
+        String path = String.format("%s.drl", data.getClass().getCanonicalName().replace('.', '/'));
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addPackages(kBuilder.getKnowledgePackages());
-        ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(kBase);
+        KieServices ks = KieServices.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write(ks.getResources().newClassPathResource(path));
+        InternalKieModule kieModule = (InternalKieModule) ks.newKieBuilder( kfs ).getKieModule(ExecutableModelProject.class);
 
-        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator);
+        BuildContext buildContext = new BuildContext();
+        KieModuleKieProject kieProject = ExecutableModelProject.SUPPLIER.apply(kieModule, kieModule.getModuleClassLoader());
+        RuleBase kBase = kieModule.createKieBase(defaultKieBaseModel(), kieProject, buildContext, null);
+        if (kBase == null) {
+            // build error, throw runtime exception
+            throw new RuntimeException("Error while creating KieBase" + buildContext.getMessages().filterMessages(Message.Level.ERROR));
+        }
+        return kBase;
     }
 
     public static class DummyRuleUnits extends AbstractRuleUnits {
