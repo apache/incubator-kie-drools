@@ -1,0 +1,100 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+droolsRepo = 'drools'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    tools {
+        maven 'kie-maven-3.8.1'
+        jdk 'kie-jdk11'
+    }
+    options {
+        timestamps()
+        timeout(time: 360, unit: 'MINUTES')
+    }
+    environment {
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        MAVEN_OPTS = '-Xms1024m -Xmx6g -XX:PermSize=128m -XX:MaxPermSize=512m'
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutDroolsRepo()
+                }
+            }
+        }
+
+        stage('Build Drools') {
+            steps {
+                script {
+                    getNativeMavenCommand(droolsRepo)
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        always {
+            script {
+                junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                util.archiveConsoleLog()
+            }
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${params.BUILD_BRANCH_NAME}] Drools", [env.KOGITO_CI_EMAIL_TO])
+}
+
+void checkoutDroolsRepo() {
+    dir(droolsRepo) {
+        checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, params.BUILD_BRANCH_NAME, false))
+    }
+}
+
+MavenCommand getNativeMavenCommand(String directory, String builderImage = getNativeBuilderImage()) {
+    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
+                    .withSettingsXmlId('kogito_release_settings')
+                    .withProperty('java.net.preferIPv4Stack', true)
+                    .inDirectory(directory)
+                    .withProfiles(['native'])
+                    .withProperty('quarkus.native.container-build', true)
+                    .withProperty('quarkus.native.container-runtime', 'docker')
+                    .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
+
+    if (builderImage) {
+        mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
+    }
+
+    return mvnCmd
+}
+
+void cleanContainers() {
+    cloud.cleanContainersAndImages('docker')
+}
+
+String getNativeBuilderImage() {
+    return params.NATIVE_BUILDER_IMAGE
+}
