@@ -758,6 +758,14 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testModifyWithMethodCall() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify($p) { addresses.clear() }; }",
+             "{ { $p.getAddresses().clear(); } }",
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
+    }
+
+    @Test
     public void testWithSemiColon() {
         test("{ with( $l = new ArrayList()) { $l.add(2); }; }",
              "{ java.util.ArrayList $l = new java.util.ArrayList(); $l.add(2); }",
