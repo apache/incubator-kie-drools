@@ -17,9 +17,9 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.ArrayDeque;
-import java.util.LinkedHashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -47,15 +47,16 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     private final Consumer<TriTuple<A, B, C>> nextNodesRetract;
     private final int outputStoreSize;
 
-    private final Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB;
-    private final Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC;
+    private final Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB;
+    private final Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC;
     private final Queue<TriTuple<A, B, C>> dirtyTupleQueue;
 
     public JoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
             int inputStoreIndexAB, int inputStoreIndexC,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize,
-            Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB, Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC) {
+            Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB,
+            Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC) {
         this.mappingAB = mappingAB;
         this.mappingC = mappingC;
         this.inputStoreIndexAB = inputStoreIndexAB;
@@ -76,14 +77,14 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         IndexProperties indexProperties = mappingAB.apply(tupleAB.factA, tupleAB.factB);
         tupleAB.store[inputStoreIndexAB] = indexProperties;
 
-        Set<TriTuple<A, B, C>> tupleABCSetAB = new LinkedHashSet<>();
-        indexerAB.put(indexProperties, tupleAB, tupleABCSetAB);
-        indexerC.visit(indexProperties, (tupleC, tupleABCSetC) -> {
+        Map<UniTuple<C>, TriTuple<A, B, C>> tupleABCMapAB = new HashMap<>();
+        indexerAB.put(indexProperties, tupleAB, tupleABCMapAB);
+        indexerC.visit(indexProperties, (tupleC, tupleABCMapC) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
                     outputStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
-            tupleABCSetAB.add(tupleABC);
-            tupleABCSetC.add(tupleABC);
+            tupleABCMapAB.put(tupleC, tupleABC);
+            tupleABCMapC.put(tupleAB, tupleABC);
             dirtyTupleQueue.add(tupleABC);
         });
     }
@@ -96,21 +97,17 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         }
         tupleAB.store[inputStoreIndexAB] = null;
 
-        Set<TriTuple<A, B, C>> tupleABCSetAB = indexerAB.remove(indexProperties, tupleAB);
+        indexerAB.remove(indexProperties, tupleAB);
         // Remove tupleABCs from the other side
-        indexerC.visit(indexProperties, (tupleC, tupleABCSetC) -> {
-            // TODO Performance: if tupleABC would contain tupleC, do this faster code instead:
-            // for (tupleABC : tupleABCSetAB { tupleABCSetMapB.get(tupleABC.tupleC).remove(tupleABC); }
-            boolean changed = tupleABCSetC.removeAll(tupleABCSetAB);
-            if (!changed) {
+        indexerC.visit(indexProperties, (tupleC, tupleABCMapC) -> {
+            TriTuple<A, B, C> tupleABC = tupleABCMapC.remove(tupleAB);
+            if (tupleABC == null) {
                 throw new IllegalStateException("Impossible state: the tuple (" + tupleAB
                         + ") with indexProperties (" + indexProperties
                         + ") has tuples on the AB side that didn't exist on the C side.");
             }
-        });
-        for (TriTuple<A, B, C> tupleABC : tupleABCSetAB) {
             killTuple(tupleABC);
-        }
+        });
     }
 
     public void insertC(UniTuple<C> tupleC) {
@@ -121,14 +118,14 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         IndexProperties indexProperties = mappingC.apply(tupleC.factA);
         tupleC.store[inputStoreIndexC] = indexProperties;
 
-        Set<TriTuple<A, B, C>> tupleABCSetC = new LinkedHashSet<>();
-        indexerC.put(indexProperties, tupleC, tupleABCSetC);
-        indexerAB.visit(indexProperties, (tupleAB, tupleABCSetAB) -> {
+        Map<BiTuple<A, B>, TriTuple<A, B, C>> tupleABCMapC = new HashMap<>();
+        indexerC.put(indexProperties, tupleC, tupleABCMapC);
+        indexerAB.visit(indexProperties, (tupleAB, tupleABCMapAB) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
                     outputStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
-            tupleABCSetC.add(tupleABC);
-            tupleABCSetAB.add(tupleABC);
+            tupleABCMapC.put(tupleAB, tupleABC);
+            tupleABCMapAB.put(tupleC, tupleABC);
             dirtyTupleQueue.add(tupleABC);
         });
     }
@@ -141,21 +138,17 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         }
         tupleC.store[inputStoreIndexC] = null;
 
-        Set<TriTuple<A, B, C>> tupleABCSetC = indexerC.remove(indexProperties, tupleC);
+        indexerC.remove(indexProperties, tupleC);
         // Remove tupleABCs from the other side
-        indexerAB.visit(indexProperties, (tupleAB, tupleABCSetAB) -> {
-            // TODO Performance: if tupleABC would contain tupleAB, do this faster code instead:
-            // for (tupleABC : tupleABCSetC { tupleABCSetMapA.get(tupleABC.tupleAB).remove(tupleABC); }
-            boolean changed = tupleABCSetAB.removeAll(tupleABCSetC);
-            if (!changed) {
+        indexerAB.visit(indexProperties, (tupleAB, tupleABCMapAB) -> {
+            TriTuple<A, B, C> tupleABC = tupleABCMapAB.remove(tupleC);
+            if (tupleABC == null) {
                 throw new IllegalStateException("Impossible state: the tuple (" + tupleAB
                         + ") with indexProperties (" + indexProperties
                         + ") has tuples on the C side that didn't exist on the AB side.");
             }
-        });
-        for (TriTuple<A, B, C> tupleABC : tupleABCSetC) {
             killTuple(tupleABC);
-        }
+        });
     }
 
     private void killTuple(TriTuple<A, B, C> tupleABC) {

@@ -16,6 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -83,8 +84,8 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
+        Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
         JoinTriNode<A, B, C> node = new JoinTriNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexAB, inputStoreIndexC, insert, retract,
