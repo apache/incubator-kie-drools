@@ -19,7 +19,6 @@ package org.drools.testcoverage.regression;
 import java.util.Collection;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -31,6 +30,8 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test to verify BRMS-312 (Allow escaping characters in metadata value) is
@@ -71,8 +72,8 @@ public class EscapesInMetadataTest {
         final Map<String, Object> metadata = kieBase.getRule(TestConstants.PACKAGE_REGRESSION, RULE_NAME).getMetaData();
         LOGGER.debug(rule);
 
-        Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
-        Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
+        assertThat(metadata.containsKey(RULE_KEY)).isTrue();
+        assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
     }
 
 }

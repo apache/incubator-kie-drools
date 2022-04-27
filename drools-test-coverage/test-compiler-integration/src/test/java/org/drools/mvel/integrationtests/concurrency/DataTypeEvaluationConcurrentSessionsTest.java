@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.integrationtests.facts.AnEnum;
 import org.drools.mvel.integrationtests.facts.FactWithBigDecimal;
 import org.drools.mvel.integrationtests.facts.FactWithBoolean;
@@ -41,6 +40,8 @@ import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentTest {
@@ -199,9 +200,9 @@ public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrent
             // This is 1 because engine doesn't insert an already existing object twice, so when sharing a session
             // the object should be present just once in the session. When not sharing a session, there is N separate
             // sessions, so each one should fire.
-            Assertions.assertThat(numberOfFirings.get()).isEqualTo(1);
+            assertThat(numberOfFirings.get()).isEqualTo(1);
         } else {
-            Assertions.assertThat(numberOfFirings.get()).isEqualTo(10);
+            assertThat(numberOfFirings.get()).isEqualTo(10);
         }
     }
 }

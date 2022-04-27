@@ -16,13 +16,14 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.MyFact;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * BZ 1190923 reproducer by Hisao Furuich.
@@ -167,15 +168,15 @@ public class AccumulateRecalculationTest {
 
         int fireCount = ksession.fireAllRules();
 
-        Assertions.assertThat(fact0.getCurrentValue().intValue()).isEqualTo(9);
-        Assertions.assertThat(fireCount).isEqualTo(2);
+        assertThat(fact0.getCurrentValue().intValue()).isEqualTo(9);
+        assertThat(fireCount).isEqualTo(2);
 
         fact2.setCurrentValue(6);
 
         ksession.update(fh2, fact2);
         fireCount = ksession.fireAllRules();
 
-        Assertions.assertThat(fact0.getCurrentValue().intValue()).isEqualTo(10);
-        Assertions.assertThat(fireCount).isEqualTo(2);
+        assertThat(fact0.getCurrentValue().intValue()).isEqualTo(10);
+        assertThat(fireCount).isEqualTo(2);
     }
 }

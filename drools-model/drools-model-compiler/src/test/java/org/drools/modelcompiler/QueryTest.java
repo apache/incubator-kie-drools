@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.rule.QueryImpl;
 import org.drools.modelcompiler.domain.Person;
@@ -41,6 +40,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -470,8 +470,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert("pull");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         // when location is changed of what Peter likes, pull query should
@@ -488,8 +488,8 @@ public class QueryTest extends BaseModelTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         final Person paul = new Person("Paul");
@@ -497,8 +497,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(paul);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
     }
 
     @Test
@@ -569,11 +569,11 @@ public class QueryTest extends BaseModelTest {
         }
 
         // items in the office should be the following
-        Assertions.assertThat(l.size()).isEqualTo(4);
-        Assertions.assertThat(l.contains("desk")).isTrue();
-        Assertions.assertThat(l.contains("flashlight")).isTrue();
-        Assertions.assertThat(l.contains("envelope")).isTrue();
-        Assertions.assertThat(l.contains("key")).isTrue();
+        assertThat(l.size()).isEqualTo(4);
+        assertThat(l.contains("desk")).isTrue();
+        assertThat(l.contains("flashlight")).isTrue();
+        assertThat(l.contains("envelope")).isTrue();
+        assertThat(l.contains("key")).isTrue();
     }
 
     @Test

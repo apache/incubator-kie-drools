@@ -45,7 +45,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.util.Pair;
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.spi.Activation;
 import org.drools.model.functions.accumulate.GroupKey;
@@ -64,6 +63,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -1259,7 +1260,7 @@ public class AccumulateTest extends BaseModelTest {
         ksession1.insert(p2);
         assertEquals( 1, ksession1.fireAllRules() );
 
-        Assertions.assertThat(results).containsExactly(BigDecimal.valueOf(8));
+        assertThat(results).containsExactly(BigDecimal.valueOf(8));
 
     }
 
@@ -1284,7 +1285,7 @@ public class AccumulateTest extends BaseModelTest {
         StockTick st = new StockTick("RHT");
         st.setTimeField(new Date().getTime());
         ksession.insert(st);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1305,7 +1306,7 @@ public class AccumulateTest extends BaseModelTest {
         StockTick st = new StockTick("RHT");
         st.setDueDate(Calendar.getInstance());
         ksession.insert(st);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1332,7 +1333,7 @@ public class AccumulateTest extends BaseModelTest {
         c.setCode("RHT");
         ksession.insert(st);
         ksession.insert(c);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -2009,7 +2010,7 @@ public class AccumulateTest extends BaseModelTest {
        FactHandle toRemove = ksession.insert(child1);
         ksession.insert(child2);
         ksession.fireAllRules();
-        Assertions.assertThat(results)
+        assertThat(results)
                   .containsOnly(Arrays.asList(child1, 2L), Arrays.asList(child2, 2L));
 
         // Remove child1, therefore it does not exist, therefore there should be no groupBy matches for the child.
@@ -2018,7 +2019,7 @@ public class AccumulateTest extends BaseModelTest {
 
         // Yet, we still get (Child2, 0).
         ksession.fireAllRules();
-        Assertions.assertThat(results)
+        assertThat(results)
                 .containsOnly(Arrays.asList(child2, 1L));
     }
 
@@ -2496,7 +2497,7 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.insert( new Shift( OffsetDateTime.now()) );
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -2521,7 +2522,7 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.insert( new Shift( OffsetDateTime.now()) );
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public class Shift {
@@ -3474,7 +3475,7 @@ public class AccumulateTest extends BaseModelTest {
         FactHandle fh2 = ksession.insert( new Person("name2", 40));
         FactHandle fh3 = ksession.insert( new Person("name3", 25));
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertEquals(0, (int)holder.get());
     }
 
@@ -3607,7 +3608,7 @@ public class AccumulateTest extends BaseModelTest {
         StockTick st2 = new StockTick("IBM");
         st2.setDueDate(new GregorianCalendar(2020, Calendar.FEBRUARY, 4));
         ksession.insert(st2);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -3760,8 +3761,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert(mario);
 
         int rulesFired = ksession.fireAllRules();
-        Assertions.assertThat(rulesFired).isGreaterThan(0);
-        Assertions.assertThat(resultTotal).contains(1l);
+        assertThat(rulesFired).isGreaterThan(0);
+        assertThat(resultTotal).contains(1l);
 
         List<Pair> resultPairItem = resultPair.iterator().next();
         Pair firstPair = resultPairItem.iterator().next();
@@ -4058,7 +4059,7 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactly(50);
+        assertThat(result).containsExactly(50);
     }
 
     @Test
@@ -4090,7 +4091,7 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactly(50);
+        assertThat(result).containsExactly(50);
     }
 
     @Test
@@ -4127,9 +4128,9 @@ public class AccumulateTest extends BaseModelTest {
 
             ksession.fireAllRules();
 
-            Assertions.assertThat(result).containsExactlyInAnyOrder(paul, george);
+            assertThat(result).containsExactlyInAnyOrder(paul, george);
         } catch (Throwable ex) {
-            Assertions.fail("Should not have thrown.", ex);
+            fail("Should not have thrown.", ex);
         }
     }
 }

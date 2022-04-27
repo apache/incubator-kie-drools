@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -42,7 +41,6 @@ import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -2393,7 +2391,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(integerToShort);
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, Short.MAX_VALUE, (double)0));
     }
 
@@ -2421,7 +2419,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(integerToShort);
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, (short)-12, (double)0));
     }
 
@@ -2450,7 +2448,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(integerToShort);
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, (short)17, (double)1));
     }
 
@@ -2481,7 +2479,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.setGlobal("functions", new GlobalFunctions());
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, 1, (short)0));
     }
 
@@ -2524,7 +2522,7 @@ public class CompilerTest extends BaseModelTest {
         kSession.insert( luca );
         assertEquals(1, kSession.fireAllRules());
 
-        Assertions.assertThat(children).containsOnly("Andrea");
+        assertThat(children).containsOnly("Andrea");
     }
 
     @Test // DROOLS-6034
@@ -2554,7 +2552,7 @@ public class CompilerTest extends BaseModelTest {
         kSession.insert( luca );
         assertEquals(1, kSession.fireAllRules());
 
-        Assertions.assertThat(children).containsOnly("Andrea");
+        assertThat(children).containsOnly("Andrea");
     }
 
     @Test // DROOLS-6034
@@ -2585,7 +2583,7 @@ public class CompilerTest extends BaseModelTest {
         kSession.insert( luca );
         assertEquals(1, kSession.fireAllRules());
 
-        Assertions.assertThat(children).containsOnly("Luca");
+        assertThat(children).containsOnly("Luca");
     }
 
     @Test

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.integrationtests.facts.AnEnum;
 import org.drools.mvel.integrationtests.facts.FactWithEnum;
@@ -37,6 +36,7 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
@@ -122,7 +122,7 @@ public class JittingTest {
         final KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(AnEnum.FIRST);
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -140,7 +140,7 @@ public class JittingTest {
 
         final KieSession kieSession = kieBase.newKieSession();
         kieSession.insert(new FactWithEnum(AnEnum.FIRST));
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -270,7 +270,7 @@ public class JittingTest {
 
         kieSession.insert(new BigDecimalFact(new BigDecimal(10)));
         kieSession.insert(new BigDecimalFact(new BigDecimal(11)));
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -290,7 +290,7 @@ public class JittingTest {
 
         kieSession.insert(new BigDecimalFact(new BigDecimal(10)));
         kieSession.insert(new BigDecimalFact(new BigDecimal(11)));
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     public class BigDecimalFact {
@@ -350,6 +350,6 @@ public class JittingTest {
 
         kieSession.insert("CV");
         kieSession.insert("CX");
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }

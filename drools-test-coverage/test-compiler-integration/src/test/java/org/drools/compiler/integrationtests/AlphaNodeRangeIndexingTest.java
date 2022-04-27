@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.ObjectSink;
@@ -51,6 +50,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -434,7 +434,7 @@ public class AlphaNodeRangeIndexingTest {
         ksession.insert(o1);
         int fired = ksession.fireAllRules();
         assertEquals(4, fired);
-        Assertions.assertThat(results).containsOnly("test1", "test2", "test3", "test4");
+        assertThat(results).containsOnly("test1", "test2", "test3", "test4");
 
         results.clear();
         Order o2 = new Order();
@@ -442,7 +442,7 @@ public class AlphaNodeRangeIndexingTest {
         ksession.insert(o2);
         fired = ksession.fireAllRules();
         assertEquals(4, fired);
-        Assertions.assertThat(results).containsOnly("test2", "test3", "test4", "test6");
+        assertThat(results).containsOnly("test2", "test3", "test4", "test6");
     }
 
     @Test
@@ -981,12 +981,12 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test1", "test2", "test3");
+        assertThat(results).containsOnly("test1", "test2", "test3");
         results.clear();
 
         ksession.insert(new Person("Paul", 60));
         ksession.fireAllRules();
-        Assertions.assertThat(results).containsOnly("test1", "test3", "test4", "test7");
+        assertThat(results).containsOnly("test1", "test3", "test4", "test7");
     }
 
     @Ignore("No need to test. Fails with standard-drl")

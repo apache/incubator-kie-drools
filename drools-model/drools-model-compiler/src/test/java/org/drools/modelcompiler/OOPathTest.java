@@ -19,7 +19,6 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Employee;
@@ -27,10 +26,10 @@ import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
 
 public class OOPathTest extends BaseModelTest {
@@ -70,7 +69,7 @@ public class OOPathTest extends BaseModelTest {
         ksession.insert( carl );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+        assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
     @Test
@@ -99,7 +98,7 @@ public class OOPathTest extends BaseModelTest {
         ksession.insert( carl );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(38);
+        assertThat(list).containsExactlyInAnyOrder(38);
     }
 
     @Test
@@ -135,13 +134,13 @@ public class OOPathTest extends BaseModelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         debbie.setAge( 11 );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
+        assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
 
@@ -179,7 +178,7 @@ public class OOPathTest extends BaseModelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
+        assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
     }
 
     @Test
@@ -203,7 +202,7 @@ public class OOPathTest extends BaseModelTest {
         ksession.insert(bob);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+        assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
     @Test
@@ -227,7 +226,7 @@ public class OOPathTest extends BaseModelTest {
         ksession.insert(bob);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+        assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
     @Test
@@ -251,7 +250,7 @@ public class OOPathTest extends BaseModelTest {
         ksession.insert(bob);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+        assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
     @Test
@@ -280,7 +279,7 @@ public class OOPathTest extends BaseModelTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City");
+        assertThat(results).containsExactlyInAnyOrder("Big City");
     }
 
     @Test
@@ -311,7 +310,7 @@ public class OOPathTest extends BaseModelTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Alice");
+        assertThat(results).containsExactlyInAnyOrder("Alice");
     }
 
     @Test
@@ -344,7 +343,7 @@ public class OOPathTest extends BaseModelTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
+        assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
     @Test
@@ -375,7 +374,7 @@ public class OOPathTest extends BaseModelTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+        assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -405,7 +404,7 @@ public class OOPathTest extends BaseModelTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
+        assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
     @Test
@@ -435,7 +434,7 @@ public class OOPathTest extends BaseModelTest {
 
         kieSession.fireAllRules();
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+        assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -464,7 +463,7 @@ public class OOPathTest extends BaseModelTest {
         kieSession.insert(alice);
 
         kieSession.fireAllRules();
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+        assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
 }

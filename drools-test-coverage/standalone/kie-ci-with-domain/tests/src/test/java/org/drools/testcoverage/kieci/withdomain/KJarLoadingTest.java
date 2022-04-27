@@ -1,6 +1,5 @@
 package org.drools.testcoverage.kieci.withdomain;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.domain.Customer;
 import org.drools.testcoverage.domain.Drink;
 import org.drools.testcoverage.domain.Order;
@@ -12,6 +11,8 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests loading a KJAR with non-trivial pom.xml (with dependencies, parent pom, ...).
@@ -41,8 +42,8 @@ public class KJarLoadingTest {
 
     @Test
     public void testLoadingKJarWithDeps() {
-        Assertions.assertThat(this.kieSession).as("Failed to create KieSession.").isNotNull();
-        Assertions.assertThat(this.kieSession.getKieBase().getKiePackages()).as("No rules compiled.").isNotEmpty();
+        assertThat(this.kieSession).as("Failed to create KieSession.").isNotNull();
+        assertThat(this.kieSession.getKieBase().getKiePackages()).as("No rules compiled.").isNotEmpty();
     }
 
     @Test
@@ -54,8 +55,8 @@ public class KJarLoadingTest {
         this.kieSession.insert(order);
         this.kieSession.fireAllRules();
 
-        Assertions.assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
-        Assertions.assertThat(order.isApproved()).as("Order should have been approved.").isTrue();
+        assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
+        assertThat(order.isApproved()).as("Order should have been approved.").isTrue();
     }
 
     @Test
@@ -67,8 +68,8 @@ public class KJarLoadingTest {
         this.kieSession.insert(order);
         this.kieSession.fireAllRules();
 
-        Assertions.assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
-        Assertions.assertThat(order.isApproved()).as("Order should have been disapproved.").isFalse();
+        assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
+        assertThat(order.isApproved()).as("Order should have been disapproved.").isFalse();
     }
 
     @Test
@@ -80,8 +81,8 @@ public class KJarLoadingTest {
         this.kieSession.insert(order);
         this.kieSession.fireAllRules();
 
-        Assertions.assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
-        Assertions.assertThat(order.isApproved()).as("Order should have been approved.").isTrue();
+        assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
+        assertThat(order.isApproved()).as("Order should have been approved.").isTrue();
     }
 
     @Test
@@ -93,7 +94,7 @@ public class KJarLoadingTest {
         this.kieSession.insert(order);
         this.kieSession.fireAllRules();
 
-        Assertions.assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
-        Assertions.assertThat(order.isApproved()).as("Order should have been approved.").isTrue();
+        assertThat(order.isApproved()).as("Order should have been processed by the rules.").isNotNull();
+        assertThat(order.isApproved()).as("Order should have been approved.").isTrue();
     }
 }

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -44,6 +43,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Util class that provides various methods related to Kie API.
@@ -158,7 +159,7 @@ public final class KieUtil {
         }
 
         if (failIfBuildError) {
-            Assertions.assertThat(msgs).as(msgs.toString()).isEmpty();
+            assertThat(msgs).as(msgs.toString()).isEmpty();
         }
 
         return kbuilder;

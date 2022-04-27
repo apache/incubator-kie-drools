@@ -16,8 +16,10 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
-import org.kie.api.time.SessionPseudoClock;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,13 +37,13 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.test.testcategory.TurtleTestCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Reproducer for BZ 1181584, by Mike Wilson.
@@ -79,7 +81,7 @@ public class DroolsGcCausesNPETest {
         final List<Message> errors = builder.buildAll().getResults()
                 .getMessages(Message.Level.ERROR);
 
-        Assertions.assertThat(errors).as("Unexpected errors building drl: " + errors).isEmpty();
+        assertThat(errors).as("Unexpected errors building drl: " + errors).isEmpty();
 
         SERVICES.getRepository().addKieModule(builder.getKieModule());
     }
@@ -113,7 +115,7 @@ public class DroolsGcCausesNPETest {
             LOGGER.warn("failed at i = " + i);
             LOGGER.warn("fact count: " + session.getFactCount());
             logActiveFacts();
-            Assertions.fail("NPE thrown - consider reopening BZ 1181584", e);
+            fail("NPE thrown - consider reopening BZ 1181584", e);
         }
     }
 
