@@ -94,7 +94,7 @@
                         </goals>
                         <phase>integration-test</phase>
                         <configuration>
-                            <skip>${skip.ui.build}</skip>
+                            <skip>${skipITs}</skip>
                             <arguments>run test:e2e:trusty</arguments>
                         </configuration>
                     </execution>
