@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.inject.Instance;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.awaitility.Awaitility;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +43,6 @@ import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegi
 import org.kie.kogito.trusty.service.common.handlers.LIMEExplainerServiceHandler;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
-import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import io.cloudevents.CloudEvent;
 import io.smallrye.context.SmallRyeManagedExecutor;
