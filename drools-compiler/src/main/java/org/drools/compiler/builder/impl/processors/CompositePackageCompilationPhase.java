@@ -19,7 +19,7 @@ package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.compiler.builder.impl.BuildResultAccumulator;
+import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -47,7 +47,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
 
-    private final BuildResultAccumulator buildResultAccumulator;
+    private final BuildResultCollector buildResultCollector;
 
     public CompositePackageCompilationPhase(
             Collection<CompositePackageDescr> packages,
@@ -55,7 +55,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
             TypeDeclarationBuilder typeBuilder,
             GlobalVariableContext globalVariableContext,
             DroolsAssemblerContext droolsAssemblerContext,
-            BuildResultAccumulator buildResultAccumulator,
+            BuildResultCollector buildResultCollector,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration) {
         this.packages = packages;
@@ -63,7 +63,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         this.typeBuilder = typeBuilder;
         this.globalVariableContext = globalVariableContext;
         this.droolsAssemblerContext = droolsAssemblerContext;
-        this.buildResultAccumulator = buildResultAccumulator;
+        this.buildResultCollector = buildResultCollector;
         this.kBase = kBase;
         this.configuration = configuration;
     }
@@ -96,7 +96,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
 
         for (CompilationPhase phase : phases) {
             phase.process();
-            phase.getResults().forEach(this.buildResultAccumulator::addBuilderResult);
+            phase.getResults().forEach(this.buildResultCollector::addBuilderResult);
         }
 
     }
@@ -119,13 +119,13 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         return annotationNormalizers;
     }
 
-    private IteratingPhase iteratingPhase(IterablePhaseFactory phaseFactory) {
+    private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
         return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
     }
 
     @Override
     public Collection<? extends KnowledgeBuilderResult> getResults() {
-        return buildResultAccumulator.getResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR);
+        return buildResultCollector.getResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR);
     }
 }
 

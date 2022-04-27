@@ -19,14 +19,14 @@ package org.drools.modelcompiler.builder.processors;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.compiler.builder.impl.BuildResultAccumulator;
-import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
+import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
-import org.drools.compiler.builder.impl.processors.IterablePhaseFactory;
+import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
 import org.drools.compiler.builder.impl.processors.IteratingPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -49,7 +49,7 @@ public class ModelMainCompilationPhase implements CompilationPhase {
     private final DroolsAssemblerContext assemblerContext;
     private final GlobalVariableContext globalVariableContext;
 
-    private final BuildResultAccumulator results = new BuildResultAccumulatorImpl();
+    private final BuildResultCollector results = new BuildResultCollectorImpl();
 
     public ModelMainCompilationPhase(
             PackageRegistryManager pkgRegistryManager,
@@ -93,7 +93,7 @@ public class ModelMainCompilationPhase implements CompilationPhase {
         return this.results.getAllResults();
     }
 
-    private IteratingPhase iteratingPhase(IterablePhaseFactory phaseFactory) {
+    private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
         return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
     }
 }

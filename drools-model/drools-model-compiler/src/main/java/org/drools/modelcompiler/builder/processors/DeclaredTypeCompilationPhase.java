@@ -18,18 +18,14 @@
 package org.drools.modelcompiler.builder.processors;
 
 import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.compiler.builder.impl.BuildResultAccumulator;
-import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
+import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
-import org.drools.compiler.builder.impl.processors.IterablePhaseFactory;
+import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
 import org.drools.compiler.builder.impl.processors.IteratingPhase;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.modelcompiler.KiePackagesBuilder;
 import org.drools.modelcompiler.builder.CanonicalModelBuildContext;
-import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.PackageModelManager;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -46,7 +42,7 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
     private final CanonicalModelBuildContext buildContext;
     private final KnowledgeBuilderConfigurationImpl buildConfiguration;
     private final Collection<CompositePackageDescr> packages;
-    private final BuildResultAccumulator results;
+    private final BuildResultCollector results;
 
     public DeclaredTypeCompilationPhase(
             PackageModelManager packageModelManager,
@@ -59,7 +55,7 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
         this.buildContext = buildContext;
         this.buildConfiguration = buildConfiguration;
         this.packages = packages;
-        this.results = new BuildResultAccumulatorImpl();
+        this.results = new BuildResultCollectorImpl();
     }
 
     @Override
@@ -81,7 +77,7 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
 
     }
 
-    private IteratingPhase iteratingPhase(IterablePhaseFactory phaseFactory) {
+    private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
         return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
     }
 

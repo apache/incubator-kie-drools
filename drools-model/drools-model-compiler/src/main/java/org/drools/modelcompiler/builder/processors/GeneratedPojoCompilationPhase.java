@@ -17,12 +17,11 @@
 
 package org.drools.modelcompiler.builder.processors;
 
-import org.drools.compiler.builder.impl.BuildResultAccumulator;
-import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
+import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.modelcompiler.builder.CanonicalModelBuildContext;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
-import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.PackageModelManager;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -36,7 +35,7 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenera
 public class GeneratedPojoCompilationPhase implements CompilationPhase {
     private final PackageModelManager packageModels;
     private final CanonicalModelBuildContext buildContext;
-    private final BuildResultAccumulator results = new BuildResultAccumulatorImpl();
+    private final BuildResultCollector results = new BuildResultCollectorImpl();
     private final ClassLoader classLoader;
 
     public GeneratedPojoCompilationPhase(PackageModelManager packageModels, CanonicalModelBuildContext buildContext, ClassLoader classLoader) {

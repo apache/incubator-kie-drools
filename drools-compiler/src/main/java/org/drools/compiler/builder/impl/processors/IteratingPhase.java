@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Decorates a {@link CompilationPhase} via its {@link IterablePhaseFactory}.
+ * Decorates a {@link CompilationPhase} via its {@link SinglePackagePhaseFactory}.
  * Iterates over a collection of {@link CompositePackageDescr}
  * and applies the decorated phase to it.
  *
@@ -34,11 +34,11 @@ import java.util.Collection;
 public class IteratingPhase implements CompilationPhase {
     private final Collection<CompositePackageDescr> packages;
     private final PackageRegistryManager pkgRegistryManager;
-    private final IterablePhaseFactory phaseFactory;
+    private final SinglePackagePhaseFactory phaseFactory;
 
     private final Collection<KnowledgeBuilderResult> results = new ArrayList<>();
 
-    public IteratingPhase(Collection<CompositePackageDescr> packages, PackageRegistryManager pkgRegistryManager, IterablePhaseFactory phaseFactory) {
+    public IteratingPhase(Collection<CompositePackageDescr> packages, PackageRegistryManager pkgRegistryManager, SinglePackagePhaseFactory phaseFactory) {
         this.packages = packages;
         this.pkgRegistryManager = pkgRegistryManager;
         this.phaseFactory = phaseFactory;

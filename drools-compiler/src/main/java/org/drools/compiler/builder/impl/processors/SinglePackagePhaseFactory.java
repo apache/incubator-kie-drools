@@ -24,6 +24,6 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
  * Instantiates a {@link CompilationPhase} that operates on
  * a single pair of {@link PackageRegistry} and {@link CompositePackageDescr}
  */
-public interface IterablePhaseFactory {
+public interface SinglePackagePhaseFactory {
     CompilationPhase create(PackageRegistry pkgRegistry, CompositePackageDescr packageDescr);
 }

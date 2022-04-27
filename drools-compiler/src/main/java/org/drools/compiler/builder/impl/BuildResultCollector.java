@@ -24,7 +24,7 @@ import java.util.Collection;
 /**
  * Holds build processing info, warnings and errors.
  */
-public interface BuildResultAccumulator {
+public interface BuildResultCollector {
     void addBuilderResult(KnowledgeBuilderResult result);
 
     /**

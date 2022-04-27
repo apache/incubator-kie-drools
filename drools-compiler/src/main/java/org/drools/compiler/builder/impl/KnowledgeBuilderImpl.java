@@ -134,7 +134,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final PackageRegistryManagerImpl pkgRegistryManager;
 
-    private final BuildResultAccumulatorImpl results;
+    private final BuildResultCollectorImpl results;
 
     private final KnowledgeBuilderConfigurationImpl configuration;
 
@@ -221,7 +221,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
-        this.results = new BuildResultAccumulatorImpl();
+        this.results = new BuildResultCollectorImpl();
 
         this.pkgRegistryManager =
                 new PackageRegistryManagerImpl(
@@ -259,7 +259,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
-        this.results = new BuildResultAccumulatorImpl();
+        this.results = new BuildResultCollectorImpl();
 
         this.kBase = kBase;
 
@@ -788,7 +788,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results.addBuilderResult(result);
     }
 
-    protected BuildResultAccumulator getBuildResultAccumulator() {
+    protected BuildResultCollector getBuildResultAccumulator() {
         return this.results;
     }
 

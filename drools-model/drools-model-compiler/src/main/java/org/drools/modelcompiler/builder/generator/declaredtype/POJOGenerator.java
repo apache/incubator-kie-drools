@@ -28,9 +28,8 @@ import java.util.Set;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.compiler.builder.impl.BuildResultAccumulator;
-import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
@@ -42,13 +41,11 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.AccessibleFact;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
-import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.DuplicatedDeclarationError;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.ResultSeverity;
 
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -62,14 +59,14 @@ public class POJOGenerator implements CompilationPhase {
 
     private final static List<Class<?>> MARKER_INTERFACES = Arrays.asList(GeneratedFact.class, AccessibleFact.class);
 
-    private BuildResultAccumulator builder;
+    private BuildResultCollector builder;
     private InternalKnowledgePackage pkg;
     private PackageDescr packageDescr;
     private PackageModel packageModel;
 
     private static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
 
-    public POJOGenerator(BuildResultAccumulator builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public POJOGenerator(BuildResultCollector builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         this.builder = builder;
         this.pkg = pkg;
         this.packageDescr = packageDescr;
@@ -78,10 +75,10 @@ public class POJOGenerator implements CompilationPhase {
     }
 
     public POJOGenerator(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
-        this(new BuildResultAccumulatorImpl(), pkg, packageDescr, packageModel);
+        this(new BuildResultCollectorImpl(), pkg, packageDescr, packageModel);
     }
 
-    public static Map<String, Class<?>> compileType(BuildResultAccumulator resultAccumulator,
+    public static Map<String, Class<?>> compileType(BuildResultCollector resultAccumulator,
                                                     ClassLoader packageClassLoader,
                                                     List<GeneratedClassWithPackage> classesWithPackage) {
         return compileAll(resultAccumulator, packageClassLoader, classesWithPackage);
