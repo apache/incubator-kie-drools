@@ -19,3 +19,20 @@ Restart your IDE, open the _Preferences_ (or _Settings_) window again and naviga
 Select _Use the Eclipse Code Formatter_, then change the _Eclipse Java Formatter Config File_ to point to the `eclipse-format.xml`
 file in the `build/optaplanner-ide-config/src/main/resources/` directory.
 Make sure the _Optimize Imports_ box is ticked, and select the `eclipse.importorder` file as the import order config file.
+
+== VS Code setup
+. Open the _Extentions_ window (Ctrl+Shift+X), search for _Language Support for Java(TM) by Red Hat_ and install it.
+. Add import order to settings.json:
++
+----
+    "java.completion.importOrder": [
+        "java",
+        "javax",
+        "com",
+        "org"
+    ]
+----
+. Go to extension page from step 1 and set path to the formatter property `java.format.settings.url`
+`path_to_proj/optaplanner/build/optaplanner-ide-config/src/main/resources/eclipse-format.xml`
+
+
