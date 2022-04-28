@@ -58,7 +58,7 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('drools')
-                        .withProperty('quickly')
+                        .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
                 }
             }
@@ -252,6 +252,8 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
     if (addQuarkusVersion) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
         mvnCmd.withProperty('version.io.quarkus.quarkus-test-maven', '999-SNAPSHOT')
+        mvnCmd.withProperty('quarkus-plugin.version', '999-SNAPSHOT')
+        mvnCmd.withProperty('quarkus.platform.version', '999-SNAPSHOT')
     }
     return mvnCmd
 }
