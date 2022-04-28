@@ -61,7 +61,7 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
     @Override
     public void process() {
         List<CompilationPhase> phases = asList(
-                iteratingPhase((reg, acc) -> new TypeDeclarationRegistrationPhase(reg, acc, pkgRegistryManager)),
+                iteratingPhase((reg, acc) -> new DeclaredTypeRegistrationPhase(reg, acc, pkgRegistryManager)),
                 iteratingPhase((reg, acc) ->
                         new POJOGenerator(reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()))),
                 new GeneratedPojoCompilationPhase(
