@@ -113,7 +113,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             }
         }
 
-        deregisterTypeDeclarations(packages);
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
     }
@@ -127,12 +126,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         throw new UnsupportedOperationException("unreachable code");
-    }
-
-    private void deregisterTypeDeclarations(Collection<CompositePackageDescr> packages) {
-        for (CompositePackageDescr packageDescr : packages) {
-            getOrCreatePackageRegistry(packageDescr).getPackage().getTypeDeclarations().clear();
-        }
     }
 
     @Override

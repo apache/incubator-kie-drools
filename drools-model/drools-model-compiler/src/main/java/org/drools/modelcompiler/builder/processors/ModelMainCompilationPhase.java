@@ -26,6 +26,7 @@ import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilation
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
+import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
 import org.drools.compiler.builder.impl.processors.IteratingPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
@@ -37,6 +38,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class ModelMainCompilationPhase implements CompilationPhase {
 
