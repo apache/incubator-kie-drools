@@ -42,6 +42,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
@@ -76,7 +77,7 @@ public class RuleContext {
 
     private static final String SCOPE_SUFFIX = "_sCoPe";
 
-    private final KnowledgeBuilderImpl kbuilder;
+    private final TypeDeclarationContext kbuilder;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
     private final RuleDescr ruleDescr;
@@ -202,7 +203,7 @@ public class RuleContext {
         return ruleUnitDescr;
     }
 
-    public KnowledgeBuilderImpl getKbuilder() {
+    public TypeDeclarationContext getKbuilder() {
         return kbuilder;
     }
 

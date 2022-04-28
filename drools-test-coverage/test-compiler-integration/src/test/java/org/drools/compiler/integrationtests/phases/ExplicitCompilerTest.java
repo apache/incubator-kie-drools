@@ -15,9 +15,7 @@
 
 package org.drools.compiler.integrationtests.phases;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
-import org.drools.compiler.builder.impl.DroolsAssemblerContextImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
 import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
@@ -26,6 +24,7 @@ import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.RootClassLoaderProvider;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.builder.impl.TypeDeclarationContextImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationManagerImpl;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
@@ -47,12 +46,12 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.util.io.ClassPathResource;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
+import org.drools.util.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
@@ -86,22 +85,12 @@ public class ExplicitCompilerTest {
                 new PackageRegistryManagerImpl(
                         configuration, rootClassLoaderProvider, internalKnowledgeBaseProvider);
 
-        TypeDeclarationContextImpl typeDeclarationContext =
-                new TypeDeclarationContextImpl(configuration, packageRegistryManager);
-        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
-        typeDeclarationContext.setTypeDeclarationBuilder(typeBuilder);
-
         GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
 
-        DroolsAssemblerContext assemblerContext =
-                new DroolsAssemblerContextImpl(
-                        configuration,
-                        rootClassLoader,
-                        kBase,
-                        globalVariableContext,
-                        typeBuilder,
-                        packageRegistryManager,
-                        results);
+        TypeDeclarationContextImpl typeDeclarationContext =
+                new TypeDeclarationContextImpl(configuration, packageRegistryManager, globalVariableContext);
+        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
+        typeDeclarationContext.setTypeDeclarationManager(new TypeDeclarationManagerImpl(typeBuilder, kBase));
 
 
         DrlResourceHandler handler = new DrlResourceHandler(configuration);
@@ -128,7 +117,7 @@ public class ExplicitCompilerTest {
                 new EntryPointDeclarationCompilationPhase(packageRegistry, packageDescr),
                 new AccumulateFunctionCompilationPhase(packageRegistry, packageDescr),
                 new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry),
-                new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, assemblerContext),
+                new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, typeDeclarationContext),
                 new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
                 new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, null),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
@@ -136,7 +125,7 @@ public class ExplicitCompilerTest {
                 new RuleValidator(packageRegistry, packageDescr, configuration),
                 new FunctionCompiler(packageDescr, packageRegistry, null, rootClassLoader),
                 new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        null, attributesForPackage, resource, assemblerContext),
+                        null, attributesForPackage, resource, typeDeclarationContext),
                 new ReteCompiler(packageRegistry, packageDescr, kBase, null),
                 new ConsequenceCompilationPhase(packageRegistryManager)
         );

@@ -74,6 +74,7 @@ public class BuildResultCollectorImpl implements BuildResultCollector {
         return problems;
     }
 
+    @Override
     public boolean hasResults(ResultSeverity... problemTypes) {
         return !getResultList(problemTypes).isEmpty();
     }

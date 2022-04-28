@@ -22,6 +22,7 @@ import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
@@ -49,7 +50,7 @@ public class ModelMainCompilationPhase implements CompilationPhase {
     private final KnowledgeBuilderConfiguration configuration;
     private final boolean hasMvel;
     private final InternalKnowledgeBase kBase;
-    private final DroolsAssemblerContext assemblerContext;
+    private final TypeDeclarationContext assemblerContext;
     private final GlobalVariableContext globalVariableContext;
 
     private final BuildResultCollector results = new BuildResultCollectorImpl();
@@ -60,14 +61,14 @@ public class ModelMainCompilationPhase implements CompilationPhase {
             KnowledgeBuilderConfiguration configuration,
             boolean hasMvel,
             InternalKnowledgeBase kBase,
-            DroolsAssemblerContext assemblerContext,
+            TypeDeclarationContext typeDeclarationContext,
             GlobalVariableContext globalVariableContext) {
         this.pkgRegistryManager = pkgRegistryManager;
         this.packages = packages;
         this.configuration = configuration;
         this.hasMvel = hasMvel;
         this.kBase = kBase;
-        this.assemblerContext = assemblerContext;
+        this.assemblerContext = typeDeclarationContext;
         this.globalVariableContext = globalVariableContext;
     }
 

@@ -1,6 +1,7 @@
 package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -17,9 +18,9 @@ import org.drools.drl.parser.DroolsError;
 
 public class WindowDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
 
-    private final DroolsAssemblerContext kBuilder;
+    private final TypeDeclarationContext kBuilder;
 
-    public WindowDeclarationCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, DroolsAssemblerContext kBuilder) {
+    public WindowDeclarationCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, TypeDeclarationContext kBuilder) {
         super(pkgRegistry, packageDescr);
         this.kBuilder = kBuilder;
     }

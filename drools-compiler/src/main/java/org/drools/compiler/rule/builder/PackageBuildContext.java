@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -41,7 +42,7 @@ public class PackageBuildContext {
     // current package
     private InternalKnowledgePackage    pkg;
 
-    private DroolsAssemblerContext kBuilder;
+    private TypeDeclarationContext      kBuilder;
 
     // the contianer descr
     private BaseDescr                   parentDescr;
@@ -78,7 +79,7 @@ public class PackageBuildContext {
     /**
      * Default constructor
      */
-    public void init(final DroolsAssemblerContext kBuilder,
+    public void init(final TypeDeclarationContext kBuilder,
                      final InternalKnowledgePackage pkg,
                      final BaseDescr parentDescr,
                      final DialectCompiletimeRegistry dialectRegistry,
@@ -220,7 +221,7 @@ public class PackageBuildContext {
         return this.kBuilder.getBuilderConfiguration();
     }
     
-    public DroolsAssemblerContext getKnowledgeBuilder() {
+    public TypeDeclarationContext getKnowledgeBuilder() {
         return this.kBuilder;
     }
 

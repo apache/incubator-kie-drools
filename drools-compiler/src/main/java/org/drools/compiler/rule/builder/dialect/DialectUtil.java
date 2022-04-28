@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -132,7 +133,7 @@ public final class DialectUtil {
         }
 
         String namespace = context.getRuleDescr().getNamespace();
-        DroolsAssemblerContext packageBuilder = context.getKnowledgeBuilder();
+        TypeDeclarationContext packageBuilder = context.getKnowledgeBuilder();
 
         Class<?> clazz = null;
         try {

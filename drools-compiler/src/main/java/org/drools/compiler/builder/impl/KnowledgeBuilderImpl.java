@@ -164,6 +164,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     private ReleaseId releaseId;
 
     private BuildContext buildContext;
+    private TypeDeclarationManager typeDeclarationManager;
 
     /**
      * Use this when package is starting from scratch.
@@ -920,16 +921,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String packageName) {
-        if (kBase != null) {
-            InternalKnowledgePackage pkg = kBase.getPackage(packageName);
-            if (pkg != null) {
-                TypeDeclaration typeDeclaration = pkg.getTypeDeclaration(cls);
-                if (typeDeclaration != null) {
-                    return typeDeclaration;
-                }
-            }
-        }
-        return typeBuilder.getAndRegisterTypeDeclaration(cls, packageName);
+        return typeDeclarationManager.getAndRegisterTypeDeclaration(cls, packageName);
     }
 
     protected void processWindowDeclarations(PackageRegistry pkgRegistry,
@@ -1216,13 +1208,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {
-        return cls != null ? typeBuilder.getTypeDeclaration(cls) : null;
+        return typeDeclarationManager.getTypeDeclaration(cls);
     }
 
     public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
-        return objectType.isTemplate() ?
-                typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) :
-                typeBuilder.getTypeDeclaration(((ClassObjectType) objectType).getClassType());
+        return typeDeclarationManager.getTypeDeclaration(objectType);
     }
 
     protected void normalizeAnnotations(AnnotatedBaseDescr annotationsContainer, TypeResolver typeResolver, boolean isStrict) {
