@@ -132,11 +132,11 @@ public class RuleContext {
 
     private AndDescr parentDescr;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
+    public RuleContext(TypeDeclarationContext kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
         this(kbuilder, packageModel, typeResolver, ruleDescr, -1);
     }
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
+    public RuleContext(TypeDeclarationContext kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();

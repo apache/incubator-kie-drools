@@ -29,6 +29,7 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.util.TypeResolver;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -85,13 +86,13 @@ public class WindowReferenceGenerator {
         }
     }
 
-    public void addWindowReferences( KnowledgeBuilderImpl kbuilder, Set<WindowDeclarationDescr> windowReferences ) {
+    public void addWindowReferences(TypeDeclarationContext kbuilder, Set<WindowDeclarationDescr> windowReferences ) {
         for (WindowDeclarationDescr descr : windowReferences) {
             addField(kbuilder, packageModel, descr);
         }
     }
 
-    private void addField( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, WindowDeclarationDescr descr ) {
+    private void addField( TypeDeclarationContext kbuilder, PackageModel packageModel, WindowDeclarationDescr descr ) {
 
         final String windowName = toVar(descr.getName());
 
@@ -128,7 +129,7 @@ public class WindowReferenceGenerator {
         packageModel.addAllWindowReferences(windowName, initializer);
     }
 
-    private List<Expression> parseConditions( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
+    private List<Expression> parseConditions( TypeDeclarationContext kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
         List<? extends BaseDescr> descrs = pattern.getConstraint().getDescrs();
         if (descrs == null) {
             return Collections.emptyList();

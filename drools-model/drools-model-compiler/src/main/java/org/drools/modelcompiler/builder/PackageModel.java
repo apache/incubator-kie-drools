@@ -58,6 +58,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.TypeDeclarationUtils;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -189,7 +190,7 @@ public class PackageModel {
                 .orElse(new PackageModel(releaseId, pkgName, configuration, pkgRegistry.getDialectCompiletimeRegistry(), exprIdGenerator));
     }
 
-    public static void initPackageModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, TypeResolver typeResolver, PackageDescr packageDescr, PackageModel packageModel ) {
+    public static void initPackageModel(TypeDeclarationContext kbuilder, InternalKnowledgePackage pkg, TypeResolver typeResolver, PackageDescr packageDescr, PackageModel packageModel ) {
         packageModel.addImports( pkg.getImports().keySet());
         packageModel.addStaticImports( pkg.getStaticImports());
         packageModel.addEntryPoints( packageDescr.getEntryPointDeclarations());

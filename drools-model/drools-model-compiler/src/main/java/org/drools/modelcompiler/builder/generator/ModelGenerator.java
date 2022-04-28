@@ -41,6 +41,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
@@ -127,7 +128,7 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public static void generateModel(TypeDeclarationContext kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
 
         List<RuleDescr> ruleDescrs = packageDescr.getRules();
