@@ -61,7 +61,6 @@ import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -692,7 +691,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results.addBuilderResult(result);
     }
 
-    protected BuildResultCollector getBuildResultAccumulator() {
+    protected BuildResultCollector getBuildResultCollector() {
         return this.results;
     }
 
