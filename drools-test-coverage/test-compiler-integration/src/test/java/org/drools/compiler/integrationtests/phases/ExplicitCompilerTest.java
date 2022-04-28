@@ -16,7 +16,7 @@
 package org.drools.compiler.integrationtests.phases;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
-import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.DroolsAssemblerContextImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
@@ -77,7 +77,7 @@ public class ExplicitCompilerTest {
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
         ClassLoader rootClassLoader = configuration.getClassLoader();
 
-        BuildResultAccumulatorImpl results = new BuildResultAccumulatorImpl();
+        BuildResultCollectorImpl results = new BuildResultCollectorImpl();
 
         RootClassLoaderProvider rootClassLoaderProvider = () -> rootClassLoader;
         InternalKnowledgeBaseProvider internalKnowledgeBaseProvider = () -> kBase;

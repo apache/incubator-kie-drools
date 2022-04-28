@@ -15,31 +15,24 @@
 package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.compiler.builder.impl.BuildResultAccumulator;
-import org.drools.compiler.builder.impl.BuildResultAccumulatorImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
-import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public class TypeDeclarationContextImpl implements TypeDeclarationContext {
 
     private KnowledgeBuilderConfigurationImpl configuration;
     private final PackageRegistryManager packageRegistryManager;
-    private final BuildResultAccumulatorImpl buildResultAccumulator = new BuildResultAccumulatorImpl();
+    private final BuildResultCollectorImpl buildResultAccumulator = new BuildResultCollectorImpl();
     private TypeDeclarationBuilder typeBuilder;
 
     public TypeDeclarationContextImpl(KnowledgeBuilderConfigurationImpl configuration, PackageRegistryManager packageRegistryManager) {

@@ -34,10 +34,10 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
+public class BuildResultCollectorImpl implements BuildResultCollector {
     private Collection<KnowledgeBuilderResult> results = new ArrayList<>();
 
-    public BuildResultAccumulatorImpl() {
+    public BuildResultCollectorImpl() {
     }
 
     @Override
@@ -54,7 +54,7 @@ public class BuildResultAccumulatorImpl implements BuildResultAccumulator {
         return !getErrorList().isEmpty();
     }
 
-    public Collection<KnowledgeBuilderResult> getInternalResultCollection() {
+    public Collection<KnowledgeBuilderResult> getAllResults() {
         return results;
     }
 

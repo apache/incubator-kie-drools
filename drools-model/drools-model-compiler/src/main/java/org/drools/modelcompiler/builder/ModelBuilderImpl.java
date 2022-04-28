@@ -16,81 +16,59 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.TypeDeclarationFactory;
+import org.drools.compiler.builder.impl.processors.CompilationPhase;
+import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.util.StringUtils;
-import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.ast.descr.TypeDeclarationDescr;
-import org.drools.modelcompiler.builder.errors.UnsupportedFeatureError;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
+import org.drools.modelcompiler.builder.processors.DeclaredTypeCompilationPhase;
+import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
+import org.drools.modelcompiler.builder.processors.ModelMainCompilationPhase;
+import org.drools.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
-import static com.github.javaparser.StaticJavaParser.parseImport;
-import static java.util.Collections.emptyList;
-import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+
+import static java.util.Arrays.asList;
 import static org.drools.core.util.Drools.hasMvel;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
-import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
 
     private final DRLIdGenerator exprIdGenerator = new DRLIdGenerator();
 
     private final Function<PackageModel, T> sourcesGenerator;
-    private final Map<String, PackageModel> packageModels = new HashMap<>();
-    private final ReleaseId releaseId;
+    private final PackageModelManager packageModels;
     private final boolean oneClassPerRule;
-    private final Map<String, T> packageSources = new HashMap<>();
+    private final PackageSourceManager<T> packageSources = new PackageSourceManager<>();
 
-    private Map<String, CompositePackageDescr> compositePackagesMap;
+    private CompositePackageManager compositePackagesManager;
 
     public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean oneClassPerRule) {
         super(configuration);
         this.sourcesGenerator = sourcesGenerator;
-        this.releaseId = releaseId;
         this.oneClassPerRule = oneClassPerRule;
+        this.packageModels = new PackageModelManager(this.getBuilderConfiguration(), releaseId, exprIdGenerator);
+        this.compositePackagesManager = new CompositePackageManager();
     }
 
     @Override
-    protected void doFirstBuildStep( Collection<CompositePackageDescr> packages) { }
+    protected void doFirstBuildStep(Collection<CompositePackageDescr> packages) {
+    }
 
     @Override
     public void addPackage(final PackageDescr packageDescr) {
-        if (compositePackagesMap == null) {
-            compositePackagesMap = new HashMap<>();
-        }
-
-        CompositePackageDescr pkgDescr = compositePackagesMap.get(packageDescr.getNamespace());
-        if (pkgDescr == null) {
-            compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr( packageDescr.getResource(), packageDescr) );
-        } else {
-            pkgDescr.addPackageDescr( packageDescr.getResource(), packageDescr );
-        }
-
+        compositePackagesManager.register(packageDescr);
         PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         for (final ImportDescr importDescr : packageDescr.getImports()) {
@@ -98,115 +76,60 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         }
         for (GlobalDescr globalDescr : packageDescr.getGlobals()) {
             try {
-                Class<?> globalType = pkg.getTypeResolver().resolveType( globalDescr.getType() );
-                addGlobal( globalDescr.getIdentifier(), globalType );
-                pkg.addGlobal( globalDescr.getIdentifier(), globalType );
+                Class<?> globalType = pkg.getTypeResolver().resolveType(globalDescr.getType());
+                addGlobal(globalDescr.getIdentifier(), globalType);
+                pkg.addGlobal(globalDescr.getIdentifier(), globalType);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException( e );
+                throw new RuntimeException(e);
             }
         }
     }
 
     @Override
-    protected void doSecondBuildStep( Collection<CompositePackageDescr> compositePackages ) {
-        Collection<CompositePackageDescr> packages = findPackages(compositePackages);
-        initPackageRegistries(packages);
-        registerTypeDeclarations( packages );
-        buildDeclaredTypes( packages );
-        storeGeneratedPojosInPackages( packages );
-        buildOtherDeclarations( packages );
-        deregisterTypeDeclarations( packages );
+    protected void doSecondBuildStep(Collection<CompositePackageDescr> compositePackages) {
+        Collection<CompositePackageDescr> packages = compositePackagesManager.findPackages(compositePackages);
+
+        List<CompilationPhase> phases = asList(
+                new DeclaredTypeCompilationPhase(
+                        this.packageModels,
+                        this.getPackageRegistryManager(),
+                        this.getBuildContext(),
+                        this.getBuilderConfiguration(),
+                        packages),
+                new ModelMainCompilationPhase(
+                        this.getPackageRegistryManager(),
+                        packages,
+                        this.getBuilderConfiguration(),
+                        hasMvel(),
+                        this.getKnowledgeBase(),
+                        this,
+                        this.getGlobalVariableContext()));
+
+        for (CompilationPhase phase : phases) {
+            phase.process();
+            this.getBuildResultAccumulator().addAll(phase.getResults());
+            if (this.getBuildResultAccumulator().hasErrors()) {
+                break;
+            }
+        }
+
+        deregisterTypeDeclarations(packages);
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
     }
 
     @Override
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        processAccumulateFunctions(pkgRegistry, packageDescr);
-        if (hasMvel()) {
-            processWindowDeclarations( pkgRegistry, packageDescr );
-        }
-        processFunctions(pkgRegistry, packageDescr);
-        processGlobals(pkgRegistry, packageDescr);
+        throw new UnsupportedOperationException("unreachable code");
     }
 
-    private Collection<CompositePackageDescr> findPackages( Collection<CompositePackageDescr> compositePackages ) {
-        if (compositePackages != null && !compositePackages.isEmpty()) {
-            if (compositePackagesMap != null) {
-                compositePackages = new HashSet<>(compositePackages);
-                for (Map.Entry<String, CompositePackageDescr> entry : compositePackagesMap.entrySet()) {
-                    Optional<CompositePackageDescr> optPkg = compositePackages.stream().filter(pkg -> pkg.getNamespace().equals(entry.getKey()) ).findFirst();
-                    if (optPkg.isPresent()) {
-                        optPkg.get().addPackageDescr(entry.getValue().getResource(), entry.getValue());
-                    } else {
-                        compositePackages.add(entry.getValue());
-                    }
-                }
-            }
-            return compositePackages;
-        }
-        if (compositePackagesMap != null) {
-            return compositePackagesMap.values();
-        }
-        return emptyList();
-    }
 
     @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
-        for ( CompositePackageDescr packageDescr : packages ) {
-            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
-                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
-            }
-
-            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
-            if (pkgRegistry == null) {
-                getOrCreatePackageRegistry( packageDescr );
-            } else {
-                for (ImportDescr importDescr : packageDescr.getImports()) {
-                    pkgRegistry.registerImport(importDescr.getTarget());
-                }
-            }
-        }
+        throw new UnsupportedOperationException("unreachable code");
     }
 
-    private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
-        for (CompositePackageDescr packageDescr : packages) {
-            InternalKnowledgePackage pkg = getOrCreatePackageRegistry(packageDescr).getPackage();
-            for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
-                processTypeDeclarationDescr(pkg, typeDescr);
-            }
-            for (EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations()) {
-                processTypeDeclarationDescr(pkg, enumDeclarationDescr);
-            }
-        }
-    }
-
-    private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
-        normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
-        try {
-            Class<?> typeClass = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
-            String typePkg = typeClass.getPackage().getName();
-            String typeName = typeClass.getName().substring( typePkg.length() + 1 );
-            TypeDeclaration type = new TypeDeclaration(typeName );
-            type.setTypeClass( typeClass );
-            type.setResource( typeDescr.getResource() );
-            if (hasMvel()) {
-                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
-            }
-            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-            if (!type.isTypesafe()) {
-                addBuilderResult(new UnsupportedFeatureError("@typesafe(false) is not supported in executable model : " + type));
-            }
-            getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
-        } catch (ClassNotFoundException e) {
-            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-            type.setResource( typeDescr.getResource() );
-            TypeDeclarationFactory.processAnnotations(typeDescr, type);
-            pkg.addTypeDeclaration( type );
-        }
-    }
-
-    private void deregisterTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+    private void deregisterTypeDeclarations(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
             getOrCreatePackageRegistry(packageDescr).getPackage().getTypeDeclarations().clear();
         }
@@ -224,73 +147,33 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             compileKnowledgePackages(packageDescr, pkgRegistry);
             setAssetFilter(null);
 
-            PackageModel pkgModel = packageModels.remove( pkgRegistry.getPackage().getName() );
-            pkgModel.setOneClassPerRule( oneClassPerRule );
-            if (getResults( ResultSeverity.ERROR ).isEmpty()) {
-                packageSources.put( pkgModel.getName(), sourcesGenerator.apply( pkgModel ) );
+            PackageModel pkgModel = packageModels.remove(pkgRegistry.getPackage().getName());
+            pkgModel.setOneClassPerRule(oneClassPerRule);
+            if (getResults(ResultSeverity.ERROR).isEmpty()) {
+                packageSources.put(pkgModel.getName(), sourcesGenerator.apply(pkgModel));
             }
         }
     }
 
-    private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
-        for (CompositePackageDescr packageDescr : packages) {
-            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            generatePOJOs(packageDescr, pkgRegistry);
-        }
-
-        List<GeneratedClassWithPackage> allGeneratedPojos =
-                packageModels.values().stream()
-                             .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
-                        .collect( Collectors.toList());
-
-        Map<String, Class<?>> allCompiledClasses = compileType(this, getBuilderConfiguration().getClassLoader(), allGeneratedPojos);
-        ((CanonicalModelBuildContext) getBuildContext()).registerGeneratedPojos(allGeneratedPojos, allCompiledClasses);
-    }
-
-    private void storeGeneratedPojosInPackages(Collection<CompositePackageDescr> packages) {
-        Collection<GeneratedClassWithPackage> allGeneratedPojos = ((CanonicalModelBuildContext) getBuildContext()).getAllGeneratedPojos();
-        Map<String, Class<?>> allCompiledClasses = ((CanonicalModelBuildContext) getBuildContext()).getAllCompiledClasses();
-
-        for (CompositePackageDescr packageDescr : packages) {
-            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
-            allGeneratedPojos.stream()
-                    .filter( pojo -> isInPackage(pkg, pojo) )
-                    .forEach( pojo -> registerType(pkg.getTypeResolver(), allCompiledClasses.get(pojo.getFullyQualifiedName())) );
-        }
-    }
-
-    private boolean isInPackage(InternalKnowledgePackage pkg, GeneratedClassWithPackage pojo) {
-        return pkg.getName().equals( pojo.getPackageName() ) || pkg.getImports().values().stream().anyMatch( i -> hasImport( i, pojo ) );
-    }
-
-    private boolean hasImport( ImportDeclaration imp, GeneratedClassWithPackage pojo ) {
-        com.github.javaparser.ast.ImportDeclaration impDec = parseImport("import " + imp.getTarget() + ";");
-        return impDec.getNameAsString().equals( impDec.isAsterisk() ? pojo.getPackageName() : pojo.getFullyQualifiedName() );
-    }
-
-    public static void registerType( TypeResolver typeResolver, Class<?> clazz) {
-        typeResolver.registerClass(clazz.getCanonicalName(), clazz);
-        typeResolver.registerClass(clazz.getSimpleName(), clazz);
-    }
-
-    protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-        model.addImports(pkg.getTypeResolver().getImports());
-        new POJOGenerator(this, pkg, packageDescr, model).findPOJOorGenerate();
-    }
-
     @Override
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        validateUniqueRuleNames(packageDescr);
+        PackageRegistry packageRegistry = this.getPackageRegistryManager().getPackageRegistry(packageDescr.getNamespace());
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        PackageModel packageModel = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-        PackageModel.initPackageModel( this, pkgRegistry.getPackage(), pkgRegistry.getTypeResolver(), packageDescr, packageModel );
-        generateModel(this, pkg, packageDescr, packageModel);
+        PackageModel packageModel = this.packageModels.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
+
+        List<CompilationPhase> phases = asList(
+                new RuleValidator(packageRegistry, packageDescr, this.getBuilderConfiguration()), // validateUniqueRuleNames
+                new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this));
+
+        for (CompilationPhase phase : phases) {
+            phase.process();
+            this.getBuildResultAccumulator().addAll(phase.getResults());
+        }
+
     }
 
     protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {
-        return packageModels.computeIfAbsent(pkgName, s -> PackageModel.createPackageModel(getBuilderConfiguration(), packageDescr, pkgRegistry, pkgName, releaseId, exprIdGenerator));
+        return packageModels.getPackageModel(packageDescr, pkgRegistry, pkgName);
     }
 
     public Collection<T> getPackageSources() {
@@ -305,4 +188,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected BuildContext createBuildContext() {
         return new CanonicalModelBuildContext();
     }
+
+    @Override
+    public CanonicalModelBuildContext getBuildContext() {
+        return (CanonicalModelBuildContext) super.getBuildContext();
+    }
+
 }

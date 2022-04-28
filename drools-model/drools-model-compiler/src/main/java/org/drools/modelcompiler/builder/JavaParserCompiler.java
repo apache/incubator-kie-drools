@@ -32,7 +32,7 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.printer.DefaultPrettyPrinter;
 import com.github.javaparser.printer.configuration.DefaultConfigurationOption;
 import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
@@ -73,7 +73,7 @@ public class JavaParserCompiler {
         return PRETTY_PRINTER;
     }
 
-    public static Map<String, Class<?>> compileAll(KnowledgeBuilderImpl kbuilder, ClassLoader classLoader, List<GeneratedClassWithPackage> classes) {
+    public static Map<String, Class<?>> compileAll(BuildResultCollector resultAccumulator, ClassLoader classLoader, List<GeneratedClassWithPackage> classes) {
         if (classes == null || classes.isEmpty()) {
             return Collections.emptyMap();
         }
@@ -87,7 +87,7 @@ public class JavaParserCompiler {
         if (errors.length != 0) {
             classes.forEach(c -> logger.error(c.toString()));
             for (CompilationProblem error : errors) {
-                kbuilder.addBuilderResult(new CompilationProblemErrorResult(new CompilationProblemAdapter( error )));
+                resultAccumulator.addBuilderResult(new CompilationProblemErrorResult(new CompilationProblemAdapter( error )));
             }
             return Collections.emptyMap();
         }

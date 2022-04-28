@@ -34,6 +34,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
@@ -126,7 +127,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final PackageRegistryManagerImpl pkgRegistryManager;
 
-    private final BuildResultAccumulatorImpl results;
+    private final BuildResultCollectorImpl results;
 
     private final KnowledgeBuilderConfigurationImpl configuration;
 
@@ -213,7 +214,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
-        this.results = new BuildResultAccumulatorImpl();
+        this.results = new BuildResultCollectorImpl();
 
         this.pkgRegistryManager =
                 new PackageRegistryManagerImpl(
@@ -251,7 +252,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
-        this.results = new BuildResultAccumulatorImpl();
+        this.results = new BuildResultCollectorImpl();
 
         this.kBase = kBase;
 
@@ -691,6 +692,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results.addBuilderResult(result);
     }
 
+    protected BuildResultCollector getBuildResultAccumulator() {
+        return this.results;
+    }
+
     @Override
     public <T extends ResourceTypePackage<?>> T computeIfAbsent(
             ResourceType resourceType,
@@ -710,6 +715,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void registerPackage(PackageDescr packageDescr) {
         this.pkgRegistryManager.registerPackage(packageDescr);
+    }
+
+    protected PackageRegistryManager getPackageRegistryManager() {
+        return pkgRegistryManager;
     }
 
     public static class ForkJoinPoolHolder {
@@ -737,7 +746,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void updateResults() {
         // some of the rules and functions may have been redefined
-        updateResults(new ArrayList<>(this.results.getInternalResultCollection()));
+        updateResults(new ArrayList<>(this.results.getAllResults()));
     }
 
     public void updateResults(List<KnowledgeBuilderResult> results) {
@@ -859,13 +868,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 pkg.addProcess(flow);
             }
         }
-    }
-
-    protected void validateUniqueRuleNames(final PackageDescr packageDescr) {
-        PackageRegistry packageRegistry = this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
-        RuleValidator ruleValidator = new RuleValidator(packageRegistry, packageDescr, configuration);
-        ruleValidator.process();
-        this.results.addAll(ruleValidator.getResults());
     }
 
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -1011,6 +1013,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.globals.addGlobal(name, type);
     }
 
+    protected GlobalVariableContext getGlobalVariableContext() {
+        return globals;
+    }
+
     /**
      * This will return true if there were errors in the package building and
      * compiling phase
@@ -1107,14 +1113,14 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
 
         if (results != null) {
-            results.getInternalResultCollection().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
+            results.getAllResults().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
         }
 
         if (processBuilder != null && processBuilder.getErrors() != null) {
             processBuilder.getErrors().removeIf(knowledgeBuilderResult -> resource.equals(knowledgeBuilderResult.getResource()));
         }
 
-        if (results != null && results.getInternalResultCollection().size() == 0) {
+        if (results != null && results.getAllResults().size() == 0) {
             // TODO Error attribution might be bugged
             for (PackageRegistry packageRegistry : this.pkgRegistryManager.getPackageRegistry().values()) {
                 packageRegistry.getPackage().resetErrors();

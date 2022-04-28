@@ -37,7 +37,7 @@ public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, Build
     private final GlobalVariableContext globalVariableContext;
     private final TypeDeclarationBuilder typeBuilder;
     private final PackageRegistryManagerImpl pkgRegistryManager;
-    private final BuildResultAccumulatorImpl buildResultAccumulator;
+    private final BuildResultCollectorImpl buildResultAccumulator;
 
     public DroolsAssemblerContextImpl(
             KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration,
@@ -46,7 +46,7 @@ public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, Build
             GlobalVariableContext globalVariableContext,
             TypeDeclarationBuilder typeBuilder,
             PackageRegistryManagerImpl pkgRegistryManager,
-            BuildResultAccumulatorImpl buildResultAccumulator) {
+            BuildResultCollectorImpl buildResultAccumulator) {
         this.knowledgeBuilderConfiguration = knowledgeBuilderConfiguration;
         this.rootClassLoader = rootClassLoader;
         this.kBase = kBase;

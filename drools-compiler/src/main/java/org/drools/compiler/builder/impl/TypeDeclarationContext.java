@@ -27,7 +27,7 @@ import org.kie.internal.builder.ResourceChange;
  */
 public interface TypeDeclarationContext extends
         RootClassLoaderProvider,
-        BuildResultAccumulator,
+        BuildResultCollector,
         BuilderConfigurationProvider,
         PackageRegistryManager,
         InternalKnowledgeBaseProvider {

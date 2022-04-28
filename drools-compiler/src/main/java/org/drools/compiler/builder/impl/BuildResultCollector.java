@@ -19,10 +19,12 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 
+import java.util.Collection;
+
 /**
  * Holds build processing info, warnings and errors.
  */
-public interface BuildResultAccumulator {
+public interface BuildResultCollector {
     void addBuilderResult(KnowledgeBuilderResult result);
 
     /**
@@ -38,4 +40,17 @@ public interface BuildResultAccumulator {
      */
     KnowledgeBuilderResults getResults(ResultSeverity... severities);
 
+    default Collection<? extends KnowledgeBuilderResult> getAllResults() {
+        return getResults(ResultSeverity.values());
+    }
+
+    default void add(KnowledgeBuilderResult result) {
+        addBuilderResult(result);
+    }
+
+    default void addAll(Collection<? extends KnowledgeBuilderResult> results) {
+        for (KnowledgeBuilderResult result : results) {
+            add(result);
+        }
+    }
 }
