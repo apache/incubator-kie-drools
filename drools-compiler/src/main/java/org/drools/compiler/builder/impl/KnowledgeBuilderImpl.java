@@ -157,14 +157,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private AssetFilter assetFilter = null;
 
-    private final TypeDeclarationBuilder typeBuilder;
+    private TypeDeclarationManagerImpl typeDeclarationManager;
 
     private Map<String, Object> builderCache;
 
     private ReleaseId releaseId;
 
     private BuildContext buildContext;
-    private TypeDeclarationManager typeDeclarationManager;
 
     /**
      * Use this when package is starting from scratch.
@@ -232,7 +231,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        this.typeBuilder = createTypeDeclarationBuilder();
+        this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
     }
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
@@ -263,7 +262,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
 
-        this.typeBuilder = createTypeDeclarationBuilder();
+        this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
     }
 
     private TypeDeclarationBuilder createTypeDeclarationBuilder() {
@@ -306,7 +305,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public TypeDeclarationBuilder getTypeBuilder() {
-        return typeBuilder;
+        return typeDeclarationManager.getTypeDeclarationBuilder();
     }
 
     /**
@@ -876,7 +875,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 new PackageCompilationPhase(this,
                         kBase,
                         configuration,
-                        typeBuilder,
+                        typeDeclarationManager.getTypeDeclarationBuilder(),
                         assetFilter,
                         pkgRegistry,
                         packageDescr);
@@ -1119,7 +1118,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             }
         }
 
-        Collection<String> removedTypes = typeBuilder.removeTypesGeneratedFromResource(resource);
+        Collection<String> removedTypes = typeDeclarationManager.getTypeDeclarationBuilder().removeTypesGeneratedFromResource(resource);
 
         for (List<PackageDescr> pkgDescrs : pkgRegistryManager.getPackageDescrs()) {
             for (PackageDescr pkgDescr : pkgDescrs) {
@@ -1271,7 +1270,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 new CompositePackageCompilationPhase(
                         packages,
                         pkgRegistryManager,
-                        typeBuilder,
+                        typeDeclarationManager.getTypeDeclarationBuilder(),
                         globals,
                         this, // as DroolsAssemblerContext
                         results,
