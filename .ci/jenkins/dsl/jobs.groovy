@@ -41,7 +41,7 @@ Map getMultijobPRConfig(Folder jobFolder) {
                 repository: 'kogito-apps',
                 dependsOn: 'optaplanner',
                 env : [
-                    ADDITIONAL_TIMEOUT: jobFolder.isNative() ? '360' : '210',
+                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',
