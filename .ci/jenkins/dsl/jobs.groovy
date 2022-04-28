@@ -81,6 +81,7 @@ setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
 
 // Nightly jobs
+setupNativeJob()
 setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 
@@ -110,6 +111,21 @@ void setupMultijobPrNativeChecks() {
 
 void setupMultijobPrLTSChecks() {
     KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
+}
+
+void setupNativeJob() {
+    def jobParams = getJobParams('drools-native', FolderUtils.getNightlyFolder(this), "${JENKINS_PATH}/Jenkinsfile.native", 'Drools Native Testing')
+    jobParams.triggers = [ cron : 'H 6 * * *' ]
+    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+        environmentVariables {
+            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+            env('NOTIFICATION_JOB_NAME', 'Native check')
+        }
+    }
 }
 
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {
