@@ -57,7 +57,7 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
 
     @Override
     public Resource getCurrentResource() {
-        return null;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
 
     @Override
     public List<PackageDescr> getPackageDescrs(String namespace) {
-        return null;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override
