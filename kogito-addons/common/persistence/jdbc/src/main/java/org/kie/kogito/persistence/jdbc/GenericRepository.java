@@ -126,11 +126,12 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    void updateInternal(DataSource dataSource, UUID id, byte[] payload) {
+    void updateInternal(DataSource dataSource, String processId, UUID id, byte[] payload) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setBytes(1, payload);
-            statement.setString(2, id.toString());
+            statement.setString(2, processId);
+            statement.setString(3, id.toString());
             statement.executeUpdate();
         } catch (Exception e) {
             throw uncheckedException(e, "Error updating process instance %s", id);
@@ -138,13 +139,14 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    boolean updateWithLock(DataSource dataSource, UUID id, byte[] payload, long version) {
+    boolean updateWithLock(DataSource dataSource, String processId, UUID id, byte[] payload, long version) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(UPDATE_WITH_LOCK)) {
             statement.setBytes(1, payload);
             statement.setLong(2, version + 1);
-            statement.setString(3, id.toString());
-            statement.setLong(4, version);
+            statement.setString(3, processId);
+            statement.setString(4, id.toString());
+            statement.setLong(5, version);
             int count = statement.executeUpdate();
             return count == 1;
         } catch (Exception e) {
@@ -153,10 +155,11 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    boolean deleteInternal(DataSource dataSource, UUID id) {
+    boolean deleteInternal(DataSource dataSource, String processId, UUID id) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(DELETE)) {
-            statement.setString(1, id.toString());
+            statement.setString(1, processId);
+            statement.setString(2, id.toString());
             int count = statement.executeUpdate();
             return count == 1;
         } catch (Exception e) {
@@ -165,11 +168,12 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    Map<String, Object> findByIdInternal(DataSource dataSource, UUID id) {
+    Map<String, Object> findByIdInternal(DataSource dataSource, String processId, UUID id) {
         Map<String, Object> result = new HashMap<>();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
-            statement.setString(1, id.toString());
+            statement.setString(1, processId);
+            statement.setString(2, id.toString());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     Optional<byte[]> b = Optional.ofNullable(resultSet.getBytes(PAYLOAD));

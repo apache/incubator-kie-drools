@@ -17,13 +17,12 @@ package com.myspace.demo;
 
 import java.util.Optional;
 
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.services.event.impl.StringEventMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.kie.kogito.event.EventMarshaller;
 
 public class MessageProducer extends org.kie.kogito.services.event.impl.AbstractMessageProducer<java.lang.String>{
 
@@ -46,7 +45,7 @@ public class MessageProducer extends org.kie.kogito.services.event.impl.Abstract
                 "",
                 eventData,
                 pi.getStringId(),
-                pi.getParentProcessInstanceStringId(),
+                pi.getParentProcessInstanceId(),
                 pi.getRootProcessInstanceId(),
                 pi.getProcessId(),
                 pi.getRootProcessId(),

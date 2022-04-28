@@ -1,0 +1,36 @@
+id: SubFlow2
+version: '1.0'
+specVersion: '0.8'
+name: subflow 2
+description: TBD
+functions:
+  - name: sout
+    type: custom
+    operation: sysout
+start: ShowStartSubFlow2Message
+states:
+  - name: ShowStartSubFlow2Message
+    type: operation
+    actions:
+      - name: showStartSubFlow2MessageAction
+        functionRef:
+          refName: sout
+          arguments:
+            message: "\"SubFlow2 has started: \" + \"$WORKFLOW.instanceId\""
+    transition: StartEventFlow2FromSubFlow2
+  - name: StartEventFlow2FromSubFlow2
+    type: operation
+    actions:
+      - name: startEventFlow2FromSubFlow2Action
+        subFlowRef: EventFlow2
+    transition: ShowEndSubFlow2Message
+  - name: ShowEndSubFlow2Message
+    type: operation
+    actions:
+      - name: showEndSubFlow2MessageAction
+        functionRef:
+          refName: sout
+          arguments:
+            message: "\"SubFlow2 has ended: \" + \"$WORKFLOW.instanceId\""
+    end:
+      terminate: true

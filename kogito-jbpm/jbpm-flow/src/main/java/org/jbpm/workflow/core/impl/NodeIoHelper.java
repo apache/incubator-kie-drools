@@ -130,7 +130,7 @@ public class NodeIoHelper {
                 case "processInstanceId":
                     return nodeInstanceImpl.getKogitoProcessInstance().getStringId();
                 case "parentProcessInstanceId":
-                    return nodeInstanceImpl.getKogitoProcessInstance().getParentProcessInstanceStringId();
+                    return nodeInstanceImpl.getKogitoProcessInstance().getParentProcessInstanceId();
                 default:
                     return sourceResolver.apply(varRef);
             }

@@ -185,7 +185,8 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     private boolean updateInternal(UUID id, byte[] payload) {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
-            client.preparedQuery("UPDATE process_instances SET payload = $1 WHERE id = $2").execute(Tuple.of(Buffer.buffer(payload), id), getAsyncResultHandler(future));
+            client.preparedQuery("UPDATE process_instances SET payload = $1 WHERE process_id = $2 and id = $3")
+                    .execute(Tuple.of(Buffer.buffer(payload), process.id(), id), getAsyncResultHandler(future));
             return getExecutedResult(future);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -198,7 +199,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     private boolean deleteInternal(UUID id) {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
-            client.preparedQuery("DELETE FROM process_instances WHERE id = $1").execute(Tuple.of(id), getAsyncResultHandler(future));
+            client.preparedQuery("DELETE FROM process_instances WHERE process_id = $1 and id = $2").execute(Tuple.of(process.id(), id), getAsyncResultHandler(future));
             return getExecutedResult(future);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -229,7 +230,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     private Optional<Row> findByIdInternal(UUID id) {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
-            client.preparedQuery("SELECT payload, version FROM process_instances WHERE id = $1").execute(Tuple.of(id), getAsyncResultHandler(future));
+            client.preparedQuery("SELECT payload, version FROM process_instances WHERE process_id = $1 and id = $2").execute(Tuple.of(process.id(), id), getAsyncResultHandler(future));
             return getResultFromFuture(future).map(RowSet::iterator).filter(Iterator::hasNext).map(Iterator::next);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -325,8 +326,8 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     private boolean updateWithLock(UUID id, byte[] payload, long version) {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
-            client.preparedQuery("UPDATE process_instances SET payload = $1, version = $2 WHERE id = $3 and version = $4")
-                    .execute(Tuple.of(Buffer.buffer(payload), version + 1, id, version), getAsyncResultHandler(future));
+            client.preparedQuery("UPDATE process_instances SET payload = $1, version = $2 WHERE process_id = $3 and id = $4 and version = $5")
+                    .execute(Tuple.of(Buffer.buffer(payload), version + 1, process.id(), id, version), getAsyncResultHandler(future));
             boolean result = getExecutedResult(future);
             if (!result) {
                 throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);

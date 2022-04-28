@@ -99,6 +99,44 @@ abstract class AbstractProcessInstancesIT {
     }
 
     @Test
+    void testMultipleProcesses() {
+        var factory = new TestProcessInstancesFactory(getDataSource(), false);
+        BpmnProcess utProcess = createProcess(factory, "BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> utProcessInstance = utProcess.createInstance(BpmnVariables.create());
+        utProcessInstance.start();
+
+        BpmnProcess scriptProcess = createProcess(factory, "BPMN2-UserTask-Script.bpmn2");
+        ProcessInstance<BpmnVariables> scriptProcessInstance = scriptProcess.createInstance(BpmnVariables.create());
+        scriptProcessInstance.start();
+
+        //Try to remove process instance from another process id
+        ((JDBCProcessInstances) utProcess.instances()).remove(scriptProcessInstance.id());
+        ((JDBCProcessInstances) scriptProcess.instances()).remove(utProcessInstance.id());
+
+        assertThat(utProcess.instances().size()).isOne();
+        assertThat(utProcess.instances().values()).hasSize(1);
+        assertThat(utProcess.instances().findById(utProcessInstance.id())).isPresent();
+        assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
+
+        assertThat(scriptProcess.instances().size()).isOne();
+        assertThat(scriptProcess.instances().values()).hasSize(1);
+        assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isPresent();
+        assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
+
+        ((JDBCProcessInstances) utProcess.instances()).remove(utProcessInstance.id());
+        assertThat(utProcess.instances().size()).isZero();
+        assertThat(utProcess.instances().values()).isEmpty();
+        assertThat(utProcess.instances().findById(utProcessInstance.id())).isEmpty();
+        assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
+
+        ((JDBCProcessInstances) scriptProcess.instances()).remove(scriptProcessInstance.id());
+        assertThat(scriptProcess.instances().size()).isZero();
+        assertThat(scriptProcess.instances().values()).isEmpty();
+        assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
+        assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
+    }
+
+    @Test
     void testBasicFlow() {
         var factory = new TestProcessInstancesFactory(getDataSource(), false);
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
@@ -151,7 +189,7 @@ abstract class AbstractProcessInstancesIT {
             BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
             instanceTwo.updateVariables(testvar);
         } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("The document with ID: " + instanceOne.id() + " was updated or deleted by other request.");
+            assertThat(e.getMessage()).isEqualTo("The process instance with id: " + instanceOne.id() + " was updated or deleted by other request.");
         }
         foundOne = processInstances.findById(processInstance.id());
         instanceOne = (BpmnProcessInstance) foundOne.get();
@@ -183,7 +221,7 @@ abstract class AbstractProcessInstancesIT {
             String id = instanceTwo.id();
             processInstances.remove(id);
         } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("The document with ID: " + instanceOne.id() + " was deleted by other request.");
+            assertThat(e.getMessage()).isEqualTo("Process instance with id: " + instanceOne.id() + " was deleted by other request.");
         }
     }
 }

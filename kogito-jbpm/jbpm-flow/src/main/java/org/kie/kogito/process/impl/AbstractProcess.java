@@ -258,8 +258,8 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         public void signalEvent(String type, Object event) {
             if (type.startsWith("processInstanceCompleted:")) {
                 KogitoProcessInstance pi = (KogitoProcessInstance) event;
-                if (!id().equals(pi.getProcessId()) && pi.getParentProcessInstanceStringId() != null) {
-                    instances().findById(pi.getParentProcessInstanceStringId()).ifPresent(p -> p.send(Sig.of(type, event)));
+                if (!id().equals(pi.getProcessId()) && pi.getParentProcessInstanceId() != null) {
+                    instances().findById(pi.getParentProcessInstanceId()).ifPresent(p -> p.send(Sig.of(type, event)));
                 }
             }
         }

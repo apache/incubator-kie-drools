@@ -119,7 +119,7 @@ public class ProcessInstanceMarshallerService {
             context.set(MarshallerContextName.MARSHALLER_INSTANCE_READ_ONLY, readOnly);
             setupEnvironment(context);
             org.kie.kogito.serialization.process.ProcessInstanceMarshaller marshaller = processInstanceMarshallerFactory.newKogitoProcessInstanceMarshaller();
-            return (ProcessInstance<?>) marshaller.readProcessInstance(context);
+            return marshaller.readProcessInstance(context);
         } catch (Exception e) {
             throw new ProcessInstanceMarshallerException("Error while unmarshalling process instance", e);
         }

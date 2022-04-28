@@ -290,11 +290,6 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     }
 
     @Override
-    public String getParentProcessInstanceStringId() {
-        return parentProcessInstanceId;
-    }
-
-    @Override
     public void setParentProcessInstanceId(String parentProcessInstanceId) {
         this.parentProcessInstanceId = parentProcessInstanceId;
     }

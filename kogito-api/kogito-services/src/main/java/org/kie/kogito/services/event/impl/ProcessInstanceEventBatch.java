@@ -221,7 +221,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
         ProcessInstanceEventBody.Builder eventBuilder = ProcessInstanceEventBody.create()
                 .id(pi.getStringId())
-                .parentInstanceId(pi.getParentProcessInstanceStringId())
+                .parentInstanceId(pi.getParentProcessInstanceId())
                 .rootInstanceId(pi.getRootProcessInstanceId())
                 .processId(pi.getProcessId())
                 .rootProcessId(pi.getRootProcessId())

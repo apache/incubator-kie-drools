@@ -11,7 +11,7 @@
   <bpmn2:itemDefinition id="ItemDefinition_7" isCollection="false"/>
   <bpmn2:itemDefinition id="ItemDefinition_8" isCollection="false"/>
   <bpmn2:itemDefinition id="ItemDefinition_9" isCollection="false"/>
-  <bpmn2:process id="UserTask" name="User Task" isExecutable="true" processType="Private">
+  <bpmn2:process id="UserTaskScript" name="User Task" isExecutable="true" processType="Private">
     <bpmn2:property id="s" itemSubjectRef="_sItem" name="s"/>
     <bpmn2:startEvent id="_1" name="StartProcess">
       <bpmn2:extensionElements>

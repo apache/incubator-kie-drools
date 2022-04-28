@@ -66,7 +66,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         }
         try {
             if (!repository.tableExists(dataSource)) {
-                LOGGER.info("dynamically creating process_instances table");
+                LOGGER.info("Dynamically creating process_instances table");
                 repository.createTable(dataSource);
             }
         } catch (Exception e) {
@@ -83,42 +83,50 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     @SuppressWarnings("unchecked")
     @Override
     public void create(String id, ProcessInstance instance) {
+        LOGGER.debug("Creating process instance id: {}, processId: {}", id, instance.process().id());
         if (isActive(instance)) {
             repository.insertInternal(dataSource, process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+        } else {
+            LOGGER.warn("Skipping create of process instance id: {}, state: {}", id, instance.status());
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void update(String id, ProcessInstance instance) {
+        LOGGER.debug("Updating process instance id: {}, processId: {}", id, instance.process().id());
         if (isActive(instance)) {
             if (lock) {
-                boolean isUpdated = repository.updateWithLock(dataSource, UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
+                boolean isUpdated = repository.updateWithLock(dataSource, process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
                 if (!isUpdated) {
-                    throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+                    throw uncheckedException(null, "The process instance with id: %s was updated or deleted by other request.", id);
                 }
             } else {
-                repository.updateInternal(dataSource, UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+                repository.updateInternal(dataSource, process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance));
             }
+        } else {
+            LOGGER.warn("Process instance id: {}, state: {} is not active, skipping update", id, instance.status());
         }
         disconnect(instance);
     }
 
     @Override
     public void remove(String id) {
-        boolean isDeleted = repository.deleteInternal(dataSource, UUID.fromString(id));
+        LOGGER.debug("Removing process instance id: {}, processId: {}", id, process.id());
+        boolean isDeleted = repository.deleteInternal(dataSource, process.id(), UUID.fromString(id));
+        LOGGER.debug("Deleted: {}", isDeleted);
         if (lock && !isDeleted) {
-            throw uncheckedException(null, "The document with ID: %s was deleted by other request.", id);
+            throw uncheckedException(null, "Process instance with id: %s was deleted by other request.", id);
         }
     }
 
     @Override
     public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        ProcessInstance<?> instance = null;
-        Map<String, Object> map = repository.findByIdInternal(dataSource, UUID.fromString(id));
+        LOGGER.debug("Find process instance id: {}, mode: {}", id, mode);
+        Map<String, Object> map = repository.findByIdInternal(dataSource, process.id(), UUID.fromString(id));
         if (map.containsKey(PAYLOAD)) {
             byte[] b = (byte[]) map.get(PAYLOAD);
-            instance = mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process)
+            ProcessInstance<?> instance = mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process)
                     : marshaller.unmarshallReadOnlyProcessInstance(b, process);
             ((AbstractProcessInstance<?>) instance).setVersion((Long) map.get(VERSION));
             return Optional.of(instance);
@@ -128,6 +136,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
 
     @Override
     public Collection<ProcessInstance> values(ProcessInstanceReadMode mode) {
+        LOGGER.debug("Find process instance values using mode: {}", mode);
         return repository.findAllInternal(dataSource, process.id()).stream()
                 .map(b -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process) : marshaller.unmarshallReadOnlyProcessInstance(b, process))
                 .collect(Collectors.toList());
@@ -145,7 +154,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
 
     private void disconnect(ProcessInstance instance) {
         Supplier<byte[]> supplier = () -> {
-            Map<String, Object> map = repository.findByIdInternal(dataSource, UUID.fromString(instance.id()));
+            Map<String, Object> map = repository.findByIdInternal(dataSource, process.id(), UUID.fromString(instance.id()));
             ((AbstractProcessInstance<?>) instance).setVersion((Long) map.get(VERSION));
             return (byte[]) map.get(PAYLOAD);
         };

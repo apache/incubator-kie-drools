@@ -118,6 +118,43 @@ class PostgresqlProcessInstancesIT {
         assertThat(process.instances().values()).isEmpty();
     }
 
+    @Test
+    void testMultipleProcesses() {
+        BpmnProcess utProcess = createProcess("BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> utProcessInstance = utProcess.createInstance(BpmnVariables.create());
+        utProcessInstance.start();
+
+        BpmnProcess scriptProcess = createProcess("BPMN2-UserTask-Script.bpmn2");
+        ProcessInstance<BpmnVariables> scriptProcessInstance = scriptProcess.createInstance(BpmnVariables.create());
+        scriptProcessInstance.start();
+
+        //Try to remove process instance from another process id
+        ((PostgresqlProcessInstances) utProcess.instances()).remove(scriptProcessInstance.id());
+        ((PostgresqlProcessInstances) scriptProcess.instances()).remove(utProcessInstance.id());
+
+        assertThat(utProcess.instances().size()).isOne();
+        assertThat(utProcess.instances().values()).hasSize(1);
+        assertThat(utProcess.instances().findById(utProcessInstance.id())).isPresent();
+        assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
+
+        assertThat(scriptProcess.instances().size()).isOne();
+        assertThat(scriptProcess.instances().values()).hasSize(1);
+        assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isPresent();
+        assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
+
+        ((PostgresqlProcessInstances) utProcess.instances()).remove(utProcessInstance.id());
+        assertThat(utProcess.instances().size()).isZero();
+        assertThat(utProcess.instances().values()).isEmpty();
+        assertThat(utProcess.instances().findById(utProcessInstance.id())).isEmpty();
+        assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
+
+        ((PostgresqlProcessInstances) scriptProcess.instances()).remove(scriptProcessInstance.id());
+        assertThat(scriptProcess.instances().size()).isZero();
+        assertThat(scriptProcess.instances().values()).isEmpty();
+        assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
+        assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
+    }
+
     private class PostgreProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
         public PostgreProcessInstancesFactory(PgPool client) {

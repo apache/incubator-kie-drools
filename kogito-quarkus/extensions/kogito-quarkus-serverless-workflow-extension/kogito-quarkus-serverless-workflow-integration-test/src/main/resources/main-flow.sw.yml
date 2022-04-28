@@ -1,0 +1,43 @@
+id: MainFlow
+version: '1.0'
+specVersion: '0.8'
+name: Main flow for ClassCastException
+description: TBD
+functions:
+  - name: sout
+    type: custom
+    operation: sysout
+start: ShowStartMainFlowMessage
+states:
+  - name: ShowStartMainFlowMessage
+    type: operation
+    actions:
+      - name: showStartMainFlowMessageAction
+        functionRef:
+          refName: sout
+          arguments:
+            message: "\"MainFlow has started: \" + \"$WORKFLOW.instanceId\""
+    transition: StartSubflow1FromMainFlow
+  - name: StartSubflow1FromMainFlow
+    type: operation
+    actions:
+      - name: startSubFlow1FromMainFlowAction
+        subFlowRef: SubFlow1
+    transition: StartSubflow3FromMainFlow
+  - name: StartSubflow3FromMainFlow
+    type: operation
+    actions:
+      - name: startSubFlow3FromMainFlowAction
+        subFlowRef: SubFlow3
+    transition: ShowEndMessageMainFlowMessage
+  - name: ShowEndMessageMainFlowMessage
+    type: operation
+    actions:
+      - name: showEndMainFlowMessageAction
+        functionRef:
+          refName: sout
+          arguments:
+            message: "\"MainFlow has ended: \" + \"$WORKFLOW.instanceId\""
+    end:
+      terminate: true
+

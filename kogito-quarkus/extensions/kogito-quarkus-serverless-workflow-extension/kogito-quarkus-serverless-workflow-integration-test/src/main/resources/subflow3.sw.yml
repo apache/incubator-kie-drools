@@ -1,0 +1,36 @@
+id: SubFlow3
+version: '1.0'
+specVersion: '0.8'
+name: subflow 3
+description: TBD
+functions:
+  - name: sout
+    type: custom
+    operation: sysout
+start: ShowStartSubFlow3Message
+states:
+  - name: ShowStartSubFlow3Message
+    type: operation
+    actions:
+      - name: showStartSubFlow3MessageAction
+        functionRef:
+          refName: sout
+          arguments:
+            message: "\"SubFlow3 has started: \" + \"$WORKFLOW.instanceId\""
+    transition: StartSubflow1FromSubFlow3
+  - name: StartSubflow1FromSubFlow3
+    type: operation
+    actions:
+      - name: startSubflow1FromSubFlow3Action
+        subFlowRef: SubFlow1
+    transition: ShowEndSubFlow3Message
+  - name: ShowEndSubFlow3Message
+    type: operation
+    actions:
+      - name: showEndSubFlow3MessageAction
+        functionRef:
+          refName: sout
+          arguments:
+            message: "\"SubFlow3 has ended: \" + \"$WORKFLOW.instanceId\""
+    end:
+      terminate: true

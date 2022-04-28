@@ -1,0 +1,31 @@
+id: EventFlow1
+name: event flow 1
+version: '1.0'
+specVersion: '0.8'
+description: TBD
+functions:
+  - name: sout
+    type: custom
+    operation: sysout
+events:
+  - name: Event1
+    source: org.persistence
+    type: event1
+start: ShowPIDOfEvent1
+states:
+  - name: ShowPIDOfEvent1
+    type: operation
+    actions:
+      - name: showPidOfEvent1Action
+        functionRef:
+          refName: sout
+          arguments:
+            message: "\"Event1: \" + \"$WORKFLOW.instanceId\""
+    transition: WaitForCallbackEventFromEvent1
+  - name: WaitForCallbackEventFromEvent1
+    type: event
+    onEvents:
+      - eventRefs:
+          - Event1
+    end:
+      terminate: true

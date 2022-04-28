@@ -31,8 +31,7 @@ public class TestProcessInstancesFactory extends AbstractProcessInstancesFactory
 
     @Override
     public JDBCProcessInstances createProcessInstances(Process<?> process) {
-        JDBCProcessInstances instances = spy(super.createProcessInstances(process));
-        return instances;
+        return spy(super.createProcessInstances(process));
     }
 
 }

@@ -266,7 +266,6 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                 handleSLAViolation();
             }
         } else if (("slaViolation:" + getStringId()).equals(type)) {
-
             handleSLAViolation();
         } else if (type.equals(getActivationType()) && event instanceof MatchCreatedEvent) {
             String name = ((MatchCreatedEvent) event).getMatch().getRule().getName();

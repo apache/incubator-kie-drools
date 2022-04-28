@@ -25,10 +25,10 @@ abstract class Repository {
 
     static final String INSERT = "INSERT INTO process_instances (id, payload, process_id, version) VALUES (?, ?, ?, ?)";
     static final String FIND_ALL = "SELECT payload FROM process_instances WHERE process_id = ?";
-    static final String FIND_BY_ID = "SELECT payload, version FROM process_instances WHERE id = ?";
-    static final String UPDATE = "UPDATE process_instances SET payload = ? WHERE id = ?";
-    static final String UPDATE_WITH_LOCK = "UPDATE process_instances SET payload = ?, version = ? WHERE id = ? and version = ?";
-    static final String DELETE = "DELETE FROM process_instances WHERE id = ?";
+    static final String FIND_BY_ID = "SELECT payload, version FROM process_instances WHERE process_id = ? and id = ?";
+    static final String UPDATE = "UPDATE process_instances SET payload = ? WHERE process_id = ? and id = ?";
+    static final String UPDATE_WITH_LOCK = "UPDATE process_instances SET payload = ?, version = ? WHERE process_id = ? and id = ? and version = ?";
+    static final String DELETE = "DELETE FROM process_instances WHERE process_id = ? and id = ?";
     static final String COUNT = "SELECT COUNT(id) as count FROM process_instances WHERE process_id = ?";
 
     abstract boolean tableExists(DataSource dataSource);
@@ -37,13 +37,13 @@ abstract class Repository {
 
     abstract void insertInternal(DataSource dataSource, String processId, UUID id, byte[] payload);
 
-    abstract void updateInternal(DataSource dataSource, UUID id, byte[] payload);
+    abstract void updateInternal(DataSource dataSource, String processId, UUID id, byte[] payload);
 
-    abstract boolean updateWithLock(DataSource dataSource, UUID id, byte[] payload, long version);
+    abstract boolean updateWithLock(DataSource dataSource, String processId, UUID id, byte[] payload, long version);
 
-    abstract boolean deleteInternal(DataSource dataSource, UUID id);
+    abstract boolean deleteInternal(DataSource dataSource, String processId, UUID id);
 
-    abstract Map<String, Object> findByIdInternal(DataSource dataSource, UUID id);
+    abstract Map<String, Object> findByIdInternal(DataSource dataSource, String processId, UUID id);
 
     abstract List<byte[]> findAllInternal(DataSource dataSource, String processId);
 
