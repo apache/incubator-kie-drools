@@ -58,9 +58,9 @@ public class DefaultPathParamResolverTest {
     @Test
     public void testReplaceTemplateMultiple() {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", 26);
+        parameters.put("veryVeryLongId", 26);
         parameters.put("name", "pepe");
-        String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name}/?user=pepe#at_point";
+        String endPoint = "http://pepe:password@www.google.com/results/{veryVeryLongId}/names/{name}/?user=pepe#at_point";
         assertEquals(
                 "http://pepe:password@www.google.com/results/26/names/pepe/?user=pepe#at_point",
                 pathParamResolver.apply(endPoint, parameters));

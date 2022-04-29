@@ -41,7 +41,7 @@ public class DefaultPathParamResolver implements PathParamResolver {
             }
             toRemove.add(key);
             sb.replace(start, end + 1, value.toString());
-            start = sb.indexOf("{", end);
+            start = sb.indexOf("{");
         }
         parameters.keySet().removeAll(toRemove);
         return sb.toString();
