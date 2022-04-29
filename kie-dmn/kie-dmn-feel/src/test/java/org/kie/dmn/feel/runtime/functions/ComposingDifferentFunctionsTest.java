@@ -28,8 +28,8 @@ import java.time.temporal.TemporalQueries;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class ComposingDifferentFunctionsTest {
 
@@ -82,7 +82,7 @@ public class ComposingDifferentFunctionsTest {
         FunctionTestUtil.assertResult(p1, LocalDate.of(2017, 1, 1));
 
         final TemporalAccessor p2TA = p2.getOrElse(null);
-        assertNotNull(p2TA);
+        assertThat(p2TA).isNotNull();
         assertEquals(LocalTime.of(23, 59, 1), p2TA.query(TemporalQueries.localTime()));
         assertEquals(ZoneId.of("Europe/Paris"), p2TA.query(TemporalQueries.zone()));
 
@@ -96,7 +96,7 @@ public class ComposingDifferentFunctionsTest {
         FunctionTestUtil.assertResult(p1, ZonedDateTime.of(2017, 8, 10, 10, 20, 0, 0, ZoneId.of("Europe/Paris")));
 
         final TemporalAccessor timeOnDateTime = timeFunction.invoke(p1.getOrElse(null)).getOrElse(null);
-        assertNotNull(timeOnDateTime);
+        assertThat(timeOnDateTime).isNotNull();
         assertEquals(LocalTime.of(10, 20, 0), timeOnDateTime.query(TemporalQueries.localTime()));
         assertEquals(ZoneId.of("Europe/Paris"), timeOnDateTime.query(TemporalQueries.zone()));
 

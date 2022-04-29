@@ -33,7 +33,6 @@ import org.kie.dmn.model.api.InputData;
 import org.kie.dmn.model.api.LiteralExpression;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 public class DMNXMLLoaderTest {
 
@@ -143,7 +142,7 @@ public class DMNXMLLoaderTest {
 
         final Definitions root = (Definitions) o;
 
-        assertNotNull( root );
+        assertThat(root).isNotNull();
     }
 
     @Test
@@ -156,7 +155,7 @@ public class DMNXMLLoaderTest {
 
         final Definitions root = (Definitions) o;
 
-        assertNotNull( root );
+        assertThat(root).isNotNull();
     }
 
 }

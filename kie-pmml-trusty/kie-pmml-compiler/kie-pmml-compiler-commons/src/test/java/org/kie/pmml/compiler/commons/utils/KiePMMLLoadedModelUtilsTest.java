@@ -27,9 +27,9 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL;
 import static org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS;
@@ -92,7 +92,7 @@ public class KiePMMLLoadedModelUtilsTest {
     public void getOpTypeFromDataFieldExisting() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
         final OP_TYPE retrieved = getOpType(getFieldsFromDataDictionary(pmmlModel.getDataDictionary()), pmmlModel.getModels().get(0), TEMPERATURE_FIELD);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(CONTINUOUS, retrieved);
     }
 
@@ -100,7 +100,7 @@ public class KiePMMLLoadedModelUtilsTest {
     public void getOpTypeFromMiningFieldExisting() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final OP_TYPE retrieved = getOpType(getFieldsFromDataDictionary(pmmlModel.getDataDictionary()), pmmlModel.getModels().get(0), OUTLOOK_FIELD);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(CATEGORICAL, retrieved);
     }
 
@@ -116,7 +116,7 @@ public class KiePMMLLoadedModelUtilsTest {
         final List<Model> models = pmmlModel.getModels();
         for (int i = 0; i < models.size(); i ++) {
             Model model = models.get(i);
-            assertNotNull(model.getModelName());
+            assertThat(model.getModelName()).isNotNull();
             assertFalse(model.getModelName().isEmpty());
             String expected = String.format(MODELNAME_TEMPLATE,
                                             NO_MODELNAME_SAMPLE_NAME,

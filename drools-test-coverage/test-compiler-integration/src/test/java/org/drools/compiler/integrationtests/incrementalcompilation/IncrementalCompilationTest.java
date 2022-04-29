@@ -90,10 +90,10 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.command.CommandFactory;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -680,9 +680,9 @@ public class IncrementalCompilationTest {
         assertEquals(3, kpkg.getRules().size());
         Map<String, Rule> rules = rulestoMap(kpkg.getRules());
 
-        assertNotNull(rules.get("R1"));
-        assertNotNull(rules.get("R2"));
-        assertNotNull(rules.get("R3"));
+        assertThat(rules.get("R1")).isNotNull();
+        assertThat(rules.get("R2")).isNotNull();
+        assertThat(rules.get("R3")).isNotNull();
 
         final RuleTerminalNode rtn1_1 = (RuleTerminalNode) ((KnowledgeBaseImpl) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R1")[0];
         final RuleTerminalNode rtn3_1 = (RuleTerminalNode) ((KnowledgeBaseImpl) kc.getKieBase()).getReteooBuilder().getTerminalNodes("org.drools.compiler.R3")[0];
@@ -706,9 +706,9 @@ public class IncrementalCompilationTest {
         assertEquals(2, kpkg.getRules().size());
         rules = rulestoMap(kpkg.getRules());
 
-        assertNotNull(rules.get("R1"));
+        assertThat(rules.get("R1")).isNotNull();
         assertNull(rules.get("R2"));
-        assertNotNull(rules.get("R3"));
+        assertThat(rules.get("R3")).isNotNull();
     }
 
     @Test
@@ -2155,8 +2155,8 @@ public class IncrementalCompilationTest {
         final KieBase kbase = kc.getKieBase();
 
         FactType ftype = kbase.getFactType("org.mytest", "Person");
-        assertNotNull(ftype.getField("name"));
-        assertNotNull(ftype.getField("age"));
+        assertThat(ftype.getField("name")).isNotNull();
+        assertThat(ftype.getField("age")).isNotNull();
 
         Object fact = ftype.newInstance();
         ftype.set(fact, "name", "me");
@@ -2167,9 +2167,9 @@ public class IncrementalCompilationTest {
         kc.updateToVersion(releaseId2);
 
         ftype = kbase.getFactType("org.mytest", "Person");
-        assertNotNull(ftype.getField("name"));
-        assertNotNull(ftype.getField("age"));
-        assertNotNull(ftype.getField("address"));
+        assertThat(ftype.getField("name")).isNotNull();
+        assertThat(ftype.getField("age")).isNotNull();
+        assertThat(ftype.getField("address")).isNotNull();
 
         fact = ftype.newInstance();
         ftype.set(fact, "name", "me again");
@@ -3809,13 +3809,13 @@ public class IncrementalCompilationTest {
         KieBase kbase = kc.getKieBase();
 
         FactType ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
-        assertNotNull(ftype.getField("text"));
+        assertThat(ftype.getField("text")).isNotNull();
 
         Object fact = ftype.newInstance();
         ftype.set(fact, "text", "What's the problem?");
 
         FactType nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
-        assertNotNull(nestedftype.getField("x"));
+        assertThat(nestedftype.getField("x")).isNotNull();
 
         Object nestedfact = nestedftype.newInstance();
         ftype.set(fact, "nested", nestedfact);
@@ -3826,14 +3826,14 @@ public class IncrementalCompilationTest {
 
         kbase = kc.getKieBase();
         ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
-        assertNotNull(ftype.getField("text"));
+        assertThat(ftype.getField("text")).isNotNull();
 
         fact = ftype.newInstance();
         ftype.set(fact, "text", "What's the problem?");
 
         nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
-        assertNotNull(nestedftype.getField("x"));
-        assertNotNull(nestedftype.getField("y"));
+        assertThat(nestedftype.getField("x")).isNotNull();
+        assertThat(nestedftype.getField("y")).isNotNull();
 
         nestedfact = nestedftype.newInstance();
         nestedftype.set(nestedfact, "y", 42);
@@ -4508,13 +4508,13 @@ public class IncrementalCompilationTest {
         KieBase kbase = kc.getKieBase();
 
         FactType ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
-        assertNotNull(ftype.getField("text"));
+        assertThat(ftype.getField("text")).isNotNull();
 
         Object fact = ftype.newInstance();
         ftype.set(fact, "text", "What's the problem?");
 
         FactType nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
-        assertNotNull(nestedftype.getField("x"));
+        assertThat(nestedftype.getField("x")).isNotNull();
 
         Object nestedfact = nestedftype.newInstance();
         ftype.set(fact, "nested", nestedfact);
@@ -4530,14 +4530,14 @@ public class IncrementalCompilationTest {
 
         kbase = kc.getKieBase();
         ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
-        assertNotNull(ftype.getField("text"));
+        assertThat(ftype.getField("text")).isNotNull();
 
         fact = ftype.newInstance();
         ftype.set(fact, "text", "What's the problem?");
 
         nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
-        assertNotNull(nestedftype.getField("x"));
-        assertNotNull(nestedftype.getField("y"));
+        assertThat(nestedftype.getField("x")).isNotNull();
+        assertThat(nestedftype.getField("y")).isNotNull();
 
         nestedfact = nestedftype.newInstance();
         nestedftype.set(nestedfact, "y", 42);
@@ -4663,7 +4663,7 @@ public class IncrementalCompilationTest {
         KieSession kieSession = kieContainer.newKieSession();
 
         assertEquals( 1, kieSession.getKieBase().getKiePackages().size() );
-        assertNotNull( kieSession.getKieBase().getKiePackage("org.drools.test") );
+        assertThat(kieSession.getKieBase().getKiePackage("org.drools.test")).isNotNull();
 
         kieSession.setGlobal( "list", new ArrayList() );
         Collection<String> globals = kieSession.getGlobals().getGlobalKeys();

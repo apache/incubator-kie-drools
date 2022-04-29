@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class FileUtilsTest {
@@ -46,7 +46,7 @@ public class FileUtilsTest {
     @Test
     public void getFileInputStreamExisting() throws IOException {
         final FileInputStream retrieved = FileUtils.getFileInputStream(TEST_FILE);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         retrieved.close();
     }
 

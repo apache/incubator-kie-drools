@@ -139,7 +139,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NullSafeMethodCallExpr setArguments(final NodeList<Expression> arguments) {
-        assertNotNull(arguments);
+    	assertNotNull(arguments);
         if (arguments == this.arguments) {
             return (NullSafeMethodCallExpr) this;
         }
@@ -154,7 +154,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NullSafeMethodCallExpr setName(final SimpleName name) {
-        assertNotNull(name);
+    	assertNotNull(name);
         if (name == this.name) {
             return (NullSafeMethodCallExpr) this;
         }

@@ -22,10 +22,11 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class DrlPackageDataTest {
     @Test
@@ -70,7 +71,7 @@ public class DrlPackageDataTest {
 
         DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( rule );
 
-        assertNotNull( s );
+        assertThat(s).isNotNull();
 
         assertEquals( "org.drools.test",
                       s.getName() );

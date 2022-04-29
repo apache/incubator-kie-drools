@@ -54,7 +54,6 @@ import org.kie.internal.io.ResourceFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -1286,7 +1285,7 @@ public class AddRemoveRulesTest {
             kieSession.fireAllRules();
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstLeftTuple() );
+            assertThat(fh1.getFirstLeftTuple()).isNotNull();
         } finally {
             kieSession.dispose();
         }
@@ -1308,7 +1307,7 @@ public class AddRemoveRulesTest {
             kieSession.fireAllRules();
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstLeftTuple() );
+            assertThat(fh1.getFirstLeftTuple()).isNotNull();
         } finally {
             kieSession.dispose();
         }
@@ -1331,7 +1330,7 @@ public class AddRemoveRulesTest {
 
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstRightTuple() );
+            assertThat(fh1.getFirstRightTuple()).isNotNull();
             assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
             assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
         } finally {
@@ -1356,7 +1355,7 @@ public class AddRemoveRulesTest {
 
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstRightTuple() );
+            assertThat(fh1.getFirstRightTuple()).isNotNull();
             assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
             assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
         } finally {
@@ -1510,9 +1509,9 @@ public class AddRemoveRulesTest {
             final LeftTuple lt1_1 = lt1.getFirstChild();
             final LeftTuple lt1_2 = lt1_1.getHandleNext();
             final LeftTuple lt1_3= lt1_2.getHandleNext();
-            assertNotNull( lt1_1 );
-            assertNotNull( lt1_2 );
-            assertNotNull( lt1_3 );
+            assertThat(lt1_1).isNotNull();
+            assertThat(lt1_2).isNotNull();
+            assertThat(lt1_3).isNotNull();
             assertSame(lt1_3, lt1.getLastChild());
 
             assertSame(lt1_2, lt1_3.getHandlePrevious() );
@@ -1538,9 +1537,9 @@ public class AddRemoveRulesTest {
             final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
             final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
 
-            assertNotNull( rt1_1 );
-            assertNotNull( rt1_2 );
-            assertNotNull( rt1_3 );
+            assertThat(rt1_1).isNotNull();
+            assertThat(rt1_2).isNotNull();
+            assertThat(rt1_3).isNotNull();
 
             assertSame(rt1_2, rt1_3.getRightParentNext() );
             assertSame(rt1_1, rt1_2.getRightParentNext() );
@@ -1585,9 +1584,9 @@ public class AddRemoveRulesTest {
             final LeftTuple lt1_1 = lt1.getFirstChild();
             final LeftTuple lt1_2 = lt1_1.getHandleNext();
             final LeftTuple lt1_3= lt1_2.getHandleNext();
-            assertNotNull( lt1_1 );
-            assertNotNull( lt1_2 );
-            assertNotNull( lt1_3 );
+            assertThat(lt1_1).isNotNull();
+            assertThat(lt1_2).isNotNull();
+            assertThat(lt1_3).isNotNull();
             assertSame(lt1_3, lt1.getLastChild());
 
             assertSame(lt1_2, lt1_3.getHandlePrevious() );
@@ -1613,9 +1612,9 @@ public class AddRemoveRulesTest {
             final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
             final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
 
-            assertNotNull( rt1_1 );
-            assertNotNull( rt1_2 );
-            assertNotNull( rt1_3 );
+            assertThat(rt1_1).isNotNull();
+            assertThat(rt1_2).isNotNull();
+            assertThat(rt1_3).isNotNull();
 
             assertSame(rt1_2, rt1_3.getRightParentNext() );
             assertSame(rt1_1, rt1_2.getRightParentNext() );
@@ -2239,7 +2238,7 @@ public class AddRemoveRulesTest {
         this.addRuleToEngine(rule2);
 
         final SubnetworkTuple tuple = (SubnetworkTuple)fh.getFirstLeftTuple().getFirstChild().getFirstChild();
-        assertNotNull( tuple.getPeer() );
+        assertThat(tuple.getPeer()).isNotNull();
 
         this.deleteRule(rule2Name);
         assertNull( tuple.getPeer() );

@@ -70,8 +70,8 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
@@ -126,9 +126,9 @@ public class KiePMMLModelFactoryUtilsTest {
     @BeforeClass
     public static void setup() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(SOURCE), "");
-        assertNotNull(pmmlModel);
+        assertThat(pmmlModel).isNotNull();
         model = (TreeModel) pmmlModel.getModels().get(0);
-        assertNotNull(model);
+        assertThat(model).isNotNull();
         compilationUnit = getFromFileName(TEMPLATE_SOURCE);
     }
 
@@ -142,8 +142,8 @@ public class KiePMMLModelFactoryUtilsTest {
         constructorDeclaration = classOrInterfaceDeclaration
                 .getDefaultConstructor()
                 .orElseThrow(() -> new RuntimeException("Failed to retrieve default constructor from " + TEMPLATE_SOURCE));
-        assertNotNull(constructorDeclaration);
-        assertNotNull(constructorDeclaration.getBody());
+        assertThat(constructorDeclaration).isNotNull();
+        assertThat(constructorDeclaration.getBody()).isNotNull();
 
         staticGetterMethod = classOrInterfaceDeclaration
                 .getMethodsByName(GET_MODEL)
@@ -434,7 +434,7 @@ public class KiePMMLModelFactoryUtilsTest {
                 })
                 .collect(Collectors.toList());
         Expression retrieved = KiePMMLModelFactoryUtils.createIntervalsExpression(intervals);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved instanceof MethodCallExpr);
         MethodCallExpr mtdExp = (MethodCallExpr) retrieved;
         String expected = "java.util.Arrays";
@@ -459,7 +459,7 @@ public class KiePMMLModelFactoryUtilsTest {
     public void getObjectCreationExprFromInterval() {
         Interval interval = new Interval(null, -14);
         ObjectCreationExpr retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(Interval.class.getCanonicalName(), retrieved.getType().asString());
         NodeList<Expression> arguments = retrieved.getArguments();
         assertEquals(2, arguments.size());
@@ -467,7 +467,7 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals(String.valueOf(interval.getRightMargin()), arguments.get(1).asNameExpr().toString());
         interval = new Interval(-13, 10);
         retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(Interval.class.getCanonicalName(), retrieved.getType().asString());
         arguments = retrieved.getArguments();
         assertEquals(2, arguments.size());
@@ -475,7 +475,7 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals(String.valueOf(interval.getRightMargin()), arguments.get(1).asNameExpr().toString());
         interval = new Interval(-13, null);
         retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(Interval.class.getCanonicalName(), retrieved.getType().asString());
         arguments = retrieved.getArguments();
         assertEquals(2, arguments.size());

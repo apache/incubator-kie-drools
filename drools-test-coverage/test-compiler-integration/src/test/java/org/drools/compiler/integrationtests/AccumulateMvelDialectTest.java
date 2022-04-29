@@ -46,9 +46,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static java.util.Arrays.asList;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class AccumulateMvelDialectTest {
@@ -305,7 +304,7 @@ public class AccumulateMvelDialectTest {
 
             // Check the network formation, to ensure the RiaNode is shared.
             final ObjectTypeNode cheeseOtn = KieUtil.getObjectTypeNode(kbase, Cheese.class);
-            assertNotNull(cheeseOtn);
+            assertThat(cheeseOtn).isNotNull();
             final ObjectSink[] oSinks = cheeseOtn.getObjectSinkPropagator().getSinks();
             assertEquals(1, oSinks.length);
 

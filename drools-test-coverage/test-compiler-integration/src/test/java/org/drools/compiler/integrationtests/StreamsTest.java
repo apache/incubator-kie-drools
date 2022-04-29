@@ -51,7 +51,6 @@ import org.mockito.ArgumentCaptor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -111,10 +110,10 @@ public class StreamsTest {
             final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -137,10 +136,10 @@ public class StreamsTest {
             final InternalFactHandle handle7 = (InternalFactHandle) entry.insert(tick7);
             final InternalFactHandle handle8 = (InternalFactHandle) entry.insert(tick8);
 
-            assertNotNull(handle5);
-            assertNotNull(handle6);
-            assertNotNull(handle7);
-            assertNotNull(handle8);
+            assertThat(handle5).isNotNull();
+            assertThat(handle6).isNotNull();
+            assertThat(handle7).isNotNull();
+            assertThat(handle8).isNotNull();
 
             assertTrue(handle5.isEvent());
             assertTrue(handle6.isEvent());
@@ -177,10 +176,10 @@ public class StreamsTest {
             final InternalFactHandle handle7 = (InternalFactHandle) entry.insert(tick7);
             final InternalFactHandle handle8 = (InternalFactHandle) entry.insert(tick8);
 
-            assertNotNull(handle5);
-            assertNotNull(handle6);
-            assertNotNull(handle7);
-            assertNotNull(handle8);
+            assertThat(handle5).isNotNull();
+            assertThat(handle6).isNotNull();
+            assertThat(handle7).isNotNull();
+            assertThat(handle8).isNotNull();
 
             assertTrue(handle5.isEvent());
             assertTrue(handle6.isEvent());
@@ -241,10 +240,10 @@ public class StreamsTest {
             final InternalFactHandle handle7 = (InternalFactHandle) entry.insert(tick7);
             final InternalFactHandle handle8 = (InternalFactHandle) entry.insert(tick8);
 
-            assertNotNull(handle5);
-            assertNotNull(handle6);
-            assertNotNull(handle7);
-            assertNotNull(handle8);
+            assertThat(handle5).isNotNull();
+            assertThat(handle6).isNotNull();
+            assertThat(handle7).isNotNull();
+            assertThat(handle8).isNotNull();
 
             assertTrue(handle5.isEvent());
             assertTrue(handle6.isEvent());
@@ -521,8 +520,8 @@ public class StreamsTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("stream-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            assertNotNull(ksession.getEntryPoint("UsedEntryPoint"));
-            assertNotNull(ksession.getEntryPoint("UnusedEntryPoint"));
+            assertThat(ksession.getEntryPoint("UsedEntryPoint")).isNotNull();
+            assertThat(ksession.getEntryPoint("UnusedEntryPoint")).isNotNull();
         } finally {
             ksession.dispose();
         }

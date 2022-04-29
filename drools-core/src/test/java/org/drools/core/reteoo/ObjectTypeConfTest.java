@@ -18,7 +18,9 @@ package org.drools.core.reteoo;
 
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class ObjectTypeConfTest {
 
@@ -26,7 +28,7 @@ public class ObjectTypeConfTest {
     public void testGetPackageName() {
         assertEquals("org.drools.core.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), null));
         Package thispkg = this.getClass().getPackage();
-        assertNotNull(thispkg);
+        assertThat(thispkg).isNotNull();
         assertEquals("org.drools.core.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), thispkg));
     }
 

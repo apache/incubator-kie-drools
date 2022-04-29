@@ -19,7 +19,6 @@ package org.kie.dmn.core.classloader;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -73,7 +72,7 @@ public class DMNRuntimeListenerPropertyTest {
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         return runtime;
     }
 

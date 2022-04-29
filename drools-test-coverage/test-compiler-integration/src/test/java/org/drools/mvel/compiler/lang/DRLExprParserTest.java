@@ -16,7 +16,6 @@
 
 package org.drools.mvel.compiler.lang;
 
-import junit.framework.TestCase;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
@@ -24,25 +23,30 @@ import org.drools.compiler.lang.descr.ConnectiveType;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * DRLExprTreeTest
  */
-public class DRLExprParserTest extends TestCase {
+public class DRLExprParserTest {
 
     DrlExprParser parser;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         new EvaluatorRegistry();
         this.parser = new DrlExprParser(LanguageLevelOption.DRL6);
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         this.parser = null;
-        super.tearDown();
     }
 
     @Test

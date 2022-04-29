@@ -44,7 +44,6 @@ import org.mockito.ArgumentCaptor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -272,7 +271,7 @@ public class MapConstraintTest {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
         KieSession session = kbase.newKieSession();
-        assertNotNull(session);
+        assertThat(session).isNotNull();
 
         final Pet pet1 = new Pet("Toni");
         pet1.getAttributes().put("key", "value");

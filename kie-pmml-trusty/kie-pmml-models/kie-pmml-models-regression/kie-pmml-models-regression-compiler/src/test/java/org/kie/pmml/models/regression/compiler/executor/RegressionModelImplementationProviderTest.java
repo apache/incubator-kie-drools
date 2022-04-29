@@ -34,6 +34,7 @@ import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.dmg.pmml.regression.RegressionModel.NormalizationMethod.CAUCHIT;
 import static org.dmg.pmml.regression.RegressionModel.NormalizationMethod.CLOGLOG;
 import static org.dmg.pmml.regression.RegressionModel.NormalizationMethod.EXP;
@@ -44,7 +45,6 @@ import static org.dmg.pmml.regression.RegressionModel.NormalizationMethod.PROBIT
 import static org.dmg.pmml.regression.RegressionModel.NormalizationMethod.SOFTMAX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
@@ -74,7 +74,7 @@ public class RegressionModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
@@ -84,14 +84,14 @@ public class RegressionModelImplementationProviderTest {
                                                                        regressionModel,
                                                                        new HasClassLoaderMock());
         final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved instanceof Serializable);
     }
 
     @Test
     public void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
@@ -101,9 +101,9 @@ public class RegressionModelImplementationProviderTest {
                                                                        regressionModel,
                                                                        new HasClassLoaderMock());
         final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final Map<String, String> sourcesMap = retrieved.getSourcesMap();
-        assertNotNull(sourcesMap);
+        assertThat(sourcesMap).isNotNull();
         assertFalse(sourcesMap.isEmpty());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final Map<String, Class<?>> compiled = KieMemoryCompiler.compile(sourcesMap, classLoader);
@@ -144,7 +144,7 @@ public class RegressionModelImplementationProviderTest {
     @Test
     public void validateNoRegressionTables() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
@@ -168,7 +168,7 @@ public class RegressionModelImplementationProviderTest {
 
     private void commonValidateSource(String sourceFile) throws Exception {
         final PMML pmml = TestUtils.loadFromFile(sourceFile);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         PROVIDER.validate(getFieldsFromDataDictionary(pmml.getDataDictionary()), (RegressionModel) pmml.getModels().get(0));

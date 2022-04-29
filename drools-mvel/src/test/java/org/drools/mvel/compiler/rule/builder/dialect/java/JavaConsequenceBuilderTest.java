@@ -46,10 +46,10 @@ import org.drools.mvel.java.JavaExprAnalyzer;
 import org.junit.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.asm.AsmUtil.fixBlockDescr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
@@ -141,8 +141,7 @@ public class JavaConsequenceBuilderTest {
 //            System.out.println( "=============================" );
 //            System.out.println( fixed );
 
-            assertNotNull( context.getErrors().toString(),
-                           fixed );
+            assertThat(fixed).as(context.getErrors().toString()).isNotNull();
             assertEqualsIgnoreSpaces( expected,
                                       fixed );
         } catch ( RecognitionException e ) {
@@ -175,8 +174,7 @@ public class JavaConsequenceBuilderTest {
 //            System.out.println( "=============================" );
 //            System.out.println( fixed );
 
-            assertNotNull( context.getErrors().toString(),
-                           fixed );
+            assertThat(fixed).as( context.getErrors().toString()).isNotNull();
             assertEqualsIgnoreSpaces( expected,
                                       fixed );
         } catch ( RecognitionException e ) {
@@ -189,7 +187,7 @@ public class JavaConsequenceBuilderTest {
     public void testDefaultConsequenceCompilation() {
         String consequence = " System.out.println(\"this is a test\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );
-        assertNotNull( context.getRule().getConsequence() );
+        assertThat(context.getRule().getConsequence()).isNotNull();
         assertFalse( context.getRule().hasNamedConsequences() );
         assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
         assertTrue( context.getRule().getConsequence() instanceof Consequence );

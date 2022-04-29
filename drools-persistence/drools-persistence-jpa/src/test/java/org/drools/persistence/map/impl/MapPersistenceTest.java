@@ -33,6 +33,8 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public abstract class MapPersistenceTest {
 
     private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
@@ -45,7 +47,7 @@ public abstract class MapPersistenceTest {
         crmPersistentSession.fireAllRules();
 
         crmPersistentSession = createSession( kbase );
-        Assert.assertNotNull( crmPersistentSession );
+        assertThat(crmPersistentSession).isNotNull();
     }
 
 
@@ -87,7 +89,7 @@ public abstract class MapPersistenceTest {
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
 
-        Assert.assertNotNull( ksession );
+        assertThat(ksession).isNotNull();
 
         Assert.assertEquals( 1,
                              ksession.getObjects().size() );

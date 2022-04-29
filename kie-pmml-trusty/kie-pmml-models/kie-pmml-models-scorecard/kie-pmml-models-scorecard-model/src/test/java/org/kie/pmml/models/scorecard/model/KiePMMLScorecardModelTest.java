@@ -28,8 +28,8 @@ import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class KiePMMLScorecardModelTest {
@@ -57,7 +57,7 @@ public class KiePMMLScorecardModelTest {
                                                                                 REASONCODE_ALGORITHM.POINTS_BELOW,
                                                                                 0);
         Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), pmmlContextTest);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
 
         Double EVALUATION_20 = baselineScore - value2;
         Double EVALUATION_11 = baselineScore - value1;

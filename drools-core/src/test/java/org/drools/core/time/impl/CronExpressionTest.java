@@ -16,7 +16,10 @@
 
 package org.drools.core.time.impl;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,7 +28,11 @@ import java.util.TimeZone;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class CronExpressionTest extends SerializationTestSupport {
     private static final String[] VERSIONS = new String[] {"1.5.2"};
@@ -59,7 +66,7 @@ public class CronExpressionTest extends SerializationTestSupport {
         CronExpression targetCronExpression = (CronExpression)target;
         CronExpression deserializedCronExpression = (CronExpression)deserialized;
         
-        assertNotNull(deserializedCronExpression);
+        assertThat(deserializedCronExpression).isNotNull();
         assertEquals(targetCronExpression.getCronExpression(), deserializedCronExpression.getCronExpression());
         assertEquals(targetCronExpression.getTimeZone(), deserializedCronExpression.getTimeZone());
     }

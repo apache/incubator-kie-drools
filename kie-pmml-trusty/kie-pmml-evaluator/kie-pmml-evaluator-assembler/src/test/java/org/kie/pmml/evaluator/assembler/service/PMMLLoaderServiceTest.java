@@ -37,8 +37,8 @@ import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -66,7 +66,7 @@ public class PMMLLoaderServiceTest {
         final List<PMMLRuleMapper> pmmlRuleMappers = getPMMLRuleMappers();
         PMMLLoaderService.loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
         assertEquals(1, kbuilderImpl.getPackageNames().size());
-        assertNotNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNotNull();
     }
 
     @Test

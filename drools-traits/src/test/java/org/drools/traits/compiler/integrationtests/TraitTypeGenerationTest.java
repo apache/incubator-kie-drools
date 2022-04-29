@@ -43,9 +43,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 public class TraitTypeGenerationTest extends CommonTraitTest {
 
@@ -196,7 +196,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
 
         KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
-        assertNotNull( ksession );
+        assertThat(ksession).isNotNull();
 
         List students = new ArrayList();
         ksession.setGlobal( "students", students );

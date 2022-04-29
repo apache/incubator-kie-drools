@@ -26,8 +26,8 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLMapValuesTest {
@@ -80,7 +80,7 @@ public class KiePMMLMapValuesTest {
                 .collect(Collectors.toList());
         ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
         Object retrieved = kiePMMLMapValues.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     private KiePMMLMapValues getKiePMMLMapValues() {

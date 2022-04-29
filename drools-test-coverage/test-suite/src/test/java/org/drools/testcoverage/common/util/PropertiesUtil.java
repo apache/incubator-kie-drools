@@ -16,16 +16,16 @@
 
 package org.drools.testcoverage.common.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.junit.Assert.assertNotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -56,7 +56,7 @@ public class PropertiesUtil {
     public static synchronized File getBasedir() {
         if (basedir == null) {
             String basedirProp = System.getProperty("basedir");
-            assertNotNull("System property for basedir not set!", basedirProp);
+            assertThat(basedirProp).as("System property for basedir not set!").isNotNull();
             basedir = new File(basedirProp);
             assertTrue("Basedir " + basedir.getAbsolutePath() + " does not exist! Check value of 'basedir' system property.", basedir.exists());
         }

@@ -49,7 +49,7 @@ import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.model.KiePMMLClassificationTable;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
-import static junit.framework.TestCase.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -121,7 +121,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                                                                                                   regressionModel.getNormalizationMethod());
         KiePMMLClassificationTable retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTable(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(regressionModel.getRegressionTables().size(), retrieved.getCategoryTableMap().size());
         regressionModel.getRegressionTables().forEach(regressionTable ->
                                                               assertTrue(retrieved.getCategoryTableMap().containsKey(regressionTable.getTargetCategory().toString())));
@@ -175,7 +175,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                                                                                                   regressionModel.getNormalizationMethod());
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTableBuilders(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(3, retrieved.size());
         retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));
 
@@ -235,7 +235,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         });
         Map.Entry<String, String> retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTableBuilder(compilationDTO, regressionTablesMap);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -263,9 +263,9 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     @Test
     public void getProbabilityMapSupportedFunction() {
         KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                                                          assertNotNull(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, false)));
+                                                                                          assertThat(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, false)).isNotNull());
         KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                                                          assertNotNull(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, true)));
+                                                                                          assertThat(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, true)).isNotNull());
     }
 
     @Test

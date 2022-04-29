@@ -24,10 +24,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class DMNRuntimeBuilderTest {
 
@@ -37,7 +37,7 @@ public class DMNRuntimeBuilderTest {
     @Before
     public void setup() {
         dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults();
-        assertNotNull(dmnRuntimeBuilder);
+        assertThat(dmnRuntimeBuilder).isNotNull();
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DMNRuntimeBuilderTest {
                 .setKieRuntimeFactoryFunction(kieRuntimeFactoryFunction)
                 .buildConfiguration()
                 .fromResources(Collections.emptyList()).getOrElseThrow(RuntimeException::new);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         KieRuntimeFactory kieRuntimeFactory = retrieved.getKieRuntimeFactory("TEST");
         assertEquals(toReturn, kieRuntimeFactory);
     }

@@ -41,9 +41,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -457,7 +457,7 @@ public class KnowledgeBuilderTest {
             KnowledgePackageImpl kpi = (KnowledgePackageImpl) kp;
             TypeDeclaration cheez = kpi.getTypeDeclaration( "Cheese" );
             if ( "org.drools.mvel.compiler".equals( kpi.getName() ) ) {
-                assertNotNull( cheez );
+                assertThat(cheez).isNotNull();
             } else {
                 assertNull( cheez );
             }

@@ -43,8 +43,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -271,7 +271,7 @@ public class CompositeObjectSinkAdapterTest {
 
         sinksAre(al1);
         otherSinksAreEmpty();
-        assertNotNull( ad.getRangeIndexedFieldIndexes() );
+        assertThat(ad.getRangeIndexedFieldIndexes()).isNotNull();
         rangeIndexableSinksAre(al1);
     }
  
@@ -302,7 +302,7 @@ public class CompositeObjectSinkAdapterTest {
         ad.addObjectSink( al3 );
 
         //this should now be nicely indexed.
-        assertNotNull( ad.getRangeIndexMap() );
+        assertThat(ad.getRangeIndexMap()).isNotNull();
         rangeIndexableSinksIsEmpty();
     }    
     

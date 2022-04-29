@@ -15,10 +15,17 @@
 
 package org.drools.persistence.timer.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.core.ClockType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,6 +47,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
@@ -48,15 +56,13 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static org.drools.persistence.util.DroolsPersistenceUtil.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.kie.test.util.db.PersistenceUtil.cleanUp;
+import static org.kie.test.util.db.PersistenceUtil.setupWithPoolingDataSource;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarTest {
@@ -273,8 +279,7 @@ public class TimerAndCalendarTest {
 
         FactType type = kbase.getFactType( "org.drools.test",
                                            "TestEvent" );
-        Assert.assertNotNull( "could not get type",
-                              type );
+        assertThat(type).as("could not get type").isNotNull();
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );

@@ -24,6 +24,7 @@ import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.DMO_SESSION_NODE;
@@ -40,7 +41,6 @@ import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ScenarioSimulationXMLPersistenceTest {
@@ -72,7 +72,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_0to1_1().accept(document);
         Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, "expressionIdentifier", "type");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
         retrieved.forEach((node, typeNodes) -> {
             assertEquals(1, typeNodes.size());
@@ -87,7 +87,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_1to1_2().accept(document);
         Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmoSession");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
         assertEquals(1, retrieved.values().iterator().next().size());
         retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "type");
@@ -101,7 +101,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_2to1_3().accept(document);
         List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
-        assertNotNull(factMappingsNodes);
+        assertThat(factMappingsNodes).isNotNull();
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
@@ -167,7 +167,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_4to1_5().accept(document);
         List<Node> retrieved = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, "dmoSession");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isEmpty());
         commonCheck(toMigrate, document, "1.5");
     }
@@ -178,7 +178,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_5to1_6().accept(document);
         Map<Node, String> retrieved = DOMParserUtil.getAttributeValues(document, "reference");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isEmpty());
         commonCheck(toMigrate, document, "1.6");
     }
@@ -189,17 +189,17 @@ public class ScenarioSimulationXMLPersistenceTest {
         Document document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_6to1_7().accept(document);
         List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
-        assertNotNull(factMappingsNodes);
+        assertThat(factMappingsNodes).isNotNull();
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
             String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
-            assertNotNull(expressionIdentifierName);
+            assertThat(expressionIdentifierName).isNotNull();
             List<Node> columnWidthNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "columnWidth");
             assertEquals(1, columnWidthNodes.size());
             String columnWidth = columnWidthNodes.get(0).getTextContent();
-            assertNotNull(columnWidth);
+            assertThat(columnWidth).isNotNull();
             assertFalse(columnWidth.isEmpty());
             double columnWidthDouble = Double.parseDouble(columnWidth);
             assertEquals(getColumnWidth(expressionIdentifierName), columnWidthDouble, 0.0);
@@ -209,17 +209,17 @@ public class ScenarioSimulationXMLPersistenceTest {
         document = DOMParserUtil.getDocument(toMigrate);
         migrationInstance.from1_6to1_7().accept(document);
         factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, SIMULATION_NODE, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
-        assertNotNull(factMappingsNodes);
+        assertThat(factMappingsNodes).isNotNull();
         assertEquals(1, factMappingsNodes.size());
         factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> expressionIdentifierNamesNodes = DOMParserUtil.getNestedChildrenNodesList(factMappingNode, "expressionIdentifier", "name");
             String expressionIdentifierName = expressionIdentifierNamesNodes.get(0).getTextContent();
-            assertNotNull(expressionIdentifierName);
+            assertThat(expressionIdentifierName).isNotNull();
             List<Node> columnWidthNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "columnWidth");
             assertEquals(1, columnWidthNodes.size());
             String columnWidth = columnWidthNodes.get(0).getTextContent();
-            assertNotNull(columnWidth);
+            assertThat(columnWidth).isNotNull();
             assertFalse(columnWidth.isEmpty());
             double columnWidthDouble = Double.parseDouble(columnWidth);
             assertEquals(getColumnWidth(expressionIdentifierName), columnWidthDouble, 0.0);
@@ -273,14 +273,14 @@ public class ScenarioSimulationXMLPersistenceTest {
 
     private void commonCheckFactMappingValueType(Document document, String scesimModel) {
         List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, scesimModel, SIMULATION_DESCRIPTOR_NODE, FACT_MAPPINGS_NODE);
-        assertNotNull(factMappingsNodes);
+        assertThat(factMappingsNodes).isNotNull();
         assertEquals(1, factMappingsNodes.size());
         List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), FACT_MAPPING_NODE);
         for (Node factMappingNode : factMappingNodes) {
             List<Node> factMappingValueTypeNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, FACT_MAPPING_VALUE_TYPE_NODE);
             assertEquals(1, factMappingValueTypeNodes.size());
             String factMappingValueTypeText = factMappingValueTypeNodes.get(0).getTextContent();
-            assertNotNull(factMappingValueTypeText);
+            assertThat(factMappingValueTypeText).isNotNull();
             assertFalse(factMappingValueTypeText.isEmpty());
             assertEquals(NOT_EXPRESSION, factMappingValueTypeText);
         }
@@ -355,9 +355,9 @@ public class ScenarioSimulationXMLPersistenceTest {
      * @param expectedTextContent
      */
     private void commonVerifySingleNodeSingleChild(Map<Node, List<Node>> toCheck, String expectedTextContent) {
-        assertNotNull(toCheck);
+        assertThat(toCheck).isNotNull();
         assertEquals(1, toCheck.size());
-        assertNotNull(toCheck.values());
+        assertThat(toCheck.values()).isNotNull();
         assertEquals(1, toCheck.values().iterator().next().size());
         if (expectedTextContent != null) {
             assertEquals(expectedTextContent, toCheck.values().iterator().next().get(0).getTextContent());
@@ -372,7 +372,7 @@ public class ScenarioSimulationXMLPersistenceTest {
 
     private void commonCheckVersion(Document document, String expectedVersion) {
         final Map<Node, String> attributeValues = DOMParserUtil.getAttributeValues(document, "ScenarioSimulationModel", "version");
-        assertNotNull(attributeValues);
+        assertThat(attributeValues).isNotNull();
         assertEquals(1, attributeValues.size());
         assertEquals(expectedVersion, attributeValues.values().toArray()[0]);
     }
@@ -384,9 +384,9 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     private void commonCheckSimulation(ScenarioSimulationModel toCheck) {
-        assertNotNull(toCheck);
-        assertNotNull(toCheck.getSimulation());
-        assertNotNull(toCheck.getSimulation().getScesimModelDescriptor());
+        assertThat(toCheck).isNotNull();
+        assertThat(toCheck.getSimulation()).isNotNull();
+        assertThat(toCheck.getSimulation().getScesimModelDescriptor()).isNotNull();
     }
 
     private void commonCheckBackground(Document toCheck) throws Exception {
@@ -396,9 +396,9 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     private void commonCheckBackground(ScenarioSimulationModel toCheck) {
-        assertNotNull(toCheck);
-        assertNotNull(toCheck.getBackground());
-        assertNotNull(toCheck.getBackground().getScesimModelDescriptor());
+        assertThat(toCheck).isNotNull();
+        assertThat(toCheck.getBackground()).isNotNull();
+        assertThat(toCheck.getBackground().getScesimModelDescriptor()).isNotNull();
         assertFalse(toCheck.getBackground().getUnmodifiableData().isEmpty());
     }
 }

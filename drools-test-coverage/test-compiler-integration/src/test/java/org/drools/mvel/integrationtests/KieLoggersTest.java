@@ -40,8 +40,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -113,7 +113,7 @@ public class KieLoggersTest {
         assertEquals(1, fired);
 
         KieRuntimeLogger logger = ksession.getLogger();
-        assertNotNull(logger);
+        assertThat(logger).isNotNull();
         logger.close();
     }
 
@@ -173,7 +173,7 @@ public class KieLoggersTest {
         ksession.execute( new Message("Hello World") );
 
         KieRuntimeLogger logger = ksession.getLogger();
-        assertNotNull(logger);
+        assertThat(logger).isNotNull();
         logger.close();
     }
 

@@ -105,10 +105,10 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.serialization.protobuf.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -402,7 +402,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
         list = (List) session.getGlobal( "list" );
 
-        assertNotNull( list );
+        assertThat(list).isNotNull();
         assertEquals( list.size(),
                       1 );
         assertEquals( "stilton",
@@ -2180,7 +2180,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         List<List> results = (List<List>) new ArrayList<List>();
         ksession.setGlobal( "results",
                             results );
-        assertNotNull( results );
+        assertThat(results).isNotNull();
 
         ksession.fireAllRules();
         ksession.dispose();

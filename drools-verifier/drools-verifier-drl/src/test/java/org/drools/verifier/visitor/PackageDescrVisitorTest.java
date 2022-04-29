@@ -16,6 +16,14 @@
 
 package org.drools.verifier.visitor;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -30,15 +38,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class PackageDescrVisitorTest {
 
@@ -58,7 +61,7 @@ public class PackageDescrVisitorTest {
 
         PackageDescr packageDescr = getPackageDescr(Verifier.class.getResourceAsStream("Misc3.drl"));
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         packageDescrVisitor.visitPackageDescr(packageDescr);
 
@@ -80,7 +83,7 @@ public class PackageDescrVisitorTest {
             }
         }
 
-        assertNotNull(all);
+        assertThat(all).isNotNull();
         assertEquals(45,
                      all.size());
 
@@ -91,13 +94,13 @@ public class PackageDescrVisitorTest {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("SubPattern.drl"));
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         packageDescrVisitor.visitPackageDescr(packageDescr);
 
         Collection<VerifierComponent> all = verifierData.getAll();
 
-        assertNotNull(all);
+        assertThat(all).isNotNull();
 
         SubPattern test1SubPattern = null;
         SubPattern test2SubPattern = null;
@@ -135,16 +138,16 @@ public class PackageDescrVisitorTest {
             }
         }
 
-        assertNotNull(test1SubPattern);
+        assertThat(test1SubPattern).isNotNull();
         assertEquals(3,
                      test1SubPattern.getItems().size());
-        assertNotNull(test2SubPattern);
+        assertThat(test2SubPattern).isNotNull();
         assertEquals(3,
                      test2SubPattern.getItems().size());
-        assertNotNull(test1SubRule);
+        assertThat(test1SubRule).isNotNull();
         assertEquals(1,
                      test1SubRule.getItems().size());
-        assertNotNull(test2SubRule);
+        assertThat(test2SubRule).isNotNull();
         assertEquals(1,
                      test2SubRule.getItems().size());
 

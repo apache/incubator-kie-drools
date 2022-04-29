@@ -39,13 +39,13 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomObject;
+import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
 
 public class KiePMMLASTFactoryUtilsTest {
 
@@ -88,7 +88,7 @@ public class KiePMMLASTFactoryUtilsTest {
         compoundPredicate.getPredicates().addAll(predicates);
         List<KiePMMLFieldOperatorValue> retrieved = KiePMMLASTFactoryUtils
                 .getConstraintEntriesFromXOrCompoundPredicate(compoundPredicate, fieldTypeMap);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(predicates.size(), retrieved.size());
         commonVerifyKiePMMLFieldOperatorValueList(retrieved, null);
     }
@@ -124,7 +124,7 @@ public class KiePMMLASTFactoryUtilsTest {
         final KiePMMLFieldOperatorValue retrieved = KiePMMLASTFactoryUtils
                 .getConstraintEntryFromSimplePredicates(fieldName, BOOLEAN_OPERATOR.OR, simplePredicates, fieldTypeMap);
         assertEquals(fieldName, retrieved.getName());
-        assertNotNull(retrieved.getConstraintsAsString());
+        assertThat(retrieved.getConstraintsAsString()).isNotNull();
         String expected = "value < \"VALUE-0\" || value < \"VALUE-1\"";
         assertEquals(expected, retrieved.getConstraintsAsString());
     }
@@ -134,7 +134,7 @@ public class KiePMMLASTFactoryUtilsTest {
         List<Predicate> predicates = new ArrayList<>(simplePredicates);
         List<KiePMMLFieldOperatorValue> retrieved = KiePMMLASTFactoryUtils
                 .getXORConstraintEntryFromSimplePredicates(predicates, fieldTypeMap);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(simplePredicates.size(), retrieved.size());
         commonVerifyKiePMMLFieldOperatorValueList(retrieved, null);
     }
@@ -245,7 +245,7 @@ public class KiePMMLASTFactoryUtilsTest {
 
     private void commonVerifyKiePMMLOperatorValue(final KiePMMLOperatorValue toVerify,
                                                   final SimplePredicate simplePredicate) {
-        assertNotNull(toVerify.getOperator());
+        assertThat(toVerify.getOperator()).isNotNull();
         Object expectedValue = simplePredicate.getValue();
         if (expectedValue instanceof String) {
             expectedValue = String.format("\"%s\"", expectedValue);

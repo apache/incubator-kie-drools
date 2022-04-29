@@ -31,8 +31,8 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -61,10 +61,10 @@ public class KiePMMLDescrRhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
-        assertNotNull(ruleBuilder.getDescr().getConsequence());
+        assertThat(ruleBuilder.getDescr().getConsequence()).isNotNull();
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertTrue(ruleBuilder.getDescr().getConsequence().toString().contains(expectedConsequence));
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
+        assertThat(ruleBuilder.getDescr().getNamedConsequences()).isNotNull();
         assertTrue(ruleBuilder.getDescr().getNamedConsequences().isEmpty());
     }
 
@@ -79,12 +79,12 @@ public class KiePMMLDescrRhsFactoryTest {
                 .withIfBreak(ifBreakField, ifBreakOperator, ifBreakValue)
                 .build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
-        assertNotNull(ruleBuilder.getDescr().getConsequence());
+        assertThat(ruleBuilder.getDescr().getConsequence()).isNotNull();
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertTrue(ruleBuilder.getDescr().getConsequence().toString().contains(expectedConsequence));
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
+        assertThat(ruleBuilder.getDescr().getNamedConsequences()).isNotNull();
         assertEquals(1, ruleBuilder.getDescr().getNamedConsequences().size());
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL));
+        assertThat(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL)).isNotNull();
     }
 
     @Test
@@ -93,10 +93,10 @@ public class KiePMMLDescrRhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareDefaultThen(rule);
-        assertNotNull(ruleBuilder.getDescr().getConsequence());
+        assertThat(ruleBuilder.getDescr().getConsequence()).isNotNull();
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertTrue(ruleBuilder.getDescr().getConsequence().toString().contains(expectedConsequence));
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
+        assertThat(ruleBuilder.getDescr().getNamedConsequences()).isNotNull();
         assertTrue(ruleBuilder.getDescr().getNamedConsequences().isEmpty());
     }
 
@@ -111,12 +111,12 @@ public class KiePMMLDescrRhsFactoryTest {
                 .withResult(result)
                 .build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareDefaultThen(rule);
-        assertNotNull(ruleBuilder.getDescr().getConsequence());
+        assertThat(ruleBuilder.getDescr().getConsequence()).isNotNull();
         String retrievedConsequence = ruleBuilder.getDescr().getConsequence().toString();
         assertTrue(retrievedConsequence.contains(String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet)));
         assertTrue(retrievedConsequence.contains(String.format(SET_PMML4_RESULT_CODE, resultCode)));
         assertTrue(retrievedConsequence.contains(String.format(ADD_PMML4_RESULT_VARIABLE, result)));
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
+        assertThat(ruleBuilder.getDescr().getNamedConsequences()).isNotNull();
         assertTrue(ruleBuilder.getDescr().getNamedConsequences().isEmpty());
     }
 
@@ -126,12 +126,12 @@ public class KiePMMLDescrRhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareIfThen(rule);
-        assertNotNull(ruleBuilder.getDescr().getConsequence());
+        assertThat(ruleBuilder.getDescr().getConsequence()).isNotNull();
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertEquals(expectedConsequence, ruleBuilder.getDescr().getConsequence());
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
+        assertThat(ruleBuilder.getDescr().getNamedConsequences()).isNotNull();
         assertEquals(1, ruleBuilder.getDescr().getNamedConsequences().size());
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL));
+        assertThat(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL)).isNotNull();
         expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, DONE);
         assertTrue(expectedConsequence,
                    ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL).toString().contains(expectedConsequence));
@@ -148,12 +148,12 @@ public class KiePMMLDescrRhsFactoryTest {
                 .withResult(result)
                 .build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareIfThen(rule);
-        assertNotNull(ruleBuilder.getDescr().getConsequence());
+        assertThat(ruleBuilder.getDescr().getConsequence()).isNotNull();
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertEquals(expectedConsequence, ruleBuilder.getDescr().getConsequence());
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
+        assertThat(ruleBuilder.getDescr().getNamedConsequences()).isNotNull();
         assertEquals(1, ruleBuilder.getDescr().getNamedConsequences().size());
-        assertNotNull(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL));
+        assertThat(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL)).isNotNull();
         String retrievedConsequence = ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL).toString();
         assertTrue(retrievedConsequence.contains(String.format(UPDATE_STATUS_HOLDER_STATUS, DONE)));
         assertTrue(retrievedConsequence.contains(String.format(SET_PMML4_RESULT_CODE, resultCode)));

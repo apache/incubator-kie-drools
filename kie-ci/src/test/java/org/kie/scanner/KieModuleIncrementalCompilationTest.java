@@ -30,8 +30,8 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
@@ -249,7 +249,7 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
                 .getAddedMessages()
                 .stream()
                 .map(m -> (MessageImpl) m )
-                .forEach(m -> assertNotNull(m.getKieBaseName()));
+                .forEach(m -> assertThat(m.getKieBaseName()).isNotNull());
     }
 
     private KieFileSystem createKieFileSystemWithTwoKBases(final KieServices ks) {

@@ -46,8 +46,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -187,8 +187,8 @@ public class KieModuleRepoTest {
         final ComparableVersion newFeatureVersion = new ComparableVersion(secondVersion);
         final KieModule newFeatureKieModule = artifactMap.get(newFeatureVersion);
 
-        assertNotNull( "Race condition occurred: normal KieModule disappeared from KieModuleRepo!", normalKieModule);
-        assertNotNull( "Race condition occurred: new feature KieModule disappeared from KieModuleRepo!", newFeatureKieModule);
+        assertThat(normalKieModule).as("Race condition occurred: normal KieModule disappeared from KieModuleRepo!").isNotNull();
+        assertThat(newFeatureKieModule).as("Race condition occurred: new feature KieModule disappeared from KieModuleRepo!").isNotNull();
     }
 
     public Runnable getStoreArtifactRunnable(final KieModuleRepo kieModuleRepo, final String groupId, final String artifactId,
@@ -252,11 +252,11 @@ public class KieModuleRepoTest {
         final String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
         final Map<ComparableVersion, KieModule> artifactMap = kieModuleRepo.kieModules.get(ga);
 
-        assertNotNull( "Artifact Map for GA '" + ga + "' not in KieModuleRepo!", artifactMap);
+        assertThat(artifactMap).as("Artifact Map for GA '" + ga + "' not in KieModuleRepo!").isNotNull();
 
         // never gets this far, but this is a good check
         final KieModule redeployedKieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
-        assertNotNull( "Redeployed module has disappeared from KieModuleRepo!", redeployedKieModule);
+        assertThat(redeployedKieModule).as("Redeployed module has disappeared from KieModuleRepo!").isNotNull();
         assertEquals( "Original module retrieved instead of redeployed module!",
                       1l, redeployKieModule.getCreationTimestamp() );
     }

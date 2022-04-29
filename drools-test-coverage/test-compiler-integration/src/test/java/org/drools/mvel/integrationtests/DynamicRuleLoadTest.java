@@ -37,8 +37,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -179,9 +179,9 @@ public class DynamicRuleLoadTest {
         ksession.insert( person );
         ksession.fireAllRules();
 
-        assertNotNull(person);
+        assertThat(person).isNotNull();
         Object personId = valueOf(person, "id");
-        assertNotNull(personId);
+        assertThat(personId).isNotNull();
         assertEquals("Person from version 1", personId);
 
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade-java", "1.1.0" );
@@ -203,9 +203,9 @@ public class DynamicRuleLoadTest {
         ksession.insert( person );
         ksession.fireAllRules();
 
-        assertNotNull(person);
+        assertThat(person).isNotNull();
         personId = valueOf(person, "id");
-        assertNotNull(personId);
+        assertThat(personId).isNotNull();
         assertEquals("Person from version 2", personId);
     }
 

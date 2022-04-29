@@ -36,7 +36,6 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class ConstraintNormalizationTest extends BaseModelTest {
 
@@ -126,7 +125,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
         CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
 
-        assertNotNull(sinkAdaptor.getHashedSinkMap());
+        assertThat(sinkAdaptor.getHashedSinkMap()).isNotNull();
         assertEquals(3, sinkAdaptor.getHashedSinkMap().size());
 
         final Person p = new Person("Toshiya", 45);
