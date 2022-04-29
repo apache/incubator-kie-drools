@@ -195,8 +195,19 @@ public class JPAWorkItemManager implements WorkItemManager {
         // work item may have been aborted
         if ( workItemInfo != null ) {
             WorkItem workItem = (WorkItemImpl) internalGetWorkItem( workItemInfo );
-            ProcessInstance processInstance = kruntime.getProcessInstance( workItem.getProcessInstanceId() );
+            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+            // avoid multiple calls // recursion
+            if (workItem == null || workItem.getState() == WorkItem.ABORTED) {
+                return;
+            }
             workItem.setState( WorkItem.ABORTED );
+
+            handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+            if ( handler != null) {
+                handler.abortWorkItem( workItem, this );
+            }
+
+            ProcessInstance processInstance = kruntime.getProcessInstance( workItem.getProcessInstanceId() );
             // process instance may have finished already
             if ( processInstance != null ) {
                 processInstance.signalEvent( "workItemAborted", workItem );
