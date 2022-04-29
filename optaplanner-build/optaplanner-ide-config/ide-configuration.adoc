@@ -21,10 +21,18 @@ file in the `build/optaplanner-ide-config/src/main/resources/` directory.
 Make sure the _Optimize Imports_ box is ticked, and select the `eclipse.importorder` file as the import order config file.
 
 == VS Code setup
-. Open the _Extentions_ window (Ctrl+Shift+X), search for _Language Support for Java(TM) by Red Hat_ and install it.
-. Add import order to settings.json:
+. Open the _Extentions_ window (Ctrl+Shift+X) and search for _Language Support for Java(TM) by Red Hat_ and install it.
+. Create settings file for your workspace 
 +
 ----
+cd optaplanner
+mkdir .vscode
+touch .vscode/settings.json
+----
+. Put in settings.json the following content:
+
+----
+    "java.format.settings.url": "build/optaplanner-ide-config/src/main/resources/eclipse-format.xml",
     "java.completion.importOrder": [
         "java",
         "javax",
@@ -32,7 +40,5 @@ Make sure the _Optimize Imports_ box is ticked, and select the `eclipse.importor
         "org"
     ]
 ----
-. Go to extension page from step 1 and set path to the formatter property `java.format.settings.url`
-`path_to_proj/optaplanner/build/optaplanner-ide-config/src/main/resources/eclipse-format.xml`
 
 
