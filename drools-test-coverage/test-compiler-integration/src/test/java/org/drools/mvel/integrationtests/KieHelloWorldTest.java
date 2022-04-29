@@ -53,8 +53,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -109,7 +109,7 @@ public class KieHelloWorldTest {
         assertSame( kieProject.getClassLoader(), kcontainer.getClassLoader() );
 
         ProjectClassLoader pcl = (( ProjectClassLoader ) kieProject.getClassLoader());
-        assertNotNull( pcl.getStore().get("org/Person.class") );
+        assertThat(pcl.getStore().get("org/Person.class")).isNotNull();
     }
 
     @Test
@@ -206,7 +206,7 @@ public class KieHelloWorldTest {
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         FactType factType = ksession.getKieBase().getFactType("org.drools.mvel.integrationtests", "CancelFact");
-        assertNotNull(factType);
+        assertThat(factType).isNotNull();
         ksession.insert(factType.newInstance());
 
         int count = ksession.fireAllRules();

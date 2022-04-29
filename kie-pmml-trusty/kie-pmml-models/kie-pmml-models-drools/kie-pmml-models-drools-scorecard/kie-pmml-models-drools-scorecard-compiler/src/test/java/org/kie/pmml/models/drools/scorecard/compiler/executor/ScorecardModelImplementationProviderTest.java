@@ -33,8 +33,8 @@ import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.test.util.filesystem.FileUtils;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ScorecardModelImplementationProviderTest {
@@ -58,7 +58,7 @@ public class ScorecardModelImplementationProviderTest {
                                                                        (Scorecard) pmml.getModels().get(0),
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLScorecardModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonVerifyIsDeepCloneable(retrieved);
     }
 
@@ -72,14 +72,14 @@ public class ScorecardModelImplementationProviderTest {
                                                                        (Scorecard) pmml.getModels().get(0),
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLDroolsModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonVerifyIsDeepCloneable(retrieved);
     }
 
     private PMML getPMML(String source) throws Exception {
         final FileInputStream fis = FileUtils.getFileInputStream(source);
         final PMML toReturn = KiePMMLUtil.load(fis, source);
-        assertNotNull(toReturn);
+        assertThat(toReturn).isNotNull();
         assertEquals(1, toReturn.getModels().size());
         assertTrue(toReturn.getModels().get(0) instanceof Scorecard);
         return toReturn;

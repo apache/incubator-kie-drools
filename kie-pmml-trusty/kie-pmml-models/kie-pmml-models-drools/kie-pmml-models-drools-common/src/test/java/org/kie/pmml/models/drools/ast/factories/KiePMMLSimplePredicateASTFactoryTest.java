@@ -32,8 +32,8 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -64,7 +64,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
                                                 currentRule,
                                                 fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
@@ -78,7 +78,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertNull(retrieved.getIfBreakOperator());
         assertNull(retrieved.getIfBreakValue());
         assertNull(retrieved.getNotConstraints());
-        assertNotNull(retrieved.getAndConstraints());
+        assertThat(retrieved.getAndConstraints()).isNotNull();
         assertEquals(1, retrieved.getAndConstraints().size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
@@ -88,7 +88,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(ResultCode.OK, retrieved.getResultCode());
         // This is the "FALSE" matching rule
         retrieved = rules.get(1);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         expectedRule = baseExpectedRule + "_FALSE";
         assertEquals(expectedRule, retrieved.getName());
         assertEquals(parentPath, retrieved.getStatusToSet());
@@ -99,7 +99,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertNull(retrieved.getIfBreakOperator());
         assertNull(retrieved.getIfBreakValue());
         assertNull(retrieved.getAndConstraints());
-        assertNotNull(retrieved.getNotConstraints());
+        assertThat(retrieved.getNotConstraints()).isNotNull();
         assertEquals(1, retrieved.getNotConstraints().size());
         kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
@@ -132,7 +132,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
                                                 currentRule,
                                                 fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
@@ -145,7 +145,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertNull(retrieved.getIfBreakField());
         assertNull(retrieved.getIfBreakOperator());
         assertNull(retrieved.getIfBreakValue());
-        assertNotNull(retrieved.getAndConstraints());
+        assertThat(retrieved.getAndConstraints()).isNotNull();
         assertEquals(1, retrieved.getAndConstraints().size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
@@ -155,7 +155,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertNull(retrieved.getResultCode());
         // This is the "FALSE" matching rule
         retrieved = rules.get(1);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         expectedRule = baseExpectedRule + "_FALSE";
         assertEquals(expectedRule, retrieved.getName());
         assertEquals(parentPath, retrieved.getStatusToSet());
@@ -166,7 +166,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertNull(retrieved.getIfBreakOperator());
         assertNull(retrieved.getIfBreakValue());
         assertNull(retrieved.getAndConstraints());
-        assertNotNull(retrieved.getNotConstraints());
+        assertThat(retrieved.getNotConstraints()).isNotNull();
         assertEquals(1, retrieved.getNotConstraints().size());
         kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
@@ -197,14 +197,14 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimplePredicate(result, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(currentRule, retrieved.getName());
         assertEquals(DONE, retrieved.getStatusToSet());
         assertEquals(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertEquals(ResultCode.OK, retrieved.getResultCode());
         assertEquals(result, retrieved.getResult());
         final List<KiePMMLFieldOperatorValue> andConstraints = retrieved.getAndConstraints();
-        assertNotNull(andConstraints);
+        assertThat(andConstraints).isNotNull();
         assertEquals(1, andConstraints.size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());
@@ -234,13 +234,13 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimplePredicate(result, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
         assertEquals(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertEquals(currentRule, retrieved.getStatusToSet());
         final List<KiePMMLFieldOperatorValue> andConstraints = retrieved.getAndConstraints();
-        assertNotNull(andConstraints);
+        assertThat(andConstraints).isNotNull();
         assertEquals(1, andConstraints.size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());

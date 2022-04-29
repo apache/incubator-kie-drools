@@ -15,6 +15,14 @@
  */
 package org.drools.mvel.compiler.builder;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.core.base.accumulators.AverageAccumulateFunction;
 import org.drools.core.base.accumulators.MaxAccumulateFunction;
 import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
@@ -22,6 +30,7 @@ import org.drools.core.base.evaluators.BeforeEvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
@@ -31,18 +40,9 @@ import org.kie.internal.builder.conf.DumpDirOption;
 import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
-import org.kie.api.runtime.rule.AccumulateFunction;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class KnowledgeBuilderConfigurationTest {
@@ -226,7 +226,7 @@ public class KnowledgeBuilderConfigurationTest {
     public void testEvaluatorConfiguration() {
         // in this use case, the application already has the instance of the evaluator definition
         EvaluatorDefinition afterDef = new AfterEvaluatorDefinition();
-        assertNotNull( afterDef );
+        assertThat(afterDef).isNotNull();
         
         // creating the option and storing in a local var just to make test easier
         EvaluatorOption option = EvaluatorOption.get( "after", afterDef );

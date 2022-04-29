@@ -43,9 +43,9 @@ import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
@@ -77,7 +77,7 @@ public class PMMLTreeModelEvaluatorTest {
     public static void setUp() throws Exception {
         evaluator = new PMMLTreeModelEvaluator();
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
@@ -92,7 +92,7 @@ public class PMMLTreeModelEvaluatorTest {
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
                 .build(ExecutableModelProject.class);
-        assertNotNull(kieBase);
+        assertThat(kieBase).isNotNull();
     }
 
     @Test
@@ -188,11 +188,11 @@ public class PMMLTreeModelEvaluatorTest {
 
     private void commonEvaluate(PMMLContext pmmlContext, String expectedScore) {
         PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         logger.trace(retrieved.toString());
         assertEquals(TARGET_FIELD, retrieved.getResultObjectName());
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
-        assertNotNull(resultVariables);
+        assertThat(resultVariables).isNotNull();
         if (expectedScore != null) {
             assertEquals(ResultCode.OK.getName(), retrieved.getResultCode());
             assertFalse(resultVariables.isEmpty());

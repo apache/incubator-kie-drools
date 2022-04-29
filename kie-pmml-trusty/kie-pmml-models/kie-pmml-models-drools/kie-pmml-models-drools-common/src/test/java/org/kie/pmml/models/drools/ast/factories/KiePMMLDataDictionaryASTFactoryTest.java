@@ -29,8 +29,8 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
@@ -45,7 +45,7 @@ public class KiePMMLDataDictionaryASTFactoryTest {
         DataDictionary dataDictionary = new DataDictionary(dataFields);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<KiePMMLDroolsType> retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(getFieldsFromDataDictionary(dataDictionary));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(dataFields.size(), retrieved.size());
         IntStream.range(0, dataFields.size()).forEach(i -> commonVerifyTypeDeclarationDescr(dataFields.get(i), fieldTypeMap, retrieved.get(i)));
     }
@@ -55,7 +55,7 @@ public class KiePMMLDataDictionaryASTFactoryTest {
         DataField dataField = getTypeDataField();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         KiePMMLDroolsType retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareType(dataField);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonVerifyTypeDeclarationDescr(dataField, fieldTypeMap, retrieved);
     }
 

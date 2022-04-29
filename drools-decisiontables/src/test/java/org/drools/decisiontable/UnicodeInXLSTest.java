@@ -15,10 +15,6 @@
 
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +23,19 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.command.Command;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UnicodeInXLSTest {
 
@@ -68,14 +68,14 @@ public class UnicodeInXLSTest {
         ksession.execute(CommandFactory.newBatchExecution(commands));
 
         // people with age greater than 18 should be added to list of adults
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "přidej k dospělým"));
+        assertThat(kbase.getRule("org.drools.decisiontable", "přidej k dospělým")).isNotNull();
         assertEquals(dospělí.size(), 5);
         assertEquals(dospělí.iterator().next().getJméno(), "Řehoř");
 
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "привет мир"));
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "你好世界"));
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "hallå världen"));
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "مرحبا العالم"));
+        assertThat(kbase.getRule("org.drools.decisiontable", "привет мир")).isNotNull();
+        assertThat(kbase.getRule("org.drools.decisiontable", "你好世界"));
+        assertThat(kbase.getRule("org.drools.decisiontable", "hallå världen")).isNotNull();
+        assertThat(kbase.getRule("org.drools.decisiontable", "مرحبا العالم")).isNotNull();
 
         ksession.dispose();
     }

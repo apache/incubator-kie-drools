@@ -16,12 +16,6 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Collections;
 
 import org.drools.core.io.impl.ClassPathResource;
@@ -32,6 +26,12 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class VerifyingScopeTest {
 
@@ -73,7 +73,7 @@ public class VerifyingScopeTest {
         }
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
+        assertThat(result).isNotNull();
         assertEquals( 0,
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 0,
@@ -115,7 +115,7 @@ public class VerifyingScopeTest {
         assertTrue( works );
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
+        assertThat(result).isNotNull();
         assertEquals( 0,
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 0,
@@ -157,7 +157,7 @@ public class VerifyingScopeTest {
         assertTrue( works );
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
+        assertThat(result).isNotNull();
         assertEquals( 0,
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 0,

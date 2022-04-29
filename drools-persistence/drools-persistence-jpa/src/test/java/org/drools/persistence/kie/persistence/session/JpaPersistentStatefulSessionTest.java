@@ -68,7 +68,6 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKI
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -437,12 +436,12 @@ public class JpaPersistentStatefulSessionTest {
         ksession.setGlobal("list", list);
 
         FactType hereType = kbase.getFactType(this.getClass().getPackage().getName(), "Here");
-        assertNotNull(hereType);
+        assertThat(hereType).isNotNull();
         Object here = hereType.newInstance();
         hereType.set(here, "place", "office");
 
         FactType locationType = kbase.getFactType(this.getClass().getPackage().getName(), "Location");
-        assertNotNull(locationType);
+        assertThat(locationType).isNotNull();
         Object location = locationType.newInstance();
         locationType.set(location, "thing", "key");
         locationType.set(location, "location", "office");
@@ -503,11 +502,11 @@ public class JpaPersistentStatefulSessionTest {
         //KieSession ksession = kbase.newKieSession();
 
         FactType manType = kbase.getFactType(this.getClass().getPackage().getName(), "Man");
-        assertNotNull(manType);
+        assertThat(manType).isNotNull();
         FactType womanType = kbase.getFactType(this.getClass().getPackage().getName(), "Woman");
-        assertNotNull(womanType);
+        assertThat(womanType).isNotNull();
         FactType parentType = kbase.getFactType(this.getClass().getPackage().getName(), "Parent");
-        assertNotNull(parentType);
+        assertThat(parentType).isNotNull();
 
         // create working memory objects
         List<Command<?>> commands = new ArrayList<Command<?>>();

@@ -20,7 +20,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.verifier.TestBase;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternDescrVisitorTest extends TestBase {
 
@@ -30,7 +30,7 @@ public class PatternDescrVisitorTest extends TestBase {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("PatternDescrVisitorTest.drl"));
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         packageDescrVisitor.visitPackageDescr(packageDescr);
 
@@ -45,7 +45,7 @@ public class PatternDescrVisitorTest extends TestBase {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("PatternDescrVisitorTest2.drl"));
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         packageDescrVisitor.visitPackageDescr(packageDescr);
 

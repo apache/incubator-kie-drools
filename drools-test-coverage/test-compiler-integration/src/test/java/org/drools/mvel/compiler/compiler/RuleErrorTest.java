@@ -21,8 +21,8 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
 import org.kie.internal.jci.CompilationProblem;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class RuleErrorTest {
@@ -38,7 +38,7 @@ public class RuleErrorTest {
                                                    new AndDescr(),
                                                    probs,
                                                    "IM IN YR EROR" );
-        assertNotNull( err.toString() );
+        assertThat(err.toString()).isNotNull();
         String msg = err.getMessage();
 
         assertTrue( msg.indexOf( "IM IN YR EROR" ) != -1 );

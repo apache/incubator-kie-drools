@@ -18,8 +18,8 @@ package org.drools.scenariosimulation.backend.runner;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +55,7 @@ import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -68,6 +69,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
@@ -75,16 +77,13 @@ import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGenerat
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.kie.dmn.api.core.DMNMessage.Severity.ERROR;
 import static org.kie.dmn.api.core.DMNMessage.Severity.WARN;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -494,7 +493,7 @@ public class DMNScenarioRunnerHelperTest {
         assertTrue(scenarioResultMetadata.getExecuted().contains("decision2"));
         assertFalse(scenarioResultMetadata.getExecuted().contains("decision3"));
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
-        assertNotNull(auditLogLines);
+        assertThat(auditLogLines).isNotNull();
         if (messages == null) {
             assertEquals(decisionResults.size(), auditLogLines.size());
             for (int i = 0; i < decisionResults.size(); i++) {

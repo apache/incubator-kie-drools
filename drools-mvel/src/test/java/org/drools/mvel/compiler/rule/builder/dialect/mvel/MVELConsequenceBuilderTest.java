@@ -82,9 +82,9 @@ import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -415,7 +415,7 @@ public class MVELConsequenceBuilderTest {
         		"c2 = new Cheese().{ type = $map[$cheese.type] };" +
         		"c3 = new Cheese().{ type = $map['key'] };";
         setupTest( consequence, new HashMap<String, Object>() );
-         assertNotNull( context.getRule().getConsequence() );
+         assertThat(context.getRule().getConsequence()).isNotNull();
         assertFalse( context.getRule().hasNamedConsequences() );
         assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
     }

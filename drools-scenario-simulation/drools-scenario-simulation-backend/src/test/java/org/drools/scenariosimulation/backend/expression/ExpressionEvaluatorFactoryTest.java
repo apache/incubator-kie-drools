@@ -23,10 +23,9 @@ import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ExpressionEvaluatorFactoryTest {
@@ -35,7 +34,7 @@ public class ExpressionEvaluatorFactoryTest {
 
     @Test
     public void create() {
-        assertNotNull(ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE));
+        assertThat(ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.RULE)).isNotNull();
     }
 
     @Test

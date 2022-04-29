@@ -16,9 +16,6 @@
 
 package org.drools.verifier.visitor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
@@ -35,6 +32,9 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+
 public class NestedPatternsTest {
 
     @Test
@@ -43,12 +43,12 @@ public class NestedPatternsTest {
         PackageDescrVisitor visitor = new PackageDescrVisitor(data,
                 Collections.EMPTY_LIST);
 
-        assertNotNull(data);
+        assertThat(data).isNotNull();
 
         Reader drlReader = new InputStreamReader(getClass().getResourceAsStream("NestedPatterns.drl"));
         PackageDescr packageDescr = new DrlParser(LanguageLevelOption.DRL5).parse(drlReader);
 
-        assertNotNull(packageDescr);
+        assertThat(packageDescr).isNotNull();
 
         visitor.visitPackageDescr(packageDescr);
 
@@ -69,7 +69,7 @@ public class NestedPatternsTest {
 //            System.out.println( pattern.getPath() + " " + pattern );
 //        }
 
-        assertNotNull(patterns);
+        assertThat(patterns).isNotNull();
         assertEquals(4,
                 patterns.size());
 
@@ -79,7 +79,7 @@ public class NestedPatternsTest {
 //            System.out.println( restriction.getPath() + " " + restriction );
 //        }
 
-        assertNotNull(restrictions);
+        assertThat(restrictions).isNotNull();
         assertEquals(3,
                 restrictions.size());
 

@@ -85,8 +85,8 @@ import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.EXPRESSION_NOT_MANAGED;
@@ -98,7 +98,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLDefineFunction(KiePMMLDefineFunction toVerify,
                                                   DefineFunction source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getName(), toVerify.getName());
         DATA_TYPE expectedDataType = DATA_TYPE.byName(source.getDataType().value());
         assertEquals(expectedDataType, toVerify.getDataType());
@@ -119,7 +119,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLDerivedField(KiePMMLDerivedField toVerify,
                                                 DerivedField source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getName().getValue(), toVerify.getName());
         DATA_TYPE expectedDataType = DATA_TYPE.byName(source.getDataType().value());
         assertEquals(expectedDataType, toVerify.getDataType());
@@ -131,7 +131,7 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLParameterField(KiePMMLParameterField toVerify, ParameterField source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getName().getValue(), toVerify.getName());
         DATA_TYPE expectedDataType = DATA_TYPE.byName(source.getDataType().value());
         assertEquals(expectedDataType, toVerify.getDataType());
@@ -166,7 +166,7 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKKiePMMLCompoundPredicate(KiePMMLCompoundPredicate toVerify, CompoundPredicate source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getBooleanOperator().value(), toVerify.getBooleanOperator().getName());
         assertEquals(source.getPredicates().size(), toVerify.getKiePMMLPredicates().size());
         IntStream.range(0, source.getPredicates().size()).forEach(i -> {
@@ -175,12 +175,12 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLFalsePredicate(KiePMMLFalsePredicate toVerify, False source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
     }
 
     static void commonVerifyKiePMMLSimplePredicate(KiePMMLSimplePredicate toVerify, SimplePredicate source,
                                                    DataField dataField) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         Object value = DATA_TYPE.byName(dataField.getDataType().value()).getActualValue(source.getValue());
         assertEquals(source.getField().getValue(), toVerify.getName());
         assertEquals(value, toVerify.getValue());
@@ -188,13 +188,13 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLSimplePredicate(KiePMMLSimplePredicate toVerify, SimplePredicate source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getField().getValue(), toVerify.getName());
         assertEquals(source.getOperator().value(), toVerify.getOperator().getName());
     }
 
     static void commonVerifyKiePMMLSimpleSetPredicate(KiePMMLSimpleSetPredicate toVerify, SimpleSetPredicate source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getField().getValue(), toVerify.getName());
         Array array = source.getArray();
         assertEquals(array.getType().value(), toVerify.getArrayType().getName());
@@ -220,7 +220,7 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLTruePredicate(KiePMMLTruePredicate toVerify, True source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
     }
 
     // Expressions
@@ -257,7 +257,7 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLApply(KiePMMLApply toVerify, Apply source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getFunction(), toVerify.getFunction());
         assertEquals(source.getMapMissingTo(), toVerify.getMapMissingTo());
         assertEquals(source.getDefaultValue(), toVerify.getDefaultValue());
@@ -269,12 +269,12 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLConstant(KiePMMLConstant toVerify, Constant source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getValue(), toVerify.getValue());
     }
 
     static void commonVerifyKiePMMLDiscretize(KiePMMLDiscretize toVerify, Discretize source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getField().getValue(), toVerify.getName());
         assertEquals(source.getMapMissingTo(), toVerify.getMapMissingTo());
         assertEquals(source.getDefaultValue(), toVerify.getDefaultValue());
@@ -284,13 +284,13 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLFieldRef(KiePMMLFieldRef toVerify, FieldRef source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getField().getValue(), toVerify.getName());
         assertEquals(source.getMapMissingTo(), toVerify.getMapMissingTo());
     }
 
     static void commonVerifyKiePMMLMapValues(KiePMMLMapValues toVerify, MapValues source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getOutputColumn(), toVerify.getOutputColumn());
         assertEquals(source.getMapMissingTo(), toVerify.getMapMissingTo());
         assertEquals(source.getDefaultValue().toString(), toVerify.getDefaultValue());
@@ -301,7 +301,7 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLNormContinuous(KiePMMLNormContinuous toVerify, NormContinuous source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getOutliers().value(), toVerify.getOutlierTreatmentMethod().getName());
         assertEquals(source.getMapMissingTo(), toVerify.getMapMissingTo());
         final List<LinearNorm> toConvertLinearNorms = source.getLinearNorms();
@@ -312,14 +312,14 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLNormDiscrete(KiePMMLNormDiscrete toVerify, NormDiscrete source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getField().getValue(), toVerify.getName());
         assertEquals(source.getMapMissingTo(), toVerify.getMapMissingTo());
         assertEquals(source.getValue().toString(), toVerify.getValue());
     }
 
     static void commonVerifyKiePMMLTextIndex(KiePMMLTextIndex toVerify, TextIndex source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getLocalTermWeights().value(), toVerify.getLocalTermWeights().getName());
         assertEquals(source.getCountHits().value(), toVerify.getCountHits().getName());
         assertEquals(StringEscapeUtils.escapeJava(source.getWordSeparatorCharacterRE()),
@@ -337,38 +337,38 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLTextIndexNormalization(KiePMMLTextIndexNormalization toVerify,
                                                           TextIndexNormalization source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
     }
 
     //
 
     static void commonVerifyKiePMMLDiscretizeBin(KiePMMLDiscretizeBin toVerify, DiscretizeBin source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         commonVerifyKiePMMLInterval(toVerify.getInterval(), source.getInterval());
         assertEquals(source.getBinValue(), toVerify.getBinValue());
     }
 
     static void commonVerifyKiePMMLFieldColumnPair(KiePMMLFieldColumnPair toVerify, FieldColumnPair source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getField().getValue(), toVerify.getName());
         assertEquals(source.getColumn(), toVerify.getColumn());
     }
 
     static void commonVerifyKiePMMLInlineTableWithCells(KiePMMLInlineTable toVerify, InlineTable source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getRows().size(), toVerify.getRows().size());
         IntStream.range(0, source.getRows().size()).forEach(i -> commonVerifyKiePMMLRowWithCells(toVerify.getRows().get(i), source.getRows().get(i)));
     }
 
     static void commonVerifyKiePMMLInterval(KiePMMLInterval toVerify, Interval source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getLeftMargin(), toVerify.getLeftMargin());
         assertEquals(source.getRightMargin(), toVerify.getRightMargin());
         assertEquals(source.getClosure().value(), toVerify.getClosure().getName());
     }
 
     static void commonVerifyKiePMMLMiningField(KiePMMLMiningField toVerify, MiningField source, DataField dataField) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getName().getValue(), toVerify.getName());
         assertEquals(source.getOpType().value(), toVerify.getOpType().getName());
         assertEquals(source.getUsageType().value(), toVerify.getFieldUsageType().getName());
@@ -382,7 +382,7 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLOutputField(KiePMMLOutputField toVerify, OutputField source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getName().getValue(), toVerify.getName());
         assertEquals(source.getValue(), toVerify.getValue());
         assertEquals(source.getDataType().value(), toVerify.getDataType().getName());
@@ -394,7 +394,7 @@ public class InstanceFactoriesTestCommon {
     }
 
     static void commonVerifyKiePMMLTarget(KiePMMLTarget toVerify, Target source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(toVerify.getTargetValues().size(), source.getTargetValues().size());
         OP_TYPE expectedOpType = OP_TYPE.byName(source.getOpType().value());
         assertEquals(expectedOpType, toVerify.getOpType());
@@ -409,19 +409,19 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLRow(KiePMMLRow toVerify,
                                        Row source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertTrue(toVerify.getColumnValues().isEmpty());
     }
 
     static void commonVerifyKiePMMLRowWithCells(KiePMMLRow toVerify,
                                                 Row source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(2, toVerify.getColumnValues().size());
     }
 
     static void commonVerifyKiePMMLTargetValue(KiePMMLTargetValue toVerify,
                                                TargetValue source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getValue().toString(), toVerify.getValue());
         assertEquals(source.getDisplayValue(), toVerify.getDisplayValue());
         assertEquals(source.getPriorProbability().doubleValue(), toVerify.getPriorProbability(), 0.0);
@@ -430,7 +430,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLLinearNorm(KiePMMLLinearNorm toVerify,
                                               LinearNorm source) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertEquals(source.getOrig().doubleValue(), toVerify.getOrig(), 0.0);
         assertEquals(source.getNorm().doubleValue(), toVerify.getNorm(), 0.0);
     }

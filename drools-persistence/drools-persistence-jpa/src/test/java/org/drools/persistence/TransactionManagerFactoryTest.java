@@ -24,9 +24,9 @@ import org.junit.After;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 public class TransactionManagerFactoryTest {
 
@@ -88,7 +88,7 @@ public class TransactionManagerFactoryTest {
         assertEquals(JtaTransactionManagerFactory.class.getName(),
                      transactionManagerFactory.get().getClass().getName());
 
-        assertNotNull(transactionManagerFactory.newTransactionManager(env));
+        assertThat(transactionManagerFactory.newTransactionManager(env)).isNotNull();
 
         assertEquals(JtaTransactionManager.class.getName(),
                      transactionManagerFactory.newTransactionManager(env).getClass().getName());

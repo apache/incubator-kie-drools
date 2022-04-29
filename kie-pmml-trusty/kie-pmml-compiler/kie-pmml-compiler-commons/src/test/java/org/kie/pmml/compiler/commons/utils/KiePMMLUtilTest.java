@@ -51,9 +51,9 @@ import org.dmg.pmml.mining.Segment;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.MODELNAME_TEMPLATE;
@@ -94,7 +94,7 @@ public class KiePMMLUtilTest {
         final Model toPopulate = pmml.getModels().get(0);
         assertNull(toPopulate.getModelName());
         KiePMMLUtil.populateMissingModelName(toPopulate, NO_MODELNAME_SAMPLE_NAME, 0);
-        assertNotNull(toPopulate.getModelName());
+        assertThat(toPopulate.getModelName()).isNotNull();
         String expected = String.format(MODELNAME_TEMPLATE,
                                         NO_MODELNAME_SAMPLE_NAME,
                                         toPopulate.getClass().getSimpleName(),
@@ -131,7 +131,7 @@ public class KiePMMLUtilTest {
         assertNull(outputField.getTargetField());
         KiePMMLUtil.populateMissingPredictedOutputFieldTarget(toPopulate);
         final MiningField targetField = getMiningTargetFields(toPopulate.getMiningSchema().getMiningFields()).get(0);
-        assertNotNull(outputField.getTargetField());
+        assertThat(outputField.getTargetField()).isNotNull();
         assertEquals(targetField.getName(), outputField.getTargetField());
     }
 
@@ -226,8 +226,8 @@ public class KiePMMLUtilTest {
         });
         KiePMMLUtil.populateCorrectMiningModel(miningModel);
         miningModel.getSegmentation().getSegments().forEach(segment -> {
-            assertNotNull(segment.getId());
-            assertNotNull(segment.getModel().getModelName());
+            assertThat(segment.getId()).isNotNull();
+            assertThat(segment.getModel().getModelName()).isNotNull();
             assertFalse(getMiningTargetFields(segment.getModel().getMiningSchema()).isEmpty());
         });
     }
@@ -244,7 +244,7 @@ public class KiePMMLUtilTest {
         String modelName = "MODEL_NAME";
         int i = 0;
         KiePMMLUtil.populateCorrectSegmentId(toPopulate, modelName, i);
-        assertNotNull(toPopulate.getId());
+        assertThat(toPopulate.getId()).isNotNull();
         String expected = String.format(SEGMENTID_TEMPLATE,
                                         modelName,
                                         i);
@@ -262,7 +262,7 @@ public class KiePMMLUtilTest {
         assertNull(toPopulate.getModelName());
         String segmentId = "SEG_ID";
         KiePMMLUtil.populateMissingSegmentModelName(toPopulate, segmentId);
-        assertNotNull(toPopulate.getModelName());
+        assertThat(toPopulate.getModelName()).isNotNull();
         String expected = String.format(SEGMENTMODELNAME_TEMPLATE,
                                         segmentId,
                                         toPopulate.getClass().getSimpleName());
@@ -343,7 +343,7 @@ public class KiePMMLUtilTest {
                     outputFields.add(toAdd);
                 });
         KiePMMLUtil.populateMissingOutputFieldDataType(outputFields, miningFields, dataFields);
-        outputFields.forEach(outputField -> assertNotNull(outputField.getDataType()));
+        outputFields.forEach(outputField -> assertThat(outputField.getDataType()).isNotNull());
     }
 
     @Test
@@ -369,7 +369,7 @@ public class KiePMMLUtilTest {
         final PMML toPopulate = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model model = toPopulate.getModels().get(0);
         List<MiningField> retrieved = KiePMMLUtil.getMiningTargetFields(model.getMiningSchema());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
         MiningField targetField = retrieved.get(0);
         assertEquals("car_location", targetField.getName().getValue());
@@ -382,7 +382,7 @@ public class KiePMMLUtilTest {
         final PMML toPopulate = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model model = toPopulate.getModels().get(0);
         List<MiningField> retrieved = KiePMMLUtil.getMiningTargetFields(model.getMiningSchema().getMiningFields());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
         MiningField targetField = retrieved.get(0);
         assertEquals("car_location", targetField.getName().getValue());
@@ -410,9 +410,9 @@ public class KiePMMLUtilTest {
     }
 
     private void commonValidatePMML(PMML toValidate) {
-        assertNotNull(toValidate);
+        assertThat(toValidate).isNotNull();
         for (Model model : toValidate.getModels()) {
-            assertNotNull(model.getModelName());
+            assertThat(model.getModelName()).isNotNull();
             if (model instanceof MiningModel) {
                 commonValidateMiningModel((MiningModel) model);
             }
@@ -420,11 +420,11 @@ public class KiePMMLUtilTest {
     }
 
     private void commonValidateMiningModel(MiningModel toValidate) {
-        assertNotNull(toValidate);
+        assertThat(toValidate).isNotNull();
         for (Segment segment : toValidate.getSegmentation().getSegments()) {
-            assertNotNull(segment.getId());
+            assertThat(segment.getId()).isNotNull();
             Model segmentModel = segment.getModel();
-            assertNotNull(segmentModel.getModelName());
+            assertThat(segmentModel.getModelName()).isNotNull();
             if (segmentModel instanceof MiningModel) {
                 commonValidateMiningModel((MiningModel) segmentModel);
             }

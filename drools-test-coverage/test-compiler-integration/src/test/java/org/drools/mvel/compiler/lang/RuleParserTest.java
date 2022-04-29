@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.drools.compiler.compiler.DrlParser;
@@ -69,22 +68,25 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class RuleParserTest extends TestCase {
+public class RuleParserTest {
 
 
     private DRLParser parser;
 
     @Before
-    protected void setUp() throws Exception {
-        super.setUp();
+    public void setUp() throws Exception {
         // initializes pluggable operators
         new EvaluatorRegistry();
     }
 
     @After
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void tearDown() throws Exception {
     }
 
     @Test
@@ -557,12 +559,12 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                               "empty_rule.drl" );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "empty",
                           rule.getName() );
-        assertNotNull( rule.getLhs() );
-        assertNotNull( rule.getConsequence() );
+        assertThat(rule.getLhs()).isNotNull();
+        assertThat(rule.getConsequence()).isNotNull();
     }
 
     @Test
@@ -642,13 +644,13 @@ public class RuleParserTest extends TestCase {
 
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
-        assertNotNull( pkg );
+        assertThat(pkg).isNotNull();
 
         RuleDescr rule = pkg.getRules().get( 0 );
 
         assertEquals( "almost_empty",
                       rule.getName() );
-        assertNotNull( rule.getLhs() );
+        assertThat(rule.getLhs()).isNotNull();
         assertEquals( "",
                       ((String) rule.getConsequence()).trim() );
     }
@@ -660,11 +662,11 @@ public class RuleParserTest extends TestCase {
 
         assertFalse( parser.getErrors().toString(),
                          parser.hasErrors() );
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "quoted string name",
                           rule.getName() );
-        assertNotNull( rule.getLhs() );
+        assertThat(rule.getLhs()).isNotNull();
         assertEquals( "",
                           ((String) rule.getConsequence()).trim() );
     }
@@ -676,7 +678,7 @@ public class RuleParserTest extends TestCase {
 
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "rule1",
                       rule.getName() );
@@ -695,7 +697,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "rule1",
                       rule.getName() );
@@ -714,7 +716,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "rule1",
                       rule.getName() );
@@ -733,7 +735,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "myrule",
                           rule.getName() );
@@ -760,7 +762,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         AndDescr lhs = rule.getLhs();
         assertEquals( 1,
@@ -777,7 +779,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                          parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         AndDescr lhs = rule.getLhs();
         ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get( 0 )).getDescrs().get( 0 );
@@ -794,7 +796,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         AndDescr lhs = rule.getLhs();
         ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get( 0 )).getDescrs().get( 1 );
@@ -811,11 +813,11 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                          parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "simple_rule",
                           rule.getName() );
-        assertNotNull( rule.getLhs() );
+        assertThat(rule.getLhs()).isNotNull();
         assertEqualsIgnoreWhitespace( "cons();",
                                           (String) rule.getConsequence() );
 
@@ -913,7 +915,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( "simple rule",
                       ruleDescr.getName() );
-        assertNotNull( ruleDescr.getLhs() );
+        assertThat(ruleDescr.getLhs()).isNotNull();
         assertEquals( 1,
                       ruleDescr.getLhs().getDescrs().size() );
         final PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get( 0 );
@@ -1001,7 +1003,7 @@ public class RuleParserTest extends TestCase {
 
         assertFalse( parser.getErrorMessages().toString(),
                      parser.hasErrors() );
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "using_from",
                       rule.getName() );
@@ -1017,7 +1019,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "simple_rule",
                       rule.getName() );
@@ -1029,7 +1031,7 @@ public class RuleParserTest extends TestCase {
 
         final AndDescr lhs = rule.getLhs();
 
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
 
         assertEquals( 3,
                       lhs.getDescrs().size() );
@@ -1046,7 +1048,7 @@ public class RuleParserTest extends TestCase {
 
         AndDescr fieldAnd = (AndDescr) first.getConstraint();
         ExprConstraintDescr constraint = (ExprConstraintDescr) fieldAnd.getDescrs().get( 0 );
-        assertNotNull( constraint );
+        assertThat(constraint).isNotNull();
 
         assertEquals( "a==3",
                       constraint.getExpression() );
@@ -1084,7 +1086,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                          parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEqualsIgnoreWhitespace( "consequence();",
                                           (String) rule.getConsequence() );
@@ -1133,7 +1135,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "simple_rule.drl" );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "simple_rule",
                       rule.getName() );
@@ -1145,7 +1147,7 @@ public class RuleParserTest extends TestCase {
 
         final AndDescr lhs = rule.getLhs();
 
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
 
         assertEquals( 3,
                       lhs.getDescrs().size() );
@@ -1200,14 +1202,14 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "simple_rule",
                       rule.getName() );
 
         final AndDescr lhs = rule.getLhs();
 
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
 
         assertEquals( 3,
                       lhs.getDescrs().size() );
@@ -1227,7 +1229,7 @@ public class RuleParserTest extends TestCase {
         // LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
         AndDescr and = (AndDescr) first.getConstraint();
         ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
-        assertNotNull( fld );
+        assertThat(fld).isNotNull();
 
         assertEquals( "a==3",
                       fld.getExpression() );
@@ -1264,7 +1266,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
         assertEquals( "simple_rule",
                       rule.getName() );
 
@@ -1299,7 +1301,7 @@ public class RuleParserTest extends TestCase {
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
         assertEquals( "simple_rule",
                       rule.getName() );
 
@@ -1327,14 +1329,14 @@ public class RuleParserTest extends TestCase {
         final QueryDescr query = (QueryDescr) parseResource( "query",
                                                              "simple_query.drl" );
 
-        assertNotNull( query );
+        assertThat(query).isNotNull();
 
         assertEquals( "simple_query",
                       query.getName() );
 
         final AndDescr lhs = query.getLhs();
 
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
 
         assertEquals( 3,
                       lhs.getDescrs().size() );
@@ -1351,7 +1353,7 @@ public class RuleParserTest extends TestCase {
 
         AndDescr and = (AndDescr) first.getConstraint();
         ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
-        assertNotNull( fld );
+        assertThat(fld).isNotNull();
 
         assertEquals( "a==3",
                       fld.getExpression() );
@@ -1415,7 +1417,7 @@ public class RuleParserTest extends TestCase {
 
         // checkout the first rule
         AndDescr lhs = rule1.getLhs();
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
         assertEquals( 1,
                       lhs.getDescrs().size() );
         assertEqualsIgnoreWhitespace( "System.out.println(\"I like \" + t);",
@@ -1428,7 +1430,7 @@ public class RuleParserTest extends TestCase {
 
         // checkout the second rule
         lhs = rule1.getLhs();
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
         assertEquals( 1,
                       lhs.getDescrs().size() );
         assertEqualsIgnoreWhitespace( "System.out.println(\"I like \" + t);",
@@ -1456,7 +1458,7 @@ public class RuleParserTest extends TestCase {
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( 2,
                       or.getDescrs().size() );
-        assertNotNull( (String) rule.getConsequence() );
+        assertThat( (String) rule.getConsequence() ).isNotNull();
 
     }
 
@@ -1488,7 +1490,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Bar",
                       pattern.getObjectType() );
 
-        assertNotNull( (String) rule.getConsequence() );
+        assertThat( (String) rule.getConsequence() ).isNotNull();
 
     }
 
@@ -1518,7 +1520,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "location==atlanta",
                       ((ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 1 )).getExpression() );
 
-        assertNotNull( (String) rule.getConsequence() );
+        assertThat( (String) rule.getConsequence() ).isNotNull();
 
     }
 
@@ -1565,7 +1567,7 @@ public class RuleParserTest extends TestCase {
     // ((RecognitionException) parser.getErrors().get( 3 )).line );
     //
     // final PackageDescr pack = parser.getPackageDescr();
-    // assertNotNull( pack );
+    // assertThat(pack).isNotNull();
     //
     // final ExpanderException ex = (ExpanderException) parser.getErrors().get(
     // 0 );
@@ -1629,7 +1631,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_nesting.drl" );
 
-        assertNotNull( pkg );
+        assertThat(pkg).isNotNull();
         assertEquals( 1,
                       pkg.getRules().size() );
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
@@ -1666,7 +1668,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "and_or_rule.drl" );
 
-        assertNotNull( pkg );
+        assertThat(pkg).isNotNull();
         assertEquals( 1,
                       pkg.getRules().size() );
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
@@ -2051,7 +2053,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "comment.drl" );
 
-        assertNotNull( pkg );
+        assertThat(pkg).isNotNull();
 
         assertEquals( "foo.bar",
                       pkg.getName() );
@@ -2186,7 +2188,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       attributes.size() );
         AttributeDescr refract = attributes.get( "refract" );
-        assertNotNull( refract );
+        assertThat(refract).isNotNull();
         assertEquals( "true",
                       refract.getValue() );
 
@@ -2615,7 +2617,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "escaped-string.drl" );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEquals( "test_Quotes",
                       rule.getName() );
@@ -2631,7 +2633,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "nested_conditional_elements.drl" );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         final AndDescr root = rule.getLhs();
         final NotDescr not1 = (NotDescr) root.getDescrs().get( 0 );
@@ -2753,7 +2755,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "in_operator_test.drl" );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEqualsIgnoreWhitespace( "consequence();",
                                       (String) rule.getConsequence() );
@@ -2798,7 +2800,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "notin_operator_test.drl" );
 
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         assertEqualsIgnoreWhitespace( "consequence();",
                                       (String) rule.getConsequence() );
@@ -3508,7 +3510,7 @@ public class RuleParserTest extends TestCase {
                       rule.getParentName() );
 
         AndDescr lhs = rule.getLhs();
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
         assertEquals( 1,
                       lhs.getDescrs().size() );
 
@@ -3575,7 +3577,7 @@ public class RuleParserTest extends TestCase {
                       field.getInitExpr() );
         assertEquals( "50",
                       field.getAnnotation( "length" ).getValue( "max" ) );
-        assertNotNull( field.getAnnotation( "key" ) );
+        assertThat( field.getAnnotation( "key" ) ).isNotNull();
 
         field = type.getFields().get( "age" );
         assertEquals( "age",
@@ -3606,7 +3608,7 @@ public class RuleParserTest extends TestCase {
                       rule.getName() );
 
         AndDescr lhs = rule.getLhs();
-        assertNotNull( lhs );
+        assertThat(lhs).isNotNull();
         assertEquals( 2,
                       lhs.getDescrs().size() );
 
@@ -3667,7 +3669,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "symbol==\"ACME\"",
                       fcd.getExpression() );
 
-        assertNotNull( pattern.getSource() );
+        assertThat(pattern.getSource()).isNotNull();
         EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
         assertEquals( "StreamA",
                       entry.getEntryId() );
@@ -3691,7 +3693,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "symbol==\"ACME\"",
                       fcd.getExpression() );
 
-        assertNotNull( pattern.getSource() );
+        assertThat(pattern.getSource()).isNotNull();
         EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
         assertEquals( "StreamA",
                       entry.getEntryId() );
@@ -3716,7 +3718,7 @@ public class RuleParserTest extends TestCase {
                       fcd.getExpression() );
 
         List<BehaviorDescr> behaviors = pattern.getBehaviors();
-        assertNotNull( behaviors );
+        assertThat(behaviors).isNotNull();
         assertEquals( 1,
                       behaviors.size() );
         BehaviorDescr descr = behaviors.get( 0 );
@@ -3919,12 +3921,12 @@ public class RuleParserTest extends TestCase {
                                              text );
 
         AnnotationDescr ann = rule.getAnnotation( "ann1" );
-        assertNotNull( ann );
+        assertThat(ann).isNotNull();
         assertEquals( "val1, val2",
                       ann.getValue() );
 
         ann = rule.getAnnotation( "ann2" );
-        assertNotNull( ann );
+        assertThat(ann).isNotNull();
         assertEquals( "\"val1\", \"val2\"",
                       ann.getValue() );
     }
@@ -4189,7 +4191,7 @@ public class RuleParserTest extends TestCase {
                       wdd.getAnnotation( "doc" ).getValue() );
 
         PatternDescr pd = wdd.getPattern();
-        assertNotNull( pd );
+        assertThat(pd).isNotNull();
         assertEquals( "$s",
                       pd.getIdentifier() );
         assertEquals( "StockTick",
@@ -4236,7 +4238,7 @@ public class RuleParserTest extends TestCase {
                       rd.getLhs().getDescrs().size() );
 
         PatternDescr pd = (PatternDescr) rd.getLhs().getDescrs().get(0);
-        assertNotNull( pd );
+        assertThat(pd).isNotNull();
         assertEquals( "StockTick",
                       pd.getObjectType() );
         assertEquals( "Y",

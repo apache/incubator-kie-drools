@@ -36,9 +36,9 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldType;
@@ -55,12 +55,12 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     @Before
     public void setUp() throws Exception {
         golfingPmml = TestUtils.loadFromFile(SOURCE_GOLFING);
-        assertNotNull(golfingPmml);
+        assertThat(golfingPmml).isNotNull();
         assertEquals(1, golfingPmml.getModels().size());
         assertTrue(golfingPmml.getModels().get(0) instanceof TreeModel);
         golfingModel = ((TreeModel) golfingPmml.getModels().get(0));
         irisPmml = TestUtils.loadFromFile(SOURCE_IRIS);
-        assertNotNull(irisPmml);
+        assertThat(irisPmml).isNotNull();
         assertEquals(1, irisPmml.getModels().size());
         assertTrue(irisPmml.getModels().get(0) instanceof TreeModel);
         irisModel = ((TreeModel) irisPmml.getModels().get(0));
