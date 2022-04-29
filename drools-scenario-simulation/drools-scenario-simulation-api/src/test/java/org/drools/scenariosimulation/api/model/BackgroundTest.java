@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class BackgroundTest {
 
@@ -58,7 +58,7 @@ public class BackgroundTest {
     @Test
     public void cloneModel() {
         final Background cloned = this.background.cloneModel();
-        assertNotNull(cloned);
+        assertThat(cloned).isNotNull();
         final ScesimModelDescriptor originalDescriptor = background.getScesimModelDescriptor();
         final ScesimModelDescriptor clonedDescriptor = cloned.getScesimModelDescriptor();
         assertEquals(originalDescriptor.getUnmodifiableFactMappings().size(), clonedDescriptor.getUnmodifiableFactMappings().size());

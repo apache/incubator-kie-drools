@@ -25,9 +25,9 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLSegmentation;
@@ -42,9 +42,9 @@ public class KiePMMLMiningModelTest {
     @BeforeClass
     public static void setup() {
         BUILDER = KiePMMLMiningModel.builder(MINING_MODEL_NAME, Collections.emptyList(), MININGFUNCTION);
-        assertNotNull(BUILDER);
+        assertThat(BUILDER).isNotNull();
         KIE_PMML_MINING_MODEL = BUILDER.build();
-        assertNotNull(KIE_PMML_MINING_MODEL);
+        assertThat(KIE_PMML_MINING_MODEL).isNotNull();
     }
 
     @Test(expected = KiePMMLException.class)

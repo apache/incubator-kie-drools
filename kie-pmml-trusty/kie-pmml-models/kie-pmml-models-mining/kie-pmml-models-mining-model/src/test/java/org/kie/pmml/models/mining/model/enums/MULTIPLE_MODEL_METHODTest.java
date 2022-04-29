@@ -34,8 +34,8 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.AVERAGE;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.MAJORITY_VOTE;
@@ -75,7 +75,7 @@ public class MULTIPLE_MODEL_METHODTest {
 
     @Test
     public void byNameExisting() {
-        EXISTING_VALUES.values().forEach(s -> assertNotNull(MULTIPLE_MODEL_METHOD.byName(s)));
+        EXISTING_VALUES.values().forEach(s -> assertThat(MULTIPLE_MODEL_METHOD.byName(s)).isNotNull());
     }
 
     @Test(expected = KieEnumException.class)

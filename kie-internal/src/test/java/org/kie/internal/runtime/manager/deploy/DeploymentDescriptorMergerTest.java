@@ -28,9 +28,9 @@ import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -44,7 +44,7 @@ public class DeploymentDescriptorMergerTest {
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.CustomStrategy", new Object[]{"param2"}))
                 .setLimitSerializationClasses(true);
 
-        assertNotNull(primary);
+        assertThat(primary).isNotNull();
         assertEquals("org.jbpm.domain", primary.getPersistenceUnit());
         assertEquals("org.jbpm.domain", primary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, primary.getAuditMode());
@@ -68,7 +68,7 @@ public class DeploymentDescriptorMergerTest {
                 .auditPersistenceUnit("my.custom.unit2")
                 .setLimitSerializationClasses(false);
 
-        assertNotNull(secondary);
+        assertThat(secondary).isNotNull();
         assertEquals("my.custom.unit", secondary.getPersistenceUnit());
         assertEquals("my.custom.unit2", secondary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, secondary.getAuditMode());
@@ -87,7 +87,7 @@ public class DeploymentDescriptorMergerTest {
 
         DeploymentDescriptor outcome = DeploymentDescriptorMerger.merge(primary, secondary, MergeMode.OVERRIDE_ALL);
 
-        assertNotNull(outcome);
+        assertThat(outcome).isNotNull();
         assertEquals("my.custom.unit", outcome.getPersistenceUnit());
         assertEquals("my.custom.unit2", outcome.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, outcome.getAuditMode());
@@ -111,7 +111,7 @@ public class DeploymentDescriptorMergerTest {
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.CustomStrategy", new Object[]{"param2"}))
                 .setLimitSerializationClasses(true);
 
-        assertNotNull(primary);
+        assertThat(primary).isNotNull();
         assertEquals("org.jbpm.domain", primary.getPersistenceUnit());
         assertEquals("org.jbpm.domain", primary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, primary.getAuditMode());
@@ -135,7 +135,7 @@ public class DeploymentDescriptorMergerTest {
                 .auditPersistenceUnit("my.custom.unit2")
                 .setLimitSerializationClasses(false);
 
-        assertNotNull(secondary);
+        assertThat(secondary).isNotNull();
         assertEquals("my.custom.unit", secondary.getPersistenceUnit());
         assertEquals("my.custom.unit2", secondary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, secondary.getAuditMode());
@@ -153,7 +153,7 @@ public class DeploymentDescriptorMergerTest {
         // and now let's merge them
         DeploymentDescriptor outcome = DeploymentDescriptorMerger.merge(primary, secondary, MergeMode.KEEP_ALL);
 
-        assertNotNull(outcome);
+        assertThat(outcome).isNotNull();
         assertEquals("org.jbpm.domain", outcome.getPersistenceUnit());
         assertEquals("org.jbpm.domain", outcome.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, outcome.getAuditMode());
@@ -177,7 +177,7 @@ public class DeploymentDescriptorMergerTest {
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.CustomStrategy", new Object[]{"param2"}))
                 .setLimitSerializationClasses(true);
 
-        assertNotNull(primary);
+        assertThat(primary).isNotNull();
         assertEquals("org.jbpm.domain", primary.getPersistenceUnit());
         assertEquals("org.jbpm.domain", primary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, primary.getAuditMode());
@@ -200,7 +200,7 @@ public class DeploymentDescriptorMergerTest {
                 .persistenceUnit(null)
                 .auditPersistenceUnit("");
 
-        assertNotNull(secondary);
+        assertThat(secondary).isNotNull();
         assertEquals(null, secondary.getPersistenceUnit());
         assertEquals("", secondary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, secondary.getAuditMode());
@@ -219,7 +219,7 @@ public class DeploymentDescriptorMergerTest {
         // and now let's merge them
         DeploymentDescriptor outcome = DeploymentDescriptorMerger.merge(primary, secondary, MergeMode.OVERRIDE_EMPTY);
 
-        assertNotNull(outcome);
+        assertThat(outcome).isNotNull();
         assertEquals("org.jbpm.domain", outcome.getPersistenceUnit());
         assertEquals("org.jbpm.domain", outcome.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, outcome.getAuditMode());
@@ -243,7 +243,7 @@ public class DeploymentDescriptorMergerTest {
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.CustomStrategy", new Object[]{"param2"}))
                 .setLimitSerializationClasses(true);
 
-        assertNotNull(primary);
+        assertThat(primary).isNotNull();
         assertEquals("org.jbpm.domain", primary.getPersistenceUnit());
         assertEquals("org.jbpm.domain", primary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, primary.getAuditMode());
@@ -268,7 +268,7 @@ public class DeploymentDescriptorMergerTest {
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.AnotherCustomStrategy", new Object[]{"param2"}))
                 .setLimitSerializationClasses(false);
 
-        assertNotNull(secondary);
+        assertThat(secondary).isNotNull();
         assertEquals(null, secondary.getPersistenceUnit());
         assertEquals("", secondary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, secondary.getAuditMode());
@@ -287,7 +287,7 @@ public class DeploymentDescriptorMergerTest {
         DeploymentDescriptor outcome = DeploymentDescriptorMerger.merge(primary, secondary,
                 MergeMode.MERGE_COLLECTIONS);
 
-        assertNotNull(outcome);
+        assertThat(outcome).isNotNull();
         assertEquals("org.jbpm.domain", outcome.getPersistenceUnit());
         assertEquals("org.jbpm.domain", outcome.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, outcome.getAuditMode());
@@ -310,7 +310,7 @@ public class DeploymentDescriptorMergerTest {
         primary.getBuilder()
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.CustomStrategy", new Object[]{"param2"}));
 
-        assertNotNull(primary);
+        assertThat(primary).isNotNull();
         assertEquals("org.jbpm.domain", primary.getPersistenceUnit());
         assertEquals("org.jbpm.domain", primary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, primary.getAuditMode());
@@ -332,7 +332,7 @@ public class DeploymentDescriptorMergerTest {
                 .persistenceUnit("my.custom.unit")
                 .auditPersistenceUnit("my.custom.unit2");
 
-        assertNotNull(secondary);
+        assertThat(secondary).isNotNull();
         assertEquals("my.custom.unit", secondary.getPersistenceUnit());
         assertEquals("my.custom.unit2", secondary.getAuditPersistenceUnit());
         assertEquals(AuditMode.NONE, secondary.getAuditMode());
@@ -356,7 +356,7 @@ public class DeploymentDescriptorMergerTest {
                 .runtimeStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE)
                 .addEnvironmentEntry(new NamedObjectModel("IS_JTA", "java.lang.Boolean", new Object[]{"false"}));
 
-        assertNotNull(third);
+        assertThat(third).isNotNull();
         assertEquals("my.custom.unit2", third.getPersistenceUnit());
         assertEquals("my.custom.altered", third.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, third.getAuditMode());
@@ -379,7 +379,7 @@ public class DeploymentDescriptorMergerTest {
         // and now let's merge them
         DeploymentDescriptor outcome = DeploymentDescriptorMerger.merge(hierarchy, MergeMode.MERGE_COLLECTIONS);
 
-        assertNotNull(outcome);
+        assertThat(outcome).isNotNull();
         assertEquals("my.custom.unit2", outcome.getPersistenceUnit());
         assertEquals("my.custom.altered", outcome.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, outcome.getAuditMode());
@@ -401,7 +401,7 @@ public class DeploymentDescriptorMergerTest {
         primary.getBuilder()
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.CustomStrategy", new Object[]{"param2"}));
 
-        assertNotNull(primary);
+        assertThat(primary).isNotNull();
         assertEquals("org.jbpm.domain", primary.getPersistenceUnit());
         assertEquals("org.jbpm.domain", primary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, primary.getAuditMode());
@@ -424,7 +424,7 @@ public class DeploymentDescriptorMergerTest {
                 .auditPersistenceUnit("")
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.test.CustomStrategy", new Object[]{"param2"}));
 
-        assertNotNull(secondary);
+        assertThat(secondary).isNotNull();
         assertEquals(null, secondary.getPersistenceUnit());
         assertEquals("", secondary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, secondary.getAuditMode());
@@ -442,7 +442,7 @@ public class DeploymentDescriptorMergerTest {
         DeploymentDescriptor outcome = DeploymentDescriptorMerger.merge(primary, secondary,
                 MergeMode.MERGE_COLLECTIONS);
 
-        assertNotNull(outcome);
+        assertThat(outcome).isNotNull();
         assertEquals("org.jbpm.domain", outcome.getPersistenceUnit());
         assertEquals("org.jbpm.domain", outcome.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, outcome.getAuditMode());
@@ -465,7 +465,7 @@ public class DeploymentDescriptorMergerTest {
                 .addWorkItemHandler(new NamedObjectModel("mvel", "Log",
                         "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()"));
 
-        assertNotNull(primary);
+        assertThat(primary).isNotNull();
         assertEquals("org.jbpm.domain", primary.getPersistenceUnit());
         assertEquals("org.jbpm.domain", primary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, primary.getAuditMode());
@@ -489,7 +489,7 @@ public class DeploymentDescriptorMergerTest {
                 .addWorkItemHandler(new NamedObjectModel("mvel", "Log",
                         "new org.jbpm.process.instance.impl.demo.CustomSystemOutWorkItemHandler()"));
 
-        assertNotNull(secondary);
+        assertThat(secondary).isNotNull();
         assertEquals(null, secondary.getPersistenceUnit());
         assertEquals("", secondary.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, secondary.getAuditMode());
@@ -507,7 +507,7 @@ public class DeploymentDescriptorMergerTest {
         DeploymentDescriptor outcome = DeploymentDescriptorMerger.merge(primary, secondary,
                 MergeMode.MERGE_COLLECTIONS);
 
-        assertNotNull(outcome);
+        assertThat(outcome).isNotNull();
         assertEquals("org.jbpm.domain", outcome.getPersistenceUnit());
         assertEquals("org.jbpm.domain", outcome.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, outcome.getAuditMode());

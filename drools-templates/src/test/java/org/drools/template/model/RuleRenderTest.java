@@ -18,7 +18,9 @@ package org.drools.template.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests how the rule parse tree renders itself to a rule XML fragment.
@@ -46,7 +48,7 @@ public class RuleRenderTest {
         final DRLOutput out = new DRLOutput();
         rule.renderDRL(out);
         final String drl = out.getDRL();
-        assertNotNull(drl);
+        assertThat(drl).isNotNull();
 
         assertTrue(drl.indexOf("cond snippet") != -1);
         assertTrue(drl.indexOf("cons snippet") != -1);

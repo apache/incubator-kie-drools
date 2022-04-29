@@ -48,9 +48,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -114,10 +114,10 @@ public class KieBuilderTest {
         KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1, r2, r3, r4);
 
         final InternalKieModule ikm = (InternalKieModule) km;
-        assertNotNull( ikm.getResource( r1.getSourcePath() ) );
-        assertNotNull( ikm.getResource( r2.getSourcePath() ) );
-        assertNotNull( ikm.getResource( r3.getSourcePath() ) );
-        assertNotNull( ikm.getResource( r4.getSourcePath() ) );
+        assertThat(ikm.getResource( r1.getSourcePath())).isNotNull();
+        assertThat( ikm.getResource( r2.getSourcePath())).isNotNull();
+        assertThat( ikm.getResource( r3.getSourcePath())).isNotNull();
+        assertThat( ikm.getResource( r4.getSourcePath())).isNotNull();
 
         // Create a session and fire rules
         final KieContainer kc = ks.newKieContainer( km.getReleaseId() );
@@ -237,10 +237,10 @@ public class KieBuilderTest {
         ks.getRepository().addKieModule( builder.getKieModule() );
 
         final KieSession kieSession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession( KSESSION_NAME );
-        assertNotNull( kieSession );
+        assertThat(kieSession).isNotNull();
 
         final KieBase kieBase = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).getKieBase( KBASE_NAME );
-        assertNotNull( kieBase );
+        assertThat(kieBase).isNotNull();
     }
 
     @Test
@@ -291,7 +291,7 @@ public class KieBuilderTest {
         final KieContainer kieContainer = ks.newKieContainer(km.getReleaseId());
         try {
             final Class<?> messageClass = kieContainer.getClassLoader().loadClass("org.drools.mvel.compiler.JavaSourceMessage");
-            assertNotNull(messageClass);
+            assertThat(messageClass).isNotNull();
         } catch (final ClassNotFoundException e) {
             throw new IllegalStateException("Loading the java class failed.", e);
         }
@@ -348,7 +348,7 @@ public class KieBuilderTest {
         final KieContainer kieContainer = ks.newKieContainer(km.getReleaseId());
         try {
             final Class<?> messageClass = kieContainer.getClassLoader().loadClass("org.drools.mvel.compiler.JavaSourceMessage");
-            assertNotNull(messageClass);
+            assertThat(messageClass).isNotNull();
         } catch (final ClassNotFoundException e) {
             throw new IllegalStateException("Loading the java class failed.", e);
         }
@@ -391,10 +391,10 @@ public class KieBuilderTest {
         ks.getRepository().addKieModule( builder.getKieModule() );
 
         final KieSession kieSession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession( KSESSION_NAME );
-        assertNotNull( kieSession );
+        assertThat(kieSession).isNotNull();
 
         final KieBase kieBase = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).getKieBase( KBASE_NAME );
-        assertNotNull( kieBase );
+        assertThat(kieBase).isNotNull();
     }
 
     @Test
@@ -484,7 +484,7 @@ public class KieBuilderTest {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         final Results results = kieBuilder.getResults();
         assertEquals( expectedErrors, results.getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
-        assertNotNull(((InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors());
+        assertThat(((InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors()).isNotNull();
     }
 
     @Test

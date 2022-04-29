@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -61,7 +60,7 @@ public class DMNExtensionRegisterTest {
             final InputData inputData1 = (InputData) dmnModel.getDefinitions().getDrgElement().get(1);
             assertEquals("First Name", inputData1.getName());
             final DMNElement.ExtensionElements id1elements = inputData1.getExtensionElements();
-            assertNotNull(id1elements);
+            assertThat(id1elements).isNotNull();
             assertEquals(1, id1elements.getAny().size());
             final FirstNameDescription firstNameDescription = (FirstNameDescription) id1elements.getAny().get(0);
             assertEquals("First name in latin characters", firstNameDescription.getContent());
@@ -69,7 +68,7 @@ public class DMNExtensionRegisterTest {
             final InputData inputData2 = (InputData) dmnModel.getDefinitions().getDrgElement().get(2);
             assertEquals("Last Name", inputData2.getName());
             final DMNElement.ExtensionElements id2elements = inputData2.getExtensionElements();
-            assertNotNull(id2elements);
+            assertThat(id2elements).isNotNull();
             assertEquals(1, id2elements.getAny().size());
             final LastNameDescription lastNameDescription = (LastNameDescription) id2elements.getAny().get(0);
             assertEquals("Last name in latin characters", lastNameDescription.getContent());
@@ -113,7 +112,7 @@ public class DMNExtensionRegisterTest {
         final InputData inputData1 = (InputData) dmnModel.getDefinitions().getDrgElement().get(1);
         assertEquals("First Name", inputData1.getName());
         final DMNElement.ExtensionElements id1elements = inputData1.getExtensionElements();
-        assertNotNull(id1elements);
+        assertThat(id1elements).isNotNull();
         assertEquals(1, id1elements.getAny().size());
         final FirstNameDescription firstNameDescription = (FirstNameDescription) id1elements.getAny().get(0);
         assertEquals("First name in latin characters", firstNameDescription.getContent());
@@ -121,7 +120,7 @@ public class DMNExtensionRegisterTest {
         final InputData inputData2 = (InputData) dmnModel.getDefinitions().getDrgElement().get(2);
         assertEquals("Last Name", inputData2.getName());
         final DMNElement.ExtensionElements id2elements = inputData2.getExtensionElements();
-        assertNotNull(id2elements);
+        assertThat(id2elements).isNotNull();
         assertEquals(1, id2elements.getAny().size());
         final LastNameDescription lastNameDescription = (LastNameDescription) id2elements.getAny().get(0);
         assertEquals("Last name in latin characters", lastNameDescription.getContent());
@@ -157,13 +156,13 @@ public class DMNExtensionRegisterTest {
         final InputData inputData1 = (InputData) dmnModel.getDefinitions().getDrgElement().get(1);
         assertEquals("First Name", inputData1.getName());
         final DMNElement.ExtensionElements id1elements = inputData1.getExtensionElements();
-        assertNotNull(id1elements);
+        assertThat(id1elements).isNotNull();
         assertEquals(0, id1elements.getAny().size());
         
         final InputData inputData2 = (InputData) dmnModel.getDefinitions().getDrgElement().get(2);
         assertEquals("Last Name", inputData2.getName());
         final DMNElement.ExtensionElements id2elements = inputData2.getExtensionElements();
-        assertNotNull(id2elements);
+        assertThat(id2elements).isNotNull();
         assertEquals(0, id2elements.getAny().size());
     }
 

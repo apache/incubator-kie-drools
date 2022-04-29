@@ -31,8 +31,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.CommandFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ExecuteCommandDisconnectedTest {
@@ -56,9 +56,9 @@ public class ExecuteCommandDisconnectedTest {
 
         ExecutionResults results = execCmd.execute( context );
 
-        assertNotNull(results);
+        assertThat(results).isNotNull();
 
-        assertNotNull(results.getFactHandle("handle"));
+        assertThat(results.getFactHandle("handle")).isNotNull();
 
         assertTrue(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
 
@@ -69,9 +69,9 @@ public class ExecuteCommandDisconnectedTest {
 
         results = execCmd.execute( context );
 
-        assertNotNull(results);
+        assertThat(results).isNotNull();
 
-        assertNotNull(results.getFactHandle("handle"));
+        assertThat(results.getFactHandle("handle")).isNotNull();
 
         assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
 

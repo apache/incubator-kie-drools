@@ -39,8 +39,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -100,7 +100,7 @@ public class BayesBeliefSystemTest {
 
         BayesRuntime bayesRuntime = ksession.getKieRuntime(BayesRuntime.class);
         BayesInstance<Garden> instance = bayesRuntime.createInstance(Garden.class);
-        assertNotNull(  instance );
+        assertThat(instance).isNotNull();
 
         assertTrue(instance.isDecided());
         instance.globalUpdate();

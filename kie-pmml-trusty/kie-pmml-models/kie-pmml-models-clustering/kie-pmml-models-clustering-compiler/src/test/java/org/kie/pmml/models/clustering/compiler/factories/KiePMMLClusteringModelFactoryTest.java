@@ -59,8 +59,8 @@ import org.kie.pmml.models.clustering.model.KiePMMLCompareFunction;
 import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
 import org.kie.pmml.models.clustering.model.KiePMMLMissingValueWeights;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
@@ -141,7 +141,7 @@ public class KiePMMLClusteringModelFactoryTest {
                                                                        new HasClassLoaderMock());
         KiePMMLClusteringModel retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(clusteringModel.getModelName(), retrieved.getName());
         assertEquals(clusteringModel.getModelClass().value(), retrieved.getModelClass().getName());
         List<KiePMMLCluster> retrievedClusters = retrieved.getClusters();
@@ -167,7 +167,7 @@ public class KiePMMLClusteringModelFactoryTest {
                                                                        new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
     }
 
@@ -220,8 +220,8 @@ public class KiePMMLClusteringModelFactoryTest {
         assertNull(KiePMMLClusteringModelFactory.getKiePMMLMissingValueWeights(null));
         KiePMMLMissingValueWeights retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLMissingValueWeights(new MissingValueWeights());
-        assertNotNull(retrieved);
-        assertNotNull(retrieved.getValues());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getValues()).isNotNull();
         assertTrue(retrieved.getValues().isEmpty());
         MissingValueWeights missingValueWeights = new MissingValueWeights();
         final Random random = new Random();
@@ -271,7 +271,7 @@ public class KiePMMLClusteringModelFactoryTest {
     }
 
     private void commonEvaluateKiePMMLCluster(KiePMMLCluster retrieved, Cluster cluster) {
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.getId().isPresent());
         assertEquals(cluster.getId(), retrieved.getId().get());
         assertTrue(retrieved.getName().isPresent());
@@ -281,7 +281,7 @@ public class KiePMMLClusteringModelFactoryTest {
 
     private void commonEvaluateKiePMMLClusteringField(KiePMMLClusteringField retrieved,
                                                       ClusteringField clusteringField) {
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         boolean isCenterField = clusteringField.getCenterField() == ClusteringField.CenterField.TRUE;
         assertEquals(clusteringField.getField().getValue(), retrieved.getField());
         assertEquals(clusteringField.getFieldWeight(), retrieved.getFieldWeight());
@@ -298,14 +298,14 @@ public class KiePMMLClusteringModelFactoryTest {
 
     private void commonEvaluateKiePMMLMissingValueWeights(KiePMMLMissingValueWeights retrieved,
                                                           MissingValueWeights missingValueWeights) {
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonEvaluateDoubles(retrieved.getValues(), missingValueWeights.getArray());
     }
 
     private void commonEvaluateDoubles(final List<Double> retrievedValues, final Array array) {
         if (array != null) {
             final List<Object> doubleValues = getObjectsFromArray(array);
-            assertNotNull(retrievedValues);
+            assertThat(retrievedValues).isNotNull();
             assertEquals(doubleValues.size(), retrievedValues.size());
             IntStream.range(0, doubleValues.size()).forEach(i -> {
                 assertEquals(doubleValues.get(i), retrievedValues.get(i));

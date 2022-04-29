@@ -32,7 +32,7 @@ import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PackageCompilationDataTest {
     public static class TestEvalExpression implements EvalExpression {
@@ -90,7 +90,7 @@ public class PackageCompilationDataTest {
         Class cls = kBase.getRootClassLoader().loadClass( "org.drools.mvel.rule.PackageCompilationDataTest$TestEvalExpression" );
         
         final CodeSource codeSource = invoker.getEvalExpression().getClass().getProtectionDomain().getCodeSource();
-        assertNotNull(codeSource.getLocation());
+        assertThat(codeSource.getLocation()).isNotNull();
     }
 
     private static byte[] read(final InputStream is) throws IOException {

@@ -33,9 +33,9 @@ import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
@@ -94,7 +94,7 @@ public class KiePMMLOutputFieldTest {
         processingDTO = getProcessingDTO(Collections.emptyList(),
                                          kiePMMLNameValues, Collections.emptyList());
         Object retrieved = kiePMMLOutputField.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(variableValue, retrieved);
     }
 
@@ -113,7 +113,7 @@ public class KiePMMLOutputFieldTest {
         reasonCodes.add(variableValue);
         processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), reasonCodes);
         Object retrieved = kiePMMLOutputField.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(variableValue, retrieved);
     }
 

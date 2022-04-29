@@ -37,9 +37,9 @@ import org.kie.util.maven.support.DependencyFilter;
 
 import static java.util.Arrays.asList;
 import static junit.framework.TestCase.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -109,10 +109,10 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         //The call to kieModuleMetaData.getClass() assumes a Java file has an explicit package
         final Class<?> beanClass = kieModuleMetaData.getClass( "", "test.Bean" );
-        assertNotNull( beanClass );
+        assertThat(beanClass).isNotNull();
 
         final TypeMetaInfo beanMetaInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
-        assertNotNull( beanMetaInfo );
+        assertThat(beanMetaInfo).isNotNull();
     }
 
     @Test
@@ -236,15 +236,15 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         assertEquals( 1, testClasses.size() );
         assertEquals( "Bean", testClasses.iterator().next() );
         Class<?> beanClass = kieModuleMetaData.getClass( "org.kie.test", "Bean" );
-        assertNotNull( beanClass.getMethod( "getValue" ) );
+        assertThat(beanClass.getMethod( "getValue")).isNotNull();
 
         TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
-        assertNotNull( beanTypeInfo );
+        assertThat(beanTypeInfo).isNotNull();
 
         assertTrue( beanTypeInfo.isEvent() );
 
         Role role = beanClass.getAnnotation( Role.class );
-        assertNotNull( role );
+        assertThat(role).isNotNull();
         assertEquals( Role.Type.EVENT, role.value() );
 
         assertEquals( useTypeDeclaration, beanTypeInfo.isDeclaredType() );
@@ -287,7 +287,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         assertEquals( 1, testClasses.size() );
         assertEquals( "Bean", testClasses.iterator().next() );
         Class<?> beanClass = kieModuleMetaData.getClass( "org.kie.test", "Bean" );
-        assertNotNull( beanClass.getMethod( "getValue" ) );
+        assertThat(beanClass.getMethod("getValue")).isNotNull();
 
         if ( useTypeDeclaration ) {
             assertTrue( kieModuleMetaData.getTypeMetaInfo( beanClass ).isEvent() );
@@ -313,11 +313,11 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         Collection<String> testClasses = kieModuleMetaData.getClasses( "org.drools" );
         assertEquals( 55, testClasses.size() );
         Class<?> beanClass = kieModuleMetaData.getClass( "org.drools", "QueryResult" );
-        assertNotNull( beanClass );
+        assertThat(beanClass).isNotNull();
 
         //Classes in dependencies should have TypeMetaInfo
         TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
-        assertNotNull( beanTypeInfo );
+        assertThat(beanTypeInfo).isNotNull();
 
         if ( useTypeDeclaration ) {
             assertTrue( beanTypeInfo.isEvent() );

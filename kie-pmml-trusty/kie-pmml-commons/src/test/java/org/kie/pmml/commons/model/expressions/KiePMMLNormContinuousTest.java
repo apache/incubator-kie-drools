@@ -22,12 +22,11 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
-import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
-import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class KiePMMLNormContinuousTest {
 
@@ -310,7 +309,7 @@ public class KiePMMLNormContinuousTest {
         KiePMMLLinearNorm[] limitLinearNorms = {startLinearNorm, endLinearNorm};
         Number input = 3.5;
         Number retrieved = KiePMMLNormContinuous.evaluate(input, limitLinearNorms);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         Number expected =
                 startNorm + ((input.doubleValue() - startOrig) / (endOrig - startOrig)) * (endNorm - startNorm);
         assertEquals(expected, retrieved);

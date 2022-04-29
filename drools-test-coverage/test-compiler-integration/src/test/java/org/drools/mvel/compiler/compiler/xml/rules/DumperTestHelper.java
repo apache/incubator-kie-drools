@@ -28,7 +28,6 @@ import org.drools.mvel.DrlDumper;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Helper Class for both xml and drl Dump Tests
@@ -52,7 +51,7 @@ public class DumperTestHelper {
         System.out.println(result);
 
         assertThat(buffer).isEqualToIgnoringWhitespace(result);
-        assertNotNull( result );
+        assertThat(result).isNotNull();
     }
 
     public static void DrlFile(String filename) throws Exception {

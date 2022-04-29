@@ -24,8 +24,8 @@ import java.util.Random;
 import org.junit.Test;
 import org.kie.pmml.commons.model.tuples.KiePMMLProbabilityConfidence;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.tree.model.KiePMMLTreeTestUtils.getRandomKiePMMLScoreDistributions;
 
@@ -34,14 +34,14 @@ public class KiePMMLNodeTest {
     @Test
     public void getProbabilityConfidenceMap() {
         LinkedHashMap<String, KiePMMLProbabilityConfidence> retrieved = KiePMMLNode.getProbabilityConfidenceMap(null, 1.0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isEmpty());
         retrieved = KiePMMLNode.getProbabilityConfidenceMap(Collections.emptyList(), 1.0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isEmpty());
         List<KiePMMLScoreDistribution> kiePMMLScoreDistributions = getRandomKiePMMLScoreDistributions(false);
         retrieved = KiePMMLNode.getProbabilityConfidenceMap(kiePMMLScoreDistributions, 1.0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(kiePMMLScoreDistributions.size(), retrieved.size());
     }
 
@@ -53,11 +53,11 @@ public class KiePMMLNodeTest {
                 .reduce(0, Integer::sum);
         final double missingValuePenalty = (double) new Random().nextInt(100)/10;
         LinkedHashMap<String, KiePMMLProbabilityConfidence> retrievedNoProbability = KiePMMLNode.getProbabilityConfidenceMap(kiePMMLScoreDistributions, missingValuePenalty);
-        assertNotNull(retrievedNoProbability);
+        assertThat(retrievedNoProbability).isNotNull();
         kiePMMLScoreDistributions.forEach(kiePMMLScoreDistribution -> {
             assertTrue(retrievedNoProbability.containsKey(kiePMMLScoreDistribution.getValue()));
             KiePMMLProbabilityConfidence kiePMMLProbabilityConfidence = retrievedNoProbability.get(kiePMMLScoreDistribution.getValue());
-            assertNotNull(kiePMMLProbabilityConfidence);
+            assertThat(kiePMMLProbabilityConfidence).isNotNull();
             double probabilityExpected = (double) kiePMMLScoreDistribution.getRecordCount() / (double) totalRecordCount;
             double confidenceExpected = kiePMMLScoreDistribution.getConfidence() * missingValuePenalty;
             assertEquals(probabilityExpected, kiePMMLProbabilityConfidence.getProbability(), 0.000000001);
@@ -66,11 +66,11 @@ public class KiePMMLNodeTest {
         //
         kiePMMLScoreDistributions = getRandomKiePMMLScoreDistributions(true);
         LinkedHashMap<String, KiePMMLProbabilityConfidence> retrievedProbability = KiePMMLNode.getProbabilityConfidenceMap(kiePMMLScoreDistributions, missingValuePenalty);
-        assertNotNull(retrievedNoProbability);
+        assertThat(retrievedNoProbability).isNotNull();
         kiePMMLScoreDistributions.forEach(kiePMMLScoreDistribution -> {
             assertTrue(retrievedProbability.containsKey(kiePMMLScoreDistribution.getValue()));
             KiePMMLProbabilityConfidence kiePMMLProbabilityConfidence = retrievedProbability.get(kiePMMLScoreDistribution.getValue());
-            assertNotNull(kiePMMLProbabilityConfidence);
+            assertThat(kiePMMLProbabilityConfidence).isNotNull();
             double probabilityExpected = kiePMMLScoreDistribution.getProbability();
             double confidenceExpected = kiePMMLScoreDistribution.getConfidence() * missingValuePenalty;
             assertEquals(probabilityExpected, kiePMMLProbabilityConfidence.getProbability(), 0.000000001);

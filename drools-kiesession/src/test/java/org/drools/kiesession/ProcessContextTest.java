@@ -34,8 +34,8 @@ import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.process.CaseData;
 import org.kie.api.task.model.OrganizationalEntity;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 public class ProcessContextTest {
@@ -46,7 +46,7 @@ public class ProcessContextTest {
 
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KieSession ksession = kbase.newKieSession();
-        assertNotNull(ksession);
+        assertThat(ksession).isNotNull();
 
         CaseInformation caseInfo = new CaseInformation();
         caseInfo.assign("owner", new OrganizationalEntity() {
@@ -70,9 +70,9 @@ public class ProcessContextTest {
         ProcessContext processContext = new ProcessContext(ksession);
 
         CaseAssignment caseAssignment = processContext.getCaseAssignment();
-        assertNotNull(caseAssignment);
+        assertThat(caseAssignment).isNotNull();
         Collection<OrganizationalEntity> forRole = caseAssignment.getAssignments("owner");
-        assertNotNull(forRole);
+        assertThat(forRole).isNotNull();
         assertEquals(1, forRole.size());
     }
 
@@ -81,7 +81,7 @@ public class ProcessContextTest {
 
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KieSession ksession = kbase.newKieSession();
-        assertNotNull(ksession);
+        assertThat(ksession).isNotNull();
 
         CaseInformation caseInfo = new CaseInformation();
         caseInfo.add("test", "value");
@@ -91,9 +91,9 @@ public class ProcessContextTest {
         ProcessContext processContext = new ProcessContext(ksession);
 
         CaseData caseData = processContext.getCaseData();
-        assertNotNull(caseData);
+        assertThat(caseData).isNotNull();
         Map<String, Object> allData = caseData.getData();
-        assertNotNull(allData);
+        assertThat(allData).isNotNull();
         assertEquals(1, allData.size());
         assertEquals("value", caseData.getData("test"));
     }
@@ -103,7 +103,7 @@ public class ProcessContextTest {
 
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KieSession ksession = kbase.newKieSession();
-        assertNotNull(ksession);
+        assertThat(ksession).isNotNull();
 
         ProcessContext processContext = new ProcessContext(ksession);
 

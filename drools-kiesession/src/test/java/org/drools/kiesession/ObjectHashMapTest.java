@@ -32,8 +32,8 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
@@ -143,7 +143,7 @@ public class ObjectHashMapTest {
     @Test
     public void testStringData() {
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -158,7 +158,7 @@ public class ObjectHashMapTest {
     @Test
     public void testIntegerData() {
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
             final Integer key = new Integer( idx );
@@ -173,7 +173,7 @@ public class ObjectHashMapTest {
     @Test
     public void testJUHashmap() {
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -188,7 +188,7 @@ public class ObjectHashMapTest {
     @Test
     public void testStringDataDupFalse() {
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 10000;
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -205,7 +205,7 @@ public class ObjectHashMapTest {
     public void testJUHashMap1() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final long start = System.currentTimeMillis();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -221,7 +221,7 @@ public class ObjectHashMapTest {
     public void testStringData2() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final long start = System.currentTimeMillis();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -237,7 +237,7 @@ public class ObjectHashMapTest {
     public void testStringData3() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -257,7 +257,7 @@ public class ObjectHashMapTest {
     public void testJUHashMap2() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -277,7 +277,7 @@ public class ObjectHashMapTest {
     public void testStringData4() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -298,7 +298,7 @@ public class ObjectHashMapTest {
     public void testJUHashMap3() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -318,7 +318,7 @@ public class ObjectHashMapTest {
     public void testStringData5() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final long start = System.currentTimeMillis();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;

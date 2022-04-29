@@ -22,8 +22,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Basic tests for creation of a KieBase from CSV and XLS resources.
@@ -77,7 +77,7 @@ public class KModuleWithDecisionTablesTest {
 
        KieBase kieBase = kContainer.getKieBase(kieBaseName);
 
-       assertNotNull("KieBase not found", kieBase);
+       assertThat(kieBase).as("KieBase not found").isNotNull();
        assertFalse("Unexpected number of KiePackages in KieBase", kieBase.getKiePackages().isEmpty());
     }
     

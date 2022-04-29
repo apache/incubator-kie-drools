@@ -64,7 +64,7 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static java.util.stream.Collectors.groupingBy;
-import static junit.framework.TestCase.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -138,7 +138,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
 
         Map<String, KiePMMLRegressionTable> retrieved =
                 KiePMMLRegressionTableFactory.getRegressionTables(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(regressionModel.getRegressionTables().size(), retrieved.size());
         regressionModel.getRegressionTables().forEach(regrTabl -> {
             assertTrue(retrieved.containsKey(regrTabl.getTargetCategory().toString()));
@@ -179,7 +179,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                                                                                   regressionModel.getNormalizationMethod());
         KiePMMLRegressionTable retrieved = KiePMMLRegressionTableFactory.getRegressionTable(regressionTable,
                                                                                             compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonEvaluateRegressionTable(retrieved, regressionTable);
     }
 
@@ -217,7 +217,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
 
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLRegressionTableFactory.getRegressionTableBuilders(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));
     }
 
@@ -254,7 +254,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                                                                                   regressionModel.getNormalizationMethod());
         Map.Entry<String, String> retrieved = KiePMMLRegressionTableFactory.getRegressionTableBuilder(regressionTable
                 , compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         Map<String, String> sources = new HashMap<>();
         sources.put(retrieved.getKey(), retrieved.getValue());
         commonValidateCompilation(sources);
@@ -281,7 +281,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                                                                    coefficient);
         SerializableFunction<Double, Double> retrieved =
                 KiePMMLRegressionTableFactory.getNumericPredictorEntry(numericPredictor);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -293,7 +293,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                                                                    coefficient);
         SerializableFunction<Double, Double> retrieved =
                 KiePMMLRegressionTableFactory.getNumericPredictorEntry(numericPredictor);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -329,7 +329,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         }
         Map<String, Double> retrieved =
                 KiePMMLRegressionTableFactory.getGroupedCategoricalPredictorMap(categoricalPredictors);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(categoricalPredictors.size(), retrieved.size());
         categoricalPredictors.forEach(categoricalPredictor ->
                                       {
@@ -367,7 +367,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                                                           Collections.singletonList(fieldRef));
         SerializableFunction<Map<String, Object>, Double> retrieved =
                 KiePMMLRegressionTableFactory.getPredictorTermSerializableFunction(predictorTerm);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -379,7 +379,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     @Test
     public void getResultUpdaterSupportedFunction() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                        assertNotNull(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)));
+                                                        assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNotNull());
     }
 
     @Test

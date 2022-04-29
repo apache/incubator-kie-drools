@@ -30,9 +30,9 @@ import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 public class ScorecardModelImplementationProviderTest {
 
@@ -66,7 +66,7 @@ public class ScorecardModelImplementationProviderTest {
                                                                        basicComplexPartialScore,
                                                                        new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved = provider.getKiePMMLModel(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -77,9 +77,9 @@ public class ScorecardModelImplementationProviderTest {
                                                                        basicComplexPartialScore,
                                                                        new HasClassLoaderMock());
         KiePMMLModelWithSources retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         Map<String, String> retrievedSourcesMap = retrieved.getSourcesMap();
-        assertNotNull(retrievedSourcesMap);
+        assertThat(retrievedSourcesMap).isNotNull();
         assertFalse(retrievedSourcesMap.isEmpty());
     }
 }
