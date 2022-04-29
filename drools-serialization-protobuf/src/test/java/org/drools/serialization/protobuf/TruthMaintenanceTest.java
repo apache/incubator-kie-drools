@@ -46,11 +46,11 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.serialization.protobuf.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -138,8 +138,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                 }
             }
 
-            assertNotNull( test );
-            assertNotNull( test2 );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
             assertEquals( "rule1",
                           test.getRules().iterator().next().getName() );
             assertEquals( "rule2",
@@ -156,8 +156,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                     test2 = kpkg;
                 }
             }
-            assertNotNull( test );
-            assertNotNull( test2 );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
 
             // Check the rule was correctly remove
             assertEquals( 0,
@@ -202,8 +202,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                     test2 = kpkg;
                 }
             }
-            assertNotNull( test );
-            assertNotNull( test2 );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
 
             kbase.removeRule( test2.getName(),
                               test2.getRules().iterator().next().getName() );
@@ -217,8 +217,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                     test2 = kpkg;
                 }
             }
-            assertNotNull( test );
-            assertNotNull( test2 );
+            assertThat(test).isNotNull();
+            assertThat(test2).isNotNull();
 
             assertEquals( 0,
                           test.getRules().size() );

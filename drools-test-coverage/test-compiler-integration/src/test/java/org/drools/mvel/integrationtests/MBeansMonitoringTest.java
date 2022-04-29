@@ -63,9 +63,9 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -543,7 +543,7 @@ public class MBeansMonitoringTest {
             KieRepository kieRepository = ks.getRepository();
             ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
-            assertNotNull( kieModule );
+            assertThat(kieModule).isNotNull();
             assertEquals( releaseId, kieModule.getReleaseId() );
             
             KieContainer kc = ks.newKieContainer("myID", releaseId);

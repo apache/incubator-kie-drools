@@ -25,9 +25,9 @@ import com.google.common.collect.ImmutableMap;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMetadata;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public abstract class BaseDMNContextTest {
@@ -141,7 +141,7 @@ public abstract class BaseDMNContextTest {
     private void testEntries(EntryContainerFacade container, Map<String, Object> expectedEntries) {
         Map<String, Object> currentEntries = container.getAll();
 
-        assertNotNull(currentEntries);
+        assertThat(currentEntries).isNotNull();
         assertEquals(expectedEntries.size(), currentEntries.size());
 
         for (Map.Entry<String, Object> entry : expectedEntries.entrySet()) {
@@ -164,22 +164,22 @@ public abstract class BaseDMNContextTest {
 
     public static void assertNamespaceIsAbsent(DMNContext ctx) {
         Optional<String> optNamespace = ctx.scopeNamespace();
-        assertNotNull(optNamespace);
+        assertThat(optNamespace).isNotNull();
         assertFalse(optNamespace.isPresent());
     }
 
     public static void assertNamespaceEquals(String expectedName, DMNContext ctx) {
         Optional<String> optNamespace = ctx.scopeNamespace();
-        assertNotNull(optNamespace);
+        assertThat(optNamespace).isNotNull();
         assertTrue(optNamespace.isPresent());
         assertEquals(expectedName, optNamespace.get());
     }
 
     public static void assertNamespaceEquals(DMNContext expectedCtx, DMNContext testCtx) {
         Optional<String> optExpectedNamespace = expectedCtx.scopeNamespace();
-        assertNotNull(optExpectedNamespace);
+        assertThat(optExpectedNamespace).isNotNull();
         Optional<String> optTestNamespace = testCtx.scopeNamespace();
-        assertNotNull(optTestNamespace);
+        assertThat(optTestNamespace).isNotNull();
 
         if (optExpectedNamespace.isPresent()) {
             assertTrue(optTestNamespace.isPresent());

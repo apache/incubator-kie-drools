@@ -40,9 +40,9 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ClassLoaderTest {
@@ -79,7 +79,7 @@ public class ClassLoaderTest {
         final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
         final ClassLoader classLoader = kieContainer.getClassLoader();
         final URL url = classLoader.getResource("META-INF/foo.xml");
-        assertNotNull(url);
+        assertThat(url).isNotNull();
 
         final KieSession ksession = kieContainer.newKieSession(KieSessionTestConfiguration.KIE_SESSION_MODEL_NAME);
         try {
@@ -146,7 +146,7 @@ public class ClassLoaderTest {
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
         final ClassLoader classLoader = kieContainer.getClassLoader();
         final URL url = classLoader.getResource("META-INF/foo.xml");
-        assertNotNull(url);
+        assertThat(url).isNotNull();
 
         final KieSession ksession = kieContainer.newKieSession("testKsession");
         try {

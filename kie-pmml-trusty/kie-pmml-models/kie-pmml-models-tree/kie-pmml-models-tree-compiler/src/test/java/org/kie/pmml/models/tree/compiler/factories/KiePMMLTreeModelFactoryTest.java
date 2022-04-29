@@ -46,8 +46,8 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -89,14 +89,14 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                                         new HasClassLoaderMock());
         KiePMMLTreeModel retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                         pmml2,
                                                                         treeModel2,
                                                                         new HasClassLoaderMock());
         retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -107,14 +107,14 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                                         new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                         pmml2,
                                                                         treeModel2,
                                                                         new HasClassLoaderMock());
         retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test

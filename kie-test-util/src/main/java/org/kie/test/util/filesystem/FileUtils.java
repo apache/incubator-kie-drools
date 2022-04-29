@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Utility to access files
@@ -46,7 +46,7 @@ public class FileUtils {
                 .filter(file -> file.getName().equals(fileName))
                 .findFirst()
                 .orElse(null);
-        assertNotNull(toReturn);
+        assertThat(toReturn).isNotNull();
         return toReturn;
     }
 

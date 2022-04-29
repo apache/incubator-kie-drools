@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
@@ -44,7 +44,7 @@ public class KiePMMLTruePredicateASTFactoryTest {
         KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromTruePredicateWithResult(DONE, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
         assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
@@ -63,7 +63,7 @@ public class KiePMMLTruePredicateASTFactoryTest {
         KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromTruePredicateWithResult(statusToSet, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());
         assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());

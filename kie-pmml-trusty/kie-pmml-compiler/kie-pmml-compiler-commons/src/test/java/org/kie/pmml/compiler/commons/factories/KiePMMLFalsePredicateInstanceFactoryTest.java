@@ -19,7 +19,6 @@ import org.dmg.pmml.False;
 import org.junit.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 
-import static org.junit.Assert.*;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLFalsePredicate;
 
 public class KiePMMLFalsePredicateInstanceFactoryTest {

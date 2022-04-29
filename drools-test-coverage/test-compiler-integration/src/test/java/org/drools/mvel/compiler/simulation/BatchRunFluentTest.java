@@ -40,9 +40,9 @@ import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieSessionFluent;
 import org.kie.internal.builder.fluent.Scope;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -141,7 +141,7 @@ public class BatchRunFluentTest {
         assertNull(requestContext.getOutputs().get("outS"));
         assertEquals("h1", requestContext.get("outS"));
 
-        assertNotNull(requestContext.getOutputs().get("outS1"));
+        assertThat(requestContext.getOutputs().get("outS1")).isNotNull();
         assertEquals(requestContext.get("outS1"), requestContext.getOutputs().get("outS1"));
         assertEquals(requestContext.get("outS"), requestContext.get("outS1"));
     }

@@ -30,14 +30,15 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import static org.junit.Assert.*;
-
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.rule.GroupElement;
+import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class DroolsObjectIOTest {
 
@@ -168,8 +169,8 @@ public class DroolsObjectIOTest {
         rule.setCalendars(new String[] {"mycalendar"});
         byte[] buf = marshal(rule);
         RuleImpl retrievedRule = (RuleImpl)unmarshal(buf);
-        assertNotNull(retrievedRule);
-        assertNotNull(retrievedRule.getCalendars());
+        assertThat(retrievedRule).isNotNull();
+        assertThat(retrievedRule.getCalendars()).isNotNull();
         assertEquals(1, retrievedRule.getCalendars().length);
         assertEquals("mycalendar", retrievedRule.getCalendars()[0]);
 

@@ -19,8 +19,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 
@@ -36,7 +36,7 @@ public class KiePMMLFactoryFactoryTest {
     }
 
     private void validateNotCodegen(Expression toValidate, String kiePMMLModelClass) {
-        assertNotNull(toValidate);
+        assertThat(toValidate).isNotNull();
         assertTrue(toValidate instanceof MethodCallExpr);
         MethodCallExpr methodCallExpr = (MethodCallExpr) toValidate;
         assertEquals(kiePMMLModelClass, methodCallExpr.getScope().get().asNameExpr().toString());
@@ -44,7 +44,7 @@ public class KiePMMLFactoryFactoryTest {
     }
 
     private void validateCodegen(Expression toValidate, String kiePMMLModelClass) {
-        assertNotNull(toValidate);
+        assertThat(toValidate).isNotNull();
         assertTrue(toValidate instanceof ObjectCreationExpr);
         ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr) toValidate;
         assertEquals(kiePMMLModelClass, objectCreationExpr.getType().asString());

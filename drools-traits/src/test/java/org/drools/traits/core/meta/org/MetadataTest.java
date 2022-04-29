@@ -40,9 +40,9 @@ import org.drools.traits.core.metadata.With;
 import org.junit.Test;
 
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -197,7 +197,7 @@ public class MetadataTest {
     @Test
     public void testNewInstance() {
         Klass klass = Klass_.newKlass( URI.create( "test" ) ).call();
-        assertNotNull( klass );
+        assertThat(klass).isNotNull();
         assertTrue( klass instanceof KlassImpl );
 
         SubKlass klass2 = SubKlass_.newSubKlass( URI.create( "test2" ) ).subProp( 42 ).prop( "hello" ).call();

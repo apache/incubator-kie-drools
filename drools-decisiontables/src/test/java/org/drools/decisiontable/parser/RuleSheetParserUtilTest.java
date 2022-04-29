@@ -25,7 +25,11 @@ import org.drools.template.parser.DecisionTableParseException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -52,7 +56,7 @@ public class RuleSheetParserUtilTest {
             final String result = RuleSheetParserUtil.getRuleName( row );
             fail( "should have failed, but get result: " + result );
         } catch ( final IllegalArgumentException e ) {
-            assertNotNull( e.getMessage() );
+            assertThat(e.getMessage()).isNotNull();
         }
     }
 
@@ -73,7 +77,7 @@ public class RuleSheetParserUtilTest {
         List<String> cellVals = null;
 
         List<Import> list = RuleSheetParserUtil.getImportList( cellVals );
-        assertNotNull( list );
+        assertThat(list).isNotNull();
         assertEquals( 0, list.size() );
 
         cellVals = new ArrayList<String>();
@@ -93,7 +97,7 @@ public class RuleSheetParserUtilTest {
         List<String> varCells = new ArrayList<String>();
         varCells.add( "Var1 var1, Var2 var2,Var3 var3" );
         final List<Global> varList = RuleSheetParserUtil.getVariableList( varCells );
-        assertNotNull( varList );
+        assertThat(varList).isNotNull();
         assertEquals( 3,
                 varList.size() );
         Global var = varList.get( 0 );
@@ -114,7 +118,7 @@ public class RuleSheetParserUtilTest {
             RuleSheetParserUtil.getVariableList( varCells );
             fail( "should not work" );
         } catch ( final DecisionTableParseException e ) {
-            assertNotNull( e.getMessage() );
+            assertThat(e.getMessage()).isNotNull();
         }
     }
 

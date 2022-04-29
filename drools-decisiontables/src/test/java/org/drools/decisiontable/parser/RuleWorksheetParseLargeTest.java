@@ -20,7 +20,8 @@ import java.io.InputStream;
 
 import org.drools.template.model.Package;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -56,7 +57,7 @@ public class RuleWorksheetParseLargeTest {
 
         System.out.println( "Time to parse large table : " + getTime() + "ms" );
         Package ruleset = listener.getRuleSet( );
-        assertNotNull( ruleset );
+        assertThat(ruleset).isNotNull();
 
 //        startTimer();
 //        String xml = ...;   // toXml() not in Package any more.

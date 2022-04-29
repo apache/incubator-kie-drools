@@ -25,8 +25,8 @@ import org.drools.core.factmodel.Field;
 import org.drools.traits.core.factmodel.Jenerator;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * This mostly shows how to go to a jar and back, if needed.
@@ -63,21 +63,21 @@ public class JeneratorTest {
         JarInputStream jis = new JarInputStream(new ByteArrayInputStream(data));
         JarEntry je = jis.getNextJarEntry();
 
-        assertNotNull(je);
+        assertThat(je).isNotNull();
         System.err.println(je.getName());
         assertEquals("factmodel.xml", je.getName());
 
 
         je = jis.getNextJarEntry();
 
-        assertNotNull(je);
+        assertThat(je).isNotNull();
         System.err.println(je.getName());
         assertEquals("whee/waa/Foobar.class", je.getName());
 
 
         je = jis.getNextJarEntry();
 
-        assertNotNull(je);
+        assertThat(je).isNotNull();
         System.err.println(je.getName());
         assertEquals("whee/waa/Baz.class", je.getName());
 

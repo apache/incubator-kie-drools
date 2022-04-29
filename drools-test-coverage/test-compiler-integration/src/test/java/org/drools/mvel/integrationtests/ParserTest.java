@@ -31,9 +31,9 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.memorycompiler.JavaConfiguration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -53,7 +53,7 @@ public class ParserTest {
 
         final DescrBuildError stiltonError = (DescrBuildError) errors[0];
         assertTrue(stiltonError.getMessage().contains("Stilton"));
-        assertNotNull(stiltonError.getDescr());
+        assertThat(stiltonError.getDescr()).isNotNull();
         assertTrue(stiltonError.getLine() != -1);
 
         // check that its getting it from the ruleDescr

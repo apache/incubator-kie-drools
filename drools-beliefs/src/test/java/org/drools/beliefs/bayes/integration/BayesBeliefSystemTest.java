@@ -15,10 +15,10 @@
 
 package org.drools.beliefs.bayes.integration;
 
-import org.drools.beliefs.bayes.BayesModeFactory;
-import org.drools.beliefs.bayes.BayesModeFactoryImpl;
 import org.drools.beliefs.bayes.BayesBeliefSystem;
 import org.drools.beliefs.bayes.BayesInstance;
+import org.drools.beliefs.bayes.BayesModeFactory;
+import org.drools.beliefs.bayes.BayesModeFactoryImpl;
 import org.drools.beliefs.bayes.PropertyReference;
 import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.core.BeliefSystemType;
@@ -36,12 +36,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -101,7 +98,7 @@ public class BayesBeliefSystemTest {
 
         BayesRuntime bayesRuntime = ksession.getKieRuntime(BayesRuntime.class);
         BayesInstance<Garden> instance = bayesRuntime.createInstance(Garden.class);
-        assertNotNull(  instance );
+        assertThat(instance).isNotNull();
 
         assertTrue(instance.isDecided());
         instance.globalUpdate();

@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -16,6 +15,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractScesimModelTest {
 
@@ -44,7 +45,7 @@ public class AbstractScesimModelTest {
     @Test(expected = UnsupportedOperationException.class)
     public void getUnmodifiableData() {
         final List<Scenario> retrieved = abstractScesimModelSpy.getUnmodifiableData();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(SCENARIO_DATA, retrieved.size());
         retrieved.add(new Scenario());
     }
@@ -72,7 +73,7 @@ public class AbstractScesimModelTest {
     @Test
     public void getDataByIndex() {
         final Scenario retrieved = abstractScesimModelSpy.getDataByIndex(3);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -91,7 +92,7 @@ public class AbstractScesimModelTest {
         assertEquals(SCENARIO_DATA, abstractScesimModelSpy.scesimData.size());
         final Scenario cloned = abstractScesimModelSpy.getDataByIndex(3);
         final Scenario clone = abstractScesimModelSpy.cloneData(3, 4);
-        assertNotNull(clone);
+        assertThat(clone).isNotNull();
         assertEquals(clone, abstractScesimModelSpy.scesimData.get(4));
         assertEquals(cloned.getDescription(), clone.getDescription());
     }

@@ -23,7 +23,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNull;
 
 public class KnownKeysKeyTreeMapTest {
@@ -37,7 +37,7 @@ public class KnownKeysKeyTreeMapTest {
 
     @Test
     public void testExisting() throws Exception {
-        assertNotNull(map.get(KeyDefinition.newKeyDefinition().withId("age").build()));
+        assertThat(map.get(KeyDefinition.newKeyDefinition().withId("age").build())).isNotNull();
     }
 
     @Test

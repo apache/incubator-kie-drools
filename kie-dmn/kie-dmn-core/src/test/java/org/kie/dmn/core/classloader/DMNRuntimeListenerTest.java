@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.drools.core.util.Drools;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -54,7 +53,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
@@ -118,7 +116,7 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_2027051c-0030-40f1-8b96-1b1422f8b257", "Drawing 1");
         assertThat(dmnModel).isNotNull();
@@ -265,16 +263,16 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         final DMNContext emptyContext = newEmptyContextWithTestMetadata();
         runtime.evaluateAll(dmnModel, emptyContext);
 
-        assertNotNull(listener.beforeEvent);
+        assertThat(listener.beforeEvent).isNotNull();
         assertEquals(listener.beforeEvent.getModelNamespace(), modelNamespace);
         assertEquals(listener.beforeEvent.getModelName(), modelName);
-        assertNotNull(listener.beforeEvent.getResult());
+        assertThat(listener.beforeEvent.getResult()).isNotNull();
         assertThat(listener.beforeEvent.getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
 
-        assertNotNull(listener.afterEvent);
+        assertThat(listener.afterEvent).isNotNull();
         assertEquals(listener.afterEvent.getModelNamespace(), modelNamespace);
         assertEquals(listener.afterEvent.getModelName(), modelName);
-        assertNotNull(listener.afterEvent.getResult());
+        assertThat(listener.afterEvent.getResult()).isNotNull();
         assertThat(listener.afterEvent.getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
     }
 

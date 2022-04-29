@@ -16,12 +16,6 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.jar.JarInputStream;
@@ -37,6 +31,12 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class VerifierTest {
 
@@ -64,7 +64,7 @@ public class VerifierTest {
         assertTrue( works );
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
+        assertThat(result).isNotNull();
         assertEquals( 0,
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 6,
@@ -111,13 +111,13 @@ public class VerifierTest {
 
         Collection<ObjectType> objectTypes = result.getVerifierData().getAll( VerifierComponentType.OBJECT_TYPE );
 
-        assertNotNull( objectTypes );
+        assertThat(objectTypes).isNotNull();
         assertEquals( 3,
                       objectTypes.size() );
 
         Collection<Field> fields = result.getVerifierData().getAll( VerifierComponentType.FIELD );
 
-        assertNotNull( fields );
+        assertThat(fields).isNotNull();
         assertEquals( 10,
                       fields.size() );
 
@@ -167,13 +167,13 @@ public class VerifierTest {
             }
         }
 
-        assertNotNull( objectTypes );
+        assertThat(objectTypes).isNotNull();
         assertEquals( 4,
                       objectTypes.size() );
 
         Collection<Field> fields = result.getVerifierData().getAll( VerifierComponentType.FIELD );
 
-        assertNotNull( fields );
+        assertThat(fields).isNotNull();
         assertEquals( 11,
                       fields.size() );
 
@@ -216,7 +216,7 @@ public class VerifierTest {
         assertTrue( works );
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
+        assertThat(result).isNotNull();
         assertEquals( 0,
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 0,

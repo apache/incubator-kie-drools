@@ -16,12 +16,6 @@
 
 package org.kie.dmn.core.v1_4;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
-import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -38,6 +32,13 @@ import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
 
 public class DMN14ExpressionsTest extends BaseVariantTest {
 
@@ -59,9 +60,9 @@ public class DMN14ExpressionsTest extends BaseVariantTest {
     @Before
     public void setup() {
         runtime = createRuntime("dmn14expressions.dmn", DMN14ExpressionsTest.class);
-        assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         model = runtime.getModel("http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5", "DMN 1.4 expressions");
-        assertNotNull(model);
+        assertThat(model).isNotNull();
     }
 
     @Test

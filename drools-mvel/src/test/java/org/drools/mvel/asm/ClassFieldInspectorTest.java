@@ -26,8 +26,8 @@ import org.drools.core.util.asm.TestAbstract;
 import org.drools.core.util.asm.TestInterface;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -47,7 +47,7 @@ public class ClassFieldInspectorTest {
                       ext.getGetterMethods().get( "name" ).getName() );
 
         final Map<String, Integer> names = ext.getFieldNames();
-        assertNotNull( names );
+        assertThat(names).isNotNull();
         assertEquals( 7,
                       names.size() );
         assertNull( names.get( "nAme" ) );
@@ -65,7 +65,7 @@ public class ClassFieldInspectorTest {
                       ext.getGetterMethods().get( "another" ).getName() );
 
         final Map<String, Integer> names = ext.getFieldNames();
-        assertNotNull( names );
+        assertThat(names).isNotNull();
         assertEquals( 2,
                       names.size() );
 
@@ -82,7 +82,7 @@ public class ClassFieldInspectorTest {
                       ext.getGetterMethods().get( "another" ).getName() );
 
         final Map<String, Integer> names = ext.getFieldNames();
-        assertNotNull( names );
+        assertThat(names).isNotNull();
         assertEquals( 5,
                       names.size() );
 
@@ -93,24 +93,24 @@ public class ClassFieldInspectorTest {
         ClassFieldInspectorImpl ext = new ClassFieldInspectorImpl( BeanInherit.class );
         assertEquals( 5,
                       ext.getFieldNames().size() );
-        assertNotNull( ext.getFieldTypesField().get( "text" ) );
-        assertNotNull( ext.getFieldTypesField().get( "number" ) );
+        assertThat( ext.getFieldTypesField().get( "text" ) ).isNotNull();
+        assertThat( ext.getFieldTypesField().get( "number" ) ).isNotNull();
 
         ext = new ClassFieldInspectorImpl( InterfaceChildImpl.class );
         assertEquals( 8,
                       ext.getFieldNames().size() );
 
         // test inheritence from abstract class
-        assertNotNull( ext.getFieldNames().get( "HTML" ) );
-        assertNotNull( ext.getFieldTypesField().get( "HTML" ) );
+        assertThat( ext.getFieldNames().get( "HTML" ) ).isNotNull();
+        assertThat( ext.getFieldTypesField().get( "HTML" ) ).isNotNull();
 
         // check normal field on child class
-        assertNotNull( ext.getFieldNames().get( "baz" ) );
-        assertNotNull( ext.getFieldTypesField().get( "baz" ) );
+        assertThat( ext.getFieldNames().get( "baz" ) ).isNotNull();
+        assertThat( ext.getFieldTypesField().get( "baz" ) ).isNotNull();
 
         // test inheritence from an interface
-        assertNotNull( ext.getFieldNames().get( "URI" ) );
-        assertNotNull( ext.getFieldTypesField().get( "URI" ) );
+        assertThat( ext.getFieldNames().get( "URI" ) ).isNotNull();
+        assertThat( ext.getFieldTypesField().get( "URI" ) ).isNotNull();
     }
 
     @Test
@@ -149,7 +149,7 @@ public class ClassFieldInspectorTest {
     public void testGetReturnTypes() throws Exception {
         final ClassFieldInspectorImpl ext = new ClassFieldInspectorImpl( Person.class );
         final Map types = ext.getFieldTypes();
-        assertNotNull( types );
+        assertThat(types).isNotNull();
         assertEquals( boolean.class,
                       types.get( "happy" ) );
         assertEquals( int.class,
@@ -162,7 +162,7 @@ public class ClassFieldInspectorTest {
     public void testGetMethodForField() throws Exception {
         final ClassFieldInspectorImpl ext = new ClassFieldInspectorImpl( Person.class );
         final Map methods = ext.getGetterMethods();
-        assertNotNull( methods );
+        assertThat(methods).isNotNull();
         assertEquals( "isHappy",
                       ((Method) methods.get( "happy" )).getName() );
         assertEquals( "getName",

@@ -24,9 +24,9 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.ResourceHelper.getResourcesByExtension;
 import static org.kie.test.util.filesystem.ResourceHelper.getResourcesFromDirectory;
@@ -66,7 +66,7 @@ public class ResourceHelperTest {
     @Test
     public void getClassPathElements() {
         String[] retrieved = ResourceHelper.getClassPathElements();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertFalse(retrieved.length == 0);
     }
 
@@ -87,7 +87,7 @@ public class ResourceHelperTest {
     }
 
     private void commonVerifyStream(final Stream<File> toVerify, String expectedFile) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         final List<File> retrieved = toVerify.collect(Collectors.toList());
         if (expectedFile != null) {
             assertEquals(1, retrieved.size());

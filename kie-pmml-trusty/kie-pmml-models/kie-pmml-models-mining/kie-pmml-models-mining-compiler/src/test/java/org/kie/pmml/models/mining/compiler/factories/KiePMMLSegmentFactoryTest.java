@@ -48,9 +48,9 @@ import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.compiler.dto.SegmentCompilationDTO;
 import org.xml.sax.SAXException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -93,7 +93,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentsSourcesMap(
                 compilationDTO,
                 nestedModels);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonEvaluateNestedModels(nestedModels);
         for (Segment segment : segments) {
             commonEvaluateMap(retrieved, segment);
@@ -226,7 +226,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     private void commonEvaluateMap(final Map<String, String> toEvaluate, final Segment segment) {
-        assertNotNull(toEvaluate);
+        assertThat(toEvaluate).isNotNull();
     }
 
     private void commonEvaluateNestedModels(final List<KiePMMLModel> toEvaluate) {

@@ -61,7 +61,7 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         IndexableConstraint betaConstraint = (IndexableConstraint) beta.getConstraints()[0];
-        assertNotNull( betaConstraint.getIndexExtractor() );
+        assertThat(betaConstraint.getIndexExtractor()).isNotNull();
 
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 4) );

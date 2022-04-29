@@ -63,10 +63,10 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -137,15 +137,15 @@ public class TypeDeclarationTest {
 
         //Get the Fact Type for org.kie.EventA
         FactType factType = ((KnowledgePackageImpl)kbuilder.getKnowledgePackages().iterator().next()).getFactType("org.kie.EventA");
-        assertNotNull( factType );
+        assertThat(factType).isNotNull();
 
         //'name' field must still be there
         FactField field = factType.getField("name");
-        assertNotNull( field );
+        assertThat(field).isNotNull();
 
         //'duration' field must still be there
         field = factType.getField("duration");
-        assertNotNull( field );
+        assertThat(field).isNotNull();
 
         //New Annotations must be there too
         TypeDeclaration typeDeclaration = ((KnowledgePackageImpl)kbuilder.getKnowledgePackages().iterator().next()).getTypeDeclaration("EventA");
@@ -341,11 +341,11 @@ public class TypeDeclarationTest {
 
         //Get the Fact Type for org.drools.ClassA
         FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.ClassA");
-        Assert.assertNotNull(factType);
+        Assert.assertThat(factType).isNotNull();
 
         //'age' field must still be there
         FactField field = factType.getField("age");
-        Assert.assertNotNull(field);
+        Assert.assertThat(field).isNotNull();
 
         //Assert that the 'name' field must be String and not Long
         Assert.assertEquals(Integer.class, field.getType());
@@ -504,7 +504,7 @@ public class TypeDeclarationTest {
         assertEquals( "event", bean.getMetaData().get( "role" ) );
 
         FactField field = bean.getField( "name" );
-        assertNotNull( field );
+        assertThat(field).isNotNull();
     }
 
     public static class EventBar {
@@ -748,8 +748,8 @@ public class TypeDeclarationTest {
         KieContainer kc = ks.newKieContainer(builder.getKieModule().getReleaseId());
         FactType ft = kc.getKieBase( "rules" ).getFactType( "org.drools.mvel.compiler.test2", "Child" );
 
-        assertNotNull( ft );
-        assertNotNull( ft.getFactClass() );
+        assertThat(ft).isNotNull();
+        assertThat(ft.getFactClass()).isNotNull();
         assertEquals( "org.drools.mvel.compiler.test1.Parent", ft.getFactClass().getSuperclass().getName() );
     }
 
@@ -1014,11 +1014,11 @@ public class TypeDeclarationTest {
 
         try {
             Method m1 = sup.getFactClass().getMethod( "getFld" );
-            assertNotNull( m1 );
+            assertThat(m1).isNotNull();
             assertEquals( Object.class, m1.getReturnType() );
 
             Method m2 = sub.getFactClass().getMethod( "getFld" );
-            assertNotNull( m2 );
+            assertThat(m2).isNotNull();
             assertEquals( String.class, m2.getReturnType() );
 
             assertEquals( 0, sub.getFactClass().getFields().length );

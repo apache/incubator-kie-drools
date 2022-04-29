@@ -32,8 +32,8 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
@@ -46,7 +46,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
     public void setup() {
         fieldTypeMap = new HashMap<>();
         fieldASTFactory = KiePMMLDerivedFieldASTFactory.factory(fieldTypeMap);
-        assertNotNull(fieldASTFactory);
+        assertThat(fieldASTFactory).isNotNull();
     }
 
     @Test

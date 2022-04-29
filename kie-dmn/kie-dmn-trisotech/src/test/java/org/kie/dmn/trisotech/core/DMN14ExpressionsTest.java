@@ -41,9 +41,9 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.trisotech.TrisotechDMNProfile;
 import org.kie.dmn.trisotech.core.compiler.TrisotechDMNEvaluatorCompilerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -108,9 +108,9 @@ public class DMN14ExpressionsTest {
     @Before
     public void setup() {
         runtime = createRuntime("dmn14expressions.dmn", DMN14ExpressionsTest.class);
-        assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         model = runtime.getModel("http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5", "DMN 1.4 expressions");
-        assertNotNull(model);
+        assertThat(model).isNotNull();
     }
 
     @Test

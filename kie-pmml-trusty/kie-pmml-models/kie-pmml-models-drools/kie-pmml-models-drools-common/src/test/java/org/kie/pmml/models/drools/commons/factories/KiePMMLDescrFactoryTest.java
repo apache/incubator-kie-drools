@@ -37,8 +37,8 @@ import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
@@ -77,7 +77,7 @@ public class KiePMMLDescrFactoryTest {
                                                      SimplePredicate.class.getName(),
                                                      PMML4Result.class.getName());
         for (String expectedImport : expectedImports) {
-            assertNotNull(toCheck.stream().filter(importDescr -> expectedImport.equals(importDescr.getTarget())).findFirst().orElse(null));
+            assertThat(toCheck.stream().filter(importDescr -> expectedImport.equals(importDescr.getTarget())).findFirst().orElse(null)).isNotNull();
         }
     }
 

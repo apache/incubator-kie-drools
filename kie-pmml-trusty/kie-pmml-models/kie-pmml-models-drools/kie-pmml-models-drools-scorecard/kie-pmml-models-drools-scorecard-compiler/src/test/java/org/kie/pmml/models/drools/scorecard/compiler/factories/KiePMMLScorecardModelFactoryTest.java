@@ -42,8 +42,8 @@ import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -65,11 +65,11 @@ public class KiePMMLScorecardModelFactoryTest {
     @BeforeClass
     public static void setUp() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         scorecardModel = (Scorecard) pmml.getModels().get(0);
-        assertNotNull(scorecardModel);
+        assertThat(scorecardModel).isNotNull();
         CompilationUnit templateCU = getFromFileName(KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA);
         classOrInterfaceDeclaration = templateCU
                 .getClassByName(KIE_PMML_SCORECARD_MODEL_TEMPLATE).get();
@@ -91,7 +91,7 @@ public class KiePMMLScorecardModelFactoryTest {
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
                                                         fieldTypeMap);
         KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(droolsCompilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(scorecardModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
     }
@@ -114,7 +114,7 @@ public class KiePMMLScorecardModelFactoryTest {
                                                         fieldTypeMap);
         Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(droolsCompilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
     }
 
@@ -127,7 +127,7 @@ public class KiePMMLScorecardModelFactoryTest {
         KiePMMLDroolsAST retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(dataDictionary),
                                                                  scorecardModel, fieldTypeMap, Collections.emptyList());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test

@@ -60,7 +60,6 @@ import static org.appformer.maven.integration.MavenRepository.getMavenRepository
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
@@ -250,7 +249,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         
         // DROOLS-1051 following should not throw NPE because dependencies are not in scope of scanner
         KieScanner scanner = ks.newKieScanner(kieContainer);
-        assertNotNull(scanner);
+        assertThat(scanner).isNotNull();
     }
 
     @Test

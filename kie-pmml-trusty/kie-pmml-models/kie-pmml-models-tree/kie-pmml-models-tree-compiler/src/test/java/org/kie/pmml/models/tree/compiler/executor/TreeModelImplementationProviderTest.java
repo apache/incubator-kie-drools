@@ -30,9 +30,9 @@ import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -62,7 +62,7 @@ public class TreeModelImplementationProviderTest {
                                                                        treeModel,
                                                                        new HasClassLoaderMock());
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved instanceof Serializable);
     }
 
@@ -75,9 +75,9 @@ public class TreeModelImplementationProviderTest {
                                                                        treeModel,
                                                                        new HasClassLoaderMock());
         final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final Map<String, String> sourcesMap = retrieved.getSourcesMap();
-        assertNotNull(sourcesMap);
+        assertThat(sourcesMap).isNotNull();
         assertFalse(sourcesMap.isEmpty());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {

@@ -19,7 +19,6 @@ import org.dmg.pmml.NormDiscrete;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLNormDiscrete;
 
-import static org.junit.Assert.*;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomNormDiscrete;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLNormDiscrete;
 

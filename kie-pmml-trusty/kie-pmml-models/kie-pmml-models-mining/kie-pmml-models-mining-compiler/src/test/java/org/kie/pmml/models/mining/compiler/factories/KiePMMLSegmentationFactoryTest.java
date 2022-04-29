@@ -33,8 +33,8 @@ import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.xml.sax.SAXException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -58,7 +58,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMap(compilationDTO,
                                                                                                    nestedModels);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
         assertEquals(expectedNestedModels, nestedModels.size());
     }
@@ -86,7 +86,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
         });
         final Map<String, String> retrieved =
                 KiePMMLSegmentationFactory.getSegmentationSourcesMapCompiled(compilationDTO, nestedModels);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
         assertEquals(expectedNestedModels, nestedModels.size());
         expectedGeneratedClasses.forEach(expectedGeneratedClass -> {

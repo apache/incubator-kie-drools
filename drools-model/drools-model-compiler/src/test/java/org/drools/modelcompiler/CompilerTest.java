@@ -54,7 +54,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -2493,7 +2492,7 @@ public class CompilerTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession( str );
-        assertNotNull( ksession);
+        assertThat(ksession).isNotNull();
     }
 
     @Test // DROOLS-6034

@@ -44,9 +44,9 @@ import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -80,7 +80,7 @@ public class ExtendsTest {
         FactType eqPair = ksession.getKieBase().getFactType("defaultpkg","EqualityPair");
 
         Object p = person.newInstance();
-        assertNotNull(p);
+        assertThat(p).isNotNull();
 
         ksession.insert("Populate");
         ksession.fireAllRules();
@@ -101,18 +101,18 @@ public class ExtendsTest {
         FactType student = ksession.getKieBase().getFactType("defaultpkg","Student");
 
         Constructor constructor = student.getFactClass().getConstructor(String.class,int.class,String.class);
-        assertNotNull(constructor);
+        assertThat(constructor).isNotNull();
         Method equals = student.getFactClass().getMethod("equals",Object.class);
-        assertNotNull(equals);
+        assertThat(equals).isNotNull();
 
         Object s1 = constructor.newInstance("John",18,"Skool");
-            assertNotNull(s1);
+            assertThat(s1).isNotNull();
             assertEquals("Student( name=John, age=18, school=Skool )", s1.toString());
 
 
 
         Object s2 = constructor.newInstance("John",25,"Skool");
-            assertNotNull(s2);
+            assertThat(s2).isNotNull();
             assertEquals("Student( name=John, age=25, school=Skool )", s2.toString());
             assertEquals(s1.hashCode(),s2.hashCode());
             assertTrue((Boolean) equals.invoke(s1,s2));
@@ -120,7 +120,7 @@ public class ExtendsTest {
 
 
         Object s3 = constructor.newInstance("Mark",18,"Skool");
-            assertNotNull(s3);
+            assertThat(s3).isNotNull();
             assertEquals("Student( name=Mark, age=18, school=Skool )", s3.toString());
 
             assertNotSame(s1.hashCode(),s3.hashCode());
@@ -129,7 +129,7 @@ public class ExtendsTest {
             assertFalse(s2.equals(s3));
 
         Object s4 = constructor.newInstance("John",25,"AnotherSkool");
-            assertNotNull(s4);
+            assertThat(s4).isNotNull();
             assertEquals("Student( name=John, age=25, school=AnotherSkool )", s4.toString());
 
             assertNotSame(s1.hashCode(),s4.hashCode());
@@ -149,7 +149,7 @@ public class ExtendsTest {
         FactType LTstudent = ksession.getKieBase().getFactType("defaultpkg","LongTermStudent");
 
         Constructor constructor = LTstudent.getFactClass().getConstructor(String.class,int.class,String.class,String.class,int.class);
-        assertNotNull(constructor);
+        assertThat(constructor).isNotNull();
 
         Object ls1 = constructor.newInstance("John",18,"Skool","C1245",4);
         Object ls2 = constructor.newInstance("John",33,"Skool","C1421",4);
@@ -175,7 +175,7 @@ public class ExtendsTest {
         KieSession ksession = kbase.newKieSession();
 
         FactType leg = ksession.getKieBase().getFactType("org.drools.compiler","BetterLegacy");
-        assertNotNull(leg);
+        assertThat(leg).isNotNull();
 
         Object b = leg.newInstance();
 
@@ -196,18 +196,18 @@ public class ExtendsTest {
         KieSession ksession = kbase.newKieSession();
 
         FactType person = ksession.getKieBase().getFactType("org.drools.mvel.compiler.ext.test","Person");
-            assertNotNull(person);
+            assertThat(person).isNotNull();
         FactType student = ksession.getKieBase().getFactType("org.drools.mvel.compiler.ext.test","Student");
-            assertNotNull(student);
+            assertThat(student).isNotNull();
 
         FactType worker = ksession.getKieBase().getFactType("org.drools.mvel.compiler.anothertest","Worker");
-            assertNotNull(worker);
+            assertThat(worker).isNotNull();
 
         FactType ltss = ksession.getKieBase().getFactType("defaultpkg","SubLTStudent");
-            assertNotNull(ltss);
+            assertThat(ltss).isNotNull();
 
         Constructor ctor = worker.getFactClass().getConstructor(String.class,int.class,String.class, double.class, int.class);
-            assertNotNull(ctor);
+            assertThat(ctor).isNotNull();
 
         Object w = ctor.newInstance("Adam",20,"Carpenter",150.0,40);
         System.out.println(w);
@@ -227,7 +227,7 @@ public class ExtendsTest {
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler", "MyBean3");
 
         Object x = test.newInstance();
-        assertNotNull(x);
+        assertThat(x).isNotNull();
 
         assertEquals(12,test.get(x,"fieldint"));
         assertEquals("xyz",test.get(x,"fieldstr"));
@@ -258,7 +258,7 @@ public class ExtendsTest {
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxBean");
 
         Object x = test.newInstance();
-        assertNotNull(x);
+        assertThat(x).isNotNull();
 
         assertEquals(12,test.get(x,"fieldint"));
         assertEquals(3.23,test.get(x,"fielddbl"));
@@ -283,7 +283,7 @@ public class ExtendsTest {
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
 
         Object x = test.newInstance();
-        assertNotNull(x);
+        assertThat(x).isNotNull();
 
         assertEquals("foobar",test.get(x,"f0"));
         assertEquals(-32,test.get(x,"fieldint"));
@@ -304,7 +304,7 @@ public class ExtendsTest {
         FactType test2 = ksession.getKieBase().getFactType("org.drools.compiler","MySimpleExpressionBean");
 
         x = test2.newInstance();
-        assertNotNull(x);
+        assertThat(x).isNotNull();
 
         assertEquals("foobar",test2.get(x,"f0"));
         assertEquals(-32,test2.get(x,"fieldint"));
@@ -393,8 +393,8 @@ public class ExtendsTest {
 
         Object p = person.newInstance();
         Object s = student.newInstance();
-        assertNotNull(p);
-        assertNotNull(s);
+        assertThat(p).isNotNull();
+        assertThat(s).isNotNull();
 
         assertEquals( 99, person.get(p,"age") );
         assertEquals( 18, person.get(s,"age") );

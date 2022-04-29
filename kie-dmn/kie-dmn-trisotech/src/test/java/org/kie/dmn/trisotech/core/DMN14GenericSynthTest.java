@@ -30,8 +30,8 @@ import org.kie.dmn.trisotech.TrisotechDMNProfile;
 import org.kie.dmn.trisotech.core.compiler.TrisotechDMNEvaluatorCompilerFactory;
 import org.kie.dmn.trisotech.validation.TrisotechValidationTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -49,9 +49,9 @@ public class DMN14GenericSynthTest {
     @Test
     public void testFilterDatatype() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/filter-datatype.dmn", TrisotechValidationTest.class);
-        assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
-        assertNotNull(model);
+        assertThat(model).isNotNull();
 
         checkFilterDatatype(runtime, model);
     }
@@ -69,9 +69,9 @@ public class DMN14GenericSynthTest {
     @Test
     public void testFilterDatatype2() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/filter-datatype2.dmn", TrisotechValidationTest.class);
-        assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
-        assertNotNull(model);
+        assertThat(model).isNotNull();
 
         checkFilterDatatype(runtime, model);
     }
@@ -79,9 +79,9 @@ public class DMN14GenericSynthTest {
     @Test
     public void testIteratorDatatype() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/iterator-datatype.dmn", TrisotechValidationTest.class);
-        assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
-        assertNotNull(model);
+        assertThat(model).isNotNull();
 
         checkIteratorDatatype(runtime, model);
     }
@@ -99,9 +99,9 @@ public class DMN14GenericSynthTest {
     @Test
     public void testIteratorDatatype2() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/iterator-datatype2.dmn", TrisotechValidationTest.class);
-        assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
-        assertNotNull(model);
+        assertThat(model).isNotNull();
 
         checkIteratorDatatype(runtime, model);
     }

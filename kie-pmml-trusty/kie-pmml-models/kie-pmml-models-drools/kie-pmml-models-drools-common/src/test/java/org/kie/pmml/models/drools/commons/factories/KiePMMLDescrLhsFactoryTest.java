@@ -42,9 +42,9 @@ import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -71,8 +71,8 @@ public class KiePMMLDescrLhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareLhs(rule);
-        assertNotNull(lhsBuilder.getDescr());
-        assertNotNull(lhsBuilder.getDescr().getDescrs());
+        assertThat(lhsBuilder.getDescr()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).isNotNull();
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof PatternDescr);
         PatternDescr patternDescr = (PatternDescr) lhsBuilder.getDescr().getDescrs().get(0);
@@ -92,12 +92,12 @@ public class KiePMMLDescrLhsFactoryTest {
                                                             Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
                                                                               new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
-        assertNotNull(lhsBuilder.getDescr());
+        assertThat(lhsBuilder.getDescr()).isNotNull();
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
         AndDescr baseAndDescr = (AndDescr) lhsBuilder.getDescr().getDescrs().get(0);
         final List<BaseDescr> descrs = baseAndDescr.getDescrs();
-        assertNotNull(descrs);
+        assertThat(descrs).isNotNull();
         assertEquals(2, descrs.size());
         // First KiePMMLFieldOperatorValue
         assertTrue(descrs.get(0) instanceof PatternDescr);
@@ -142,12 +142,12 @@ public class KiePMMLDescrLhsFactoryTest {
                 Collections.singletonList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
                                                                         Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), nestedKiePMMLFieldOperatorValues));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
-        assertNotNull(lhsBuilder.getDescr());
+        assertThat(lhsBuilder.getDescr()).isNotNull();
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
         AndDescr baseAndDescr = (AndDescr) lhsBuilder.getDescr().getDescrs().get(0);
         final List<BaseDescr> descrs = baseAndDescr.getDescrs();
-        assertNotNull(descrs);
+        assertThat(descrs).isNotNull();
         assertEquals(2, descrs.size());
         // First KiePMMLFieldOperatorValue
         assertTrue(descrs.get(0) instanceof PatternDescr);
@@ -207,12 +207,12 @@ public class KiePMMLDescrLhsFactoryTest {
                                                             Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
                                                                               new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.or());
-        assertNotNull(lhsBuilder.getDescr());
+        assertThat(lhsBuilder.getDescr()).isNotNull();
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof OrDescr);
         OrDescr baseOrDescr = (OrDescr) lhsBuilder.getDescr().getDescrs().get(0);
         final List<BaseDescr> descrs = baseOrDescr.getDescrs();
-        assertNotNull(descrs);
+        assertThat(descrs).isNotNull();
         assertEquals(2, descrs.size());
         // First KiePMMLFieldOperatorValue
         assertTrue(descrs.get(0) instanceof PatternDescr);
@@ -269,8 +269,8 @@ public class KiePMMLDescrLhsFactoryTest {
                         new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
                                                       Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
-        assertNotNull(lhsBuilder.getDescr());
-        assertNotNull(lhsBuilder.getDescr().getDescrs());
+        assertThat(lhsBuilder.getDescr()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).isNotNull();
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
         AndDescr rootAndDescr = (AndDescr) lhsBuilder.getDescr().getDescrs().get(0);
@@ -352,9 +352,9 @@ public class KiePMMLDescrLhsFactoryTest {
         final CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, NotDescr>, ExistsDescr> existsBuilder = lhsBuilder.not().exists();
         KiePMMLDescrLhsFactory.factory(lhsBuilder).commonDeclarePatternWithConstraint(existsBuilder, patternType,
                                                                                       constraintsString);
-        assertNotNull(existsBuilder.getDescr());
+        assertThat(existsBuilder.getDescr()).isNotNull();
         final List<BaseDescr> descrs = existsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
+        assertThat(descrs).isNotNull();
         assertEquals(1, descrs.size());
         assertTrue(descrs.get(0) instanceof PatternDescr);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
@@ -376,7 +376,7 @@ public class KiePMMLDescrLhsFactoryTest {
         String patternType = "INPUT1";
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintIn(patternType, values);
         final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
+        assertThat(descrs).isNotNull();
         assertEquals(1, descrs.size());
         assertTrue(descrs.get(0) instanceof PatternDescr);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
@@ -399,7 +399,7 @@ public class KiePMMLDescrLhsFactoryTest {
         String patternType = "INPUT2";
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintNotIn(patternType, values);
         final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
+        assertThat(descrs).isNotNull();
         assertEquals(1, descrs.size());
         assertTrue(descrs.get(0) instanceof NotDescr);
         NotDescr notDescr = (NotDescr) descrs.get(0);
@@ -425,9 +425,9 @@ public class KiePMMLDescrLhsFactoryTest {
         String ifBreakOperator = "<";
         Object ifBreakValue = 24;
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareIfBreak(ifBreakField, ifBreakOperator, ifBreakValue);
-        assertNotNull(lhsBuilder.getDescr());
+        assertThat(lhsBuilder.getDescr()).isNotNull();
         final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
+        assertThat(descrs).isNotNull();
         assertEquals(2, descrs.size());
         assertTrue(descrs.get(0) instanceof PatternDescr);
         assertTrue(descrs.get(1) instanceof ConditionalBranchDescr);

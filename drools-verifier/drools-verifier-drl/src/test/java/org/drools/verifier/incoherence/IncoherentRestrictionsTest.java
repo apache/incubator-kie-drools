@@ -16,6 +16,12 @@
 
 package org.drools.verifier.incoherence;
 
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.TestBaseOld;
@@ -30,17 +36,15 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class IncoherentRestrictionsTest extends TestBaseOld {
 
@@ -78,7 +82,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         assertTrue(works);
 
         VerifierReport result = verifier.getResult();
-        assertNotNull(result);
+        assertThat(result).isNotNull();
 
         assertEquals(3,
                      result.getBySeverity(Severity.ERROR).size());

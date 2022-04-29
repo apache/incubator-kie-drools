@@ -50,8 +50,8 @@ import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -70,9 +70,9 @@ public class DroolsModelProviderTest {
     @BeforeClass
     public static void setup() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         scorecard = (Scorecard) pmml.getModels().get(0);
-        assertNotNull(scorecard);
+        assertThat(scorecard).isNotNull();
         droolsModelProvider = new DroolsModelProvider<Scorecard, KiePMMLDroolsModel>() {
             @Override
             public KiePMMLDroolsModel getKiePMMLDroolsModel(final DroolsCompilationDTO<Scorecard> compilationDTO) {
@@ -114,7 +114,7 @@ public class DroolsModelProviderTest {
                                                                        scorecard,
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModel(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved instanceof KiePMMLDroolsModelTest);
         KiePMMLDroolsModelTest retrievedTest = (KiePMMLDroolsModelTest) retrieved;
         final List<DataField> originalDataFields = pmml.getDataDictionary().getDataFields();
@@ -155,14 +155,14 @@ public class DroolsModelProviderTest {
                                                                        scorecard,
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         KiePMMLDroolsModelWithSources retrieved = droolsModelProvider.getKiePMMLModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(SOURCE_MAP, retrieved.getSourcesMap());
         String expectedPackageName = compilationDTO.getPackageName();
         assertEquals(expectedPackageName, retrieved.getKModulePackageName());
         assertEquals(scorecard.getModelName(), retrieved.getName());
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         commonVerifyPackageDescr(packageDescr, expectedPackageName);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final String rootPath = expectedPackageName + ".";
         commonVerifyRulesSourcesMap(retrieved.getRulesSourcesMap(), packageDescr, rootPath);
     }
@@ -212,7 +212,7 @@ public class DroolsModelProviderTest {
         String expectedPackageName = compilationDTO.getPackageName();
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         final Map<String, String> retrieved = droolsModelProvider.getRulesSourceMap(packageDescr);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final String rootPath = expectedPackageName + ".";
         commonVerifyRulesSourcesMap(retrieved, packageDescr, rootPath);
     }
@@ -229,7 +229,7 @@ public class DroolsModelProviderTest {
         String expectedPackageName = compilationDTO.getPackageName();
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(expectedPackageName).get(0);
         final List<GeneratedFile> retrieved = droolsModelProvider.generateRulesFiles(packageDescr);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final String rootPath = expectedPackageName.replace('.', '/') + "/";
         packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
             String expectedPath = rootPath + typeDeclarationDescr.getTypeName() + ".java";
@@ -260,7 +260,7 @@ public class DroolsModelProviderTest {
 
     private void commonVerifyKiePMMLDroolsAST(final KiePMMLDroolsAST toVerify, final Map<String,
             KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertTrue(toVerify instanceof KiePMMLDroolsASTTest);
         KiePMMLDroolsASTTest toVerifyTest = (KiePMMLDroolsASTTest) toVerify;
 

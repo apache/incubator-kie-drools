@@ -32,7 +32,6 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLTest {
@@ -187,7 +186,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         inputData.put("car_location", car_location);
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", "34.1");
-        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
     @Test(expected = KiePMMLException.class)
