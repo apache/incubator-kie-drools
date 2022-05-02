@@ -78,7 +78,7 @@ public class RuleBuildContext extends PackageBuildContext {
         this.rule.setDialect(ruleDescr.getDialect());
         this.rule.setLoadOrder(ruleDescr.getLoadOrder());
 
-        init(kBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule);
+        initContext(kBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule);
 
         if (this.rule.getDialect() == null) {
             this.rule.setDialect(getDialect().getId());
