@@ -18,7 +18,10 @@
 package org.drools.modelcompiler.bigdecimaltest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.BaseModelTest;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -521,5 +524,31 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(new BigDecimal("-10.5"), holder.getBd1());
+    }
+
+    @Test
+    public void testBigDecimalLiteralWithBinding() {
+        // DROOLS-6936
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                        "global java.util.List result;\n" +
+                        "rule R1 dialect \"mvel\"\n" +
+                        "when\n" +
+                        "    $holder : BdHolder($bd1 : bd1, $zero : 0B)\n" +
+                        "then\n" +
+                        "    result.add($zero);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        BdHolder holder = new BdHolder();
+        holder.setBd1(new BigDecimal("10"));
+        ksession.insert(holder);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactly(new BigDecimal("0"));
     }
 }
