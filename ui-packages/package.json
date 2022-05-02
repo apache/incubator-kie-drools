@@ -140,6 +140,6 @@
   },
   "resolutions": {
     "@types/express-serve-static-core": "^4.17.21",
-    "axios": "0.21.1"
+    "axios": "0.21.2"
   }
 }
