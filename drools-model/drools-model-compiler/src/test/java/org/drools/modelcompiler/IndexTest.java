@@ -19,7 +19,6 @@ package org.drools.modelcompiler;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -27,17 +26,18 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.util.DateUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.util.DateUtils;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class IndexTest extends BaseModelTest {
@@ -61,7 +61,7 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         IndexableConstraint betaConstraint = (IndexableConstraint) beta.getConstraints()[0];
-        assertNotNull( betaConstraint.getIndexExtractor() );
+        assertThat(betaConstraint.getIndexExtractor()).isNotNull();
 
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 4) );

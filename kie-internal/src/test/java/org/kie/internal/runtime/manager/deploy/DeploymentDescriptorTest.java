@@ -31,9 +31,9 @@ import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -53,13 +53,13 @@ public class DeploymentDescriptorTest {
                   .addRequiredRole("experts");
 
         String deploymentDescriptorXml = descriptor.toXml();
-        assertNotNull(deploymentDescriptorXml);
+        assertThat(deploymentDescriptorXml).isNotNull();
         logger.info(deploymentDescriptorXml);
 
         ByteArrayInputStream stream = new ByteArrayInputStream(deploymentDescriptorXml.getBytes());
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
 
-        assertNotNull(fromXml);
+        assertThat(fromXml).isNotNull();
         assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
         assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, fromXml.getAuditMode());
@@ -80,7 +80,7 @@ public class DeploymentDescriptorTest {
         InputStream input = this.getClass().getResourceAsStream("/deployment/deployment-descriptor-defaults.xml");
 
         DeploymentDescriptor descriptor = DeploymentDescriptorIO.fromXml(input);
-        assertNotNull(descriptor);
+        assertThat(descriptor).isNotNull();
         assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
         assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, descriptor.getAuditMode());
@@ -101,7 +101,7 @@ public class DeploymentDescriptorTest {
         InputStream input = this.getClass().getResourceAsStream("/deployment/deployment-descriptor-defaults-and-ms.xml");
 
         DeploymentDescriptor descriptor = DeploymentDescriptorIO.fromXml(input);
-        assertNotNull(descriptor);
+        assertThat(descriptor).isNotNull();
         assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
         assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, descriptor.getAuditMode());
@@ -122,7 +122,7 @@ public class DeploymentDescriptorTest {
         InputStream input = this.getClass().getResourceAsStream("/deployment/partial-deployment-descriptor.xml");
 
         DeploymentDescriptor descriptor = DeploymentDescriptorIO.fromXml(input);
-        assertNotNull(descriptor);
+        assertThat(descriptor).isNotNull();
         assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
         assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, descriptor.getAuditMode());
@@ -157,7 +157,7 @@ public class DeploymentDescriptorTest {
 
         descriptor.setRequiredRoles(roles);
 
-        assertNotNull(descriptor);
+        assertThat(descriptor).isNotNull();
         assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
         assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, descriptor.getAuditMode());
@@ -196,13 +196,13 @@ public class DeploymentDescriptorTest {
                   .addRequiredRole("experts");
 
         String deploymentDescriptorXml = descriptor.toXml();
-        assertNotNull(deploymentDescriptorXml);
+        assertThat(deploymentDescriptorXml).isNotNull();
         logger.info(deploymentDescriptorXml);
 
         ByteArrayInputStream stream = new ByteArrayInputStream(deploymentDescriptorXml.getBytes());
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
 
-        assertNotNull(fromXml);
+        assertThat(fromXml).isNotNull();
         assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
         assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, fromXml.getAuditMode());
@@ -240,7 +240,7 @@ public class DeploymentDescriptorTest {
 
         descriptor.setRequiredRoles(roles);
 
-        assertNotNull(descriptor);
+        assertThat(descriptor).isNotNull();
         assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
         assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
         assertEquals(AuditMode.JMS, descriptor.getAuditMode());
@@ -293,13 +293,13 @@ public class DeploymentDescriptorTest {
                   .addRequiredRole("experts");
 
         String deploymentDescriptorXml = descriptor.toXml();
-        assertNotNull(deploymentDescriptorXml);
+        assertThat(deploymentDescriptorXml).isNotNull();
         logger.info(deploymentDescriptorXml);
 
         ByteArrayInputStream stream = new ByteArrayInputStream(deploymentDescriptorXml.getBytes());
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
 
-        assertNotNull(fromXml);
+        assertThat(fromXml).isNotNull();
         assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
         assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
         assertEquals(AuditMode.JPA, fromXml.getAuditMode());
@@ -331,7 +331,7 @@ public class DeploymentDescriptorTest {
         InputStream input = this.getClass().getResourceAsStream("/deployment/empty-descriptor.xml");
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(input);
 
-        assertNotNull(fromXml);
+        assertThat(fromXml).isNotNull();
         assertTrue(((DeploymentDescriptorImpl) fromXml).isEmpty());
 
         assertNull(fromXml.getPersistenceUnit());

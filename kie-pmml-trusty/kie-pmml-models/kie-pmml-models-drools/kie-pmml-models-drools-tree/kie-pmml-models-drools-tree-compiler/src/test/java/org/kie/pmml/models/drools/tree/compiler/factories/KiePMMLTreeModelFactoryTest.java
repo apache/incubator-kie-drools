@@ -44,8 +44,8 @@ import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -67,7 +67,7 @@ public class KiePMMLTreeModelFactoryTest {
     @BeforeClass
     public static void setUp() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         treeModel = (TreeModel) pmml.getModels().get(0);
@@ -91,7 +91,7 @@ public class KiePMMLTreeModelFactoryTest {
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
                                                         fieldTypeMap);
         KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(droolsCompilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(treeModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
     }
@@ -111,7 +111,7 @@ public class KiePMMLTreeModelFactoryTest {
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
                                                         fieldTypeMap);
         Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(droolsCompilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
     }
 
@@ -124,7 +124,7 @@ public class KiePMMLTreeModelFactoryTest {
         KiePMMLDroolsAST retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(dataDictionary), treeModel,
                                                             fieldTypeMap, Collections.emptyList());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         List<DataField> dataFields = dataDictionary.getDataFields();
         assertEquals(dataFields.size(), fieldTypeMap.size());
         dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));

@@ -37,8 +37,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -125,7 +125,7 @@ public class StatefulSessionTest {
             final Object object = new Object();
             ksession.insert(object);
             final FactHandle factHandle = ksession.getFactHandle(object);
-            assertNotNull(factHandle);
+            assertThat(factHandle).isNotNull();
             assertEquals(object, ksession.getObject(factHandle));
         }
         ksession.dispose();
@@ -140,7 +140,7 @@ public class StatefulSessionTest {
         final CheeseEqual cheese = new CheeseEqual("stilton", 10);
         ksession.insert(cheese);
         final FactHandle fh = ksession.getFactHandle(new CheeseEqual("stilton", 10));
-        assertNotNull(fh);
+        assertThat(fh).isNotNull();
     }
 
     @Test
@@ -154,7 +154,7 @@ public class StatefulSessionTest {
         final FactHandle fh1 = ksession.getFactHandle(new Cheese("stilton", 10));
         assertNull(fh1);
         final FactHandle fh2 = ksession.getFactHandle(cheese);
-        assertNotNull(fh2);
+        assertThat(fh2).isNotNull();
     }
 
     @Test

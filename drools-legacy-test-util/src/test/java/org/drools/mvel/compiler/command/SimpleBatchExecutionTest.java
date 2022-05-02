@@ -36,9 +36,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class SimpleBatchExecutionTest extends CommonTestMethodBase {
@@ -87,9 +87,9 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
         
         Object fact_1 = result.getValue("out_1");
-        assertNotNull(fact_1);
+        assertThat(fact_1).isNotNull();
         Object fact_2 = result.getValue("out_2");
-        assertNotNull(fact_2);
+        assertThat(fact_2).isNotNull();
         ksession.fireAllRules();
 
         Object [] expectedArr = {expected_1, expected_2};
@@ -121,7 +121,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
         
         Collection<? extends Object> outList = (Collection<? extends Object>) result.getValue("out_list");
-        assertNotNull(outList);
+        assertThat(outList).isNotNull();
         ksession.fireAllRules();
     
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
@@ -150,9 +150,9 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Command cmds = CommandFactory.newBatchExecution( commands );
     
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull(result);
+        assertThat(result).isNotNull();
         Object global = result.getValue("globalCheeseCountry");
-        assertNotNull(global);
+        assertThat(global).isNotNull();
         assertEquals("France", global);
     }
 
@@ -170,9 +170,9 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Command cmds = CommandFactory.newBatchExecution( commands );
 
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull("GetGlobalCommand result is null!", result);
+        assertThat(result).as("GetGlobalCommand result is null!").isNotNull();
         Object global = result.getValue("cheeseCountry");
-        assertNotNull("Retrieved global fact is null!", global);
+        assertThat(global).as("Retrieved global fact is null!").isNotNull();
         assertEquals("Retrieved global is not equal to 'France'.", "France", global );
     }
    
@@ -187,7 +187,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         
         Object fact = ksession.getObject(handle_1);
-        assertNotNull(fact);
+        assertThat(fact).isNotNull();
         assertEquals(expected_1, fact);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -196,7 +196,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Command cmds = CommandFactory.newBatchExecution( commands );
         
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull("GetObjectCommand result is null!", result);
+        assertThat(result).as("GetObjectCommand result is null!").isNotNull();
         
         assertEquals( expected_1, result.getValue("out_1") );
         assertEquals( expected_2, result.getValue("out_2") );
@@ -213,10 +213,10 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         
         Object object = ksession.getObject(handle_1);
-        assertNotNull(object);
+        assertThat(object).isNotNull();
         assertEquals(expected_1, object);
         object = ksession.getObject(handle_2);
-        assertNotNull(object);
+        assertThat(object).isNotNull();
         assertEquals(expected_2, object);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -224,7 +224,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Command cmds = CommandFactory.newBatchExecution( commands );
         
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-        assertNotNull("GetObjectsCommand result is null!", result);
+        assertThat(result).as("GetObjectsCommand result is null!").isNotNull();
         
         List<Object> objectList = (List) result.getValue("out_list");
         assertTrue("Retrieved object list is null or empty!", objectList != null && ! objectList.isEmpty());

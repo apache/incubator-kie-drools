@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
@@ -40,8 +40,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -219,11 +219,11 @@ public class RemoveRuleTest {
         final DefaultFactHandle handle = (DefaultFactHandle) ksession.insert("hello");
         ksession.fireAllRules();
         LeftTuple leftTuple = handle.getFirstLeftTuple();
-        assertNotNull(leftTuple);
-        assertNotNull(leftTuple.getPeer());
+        assertThat(leftTuple).isNotNull();
+        assertThat(leftTuple.getPeer()).isNotNull();
         kbase.removeRule("org.drools.compiler", "rule2");
         leftTuple = handle.getFirstLeftTuple();
-        assertNotNull(leftTuple);
+        assertThat(leftTuple).isNotNull();
         assertNull(leftTuple.getHandleNext());
     }
 

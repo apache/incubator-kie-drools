@@ -51,7 +51,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
 import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class KieContainerTest {
@@ -398,7 +397,7 @@ public class KieContainerTest {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
         KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
-        assertNotNull(sessionModel);
+        assertThat(sessionModel).isNotNull();
         assertEquals("testKsession", sessionModel.getName());
     }
 
@@ -423,7 +422,7 @@ public class KieContainerTest {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
         KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
-        assertNotNull(sessionModel);
+        assertThat(sessionModel).isNotNull();
     }
 
     private String createDRL(String ruleName) {

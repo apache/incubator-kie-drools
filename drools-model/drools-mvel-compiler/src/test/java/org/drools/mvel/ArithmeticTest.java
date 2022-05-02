@@ -28,10 +28,10 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.MVEL.executeExpressionWithDefaultVariables;
 import static org.drools.mvel.MVEL.executeExpression;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -950,9 +950,9 @@ public class ArithmeticTest {
     Object val1, val2;
     for (String expr : testCases) {
       val1 = executeExpression(expr, vars);
-      assertNotNull(val1);
+      assertThat(val1).isNotNull();
       val2 = executeExpression(expr, vars);
-      assertNotNull(val2);
+      assertThat(val2).isNotNull();
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
   }
@@ -978,9 +978,9 @@ public class ArithmeticTest {
     
     for (String expr : testCases) {
       Object val1 = executeExpression(expr, vars);
-      assertNotNull(val1);
+      assertThat(val1).isNotNull();
       Object val2 = executeExpression(expr, vars);
-      assertNotNull(val2);
+      assertThat(val2).isNotNull();
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
   }
@@ -995,9 +995,9 @@ public class ArithmeticTest {
 
     for (String expr : testCases) {
       Object val1 = executeExpression(expr, vars);
-      assertNotNull(val1);
+      assertThat(val1).isNotNull();
       Object val2 = executeExpression(expr, vars);
-      assertNotNull(val2);
+      assertThat(val2).isNotNull();
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
   }

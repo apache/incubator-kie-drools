@@ -50,7 +50,6 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -108,7 +107,7 @@ public class JoinNodeRangeIndexingTest {
 
     private void assertIndexed(KieBase kbase, Class<?> factClass, boolean isIndexed) {
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, factClass);
-        assertNotNull(otn);
+        assertThat(otn).isNotNull();
 
         ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
         if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {

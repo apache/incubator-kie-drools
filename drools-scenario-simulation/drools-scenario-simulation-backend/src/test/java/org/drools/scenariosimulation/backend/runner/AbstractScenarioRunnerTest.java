@@ -39,8 +39,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -102,7 +102,7 @@ public class AbstractScenarioRunnerTest {
         // all existing types should have a dedicated runner
         for (ScenarioSimulationModel.Type value : ScenarioSimulationModel.Type.values()) {
             final ScenarioRunnerProvider retrieved = AbstractScenarioRunner.getSpecificRunnerProvider(value);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
         }
     }
 
@@ -137,7 +137,7 @@ public class AbstractScenarioRunnerTest {
 
         abstractScenarioRunnerLocal.run(runNotifier);
 
-        assertNotNull(abstractScenarioRunnerLocal.simulationRunMetadataBuilder);
+        assertThat(abstractScenarioRunnerLocal.simulationRunMetadataBuilder).isNotNull();
         verify(runNotifier, times(SCENARIO_DATA + 2)).fireTestStarted(isA(Description.class));
         verify(runNotifier, times(SCENARIO_DATA)).fireTestFailure(failureArgumentCaptor.capture());
         verify(runNotifier, times(SCENARIO_DATA)).fireTestFinished(isA(Description.class));
@@ -167,7 +167,7 @@ public class AbstractScenarioRunnerTest {
     }
 
     private void commonVerifyDescriptionForSimulation(final Description retrieved, final String className) {
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(className, retrieved.getDisplayName());
         assertEquals(SCENARIO_DATA, retrieved.getChildren().size());
         assertNull(retrieved.getTestClass());

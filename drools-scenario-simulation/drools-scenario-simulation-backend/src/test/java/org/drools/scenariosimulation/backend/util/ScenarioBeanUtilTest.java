@@ -40,6 +40,7 @@ import org.junit.Test;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorEmptyMessage;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.of;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.convertValue;
@@ -47,7 +48,6 @@ import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.getFie
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revertValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -423,9 +423,9 @@ public class ScenarioBeanUtilTest {
 
     @Test
     public void getFieldTest() {
-        assertNotNull(getField(Person.class, "firstName"));
-        assertNotNull(getField(SubPerson.class, "firstName"));
-        assertNotNull(getField(SubPerson.class, "additionalField"));
+        assertThat(getField(Person.class, "firstName")).isNotNull();
+        assertThat(getField(SubPerson.class, "firstName")).isNotNull();
+        assertThat(getField(SubPerson.class, "additionalField")).isNotNull();
         assertThatThrownBy(() -> getField(Person.class, "notExistingField"))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessageStartingWith("Impossible to find field with name ");

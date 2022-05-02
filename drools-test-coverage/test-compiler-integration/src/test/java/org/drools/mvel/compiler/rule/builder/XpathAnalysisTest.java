@@ -22,9 +22,9 @@ import java.util.Iterator;
 import org.drools.compiler.rule.builder.XpathAnalysis;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 /**
@@ -38,7 +38,7 @@ public class XpathAnalysisTest {
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath has to start with '/'.", true, result.hasError());
-        assertNotNull(result.getError());
+        assertThat(result.getError()).isNotNull();
         assertEquals(false, result.iterator().hasNext());
     }
 
@@ -48,7 +48,7 @@ public class XpathAnalysisTest {
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath has to start with '/'.", true, result.hasError());
-        assertNotNull(result.getError());
+        assertThat(result.getError()).isNotNull();
         assertEquals(false, result.iterator().hasNext());
     }
 
@@ -302,7 +302,7 @@ public class XpathAnalysisTest {
         if (expected == null) {
             assertNull(actual);
         } else {
-            assertNotNull(actual);
+            assertThat(actual).isNotNull();
         }
         assertEquals(expected.getField(), actual.getField());
         assertEquals(expected.isIterate(), actual.isIterate());

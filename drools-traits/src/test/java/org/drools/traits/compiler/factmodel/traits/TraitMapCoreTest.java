@@ -29,8 +29,8 @@ import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -856,7 +856,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         assertEquals( 2, list.size() );
         assertNull( list.get( 0 ) );
-        assertNotNull( list.get( 1 ) );
+        assertThat(list.get(1)).isNotNull();
     }
 
     @Test
@@ -1026,7 +1026,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertNotNull(list.get(0));
+        assertThat(list.get(0)).isNotNull();
     }
 
     @Test
@@ -1098,7 +1098,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertNotNull(list.get(0));
+        assertThat(list.get(0)).isNotNull();
     }
 
     @Test
@@ -1170,7 +1170,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertNotNull(list.get(0));
+        assertThat(list.get(0)).isNotNull();
     }
 
     @Test
@@ -1245,7 +1245,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertNotNull(list.get(0));
+        assertThat(list.get(0)).isNotNull();
     }
 
     @Test()

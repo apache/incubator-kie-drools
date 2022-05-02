@@ -46,8 +46,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
@@ -207,7 +207,7 @@ public class ReteooWorkingMemoryTest {
         }   
         
         ksession.update( f1, "s1" );
-        assertNotNull( ksession.getObject( f1 ) );
+        assertThat(ksession.getObject(f1)).isNotNull();
         ksession.retract( f1 );
         
         ksession.retract( f1 );

@@ -23,9 +23,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.core.base.accumulators.AverageAccumulateFunction;
 import org.drools.core.base.accumulators.MaxAccumulateFunction;
-import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.mvel.evaluators.AfterEvaluatorDefinition;
 import org.drools.mvel.evaluators.BeforeEvaluatorDefinition;
 import org.junit.Before;
@@ -41,8 +41,8 @@ import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class KnowledgeBuilderConfigurationTest {
@@ -226,7 +226,7 @@ public class KnowledgeBuilderConfigurationTest {
     public void testEvaluatorConfiguration() {
         // in this use case, the application already has the instance of the evaluator definition
         EvaluatorDefinition afterDef = new AfterEvaluatorDefinition();
-        assertNotNull( afterDef );
+        assertThat(afterDef).isNotNull();
         
         // creating the option and storing in a local var just to make test easier
         EvaluatorOption option = EvaluatorOption.get( "after", afterDef );

@@ -23,7 +23,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNBuildFromReaderTest {
 
@@ -63,6 +63,6 @@ public class DMNBuildFromReaderTest {
         kieHelper.addResource(dmnResource);
 
         KieBase kieBase = kieHelper.build();
-        assertNotNull(kieBase);
+        assertThat(kieBase).isNotNull();
     }
 }

@@ -42,6 +42,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -52,9 +53,9 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -783,7 +784,7 @@ public class LinkingTest {
         assertEquals(2, riaMem1.getRiaPathMemory().getLinkedSegmentMask()); // E deleted
 
         // assert e, f are in the same segment, and that this is the only segment in ria2 memory
-        assertNotNull( null, eMem.getSegmentMemory() ); //subnetworks are recursively created, so segment already exists
+        assertThat(eMem.getSegmentMemory()).isNotNull(); //subnetworks are recursively created, so segment already exists
         assertSame( fMem.getSegmentMemory(), eMem.getSegmentMemory() );
 
         assertEquals( 3, riaMem2.getRiaPathMemory().getSegmentMemories().length );
@@ -880,15 +881,15 @@ public class LinkingTest {
         BetaMemory cmem = ( BetaMemory ) wm.getNodeMemory( cNode );
         
         // amem.getSegmentMemory().getStagedLeftTuples().insertSize() == 3
-        assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst() );
-        assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext() );
-        assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertThat(amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple) amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNotNull();
         assertNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
 
         //assertEquals( 3, bmem.getStagedRightTuples().insertSize() );
-        assertNotNull( bmem.getStagedRightTuples().getInsertFirst() );
-        assertNotNull( bmem.getStagedRightTuples().getInsertFirst().getStagedNext() );
-        assertNotNull( bmem.getStagedRightTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertThat(bmem.getStagedRightTuples().getInsertFirst()).isNotNull();
+        assertThat((Tuple) bmem.getStagedRightTuples().getInsertFirst().getStagedNext()).isNotNull();
+        assertThat((Tuple) bmem.getStagedRightTuples().getInsertFirst().getStagedNext().getStagedNext()).isNotNull();
         assertNull( bmem.getStagedRightTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
 
         wm.fireAllRules();
