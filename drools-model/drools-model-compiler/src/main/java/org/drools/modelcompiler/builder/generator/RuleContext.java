@@ -142,13 +142,13 @@ public class RuleContext {
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
         this.ruleDescr = ruleDescr;
-        processUnitData();
+        this.ruleUnitDescr = findUnitDescr();
         this.ruleIndex = ruleIndex;
     }
 
-    private void findUnitDescr() {
+    private RuleUnitDescription findUnitDescr() {
         if (ruleDescr == null) {
-            return;
+            return null;
         }
 
         boolean useNamingConvention = false;
@@ -161,7 +161,7 @@ public class RuleContext {
             unitName = ruleDescr.getUnit().getTarget();
         } else {
             if (ruleDescr.getResource() == null) {
-                return;
+                return null;
             }
             String drlFile = ruleDescr.getResource().getSourcePath();
             if (drlFile != null) {
@@ -169,33 +169,33 @@ public class RuleContext {
                 unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
                 useNamingConvention = true;
             } else {
-                return;
+                return null;
             }
         }
 
         RuleUnitDescriptionLoader ruleUnitDescriptionLoader = kbuilder.getPackageRegistry(packageModel.getName() ).getPackage().getRuleUnitDescriptionLoader();
         Optional<RuleUnitDescription> ruDescr = ruleUnitDescriptionLoader.getDescription(unitName );
         if (ruDescr.isPresent()) {
-            ruleUnitDescr = ruDescr.get();
+            return processRuleUnit(ruDescr.get());
         } else if (!useNamingConvention) {
             throw new UnknownRuleUnitException( unitName );
         }
+
+        return null;
     }
 
-    private void processUnitData() {
-        findUnitDescr();
-        if (ruleUnitDescr != null) {
-            for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
-                String unitVarName = unitVar.getName();
-                Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
-                addRuleUnitVar( unitVarName, resolvedType );
+    private RuleUnitDescription processRuleUnit(RuleUnitDescription ruleUnitDescr) {
+        for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
+            String unitVarName = unitVar.getName();
+            Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
+            addRuleUnitVar( unitVarName, resolvedType );
 
-                getPackageModel().addGlobal( unitVarName, unitVar.getType() );
-                if ( unitVar.isDataSource() ) {
-                    getPackageModel().addEntryPoint( unitVarName );
-                }
+            packageModel.addGlobal( unitVarName, unitVar.getType() );
+            if ( unitVar.isDataSource() ) {
+                packageModel.addEntryPoint( unitVarName );
             }
         }
+        return ruleUnitDescr;
     }
 
     public RuleUnitDescription getRuleUnitDescr() {

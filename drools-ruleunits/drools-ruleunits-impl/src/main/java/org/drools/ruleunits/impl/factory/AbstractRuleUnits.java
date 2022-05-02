@@ -46,4 +46,15 @@ public abstract class AbstractRuleUnits implements RuleUnits {
     public RuleUnitInstance<?> getRegisteredInstance(String name) {
         return unitRegistry.get(name);
     }
+
+
+    public static class DummyRuleUnits extends AbstractRuleUnits {
+
+        static final DummyRuleUnits INSTANCE = new DummyRuleUnits();
+
+        @Override
+        protected RuleUnit<?> create(String fqcn) {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

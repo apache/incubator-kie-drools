@@ -62,6 +62,11 @@ public class PackageSources {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
         }
 
+        for (RuleUnitWriter ruleUnitWriter : packageModelWriter.getRuleUnitWriters()) {
+            sources.ruleSources.add(new GeneratedFile(ruleUnitWriter.getUnitName(), logSource( ruleUnitWriter.getUnitSource() )));
+            sources.ruleSources.add(new GeneratedFile(ruleUnitWriter.getInstanceName(), logSource( ruleUnitWriter.getInstanceSource() )));
+        }
+
         pkgModel.getLambdaClasses()
                 .values()
                 .stream()

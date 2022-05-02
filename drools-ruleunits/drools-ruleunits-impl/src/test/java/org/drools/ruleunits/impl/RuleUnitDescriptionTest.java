@@ -38,7 +38,7 @@ public class RuleUnitDescriptionTest {
 
     @Test
     public void getRuleUnitClass() {
-        assertThat(ruleUnitDescr.getRuleUnitClass()).isEqualTo(TestRuleUnit.class);
+        assertThat(ruleUnitDescr.getRuleUnitName()).isEqualTo(TestRuleUnit.class.getName());
     }
 
     @Test

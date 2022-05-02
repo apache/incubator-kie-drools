@@ -45,13 +45,8 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
     }
 
     @Override
-    public Class<?> getRuleUnitClass() {
-        return ruleUnitClass;
-    }
-
-    @Override
     public String getCanonicalName() {
-        return getRuleUnitClass().getCanonicalName();
+        return ruleUnitClass.getCanonicalName();
     }
 
     @Override
@@ -68,6 +63,11 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
         } else {
             return aPackage.getName();
         }
+    }
+
+    @Override
+    public Class<?> getRuleUnitClass() {
+        return ruleUnitClass;
     }
 
     @Override

@@ -61,10 +61,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationUtils;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.util.StringUtils;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.model.DomainClassMetadata;
@@ -83,6 +81,8 @@ import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
 import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
+import org.drools.util.StringUtils;
+import org.drools.util.TypeResolver;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
@@ -156,7 +156,7 @@ public class PackageModel {
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
-    private final Set<RuleUnitDescription> ruleUnits = Collections.synchronizedSet( new HashSet<>() );
+    private final Set<RuleUnitDescription> ruleUnits = new HashSet<>();
 
     private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new ConcurrentHashMap<>();
     private final Map<String, PredicateInformation> allConstraintsMap = new ConcurrentHashMap<>();
@@ -429,8 +429,8 @@ public class PackageModel {
         return dialectCompiletimeRegistry;
     }
 
-    public void addRuleUnit(RuleUnitDescription ruleUnitDescription) {
-        this.ruleUnits.add(ruleUnitDescription);
+    public void addRuleUnits(Collection<RuleUnitDescription> ruleUnitDescriptions) {
+        this.ruleUnits.addAll(ruleUnitDescriptions);
     }
 
     public Collection<RuleUnitDescription> getRuleUnits() {
@@ -438,13 +438,7 @@ public class PackageModel {
     }
 
     public void addQueryInRuleUnit(RuleUnitDescription ruleUnitDescription, QueryModel query) {
-        addRuleUnit(ruleUnitDescription);
         queriesByRuleUnit.computeIfAbsent( ruleUnitDescription.getSimpleName(), k -> Collections.synchronizedSet( new HashSet<>() ) ).add(query);
-    }
-
-    public Collection<QueryModel> getQueriesInRuleUnit(Class<?> ruleUnitType) {
-        String simpleName = ruleUnitType.getSimpleName();
-        return getQueriesInRuleUnit(simpleName);
     }
 
     public Collection<QueryModel> getQueriesInRuleUnit(RuleUnitDescription ruleUnitDescription) {
