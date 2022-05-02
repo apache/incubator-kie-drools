@@ -32,7 +32,7 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
     private final Semaphore activeConsumption = new Semaphore(1);
     private final BestSolutionHolder<Solution_> bestSolutionHolder;
-    private ExecutorService consumerExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService consumerExecutor = Executors.newSingleThreadExecutor();
 
     public ConsumerSupport(ProblemId_ problemId, Consumer<? super Solution_> bestSolutionConsumer,
             Consumer<? super Solution_> finalBestSolutionConsumer,
@@ -87,6 +87,7 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
                 // Cancel problem changes that arrived after the solver terminated.
                 bestSolutionHolder.cancelPendingChanges();
                 activeConsumption.release();
+                disposeConsumerThread();
             }
         });
     }
@@ -127,10 +128,11 @@ final class ConsumerSupport<Solution_, ProblemId_> implements AutoCloseable {
 
     @Override
     public void close() {
-        if (consumerExecutor != null) {
-            consumerExecutor.shutdownNow();
-            consumerExecutor = null;
-        }
+        disposeConsumerThread();
         bestSolutionHolder.cancelPendingChanges();
+    }
+
+    private void disposeConsumerThread() {
+        consumerExecutor.shutdownNow();
     }
 }
