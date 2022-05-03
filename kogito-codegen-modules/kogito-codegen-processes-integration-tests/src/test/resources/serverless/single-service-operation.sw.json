@@ -6,11 +6,8 @@
   "functions": [
     {
       "name": "helloWorld",
-      "metadata": {
-        "interface": "org.kie.kogito.codegen.data.HelloService",
-        "operation": "jsonHello",
-        "type": "service"
-      }
+      "type": "custom",
+      "operation" : "service:org.kie.kogito.codegen.data.HelloService::jsonHello"
     }
   ],
   "states":[

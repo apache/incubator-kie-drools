@@ -4,11 +4,11 @@ name: test-wf
 start: HelloWorld
 functions:
   - name: helloWorld
-    metadata:
-      type: script
+    type: custom
+    operation: script
   - name: goodbyeWorld
-    metadata:
-      type: script
+    type: custom
+    operation: script
 states:
   - name: HelloWorld
     type: operation

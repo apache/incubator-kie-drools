@@ -16,6 +16,8 @@
 package org.kie.kogito.codegen.api.context;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -159,6 +161,13 @@ public interface KogitoBuildContext extends DroolsModelBuildContext {
                 .filter(key -> getApplicationProperty(key).isPresent())
                 .collect(Collectors.toUnmodifiableMap(key -> key,
                         key -> getApplicationProperty(key).get()));
+    }
+
+    default Collection<String> getGeneratedHandlers() {
+        return Collections.emptySet();
+    }
+
+    default void addGeneratedHandler(String workName) {
     }
 
     interface Builder {

@@ -4,20 +4,14 @@ version: '1.0'
 start: HandleOpenPR
 functions:
   - name: AddLabels
-    metadata:
-      interface: org.kogito.examples.sw.github.workflow.GithubService
-      operation: addLabels
-      type: service
+    type: custom
+    operation: service:org.kogito.examples.sw.github.workflow.GithubService::addLabels
   - name: AddReviewers
-    metadata:
-      interface: org.kogito.examples.sw.github.workflow.GithubService
-      operation: addReviewers
-      type: service
+    type: custom
+    operation: service:org.kogito.examples.sw.github.workflow.GithubService::addReviewers
   - name: FetchPRFiles
-    metadata:
-      interface: org.kogito.examples.sw.github.workflow.GithubService
-      operation: fetchPRFiles
-      type: service
+    type: custom
+    operation: service:org.kogito.examples.sw.github.workflow.GithubService::fetchPRFiles
 events:
   - name: PROpened
     source: github

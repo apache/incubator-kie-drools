@@ -12,17 +12,13 @@
   "functions": [
     {
       "name": "isEven",
-      "metadata": {
-        "interface": "org.kie.kogito.examples.EvenService",
-        "operation": "isEven",
-        "type": "service"
-      }
+      "type": "custom",
+      "operation": "service:org.kie.kogito.examples.EvenService::isEven"
     },
     {
       "name": "printMessage",
-      "metadata": {
-        "type": "sysout"
-      }
+      "type": "custom",
+      "operation": "sysout"
     }
   ],
   "states": [

@@ -7,9 +7,8 @@
   "functions": [
     {
       "name": "printMessage",
-      "metadata": {
-        "type": "sysout"
-      }
+      "type" : "custom",
+      "operation": "sysout"
     },
     {
       "name": "increase",

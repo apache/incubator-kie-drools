@@ -18,7 +18,6 @@ package org.kie.kogito.serverless.workflow.utils;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -44,6 +43,12 @@ public class ServerlessWorkflowUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
 
+    public static final String API_KEY_PREFIX = "api_key_prefix";
+    public static final String API_KEY = "api_key";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String USER_PROP = "username";
+    public static final String PASSWORD_PROP = "password";
+
     public static final String DEFAULT_WORKFLOW_FORMAT = "json";
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
     private static final String APP_PROPERTIES_BASE = "kogito.sw.";
@@ -51,10 +56,6 @@ public class ServerlessWorkflowUtils {
 
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = APP_PROPERTIES_BASE + "functions.";
     private static final String APP_PROPERTIES_STATES_BASE = "states.";
-    public static final String OPENAPI_OPERATION_SEPARATOR = "#";
-
-    private static final String REGEX_NO_EXT = "[.][^.]+$";
-    private static final String ONLY_CHARS = "[^a-z]";
 
     private ServerlessWorkflowUtils() {
     }
@@ -126,35 +127,6 @@ public class ServerlessWorkflowUtils {
         Supplier<Expression> create(String key, Class<T> clazz, T defaultValue);
     }
 
-    public static String getForEachVarName(KogitoBuildContext context) {
-        return context.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + "foreach.outputVarName").orElse("_swf_eval_temp");
-    }
-
-    /**
-     * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
-     *      Invocations</a>
-     * @param function to extract the OpenApi URI
-     * @return the OpenApi URI if found, or an empty string if not
-     */
-    public static String getOpenApiURI(FunctionDefinition function) {
-        return isOpenApiOperation(function) ? function.getOperation().substring(0, function.getOperation().indexOf(OPENAPI_OPERATION_SEPARATOR)) : "";
-    }
-
-    public static String getOpenApiFileName(URI uri) {
-        return sanitizeName(fileName(uri.getPath()));
-    }
-
-    /**
-     * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
-     *      Invocations</a>
-     * @param function to extract the OpenApi operationId
-     * @return the OpenApi operationId if found, otherwise an empty string
-     */
-    public static String getOpenApiOperationId(FunctionDefinition function) {
-        final String uri = getOpenApiURI(function);
-        return uri.isEmpty() ? uri : function.getOperation().substring(uri.length() + 1);
-    }
-
     /**
      * Checks whether or not the Function definition is an OpenApi operation
      *
@@ -162,23 +134,11 @@ public class ServerlessWorkflowUtils {
      * @return true if the given function refers to an OpenApi operation
      */
     public static boolean isOpenApiOperation(FunctionDefinition function) {
-        return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OPENAPI_OPERATION_SEPARATOR);
+        return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OpenAPIOperationId.OPENAPI_OPERATION_SEPARATOR);
     }
 
-    public static String getServiceName(String uri) {
-        return sanitizeName(removeExt(fileName(uri)));
-    }
-
-    public static String removeExt(String fileName) {
-        return fileName.replaceFirst(REGEX_NO_EXT, "");
-    }
-
-    private static String fileName(String uri) {
-        return Path.of(uri).getFileName().toString().toLowerCase();
-    }
-
-    private static String sanitizeName(String name) {
-        return name.replaceAll(ONLY_CHARS, "");
+    public static String getForEachVarName(KogitoBuildContext context) {
+        return context.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + "foreach.outputVarName").orElse("_swf_eval_temp");
     }
 
     public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr) {

@@ -3,14 +3,14 @@ name: test-wf
 start: HelloWorld
 functions:
   - name: helloOne
-    metadata:
-      type: script
+    type: custom
+    operation: script
   - name: helloTwo
-    metadata:
-      type: script
+    type: custom
+    operation: script
   - name: helloThree
-    metadata:
-      type: script
+    type: custom
+    operation: script
 states:
   - name: HelloWorld
     type: operation

@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
+import org.kie.kogito.serverless.workflow.utils.OpenAPIOperationId;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.quarkiverse.openapi.generator.deployment.codegen.OpenApiSpecInputProvider;
@@ -76,8 +77,9 @@ public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvide
 
     private SpecInputModel getSpecInput(FunctionDefinition function, Workflow workflow) {
         try {
-            URI uri = URI.create(ServerlessWorkflowUtils.getOpenApiURI(function));
-            return new SpecInputModel(ServerlessWorkflowUtils.getOpenApiFileName(uri),
+            OpenAPIOperationId operationId = OpenAPIOperationId.fromOperation(function.getOperation());
+            URI uri = operationId.getUri();
+            return new SpecInputModel(operationId.getFileName(),
                     URIContentLoaderFactory.buildLoader(uri, Thread.currentThread().getContextClassLoader(), workflow, function.getAuthRef()).getInputStream());
         } catch (IOException io) {
             throw new IllegalStateException(io);

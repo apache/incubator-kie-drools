@@ -15,23 +15,18 @@
   "functions": [
     {
       "name": "publishMove",
-      "metadata": {
-        "interface": "org.kie.kogito.examples.PublishService",
-        "operation": "publishMove",
-        "type": "service"
-      }
+      "type": "custom",
+      "operation": "service:org.kie.kogito.examples.PublishService::publishMove"
     },
     {
       "name": "printMessage",
-      "metadata": {
-        "type": "sysout"
-      }
+      "type": "custom",
+      "operation": "sysout"
     },
     {
       "name": "injectPI",
-      "metadata": {
-        "type": "script"
-      }
+      "type": "custom",
+      "operation": "script"
     }
   ],
   "states": [

@@ -28,15 +28,13 @@
   "functions": [
     {
       "name": "helloOne",
-      "metadata": {
-        "type": "script"
-      }
+      "operation": "script",
+      "type": "custom"
     },
     {
       "name": "helloTwo",
-      "metadata": {
-        "type": "script"
-      }
+      "operation": "script",
+      "type": "custom"
     }
   ],
   "states": [

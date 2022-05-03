@@ -100,6 +100,7 @@ public class KogitoAssetsProcessor {
     @BuildStep
     public KogitoGeneratedSourcesBuildItem generateSources(
             Capabilities capabilities,
+            List<KogitoAddonsPreGeneratedSourcesBuildItem> extraSources,
             KogitoBuildContextBuildItem contextBuildItem) {
 
         final KogitoBuildContext context = contextBuildItem.getKogitoBuildContext();
@@ -119,7 +120,8 @@ public class KogitoAssetsProcessor {
     @BuildStep
     public List<KogitoGeneratedClassesBuildItem> generateModel(
             KogitoGeneratedSourcesBuildItem sources,
-            List<KogitoAddonsGeneratedSourcesBuildItem> extraSources,
+            List<KogitoAddonsPreGeneratedSourcesBuildItem> addonsPreSources,
+            List<KogitoAddonsPostGeneratedSourcesBuildItem> addonsPostSources,
             KogitoBuildContextBuildItem contextBuildItem,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer,
@@ -130,7 +132,7 @@ public class KogitoAssetsProcessor {
 
         final KogitoBuildContext context = contextBuildItem.getKogitoBuildContext();
 
-        Collection<GeneratedFile> generatedFiles = collectGeneratedFiles(sources, extraSources);
+        Collection<GeneratedFile> generatedFiles = collectGeneratedFiles(sources, addonsPreSources, addonsPostSources);
 
         // dump files to disk
         dumpFilesToDisk(context.getAppPaths(), generatedFiles);
@@ -153,19 +155,27 @@ public class KogitoAssetsProcessor {
                 .orElse(Collections.emptyList());
     }
 
-    private Collection<GeneratedFile> collectGeneratedFiles(KogitoGeneratedSourcesBuildItem sources, List<KogitoAddonsGeneratedSourcesBuildItem> extraSources) {
+    private Collection<GeneratedFile> collectGeneratedFiles(KogitoGeneratedSourcesBuildItem sources, List<KogitoAddonsPreGeneratedSourcesBuildItem> preSources,
+            List<KogitoAddonsPostGeneratedSourcesBuildItem> postSources) {
         Map<String, GeneratedFile> map = new HashMap<>();
+
+        addGeneratedFiles(preSources, map);
 
         for (GeneratedFile generatedFile : sources.getGeneratedFiles()) {
             map.put(generatedFile.relativePath(), generatedFile);
         }
 
-        for (KogitoAddonsGeneratedSourcesBuildItem item : extraSources) {
+        addGeneratedFiles(postSources, map);
+
+        return map.values();
+    }
+
+    private static void addGeneratedFiles(List<? extends KogitoAddonsGeneratedSourcesBuildItem> items, Map<String, GeneratedFile> map) {
+        for (KogitoAddonsGeneratedSourcesBuildItem item : items) {
             for (GeneratedFile generatedFile : item.getGeneratedFiles()) {
                 map.put(generatedFile.relativePath(), generatedFile);
             }
         }
-        return map.values();
     }
 
     void validateAvailableCapabilities(KogitoBuildContext context, Capabilities capabilities) {

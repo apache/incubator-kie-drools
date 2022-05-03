@@ -32,7 +32,7 @@ import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessGenerator;
 import org.kie.kogito.quarkus.addons.common.deployment.AnyEngineKogitoAddOnProcessor;
-import org.kie.kogito.quarkus.common.deployment.KogitoAddonsGeneratedSourcesBuildItem;
+import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPostGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 
@@ -56,7 +56,7 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
     }
 
     @BuildStep
-    KogitoAddonsGeneratedSourcesBuildItem generate(Optional<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<KogitoMessagingMetadataBuildItem> metadataProducer,
+    KogitoAddonsPostGeneratedSourcesBuildItem generate(Optional<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<KogitoMessagingMetadataBuildItem> metadataProducer,
             KogitoBuildContextBuildItem kogitoContext) {
 
         Collection<ChannelInfo> channelsInfo = ChannelMappingStrategy.getChannelMapping();
@@ -78,7 +78,7 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
             }
         }
 
-        return new KogitoAddonsGeneratedSourcesBuildItem(generatedFiles);
+        return new KogitoAddonsPostGeneratedSourcesBuildItem(generatedFiles);
     }
 
     private Set<EventGenerator> getGenerators(Map<DotName, EventGenerator> generators,

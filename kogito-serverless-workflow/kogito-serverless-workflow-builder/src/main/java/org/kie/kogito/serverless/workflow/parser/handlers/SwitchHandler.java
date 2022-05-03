@@ -37,9 +37,9 @@ import io.serverlessworkflow.api.switchconditions.EventCondition;
 import io.serverlessworkflow.api.transitions.Transition;
 
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.eventBasedExclusiveSplitNode;
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.exclusiveSplitNode;
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.timerNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.eventBasedExclusiveSplitNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.exclusiveSplitNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.timerNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.validation.SwitchValidator.validateConditions;
 import static org.kie.kogito.serverless.workflow.parser.handlers.validation.SwitchValidator.validateDefaultCondition;
 import static org.kie.kogito.serverless.workflow.utils.TimeoutsConfigResolver.resolveEventTimeout;

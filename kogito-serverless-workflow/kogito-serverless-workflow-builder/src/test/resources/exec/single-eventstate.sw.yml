@@ -8,8 +8,8 @@ events:
     type: kafka
 functions:
   - name: greetFunction
-    metadata:
-      type: script
+    type: custom
+    operation: script
 states:
   - name: WaitForGreeting
     type: event

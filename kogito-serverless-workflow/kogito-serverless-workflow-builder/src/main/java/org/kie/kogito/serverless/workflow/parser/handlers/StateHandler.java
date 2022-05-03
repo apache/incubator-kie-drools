@@ -61,6 +61,7 @@ import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.transitions.Transition;
 
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.messageNode;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.processResourceFile;
 
 public abstract class StateHandler<S extends State> {
@@ -123,7 +124,7 @@ public abstract class StateHandler<S extends State> {
             EventDefinition eventDefinition,
             String data,
             String defaultWorkflowVar) {
-        return ServerlessWorkflowParser.sendEventNode(
+        return NodeFactoryUtils.sendEventNode(
                 actionNode.action(new ProduceEventActionSupplier(workflow, data)),
                 eventDefinition,
                 defaultWorkflowVar);
@@ -438,7 +439,7 @@ public abstract class StateHandler<S extends State> {
 
     protected final NodeFactory<?, ?> consumeEventNode(RuleFlowNodeContainerFactory<?, ?> factory, String eventRef, String inputVar, String outputVar) {
         EventDefinition eventDefinition = eventDefinition(eventRef);
-        return ServerlessWorkflowParser.messageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar)
+        return messageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar)
                 .inputVariableName(inputVar)
                 .variableName(outputVar)
                 .outMapping(inputVar, outputVar)

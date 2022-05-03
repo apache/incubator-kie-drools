@@ -4,10 +4,8 @@ version: '1.0'
 start: HelloWorld
 functions:
   - name: helloWorld
-    metadata:
-      interface: org.something.other.TestService
-      operation: get
-      type: service
+    type: custom
+    operation: service:org.something.other.TestService::get
 states:
   - name: HelloWorld
     type: operation

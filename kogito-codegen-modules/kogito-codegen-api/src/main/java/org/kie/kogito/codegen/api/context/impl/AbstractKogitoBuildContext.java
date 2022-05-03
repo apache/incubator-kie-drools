@@ -63,6 +63,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected final KogitoGAV gav;
     protected final SourceFileCodegenBindNotifier sourceFileCodegenBindNotifier;
     protected Set<ApplicationSection> applicationSections;
+    protected Collection<String> appHandlers;
 
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
     protected RestAnnotator restAnnotator;
@@ -84,6 +85,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         this.contextName = contextName;
         this.contextAttributes = new HashMap<>();
         this.applicationSections = new HashSet<>();
+        this.appHandlers = new HashSet<>();
         this.sourceFileCodegenBindNotifier = builder.sourceFileCodegenBindNotifier;
     }
 
@@ -184,6 +186,16 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     @Override
     public Map<String, Object> getContextAttributes() {
         return Collections.unmodifiableMap(contextAttributes);
+    }
+
+    @Override
+    public Collection<String> getGeneratedHandlers() {
+        return Collections.unmodifiableCollection(appHandlers);
+    }
+
+    @Override
+    public void addGeneratedHandler(String workName) {
+        appHandlers.add(workName);
     }
 
     @Override

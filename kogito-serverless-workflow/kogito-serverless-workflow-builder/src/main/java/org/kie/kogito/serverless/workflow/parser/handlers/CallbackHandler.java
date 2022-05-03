@@ -26,9 +26,9 @@ import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.states.CallbackState;
 
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.eventBasedExclusiveSplitNode;
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.joinExclusiveNode;
-import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.timerNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.eventBasedExclusiveSplitNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.joinExclusiveNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.timerNode;
 import static org.kie.kogito.serverless.workflow.utils.TimeoutsConfigResolver.resolveEventTimeout;
 
 public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> {

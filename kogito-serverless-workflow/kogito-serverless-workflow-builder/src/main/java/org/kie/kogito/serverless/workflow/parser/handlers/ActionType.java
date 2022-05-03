@@ -19,7 +19,7 @@ import java.util.Map;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
-import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.isOpenApiOperation;
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
 
 enum ActionType {
     REST("rest"),
@@ -54,7 +54,7 @@ enum ActionType {
     public static ActionType from(FunctionDefinition actionFunction) {
         switch (actionFunction.getType()) {
             case REST:
-                return isOpenApiOperation(actionFunction) ? ActionType.OPENAPI : fromMetadata(actionFunction.getMetadata());
+                return isEmpty(actionFunction.getOperation()) ? fromMetadata(actionFunction.getMetadata()) : ActionType.OPENAPI;
             case EXPRESSION:
                 return ActionType.EXPRESSION;
             case CUSTOM:
@@ -75,6 +75,7 @@ enum ActionType {
         throw new UnsupportedOperationException("Unable to recognize custom format " + operation + ", supported custom formats are " + values());
     }
 
+    /* This code is kept for backward compatibility with old workflow files, metadata should not be used for type resolution */
     private static ActionType fromMetadata(Map<String, String> metadata) {
         String type = metadata != null ? metadata.get("type") : null;
         if (type != null) {

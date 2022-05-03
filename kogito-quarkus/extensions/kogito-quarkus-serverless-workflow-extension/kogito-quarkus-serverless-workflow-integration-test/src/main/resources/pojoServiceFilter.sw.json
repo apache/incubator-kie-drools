@@ -7,17 +7,13 @@
   "functions": [
     {
       "name": "getPerson",
-      "metadata": {
-        "interface": "org.kie.kogito.workflows.services.AgePersonService",
-        "operation": "from",
-        "type": "service"
-      }
+      "operation": "service:org.kie.kogito.workflows.services.AgePersonService::from",
+      "type": "custom"
     },
     {
       "name": "printMessage",
-      "metadata": {
-        "type": "sysout"
-      }
+      "operation" : "sysout",
+      "type" : "custom"
     }
   ],
   "states": [
