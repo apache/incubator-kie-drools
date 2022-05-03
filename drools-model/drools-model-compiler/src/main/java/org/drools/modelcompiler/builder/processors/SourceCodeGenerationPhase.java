@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.processors;
 
 import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -24,21 +25,18 @@ public class SourceCodeGenerationPhase<T> implements CompilationPhase {
             PackageModel pkgModel,
             PackageSourceManager<T> packageSources,
             Function<PackageModel, T> sourcesGenerator,
-            BuildResultCollector results,
             boolean oneClassPerRule) {
         this.pkgModel = pkgModel;
         this.packageSources = packageSources;
         this.sourcesGenerator = sourcesGenerator;
-        this.results = results;
+        this.results = new BuildResultCollectorImpl();
         this.oneClassPerRule = oneClassPerRule;
     }
 
     @Override
     public void process() {
         pkgModel.setOneClassPerRule(oneClassPerRule);
-        if (results.getResults(ResultSeverity.ERROR).isEmpty()) {
-            packageSources.put(pkgModel.getName(), sourcesGenerator.apply(pkgModel));
-        }
+        packageSources.put(pkgModel.getName(), sourcesGenerator.apply(pkgModel));
     }
 
     @Override

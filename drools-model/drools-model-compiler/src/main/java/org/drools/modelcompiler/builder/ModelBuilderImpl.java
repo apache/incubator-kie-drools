@@ -34,7 +34,6 @@ import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
 import org.drools.modelcompiler.builder.processors.ModelMainCompilationPhase;
 import org.drools.modelcompiler.builder.processors.SourceCodeGenerationPhase;
 import org.kie.api.builder.ReleaseId;
-import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
 import java.util.List;
@@ -89,56 +88,32 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected void doSecondBuildStep(Collection<CompositePackageDescr> compositePackages) {
         Collection<CompositePackageDescr> packages = compositePackagesManager.findPackages(compositePackages);
 
-        {
-            List<CompilationPhase> phases = asList(
-                    new DeclaredTypeCompilationPhase(
-                            this.packageModels,
-                            this.getPackageRegistryManager(),
-                            this.getBuildContext(),
-                            this.getBuilderConfiguration(),
-                            packages),
-                    new ModelMainCompilationPhase(
-                            this.getPackageRegistryManager(),
-                            packages,
-                            this.getBuilderConfiguration(),
-                            hasMvel(),
-                            this.getKnowledgeBase(),
-                            this,
-                            this.getGlobalVariableContext()));
 
-            for (CompilationPhase phase : phases) {
-                phase.process();
-                this.getBuildResultCollector().addAll(phase.getResults());
-                if (this.getBuildResultCollector().hasErrors()) {
-                    break;
-                }
-            }
-        }
+        List<CompilationPhase> phases = asList(
+                new DeclaredTypeCompilationPhase(
+                        this.packageModels,
+                        this.getPackageRegistryManager(),
+                        this.getBuildContext(),
+                        this.getBuilderConfiguration(),
+                        packages),
+                new ModelMainCompilationPhase<>(
+                        this.packageModels,
+                        this.getPackageRegistryManager(),
+                        packages,
+                        this.getBuilderConfiguration(),
+                        hasMvel(),
+                        this.getKnowledgeBase(),
+                        this,
+                        this.getGlobalVariableContext(),
+                        this.sourcesGenerator,
+                        this.packageSources,
+                        oneClassPerRule));
 
-        {
-            for (CompositePackageDescr packageDescr : packages) {
-                PackageRegistry pkgRegistry = this.getPackageRegistryManager().getPackageRegistry(packageDescr.getNamespace());
-                InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-                PackageModel packageModel = this.packageModels.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-
-                List<CompilationPhase> phases = asList(
-                        new RuleValidator(pkgRegistry, packageDescr, this.getBuilderConfiguration()), // validateUniqueRuleNames
-                        new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this),
-                        new SourceCodeGenerationPhase<>(
-                                packageModel,
-                                this.packageSources,
-                                this.sourcesGenerator,
-                                this.getBuildResultCollector(),
-                                this.oneClassPerRule));
-
-                for (CompilationPhase phase : phases) {
-                    phase.process();
-                    this.getBuildResultCollector().addAll(phase.getResults());
-                    if (this.getBuildResultCollector().hasErrors()) {
-                        break;
-                    }
-                }
-
+        for (CompilationPhase phase : phases) {
+            phase.process();
+            this.getBuildResultCollector().addAll(phase.getResults());
+            if (this.getBuildResultCollector().hasErrors()) {
+                break;
             }
         }
 
