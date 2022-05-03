@@ -18,6 +18,8 @@
 package org.drools.modelcompiler.builder;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.UUID;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -43,6 +45,8 @@ public class RuleUnitWriter {
     private final PackageModel.RuleSourceResult ruleSourceResult;
     private final PackageModel pkgModel;
 
+    private final String uuid = "" + Math.abs( UUID.randomUUID().getLeastSignificantBits() );
+
     public RuleUnitWriter(PackageModel pkgModel, PackageModel.RuleSourceResult ruleSourceResult, RuleUnitDescription ruleUnitDescr) {
         this.pkgModel = pkgModel;
         this.ruleSourceResult = ruleSourceResult;
@@ -50,11 +54,23 @@ public class RuleUnitWriter {
     }
 
     public String getUnitName() {
-        return pkgModel.getPathName() + "/" + ruleUnitDescr.getSimpleName() + "RuleUnit.java";
+        return pkgModel.getPathName() + "/" + getRuleUnitSimpleClassName() + ".java";
     }
 
     public String getInstanceName() {
-        return pkgModel.getPathName() + "/" + ruleUnitDescr.getSimpleName() + "RuleUnitInstance.java";
+        return pkgModel.getPathName() + "/" + getRuleUnitInstanceSimpleClassName() + ".java";
+    }
+
+    public String getRuleUnitClassName() {
+        return pkgModel.getName() + "." + getRuleUnitSimpleClassName();
+    }
+
+    private String getRuleUnitSimpleClassName() {
+        return ruleUnitDescr.getSimpleName() + "RuleUnit" + uuid;
+    }
+
+    private String getRuleUnitInstanceSimpleClassName() {
+        return ruleUnitDescr.getSimpleName() + "RuleUnitInstance" + uuid;
     }
 
     public String getUnitSource() {
@@ -62,7 +78,7 @@ public class RuleUnitWriter {
         try {
             cu = StaticJavaParser.parseResource("RuleUnitTemplate.java");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
 
         ClassOrInterfaceDeclaration parsedClass = cu
@@ -71,20 +87,18 @@ public class RuleUnitWriter {
 
         cu.setPackageDeclaration(pkgModel.getName());
 
-        String ruleUnitClassName = ruleUnitDescr.getSimpleName() + "RuleUnit";
-
-        parsedClass.setName(ruleUnitClassName);
+        parsedClass.setName(getRuleUnitSimpleClassName());
         parsedClass.findAll(ConstructorDeclaration.class)
-                .forEach(c -> c.setName(ruleUnitClassName));
+                .forEach(c -> c.setName(getRuleUnitSimpleClassName()));
         parsedClass.findAll(ClassOrInterfaceType.class, c -> "CLASS_NAME".equals(c.asString()))
-                .forEach(c -> c.setName(ruleUnitClassName));
+                .forEach(c -> c.setName(getRuleUnitSimpleClassName()));
         parsedClass.findAll(ClassOrInterfaceType.class, c -> "RULE_UNIT_CLASS".equals(c.asString()))
                 .forEach(c -> c.setName(ruleUnitDescr.getRuleUnitName()));
 
         parsedClass.findAll(ClassOrInterfaceType.class, c -> "RULE_UNIT_INSTANCE_CLASS".equals(c.asString()))
-                .forEach(c -> c.setName(ruleUnitClassName + "Instance"));
+                .forEach(c -> c.setName(getRuleUnitInstanceSimpleClassName()));
         parsedClass.findAll(ObjectCreationExpr.class, c -> "RULE_UNIT_INSTANCE_CLASS".equals(c.getTypeAsString()))
-                .forEach(c -> c.setType(ruleUnitClassName + "Instance"));
+                .forEach(c -> c.setType(getRuleUnitInstanceSimpleClassName()));
 
         parsedClass.findAll(ObjectCreationExpr.class, c -> "RULE_UNIT_MODEL".equals(c.getTypeAsString()))
                 .forEach(c -> c.setType(ruleSourceResult.getModelsByUnit().get(ruleUnitDescr.getRuleUnitName())));
@@ -97,7 +111,7 @@ public class RuleUnitWriter {
         try {
             cu = StaticJavaParser.parseResource("RuleUnitInstanceTemplate.java");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
 
         ClassOrInterfaceDeclaration parsedClass = cu
@@ -106,11 +120,9 @@ public class RuleUnitWriter {
 
         cu.setPackageDeclaration(pkgModel.getName());
 
-        String ruleUnitInstanceClassName = ruleUnitDescr.getSimpleName() + "RuleUnitInstance";
-
-        parsedClass.setName(ruleUnitInstanceClassName);
+        parsedClass.setName(getRuleUnitInstanceSimpleClassName());
         parsedClass.findAll(ConstructorDeclaration.class)
-                .forEach(c -> c.setName(ruleUnitInstanceClassName));
+                .forEach(c -> c.setName(getRuleUnitInstanceSimpleClassName()));
         parsedClass.findAll(ClassOrInterfaceType.class, c -> "RULE_UNIT_CLASS".equals(c.asString()))
                 .forEach(c -> c.setName(ruleUnitDescr.getRuleUnitName()));
 

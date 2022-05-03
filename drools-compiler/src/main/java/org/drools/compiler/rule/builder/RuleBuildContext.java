@@ -16,7 +16,9 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.lang.reflect.Field;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
@@ -179,7 +181,11 @@ public class RuleBuildContext extends PackageBuildContext {
             try {
                 ruleUnitClass = typeResolver.resolveType(ruleUnitClassName);
             } catch (ClassNotFoundException e) {
-                // ignored: missing RuleUnit class will be reported as a compile time error
+                if (!nameInferredFromResource) {
+                    addError(new RuleBuildError(rule, getParentDescr(), null,
+                            "Cannot find rule unit class " + ruleUnitClassName));
+                    return;
+                }
             }
             if (ruleUnitClass != null) {
                 unitFound = RuleUnitComponentFactory.get().isRuleUnitClass( ruleUnitClass );
@@ -187,14 +193,20 @@ public class RuleBuildContext extends PackageBuildContext {
                     rule.setRuleUnitClassName(ruleUnitClassName);
                 }
 
-                for (Field f : ruleUnitClass.getDeclaredFields()) {
-                    getPkg().addGlobal(f.getName(), f.getClass());
+                try {
+                    for (PropertyDescriptor prop : Introspector.getBeanInfo(ruleUnitClass).getPropertyDescriptors()) {
+                        if (!"class".equals(prop.getName())) {
+                            getPkg().addGlobal(prop.getName(), prop.getPropertyType());
+                        }
+                    }
+                } catch (IntrospectionException e) {
+                    throw new RuntimeException();
                 }
             }
 
             if (!unitFound && !nameInferredFromResource) {
                 addError(new RuleBuildError(rule, getParentDescr(), null,
-                                            ruleUnitClassName + " is not a valid RuleUnit class name"));
+                                            ruleUnitClassName + " must implement RuleUnitData"));
             }
         }
     }

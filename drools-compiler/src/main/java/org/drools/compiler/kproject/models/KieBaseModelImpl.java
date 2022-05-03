@@ -87,8 +87,8 @@ public class KieBaseModelImpl
         this.kSessions = Collections.emptyMap();
     }
 
-    public static KieBaseModelImpl defaultKieBaseModel() {
-        return (KieBaseModelImpl) KieServices.get().newKieModuleModel().newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );
+    public static KieBaseModel defaultKieBaseModel() {
+        return KieServices.get().newKieModuleModel().newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );
     }
 
     public boolean isDefault() {

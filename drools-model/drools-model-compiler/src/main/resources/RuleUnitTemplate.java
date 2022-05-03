@@ -10,9 +10,7 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
 
     private static final RuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel( new RULE_UNIT_MODEL() );
 
-    public static final CLASS_NAME INSTANCE = new CLASS_NAME();
-
-    private CLASS_NAME() {
+    public CLASS_NAME() {
         super(RULE_UNIT_CLASS.class.getCanonicalName());
     }
 

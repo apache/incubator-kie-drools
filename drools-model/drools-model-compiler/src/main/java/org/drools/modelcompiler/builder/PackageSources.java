@@ -36,6 +36,7 @@ public class PackageSources {
     protected GeneratedFile domainClassSource;
 
     private Collection<String> modelNames;
+    private Collection<String> ruleUnitClassNames = new ArrayList<>();
 
     public static PackageSources dumpSources(PackageModel pkgModel) {
         PackageSources sources = new PackageSources();
@@ -65,6 +66,7 @@ public class PackageSources {
         for (RuleUnitWriter ruleUnitWriter : packageModelWriter.getRuleUnitWriters()) {
             sources.ruleSources.add(new GeneratedFile(ruleUnitWriter.getUnitName(), logSource( ruleUnitWriter.getUnitSource() )));
             sources.ruleSources.add(new GeneratedFile(ruleUnitWriter.getInstanceName(), logSource( ruleUnitWriter.getInstanceSource() )));
+            sources.ruleUnitClassNames.add( ruleUnitWriter.getRuleUnitClassName() );
         }
 
         pkgModel.getLambdaClasses()
@@ -80,6 +82,10 @@ public class PackageSources {
 
     public Collection<String> getModelNames() {
         return modelNames;
+    }
+
+    public Collection<String> getRuleUnitClassNames() {
+        return ruleUnitClassNames;
     }
 
     protected static String logSource(String source) {

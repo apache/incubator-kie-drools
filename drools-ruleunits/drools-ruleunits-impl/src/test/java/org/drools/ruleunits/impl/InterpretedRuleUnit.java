@@ -19,6 +19,7 @@ import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.modelcompiler.ExecutableModelProject;
@@ -66,7 +67,7 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
         KieModuleKieProject kieProject = createRuleUnitKieProject(kieModule, useExecModel);
 
         BuildContext buildContext = new BuildContext();
-        RuleBase kBase = kieModule.createKieBase(defaultKieBaseModel(), kieProject, buildContext, null);
+        RuleBase kBase = kieModule.createKieBase((KieBaseModelImpl) defaultKieBaseModel(), kieProject, buildContext, null);
         if (kBase == null) {
             // build error, throw runtime exception
             throw new RuntimeException("Error while creating KieBase" + buildContext.getMessages().filterMessages(Message.Level.ERROR));
