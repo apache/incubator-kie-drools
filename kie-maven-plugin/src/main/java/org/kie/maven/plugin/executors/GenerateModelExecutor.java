@@ -162,16 +162,19 @@ public class GenerateModelExecutor {
     }
 
     private static void copyMetaInfFile(File targetDirectory, MemoryFileSystem mfs, String path) throws MojoExecutionException {
-        final MemoryFile packagesMemoryFile = (MemoryFile) mfs.getFile(path);
-        final String packagesMemoryFilePath = packagesMemoryFile.getFolder().getPath().asString();
+        final MemoryFile memoryFile = (MemoryFile) mfs.getFile(path);
+        if (!memoryFile.exists()) {
+            return;
+        }
+        final String packagesMemoryFilePath = memoryFile.getFolder().getPath().asString();
         final Path packagesDestinationPath = Paths.get(targetDirectory.getPath(), "classes",
-                                                       packagesMemoryFilePath, packagesMemoryFile.getName());
+                                                       packagesMemoryFilePath, memoryFile.getName());
 
         try {
             if (!Files.exists(packagesDestinationPath)) {
                 Files.createDirectories(packagesDestinationPath.getParent());
             }
-            Files.copy(packagesMemoryFile.getContents(), packagesDestinationPath,
+            Files.copy(memoryFile.getContents(), packagesDestinationPath,
                        StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to write file", e);
