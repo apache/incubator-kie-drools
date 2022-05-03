@@ -2,32 +2,35 @@
 :sonarBadge: image:https://sonarcloud.io/api/project_badges/measure?project={projectKey}
 :sonarLink: link="https://sonarcloud.io/dashboard?id={projectKey}"
 
-= OptaPlanner
+image::optaplanner-docs/src/modules/ROOT/images/shared/optaPlannerLogo.png[link="https://www.optaplanner.org/",OptaPlanner,150,150,align="center"]
 
-https://www.optaplanner.org/[www.optaplanner.org]
-
-image:https://img.shields.io/badge/stackoverflow-ask_question-orange.svg?logo=stackoverflow[
-"Ask question on Stack Overflow", link="https://stackoverflow.com/questions/tagged/optaplanner"]
-image:https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip[
+image:https://img.shields.io/maven-central/v/org.optaplanner/optaplanner-bom?logo=apache-maven&style=for-the-badge["Maven artifact", link="https://ossindex.sonatype.org/component/pkg:maven/org.optaplanner/optaplanner-bom"]
+image:https://img.shields.io/badge/stackoverflow-ask_question-orange.svg?logo=stackoverflow&style=for-the-badge["Stackoverflow", link="https://stackoverflow.com/questions/tagged/optaplanner"]
+image:https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip&style=for-the-badge[
 "Join Zulip Chat", link="https://kie.zulipchat.com/#narrow/stream/232679-optaplanner"]
+image:https://img.shields.io/github/commit-activity/m/kiegroup/optaplanner?label=commits&style=for-the-badge["Commit Activity", link="https://github.com/kiegroup/optaplanner/pulse"]
+image:https://img.shields.io/github/license/kiegroup/optaplanner?style=for-the-badge&logo=apache["Livense", link="https://www.apache.org/licenses/LICENSE-2.0"]
+image:https://img.shields.io/badge/JVM-11--17-brightgreen.svg?style=for-the-badge["JVM support", link="https://github.com/kiegroup/optaplanner/actions/workflows/pull_request.yml"]
+image:https://img.shields.io/badge/Maven-3.x-blue?style=for-the-badge["Maven",link="https://maven.apache.org/install.html"]
+image:https://img.shields.io/github/languages/code-size/kiegroup/optaplanner?style=for-the-badge["Code size", link="https://github.com/kiegroup/optaplanner/actions/workflows/pull_request.yml"]
 
-{sonarBadge}&metric=alert_status["Quality Gate Status", {sonarLink}]
-{sonarBadge}&metric=reliability_rating["Reliability Rating", {sonarLink}]
+{sonarBadge}&style=for-the-badge&metric=reliability_rating["Reliability Rating", {sonarLink}]
 {sonarBadge}&metric=security_rating["Security Rating", {sonarLink}]
 {sonarBadge}&metric=sqale_rating["Maintainability Rating", {sonarLink}]
-{sonarBadge}&metric=ncloc["Lines of Code", {sonarLink}]
 {sonarBadge}&metric=coverage["Coverage", {sonarLink}]
+
+A fast, easy-to-use, open source AI constraint solver for software developers
 
 == Looking for Quickstarts?
 
-OptaPlanner's quickstarts have moved to https://github.com/kiegroup/optaplanner-quickstarts[optaplanner-quickstarts repository].
+OptaPlanner's quickstarts are located in the https://github.com/kiegroup/optaplanner-quickstarts[optaplanner-quickstarts repository].
 
 == Quick development start
 
 To build and run from source:
 
 ----
-$ mvn clean install -DskipTests
+$ mvn clean install -Dquickly
 $ cd optaplanner-examples
 $ mvn exec:java
 ----
@@ -42,37 +45,51 @@ and configure a _Run/Debug configuration_ like this:
 * Working directory: `$MODULE_DIR$` (must resolve to optaplanner-examples directory)
 * Use classpath of module: `optaplanner-examples`
 
-=== Starter issues
+== Contributing to OptaPlanner
 
-If you're just starting out with OptaPlanner and want to contribute,
+This is an open source project, and you are more than welcome to contribute :heart:!
+
+
+* If you're just starting out with OptaPlanner and want to contribute,
 take a look at our https://issues.redhat.com/issues/?jql=project%20%3D%20PLANNER%20AND%20status%20in%20(Open%2C%20Reopened)%20AND%20labels%20%3D%20starter%20ORDER%20BY%20priority%20DESC[starter issues].
 They're specifically chosen to be easier for first time contributors.
 
-== Developing Drools, OptaPlanner and jBPM
+* If you want to contribute or start an opinionated discussion, join our https://groups.google.com/g/optaplanner-dev[discussion] or send an e-mail directly to optaplanner-dev@googlegroups.com.
 
-*If you want to build or contribute to a kiegroup project, https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/main/README.md[read this document].*
+* If you want to submit an issue, check out the https://issues.redhat.com/projects/PLANNER/issues[OptaPlanner Jira project].
 
-*It will save you and us a lot of time by setting up your development environment correctly.*
-It solves all known pitfalls that can disrupt your development.
-It also describes all guidelines, tips and tricks.
-If you want your pull requests (or patches) to be merged into main, please respect those guidelines.
+=== Time to make a change?
 
-=== Code style
+Every change must be submitted through a GitHub pull request (PR). OptaPlanner uses continuous integration (CI). The OptaPlanner CI  runs checks against your branch after you submit the PR to ensure that your PR doesn't introduce errors. If the CI identifies a potential problem, our friendly PR maintainers will help you resolve it.
 
-OptaPlanner has adopted the https://github.com/quarkusio/quarkus[Quarkus] code style, enforces it, and automatically formats code during the build.
-To setup your IDE, please see the
-<<build/optaplanner-ide-config/ide-configuration.adoc#, IDE Setup Instructions>>.
+=== Contributing
 
-=== Definition of Done
+. Fork it (https://github.com/kiegroup/optaplanner).
+. Create your feature branch: (`git checkout -b feature`).
+. Commit your changes with a comment: (`git commit -am 'Add some feature'`).
+. Push to the branch to GitHub: (`git push origin feature`).
+. Create a new pull request.
 
-To consider any individual ticket "Done", following requirements must be satisfied:
+=== Code standards
 
-  . Every change must go through PR; source code of both the feature/bugfix and its tests have been reviewed.
-  . Documentation (if applicable) exists and has been reviewed.
-  . There is test coverage proving the feature works and tests are passing.
+Your code is automatically formatted according to the _Import and Code Style_ conventions during every Maven build. CI checks enforce those conventions too, so be sure to build your project with maven before creating your PR:
+----
+mvn clean install
+----
+For information about how to set up code style checks, see https://github.com/kiegroup/optaplanner/blob/main/build/optaplanner-ide-config/ide-configuration.adoc[IDE Setup Instructions].
 
-In order to avoid introducing unstable features, the PR will be merged only after these points have been fulfilled. For PRs contributed by community the core team will assist with making the functionality meet these conditions.
+=== Building your OptaPlanner project
 
-=== OptaPlanner CI Status
+Use one of the following ways to build your OptaPlanner project:
 
-You can check OptaPlanner repositories CI status from https://kiegroup.github.io/optaplanner/[Chain Status webpage].
+- :rocket: *build-fast*: `mvn clean install -Dquickly` skips any checks and code analysis (~1 min)
+
+- :hammer: *build-normally*: `mvn clean install` runs tests, checks code style, skips documentation  (~17 min)
+
+- :receipt: *build-doc*: `mvn clean install` at `optaplanner/optaplanner-docs` creates asciidoctor documentation `target/optaplanner-docs-*/html_single/index.html` (~2 min)
+
+- :mechanical_arm: *build-all*: `mvn clean install -Dfull` runs all checks + creates documentation and distribution files (~20 min)
+
+== OptaPlanner CI status
+
+You can check the CI status of the OptaPlanner repositories from the https://kiegroup.github.io/optaplanner/[Chain Status webpage].
