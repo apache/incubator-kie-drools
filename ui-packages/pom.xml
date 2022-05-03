@@ -200,7 +200,7 @@
             </goals>
             <phase>test</phase>
             <configuration>
-              <skip>${skipTests}</skip>
+              <skip>${skip.ui.test}</skip>
               <arguments>run test</arguments>
             </configuration>
           </execution>
@@ -211,7 +211,7 @@
             </goals>
             <phase>integration-test</phase>
             <configuration>
-              <skip>${skipITs}</skip>
+              <skip>${skip.ui.it}</skip>
               <arguments>run test:it</arguments>
             </configuration>
           </execution>
