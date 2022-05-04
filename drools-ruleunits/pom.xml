@@ -23,7 +23,6 @@
   <modules>
     <module>drools-ruleunits-api</module>
     <module>drools-ruleunits-impl</module>
-    <module>drools-ruleunits-integrationtests</module>
   </modules>
 
   <!-- Logging -->

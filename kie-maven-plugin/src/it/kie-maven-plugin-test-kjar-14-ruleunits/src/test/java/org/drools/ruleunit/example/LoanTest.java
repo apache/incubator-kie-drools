@@ -5,10 +5,10 @@ import java.util.Map;
 
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitInstanceFactory;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class LoanTest {
 
