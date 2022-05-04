@@ -35,6 +35,10 @@ public class RuleUnitInstanceFactory {
     }
 
     public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnit) {
-        return RuleUnitServices.ruleUnitMap.get(ruleUnit.getClass().getCanonicalName()).createInstance(ruleUnit);
+        RuleUnit unit = RuleUnitServices.ruleUnitMap.get(ruleUnit.getClass().getCanonicalName());
+        if (unit == null) {
+            throw new RuntimeException("There isn't any generated rule unit for " + ruleUnit.getClass().getCanonicalName() + ", do you forget to run code generation?");
+        }
+        return unit.createInstance(ruleUnit);
     }
 }
