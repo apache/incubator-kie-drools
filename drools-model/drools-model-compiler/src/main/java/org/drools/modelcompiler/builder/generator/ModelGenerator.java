@@ -160,9 +160,6 @@ public class ModelGenerator {
             int i = 0;
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
                 RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ );
-                if (context.getRuleUnitDescr() != null) {
-                    ruleUnitDescrs.add(context.getRuleUnitDescr());
-                }
                 ruleContexts.add(context);
             }
             KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
@@ -172,9 +169,6 @@ public class ModelGenerator {
             int i = 0;
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
                 RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ );
-                if (context.getRuleUnitDescr() != null) {
-                    ruleUnitDescrs.add(context.getRuleUnitDescr());
-                }
                 processRuleDescr(context, packageDescr);
             }
         }
