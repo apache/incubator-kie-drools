@@ -1,18 +1,22 @@
-import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.FolderUtils
-import org.kie.jenkins.jobdsl.KogitoJobType
+/*
+* This file is describing all the Jenkins jobs in the DSL format (see https://plugins.jenkins.io/job-dsl/)
+* needed by the Kogito pipelines.
+*
+* The main part of Jenkins job generation is defined into the https://github.com/kiegroup/kogito-pipelines repository.
+*
+* This file is making use of shared libraries defined in
+* https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
+*/
+
+import org.kie.jenkins.jobdsl.model.Folder
+import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
-import org.kie.jenkins.jobdsl.VersionUtils
 
-JENKINS_PATH = '.ci/jenkins'
+jenkins_path = '.ci/jenkins'
 
-def getDefaultJobParams(String repoName = 'drools') {
-    return KogitoJobTemplate.getDefaultJobParams(this, repoName)
-}
-
-Map getMultijobPRConfig(boolean isNative = false) {
-    return [
+Map getMultijobPRConfig(Folder jobFolder) {
+    def jobConfig = [
         parallel: true,
         buildchain: true,
         jobs : [
@@ -37,7 +41,7 @@ Map getMultijobPRConfig(boolean isNative = false) {
                 repository: 'kogito-apps',
                 dependsOn: 'optaplanner',
                 env : [
-                    ADDITIONAL_TIMEOUT: isNative ? '360' : '210',
+                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',
@@ -62,36 +66,25 @@ Map getMultijobPRConfig(boolean isNative = false) {
             ]
         ]
     ]
-}
-
-def getJobParams(String jobName, String jobFolder, String jenkinsfileName, String jobDescription = '') {
-    def jobParams = getDefaultJobParams()
-    jobParams.job.name = jobName
-    jobParams.job.folder = jobFolder
-    jobParams.jenkinsfile = jenkinsfileName
-    if (jobDescription) {
-        jobParams.job.description = jobDescription
+    if (jobFolder.isNative() || jobFolder.isMandrel()) { // Optawebs should not be built in native.
+        jobConfig.jobs.retainAll { !it.id.startsWith('optaweb') }
     }
-    return jobParams
+    return jobConfig
 }
 
-// Drools PR checks
-setupMultijobPrDefaultChecks()
-setupMultijobPrNativeChecks()
-setupMultijobPrLTSChecks()
+// PR checks
+KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
 
 // Nightly jobs
 setupNativeJob()
-setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
-setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
+setupMandrelJob()
+setupDeployJob(Folder.NIGHTLY)
 
-// No release directly on main branch
-if (!Utils.isMainBranch(this)) {
-    setupDeployJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
-    setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
-}
+// Release jobs
+setupDeployJob(Folder.RELEASE)
+setupPromoteJob(Folder.RELEASE)
 
-KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', 'Drools', [
+KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
   modules: [ 'drools-build-parent' ],
   compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
   properties: [ 'version.io.quarkus' ],
@@ -101,22 +94,10 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', 'Drools', [
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupMultijobPrDefaultChecks() {
-    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
-}
-
-void setupMultijobPrNativeChecks() {
-    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig(true)) { return getDefaultJobParams() }
-}
-
-void setupMultijobPrLTSChecks() {
-    KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
-}
-
 void setupNativeJob() {
-    def jobParams = getJobParams('drools-native', FolderUtils.getNightlyFolder(this), "${JENKINS_PATH}/Jenkinsfile.native", 'Drools Native Testing')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Drools Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
@@ -128,9 +109,26 @@ void setupNativeJob() {
     }
 }
 
-void setupDeployJob(String jobFolder, KogitoJobType jobType) {
-    def jobParams = getJobParams('drools-deploy', jobFolder, "${JENKINS_PATH}/Jenkinsfile.deploy", 'Drools Deploy')
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+void setupMandrelJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Drools Mandrel Testing')
+    jobParams.triggers = [ cron : 'H 8 * * *' ]
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+
+            stringParam('NATIVE_BUILDER_IMAGE', Utils.getMandrelEnvironmentBuilderImage(this), 'Which native builder image to use ?')
+        }
+        environmentVariables {
+            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+            env('NOTIFICATION_JOB_NAME', 'Mandrel check')
+        }
+    }
+}
+
+void setupDeployJob(Folder jobFolder) {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Drools Deploy')
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -148,7 +146,6 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             env('REPO_NAME', 'drools')
             env('PROPERTIES_FILE_NAME', 'deployment.properties')
 
-            env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
 
@@ -158,7 +155,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
 
             env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
             env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-            if (jobType == KogitoJobType.RELEASE) {
+            if (jobFolder.isRelease()) {
                 env('NEXUS_RELEASE_URL', "${MAVEN_NEXUS_RELEASE_URL}")
                 env('NEXUS_RELEASE_REPOSITORY_ID', "${MAVEN_NEXUS_RELEASE_REPOSITORY}")
                 env('NEXUS_STAGING_PROFILE_ID', "${MAVEN_NEXUS_STAGING_PROFILE_ID}")
@@ -168,8 +165,8 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
     }
 }
 
-void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('drools-promote', jobFolder, "${JENKINS_PATH}/Jenkinsfile.promote", 'Drools Promote')).with {
+void setupPromoteJob(Folder jobFolder) {
+    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'drools-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Drools Promote'))?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -190,7 +187,6 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
             env('REPO_NAME', 'drools')
             env('PROPERTIES_FILE_NAME', 'deployment.properties')
 
-            env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
 
             env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
