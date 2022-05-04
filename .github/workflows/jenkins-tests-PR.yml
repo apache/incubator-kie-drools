@@ -1,31 +1,22 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: Jenkins Tests
-
 on:
   pull_request:
-    paths:
-      - '.ci/jenkins/**'
+    paths: 
+    - '.ci/jenkins/**'
 
 jobs:
   dsl-tests:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        java-version: [ 11 ]
-        maven-version: [ '3.8.1' ]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
-        with:
-          java-version: ${{ matrix.java-version }}
-          maven-version: ${{ matrix.maven-version }}
-          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - name: Test DSL
-        run: cd .ci/jenkins/dsl && ./test.sh
+    - name: Checkout 
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Test DSL
+      run: cd .ci/jenkins/dsl && ./test.sh -b ${{ github.head_ref }} -o ${{ github.event.pull_request.user.login }} -t ${{ github.base_ref }} -a ${{ github.event.pull_request.base.user.login }}

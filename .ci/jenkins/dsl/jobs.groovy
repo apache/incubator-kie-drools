@@ -1,18 +1,21 @@
-import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.FolderUtils
-import org.kie.jenkins.jobdsl.KogitoConstants
-import org.kie.jenkins.jobdsl.KogitoJobType
+/*
+* This file is describing all the Jenkins jobs in the DSL format (see https://plugins.jenkins.io/job-dsl/)
+* needed by the Kogito pipelines.
+*
+* The main part of Jenkins job generation is defined into the https://github.com/kiegroup/kogito-pipelines repository.
+*
+* This file is making use of shared libraries defined in
+* https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
+*/
+
+import org.kie.jenkins.jobdsl.model.Folder
+import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
-import org.kie.jenkins.jobdsl.VersionUtils
 
-JENKINS_PATH = '.ci/jenkins'
+jenkins_path = '.ci/jenkins'
 
-def getDefaultJobParams(String repoName = 'optaplanner') {
-    return KogitoJobTemplate.getDefaultJobParams(this, repoName)
-}
-
-Map getMultijobPRConfig(boolean isNative = false) {
+Map getMultijobPRConfig(Folder jobFolder) {
     def jobConfig = [
         parallel: true,
         buildchain: true,
@@ -30,14 +33,14 @@ Map getMultijobPRConfig(boolean isNative = false) {
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream",
-                    ADDITIONAL_TIMEOUT: isNative ? '360' : '210',
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() || jobFolder.isMandrel() ? '-Poptaplanner-downstream,native' : '-Poptaplanner-downstream',
+                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: "-Poptaplanner-downstream"
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() || jobFolder.isMandrel() ? '-Poptaplanner-downstream-native' : '-Poptaplanner-downstream'
                 ]
             ], [
                 id: 'optaweb-employee-rostering',
@@ -55,55 +58,32 @@ Map getMultijobPRConfig(boolean isNative = false) {
             ]
         ]
     ]
-    if (isNative) { // Optawebs should not be used in native.
+    if (jobFolder.isNative() || jobFolder.isMandrel()) { // Optawebs should not be built in native.
         jobConfig.jobs.retainAll { !it.id.startsWith('optaweb') }
     }
     return jobConfig
 }
 
-def getJobParams(String jobName, String jobFolder, String jenkinsfileName, String jobDescription = '') {
-    def jobParams = getDefaultJobParams()
-    jobParams.job.name = jobName
-    jobParams.job.folder = jobFolder
-    jobParams.jenkinsfile = jenkinsfileName
-    if (jobDescription) {
-        jobParams.job.description = jobDescription
-    }
-    return jobParams
-}
-
-if (Utils.isMainBranch(this)) {
-    // For BDD runtimes PR job
-    setupDeployJob(FolderUtils.getPullRequestRuntimesBDDFolder(this), KogitoJobType.PR)
-}
-
 // Optaplanner PR checks
-setupMultijobPrDefaultChecks()
-setupMultijobPrNativeChecks()
-setupMultijobPrLTSChecks()
+KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
+setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 
 // Nightly jobs
 setupNativeJob()
-setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
-setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
+setupDeployJob(Folder.NIGHTLY)
+setupMandrelJob()
 
-// No release directly on main branch
-if (!Utils.isMainBranch(this)) {
-    setupDeployJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
-    setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
-    setupPostReleaseJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
-}
+// Release jobs
+setupDeployJob(Folder.RELEASE)
+setupPromoteJob(Folder.RELEASE)
+setupPostReleaseJob()
 
 if (Utils.isMainBranch(this)) {
     setupOptaPlannerTurtleTestsJob()
 }
 
-if (Utils.isLTSBranch(this)) {
-    setupNativeLTSJob()
-}
-
 // Tools folder
-KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', 'OptaPlanner', [
+KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', [
   modules: [ 'optaplanner-build-parent' ],
   properties: [ 'version.io.quarkus' ],
 ])
@@ -112,25 +92,10 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', 'OptaPlanner', [
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupMultijobPrDefaultChecks() {
-    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
-}
-
-void setupMultijobPrNativeChecks() {
-    def multijobConfig = getMultijobPRConfig(true)
-    multijobConfig.jobs.find { it.id == 'kogito-apps' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream,native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
-    multijobConfig.jobs.find { it.id == 'kogito-examples' }.env.BUILD_MVN_OPTS_CURRENT = "-Poptaplanner-downstream-native ${KogitoConstants.DEFAULT_NATIVE_CONTAINER_PARAMS}"
-    KogitoJobTemplate.createMultijobNativePRJobs(this, multijobConfig) { return getDefaultJobParams() }
-}
-
-void setupMultijobPrLTSChecks() {
-    KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
-}
-
 void setupNativeJob() {
-    def jobParams = getJobParams('optaplanner-native', FolderUtils.getNightlyFolder(this), "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native Testing')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Optaplanner Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
@@ -142,36 +107,36 @@ void setupNativeJob() {
     }
 }
 
-void setupNativeLTSJob() {
-    def jobParams = getJobParams('optaplanner-native-lts', FolderUtils.getNightlyFolder(this), "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native LTS Testing')
+void setupMandrelJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Optaplanner Mandrel Testing')
     jobParams.triggers = [ cron : 'H 8 * * *' ]
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
 
-            stringParam('NATIVE_BUILDER_IMAGE', Utils.getLTSNativeBuilderImage(this), 'Which native builder image to use ?')
+            stringParam('NATIVE_BUILDER_IMAGE', Utils.getMandrelEnvironmentBuilderImage(this), 'Which native builder image to use ?')
         }
         environmentVariables {
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('NOTIFICATION_JOB_NAME', 'Native LTS check')
+            env('NOTIFICATION_JOB_NAME', 'Mandrel check')
         }
     }
 }
 
-void setupDeployJob(String jobFolder, KogitoJobType jobType) {
-    def jobParams = getJobParams('optaplanner-deploy', jobFolder, "${JENKINS_PATH}/Jenkinsfile.deploy", 'Optaplanner Deploy')
-    if (jobType == KogitoJobType.PR) {
+void setupDeployJob(Folder jobFolder) {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Optaplanner Deploy')
+    if (jobFolder.isPullRequest()) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
     }
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            if (jobType == KogitoJobType.PR) {
+            if (jobFolder.isPullRequest()) {
                 // author can be changed as param only for PR behavior, due to source branch/target, else it is considered as an env
                 stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
             }
@@ -183,7 +148,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('DROOLS_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
 
-            if (jobType == KogitoJobType.PR) {
+            if (jobFolder.isPullRequest()) {
                 stringParam('PR_TARGET_BRANCH', '', 'What is the target branch of the PR?')
             }
 
@@ -196,11 +161,10 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
         environmentVariables {
             env('PROPERTIES_FILE_NAME', 'deployment.properties')
 
-            env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
 
-            if (jobType == KogitoJobType.PR) {
+            if (jobFolder.isPullRequest()) {
                 env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
                 env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
                 env('MAVEN_REPO_CREDS_ID', "${MAVEN_PR_CHECKS_REPOSITORY_CREDS_ID}")
@@ -214,7 +178,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
 
                 env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
                 env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-                if (jobType == KogitoJobType.RELEASE) {
+                if (jobFolder.isRelease()) {
                     env('NEXUS_RELEASE_URL', "${MAVEN_NEXUS_RELEASE_URL}")
                     env('NEXUS_RELEASE_REPOSITORY_ID', "${MAVEN_NEXUS_RELEASE_REPOSITORY}")
                     env('NEXUS_STAGING_PROFILE_ID', "${MAVEN_NEXUS_STAGING_PROFILE_ID}")
@@ -225,8 +189,8 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
     }
 }
 
-void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-promote', jobFolder, "${JENKINS_PATH}/Jenkinsfile.promote", 'Optaplanner Promote')).with {
+void setupPromoteJob(Folder jobFolder) {
+    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'optaplanner-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote'))?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -245,7 +209,6 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
         }
 
         environmentVariables {
-            env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
 
             env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
@@ -265,8 +228,8 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
     }
 }
 
-void setupPostReleaseJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('optaplanner-post-release', jobFolder, "${JENKINS_PATH}/Jenkinsfile.post-release", 'Optaplanner Post Release')).with {
+void setupPostReleaseJob() {
+    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'optaplanner-post-release', Folder.RELEASE, "${jenkins_path}/Jenkinsfile.post-release", 'Optaplanner Post Release'))?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -295,10 +258,10 @@ void setupPostReleaseJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupOptaPlannerTurtleTestsJob() {
-    def jobParams = getJobParams('optaplanner-turtle-tests', FolderUtils.getOtherFolder(this), "${JENKINS_PATH}/Jenkinsfile.turtle",
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-turtle-tests', Folder.OTHER, "${jenkins_path}/Jenkinsfile.turtle",
             'Run OptaPlanner turtle tests on a weekly basis.')
     jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or an organization.')
