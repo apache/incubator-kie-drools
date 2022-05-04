@@ -57,7 +57,6 @@ import org.kie.api.definition.rule.ActivationListener;
 import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
-import org.kie.api.definition.rule.Unit;
 
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 
@@ -77,8 +76,6 @@ public class RuleBuilder {
         if ( null != ruleDescr.getParentName() && null != context.getPkg().getRule( ruleDescr.getParentName() ) ) {
             context.getRule().setParent( context.getPkg().getRule( ruleDescr.getParentName() ) );
         }
-
-        parseUnitAnnotations( context, context.getRule(), ruleDescr );
 
         // add all the rule's meta attributes
         buildMetaAttributes( context );
@@ -294,19 +291,6 @@ public class RuleBuilder {
 
             rule.setAllMatches(ruleDescr.hasAnnotation(All.class));
 
-        } catch (Exception e) {
-            DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                  e.getMessage() );
-            context.addError( err  );
-        }
-    }
-
-    private static void parseUnitAnnotations( RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr ) {
-        try {
-            Unit unit = getTypedAnnotation( ruleDescr, Unit.class );
-            if (unit != null) {
-                rule.setRuleUnitClass( unit.value() );
-            }
         } catch (Exception e) {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   e.getMessage() );
