@@ -1,8 +1,6 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: Jenkins Tests
-
 on:
   pull_request:
     paths: 
@@ -11,7 +9,6 @@ on:
 jobs:
   dsl-tests:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout 
       uses: actions/checkout@v2
@@ -20,6 +17,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-      
+
     - name: Test DSL
-      run: cd .ci/jenkins/dsl && ./test.sh
+      run: cd .ci/jenkins/dsl && ./test.sh -b ${{ github.head_ref }} -o ${{ github.event.pull_request.user.login }} -t ${{ github.base_ref }} -a ${{ github.event.pull_request.base.user.login }}
