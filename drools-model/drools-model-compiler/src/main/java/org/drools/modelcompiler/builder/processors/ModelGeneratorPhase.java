@@ -23,6 +23,9 @@ import org.drools.compiler.builder.impl.processors.AbstractPackageCompilationPha
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+
+import java.util.Collection;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 
@@ -42,4 +45,9 @@ public class ModelGeneratorPhase extends AbstractPackageCompilationPhase {
         generateModel(kbuilder, pkgRegistry.getPackage(), packageDescr, packageModel);
     }
 
+    @Override
+    public Collection<? extends KnowledgeBuilderResult> getResults() {
+        // fixme: this will return the errors twice!
+        return kbuilder.getAllResults();
+    }
 }

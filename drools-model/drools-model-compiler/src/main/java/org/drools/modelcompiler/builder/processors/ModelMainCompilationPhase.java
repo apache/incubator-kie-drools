@@ -100,13 +100,15 @@ public class ModelMainCompilationPhase<T> implements CompilationPhase {
         phases.add(iteratingPhase((reg, acc) -> new SourceCodeGenerationPhase<>(
                 packageModels.getPackageModel(acc, reg, acc.getName()), packageSourceManager, sourceGenerator, oneClassPerRule))); // validateUniqueRuleNames
 
+
         for (CompilationPhase phase : phases) {
             phase.process();
             this.results.addAll(phase.getResults());
             if (this.results.hasErrors()) {
-                break;
+                return;
             }
         }
+
     }
 
 

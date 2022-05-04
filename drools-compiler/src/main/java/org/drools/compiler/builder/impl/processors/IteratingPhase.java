@@ -18,9 +18,11 @@
 package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.PackageRegistryManager;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +38,7 @@ public class IteratingPhase implements CompilationPhase {
     private final PackageRegistryManager pkgRegistryManager;
     private final SinglePackagePhaseFactory phaseFactory;
 
-    private final Collection<KnowledgeBuilderResult> results = new ArrayList<>();
+    private final BuildResultCollectorImpl results = new BuildResultCollectorImpl();
 
     public IteratingPhase(Collection<CompositePackageDescr> packages, PackageRegistryManager pkgRegistryManager, SinglePackagePhaseFactory phaseFactory) {
         this.packages = packages;
@@ -52,12 +54,15 @@ public class IteratingPhase implements CompilationPhase {
                     packageRegistry,
                     compositePackageDescr);
             phase.process();
-            results.addAll(phase.getResults());
+            this.results.addAll(phase.getResults());
+            if (this.results.hasErrors()) {
+                return;
+            }
         }
     }
 
     @Override
     public Collection<? extends KnowledgeBuilderResult> getResults() {
-        return results;
+        return results.getAllResults();
     }
 }

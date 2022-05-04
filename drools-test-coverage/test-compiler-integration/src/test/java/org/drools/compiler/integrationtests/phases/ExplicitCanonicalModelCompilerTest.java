@@ -77,7 +77,6 @@ public class ExplicitCanonicalModelCompilerTest {
 
 
 
-        int parallelRulesBuildThreshold = 0;
         InternalKnowledgeBase kBase = null;
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
         ClassLoader rootClassLoader = configuration.getClassLoader();
@@ -199,7 +198,9 @@ class ExplicitCanonicalModelCompiler {
         for (CompilationPhase phase : phases) {
             phase.process();
             this.results.addAll(phase.getResults());
-            if (results.hasErrors()) break;
+            if (results.hasErrors()) {
+                break;
+            }
         }
 
     }
