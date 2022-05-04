@@ -84,7 +84,7 @@ public abstract class Processor {
             IoUtils.write(dumpFile, generatedDrl.getBytes(IoUtils.UTF8_CHARSET));
         } catch (IOException ex) {
             // nothing serious, just failure when writing the generated DRL to file, just log the exception and continue
-            logger.warn("Can't write the DRL generated from decision table to file " + dumpFile.getAbsolutePath() + "!\n" +
+            logger.warn("Can't write the DRL generated from decision table to file {}!\n{}", dumpFile.getAbsolutePath(),
                     Arrays.toString(ex.getStackTrace()));
         }
     }

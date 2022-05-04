@@ -52,7 +52,7 @@ public class ProcessorTemplate extends Processor{
         } else if (ResourceType.DRL.equals(resourceType)) {
             return generatedDrlToPackageDescr(resource, resourceConversionResult.getContent());
         } else {
-            throw new RuntimeException("Converting generated " + resourceType + " into PackageDescr is not supported!");
+            throw new DroolsParserException("Converting generated " + resourceType + " into PackageDescr is not supported!");
         }
     }
 
