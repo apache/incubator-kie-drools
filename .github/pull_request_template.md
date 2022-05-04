@@ -26,25 +26,45 @@ Build Chain tool does "simple" maven build(s), the builds are just Maven command
 How to retest this PR or trigger a specific build:
 </summary>
 
-* <b>Run all builds</b>  
+- for <b>pull request checks</b>  
   Please add comment: <b>Jenkins retest this</b>
 
-* <b>Run (or rerun) specific test(s)</b>  
-  Please add comment: <b>Jenkins (re)run [kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
- 
-* <b>Quarkus LTS checks</b>  
-  Please add comment: <b>Jenkins run LTS</b>
+- for a <b>specific pull request check</b>  
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|kogito-apps|kogito-examples] tests</b>
 
-* <b>Run (or rerun) LTS specific test(s)</b>  
-  Please add comment: <b>Jenkins (re)run [kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] LTS</b>
+- for <b>quarkus branch checks</b>  
+  Run checks against Quarkus current used branch  
+  Please add comment: <b>Jenkins run quarkus-branch</b>
 
-* <b>Native checks</b>  
+- for a <b>quarkus branch specific check</b>  
+  Run checks against Quarkus current used branch  
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|kogito-apps|kogito-examples] quarkus-branch</b>
+
+- for <b>quarkus main checks</b>  
+  Run checks against Quarkus main branch  
+  Please add comment: <b>Jenkins run quarkus-main</b>
+
+- for a <b>specific quarkus main check</b>  
+  Run checks against Quarkus main branch  
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|kogito-apps|kogito-examples] quarkus-branch</b>
+
+- for <b>native checks</b>  
+  Run native checks  
   Please add comment: <b>Jenkins run native</b>
 
-* <b>Run (or rerun) native specific test(s)</b>  
-  Please add comment: <b>Jenkins (re)run [kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] native</b>
+- for a <b>specific native check</b>  
+  Run native checks 
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|kogito-apps|kogito-examples] native</b>
 
-* <b>Full Kogito testing</b> (with cloud images and operator BDD testing)  
+- for <b>mandrel checks</b>  
+  Run native checks against Mandrel image
+  Please add comment: <b>Jenkins run mandrel</b>
+
+- for a <b>specific mandrel check</b>  
+  Run native checks against Mandrel image  
+  Please add comment: <b>Jenkins (re)run [kogito-runtimes|kogito-apps|kogito-examples] mandrel</b>
+
+- <b>Full Kogito testing</b> (with cloud images and operator BDD testing)  
   Please add comment: <b>Jenkins run BDD</b>  
   <b>This check should be used only if a big change is done as it takes time to run, need resources and one full BDD tests check can be done at a time ...</b>
 </details>

@@ -48,4 +48,4 @@ jobs:
         java-version: 11
       
     - name: Test DSL
-      run: cd .ci/jenkins/dsl && ./test.sh
+      run: cd .ci/jenkins/dsl && ./test.sh -b ${{ github.head_ref }} -o ${{ github.event.pull_request.user.login }} -t ${{ github.base_ref }} -a ${{ github.event.pull_request.base.user.login }}
