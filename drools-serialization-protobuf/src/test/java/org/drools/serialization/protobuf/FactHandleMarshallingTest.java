@@ -199,8 +199,7 @@ public class FactHandleMarshallingTest {
                 handle = new DefaultFactHandle( id,
                         object,
                         recency,
-                        (WorkingMemoryEntryPoint) entryPoint,
-                        typeConf != null && typeConf.isTrait() );
+                        (WorkingMemoryEntryPoint) entryPoint );
                 break;
 
             }
@@ -212,8 +211,7 @@ public class FactHandleMarshallingTest {
             }
             case 2: {
                 handle = new EventFactHandle( id, object, recency, startTimeStamp, duration,
-                        (WorkingMemoryEntryPoint) entryPoint,
-                        typeConf != null && typeConf.isTrait() );
+                        (WorkingMemoryEntryPoint) entryPoint );
                 ( (EventFactHandle) handle ).setExpired( expired );
                 ( (EventFactHandle) handle ).setActivationsCount( activationsCount );
                 break;

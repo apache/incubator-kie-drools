@@ -19,7 +19,6 @@ package org.drools.core.common;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
@@ -69,21 +68,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                            long timestamp,
                            long duration,
                            WorkingMemoryEntryPoint wmEntryPoint ) {
-        this( id, object, recency, timestamp, duration, wmEntryPoint, false );
-    }
-
-    public EventFactHandle(long id,
-                           Object object,
-                           long recency,
-                           long timestamp,
-                           long duration,
-                           WorkingMemoryEntryPoint wmEntryPoint,
-                           boolean isTraitOrTraitable ) {
-        super( id,
-               object,
-               recency,
-               wmEntryPoint,
-               isTraitOrTraitable );
+        super( id, object, recency, wmEntryPoint );
         this.startTimestamp = timestamp;
         this.duration = duration;
 
@@ -98,10 +83,9 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                               long recency,
                               long timestamp,
                               long duration,
-                              EntryPointId entryPointId,
-                              TraitTypeEnum traitType ) {
+                              EntryPointId entryPointId ) {
 
-        super( id, identityHashCode, object, recency, entryPointId, traitType );
+        super( id, identityHashCode, object, recency, entryPointId );
         this.startTimestamp = timestamp;
         this.duration = duration;
     }
@@ -272,8 +256,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                                                       getRecency(),
                                                       getStartTimestamp(),
                                                       getDuration(),
-                                                      getEntryPointId(),
-                                                      getTraitType() );
+                                                      getEntryPointId() );
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
@@ -291,8 +274,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                 getRecency(),
                 getStartTimestamp(),
                 getDuration(),
-                getEntryPointId(),
-                getTraitType() );
+                getEntryPointId() );
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
