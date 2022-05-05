@@ -15,18 +15,18 @@
  */
 package org.kie.kogito.test.resources;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.lenient;
@@ -38,8 +38,9 @@ import static org.mockito.Mockito.when;
 public class ConditionalQuarkusTestResourceTest {
 
     private static final int MAPPED_PORT = 8800;
-    private static final String KOGITO_PROPERTY = "my-kogito-property";
-    private static final String KOGITO_PROPERTY_VALUE = "localhost:" + MAPPED_PORT;
+    private static final String PROPERTY_KEY = "property-key";
+    private static final String PROPERTY_VALUE = "localhost:" + MAPPED_PORT;
+    private static final String PROPERTY_DEFAULT_VALUE = "PROPERTY_DEFAULT_VALUE";
 
     @Mock
     private TestResource resource;
@@ -58,7 +59,7 @@ public class ConditionalQuarkusTestResourceTest {
 
             @Override
             protected Map<String, String> getProperties() {
-                return singletonMap(KOGITO_PROPERTY, KOGITO_PROPERTY_VALUE);
+                return Collections.singletonMap(PROPERTY_KEY, PROPERTY_VALUE);
             }
 
         };
@@ -108,10 +109,11 @@ public class ConditionalQuarkusTestResourceTest {
     }
 
     @Test
-    public void shouldInjectConfigProperty() {
+    public void shouldInjectQuarkusIntegrationTestProperty() {
         whenInjectTestInstance();
-        thenKogitoPropertyIsUpdated();
-        thenAnotherPropertyIsNotUpdated();
+        thenPropertyValueIsUpdated();
+        thenPropertyValueWithDefaultValueIsUpdated();
+        thenOtherPropertyValueIsNotUpdated();
         thenResourceIsUpdated();
     }
 
@@ -148,16 +150,20 @@ public class ConditionalQuarkusTestResourceTest {
     }
 
     private void thenConfigMapIsUpdated() {
-        String actual = actualOutput.get(KOGITO_PROPERTY);
-        assertEquals(KOGITO_PROPERTY_VALUE, actual);
+        String actual = actualOutput.get(PROPERTY_KEY);
+        assertEquals(PROPERTY_VALUE, actual);
     }
 
-    private void thenKogitoPropertyIsUpdated() {
-        assertEquals(KOGITO_PROPERTY_VALUE, testInstance.kogitoProperty);
+    private void thenPropertyValueIsUpdated() {
+        assertEquals(PROPERTY_VALUE, testInstance.propertyValue);
     }
 
-    private void thenAnotherPropertyIsNotUpdated() {
-        assertNull(testInstance.anotherProperty);
+    private void thenPropertyValueWithDefaultValueIsUpdated() {
+        assertEquals(PROPERTY_DEFAULT_VALUE, testInstance.propertyWithDefaultValue);
+    }
+
+    private void thenOtherPropertyValueIsNotUpdated() {
+        assertNull(testInstance.otherPropertyValue);
     }
 
     private void thenResourceIsUpdated() {
@@ -166,11 +172,14 @@ public class ConditionalQuarkusTestResourceTest {
 
     private class TestInstance {
 
-        @ConfigProperty(name = "my-kogito-property")
-        private String kogitoProperty;
+        @QuarkusTestProperty(name = "property-key")
+        private String propertyValue;
 
-        @ConfigProperty(name = "another-property")
-        private String anotherProperty;
+        @QuarkusTestProperty(name = "property-key-with-default", defaultValue = PROPERTY_DEFAULT_VALUE)
+        private String propertyWithDefaultValue;
+
+        @QuarkusTestProperty(name = "other-property-key")
+        private String otherPropertyValue;
 
         @Resource
         private ConditionalQuarkusTestResource resource;
