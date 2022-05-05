@@ -19,6 +19,7 @@ package org.drools.core.spi;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 

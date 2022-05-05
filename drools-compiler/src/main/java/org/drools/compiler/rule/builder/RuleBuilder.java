@@ -32,11 +32,11 @@ import org.drools.compiler.compiler.RuleBuildWarning;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.QueryImpl;
-import org.drools.core.spi.AgendaGroup;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerExpression;
@@ -206,7 +206,7 @@ public class RuleBuilder {
                     break;
                 case "ruleflow-group":
                     rule.setRuleFlowGroup( attributeDescr.getValue() );
-                    if ( !rule.getAgendaGroup().equals( AgendaGroup.MAIN ) && !rule.getAgendaGroup().equals( attributeDescr.getValue() ) ) {
+                    if ( !rule.getAgendaGroup().equals( InternalAgendaGroup.MAIN ) && !rule.getAgendaGroup().equals( attributeDescr.getValue() ) ) {
                         DroolsWarning warn = new RuleBuildWarning( rule, context.getParentDescr(), null,
                                                                    "Both an agenda-group ( " + attributeDescr.getValue() +
                                                                    " ) and a ruleflow-group ( " + rule.getRuleFlowGroup() +

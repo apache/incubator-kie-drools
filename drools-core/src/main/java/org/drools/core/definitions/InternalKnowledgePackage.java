@@ -35,7 +35,7 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
@@ -167,11 +167,11 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     default Class<?> getFieldType(Class<?> clazz, String leftValue) { return null; }
 
-    default InternalReadAccessor getReader(String className, String fieldName, AcceptsReadAccessor target) { return null; }
+    default ReadAccessor getReader(String className, String fieldName, AcceptsReadAccessor target) { return null; }
 
     default Collection<KnowledgeBuilderResult> getWiringResults(Class<?> classType, String fieldName) { return Collections.emptyList(); }
 
-    default InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, Class<?> returnType ) { return null; }
+    default ReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, Class<?> returnType ) { return null; }
 
     default void setClassFieldAccessorCache(ClassFieldAccessorCache classFieldAccessorCache) { }
 }

@@ -243,15 +243,14 @@ public interface Accumulator
                 throw new RuntimeException( e );
             }
         }
-        
+
+        @Override
         public boolean wrapsCompiledInvoker() {
             return delegate instanceof CompiledInvoker;
         }
     }
 
-    static boolean isCompiledInvoker(final Accumulator accumulator) {
-        return (accumulator instanceof CompiledInvoker)
-                || (accumulator instanceof SafeAccumulator && ((SafeAccumulator) accumulator).wrapsCompiledInvoker());
-    }
+    default void replaceDeclaration(Declaration declaration, Declaration resolved) { }
 
+    default Declaration[] getRequiredDeclarations() { return new Declaration[0]; }
 }

@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.core.spi;
+package org.drools.core.rule.constraint;
 
-import java.io.Serializable;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.spi.Tuple;
 
-/**
- * Interface for specifying truthness duration.
- * 
- * @see org.kie.rule.Rule#setDuration
- * @see org.kie.rule.Rule#getDuration
- */
-public interface Duration
+public interface BetaNodeFieldConstraint
     extends
-    Serializable {
+    Constraint {
+
+    boolean isAllowedCachedLeft(ContextEntry context,
+                                InternalFactHandle handle);
+
+    boolean isAllowedCachedRight(Tuple tuple,
+                                 ContextEntry context);
+
+    ContextEntry createContextEntry();
+
     /**
-     * <p>
-     * Retrieve the duration for which the conditions of this <code>Tuple</code>
-     * must remain true before the rule will fire.
-     * </p>
-     * 
-     * @param tuple
-     * 
-     * @return the duration
+     * Clone this constraints only if it is already used by a different node, otherwise returns this
      */
-    long getDuration(Tuple tuple);
+    BetaNodeFieldConstraint cloneIfInUse();
 }

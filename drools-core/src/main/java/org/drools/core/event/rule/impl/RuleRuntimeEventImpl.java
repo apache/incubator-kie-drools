@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.RuleRuntimeEvent;
 import org.kie.api.runtime.KieRuntime;

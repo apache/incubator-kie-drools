@@ -27,7 +27,7 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 
 public class MockRightTupleSink

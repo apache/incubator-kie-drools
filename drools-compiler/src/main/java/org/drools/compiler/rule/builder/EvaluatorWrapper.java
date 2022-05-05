@@ -26,7 +26,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
 import org.drools.core.time.Interval;
 
 import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
@@ -125,7 +125,7 @@ public class EvaluatorWrapper implements Evaluator {
     }
 
     public boolean evaluate(ReteEvaluator reteEvaluator,
-                            InternalReadAccessor extractor,
+                            ReadAccessor extractor,
                             InternalFactHandle factHandle,
                             FieldValue value) {
         return evaluator.evaluate( reteEvaluator,
@@ -135,9 +135,9 @@ public class EvaluatorWrapper implements Evaluator {
     }
 
     public boolean evaluate(ReteEvaluator reteEvaluator,
-                            InternalReadAccessor leftExtractor,
+                            ReadAccessor leftExtractor,
                             InternalFactHandle left,
-                            InternalReadAccessor rightExtractor,
+                            ReadAccessor rightExtractor,
                             InternalFactHandle right) {
         return evaluator.evaluate( reteEvaluator,
                                    leftExtractor,

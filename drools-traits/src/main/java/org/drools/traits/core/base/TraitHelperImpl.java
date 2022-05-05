@@ -58,7 +58,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.traits.core.factmodel.HierarchyEncoder;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.beliefsystem.Mode;

@@ -18,8 +18,7 @@ package org.drools.core.phreak;
 import org.drools.core.common.Memory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 public interface TupleEntry {
 

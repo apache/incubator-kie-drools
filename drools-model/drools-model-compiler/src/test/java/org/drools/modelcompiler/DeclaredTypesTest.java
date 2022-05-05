@@ -30,7 +30,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;

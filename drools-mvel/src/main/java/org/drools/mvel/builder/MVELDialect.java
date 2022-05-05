@@ -82,7 +82,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.LineMappings;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.util.StringUtils;
 import org.drools.mvel.MVELDialectRuntimeData;

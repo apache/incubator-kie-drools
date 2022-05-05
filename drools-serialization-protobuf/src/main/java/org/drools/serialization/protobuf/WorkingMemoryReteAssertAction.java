@@ -26,7 +26,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.spi.Tuple;
 
 public class WorkingMemoryReteAssertAction

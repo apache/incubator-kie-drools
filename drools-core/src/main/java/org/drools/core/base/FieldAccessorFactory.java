@@ -14,7 +14,7 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 import org.kie.api.internal.utils.KieService;
 
@@ -34,6 +34,6 @@ public interface FieldAccessorFactory extends KieService {
         return Holder.fieldFactory;
     }
 
-    InternalReadAccessor getClassFieldReader(Class< ? > clazz, String fieldName, ClassFieldAccessorCache.CacheEntry cache);
+    ReadAccessor getClassFieldReader(Class< ? > clazz, String fieldName, ClassFieldAccessorCache.CacheEntry cache);
     WriteAccessor getClassFieldWriter(Class< ? > clazz, String fieldName, ClassFieldAccessorCache.CacheEntry cache);
 }

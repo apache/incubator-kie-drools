@@ -126,7 +126,7 @@ public class DeclarationScopeResolver {
             final Pattern dummy = new Pattern( 0,
                                                classObjectType );
 
-            InternalReadAccessor globalExtractor = new GlobalExtractor( identifier, classObjectType );//FieldAccessorFactory.get().getGlobalReadAccessor( identifier, classObjectType );
+            ReadAccessor globalExtractor = new GlobalExtractor( identifier, classObjectType );//FieldAccessorFactory.get().getGlobalReadAccessor( identifier, classObjectType );
             declaration = new Declaration( identifier, globalExtractor, dummy );
             if ( pkg != null ) {
 

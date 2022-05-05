@@ -20,7 +20,7 @@ import java.util.Arrays;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.ObjectType;
 import org.drools.drl.ast.descr.AnnotationDescr;

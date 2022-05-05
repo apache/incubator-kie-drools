@@ -26,7 +26,6 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queue;

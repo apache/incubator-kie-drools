@@ -31,7 +31,7 @@ import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.spi.Activation;
 import org.drools.model.DSL;
 import org.drools.model.Global;

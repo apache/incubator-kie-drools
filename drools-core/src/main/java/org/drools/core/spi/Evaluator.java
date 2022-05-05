@@ -80,7 +80,7 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
      * @return Returns true if evaluation is successful. false otherwise.
      */
     public boolean evaluate(ReteEvaluator reteEvaluator,
-                            InternalReadAccessor extractor,
+                            ReadAccessor extractor,
                             InternalFactHandle factHandle,
                             FieldValue value);
 
@@ -117,9 +117,9 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
      * @return Returns true if evaluation is successful. false otherwise.
      */
     public boolean evaluate(ReteEvaluator reteEvaluator,
-                            InternalReadAccessor leftExtractor,
+                            ReadAccessor leftExtractor,
                             InternalFactHandle left,
-                            InternalReadAccessor rightExtractor,
+                            ReadAccessor rightExtractor,
                             InternalFactHandle right);
 
     /**

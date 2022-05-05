@@ -26,7 +26,7 @@ import java.util.Stack;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.spi.Constraint;
+import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.DeclarationScopeResolver;
 

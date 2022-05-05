@@ -17,7 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 public interface RightTupleSink extends Sink {
 

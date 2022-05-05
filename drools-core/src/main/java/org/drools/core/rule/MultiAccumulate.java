@@ -28,7 +28,7 @@ import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.MvelAccumulator;
+import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.index.TupleList;
@@ -64,7 +64,7 @@ public class MultiAccumulate extends Accumulate {
         out.writeInt(arraySize);
         out.writeInt( accumulators.length );
         for (Accumulator acc : accumulators) {
-            if (Accumulator.isCompiledInvoker(acc)) {
+            if (CompiledInvoker.isCompiledInvoker(acc)) {
                 out.writeObject(null);
             } else {
                 out.writeObject(acc);
@@ -185,9 +185,7 @@ public class MultiAccumulate extends Accumulate {
 
     public void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
         for (Accumulator accumulator : accumulators) {
-            if ( accumulator instanceof MvelAccumulator ) {
-                ( (MvelAccumulator) accumulator ).replaceDeclaration( declaration, resolved );
-            }
+            accumulator.replaceDeclaration( declaration, resolved );
         }
     }
 

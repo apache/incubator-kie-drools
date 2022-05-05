@@ -33,7 +33,7 @@ import org.drools.util.ClassUtils;
  */
 public class GlobalExtractor extends BaseObjectClassFieldReader
     implements
-    InternalReadAccessor,
+    ReadAccessor,
     AcceptsClassObjectType,
     Externalizable {
 

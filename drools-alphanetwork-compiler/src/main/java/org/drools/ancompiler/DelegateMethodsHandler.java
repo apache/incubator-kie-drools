@@ -16,9 +16,13 @@
 
 package org.drools.ancompiler;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
 
 public class DelegateMethodsHandler extends AbstractCompilerHandler {
@@ -47,10 +51,10 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
             "        return objectTypeNode.isAssociatedWith(rule);\n" +
             "    }\n " +
             "\n" +
-            "    public void byPassModifyToBetaNode (org.drools.core.common.InternalFactHandle factHandle,\n" +
-            "                                        org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
-            "                                        org.drools.core.spi.PropagationContext context,\n" +
-            "                                        org.drools.core.common.ReteEvaluator reteEvaluator) {\n" +
+            "    public void byPassModifyToBetaNode (" + InternalFactHandle.class.getCanonicalName() + " factHandle,\n" +
+            "                                        " + ModifyPreviousTuples.class.getCanonicalName() + " modifyPreviousTuples,\n" +
+            "                                        " + PropagationContext.class.getCanonicalName() + " context,\n" +
+            "                                        " + ReteEvaluator.class.getCanonicalName() + " reteEvaluator) {\n" +
             "        throw new UnsupportedOperationException();\n" +
             "    }\n" +
             "\n";

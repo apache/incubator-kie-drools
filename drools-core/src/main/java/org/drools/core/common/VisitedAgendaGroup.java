@@ -22,7 +22,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
-import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class VisitedAgendaGroup implements Activation {

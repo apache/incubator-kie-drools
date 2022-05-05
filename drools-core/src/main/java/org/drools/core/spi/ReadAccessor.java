@@ -19,6 +19,7 @@ package org.drools.core.spi;
 import java.lang.reflect.Method;
 
 import org.drools.core.base.ValueType;
+import org.drools.core.common.ReteEvaluator;
 
 /**
  * A public interface for Read accessors
@@ -43,4 +44,29 @@ public interface ReadAccessor {
 
     int getIndex();
 
+    Object getValue(ReteEvaluator reteEvaluator, Object object);
+
+    char getCharValue(ReteEvaluator reteEvaluator, Object object);
+
+    int getIntValue(ReteEvaluator reteEvaluator, Object object);
+
+    byte getByteValue(ReteEvaluator reteEvaluator, Object object);
+
+    short getShortValue(ReteEvaluator reteEvaluator, Object object);
+
+    long getLongValue(ReteEvaluator reteEvaluator, Object object);
+
+    float getFloatValue(ReteEvaluator reteEvaluator, Object object);
+
+    double getDoubleValue(ReteEvaluator reteEvaluator, Object object);
+
+    boolean getBooleanValue(ReteEvaluator reteEvaluator, Object object);
+
+    boolean isNullValue(ReteEvaluator reteEvaluator, Object object);
+
+    int getHashCode(ReteEvaluator reteEvaluator, Object object);
+
+    boolean isGlobal();
+
+    boolean isSelfReference();
 }

@@ -31,7 +31,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Consequence;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaItem {

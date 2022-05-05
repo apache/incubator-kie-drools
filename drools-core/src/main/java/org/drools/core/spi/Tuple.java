@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Sink;

@@ -31,12 +31,6 @@ import java.util.Map;
 import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.serialization.protobuf.iterators.ActivationIterator;
-import org.drools.serialization.protobuf.iterators.LeftTupleIterator;
-import org.drools.tms.TruthMaintenanceSystemEqualityKey;
-import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
-import org.drools.tms.beliefsystem.BeliefSet;
-import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
@@ -44,11 +38,10 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.tms.LogicalDependency;
 import org.drools.core.common.Memory;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
@@ -56,10 +49,7 @@ import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.MarshallerWriteContext;
-import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
-import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
@@ -74,7 +64,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
@@ -88,12 +77,23 @@ import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.serialization.protobuf.ProtobufMessages.FactHandle;
 import org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.serialization.protobuf.ProtobufMessages.ProcessData.Builder;
 import org.drools.serialization.protobuf.ProtobufMessages.Timers;
 import org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer;
 import org.drools.serialization.protobuf.ProtobufMessages.Tuple;
+import org.drools.serialization.protobuf.iterators.ActivationIterator;
+import org.drools.serialization.protobuf.iterators.LeftTupleIterator;
+import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
+import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
+import org.drools.tms.LogicalDependency;
+import org.drools.tms.TruthMaintenanceSystemEqualityKey;
+import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
+import org.drools.tms.beliefsystem.BeliefSet;
+import org.drools.tms.beliefsystem.ModedAssertion;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -296,10 +296,10 @@ public class ProtobufOutputMarshaller {
 
         ProtobufMessages.Agenda.Builder _ab = ProtobufMessages.Agenda.newBuilder();
 
-        AgendaGroup[] agendaGroups = agenda.getAgendaGroupsManager().getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsManager().getAgendaGroupsMap().size()] );
+        InternalAgendaGroup[] agendaGroups = agenda.getAgendaGroupsManager().getAgendaGroupsMap().values().toArray( new InternalAgendaGroup[agenda.getAgendaGroupsManager().getAgendaGroupsMap().size()] );
         Arrays.sort( agendaGroups,
                      AgendaGroupSorter.instance );
-        for ( AgendaGroup ag : agendaGroups ) {
+        for ( InternalAgendaGroup ag : agendaGroups ) {
             AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) ag;
             ProtobufMessages.Agenda.AgendaGroup.Builder _agb = ProtobufMessages.Agenda.AgendaGroup.newBuilder();
             _agb.setName( group.getName() )
@@ -433,11 +433,11 @@ public class ProtobufOutputMarshaller {
 
     private static class AgendaGroupSorter
             implements
-            Comparator<AgendaGroup> {
+            Comparator<InternalAgendaGroup> {
         public static final AgendaGroupSorter instance = new AgendaGroupSorter();
 
-        public int compare(AgendaGroup group1,
-                           AgendaGroup group2) {
+        public int compare(InternalAgendaGroup group1,
+                           InternalAgendaGroup group2) {
             return group1.getName().compareTo( group2.getName() );
         }
     }

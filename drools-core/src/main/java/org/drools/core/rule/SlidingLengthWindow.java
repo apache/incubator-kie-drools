@@ -27,7 +27,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 

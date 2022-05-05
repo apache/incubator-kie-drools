@@ -28,7 +28,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.MvelAccumulator;
+import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit.DroolsVarFactory;
@@ -40,7 +40,7 @@ import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
  * An MVEL accumulator implementation
  */
 public class MVELAccumulator
-    implements MVELCompileable, MvelAccumulator, Externalizable {
+    implements MVELCompileable, Accumulator, Externalizable {
 
     private static final long serialVersionUID = 510l;
 

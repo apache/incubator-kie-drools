@@ -22,7 +22,7 @@ import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
-import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 
 public class BetaNodeConstraintFactoryImpl implements BetaNodeConstraintFactory {
 

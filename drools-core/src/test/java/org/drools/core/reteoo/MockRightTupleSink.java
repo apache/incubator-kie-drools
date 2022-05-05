@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 
 public class MockRightTupleSink

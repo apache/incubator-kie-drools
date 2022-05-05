@@ -39,12 +39,7 @@ public interface PredicateExpression
                             ReteEvaluator reteEvaluator,
                             Object context ) throws Exception;
 
-    public static boolean isCompiledInvoker(final PredicateExpression expression) {
-        return (expression instanceof CompiledInvoker)
-                || (expression instanceof SafePredicateExpression && ((SafePredicateExpression) expression).wrapsCompiledInvoker());
-    }
-
-    public class SafePredicateExpression implements PredicateExpression, Serializable {
+    class SafePredicateExpression implements PredicateExpression, Serializable {
         private static final long serialVersionUID = -4570820770000524010L;
         private PredicateExpression delegate;
 
@@ -66,6 +61,7 @@ public interface PredicateExpression
                     (PrivilegedExceptionAction<Boolean>) () -> delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, reteEvaluator, context), KiePolicyHelper.getAccessContext());
         }
 
+        @Override
         public boolean wrapsCompiledInvoker() {
             return this.delegate instanceof CompiledInvoker;
         }

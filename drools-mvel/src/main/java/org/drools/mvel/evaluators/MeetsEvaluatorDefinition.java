@@ -34,7 +34,7 @@ import org.drools.mvel.evaluators.VariableRestriction.LeftStartRightEndContextEn
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
 import org.drools.core.time.Interval;
 
 /**
@@ -238,7 +238,7 @@ public class MeetsEvaluatorDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeException( "The 'meets' operator can only be used to compare one event to another, and never to compare to literal constraints." );
@@ -271,9 +271,9 @@ public class MeetsEvaluatorDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
+                                final ReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
             if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
                     extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {

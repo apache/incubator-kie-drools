@@ -18,7 +18,7 @@ package org.drools.tms.beliefsystem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.FastIterator;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 public interface BeliefSet<M extends ModedAssertion<M>> {
     BeliefSystem getBeliefSystem();

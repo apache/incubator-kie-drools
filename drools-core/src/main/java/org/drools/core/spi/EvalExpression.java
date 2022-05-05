@@ -46,11 +46,6 @@ public interface EvalExpression
         return original;
     }
 
-    static boolean isCompiledInvoker(final EvalExpression expression) {
-        return (expression instanceof CompiledInvoker)
-                || (expression instanceof SafeEvalExpression && ((SafeEvalExpression) expression).wrapsCompiledInvoker());
-    }
-
     class SafeEvalExpression implements EvalExpression, Serializable {
         private static final long serialVersionUID = -5682290553015978731L;
         private EvalExpression delegate;
@@ -83,6 +78,7 @@ public interface EvalExpression
             return new SafeEvalExpression( this.delegate.clone() );
         }
 
+        @Override
         public boolean wrapsCompiledInvoker() {
             return delegate instanceof CompiledInvoker;
         }

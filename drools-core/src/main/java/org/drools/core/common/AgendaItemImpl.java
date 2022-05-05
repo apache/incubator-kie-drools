@@ -28,7 +28,6 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Consequence;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 

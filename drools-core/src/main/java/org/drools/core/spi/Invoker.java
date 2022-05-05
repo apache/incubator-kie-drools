@@ -16,8 +16,10 @@
 
 package org.drools.core.spi;
 
-public interface Invoker
-    extends
-    RuleComponent {
+import org.drools.core.rule.RuleComponent;
 
+public interface Invoker extends RuleComponent {
+    default boolean wrapsCompiledInvoker() {
+        return false;
+    }
 }

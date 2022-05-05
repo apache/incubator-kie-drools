@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 
 /**

@@ -19,7 +19,7 @@ package org.drools.core.event;
 import java.util.EventObject;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 public class WorkingMemoryEvent extends EventObject {
     private static final long        serialVersionUID = 510l;

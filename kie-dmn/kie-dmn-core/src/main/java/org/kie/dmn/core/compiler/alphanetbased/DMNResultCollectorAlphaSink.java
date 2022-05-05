@@ -28,7 +28,7 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 public class DMNResultCollectorAlphaSink extends LeftInputAdapterNode implements CanInlineInANC<DMNResultCollector> {
 

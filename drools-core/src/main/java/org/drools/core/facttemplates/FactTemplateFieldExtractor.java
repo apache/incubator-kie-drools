@@ -30,7 +30,7 @@ import org.drools.util.ClassUtils;
 public class FactTemplateFieldExtractor
     implements
     Externalizable,
-    org.drools.core.spi.InternalReadAccessor {
+    org.drools.core.spi.ReadAccessor {
 
     private static final long serialVersionUID = 510l;
     private FactTemplate factTemplate;

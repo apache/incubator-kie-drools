@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.core.reteoo.TupleIterator.OnLeaf;
 
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

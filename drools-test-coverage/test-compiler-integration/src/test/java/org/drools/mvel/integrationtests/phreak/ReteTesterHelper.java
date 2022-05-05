@@ -19,7 +19,7 @@ package org.drools.mvel.integrationtests.phreak;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.mvel.MVELKnowledgePackageImpl;
 
 public class ReteTesterHelper {

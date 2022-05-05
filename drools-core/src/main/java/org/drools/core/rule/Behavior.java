@@ -21,8 +21,7 @@ import java.util.Collection;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleComponent;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.time.JobHandle;
 
 /**

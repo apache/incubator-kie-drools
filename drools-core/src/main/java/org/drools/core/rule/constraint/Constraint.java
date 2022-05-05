@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.spi;
+package org.drools.core.rule.constraint;
 
 import java.io.Externalizable;
 import java.util.Collection;
@@ -24,13 +24,15 @@ import java.util.List;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.RuleComponent;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public interface Constraint
     extends
-    RuleComponent,
+        RuleComponent,
     Externalizable,
     Cloneable {
 
@@ -76,7 +78,7 @@ public interface Constraint
      */
     boolean isTemporal();
 
-    default BitMask getListenedPropertyMask( ObjectType objectType, List<String> settableProperties ) {
+    default BitMask getListenedPropertyMask(ObjectType objectType, List<String> settableProperties ) {
         return allSetButTraitBitMask();
     }
 

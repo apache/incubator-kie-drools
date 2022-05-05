@@ -45,11 +45,6 @@ public interface Consequence
     void evaluate(KnowledgeHelper knowledgeHelper,
                   ReteEvaluator reteEvaluator) throws Exception;
 
-    static boolean isCompiledInvoker(final Consequence consequence) {
-        return (consequence instanceof CompiledInvoker)
-                || (consequence instanceof SafeConsequence && ((SafeConsequence) consequence).wrapsCompiledInvoker());
-    }
-
     class SafeConsequence implements Consequence, Serializable {
         private static final long serialVersionUID = -8109957972163261899L;
         private final Consequence delegate;
@@ -70,6 +65,7 @@ public interface Consequence
             }, KiePolicyHelper.getAccessContext());
         }
 
+        @Override
         public boolean wrapsCompiledInvoker() {
             return this.delegate instanceof CompiledInvoker;
         }

@@ -17,5 +17,5 @@
 package org.drools.core.spi;
 
 public interface AcceptsReadAccessor {
-    void setReadAccessor(InternalReadAccessor readAccessor);
+    void setReadAccessor(ReadAccessor readAccessor);
 }

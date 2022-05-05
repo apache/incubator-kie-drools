@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.rule;
+package org.drools.core.definitions.rule.impl;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -25,6 +25,7 @@ import java.util.function.Function;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.definition.rule.Query;

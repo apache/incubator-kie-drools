@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.core.spi;
+package org.drools.core.base;
 
-import java.util.List;
 
-public interface FunctionResolver {
-    public List getFunctionImports();
+public interface ClassWireable {
 
-    public void addFunctionImport(String functionImport);
+    void wire( Class<?> klass );
 
-    public String resolveFunction(String functionName,
-                                  String params);
+    String getClassName();
 
-    public String resolveFunction(String functionName,
-                                  String params,
-                                  DeclarationScopeResolver variables);
+    Class<?> getClassType();
 
 }

@@ -19,11 +19,9 @@ package org.drools.core.runtime.rule.impl;
 import java.util.List;
 
 import org.drools.core.base.InternalViewChangedEventListener;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 public class OpenQueryViewChangedEventListenerAdapter

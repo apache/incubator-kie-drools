@@ -25,7 +25,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 

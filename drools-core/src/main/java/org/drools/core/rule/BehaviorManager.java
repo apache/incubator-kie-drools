@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 /**
  * A class to encapsulate behavior management for a given beta node

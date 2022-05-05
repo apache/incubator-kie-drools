@@ -23,8 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.Constraint;
 
 public class NegConstraint implements AlphaNodeFieldConstraint {
 

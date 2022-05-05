@@ -26,7 +26,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable;
@@ -74,7 +74,7 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public InternalReadAccessor getFieldExtractor() {
+    public ReadAccessor getFieldExtractor() {
         throw new UnsupportedOperationException();
     }
 

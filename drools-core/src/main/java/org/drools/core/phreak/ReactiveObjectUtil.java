@@ -27,7 +27,7 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNodeLeftTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.spi.Tuple;
 
 import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;

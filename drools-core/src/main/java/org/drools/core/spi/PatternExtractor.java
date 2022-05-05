@@ -30,7 +30,7 @@ import org.drools.util.ClassUtils;
 
 public class PatternExtractor extends BaseObjectClassFieldReader
     implements
-    InternalReadAccessor,
+    ReadAccessor,
     AcceptsClassObjectType,
     Externalizable {
 

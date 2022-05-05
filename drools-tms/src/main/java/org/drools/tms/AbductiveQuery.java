@@ -35,7 +35,7 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;

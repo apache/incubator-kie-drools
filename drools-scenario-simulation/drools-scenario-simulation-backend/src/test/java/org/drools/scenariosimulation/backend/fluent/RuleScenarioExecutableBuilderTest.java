@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;

@@ -26,7 +26,6 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.AgendaFilter;
 
 public interface ActivationsManager {

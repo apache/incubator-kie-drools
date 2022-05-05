@@ -30,7 +30,7 @@ import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 

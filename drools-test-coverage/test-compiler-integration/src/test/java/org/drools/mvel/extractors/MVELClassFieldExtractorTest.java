@@ -201,7 +201,7 @@ public class MVELClassFieldExtractorTest {
             
             nullExtractor.compile( data );            
 //
-//            InternalReadAccessor nullExtractor = store.getReader( Person.class,
+//            ReadAccessor nullExtractor = store.getReader( Person.class,
 //                                                                  "addresses['business'].phone",
 //                                                                  getClass().getClassLoader() );
             assertTrue( nullExtractor.isNullValue( null,

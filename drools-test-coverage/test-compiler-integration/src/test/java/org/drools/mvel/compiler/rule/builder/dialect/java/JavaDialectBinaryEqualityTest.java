@@ -24,7 +24,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.spi.Constraint;
+import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.mvel.compiler.Person;

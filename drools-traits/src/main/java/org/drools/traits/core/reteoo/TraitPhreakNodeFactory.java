@@ -26,7 +26,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 
 public class TraitPhreakNodeFactory extends PhreakNodeFactory {

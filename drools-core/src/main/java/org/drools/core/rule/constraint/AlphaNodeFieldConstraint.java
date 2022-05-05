@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.core.spi;
+package org.drools.core.rule.constraint;
 
-import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 
-public interface AsyncExceptionHandler {
+public interface AlphaNodeFieldConstraint
+    extends
+    Constraint {
+    
+    boolean isAllowed(InternalFactHandle handle, ReteEvaluator reteEvaluator);
 
-    void handleException(WorkingMemory workingMemory,
-                         ConsequenceException exception);
-
+    /**
+     * Clone this constraints only if it is already used by a different node, otherwise returns this
+     */
+    AlphaNodeFieldConstraint cloneIfInUse();
 }

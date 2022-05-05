@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.QueryResultsImpl;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;

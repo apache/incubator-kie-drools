@@ -23,7 +23,7 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.rule.From;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 
 public class ReactiveFromBuilder implements ReteooComponentBuilder {
 

@@ -37,7 +37,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.SingleObjectSinkAdapter;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 /**

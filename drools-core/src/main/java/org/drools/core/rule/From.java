@@ -32,7 +32,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;

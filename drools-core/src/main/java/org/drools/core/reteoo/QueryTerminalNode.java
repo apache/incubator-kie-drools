@@ -23,8 +23,8 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.QueryImpl;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.definitions.rule.impl.QueryImpl;
+import org.drools.core.common.PropagationContext;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a

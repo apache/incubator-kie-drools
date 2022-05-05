@@ -31,4 +31,9 @@ public interface CompiledInvoker
      * There are utilities in the ASM package to retrieve the bytecode for this.
      */
     String getMethodBytecode();
+
+    static boolean isCompiledInvoker(Invoker invoker) {
+        return (invoker instanceof CompiledInvoker)
+                || (invoker instanceof EvalExpression.SafeEvalExpression && ((EvalExpression.SafeEvalExpression) invoker).wrapsCompiledInvoker());
+    }
 }
