@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.index.infinispan;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.AbstractProcessDataIndexIT;
 import org.kie.kogito.index.quarkus.DataIndexInfinispanQuarkusTestResource;
 import org.kie.kogito.index.quarkus.InfinispanTestProfile;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
@@ -27,7 +27,7 @@ import io.quarkus.test.junit.TestProfile;
 @TestProfile(InfinispanTestProfile.class)
 public class ProcessDataIndexInfinispanIT extends AbstractProcessDataIndexIT {
 
-    @ConfigProperty(name = DataIndexInfinispanQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
+    @QuarkusTestProperty(name = DataIndexInfinispanQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
     String dataIndex;
 
     @Override

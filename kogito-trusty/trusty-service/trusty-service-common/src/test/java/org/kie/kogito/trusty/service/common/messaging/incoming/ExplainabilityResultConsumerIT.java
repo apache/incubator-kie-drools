@@ -19,13 +19,13 @@ package org.kie.kogito.trusty.service.common.messaging.incoming;
 import java.net.URI;
 import java.util.Collections;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verify;
 @QuarkusTestResource(KafkaQuarkusTestResource.class)
 public class ExplainabilityResultConsumerIT {
 
-    @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
+    @QuarkusTestProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
     String kafkaBootstrapServers;
 
     @InjectMock

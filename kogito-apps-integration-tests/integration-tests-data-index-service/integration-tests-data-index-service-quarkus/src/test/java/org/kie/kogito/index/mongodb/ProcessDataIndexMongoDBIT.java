@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.index.mongodb;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.AbstractProcessDataIndexIT;
 import org.kie.kogito.index.quarkus.DataIndexMongoDBQuarkusTestResource;
 import org.kie.kogito.index.quarkus.MongoDBTestProfile;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
@@ -27,7 +27,7 @@ import io.quarkus.test.junit.TestProfile;
 @TestProfile(MongoDBTestProfile.class)
 public class ProcessDataIndexMongoDBIT extends AbstractProcessDataIndexIT {
 
-    @ConfigProperty(name = DataIndexMongoDBQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
+    @QuarkusTestProperty(name = DataIndexMongoDBQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
     String dataIndex;
 
     @Override

@@ -16,9 +16,9 @@
 package org.kie.kogito.explainability.rest;
 
 import org.apache.http.HttpStatus;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
 
@@ -39,7 +39,7 @@ class KeycloakExplainabilityServiceIT {
     private static final String VALID_USER = "jdoe";
     private static final String SERVICE_ENDPOINT = "/q/health/live";
 
-    @ConfigProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY)
+    @QuarkusTestProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY)
     String keycloakURL;
 
     @Test
