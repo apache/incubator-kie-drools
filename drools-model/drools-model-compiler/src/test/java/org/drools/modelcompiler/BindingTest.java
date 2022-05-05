@@ -293,4 +293,187 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder(40, "Cheddar");
     }
 
+    @Test
+    public void testBindingOnRightWithOr() {
+        // DROOLS-6920
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List result;\n" +
+                        "rule R when\n" +
+                        "  $p : Person(name == \"Mario\" || $a : age > 20)\n" +
+                        "then\n" +
+                        "  result.add($a);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Toshiya", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactly(40);
+    }
+
+    @Test
+    public void testBindingOnBothWithOr() {
+        // DROOLS-6920
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name == \"Mario\" || $a : age > 20)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "  result.add($a);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Toshiya", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder("Toshiya", 40);
+    }
+
+    @Test
+    public void test3BindingOn3ConditionsWithOr() {
+        // DROOLS-6920
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name == \"Mario\" || $a : age > 20 || $l : likes != null)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "  result.add($a);\n" +
+                "  result.add($l);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Toshiya", 10);
+        me.setLikes("Cheddar");
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder("Toshiya", 10, "Cheddar");
+    }
+
+    @Test
+    public void test2BindingOn3ConditionsWithOr() {
+        // DROOLS-6920
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\" || $a : age > 20 || $l : likes != null)\n" +
+                "then\n" +
+                "  result.add($a);\n" +
+                "  result.add($l);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Toshiya", 10);
+        me.setLikes("Cheddar");
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder(10, "Cheddar");
+    }
+
+    @Test
+    public void test3BindingOn3ConditionsWithAndOr() {
+        // DROOLS-6920
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name == \"Mario\" && $a : age > 20 || $l : likes != null)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "  result.add($a);\n" +
+                "  result.add($l);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        // name == "Mario" && age > 20
+        Person p1 = new Person("Mario", 40);
+        p1.setLikes(null);
+        ksession.insert(p1);
+        ksession.fireAllRules();
+        assertThat(result).containsExactlyInAnyOrder("Mario", 40, null);
+        result.clear();
+
+        // likes != null
+        Person p2 = new Person("Toshiya", 10);
+        p2.setLikes("Cheddar");
+        ksession.insert(p2);
+        ksession.fireAllRules();
+        assertThat(result).containsExactlyInAnyOrder("Toshiya", 10, "Cheddar");
+        result.clear();
+
+        // Only name == "Mario"
+        Person p3 = new Person("Mario", 10);
+        p3.setLikes(null);
+        ksession.insert(p3);
+        ksession.fireAllRules();
+        assertThat(result).isEmpty();
+        result.clear();
+    }
+
+    @Test
+    public void test3BindingOn3ConditionsWithOrAnd() {
+        // DROOLS-6920
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name == \"Mario\" || $a : age > 20 && $l : likes != null)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "  result.add($a);\n" +
+                "  result.add($l);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        // name == "Mario"
+        Person p1 = new Person("Mario", 10);
+        p1.setLikes(null);
+        ksession.insert(p1);
+        ksession.fireAllRules();
+        assertThat(result).containsExactlyInAnyOrder("Mario", 10, null);
+        result.clear();
+
+        // age > 20 && likes != null
+        Person p2 = new Person("Toshiya", 40);
+        p2.setLikes("Cheddar");
+        ksession.insert(p2);
+        ksession.fireAllRules();
+        assertThat(result).containsExactlyInAnyOrder("Toshiya", 40, "Cheddar");
+        result.clear();
+
+        // Only age > 20
+        Person p3 = new Person("Toshiya", 40);
+        p3.setLikes(null);
+        ksession.insert(p3);
+        ksession.fireAllRules();
+        assertThat(result).isEmpty();
+        result.clear();
+    }
 }
