@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel.traits;
+package org.drools.traits.core.factmodel;
 
 import java.util.BitSet;
 
-public interface TraitProxy {
-    public abstract TraitableBean getObject();
+import org.drools.core.factmodel.traits.TraitableBean;
 
-    public BitSet _getTypeCode();
+public interface TraitProxy {
+    TraitableBean getObject();
+
+    BitSet _getTypeCode();
 
 }
