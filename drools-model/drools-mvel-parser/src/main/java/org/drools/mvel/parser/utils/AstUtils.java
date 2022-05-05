@@ -98,7 +98,7 @@ public class AstUtils {
         return false;
     }
 
-    public static DrlxExpression parseBindingAfterAnd(TokenRange tokenRange, DrlxExpression leftExpr, Expression rightExpr) {
+    public static DrlxExpression parseBindingAfterAndOr(TokenRange tokenRange, DrlxExpression leftExpr, Expression rightExpr) {
         // This is intended to parse and adjust the AST of expressions with a binding on the right side of an AND like
         //     $n : name == "Mario" && $a : age > 20
         // In the case the parser originally produces the following
@@ -107,23 +107,35 @@ public class AstUtils {
         // and this method combine these 2 expressions into
         //     DrlxExpression( BinaryExpr( DrlxExpression("$n", "name == \"Mario\""), AND, DrlxExpression("$a", "age > 20") ) )
 
-        if (leftExpr.getExpr() instanceof BinaryExpr && ((BinaryExpr)leftExpr.getExpr()).getOperator() == BinaryExpr.Operator.AND) {
+        if (leftExpr.getExpr() instanceof BinaryExpr) {
+            BinaryExpr.Operator operator = ((BinaryExpr)leftExpr.getExpr()).getOperator();
+            if (isLogicalOperator(operator)) {
+                if (((BinaryExpr) leftExpr.getExpr()).getRight() instanceof NameExpr) {
+                    DrlxExpression newLeft = new DrlxExpression(leftExpr.getBind(), ((BinaryExpr) leftExpr.getExpr()).getLeft());
+                    SimpleName rightName = ((NameExpr) ((BinaryExpr) leftExpr.getExpr()).getRight()).getName();
+                    DrlxExpression newRight = new DrlxExpression(rightName, rightExpr);
+                    return new DrlxExpression(null, new BinaryExpr(tokenRange, newLeft, newRight, operator));
+                }
 
-            if (((BinaryExpr)leftExpr.getExpr()).getRight() instanceof NameExpr) {
-                DrlxExpression newLeft = new DrlxExpression(leftExpr.getBind(), ((BinaryExpr) leftExpr.getExpr()).getLeft());
-                SimpleName rightName = ((NameExpr) ((BinaryExpr) leftExpr.getExpr()).getRight()).getName();
-                DrlxExpression newRight = new DrlxExpression(rightName, rightExpr);
-                return new DrlxExpression(null, new BinaryExpr(tokenRange, newLeft, newRight, BinaryExpr.Operator.AND));
-            }
-
-            if (((BinaryExpr)leftExpr.getExpr()).getRight() instanceof DrlxExpression) {
-                Expression first = ((BinaryExpr) leftExpr.getExpr()).getLeft();
-                DrlxExpression innerRight = parseBindingAfterAnd(tokenRange, (DrlxExpression)((BinaryExpr)leftExpr.getExpr()).getRight(), rightExpr);
-                Expression second = ((BinaryExpr) innerRight.getExpr()).getLeft();
-                Expression third = ((BinaryExpr) innerRight.getExpr()).getRight();
-                return new DrlxExpression(null, new BinaryExpr(tokenRange, new BinaryExpr(tokenRange, first, second, BinaryExpr.Operator.AND), third, BinaryExpr.Operator.AND));
+                if (((BinaryExpr) leftExpr.getExpr()).getRight() instanceof DrlxExpression) {
+                    Expression first = ((BinaryExpr) leftExpr.getExpr()).getLeft();
+                    DrlxExpression innerRight = parseBindingAfterAndOr(tokenRange, (DrlxExpression) ((BinaryExpr) leftExpr.getExpr()).getRight(), rightExpr);
+                    Expression second = ((BinaryExpr) innerRight.getExpr()).getLeft();
+                    Expression third = ((BinaryExpr) innerRight.getExpr()).getRight();
+                    BinaryExpr.Operator innerRightOperator = ((BinaryExpr) innerRight.getExpr()).getOperator();
+                    if (operator == BinaryExpr.Operator.OR && innerRightOperator == BinaryExpr.Operator.AND) {
+                        return new DrlxExpression(null, new BinaryExpr(tokenRange, first, new BinaryExpr(tokenRange, second, third, innerRightOperator), operator));
+                    } else {
+                        return new DrlxExpression(null, new BinaryExpr(tokenRange, new BinaryExpr(tokenRange, first, second, operator), third, innerRightOperator));
+                    }
+                }
             }
         }
-        throw new IllegalStateException();
+        throw new IllegalStateException("leftExpr has to be a BinaryExpr with LogicalOperator");
     }
+
+    public static boolean isLogicalOperator( BinaryExpr.Operator operator ) {
+        return operator == BinaryExpr.Operator.AND || operator == BinaryExpr.Operator.OR;
+    }
+
 }
