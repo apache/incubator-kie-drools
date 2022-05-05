@@ -322,7 +322,7 @@ boolean isNotTestingBuild() {
 }
 
 boolean isRelease() {
-    return env.RELEASE.toBoolean()
+    return env.RELEASE ? env.RELEASE.toBoolean() : false
 }
 
 String getProjectVersion() {
