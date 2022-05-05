@@ -1310,4 +1310,82 @@ public class DroolsMvelParserTest {
         assertEquals("null", toString(binaryExpr.getRight()));
         assertEquals(Operator.NOT_EQUALS, binaryExpr.getOperator());
     }
+
+    @Test
+    public void testBindingOnRightWithOr() {
+        String expr = "$n : name == \"Mario\" || $a : age > 20";
+
+        DrlxExpression drlxExpression = parseExpression(parser, expr);
+        Expression bExpr = drlxExpression.getExpr();
+        assertTrue(bExpr instanceof BinaryExpr);
+        assertTrue(((BinaryExpr) bExpr).getOperator() == BinaryExpr.Operator.OR);
+
+        Node left = ((BinaryExpr) bExpr).getLeft();
+        assertTrue(left instanceof DrlxExpression);
+        DrlxExpression leftExpr = (DrlxExpression) left;
+
+        SimpleName leftBind = leftExpr.getBind();
+        assertEquals("$n", leftBind.asString());
+
+        Expression expression = leftExpr.getExpr();
+        BinaryExpr binaryExpr = ((BinaryExpr) expression);
+        assertEquals("name", toString(binaryExpr.getLeft()));
+        assertEquals("\"Mario\"", toString(binaryExpr.getRight()));
+        assertEquals(Operator.EQUALS, binaryExpr.getOperator());
+
+        Node right = ((BinaryExpr) bExpr).getRight();
+        assertTrue(right instanceof DrlxExpression);
+        DrlxExpression rightExpr = (DrlxExpression) right;
+
+        SimpleName rightBind = rightExpr.getBind();
+        assertEquals("$a", rightBind.asString());
+
+        BinaryExpr binaryExpr2 = ((BinaryExpr) rightExpr.getExpr());
+        assertEquals("age", toString(binaryExpr2.getLeft()));
+        assertEquals("20", toString(binaryExpr2.getRight()));
+        assertEquals(Operator.GREATER, binaryExpr2.getOperator());
+    }
+
+    @Test
+    public void test3BindingOn3ConditionsWithOrAnd() {
+        String expr = "$n : name == \"Mario\" || $a : age > 20 && $l : likes != null";
+
+        DrlxExpression drlxExpression = parseExpression(parser, expr);
+        Expression bExpr = drlxExpression.getExpr();
+        assertTrue(bExpr instanceof BinaryExpr);
+        assertTrue(((BinaryExpr) bExpr).getOperator() == BinaryExpr.Operator.OR);
+
+        Expression left = ((BinaryExpr) bExpr).getLeft();
+        assertTrue(left instanceof DrlxExpression);
+
+        Expression right = ((BinaryExpr) bExpr).getRight();
+        assertTrue(right instanceof BinaryExpr);
+        BinaryExpr rightExpr = (BinaryExpr) right;
+        assertTrue(rightExpr.getOperator() == BinaryExpr.Operator.AND);
+
+        DrlxExpression first = (DrlxExpression) left;
+        DrlxExpression second = (DrlxExpression) rightExpr.getLeft();
+        DrlxExpression third = (DrlxExpression) rightExpr.getRight();
+
+        SimpleName bind = first.getBind();
+        assertEquals("$n", bind.asString());
+        BinaryExpr binaryExpr = ((BinaryExpr) first.getExpr());
+        assertEquals("name", toString(binaryExpr.getLeft()));
+        assertEquals("\"Mario\"", toString(binaryExpr.getRight()));
+        assertEquals(Operator.EQUALS, binaryExpr.getOperator());
+
+        bind = second.getBind();
+        assertEquals("$a", bind.asString());
+        binaryExpr = ((BinaryExpr) second.getExpr());
+        assertEquals("age", toString(binaryExpr.getLeft()));
+        assertEquals("20", toString(binaryExpr.getRight()));
+        assertEquals(Operator.GREATER, binaryExpr.getOperator());
+
+        bind = third.getBind();
+        assertEquals("$l", bind.asString());
+        binaryExpr = ((BinaryExpr) third.getExpr());
+        assertEquals("likes", toString(binaryExpr.getLeft()));
+        assertEquals("null", toString(binaryExpr.getRight()));
+        assertEquals(Operator.NOT_EQUALS, binaryExpr.getOperator());
+    }
 }
