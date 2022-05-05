@@ -36,7 +36,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class BuildResultCollectorImpl implements BuildResultCollector {
-    private Collection<KnowledgeBuilderResult> results = new LinkedHashSet<>(); //fixme: avoid duplicate errors (see ModelGeneratorPhase)
+    private Collection<KnowledgeBuilderResult> results = new LinkedHashSet<>(); // avoid duplicate errors
 
     public BuildResultCollectorImpl() {
     }
