@@ -15,5 +15,7 @@
  */
 package org.kie.kogito.codegen.rules.myunit
 
+unit MyUnit
+
 rule IAmAInAUnitAMA when
 then  end
