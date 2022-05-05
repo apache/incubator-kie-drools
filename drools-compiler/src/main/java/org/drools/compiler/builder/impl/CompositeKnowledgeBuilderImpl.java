@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.internal.assembler.KieAssemblers;
@@ -328,15 +327,35 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private interface ResourceToPkgDescrMapper {
         PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception;
 
-        ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> {
-            DrlResourceHandler handler = new DrlResourceHandler(kBuilder.getBuilderConfiguration());
-            PackageDescr result = handler.process(resourceDescr.resource);
-            handler.getResults().forEach(kBuilder::addBuilderResult);
-            return result;
+        ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
+            ProcessorDrl processor = new ProcessorDrl(kBuilder.getBuilderConfiguration());
+            PackageDescr pkg = processor.process(resourceDescr.resource);
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
         };
-        ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.templateToPackageDescr( resourceDescr.resource);
-        ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.dslrToPackageDescr(resourceDescr.resource);
-        ResourceToPkgDescrMapper XML_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.xmlToPackageDescr(resourceDescr.resource);
-        ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
+        ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
+            ProcessorTemplate processor = new ProcessorTemplate(kBuilder.getBuilderConfiguration(), kBuilder.getReleaseId());
+            PackageDescr pkg = processor.process(resourceDescr.resource, kBuilder.getDslExpander());
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
+        ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
+            ProcessorDslr processor = new ProcessorDslr(kBuilder.getBuilderConfiguration());
+            PackageDescr pkg = processor.process(resourceDescr.resource, kBuilder.getDslExpander());
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
+        ResourceToPkgDescrMapper XML_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
+            ProcessorXml processor = new ProcessorXml(kBuilder.getBuilderConfiguration());
+            PackageDescr pkg = processor.process(resourceDescr.resource);
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
+        ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
+            ProcessorDecisionTable processor = new ProcessorDecisionTable(kBuilder.getBuilderConfiguration(), kBuilder.getReleaseId());
+            PackageDescr pkg = processor.process(resourceDescr.resource, resourceDescr.configuration);
+            processor.getResults().forEach(kBuilder::addBuilderResult);
+            return pkg;
+        };
     }
 }
