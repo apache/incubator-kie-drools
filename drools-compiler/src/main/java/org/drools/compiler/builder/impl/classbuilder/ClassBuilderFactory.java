@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel;
+package org.drools.compiler.builder.impl.classbuilder;
 
 import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.internal.utils.KieService;
@@ -22,8 +22,6 @@ import org.kie.api.internal.utils.KieService;
 import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
 public interface ClassBuilderFactory extends KieService {
-
-    boolean DUMP_GENERATED_CLASSES = false;
 
     class Holder {
         private static final ClassBuilderFactory factory = getFactory();

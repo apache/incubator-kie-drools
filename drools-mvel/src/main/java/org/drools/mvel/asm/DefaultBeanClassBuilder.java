@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.factmodel.BeanClassBuilder;
-import org.drools.core.factmodel.BuildUtils;
+import org.drools.compiler.builder.impl.classbuilder.BeanClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;
@@ -46,8 +46,8 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import static org.drools.core.factmodel.BuildUtils.getDescriptor;
-import static org.drools.core.factmodel.BuildUtils.getSignature;
+import static org.drools.compiler.builder.impl.classbuilder.BuildUtils.getDescriptor;
+import static org.drools.compiler.builder.impl.classbuilder.BuildUtils.getSignature;
 import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
 /**

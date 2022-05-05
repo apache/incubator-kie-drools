@@ -21,8 +21,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-core</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-memory-compiler</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jdt</groupId>

@@ -24,6 +24,11 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilderFactory;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
@@ -31,11 +36,6 @@ import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.QualifiedName;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.ClassBuilder;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
 
@@ -267,7 +267,7 @@ public class TypeDeclarationBuilder {
             success = ! context.hasErrors();
 
             if ( success ) {
-                ClassBuilder classBuilder = RuntimeComponentFactory.get().getClassBuilderFactory().getClassBuilder(type);
+                ClassBuilder classBuilder = ClassBuilderFactory.get().getClassBuilder(type);
                 declaredClassBuilder.generateBeanFromDefinition(typeDescr,
                                                                 type,
                                                                 pkgRegistry,

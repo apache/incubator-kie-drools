@@ -32,6 +32,8 @@ import org.kie.memorycompiler.resources.ResourceStore;
  */
 public interface JavaCompiler {
 
+    boolean DUMP_GENERATED_CLASSES = false;
+
     static JavaCompiler getCompiler() {
         return CompilerHolder.JAVA_COMPILER;
     }

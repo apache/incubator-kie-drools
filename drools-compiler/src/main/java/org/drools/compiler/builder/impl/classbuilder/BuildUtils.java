@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel;
+package org.drools.compiler.builder.impl.classbuilder;
 
+import org.drools.core.factmodel.FieldDefinition;
 import org.kie.internal.definition.GenericTypeDefinition;
 
 import static java.util.stream.Collectors.joining;

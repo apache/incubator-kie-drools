@@ -16,7 +16,7 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.factmodel.ClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.mvel2.asm.Opcodes;
 
