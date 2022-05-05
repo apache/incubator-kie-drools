@@ -28,9 +28,9 @@ import org.drools.scenariosimulation.backend.util.ResourceHelper;
 import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNMessage;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,7 +46,7 @@ public class TestUtils {
                 .filter(path -> path.endsWith(fileName))
                 .findFirst()
                 .orElse(null);
-        assertNotNull(filePath);
+        assertThat(filePath).isNotNull();
         File sourceFile = new File(filePath);
         assertTrue(sourceFile.exists());
         return new String(Files.readAllBytes(sourceFile.toPath()));
@@ -60,7 +60,7 @@ public class TestUtils {
     }
 
     public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedDecisionOrRuleName, String expectedResult, String expectedMessage) {
-        assertNotNull(toCheck);
+        assertThat(toCheck).isNotNull();
         assertEquals(expectedDecisionOrRuleName, toCheck.getDecisionOrRuleName());
         assertEquals(expectedResult, toCheck.getResult());
         if (expectedMessage == null) {

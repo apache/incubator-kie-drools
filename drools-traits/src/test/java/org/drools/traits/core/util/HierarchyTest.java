@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class HierarchyTest {
@@ -1148,31 +1148,31 @@ public class HierarchyTest {
         BitSet jk = encoder.encode( "J", Arrays.asList( "F", "D" ) );
         BitSet lk = encoder.encode( "L", Arrays.asList( "J" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet ok = encoder.encode( "O", Arrays.asList( "L" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet kk = encoder.encode( "K", Arrays.asList( "F", "G" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet mk = encoder.encode( "M", Arrays.asList( "J", "K" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet nk = encoder.encode( "N", Arrays.asList( "K" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet hk = encoder.encode( "H", Arrays.asList( "F" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         BitSet pk = encoder.encode( "P", Arrays.asList( "A" ) );
 
-        assertNotNull( encoder.getCode( "L" ) );
+        assertThat(encoder.getCode("L")).isNotNull();
 
         System.out.println( encoder );
         assertEquals( 16, encoder.size() );

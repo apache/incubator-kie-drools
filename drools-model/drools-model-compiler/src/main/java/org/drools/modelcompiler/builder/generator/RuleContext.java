@@ -42,22 +42,21 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
+import org.drools.core.util.Bag;
 import org.drools.drl.ast.descr.AndDescr;
-import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ConditionalElementDescr;
 import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.util.TypeResolver;
-import org.drools.compiler.rule.builder.EvaluatorDefinition;
-import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
-import org.drools.core.util.Bag;
+import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationException;
 import org.drools.modelcompiler.builder.errors.UnknownRuleUnitException;
+import org.drools.util.TypeResolver;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -142,60 +141,33 @@ public class RuleContext {
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
         this.ruleDescr = ruleDescr;
-        processUnitData();
+        this.ruleUnitDescr = findUnitDescr();
         this.ruleIndex = ruleIndex;
     }
 
-    private void findUnitDescr() {
-        if (ruleDescr == null) {
-            return;
+    private RuleUnitDescription findUnitDescr() {
+        if (ruleDescr == null || ruleDescr.getUnit() == null) {
+            return null;
         }
 
-        boolean useNamingConvention = false;
-        String unitName;
-        AnnotationDescr unitAnn = ruleDescr.getAnnotation( "Unit" );
-        if (unitAnn != null) {
-            unitName = ( String ) unitAnn.getValue();
-            unitName = unitName.substring( 0, unitName.length() - ".class".length() );
-        } else if (ruleDescr.getUnit() != null) {
-            unitName = ruleDescr.getUnit().getTarget();
-        } else {
-            if (ruleDescr.getResource() == null) {
-                return;
-            }
-            String drlFile = ruleDescr.getResource().getSourcePath();
-            if (drlFile != null) {
-                String drlFileName = drlFile.substring(drlFile.lastIndexOf('/')+1);
-                unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
-                useNamingConvention = true;
-            } else {
-                return;
-            }
-        }
-
+        String unitName = ruleDescr.getUnit().getTarget();
         RuleUnitDescriptionLoader ruleUnitDescriptionLoader = kbuilder.getPackageRegistry(packageModel.getName() ).getPackage().getRuleUnitDescriptionLoader();
         Optional<RuleUnitDescription> ruDescr = ruleUnitDescriptionLoader.getDescription(unitName );
-        if (ruDescr.isPresent()) {
-            ruleUnitDescr = ruDescr.get();
-        } else if (!useNamingConvention) {
-            throw new UnknownRuleUnitException( unitName );
-        }
+        return ruDescr.map(this::processRuleUnit).orElseThrow( () -> new UnknownRuleUnitException( unitName ) );
     }
 
-    private void processUnitData() {
-        findUnitDescr();
-        if (ruleUnitDescr != null) {
-            for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
-                String unitVarName = unitVar.getName();
-                Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
-                addRuleUnitVar( unitVarName, resolvedType );
+    private RuleUnitDescription processRuleUnit(RuleUnitDescription ruleUnitDescr) {
+        for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
+            String unitVarName = unitVar.getName();
+            Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
+            addRuleUnitVar( unitVarName, resolvedType );
 
-                getPackageModel().addGlobal( unitVarName, unitVar.getType() );
-                if ( unitVar.isDataSource() ) {
-                    getPackageModel().addEntryPoint( unitVarName );
-                }
+            packageModel.addGlobal( unitVarName, unitVar.getType() );
+            if ( unitVar.isDataSource() ) {
+                packageModel.addEntryPoint( unitVarName );
             }
         }
+        return ruleUnitDescr;
     }
 
     public RuleUnitDescription getRuleUnitDescr() {

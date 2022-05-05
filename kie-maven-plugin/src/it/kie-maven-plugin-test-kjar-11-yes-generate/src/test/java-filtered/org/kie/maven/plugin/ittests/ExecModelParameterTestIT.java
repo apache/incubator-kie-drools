@@ -26,8 +26,8 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ExecModelParameterTestIT {
@@ -40,7 +40,7 @@ public class ExecModelParameterTestIT {
     @Test
     public void testWithoutDroolsModelCompilerOnClassPathDoNotRunExecModel() throws Exception {
         KieModule kieModule = fireRule();
-        assertNotNull(kieModule);
+        assertThat(kieModule).isNotNull();
         assertTrue(kieModule instanceof CanonicalKieModule);
     }
 

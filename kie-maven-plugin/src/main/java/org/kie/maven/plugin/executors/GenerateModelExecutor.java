@@ -129,22 +129,9 @@ public class GenerateModelExecutor {
             compileAndWriteClasses(targetDirectory, projectClassLoader, javaCompilerSettings, compilerType,
                                    classNameSourceMap, dumpKieSourcesFolder);
 
-            // copy the META-INF packages file
-            final String path = CanonicalKieModule.getModelFileWithGAV(kieModule.getReleaseId());
-            final MemoryFile packagesMemoryFile = (MemoryFile) mfs.getFile(path);
-            final String packagesMemoryFilePath = packagesMemoryFile.getFolder().getPath().asString();
-            final Path packagesDestinationPath = Paths.get(targetDirectory.getPath(), "classes",
-                                                           packagesMemoryFilePath, packagesMemoryFile.getName());
-
-            try {
-                if (!Files.exists(packagesDestinationPath)) {
-                    Files.createDirectories(packagesDestinationPath.getParent());
-                }
-                Files.copy(packagesMemoryFile.getContents(), packagesDestinationPath,
-                           StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new MojoExecutionException("Unable to write file", e);
-            }
+            // copy the META-INF packages files
+            copyMetaInfFile(targetDirectory, mfs, CanonicalKieModule.getModelFileWithGAV(kieModule.getReleaseId()));
+            copyMetaInfFile(targetDirectory, mfs, CanonicalKieModule.RULE_UNIT_SERVICES_FILE);
 
             if (shallPerformDMNDTAnalysis(validateDMN, log)) {
                 performDMNDTAnalysis(kieModule, resources, log);
@@ -172,6 +159,26 @@ public class GenerateModelExecutor {
         }
 
         log.info("DSL successfully generated");
+    }
+
+    private static void copyMetaInfFile(File targetDirectory, MemoryFileSystem mfs, String path) throws MojoExecutionException {
+        final MemoryFile memoryFile = (MemoryFile) mfs.getFile(path);
+        if (!memoryFile.exists()) {
+            return;
+        }
+        final String packagesMemoryFilePath = memoryFile.getFolder().getPath().asString();
+        final Path packagesDestinationPath = Paths.get(targetDirectory.getPath(), "classes",
+                                                       packagesMemoryFilePath, memoryFile.getName());
+
+        try {
+            if (!Files.exists(packagesDestinationPath)) {
+                Files.createDirectories(packagesDestinationPath.getParent());
+            }
+            Files.copy(memoryFile.getContents(), packagesDestinationPath,
+                       StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to write file", e);
+        }
     }
 
     private static void deleteDrlFiles(final File outputDirectory,
@@ -221,6 +228,7 @@ public class GenerateModelExecutor {
                 Folder sourceFolder = srcMfs.getFolder("src/main/java");
 
                 List<String> modelFiles = new ArrayList<>();
+                List<String> ruleUnitClassNames = new ArrayList<>();
                 ModelWriter modelWriter = new ModelWriter();
 
                 Map<String, List<String>> modelsByKBase = new HashMap<>();
@@ -228,6 +236,7 @@ public class GenerateModelExecutor {
                     ModelWriter.Result result = modelWriter.writeModel(srcMfs,
                                                                        modelBuilder.getValue().getPackageSources());
                     modelFiles.addAll(result.getModelFiles());
+                    ruleUnitClassNames.addAll( result.getRuleUnitClassNames() );
                     modelsByKBase.put(modelBuilder.getKey(), result.getModelFiles());
                 }
 
@@ -240,6 +249,7 @@ public class GenerateModelExecutor {
                 Folder targetFolder = trgMfs.getFolder(".");
                 srcMfs.copyFolder(sourceFolder, trgMfs, targetFolder);
                 modelWriter.writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
+                modelWriter.writeRuleUnitServiceFile(ruleUnitClassNames, trgMfs);
             }
         }
     }

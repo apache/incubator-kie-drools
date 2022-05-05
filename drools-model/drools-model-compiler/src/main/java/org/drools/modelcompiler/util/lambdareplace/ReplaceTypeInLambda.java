@@ -24,28 +24,42 @@ import java.util.Optional;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
+import static org.drools.modelcompiler.util.ClassUtil.javaSourceNameToClass;
 
 public class ReplaceTypeInLambda {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReplaceTypeInLambda.class);
 
     private ReplaceTypeInLambda() {
 
     }
 
-    public static void replaceTypeInExprLambda(String bindingId, Class accumulateFunctionResultType, Expression expression) {
+    public static void replaceTypeInExprLambdaAndIndex(String bindingId, Class accumulateFunctionResultType, Expression expression) {
         if (expression instanceof MethodCallExpr && (( MethodCallExpr ) expression).getNameAsString().equals( ACCUMULATE_CALL )) {
             return;
         }
+        replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, expression);
+        replaceTypeInIndex(bindingId, accumulateFunctionResultType, expression);
+    }
 
+    private static void replaceTypeInExprLambda(String bindingId, Class accumulateFunctionResultType, Expression expression) {
         expression.findAll(MethodCallExpr.class).forEach(mc -> {
             if (mc.getArguments().stream().anyMatch(a -> a.toString().equals(toVar(bindingId)))) {
                 List<LambdaExpr> allLambdas = new ArrayList<>();
@@ -82,4 +96,53 @@ public class ReplaceTypeInLambda {
             }
         }
     }
+
+    private static void replaceTypeInIndex(String bindingId, Class accumulateFunctionResultType, Expression expression) {
+        Optional<MethodCallExpr> optPattern = expression.findAll(MethodCallExpr.class)
+                                                        .stream()
+                                                        .filter(mce -> mce.getNameAsString().equals(PATTERN_CALL))
+                                                        .filter(mce -> mce.getArguments().stream().anyMatch(a -> a.toString().equals(toVar(bindingId))))
+                                                        .findAny();
+        if (!optPattern.isPresent()) {
+            return;
+        }
+
+        expression.findAll(MethodCallExpr.class)
+                  .stream()
+                  .filter(mce -> {
+                      String methodName = mce.getNameAsString();
+                      return (methodName.equals(ALPHA_INDEXED_BY_CALL) || methodName.equals(BETA_INDEXED_BY_CALL));
+                  })
+                  .forEach(mce -> mce.getArguments()
+                                     .stream()
+                                     .filter(MethodCallExpr.class::isInstance)
+                                     .map(MethodCallExpr.class::cast)
+                                     .filter(argMce -> argMce.getName().asString().equals("getPropertyIndex"))
+                                     .map(MethodCallExpr::getScope)
+                                     .filter(Optional::isPresent)
+                                     .map(Optional::get)
+                                     .filter(FieldAccessExpr.class::isInstance)
+                                     .map(FieldAccessExpr.class::cast)
+                                     .forEach(fieldAccessExpr -> {
+                                         Class<?> domainClass = extractDomainClass(fieldAccessExpr.getName().asString());
+                                         if (domainClass != null && domainClass != accumulateFunctionResultType && domainClass.isAssignableFrom(accumulateFunctionResultType)) {
+                                             // e.g. from java_lang_Number_Metadata_INSTANCE to java_lang_Long_Metadata_INSTANCE
+                                             fieldAccessExpr.setName(asJavaSourceName(accumulateFunctionResultType) + DOMAIN_CLASS_METADATA_INSTANCE);
+                                         }
+                                     }));
+    }
+
+    private static Class<?> extractDomainClass(String domainClassInstance) {
+        if (!domainClassInstance.endsWith(DOMAIN_CLASS_METADATA_INSTANCE)) {
+            return null;
+        }
+        String javaSourceName = domainClassInstance.substring(0, domainClassInstance.lastIndexOf(DOMAIN_CLASS_METADATA_INSTANCE));
+        try {
+            return javaSourceNameToClass(javaSourceName);
+        } catch (ClassNotFoundException e) {
+            logger.info("Class not found. Not an issue unless the generated code causes a compile error : domainClassInstance = {} ", domainClassInstance);
+            return null;
+        }
+    }
+
 }

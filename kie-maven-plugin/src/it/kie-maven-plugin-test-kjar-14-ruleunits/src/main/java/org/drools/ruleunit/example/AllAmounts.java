@@ -1,5 +1,5 @@
-/**
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.rules;
-unit HelloWorld;
+package org.drools.ruleunit.example;
 
-rule HelloWorld
-when
-    /strings [ this == "Hello World" ]
-then
-    strings.add("it worked!");
-end
+public class AllAmounts {
+    private int amounts;
+
+    public AllAmounts(int amounts) {
+        this.amounts = amounts;
+    }
+
+    public int getAmounts() {
+        return amounts;
+    }
+
+    public void setAmounts(int amounts) {
+        this.amounts = amounts;
+    }
+}

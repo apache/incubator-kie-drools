@@ -52,10 +52,10 @@ import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -75,7 +75,6 @@ import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.WEIGH
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.WEIGHTED_SUM;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 public class PMMLMiningModelEvaluatorTest {
@@ -119,7 +118,7 @@ public class PMMLMiningModelEvaluatorTest {
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", prediction), new ArrayList<>()));
         inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
         PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(OK.getName(), retrieved.getResultCode());
         assertEquals(targetField, retrieved.getResultObjectName());
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
@@ -141,7 +140,7 @@ public class PMMLMiningModelEvaluatorTest {
         inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"), new ArrayList<>()));
         inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
         PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(FAIL.getName(), retrieved.getResultCode());
         assertEquals(targetField, retrieved.getResultObjectName());
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
@@ -157,7 +156,7 @@ public class PMMLMiningModelEvaluatorTest {
         String kModulePackageName = "kModulePackageNameA";
         String containerModelName = "containerModelNameA";
         PMMLRuntime firstRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
-        assertNotNull(firstRetrieved);
+        assertThat(firstRetrieved).isNotNull();
         assertTrue(firstRetrieved instanceof PMMLRuntimeInternal);
         PMMLRuntimeInternal firstPMMLRuntimeInternal = (PMMLRuntimeInternal) firstRetrieved;
         PMMLRuntime secondRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
@@ -167,7 +166,7 @@ public class PMMLMiningModelEvaluatorTest {
         kModulePackageName = "kModulePackageNameB";
         containerModelName = "containerModelNameB";
         PMMLRuntime thirdRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
-        assertNotNull(thirdRetrieved);
+        assertThat(thirdRetrieved).isNotNull();
         assertTrue(thirdRetrieved instanceof PMMLRuntimeInternal);
         PMMLRuntimeInternal thirdPMMLRuntimeInternal = (PMMLRuntimeInternal) thirdRetrieved;
         assertNotEquals(firstPMMLRuntimeInternal.getKnowledgeBase(), thirdPMMLRuntimeInternal.getKnowledgeBase());
@@ -180,7 +179,7 @@ public class PMMLMiningModelEvaluatorTest {
         RAW_OBJECT_METHODS.forEach(multipleModelMethod -> {
             KiePMMLNameValue retrieved = evaluator.getKiePMMLNameValue(pmml4Result, multipleModelMethod, 34.2);
             assertEquals(pmml4Result.getResultObjectName(), retrieved.getName());
-            assertNotNull(retrieved.getValue());
+            assertThat(retrieved.getValue()).isNotNull();
             assertEquals(rawObject, retrieved.getValue());
         });
     }
@@ -193,9 +192,9 @@ public class PMMLMiningModelEvaluatorTest {
         double expected = rawObject.doubleValue();
         VALUE_WEIGHT_METHODS.forEach(multipleModelMethod -> {
             KiePMMLNameValue retrieved = evaluator.getKiePMMLNameValue(pmml4Result, multipleModelMethod, weight);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             assertEquals(pmml4Result.getResultObjectName(), retrieved.getName());
-            assertNotNull(retrieved.getValue());
+            assertThat(retrieved.getValue()).isNotNull();
             assertTrue(retrieved.getValue() instanceof KiePMMLValueWeight);
             KiePMMLValueWeight kiePMMLValueWeight = (KiePMMLValueWeight) retrieved.getValue();
             assertEquals(expected, kiePMMLValueWeight.getValue(), 0.0);
@@ -234,7 +233,7 @@ public class PMMLMiningModelEvaluatorTest {
         final Object rawObject = "OBJ";
         RAW_OBJECT_METHODS.forEach(multipleModelMethod -> {
             Object retrieved = evaluator.getEventuallyWeightedResult(rawObject, multipleModelMethod, 34.2);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             assertEquals(rawObject, retrieved);
         });
     }
@@ -245,7 +244,7 @@ public class PMMLMiningModelEvaluatorTest {
         final double weight = 2.23;
         VALUE_WEIGHT_METHODS.forEach(multipleModelMethod -> {
             Object retrieved = evaluator.getEventuallyWeightedResult(rawObject, multipleModelMethod, weight);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             assertTrue(retrieved instanceof KiePMMLValueWeight);
             KiePMMLValueWeight kiePMMLValueWeight = (KiePMMLValueWeight) retrieved;
             assertEquals(rawObject.doubleValue(), kiePMMLValueWeight.getValue(), 0.0);
@@ -349,10 +348,10 @@ public class PMMLMiningModelEvaluatorTest {
         pmml4Result.setResultObjectName(resultObjectName);
         pmml4Result.getResultVariables().put(resultObjectName, resultObjectValue);
         PMMLStep retrieved = evaluator.getStep(segmentMock, pmml4Result);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved instanceof PMMLMiningModelStep);
         Map<String, Object> retrievedInfo = retrieved.getInfo();
-        assertNotNull(retrievedInfo);
+        assertThat(retrievedInfo).isNotNull();
         assertEquals(segmentName, retrievedInfo.get("SEGMENT"));
         assertEquals(modelName, retrievedInfo.get("MODEL"));
         assertEquals(resultCode.getName(), retrievedInfo.get("RESULT CODE"));
@@ -362,10 +361,10 @@ public class PMMLMiningModelEvaluatorTest {
         pmml4Result = new PMML4Result();
         pmml4Result.setResultCode(resultCode.getName());
         retrieved = evaluator.getStep(segmentMock, pmml4Result);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved instanceof PMMLMiningModelStep);
         retrievedInfo = retrieved.getInfo();
-        assertNotNull(retrievedInfo);
+        assertThat(retrievedInfo).isNotNull();
         assertEquals(segmentName, retrievedInfo.get("SEGMENT"));
         assertEquals(modelName, retrievedInfo.get("MODEL"));
         assertEquals(resultCode.getName(), retrievedInfo.get("RESULT CODE"));

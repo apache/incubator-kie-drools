@@ -15,13 +15,16 @@
  */
 package org.drools.ruleunits.impl;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 
 import org.drools.core.common.ReteEvaluator;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends ReteEvaluatorBasedRuleUnitInstance<T> {
 
@@ -31,11 +34,17 @@ public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends ReteEva
 
     protected void bind(ReteEvaluator reteEvaluator, T workingMemory) {
         try {
-            for (Field f : workingMemory.getClass().getDeclaredFields()) {
+            for (PropertyDescriptor prop : Introspector.getBeanInfo(workingMemory.getClass()).getPropertyDescriptors()) {
+                Field f;
+                try {
+                    f = workingMemory.getClass().getDeclaredField(prop.getName());
+                } catch (NoSuchFieldException noSuchFieldException) {
+                    // ignore not existing fields
+                    continue;
+                }
                 f.setAccessible(true);
                 Object v = f.get(workingMemory);
-                String dataSourceName = String.format(
-                        "%s.%s", workingMemory.getClass().getCanonicalName(), f.getName());
+                String dataSourceName = f.getName();
                 if (v instanceof DataSource) {
                     DataSource<?> o = (DataSource<?>) v;
                     EntryPoint ep = reteEvaluator.getEntryPoint(dataSourceName);
@@ -47,8 +56,8 @@ public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends ReteEva
                     // ignore if the global doesn't exist
                 }
             }
-        } catch (IllegalAccessException e) {
-            throw new Error(e);
+        } catch (IntrospectionException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

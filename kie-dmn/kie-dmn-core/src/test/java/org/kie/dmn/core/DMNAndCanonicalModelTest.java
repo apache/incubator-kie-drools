@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -51,7 +50,7 @@ public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanon
                                                                                                                                        this.getClass())));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext = runtime.newContext();
@@ -73,7 +72,7 @@ public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanon
                                                                                                                                        this.getClass())));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext = DMNFactory.newContext();

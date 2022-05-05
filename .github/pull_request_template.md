@@ -33,15 +33,51 @@ Build Chain tool does "simple" maven build(s), the builds are just Maven command
 How to retest this PR or trigger a specific build:
 </summary>
 
-* <b>a pull request</b> please add comment: <b>Jenkins retest this</b>
+- for <b>pull request checks</b>  
+  Please add comment: <b>Jenkins retest this</b>
 
-* for a <b>full downstream build</b> 
-  * for <b>jenkins</b> job: please add comment: <b>Jenkins run fdb</b>
-  * for <b>github actions</b> job: add the label `run_fdb`
+- for a <b>specific pull request check</b>  
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
 
-* <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
+- for a <b>full downstream build</b> 
+  - for <b>jenkins</b> job: please add comment: <b>Jenkins run fdb</b>
+  - for <b>github actions</b> job: add the label `run_fdb`
 
-* <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
+- <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
 
-* <b>an upstream build</b> please add comment: <b>Jenkins run upstream</b>
+- <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
+
+- <b>an upstream build</b> please add comment: <b>Jenkins run upstream</b>
+
+- for <b>quarkus branch checks</b>  
+  Run checks against Quarkus current used branch  
+  Please add comment: <b>Jenkins run quarkus-branch</b>
+
+- for a <b>quarkus branch specific check</b>  
+  Run checks against Quarkus current used branch  
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] quarkus-branch</b>
+
+- for <b>quarkus main checks</b>  
+  Run checks against Quarkus main branch  
+  Please add comment: <b>Jenkins run quarkus-main</b>
+
+- for a <b>specific quarkus main check</b>  
+  Run checks against Quarkus main branch  
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] quarkus-branch</b>
+
+- for <b>native checks</b>  
+  Run native checks  
+  Please add comment: <b>Jenkins run native</b>
+
+- for a <b>specific native check</b>  
+  Run native checks 
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] native</b>
+
+- for <b>mandrel checks</b>  
+  Run native checks against Mandrel image
+  Please add comment: <b>Jenkins run mandrel</b>
+
+- for a <b>specific mandrel check</b>  
+  Run native checks against Mandrel image  
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] mandrel</b>
 </details>

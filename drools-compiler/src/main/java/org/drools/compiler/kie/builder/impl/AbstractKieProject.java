@@ -327,7 +327,7 @@ public abstract class AbstractKieProject implements KieProject {
         }
     }
 
-    protected KnowledgeBuilderConfigurationImpl getBuilderConfiguration( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
+    protected KnowledgeBuilderConfigurationImpl getBuilderConfiguration( KieBaseModel kBaseModel, InternalKieModule kModule ) {
         return (KnowledgeBuilderConfigurationImpl) kModule.createBuilderConfiguration(kBaseModel, getClassLoader());
     }
 

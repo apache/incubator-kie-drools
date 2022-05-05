@@ -82,4 +82,14 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
     public RuleUnitConfig getConfig() {
         return config;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RuleUnitDescription && getRuleUnitName().equals(((RuleUnitDescription) obj).getRuleUnitName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getRuleUnitName().hashCode();
+    }
 }

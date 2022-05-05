@@ -19,7 +19,6 @@ import org.dmg.pmml.FieldRef;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
-import static org.junit.Assert.*;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomFieldRef;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLFieldRef;
 

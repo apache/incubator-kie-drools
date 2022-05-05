@@ -34,8 +34,8 @@ import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -70,7 +70,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
             KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, true);
             assertEquals(1, rules.size());
             final KiePMMLDroolsRule retrieved = rules.get(0);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             assertEquals(currentRule, retrieved.getName());
             assertEquals(DONE, retrieved.getStatusToSet());
             assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
@@ -78,13 +78,13 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
             assertEquals(ResultCode.OK, retrieved.getResultCode());
             switch (compoundPredicate.getBooleanOperator()) {
                 case AND:
-                    assertNotNull(retrieved.getAndConstraints());
+                    assertThat(retrieved.getAndConstraints()).isNotNull();
                     break;
                 case OR:
-                    assertNotNull(retrieved.getOrConstraints());
+                    assertThat(retrieved.getOrConstraints()).isNotNull();
                     break;
                 case XOR:
-                    assertNotNull(retrieved.getXorConstraints());
+                    assertThat(retrieved.getXorConstraints()).isNotNull();
                     break;
                 default:
                     // no op
@@ -116,19 +116,19 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
             KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, false);
             assertEquals(1, rules.size());
             final KiePMMLDroolsRule retrieved = rules.get(0);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             assertEquals(currentRule, retrieved.getName());
             assertEquals(currentRule, retrieved.getStatusToSet());
             assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
             switch (compoundPredicate.getBooleanOperator()) {
                 case AND:
-                    assertNotNull(retrieved.getAndConstraints());
+                    assertThat(retrieved.getAndConstraints()).isNotNull();
                     break;
                 case OR:
-                    assertNotNull(retrieved.getOrConstraints());
+                    assertThat(retrieved.getOrConstraints()).isNotNull();
                     break;
                 case XOR:
-                    assertNotNull(retrieved.getXorConstraints());
+                    assertThat(retrieved.getXorConstraints()).isNotNull();
                     break;
                 default:
                     // no op
@@ -175,7 +175,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                             .filter(pred -> fieldName.get().equals(pred.getField().getValue()))
                             .findFirst()
                             .orElse(null);
-                    assertNotNull(mappedPredicate);
+                    assertThat(mappedPredicate).isNotNull();
                     assertNull(retrieved.getStatusConstraint());
                     assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
                     assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
@@ -191,7 +191,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                     }
                 }
             } else {
-                assertNotNull(retrieved.getStatusConstraint());
+                assertThat(retrieved.getStatusConstraint()).isNotNull();
                 assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
                 assertEquals(agendaActivationGroup, retrieved.getFocusedAgendaGroup());
                 assertNull(retrieved.getStatusToSet());
@@ -238,7 +238,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                 if (fieldName.isPresent()) {
                     SimplePredicate mappedPredicate = predicates.stream()
                             .filter(pred -> fieldName.get().equals(pred.getField().getValue())).findFirst().orElse(null);
-                    assertNotNull(mappedPredicate);
+                    assertThat(mappedPredicate).isNotNull();
                     assertNull(retrieved.getStatusConstraint());
                     assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
                     assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
@@ -254,7 +254,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                     }
                 }
             } else {
-                assertNotNull(retrieved.getStatusConstraint());
+                assertThat(retrieved.getStatusConstraint()).isNotNull();
                 assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
                 assertEquals(agendaActivationGroup, retrieved.getFocusedAgendaGroup());
                 assertNull(retrieved.getStatusToSet());

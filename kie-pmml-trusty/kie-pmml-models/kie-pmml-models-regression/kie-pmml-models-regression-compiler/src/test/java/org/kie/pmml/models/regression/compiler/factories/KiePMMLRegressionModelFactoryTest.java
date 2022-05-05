@@ -31,7 +31,6 @@ import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -69,12 +68,11 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getCategoricalPredictor;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataDictionary;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataField;
@@ -84,7 +82,6 @@ import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getNumericP
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPredictorTerm;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRegressionModel;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRegressionTable;
-import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA;
@@ -165,13 +162,13 @@ public class KiePMMLRegressionModelFactoryTest {
                                                                        new HasClassLoaderMock());
         KiePMMLRegressionModel retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(regressionModel.getModelName(), retrieved.getName());
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()),
                      retrieved.getMiningFunction());
         assertEquals(miningFields.get(0).getName().getValue(), retrieved.getTargetField());
         final AbstractKiePMMLTable regressionTable = retrieved.getRegressionTable();
-        assertNotNull(regressionTable);
+        assertThat(regressionTable).isNotNull();
         assertTrue(regressionTable instanceof KiePMMLClassificationTable);
         evaluateCategoricalRegressionTable((KiePMMLClassificationTable) regressionTable);
     }
@@ -185,7 +182,7 @@ public class KiePMMLRegressionModelFactoryTest {
                                                                        new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         int expectedSize = regressionTables.size()
                 + 2; // One for classification and one for the whole model
         assertEquals(expectedSize, retrieved.size());

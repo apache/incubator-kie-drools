@@ -18,15 +18,15 @@ package org.drools.ruleunits.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.api.SingletonStore;
+import org.junit.jupiter.api.Test;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -49,7 +49,7 @@ public class SingletonDataStoreTest {
         integers.set(1);
         integers.set(2);
         integers.set(3);
-        assertNotNull(probe.handle);
+        assertThat(probe.handle).isNotNull();
         assertEquals(3, probe.value);
         assertEquals(asList(1, 2, 3), probe.seen);
     }

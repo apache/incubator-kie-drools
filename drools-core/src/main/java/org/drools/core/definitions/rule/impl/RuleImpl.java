@@ -865,10 +865,6 @@ public class RuleImpl implements Externalizable,
         this.ruleUnitClassName = ruleUnitClassName;
     }
 
-    public boolean hasRuleUnit() {
-        return ruleUnitClassName != null;
-    }
-
     public Declaration[] findEnabledDeclarations(Map<String, Declaration> decls) {
         return this.enabled.findDeclarations(decls);
     }

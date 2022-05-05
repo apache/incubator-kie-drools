@@ -36,7 +36,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SessionInspectorTest {
@@ -119,7 +119,7 @@ public class SessionInspectorTest {
         
         String report = SessionReporter.generateReport( "simple", info, null );
         
-        assertNotNull( report );
+        assertThat(report).isNotNull();
     }
     
     @Test
@@ -194,7 +194,7 @@ public class SessionInspectorTest {
         SessionReporter.addNamedTemplate( "topten", getClass().getResourceAsStream( "customreports.mvel" ) );
         String report = SessionReporter.generateReport( "topten", info, null );
         
-        assertNotNull( report );
+        assertThat(report).isNotNull();
         
     }
 

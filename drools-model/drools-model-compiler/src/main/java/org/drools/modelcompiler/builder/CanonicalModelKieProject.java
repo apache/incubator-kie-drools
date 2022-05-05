@@ -82,12 +82,14 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         ModelWriter modelWriter = new ModelWriter();
         Collection<String> modelFiles = new HashSet<>();
         Collection<String> sourceFiles = new HashSet<>();
+        Collection<String> ruleUnitClassNames = new HashSet<>();
 
         Map<String, List<String>> modelsByKBase = new HashMap<>();
         for (Map.Entry<String, ModelBuilderImpl> modelBuilder : modelBuilders.entrySet()) {
             ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilder.getValue().getPackageSources() );
             modelFiles.addAll( result.getModelFiles() );
             sourceFiles.addAll( result.getSourceFiles() );
+            ruleUnitClassNames.addAll( result.getRuleUnitClassNames() );
 
             List<String> modelFilesForKieBase = new ArrayList<>();
             modelFilesForKieBase.addAll( result.getModelFiles() );
@@ -133,6 +135,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         }
 
         modelWriter.writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
+        modelWriter.writeRuleUnitServiceFile(ruleUnitClassNames, trgMfs);
     }
 
     @Override

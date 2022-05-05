@@ -22,7 +22,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.junit.Assert;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -62,7 +61,7 @@ public final class DMNRuntimeUtil {
         final KieContainer kieContainer = KieHelper.getKieContainer(
         ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"));
         final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         return runtime;
     }
 
@@ -73,7 +72,7 @@ public final class DMNRuntimeUtil {
                 ks.getResources().newClassPathResource(resourceName, testClass));
 
         final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         return runtime;
     }
     
@@ -106,7 +105,7 @@ public final class DMNRuntimeUtil {
                 totalResources.toArray(new Resource[] {}));
 
         final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         return runtime;
     }
 

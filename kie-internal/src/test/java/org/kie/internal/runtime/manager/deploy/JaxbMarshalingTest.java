@@ -28,7 +28,7 @@ import org.kie.internal.runtime.conf.ObjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JaxbMarshalingTest {
 
@@ -44,7 +44,7 @@ public class JaxbMarshalingTest {
 
         String output = convertJaxbObjectToString(descriptor);
         logger.debug(output);
-        assertNotNull(output);
+        assertThat(output).isNotNull();
     }
 
     public String convertJaxbObjectToString(Object object) throws JAXBException {

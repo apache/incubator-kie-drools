@@ -32,8 +32,8 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -94,7 +94,7 @@ public class KnowledgePackageMetaDataTest {
         KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KiePackage pack = kBase.getKiePackage( "org.drools.mvel.compiler.test.definitions" );
 
-        assertNotNull( pack );
+        assertThat(pack).isNotNull();
 
         if (!kieBaseTestConfiguration.isExecutableModel()) {
             // With executable model functions becomes plain static methods and then now longer distinguishable from any other static method

@@ -27,8 +27,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class CustomWorkItemHandlerTest {
@@ -41,13 +41,13 @@ public class CustomWorkItemHandlerTest {
         KieSessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration(props);
         
         KieSession ksession = kbase.newKieSession(config, EnvironmentFactory.newEnvironment());
-        assertNotNull(ksession);
+        assertThat(ksession).isNotNull();
         // this test would fail on creation of the work item manager if injecting session is not supported
         WorkItemManager manager = ksession.getWorkItemManager();
-        assertNotNull(manager);
+        assertThat(manager).isNotNull();
         
         Map<String, WorkItemHandler> handlers = ((SessionConfiguration)config).getWorkItemHandlers();
-        assertNotNull(handlers);
+        assertThat(handlers).isNotNull();
         assertEquals(1, handlers.size());
         assertTrue(handlers.containsKey("Custom"));
     }

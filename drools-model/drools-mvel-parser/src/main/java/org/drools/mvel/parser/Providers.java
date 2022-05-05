@@ -51,8 +51,8 @@ public final class Providers {
     }
 
     public static Provider provider(InputStream input, Charset encoding) {
-        assertNotNull(input);
-        assertNotNull(encoding);
+    	assertNotNull(input);
+    	assertNotNull(encoding);
         try {
             return new StreamProvider(input, encoding.name());
         } catch (IOException e) {

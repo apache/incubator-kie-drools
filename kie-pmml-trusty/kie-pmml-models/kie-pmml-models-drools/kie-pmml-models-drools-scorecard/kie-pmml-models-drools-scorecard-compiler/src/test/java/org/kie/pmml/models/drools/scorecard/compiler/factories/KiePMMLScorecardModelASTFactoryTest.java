@@ -29,9 +29,9 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeMap;
@@ -45,7 +45,7 @@ public class KiePMMLScorecardModelASTFactoryTest {
     @Before
     public void setUp() throws Exception {
         samplePmml = TestUtils.loadFromFile(SOURCE_SAMPLE);
-        assertNotNull(samplePmml);
+        assertThat(samplePmml).isNotNull();
         assertEquals(1, samplePmml.getModels().size());
         assertTrue(samplePmml.getModels().get(0) instanceof Scorecard);
         scorecardModel = ((Scorecard) samplePmml.getModels().get(0));
@@ -56,7 +56,7 @@ public class KiePMMLScorecardModelASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(samplePmml.getDataDictionary(), samplePmml.getTransformationDictionary(),  scorecardModel.getLocalTransformations());
         List<KiePMMLDroolsType> types = Collections.emptyList();
         KiePMMLDroolsAST retrieved = KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(samplePmml.getDataDictionary()), scorecardModel, fieldTypeMap, types);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(types, retrieved.getTypes());
         assertFalse(retrieved.getRules().isEmpty());
     }

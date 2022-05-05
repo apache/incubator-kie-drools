@@ -54,12 +54,6 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
     }
 
     @Override
-    @Deprecated
-    public Class<?> getRuleUnitClass() {
-        return null;
-    }
-
-    @Override
     public String getCanonicalName() {
         return canonicalName;
     }

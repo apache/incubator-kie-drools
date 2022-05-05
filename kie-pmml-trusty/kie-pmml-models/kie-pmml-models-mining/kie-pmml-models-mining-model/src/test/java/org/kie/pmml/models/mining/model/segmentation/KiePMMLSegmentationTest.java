@@ -23,8 +23,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLSegments;
 
@@ -39,9 +39,9 @@ public class KiePMMLSegmentationTest {
     public static void setup() {
         BUILDER = KiePMMLSegmentation.builder(SEGMENTATION_NAME, Collections.emptyList(),
                                               MULTIPLE_MODELMETHOD);
-        assertNotNull(BUILDER);
+        assertThat(BUILDER).isNotNull();
         KIE_PMML_SEGMENTATION = BUILDER.build();
-        assertNotNull(KIE_PMML_SEGMENTATION);
+        assertThat(KIE_PMML_SEGMENTATION).isNotNull();
     }
 
     @Test

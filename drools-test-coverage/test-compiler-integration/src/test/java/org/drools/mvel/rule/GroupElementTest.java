@@ -14,15 +14,21 @@
 
 package org.drools.mvel.rule;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.Person;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class GroupElementTest {
 
@@ -72,8 +78,8 @@ public class GroupElementTest {
         Declaration x1 = ( Declaration ) and1.getInnerDeclarations().get( "x" );
         Declaration y1 = ( Declaration ) and1.getInnerDeclarations().get( "y" );
         Declaration z1 = ( Declaration ) and1.getInnerDeclarations().get( "z" );
-        assertNotNull( x1 );
-        assertNotNull( y1 );
+        assertThat(x1).isNotNull();
+        assertThat(y1).isNotNull();
         assertNull( z1);
 
         assertEquals( 2,
@@ -104,8 +110,8 @@ public class GroupElementTest {
         Declaration x2 = ( Declaration ) and2.getInnerDeclarations().get( "x" );
         Declaration y2 = ( Declaration ) and2.getInnerDeclarations().get( "y" );
         Declaration z2 = ( Declaration ) and2.getInnerDeclarations().get( "z" );
-        assertNotNull( x2 );        
-        assertNotNull( y2 );
+        assertThat(x2).isNotNull();        
+        assertThat(y2).isNotNull();
         assertNull( z2);    
         
         assertNotSame( x1, x2);
