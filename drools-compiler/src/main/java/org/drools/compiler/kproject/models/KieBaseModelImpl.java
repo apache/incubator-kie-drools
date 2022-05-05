@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -81,9 +82,13 @@ public class KieBaseModelImpl
     public KieBaseModelImpl(KieModuleModel kModule,
                             String name) {
         this.kModule = kModule;
-        this.includes = new HashSet<String>();
+        this.includes = new HashSet<>();
         this.name = name;
         this.kSessions = Collections.emptyMap();
+    }
+
+    public static KieBaseModel defaultKieBaseModel() {
+        return KieServices.get().newKieModuleModel().newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );
     }
 
     public boolean isDefault() {

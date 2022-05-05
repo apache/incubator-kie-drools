@@ -16,22 +16,24 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
-import org.drools.drl.ast.descr.QueryDescr;
-import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.util.TypeResolver;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.util.ClassUtils;
+import org.drools.drl.ast.descr.QueryDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.util.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
@@ -175,17 +177,36 @@ public class RuleBuildContext extends PackageBuildContext {
         if (RuleUnitComponentFactory.get() != null && ruleUnitClassName != null) {
             TypeResolver typeResolver = getPkg().getTypeResolver();
             boolean unitFound = false;
-            Class<?> ruleUnitClass = ClassUtils.safeLoadClass(typeResolver.getClassLoader(), ruleUnitClassName);
+            Class<?> ruleUnitClass = null;
+            try {
+                ruleUnitClass = typeResolver.resolveType(ruleUnitClassName);
+            } catch (ClassNotFoundException e) {
+                if (!nameInferredFromResource) {
+                    addError(new RuleBuildError(rule, getParentDescr(), null,
+                            "Cannot find rule unit class " + ruleUnitClassName));
+                    return;
+                }
+            }
             if (ruleUnitClass != null) {
                 unitFound = RuleUnitComponentFactory.get().isRuleUnitClass( ruleUnitClass );
                 if (unitFound && nameInferredFromResource) {
                     rule.setRuleUnitClassName(ruleUnitClassName);
                 }
+
+                try {
+                    for (PropertyDescriptor prop : Introspector.getBeanInfo(ruleUnitClass).getPropertyDescriptors()) {
+                        if (!"class".equals(prop.getName())) {
+                            getPkg().addGlobal(prop.getName(), prop.getPropertyType());
+                        }
+                    }
+                } catch (IntrospectionException e) {
+                    throw new RuntimeException();
+                }
             }
 
             if (!unitFound && !nameInferredFromResource) {
                 addError(new RuleBuildError(rule, getParentDescr(), null,
-                                            ruleUnitClassName + " is not a valid RuleUnit class name"));
+                                            ruleUnitClassName + " must implement RuleUnitData"));
             }
         }
     }
@@ -195,7 +216,7 @@ public class RuleBuildContext extends PackageBuildContext {
     }
 
     public Optional<EntryPointId> getEntryPointId( RuleUnitDescription ruDescr, String name ) {
-        return ruDescr.hasVar( name ) ? Optional.of( new EntryPointId( ruDescr.getEntryPointName(name) ) ) : Optional.empty();
+        return ruDescr.hasVar( name ) ? Optional.of( new EntryPointId( name ) ) : Optional.empty();
     }
 
     private String extractClassNameFromSourcePath() {

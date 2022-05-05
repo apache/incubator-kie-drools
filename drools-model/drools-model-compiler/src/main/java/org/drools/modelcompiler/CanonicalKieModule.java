@@ -112,6 +112,8 @@ public class CanonicalKieModule implements InternalKieModule {
     public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
     public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
     public static final String MODEL_FILE_NAME = "drools-model";
+    public static final String SERVICES_DIRECTORY = "META-INF/services/";
+    public static final String RULE_UNIT_SERVICES_FILE = SERVICES_DIRECTORY + "org.drools.ruleunits.api.RuleUnit";
     public static final String ANC_FILE_NAME = "alpha-network-compiler";
     public static final String GENERATED_CLASS_NAMES = "generated-class-names";
     public static final String MODEL_VERSION = "Drools-Model-Version:";

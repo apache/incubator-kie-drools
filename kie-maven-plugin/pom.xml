@@ -166,6 +166,14 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-alphanetwork-compiler</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-impl</artifactId>
+    </dependency>
     <!-- Include all dependencies needed to support all resource types out-of-the-box -->
     <dependency>
       <groupId>org.drools</groupId>

@@ -27,6 +27,7 @@ public class PackageModelWriter {
     private final PackageModel packageModel;
     private final List<DeclaredTypeWriter> declaredTypes;
     private final List<AccumulateClassWriter> accumulateClasses;
+    private final List<RuleUnitWriter> ruleUnitWriters;
     private final RuleWriter ruleWriter;
     private final DomainClassesMetadata domainClassesMetadata;
 
@@ -34,7 +35,9 @@ public class PackageModelWriter {
         this.packageModel = packageModel;
         this.declaredTypes = toDeclaredTypeWriters(packageModel);
         this.accumulateClasses = toAccumulateClassWriters(packageModel);
-        this.ruleWriter = new RuleWriter(packageModel.getRulesFileName(), packageModel.getRulesSource(), packageModel);
+        PackageModel.RuleSourceResult ruleSourceResult = packageModel.getRulesSource();
+        this.ruleWriter = new RuleWriter(packageModel.getRulesFileName(), ruleSourceResult, packageModel);
+        this.ruleUnitWriters = toRuleUnitWriters(packageModel, ruleSourceResult);
         this.domainClassesMetadata = new DomainClassesMetadata(packageModel);
     }
 
@@ -44,6 +47,10 @@ public class PackageModelWriter {
 
     public List<AccumulateClassWriter> getAccumulateClasses() {
         return accumulateClasses;
+    }
+
+    public List<RuleUnitWriter> getRuleUnitWriters() {
+        return ruleUnitWriters;
     }
 
     public RuleWriter getRules() {
@@ -56,6 +63,10 @@ public class PackageModelWriter {
 
     private List<AccumulateClassWriter> toAccumulateClassWriters(PackageModel packageModel) {
         return packageModel.getGeneratedAccumulateClasses().stream().map(pojo -> new AccumulateClassWriter(pojo, packageModel)).collect(Collectors.toList());
+    }
+
+    private List<RuleUnitWriter> toRuleUnitWriters(PackageModel packageModel, PackageModel.RuleSourceResult ruleSourceResult) {
+        return packageModel.getRuleUnits().stream().map(ruleUnitDescr -> new RuleUnitWriter(packageModel, ruleSourceResult, ruleUnitDescr)).collect(Collectors.toList());
     }
 
     private static List<DeclaredTypeWriter> toDeclaredTypeWriters(PackageModel packageModel) {

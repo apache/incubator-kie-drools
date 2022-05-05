@@ -25,6 +25,10 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements RuleUn
     private final String id;
     protected final RuleUnits ruleUnits;
 
+    public AbstractRuleUnit(String id) {
+        this(id, AbstractRuleUnits.DummyRuleUnits.INSTANCE);
+    }
+
     public AbstractRuleUnit(String id, RuleUnits ruleUnits) {
         this.id = id;
         this.ruleUnits = ruleUnits;
