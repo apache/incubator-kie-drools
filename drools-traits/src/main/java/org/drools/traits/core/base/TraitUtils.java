@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel.traits;
+package org.drools.traits.core.base;
 
 import java.util.BitSet;
 

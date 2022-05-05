@@ -19,7 +19,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
-import org.drools.core.factmodel.ClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;

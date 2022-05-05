@@ -16,7 +16,7 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.factmodel.ClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.mvel.asm.DefaultClassBuilderFactory;
 
@@ -69,5 +69,10 @@ public class TraitClassBuilderFactory extends DefaultClassBuilderFactory {
             case ENUM: return getEnumClassBuilder();
             case CLASS: default: return getBeanClassBuilder();
         }
+    }
+
+    @Override
+    public int servicePriority() {
+        return 1;
     }
 }

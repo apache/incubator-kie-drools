@@ -31,7 +31,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.traits.core.factmodel.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -44,7 +44,7 @@ import org.drools.traits.core.factmodel.CodedHierarchy;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.kie.api.runtime.ObjectFilter;
 
-import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
+import static org.drools.traits.core.base.TraitUtils.supersetOrEqualset;
 
 /**
  * <p>The implementation of the 'str' evaluator definition.</p>

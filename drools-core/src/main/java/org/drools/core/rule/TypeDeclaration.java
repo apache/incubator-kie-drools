@@ -116,7 +116,7 @@ public class TypeDeclaration
     private boolean                novel;
     private boolean                valid;
     private boolean                propertyReactive;
-    private boolean javaBased;
+    private boolean                javaBased;
     private transient List<String> accessibleProperties;
 
     private transient ObjectType   objectType;

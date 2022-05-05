@@ -35,7 +35,7 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 
-import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
+import static org.drools.traits.core.base.TraitUtils.supersetOrEqualset;
 
 public class TraitObjectTypeNode extends ObjectTypeNode {
 

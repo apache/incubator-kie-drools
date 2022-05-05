@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.factmodel.BuildUtils;
+import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.mvel.asm.AsmUtil;

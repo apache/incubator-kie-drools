@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel;
+package org.drools.compiler.builder.impl.classbuilder;
 
 
 import java.io.Externalizable;

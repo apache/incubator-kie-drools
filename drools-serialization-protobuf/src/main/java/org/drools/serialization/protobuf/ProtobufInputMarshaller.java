@@ -43,7 +43,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
@@ -52,11 +51,7 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.serialization.protobuf.marshalling.ActivationKey;
-import org.drools.serialization.protobuf.marshalling.KieSessionInitializer;
 import org.drools.core.marshalling.MarshallerReaderContext;
-import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
-import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
 import org.drools.core.marshalling.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -65,7 +60,6 @@ import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
@@ -77,12 +71,17 @@ import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.factory.PhreakWorkingMemoryFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.serialization.protobuf.ProtobufMessages.FactHandle;
 import org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.serialization.protobuf.ProtobufMessages.RuleData;
 import org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer;
+import org.drools.serialization.protobuf.marshalling.ActivationKey;
+import org.drools.serialization.protobuf.marshalling.KieSessionInitializer;
+import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
+import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.TruthMaintenanceSystemImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -538,23 +537,13 @@ public class ProtobufInputMarshaller {
         }
 
 
-        EntryPointId confEP;
-        if ( entryPoint != null ) {
-            confEP = ((NamedEntryPoint) entryPoint).getEntryPoint();
-        } else {
-            confEP = context.getWorkingMemory().getEntryPoint();
-        }
-        ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( confEP, object );
-
-
-        InternalFactHandle handle = null;
+        InternalFactHandle handle;
         switch ( _handle.getType() ) {
             case FACT : {
                 handle = new DefaultFactHandle( _handle.getId(),
                                                 object,
                                                 _handle.getRecency(),
-                                                (WorkingMemoryEntryPoint) entryPoint,
-                                                typeConf != null && typeConf.isTrait() );
+                                                (WorkingMemoryEntryPoint) entryPoint );
                 break;
             }
             case QUERY : {
@@ -569,8 +558,7 @@ public class ProtobufInputMarshaller {
                                               _handle.getRecency(),
                                               _handle.getTimestamp(),
                                               _handle.getDuration(),
-                                              (WorkingMemoryEntryPoint) entryPoint,
-                                              typeConf != null && typeConf.isTrait() );
+                                              (WorkingMemoryEntryPoint) entryPoint );
                 ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
                 ((EventFactHandle) handle).setOtnCount( _handle.getOtnCount() );
                 // the event is re-propagated through the network, so the activations counter will be recalculated

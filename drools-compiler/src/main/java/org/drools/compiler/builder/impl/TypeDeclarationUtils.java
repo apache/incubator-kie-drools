@@ -27,7 +27,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.util.TypeResolver;
 import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.core.factmodel.BuildUtils;
+import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.util.StringUtils;

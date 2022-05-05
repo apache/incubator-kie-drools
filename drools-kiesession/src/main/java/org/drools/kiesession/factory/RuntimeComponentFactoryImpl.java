@@ -27,7 +27,6 @@ import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
@@ -80,10 +79,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
 
     public TraitFactory getTraitFactory(RuleBase knowledgeBase) {
         return null;
-    }
-
-    public ClassBuilderFactory getClassBuilderFactory() {
-        return ClassBuilderFactory.get();
     }
 
     public final KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator) {

@@ -18,7 +18,7 @@ package org.drools.traits.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.traits.core.factmodel.TraitProxy;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;

@@ -16,11 +16,6 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.kie.api.runtime.rule.Variable;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -31,7 +26,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
+import org.drools.core.factmodel.traits.TraitType;
+import org.drools.core.factmodel.traits.TraitableBean;
+import org.kie.api.runtime.rule.Variable;
+
+import static org.drools.traits.core.base.TraitUtils.supersetOrEqualset;
 
 public abstract class TraitProxyImpl implements Externalizable,
                                                 TraitType, Comparable<TraitProxyImpl>,

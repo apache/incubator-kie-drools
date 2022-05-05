@@ -16,10 +16,10 @@ package org.drools.mvel.asm;
 
 import java.io.Serializable;
 
-import org.drools.core.factmodel.BeanClassBuilder;
-import org.drools.core.factmodel.ClassBuilder;
-import org.drools.core.factmodel.ClassBuilderFactory;
-import org.drools.core.factmodel.EnumClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.BeanClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilderFactory;
+import org.drools.compiler.builder.impl.classbuilder.EnumClassBuilder;
 import org.drools.core.rule.TypeDeclaration;
 
 public class DefaultClassBuilderFactory implements Serializable, ClassBuilderFactory {
