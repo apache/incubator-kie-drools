@@ -43,6 +43,7 @@ import com.github.javaparser.ast.expr.PatternExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TextBlockLiteralExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.YieldStmt;
@@ -364,6 +365,19 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(BigIntegerLiteralExpr n, Context arg) {
         return new BigIntegerConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
+    }
+
+    @Override
+    public TypedExpression visit(UnaryExpr n, Context arg) {
+        Expression innerExpr = n.getExpression();
+        UnaryExpr.Operator operator = n.getOperator();
+        if (innerExpr instanceof BigDecimalLiteralExpr && operator == UnaryExpr.Operator.MINUS) {
+            return new BigDecimalConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(operator.asString() + ((BigDecimalLiteralExpr) innerExpr).getValue())));
+        } else if (innerExpr instanceof BigIntegerLiteralExpr && operator == UnaryExpr.Operator.MINUS) {
+            return new BigIntegerConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(operator.asString() + ((BigIntegerLiteralExpr) innerExpr).getValue())));
+        } else {
+            return defaultMethod(n, arg);
+        }
     }
 
     private Class<?> resolveType(com.github.javaparser.ast.type.Type type) {
