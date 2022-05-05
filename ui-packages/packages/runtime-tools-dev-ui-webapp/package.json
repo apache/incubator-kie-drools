@@ -10,10 +10,10 @@
   },
   "scripts": {
     "precommit": "lint-staged",
-    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
+    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js && locktt",
     "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
     "build:prod": "yarn run clean && yarn run lint && yarn run build",
-    "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
+    "start": "webpack-dev-server --color --config webpack.dev.js",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",

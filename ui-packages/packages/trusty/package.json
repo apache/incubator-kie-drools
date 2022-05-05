@@ -29,7 +29,7 @@
     "start": "webpack-dev-server --hot --color --progress --info=true --config ./dev-webapp/webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "build:prod": "yarn lint && rimraf dist && rimraf dist-standalone && yarn build && yarn build:standalone",
-    "build:standalone": "webpack --config ./dev-webapp/webpack.prod.js",
+    "build:standalone": "webpack --config ./dev-webapp/webpack.prod.js && locktt",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "test:coverage": "rimraf coverage && yarn test --coverage",
     "test:watch": "jest --watch",

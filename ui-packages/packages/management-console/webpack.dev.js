@@ -9,15 +9,22 @@ module.exports = merge(common, {
   mode: 'development',
   devtool: 'source-map',
   devServer: {
-    contentBase: './dist',
+    static: {
+      directory:'./dist'
+    },
     host: HOST,
     port: PORT,
     compress: true,
-    inline: true,
     historyApiFallback: true,
     hot: true,
-    overlay: true,
     open: true,
+    client: {
+      overlay: {
+        warnings: false,
+        errors: true
+      },
+      progress:true
+    },
     proxy: {
       '/svg': {
           target: 'http://localhost:4000',

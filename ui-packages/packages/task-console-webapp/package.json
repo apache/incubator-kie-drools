@@ -10,8 +10,8 @@
   },
   "scripts": {
     "precommit": "lint-staged",
-    "build:prod": "yarn run lint && webpack --config webpack.prod.js",
-    "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
+    "build:prod": "yarn run lint && webpack --config webpack.prod.js && locktt",
+    "start": "webpack-dev-server --color --config webpack.dev.js",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",

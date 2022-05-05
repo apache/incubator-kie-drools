@@ -13,21 +13,28 @@ module.exports = merge(common, {
     publicPath: "/"
   },
   devServer: {
-    contentBase: './dist',
+    static: {
+      directory: './dist'
+    },
     host: HOST,
     port: PORT,
     compress: true,
-    inline: true,
     historyApiFallback: true,
     hot: true,
-    overlay: true,
     open: true,
+    client: {
+      overlay: {
+        warnings: false,
+        errors: true
+      },
+      progress: true
+    },
     proxy: [
       {
-        context:['/svg','/forms'],
+        context: ['/svg', '/forms'],
         target: 'http://localhost:4000',
-          secure: false,
-          changeOrigin: true
+        secure: false,
+        changeOrigin: true
       }
     ]
   },
@@ -76,7 +83,7 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-list/dist/envelope/components/styles.css'
-            ),
+          ),
           path.resolve(
             '../../node_modules/@kogito-apps/task-console-shared/dist/envelope/styles.css'
           ),
@@ -119,7 +126,7 @@ module.exports = merge(common, {
         ],
         use: ['style-loader', 'css-loader']
       }
-      
+
     ]
   },
   resolve: {
