@@ -83,7 +83,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             MethodCallExpr exprDSL = new MethodCallExpr(null, multi.getOperator() == BinaryExpr.Operator.OR ? EXPR_OR_CALL : EXPR_AND_CALL );
             for (DrlxParseSuccess child : multi.getResults()) {
                 MethodCallExpr childExpr = buildExpressionWithIndexing(child);
-                childExpr.setScope( exprDSL );
+                setScopeToAscendantExpr(childExpr, exprDSL);
                 exprDSL = childExpr;
 
                 if (child instanceof SingleDrlxParseSuccess && child.getExprBinding() != null) {
@@ -96,6 +96,20 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             return new MethodCallExpr(exprDSL, multi.getOperator() == BinaryExpr.Operator.OR ? EXPR_END_OR_CALL : EXPR_END_AND_CALL );
         }
         return buildSingleExpressionWithIndexing((SingleDrlxParseSuccess ) drlxParseResult);
+    }
+
+    private void setScopeToAscendantExpr(MethodCallExpr targetExpr, MethodCallExpr newScope) {
+        Optional<Expression> optCurrentScope = targetExpr.getScope();
+        if (!optCurrentScope.isPresent()) {
+            targetExpr.setScope(newScope);
+        } else {
+            Expression currentScope = optCurrentScope.get();
+            if (currentScope.isMethodCallExpr()) {
+                setScopeToAscendantExpr(currentScope.asMethodCallExpr(), newScope);
+            } else {
+                throw new IllegalStateException("Root MethodCallExpr scope has to be null : " + targetExpr);
+            }
+        }
     }
 
     private MethodCallExpr buildSingleExpressionWithIndexing(SingleDrlxParseSuccess drlxParseResult) {
