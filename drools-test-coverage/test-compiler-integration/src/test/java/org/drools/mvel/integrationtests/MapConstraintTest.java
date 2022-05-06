@@ -60,8 +60,7 @@ public class MapConstraintTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class MapConstraintTest {
         final Map map = new HashMap();
         map.put("name", "Edson");
         map.put("surname", "Tirelli");
-        map.put("age", "28");
+        map.put("age", 28);
 
         ksession.insert(map);
 

@@ -182,6 +182,10 @@ public class DrlxParseUtil {
         } catch (NoSuchFieldException e) {
             // There's no field with the given name, return null and manage the problem on the caller
         }
+        if (Map.class.isAssignableFrom(clazz)) {
+            MethodCallExpr body = new MethodCallExpr( scope, "get", new NodeList<>(new StringLiteralExpr(name)) );
+            return new TypedExpression( body, Object.class );
+        }
         return null;
     }
 
@@ -572,7 +576,6 @@ public class DrlxParseUtil {
 
     public static Type classToReferenceType(DeclarationSpec declaration) {
         Class<?> declarationClass = declaration.getDeclarationClass();
-        String className = declarationClass.getCanonicalName();
         ReferenceType parsedType = classNameToReferenceTypeWithBoxing(declarationClass);
         declaration.setBoxed(parsedType.wasBoxed);
         return parsedType.parsedType;
