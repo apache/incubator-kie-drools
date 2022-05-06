@@ -97,14 +97,14 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
 void setupNativeJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Drools Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: 'Native check'
+    ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-        }
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('NOTIFICATION_JOB_NAME', 'Native check')
         }
     }
 }
@@ -112,22 +112,41 @@ void setupNativeJob() {
 void setupMandrelJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Drools Mandrel Testing')
     jobParams.triggers = [ cron : 'H 8 * * *' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: 'Mandrel check'
+    ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-
-            stringParam('NATIVE_BUILDER_IMAGE', Utils.getMandrelEnvironmentBuilderImage(this), 'Which native builder image to use ?')
-        }
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('NOTIFICATION_JOB_NAME', 'Mandrel check')
         }
     }
 }
 
 void setupDeployJob(Folder jobFolder) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Drools Deploy')
+    jobParams.env.putAll([
+        REPO_NAME: 'drools',
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    if (jobFolder.isRelease()) {
+        jobParams.env.putAll([
+            NEXUS_RELEASE_URL: "${MAVEN_NEXUS_RELEASE_URL}",
+            NEXUS_RELEASE_REPOSITORY_ID: "${MAVEN_NEXUS_RELEASE_REPOSITORY}",
+            NEXUS_STAGING_PROFILE_ID: "${MAVEN_NEXUS_STAGING_PROFILE_ID}",
+            NEXUS_BUILD_PROMOTION_PROFILE_ID: "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}",
+        ])
+    }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
@@ -141,32 +160,25 @@ void setupDeployJob(Folder jobFolder) {
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
-
-        environmentVariables {
-            env('REPO_NAME', 'drools')
-            env('PROPERTIES_FILE_NAME', 'deployment.properties')
-
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
-
-            env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-            env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-            env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-
-            env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-            env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-            if (jobFolder.isRelease()) {
-                env('NEXUS_RELEASE_URL', "${MAVEN_NEXUS_RELEASE_URL}")
-                env('NEXUS_RELEASE_REPOSITORY_ID', "${MAVEN_NEXUS_RELEASE_REPOSITORY}")
-                env('NEXUS_STAGING_PROFILE_ID', "${MAVEN_NEXUS_STAGING_PROFILE_ID}")
-                env('NEXUS_BUILD_PROMOTION_PROFILE_ID', "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}")
-            }
-        }
     }
 }
 
 void setupPromoteJob(Folder jobFolder) {
-    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'drools-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Drools Promote'))?.with {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Drools Promote')
+    jobParams.env.putAll([
+        REPO_NAME: 'drools',
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -181,21 +193,6 @@ void setupPromoteJob(Folder jobFolder) {
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
-        }
-
-        environmentVariables {
-            env('REPO_NAME', 'drools')
-            env('PROPERTIES_FILE_NAME', 'deployment.properties')
-
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-
-            env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-            env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-            env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-
-            env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
-            env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-            env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
         }
     }
 }
