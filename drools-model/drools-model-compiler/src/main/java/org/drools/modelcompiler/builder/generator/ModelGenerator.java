@@ -139,7 +139,7 @@ public class ModelGenerator {
         packageModel.addRuleUnits( processRules(kbuilder, packageDescr, packageModel, typeResolver, ruleDescrs) );
     }
 
-    private static Set<RuleUnitDescription> processRules(KnowledgeBuilderImpl kbuilder, PackageDescr packageDescr, PackageModel packageModel, TypeResolver typeResolver, List<RuleDescr> ruleDescrs) {
+    private static Set<RuleUnitDescription> processRules(TypeDeclarationContext kbuilder, PackageDescr packageDescr, PackageModel packageModel, TypeResolver typeResolver, List<RuleDescr> ruleDescrs) {
         Set<RuleUnitDescription> ruleUnitDescrs = new HashSet<>();
 
         for (RuleDescr descr : ruleDescrs) {
