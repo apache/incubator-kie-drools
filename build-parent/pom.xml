@@ -235,7 +235,7 @@
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
 
     <version.org.awaitility>4.2.0</version.org.awaitility>
-    <version.io.github.bonigarcia>5.0.3</version.io.github.bonigarcia>
+    <version.io.github.bonigarcia>5.1.1</version.io.github.bonigarcia>
   </properties>
 
   <dependencyManagement>
