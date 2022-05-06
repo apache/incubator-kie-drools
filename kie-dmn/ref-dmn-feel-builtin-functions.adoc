@@ -1305,7 +1305,7 @@ product( n1, n2, ..., nN )
 [source,FEEL]
 ----
 product( [2, 3, 4] ) = 24
-product([]) = null
+product( [] ) = null
 product( 2, 3, 4 ) = 24
 ----
 --
