@@ -1964,7 +1964,7 @@ Returns `true` when an element `A` overlaps an element `B` and when the relevant
 a. `overlaps( range1, range2 )`
 
 .Requirements for evaluating to `true`
-a. `( range1.end > range2.start or (range1.end = range2.start and (range1.end included or range2.end included)) ) and ( range1.start < range2.end or (range1.start = range2.end and range1.start included and range2.end included) )`
+a. `( range1.end > range2.start or (range1.end = range2.start and range1.end included and range2.end included) ) and ( range1.start < range2.end or (range1.start = range2.end and range1.start included and range2.end included) )`
 
 .Examples
 [source,FEEL]
@@ -1996,7 +1996,7 @@ Returns `true` when an element `A` overlaps before an element `B` and when the r
 a. `overlaps before( range1 range2 )`
 
 .Requirements for evaluating to `true`
-a. `( range1.start < range2.start or (range1.start = range2.start and range1.start included and range2.start included) ) and ( range1.end > range2.start or (range1.end = range2.start and range1.end included and range2.start included) ) and ( range1.end < range2.end or (range1.end = range2.end and (not(range1.end included) or range2.end included )) )`
+a. `( range1.start < range2.start or (range1.start = range2.start and range1.start included and not(range2.start included)) ) and ( range1.end > range2.start or (range1.end = range2.start and range1.end included and range2.start included) ) and ( range1.end < range2.end or (range1.end = range2.end and (not(range1.end included) or range2.end included )) )`
 
 .Examples
 [source,FEEL]
