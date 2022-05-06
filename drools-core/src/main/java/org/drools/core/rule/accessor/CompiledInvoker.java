@@ -34,6 +34,6 @@ public interface CompiledInvoker
 
     static boolean isCompiledInvoker(Invoker invoker) {
         return (invoker instanceof CompiledInvoker)
-                || (invoker instanceof EvalExpression.SafeEvalExpression && ((EvalExpression.SafeEvalExpression) invoker).wrapsCompiledInvoker());
+                || (invoker instanceof EvalExpression.SafeEvalExpression && invoker.wrapsCompiledInvoker());
     }
 }
