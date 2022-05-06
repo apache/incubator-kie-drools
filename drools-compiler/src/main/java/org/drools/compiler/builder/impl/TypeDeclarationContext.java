@@ -45,6 +45,7 @@ public interface TypeDeclarationContext extends
 
     TypeDeclarationBuilder getTypeBuilder();
 
+    // this is currently only invoked in org.drools.compiler.builder.impl.TypeDeclarationBuilder#setResourcesInDescriptors
     Resource getCurrentResource();
 
     boolean filterAccepts(ResourceChange.Type declaration, String namespace, String typeName);
