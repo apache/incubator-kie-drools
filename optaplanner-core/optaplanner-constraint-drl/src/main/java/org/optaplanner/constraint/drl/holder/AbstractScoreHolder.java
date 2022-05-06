@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.drools.core.common.AgendaItem;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleContext;

@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Tuple;
 
 final class ValueExtractor<X> implements Function<Tuple, X> {
 

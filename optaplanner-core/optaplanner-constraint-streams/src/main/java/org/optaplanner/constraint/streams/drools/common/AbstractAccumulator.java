@@ -22,9 +22,9 @@ import java.util.function.Supplier;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Accumulator;
 
 abstract class AbstractAccumulator<ResultContainer_, Result_> implements Accumulator {
 

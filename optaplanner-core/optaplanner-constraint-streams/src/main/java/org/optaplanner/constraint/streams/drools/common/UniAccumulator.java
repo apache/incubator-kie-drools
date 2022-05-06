@@ -22,8 +22,8 @@ import java.util.function.UnaryOperator;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SubnetworkTuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
