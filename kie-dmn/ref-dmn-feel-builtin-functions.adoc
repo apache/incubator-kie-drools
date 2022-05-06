@@ -576,6 +576,7 @@ NOTE: This function uses regular expression parameters as defined in https://www
 .Example
 [source,FEEL]
 ----
+replace( "banana", "a", "o" ) = "bonono"
 replace( "abcd", "(ab)|(a)", "[1=$1][2=$2]" ) = "[1=ab][2=]cd"
 ----
 --
