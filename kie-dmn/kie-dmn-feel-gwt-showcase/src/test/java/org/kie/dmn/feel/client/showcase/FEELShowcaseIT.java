@@ -46,7 +46,7 @@ public class FEELShowcaseIT {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().arch64().setup();
+        WebDriverManager.firefoxdriver().useMirror().setup();
     }
 
     @Before
