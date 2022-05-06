@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.spi.DataProvider;
+import org.drools.core.rule.accessor.DataProvider;
 
 public class AsyncSend extends ConditionalElement implements PatternSource {
 

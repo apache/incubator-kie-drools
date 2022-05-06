@@ -29,9 +29,9 @@ import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -901,7 +901,7 @@ public class TemporalEvaluatorFactoryTest {
 
     private void runEvaluatorTest(final Object[][] data,
                                   final ValueType valueType) {
-        final InternalReadAccessor extractor = new MockExtractor();
+        final ReadAccessor extractor = new MockExtractor();
         for ( int i = 0; i < data.length; i++ ) {
             final Object[] row = data[i];
             boolean isNegated = ((String) row[1]).startsWith( "not " );
@@ -942,7 +942,7 @@ public class TemporalEvaluatorFactoryTest {
     }
 
     private void checkEvaluatorMethodWith2Extractors(final ValueType valueType,
-                                                     final InternalReadAccessor extractor,
+                                                     final ReadAccessor extractor,
                                                      final Object[] row,
                                                      final MvelEvaluator evaluator) {
         final boolean result = evaluator.evaluate( null,
@@ -962,7 +962,7 @@ public class TemporalEvaluatorFactoryTest {
     }
 
     private void checkEvaluatorMethodCachedRight(final ValueType valueType,
-                                                 final InternalReadAccessor extractor,
+                                                 final ReadAccessor extractor,
                                                  final Object[] row,
                                                  final MvelEvaluator evaluator) {
         final VariableRestriction.VariableContextEntry context = this.getContextEntry( evaluator,
@@ -985,7 +985,7 @@ public class TemporalEvaluatorFactoryTest {
     }
 
     private void checkEvaluatorMethodCachedLeft(final ValueType valueType,
-                                                final InternalReadAccessor extractor,
+                                                final ReadAccessor extractor,
                                                 final Object[] row,
                                                 final MvelEvaluator evaluator) {
         final VariableRestriction.VariableContextEntry context = this.getContextEntry( evaluator,
@@ -1008,7 +1008,7 @@ public class TemporalEvaluatorFactoryTest {
     }
 
     private void checkEvaluatorMethodWithFieldValue(final ValueType valueType,
-                                                    final InternalReadAccessor extractor,
+                                                    final ReadAccessor extractor,
                                                     final Object[] row,
                                                     final Evaluator evaluator) {
         final FieldValue value = FieldFactory.getInstance().getFieldValue( row[2] );
@@ -1025,7 +1025,7 @@ public class TemporalEvaluatorFactoryTest {
     }
 
     private VariableRestriction.VariableContextEntry getContextEntry(final Evaluator evaluator,
-                                                                     final InternalReadAccessor extractor,
+                                                                     final ReadAccessor extractor,
                                                                      final ValueType valueType,
                                                                      final Object[] row,
                                                                      final boolean left) {
@@ -1161,7 +1161,7 @@ public class TemporalEvaluatorFactoryTest {
 
     public static class MockExtractor
         implements
-        InternalReadAccessor {
+        ReadAccessor {
 
         private static final long serialVersionUID = 510l;
 

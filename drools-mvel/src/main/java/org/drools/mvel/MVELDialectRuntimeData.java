@@ -36,8 +36,8 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.Wireable;
 import org.drools.mvel.expr.MVELCompileable;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.integration.VariableResolver;
@@ -350,7 +350,7 @@ public class MVELDialectRuntimeData
         this.mvelReaders.add(compilable);
     }
 
-    public void compile(InternalReadAccessor reader) {
+    public void compile(ReadAccessor reader) {
         addCompileable(( MVELCompileable ) reader);
         ((MVELCompileable) reader).compile(this);
     }

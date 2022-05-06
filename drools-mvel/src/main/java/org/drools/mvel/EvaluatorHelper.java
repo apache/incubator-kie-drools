@@ -24,7 +24,7 @@ import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public class EvaluatorHelper {
 

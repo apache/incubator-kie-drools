@@ -18,7 +18,7 @@ package org.drools.mvel.evaluators;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.Evaluator;
+import org.drools.core.rule.accessor.Evaluator;
 
 public interface MvelEvaluator extends Evaluator {
 

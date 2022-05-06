@@ -36,7 +36,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -81,7 +81,7 @@ public class MVELEvalBuilderTest {
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
 
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                              "price" );
 
         final Pattern pattern = new Pattern( 0,

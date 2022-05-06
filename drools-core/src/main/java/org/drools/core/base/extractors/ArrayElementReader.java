@@ -24,27 +24,27 @@ import java.lang.reflect.Method;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.ClassWireable;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.base.ClassWireable;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
 
 public class ArrayElementReader
     implements
     AcceptsReadAccessor,
-    InternalReadAccessor,
+    ReadAccessor,
     ClassWireable,
     Externalizable {
-    private InternalReadAccessor arrayReadAccessor;
-    private int                  index;
-    private Class                type;
+    private ReadAccessor arrayReadAccessor;
+    private int index;
+    private Class type;
 
     public ArrayElementReader() {
 
     }
 
-    public ArrayElementReader(InternalReadAccessor arrayExtractor,
+    public ArrayElementReader(ReadAccessor arrayExtractor,
                               int index,
                               Class<?> type) {
         this.arrayReadAccessor = arrayExtractor;
@@ -58,7 +58,7 @@ public class ArrayElementReader
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        arrayReadAccessor = (InternalReadAccessor) in.readObject();
+        arrayReadAccessor = (ReadAccessor) in.readObject();
         index = in.readInt();
         type = (Class<?>) in.readObject();
     }
@@ -69,11 +69,11 @@ public class ArrayElementReader
         out.writeObject( type );
     }
 
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
+    public void setReadAccessor(ReadAccessor readAccessor) {
         this.arrayReadAccessor = readAccessor;
     }
     
-    public InternalReadAccessor getReadAccessor() {
+    public ReadAccessor getReadAccessor() {
         return this.arrayReadAccessor;
     }
 

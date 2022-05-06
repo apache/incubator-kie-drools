@@ -19,7 +19,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 
 public class RuleUnitFactHandleFactory extends ReteooFactHandleFactory {
 

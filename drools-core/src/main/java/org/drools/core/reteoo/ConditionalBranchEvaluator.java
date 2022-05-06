@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.rule.EvalCondition;
-import org.drools.core.spi.Tuple;
 
 public class ConditionalBranchEvaluator implements Externalizable {
 

@@ -30,8 +30,8 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.LinkedList;
@@ -92,7 +92,7 @@ public abstract class BaseBetaConstraintsTest {
             ClassFieldAccessorStore store = new ClassFieldAccessorStore();
             store.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
             store.setEagerWire(true);
-            InternalReadAccessor extractor = store.getReader(Cheese.class,
+            ReadAccessor extractor = store.getReader(Cheese.class,
                                                              "type");
             Declaration declaration = new Declaration(identifier,
                                                       extractor,

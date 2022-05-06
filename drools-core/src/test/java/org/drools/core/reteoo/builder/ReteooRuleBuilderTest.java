@@ -30,8 +30,8 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.Consequence;
-import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.rule.consequence.Consequence;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -34,7 +34,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 public class BetaNodeBuilder {
     BuildContext buildContext;
@@ -108,7 +108,7 @@ public class BetaNodeBuilder {
         if (constraintFieldName != null) {
             ClassFieldAccessorStore store = (ClassFieldAccessorStore) reteTesterHelper.getStore();
 
-            InternalReadAccessor extractor = store.getReader(leftType,
+            ReadAccessor extractor = store.getReader(leftType,
                                                              leftFieldName);
 
             Declaration declr = new Declaration(leftVariableName,

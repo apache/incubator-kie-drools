@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.drools.traits.core.factmodel.MapWrapper;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 
@@ -32,10 +32,10 @@ public class StudentProxyWrapper2 implements Map<String, Object>, MapWrapper {
         Imp2 object;
         Map<String, Object> map;
 
-        public static InternalReadAccessor name_reader;
+        public static ReadAccessor name_reader;
         public static WriteAccessor name_writer;
 
-        public static InternalReadAccessor bit_reader;
+        public static ReadAccessor bit_reader;
         public static WriteAccessor bit_writer;
 
 

@@ -47,14 +47,13 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.TupleValueExtractor;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.bitmask.BitMask;
@@ -105,7 +104,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     private Declaration[] declarations;
     private EvaluatorWrapper[] operators;
     private TupleValueExtractor indexingDeclaration;
-    private InternalReadAccessor extractor;
+    private ReadAccessor extractor;
     private boolean isUnification;
     protected boolean isDynamic;
     private FieldValue fieldValue;
@@ -127,7 +126,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           MVELCompilationUnit compilationUnit,
                           IndexUtil.ConstraintType constraintType,
                           FieldValue fieldValue,
-                          InternalReadAccessor extractor,
+                          ReadAccessor extractor,
                           EvaluatorWrapper[] operators) {
         this.packageNames = new LinkedHashSet<>();
         this.packageNames.add(packageName);
@@ -162,7 +161,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           MVELCompilationUnit compilationUnit,
                           IndexUtil.ConstraintType constraintType,
                           TupleValueExtractor indexingDeclaration,
-                          InternalReadAccessor extractor,
+                          ReadAccessor extractor,
                           boolean isUnification) {
         this.packageNames = new LinkedHashSet<>(packageNames);
         this.expression = expression;
@@ -183,7 +182,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                         null;
     }
 
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
+    public void setReadAccessor(ReadAccessor readAccessor) {
         this.extractor = readAccessor;
     }
 
@@ -385,7 +384,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         return new FieldIndex(extractor, indexingDeclaration);
     }
 
-    public InternalReadAccessor getFieldExtractor() {
+    public ReadAccessor getFieldExtractor() {
         return extractor;
     }
 
@@ -481,7 +480,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     private String findBoundVariable(String variable) {
         for (Declaration declaration : declarations) {
             if (declaration.getIdentifier().equals(variable)) {
-                InternalReadAccessor accessor = declaration.getExtractor();
+                ReadAccessor accessor = declaration.getExtractor();
                 if (accessor instanceof ClassFieldReader) {
                     return ((ClassFieldReader) accessor).getFieldName();
                 }

@@ -28,7 +28,7 @@ import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.PatternExtractor;
+import org.drools.core.rule.accessor.PatternExtractor;
 import com.github.javaparser.ast.expr.Expression;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;

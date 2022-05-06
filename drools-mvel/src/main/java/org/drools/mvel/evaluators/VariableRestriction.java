@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import org.drools.core.base.ValueType;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.mvel.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
 import org.drools.mvel.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
 import org.drools.mvel.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
@@ -30,15 +31,14 @@ import org.drools.mvel.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.reteoo.Tuple;
 
 public class VariableRestriction {
 
     private VariableRestriction() { }
 
-    public static VariableContextEntry createContextEntry(InternalReadAccessor fieldExtractor,
+    public static VariableContextEntry createContextEntry(ReadAccessor fieldExtractor,
                                                           Declaration declaration,
                                                           Evaluator evaluator) {
         ValueType coerced = evaluator.getCoercedValueType();
@@ -90,7 +90,7 @@ public class VariableRestriction {
     public static abstract class VariableContextEntry
         implements
             ContextEntry {
-        public InternalReadAccessor  extractor;
+        public ReadAccessor          extractor;
         public Evaluator             evaluator;
         public Object                object;
         public Declaration           declaration;
@@ -103,7 +103,7 @@ public class VariableRestriction {
         public VariableContextEntry() {
         }
 
-        public VariableContextEntry(final InternalReadAccessor extractor,
+        public VariableContextEntry(final ReadAccessor extractor,
                                     final Declaration declaration,
                                     final Evaluator evaluator) {
             this.extractor = extractor;
@@ -114,7 +114,7 @@ public class VariableRestriction {
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             reteEvaluator = (ReteEvaluator) in.readObject();
-            extractor = (InternalReadAccessor) in.readObject();
+            extractor = (ReadAccessor) in.readObject();
             evaluator = (Evaluator) in.readObject();
             object = in.readObject();
             declaration = (Declaration) in.readObject();
@@ -144,7 +144,7 @@ public class VariableRestriction {
             this.entry = entry;
         }
 
-        public InternalReadAccessor getFieldExtractor() {
+        public ReadAccessor getFieldExtractor() {
             return this.extractor;
         }
 
@@ -186,7 +186,7 @@ public class VariableRestriction {
         public ObjectVariableContextEntry() {
         }
 
-        public ObjectVariableContextEntry(final InternalReadAccessor extractor,
+        public ObjectVariableContextEntry(final ReadAccessor extractor,
                                           final Declaration declaration,
                                           final Evaluator evaluator) {
             super( extractor,
@@ -248,7 +248,7 @@ public class VariableRestriction {
         public LongVariableContextEntry() {
         }
 
-        public LongVariableContextEntry(final InternalReadAccessor extractor,
+        public LongVariableContextEntry(final ReadAccessor extractor,
                                         final Declaration declaration,
                                         final Evaluator evaluator) {
             super( extractor,
@@ -309,7 +309,7 @@ public class VariableRestriction {
         public CharVariableContextEntry() {
         }
 
-        public CharVariableContextEntry(final InternalReadAccessor extractor,
+        public CharVariableContextEntry(final ReadAccessor extractor,
                                         final Declaration declaration,
                                         final Evaluator evaluator) {
             super( extractor,
@@ -371,7 +371,7 @@ public class VariableRestriction {
         public DoubleVariableContextEntry() {
         }
 
-        public DoubleVariableContextEntry(final InternalReadAccessor extractor,
+        public DoubleVariableContextEntry(final ReadAccessor extractor,
                                           final Declaration declaration,
                                           final Evaluator evaluator) {
             super( extractor,
@@ -432,7 +432,7 @@ public class VariableRestriction {
         public BooleanVariableContextEntry() {
         }
 
-        public BooleanVariableContextEntry(final InternalReadAccessor extractor,
+        public BooleanVariableContextEntry(final ReadAccessor extractor,
                                            final Declaration declaration,
                                            final Evaluator evaluator) {
             super( extractor,
@@ -481,7 +481,7 @@ public class VariableRestriction {
         public TimestampedContextEntry() {
         }
 
-        public TimestampedContextEntry(final InternalReadAccessor extractor,
+        public TimestampedContextEntry(final ReadAccessor extractor,
                                              final Declaration declaration,
                                              final Evaluator evaluator) {
             super( extractor,
@@ -552,7 +552,7 @@ public class VariableRestriction {
         public LeftStartRightEndContextEntry() {
         }
 
-        public LeftStartRightEndContextEntry(final InternalReadAccessor extractor,
+        public LeftStartRightEndContextEntry(final ReadAccessor extractor,
                                              final Declaration declaration,
                                              final Evaluator evaluator) {
             super( extractor,
@@ -578,7 +578,7 @@ public class VariableRestriction {
         public LeftEndRightStartContextEntry() {
         }
 
-        public LeftEndRightStartContextEntry(final InternalReadAccessor extractor,
+        public LeftEndRightStartContextEntry(final ReadAccessor extractor,
                                             final Declaration declaration,
                                             final Evaluator evaluator) {
             super( extractor,
@@ -607,7 +607,7 @@ public class VariableRestriction {
         public TemporalVariableContextEntry() {
         }
 
-        public TemporalVariableContextEntry(final InternalReadAccessor extractor,
+        public TemporalVariableContextEntry(final ReadAccessor extractor,
                                             final Declaration declaration,
                                             final Evaluator evaluator) {
             super( extractor,

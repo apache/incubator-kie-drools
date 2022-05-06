@@ -25,9 +25,9 @@ import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.reteoo.Tuple;
 import org.drools.util.ClassUtils;
 
 public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {

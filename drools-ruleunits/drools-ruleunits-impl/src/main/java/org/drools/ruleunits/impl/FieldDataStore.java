@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.impl.facthandles.RuleUnitInternalFactHandle;
 import org.drools.ruleunits.impl.factory.DataHandleImpl;

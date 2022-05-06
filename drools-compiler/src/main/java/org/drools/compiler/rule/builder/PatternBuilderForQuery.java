@@ -16,15 +16,15 @@
 package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 
 
 public class PatternBuilderForQuery implements EngineElementBuilder {
@@ -36,7 +36,7 @@ public class PatternBuilderForQuery implements EngineElementBuilder {
                                              queryObjectType,
                                              null );
         
-        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context, queryDescr, pattern, "name", null, true);
+        final ReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context, queryDescr, pattern, "name", null, true);
         final QueryNameConstraint constraint = new QueryNameConstraint(extractor, queryDescr.getName());
 
         PatternBuilder.registerReadAccessor( context, queryObjectType, "name", constraint );
@@ -45,8 +45,8 @@ public class PatternBuilderForQuery implements EngineElementBuilder {
         pattern.addConstraint( constraint );
 
         ObjectType argsObjectType = ClassObjectType.DroolsQuery_ObjectType;
-        
-        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, null, argsObjectType, "elements", null, true );
+
+        ReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, null, argsObjectType, "elements", null, true );
 
         QueryImpl query = ((QueryImpl) context.getRule());
 

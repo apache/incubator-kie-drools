@@ -41,12 +41,11 @@ import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.MvelAccumulator;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.rule.accessor.DeclarationScopeResolver;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -131,8 +130,7 @@ public class MVELAccumulateBuilder
 
             List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
             for ( Accumulator acc : accumulators ) {
-                MvelAccumulator mvelAcc = (MvelAccumulator) acc;
-                Collections.addAll( requiredDeclarations, mvelAcc.getRequiredDeclarations() );
+                Collections.addAll( requiredDeclarations, acc.getRequiredDeclarations() );
             }
 
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
@@ -185,7 +183,7 @@ public class MVELAccumulateBuilder
 
         accumulators = new Accumulator[functions.size()];
         // creating the custom array reader
-        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
+        ReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
 
         int index = 0;
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();

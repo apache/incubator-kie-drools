@@ -27,9 +27,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 /**
  * This class defines the matches evaluator
@@ -136,7 +136,7 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1, final FieldValue fieldValue) {
             final String value1 = (String) extractor.getValue( reteEvaluator, handle1.getObject() );
             final String value2 = (String) fieldValue.getValue();
@@ -165,9 +165,9 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2, final InternalFactHandle handle2) {
+                                final ReadAccessor extractor2, final InternalFactHandle handle2) {
             final Object value1 = extractor1.getValue( reteEvaluator, handle1.getObject() );
             final Object value2 = extractor2.getValue( reteEvaluator, handle2.getObject() );
             if ( value1 == null ) {
@@ -191,7 +191,7 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1, final FieldValue fieldValue) {
             final String value1 = (String) extractor.getValue( reteEvaluator, handle1.getObject() );
             final String value2 = (String) fieldValue.getValue();
@@ -220,9 +220,9 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2, final InternalFactHandle handle2) {
+                                final ReadAccessor extractor2, final InternalFactHandle handle2) {
             final Object value1 = extractor1.getValue( reteEvaluator, handle1.getObject() );
             final Object value2 = extractor2.getValue( reteEvaluator, handle2.getObject() );
             if ( value1 == null ) {

@@ -22,8 +22,7 @@ import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.AsyncExceptionHandler;
-import org.drools.core.spi.GlobalResolver;
+import org.drools.core.rule.accessor.GlobalResolver;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -154,14 +153,6 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      *         if no query named "query" is found in the rulebase
      */
     QueryResults getQueryResults(String query, Object... arguments);
-
-    /**
-     * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
-     * Scheduler used for duration rules.
-     *
-     * @param handler
-     */
-    void setAsyncExceptionHandler(AsyncExceptionHandler handler);
 
     /**
      * Clear the Agenda. Iterates over each AgendaGroup cancalling all Activations.

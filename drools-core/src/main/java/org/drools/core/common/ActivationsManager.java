@@ -23,10 +23,8 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.InternalActivationGroup;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 
 public interface ActivationsManager {

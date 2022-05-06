@@ -18,10 +18,38 @@ package org.drools.core.common;
 
 import java.util.Map;
 
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
+import org.drools.core.rule.consequence.Activation;
 
-public interface InternalAgendaGroup extends AgendaGroup {
+public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGroup {
+
+    /**
+     * Static reference to determine the default <code>AgendaGroup</code> name.
+     */
+    String MAIN = "MAIN";
+
+    /**
+     * @return
+     *     The int total number of activations
+     */
+    int size();
+
+    /**
+     * @return
+     *     boolean value indicating if this AgendaGroup is empty or not
+     */
+    boolean isEmpty();
+
+    /**
+     *
+     * @return
+     *     boolean value indicating if the AgendaGroup is active and thus being evaluated.
+     */
+    boolean isActive();
+
+    void setAutoFocusActivator(PropagationContext ctx);
+
+
+    PropagationContext getAutoFocusActivator();
 
     /**
      * Sets the auto-deactivate status of this RuleFlowGroup.

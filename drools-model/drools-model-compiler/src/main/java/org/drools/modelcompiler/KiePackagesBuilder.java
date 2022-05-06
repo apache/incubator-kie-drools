@@ -63,7 +63,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PatternSource;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.rule.SlidingLengthWindow;
@@ -71,14 +71,14 @@ import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.Enabled;
-import org.drools.core.spi.EvalExpression;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.PatternExtractor;
-import org.drools.core.spi.Salience;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.rule.accessor.DataProvider;
+import org.drools.core.rule.accessor.Enabled;
+import org.drools.core.rule.accessor.EvalExpression;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.PatternExtractor;
+import org.drools.core.rule.accessor.Salience;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
@@ -359,7 +359,7 @@ public class KiePackagesBuilder {
                                        ClassObjectType.DroolsQuery_ObjectType,
                                        null );
 
-        InternalReadAccessor extractor = new LambdaReadAccessor(DroolsQuery.class, q -> ((DroolsQuery)q).getName());
+        ReadAccessor extractor = new LambdaReadAccessor(DroolsQuery.class, q -> ((DroolsQuery)q).getName());
         QueryNameConstraint constraint = new QueryNameConstraint( extractor, query.getName() );
         pattern.addConstraint( constraint );
         queryImpl.getLhs().addChild(pattern);
@@ -809,7 +809,7 @@ public class KiePackagesBuilder {
         if ( !declr.isPatternDeclaration()) {
             // The direct pattern binding is a delegate, that already exists,
             // So first resolve that to pass to the next resolver.
-            InternalReadAccessor reader = declr.getExtractor();
+            ReadAccessor reader = declr.getExtractor();
             return (o) -> binding.getBindingFunction().apply(reader.getValue(o));
         }
         return binding.getBindingFunction();
@@ -832,7 +832,7 @@ public class KiePackagesBuilder {
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
         Declaration groupByDeclaration  = null;
         Class selfType = (isGroupBy || accFunctions.length > 1 ) ? Object[].class : accFunctions[0].getResult().getType();
-        InternalReadAccessor selfReader = new SelfReferenceClassFieldReader( selfType );
+        ReadAccessor selfReader = new SelfReferenceClassFieldReader( selfType );
         int arrayIndexOffset = 0;
         if (isGroupBy) {
             if (accFunctions.length == 0) {
@@ -893,7 +893,7 @@ public class KiePackagesBuilder {
 
     private Variable processFunctions(RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern,
                                   Set<String> usedVariableName, Collection<Binding> bindings, boolean isGroupBy, AccumulateFunction accFunction,
-                                  InternalReadAccessor selfReader, Accumulator[] accumulators,
+                                  ReadAccessor selfReader, Accumulator[] accumulators,
                                   List<Declaration> requiredDeclarationList, int arrayIndexOffset, int i) {
         Binding binding = findBindingForAccumulate(bindings, accFunction);
         if (binding != null) {
@@ -1156,7 +1156,7 @@ public class KiePackagesBuilder {
         createConstraint( ctx, pattern, constraint ).ifPresent( pattern::addConstraint );
     }
 
-    private Optional<org.drools.core.spi.Constraint> createConstraint( RuleContext ctx, Pattern pattern, Constraint constraint ) {
+    private Optional<org.drools.core.rule.constraint.Constraint> createConstraint(RuleContext ctx, Pattern pattern, Constraint constraint ) {
         if (constraint.getType() == Constraint.Type.SINGLE) {
             SingleConstraint singleConstraint = (SingleConstraint) constraint;
             if (singleConstraint.getVariables().length > 0 || singleConstraint.equals(SingleConstraint.FALSE)) {
@@ -1171,7 +1171,7 @@ public class KiePackagesBuilder {
         }
     }
 
-    private org.drools.core.spi.Constraint createSingleConstraint( RuleContext ctx, Pattern pattern, SingleConstraint singleConstraint ) {
+    private org.drools.core.rule.constraint.Constraint createSingleConstraint(RuleContext ctx, Pattern pattern, SingleConstraint singleConstraint ) {
         Variable[] vars = singleConstraint.getVariables();
         Declaration[] declarations = new Declaration[vars.length];
         Declaration unificationDeclaration = collectConstraintDeclarations( ctx, pattern, singleConstraint, vars, declarations );

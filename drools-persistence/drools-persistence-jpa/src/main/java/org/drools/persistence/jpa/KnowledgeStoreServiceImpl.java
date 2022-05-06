@@ -21,7 +21,7 @@ import java.util.Properties;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
-import org.drools.core.process.instance.WorkItemManagerFactory;
+import org.drools.core.process.WorkItemManagerFactory;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.kie.api.KieBase;

@@ -17,9 +17,9 @@
 package org.drools.modelcompiler.attributes;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.Salience;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.accessor.Salience;
+import org.drools.core.reteoo.Tuple;
 import org.drools.model.DynamicValueSupplier;
 import org.kie.api.definition.rule.Rule;
 

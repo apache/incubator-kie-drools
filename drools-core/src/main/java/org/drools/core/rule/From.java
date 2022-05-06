@@ -31,10 +31,10 @@ import java.util.Map;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.facttemplates.Fact;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.DataProvider;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
 
 public class From extends ConditionalElement

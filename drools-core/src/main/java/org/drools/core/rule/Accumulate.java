@@ -32,8 +32,8 @@ import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 
 /**

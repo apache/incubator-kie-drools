@@ -34,10 +34,10 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 
@@ -134,7 +134,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
-            final InternalReadAccessor readAccessor = getHashableAccessor(alphaNode);
+            final ReadAccessor readAccessor = getHashableAccessor(alphaNode);
 
             // hash indexing
             if ( readAccessor != null ) {
@@ -165,9 +165,9 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             // range indexing
             if (isRangeIndexable(alphaNode)) {
                 IndexableConstraint indexableConstraint = (IndexableConstraint) alphaNode.getConstraint();
-                InternalReadAccessor internalReadAccessor = indexableConstraint.getFieldExtractor();
-                final int index = internalReadAccessor.getIndex();
-                final FieldIndex fieldIndex = registerFieldIndexForRange(index, internalReadAccessor);
+                ReadAccessor ReadAccessor = indexableConstraint.getFieldExtractor();
+                final int index = ReadAccessor.getIndex();
+                final FieldIndex fieldIndex = registerFieldIndexForRange(index, ReadAccessor);
                 final FieldValue value = indexableConstraint.getField();
                 if (fieldIndex.getCount() >= this.alphaNodeRangeIndexThreshold && this.alphaNodeRangeIndexThreshold != 0 && !value.isNull()) {
                     if (!fieldIndex.isRangeIndexed()) {
@@ -192,7 +192,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         return this;
     }
 
-    static InternalReadAccessor getHashableAccessor(AlphaNode alphaNode) {
+    static ReadAccessor getHashableAccessor(AlphaNode alphaNode) {
         AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
         if ( fieldConstraint instanceof IndexableConstraint ) {
             IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
@@ -225,7 +225,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
                 // hash index
                 if ( isHashable( indexableConstraint ) ) {
-                    final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
+                    final ReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
 
@@ -251,7 +251,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
                 // range index
                 if (isRangeIndexable(alphaNode)) {
-                    final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
+                    final ReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndexForRange(index);
 
@@ -291,7 +291,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         final int index = fieldIndex.getIndex();
-        final InternalReadAccessor fieldReader = fieldIndex.getFieldExtractor();
+        final ReadAccessor fieldReader = fieldIndex.getFieldExtractor();
 
         Iterator<AlphaNode> sinkIterator = this.hashableSinks.iterator();
         while ( sinkIterator.hasNext() ) {
@@ -359,7 +359,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
      * in the sinks.
      */
     private FieldIndex registerFieldIndex(final int index,
-                                          final InternalReadAccessor fieldExtractor) {
+                                          final ReadAccessor fieldExtractor) {
         FieldIndex fieldIndex = null;
 
         // is linkedlist null, if so create and add
@@ -484,7 +484,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
      * in the sinks.
      */
     private FieldIndex registerFieldIndexForRange(final int index,
-                                                  final InternalReadAccessor fieldExtractor) {
+                                                  final ReadAccessor fieldExtractor) {
         if (rangeIndexedFieldIndexes == null) {
             rangeIndexedFieldIndexes = new ArrayList<>();
         }
@@ -908,7 +908,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         public HashKey(final int index,
                        final FieldValue value,
-                       final InternalReadAccessor extractor) {
+                       final ReadAccessor extractor) {
             this.setValue( index, extractor, value );
         }
 
@@ -933,7 +933,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         public void setValue(final int index,
                              final Object value,
-                             final InternalReadAccessor extractor) {
+                             final ReadAccessor extractor) {
             this.index = index;
             isNull = extractor.isNullValue( null, value );
 
@@ -946,7 +946,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         public void setValue(final int index,
-                             final InternalReadAccessor extractor,
+                             final ReadAccessor extractor,
                              final FieldValue value) {
             this.index = index;
 
@@ -992,7 +992,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     public static class FieldIndex implements Externalizable {
         private static final long    serialVersionUID = 510l;
         private int                  index;
-        private InternalReadAccessor fieldExtractor;
+        private ReadAccessor         fieldExtractor;
 
         private int                  count;
 
@@ -1003,7 +1003,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         public FieldIndex(final int index,
-                          final InternalReadAccessor fieldExtractor) {
+                          final ReadAccessor fieldExtractor) {
             this.index = index;
             this.fieldExtractor = fieldExtractor;
         }
@@ -1011,7 +1011,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             index = in.readInt();
-            fieldExtractor = (InternalReadAccessor) in.readObject();
+            fieldExtractor = (ReadAccessor) in.readObject();
             count = in.readInt();
             hashed = in.readBoolean();
             rangeIndexed = in.readBoolean();
@@ -1033,7 +1033,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             return this.count;
         }
 
-        public InternalReadAccessor getFieldExtractor() {
+        public ReadAccessor getFieldExtractor() {
             return this.fieldExtractor;
         }
 

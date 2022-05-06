@@ -18,8 +18,6 @@ package org.drools.core.reteoo;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.core.spi.Tuple;
-
 public interface LeftTuple extends Tuple {
 
     void reAddLeft();

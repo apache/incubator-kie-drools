@@ -32,9 +32,9 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 

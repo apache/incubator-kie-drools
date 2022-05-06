@@ -20,7 +20,7 @@ import java.util.Date;
 import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.rule.DialectRuntimeData;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.MVELExecutor;
 import org.drools.mvel.asm.ClassFieldInspectorImpl;
 import org.drools.mvel.extractors.MVELDateClassFieldReader;
@@ -33,7 +33,7 @@ import org.mvel2.ParserContext;
 public class MVELCoreComponentsBuilder implements CoreComponentsBuilder {
 
     @Override
-    public InternalReadAccessor getReadAcessor( String className, String expr, boolean typesafe, Class<?> returnType) {
+    public ReadAccessor getReadAcessor( String className, String expr, boolean typesafe, Class<?> returnType) {
         if (Number.class.isAssignableFrom( returnType ) ||
                 ( returnType == byte.class ||
                         returnType == short.class ||

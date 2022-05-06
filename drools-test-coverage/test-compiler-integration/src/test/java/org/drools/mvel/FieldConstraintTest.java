@@ -33,10 +33,10 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
 import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PredicateExpression;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.PredicateExpression;
+import org.drools.core.reteoo.Tuple;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.model.Cheese;
@@ -167,7 +167,7 @@ public class FieldConstraintTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        final InternalReadAccessor priceExtractor = store.getReader( Cheese.class,
+        final ReadAccessor priceExtractor = store.getReader( Cheese.class,
                                                                      "price" );
 
         Pattern pattern = new Pattern( 0,

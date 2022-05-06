@@ -23,11 +23,11 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Consequence;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.consequence.Consequence;
+import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.asm.MethodVisitor;
 
@@ -84,7 +84,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     paramsPos[i] = factPos;
 
                     // Object obj[i] = tuple.get(declarations[i]);
-                    mv.visitVarInsn(ALOAD, 3); // org.kie.spi.Tuple
+                    mv.visitVarInsn(ALOAD, 3); // org.drools.core.reteoo.Tuple
                     mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]

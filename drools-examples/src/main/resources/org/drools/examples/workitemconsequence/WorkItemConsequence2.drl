@@ -25,7 +25,7 @@ rule "Call Work Item"
         $g : Greeting( $name : name, response == null )
     then
         org.drools.core.process.instance.WorkItemManager wiManager = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
-        org.drools.core.process.instance.impl.WorkItemImpl wiGreeting = new org.drools.core.process.instance.impl.WorkItemImpl();
+        org.drools.core.process.impl.WorkItemImpl wiGreeting = new org.drools.core.process.impl.WorkItemImpl();
         wiGreeting.setName( "GreetingWorkItemHandler" );
         wiGreeting.getParameters().put( "name", $name );
         wiManager.internalExecuteWorkItem( wiGreeting );

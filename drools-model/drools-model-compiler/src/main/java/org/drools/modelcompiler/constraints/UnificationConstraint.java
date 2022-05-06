@@ -24,9 +24,9 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.Index;
@@ -35,7 +35,7 @@ import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
 public class UnificationConstraint extends MutableTypeConstraint implements IndexableConstraint {
 
     private Declaration indexingDeclaration;
-    private final InternalReadAccessor readAccessor;
+    private final ReadAccessor readAccessor;
     private final ConstraintEvaluator evaluator;
 
     private boolean unification = true;
@@ -86,7 +86,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     @Override
-    public InternalReadAccessor getFieldExtractor() {
+    public ReadAccessor getFieldExtractor() {
         return readAccessor;
     }
 

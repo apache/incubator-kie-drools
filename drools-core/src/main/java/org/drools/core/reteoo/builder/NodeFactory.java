@@ -55,9 +55,9 @@ import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.rule.accessor.DataProvider;
+import org.drools.core.base.ObjectType;
 import org.drools.core.time.impl.Timer;
 
 public interface NodeFactory {

@@ -28,7 +28,7 @@ import org.drools.core.facttemplates.Fact;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.XpathBackReference;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 
 public class BoundIdentifiers {
     private Map<String, Class< ? >>       declrClasses;

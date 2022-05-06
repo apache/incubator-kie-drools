@@ -15,7 +15,7 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 import java.util.Collection;
 

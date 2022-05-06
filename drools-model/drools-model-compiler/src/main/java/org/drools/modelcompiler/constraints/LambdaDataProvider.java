@@ -21,13 +21,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.DataProvider;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.Tuple;
 import org.drools.model.functions.FunctionN;
 
 public class LambdaDataProvider implements DataProvider {

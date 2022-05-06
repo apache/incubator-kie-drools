@@ -26,9 +26,9 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Salience;
-import org.drools.core.spi.Tuple;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.accessor.Salience;
+import org.drools.core.reteoo.Tuple;
 import org.kie.api.event.rule.MatchCancelledCause;
 
 /**

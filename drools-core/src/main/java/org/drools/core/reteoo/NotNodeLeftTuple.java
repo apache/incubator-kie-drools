@@ -25,7 +25,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 
 public class NotNodeLeftTuple extends BaseLeftTuple {

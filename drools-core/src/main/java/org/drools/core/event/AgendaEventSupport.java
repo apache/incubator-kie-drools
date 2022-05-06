@@ -16,6 +16,7 @@
 
 package org.drools.core.event;
 
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
@@ -27,9 +28,8 @@ import org.drools.core.event.rule.impl.AgendaGroupPushedEventImpl;
 import org.drools.core.event.rule.impl.BeforeActivationFiredEventImpl;
 import org.drools.core.event.rule.impl.RuleFlowGroupActivatedEventImpl;
 import org.drools.core.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.RuleFlowGroup;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.common.RuleFlowGroup;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
@@ -78,7 +78,7 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
         }
     }
 
-    public void fireAgendaGroupPopped(final AgendaGroup agendaGroup,
+    public void fireAgendaGroupPopped(final InternalAgendaGroup agendaGroup,
                                       final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
             AgendaGroupPoppedEventImpl event = new AgendaGroupPoppedEventImpl( agendaGroup, getKRuntime( reteEvaluator ) );
@@ -86,7 +86,7 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
         }
     }
 
-    public void fireAgendaGroupPushed(final AgendaGroup agendaGroup,
+    public void fireAgendaGroupPushed(final InternalAgendaGroup agendaGroup,
                                       final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
             AgendaGroupPushedEventImpl event = new AgendaGroupPushedEventImpl( agendaGroup, getKRuntime( reteEvaluator ) );

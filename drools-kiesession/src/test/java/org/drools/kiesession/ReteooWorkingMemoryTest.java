@@ -34,7 +34,7 @@ import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.GlobalResolver;
+import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

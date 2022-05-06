@@ -15,26 +15,23 @@
 
 package org.drools.core.rule.constraint;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.field.ObjectFieldImpl;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.index.IndexUtil;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.field.ObjectFieldImpl;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.index.IndexUtil;
 
 public class QueryNameConstraint implements
         AlphaNodeFieldConstraint,
@@ -42,13 +39,13 @@ public class QueryNameConstraint implements
         AcceptsReadAccessor,
         Externalizable {
 
-    private InternalReadAccessor readAccessor;
+    private ReadAccessor readAccessor;
     private String queryName;
     private FieldValue fieldValue;
 
     public QueryNameConstraint() { }
 
-    public QueryNameConstraint(InternalReadAccessor readAccessor, String queryName) {
+    public QueryNameConstraint(ReadAccessor readAccessor, String queryName) {
         this.readAccessor = readAccessor;
         this.queryName = queryName;
     }
@@ -80,11 +77,11 @@ public class QueryNameConstraint implements
         return null;
     }
 
-    public InternalReadAccessor getFieldExtractor() {
+    public ReadAccessor getFieldExtractor() {
         return readAccessor;
     }
 
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
+    public void setReadAccessor(ReadAccessor readAccessor) {
         this.readAccessor = readAccessor;
     }
 
@@ -116,7 +113,7 @@ public class QueryNameConstraint implements
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        readAccessor = (InternalReadAccessor) in.readObject();
+        readAccessor = (ReadAccessor) in.readObject();
         queryName = (String) in.readObject();
     }
 

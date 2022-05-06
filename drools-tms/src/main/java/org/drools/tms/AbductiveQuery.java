@@ -35,10 +35,10 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.QueryImpl;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.definitions.rule.impl.QueryImpl;
+import org.drools.core.base.AcceptsClassObjectType;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.base.ObjectType;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.abductive.Abductive;
 

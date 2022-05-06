@@ -23,7 +23,7 @@ import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class DeclarationTest {
 
     @Test
     public void testDeclaration() {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 5,
@@ -71,7 +71,7 @@ public class DeclarationTest {
 
     @Test
     public void testGetFieldValue() {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 5,

@@ -4,9 +4,9 @@ import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.mvel.field.FieldFactory;
 import org.drools.mvel.field.LongFieldImpl;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.mvel.model.Cheese;
 
 public class ConstraintTestUtil {
@@ -21,7 +21,7 @@ public class ConstraintTestUtil {
         }
     }
 
-    public static AlphaNodeFieldConstraint createCheeseTypeEqualsConstraint(InternalReadAccessor extractor, String rightvalue, boolean useLambdaConstraint) {
+    public static AlphaNodeFieldConstraint createCheeseTypeEqualsConstraint(ReadAccessor extractor, String rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
             return LambdaConstraintTestUtil.createCheeseTypeEqualsConstraint(rightvalue, extractor.getIndex());
         } else {
@@ -30,7 +30,7 @@ public class ConstraintTestUtil {
         }
     }
 
-    public static AlphaNodeFieldConstraint createCheeseCharTypeEqualsConstraint(InternalReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
+    public static AlphaNodeFieldConstraint createCheeseCharTypeEqualsConstraint(ReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
             return LambdaConstraintTestUtil.createCheeseCharTypeEqualsConstraint((char) rightvalue, extractor.getIndex());
         } else {
@@ -38,7 +38,7 @@ public class ConstraintTestUtil {
         }
     }
 
-    public static AlphaNodeFieldConstraint createCheeseCharObjectTypeEqualsConstraint(InternalReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
+    public static AlphaNodeFieldConstraint createCheeseCharObjectTypeEqualsConstraint(ReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
             return LambdaConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint((char) rightvalue, extractor.getIndex());
         } else {
@@ -46,7 +46,7 @@ public class ConstraintTestUtil {
         }
     }
 
-    public static AlphaNodeFieldConstraint createCheesePriceEqualsConstraint(InternalReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
+    public static AlphaNodeFieldConstraint createCheesePriceEqualsConstraint(ReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
             return LambdaConstraintTestUtil.createCheesePriceEqualsConstraint(rightvalue, extractor.getIndex());
         } else {
@@ -55,7 +55,7 @@ public class ConstraintTestUtil {
         }
     }
 
-    public static AlphaNodeFieldConstraint createCheesePriceGreaterConstraint(InternalReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
+    public static AlphaNodeFieldConstraint createCheesePriceGreaterConstraint(ReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
             return LambdaConstraintTestUtil.createCheesePriceGreaterConstraint(rightvalue, extractor.getIndex());
         } else {

@@ -23,8 +23,8 @@ import org.drools.core.InitialFact;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface AgendaItem extends Activation {

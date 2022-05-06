@@ -30,7 +30,7 @@ import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
-import org.drools.core.spi.ConflictResolver;
+import org.drools.core.rule.consequence.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.util.StringUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;

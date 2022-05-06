@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.drools.traits.core.factmodel.ExternalizableLinkedHashMap;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TraitTypeMapImpl;
@@ -32,10 +32,10 @@ public class StudentProxyImpl2 extends TraitProxyImpl implements IStudent {
     public final Map<String, Object> map;
 
 
-    public static InternalReadAccessor name_reader;
+    public static ReadAccessor name_reader;
     public static WriteAccessor name_writer;
 
-    public static InternalReadAccessor bit_reader;
+    public static ReadAccessor bit_reader;
     public static WriteAccessor bit_writer;
 
     private static final String traitType = IStudent.class.getName();

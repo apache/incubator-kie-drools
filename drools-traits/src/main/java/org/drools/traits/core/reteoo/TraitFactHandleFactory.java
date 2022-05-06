@@ -20,7 +20,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.traits.core.common.TraitDefaultFactHandle;
 
 public class TraitFactHandleFactory extends ReteooFactHandleFactory {

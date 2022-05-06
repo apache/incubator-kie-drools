@@ -35,6 +35,7 @@ import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.drl.parser.DrlExprParser;
 import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.drl.parser.DroolsParserException;
@@ -63,7 +64,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PatternSource;
 import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
@@ -71,14 +72,13 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.XpathBackReference;
 import org.drools.core.rule.constraint.NegConstraint;
 import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.AcceptsClassObjectType;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.rule.accessor.DeclarationScopeResolver;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.base.ObjectType;
 import org.drools.core.time.TimeUtils;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
@@ -1161,7 +1161,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                    boolean isConstant,
                                                    Map<String, OperatorDescr> aliases) {
 
-        InternalReadAccessor extractor = getFieldReadAccessor(context, relDescr, pattern, value1, null, true);
+        ReadAccessor extractor = getFieldReadAccessor(context, relDescr, pattern, value1, null, true);
         if (extractor == null) {
             return null;
         }
@@ -1466,12 +1466,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             declr.setxPathOffset( context.getXpathChuckNr() );
         }
 
-        final InternalReadAccessor extractor = getFieldReadAccessor(context,
-                                                                    fieldBindingDescr,
-                                                                    pattern,
-                                                                    fieldBindingDescr.getBindingField(),
-                                                                    declr,
-                                                                    true);
+        ReadAccessor extractor = getFieldReadAccessor(context, fieldBindingDescr, pattern, fieldBindingDescr.getBindingField(), declr, true);
 
         if (extractor == null) {
             registerDescrBuildError(context, patternDescr,
@@ -1726,12 +1721,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         pattern,
                                                         true);
 
-        InternalReadAccessor extractor = getFieldReadAccessor(context,
-                                                              implicitBinding,
-                                                              pattern,
-                                                              implicitBinding.getExpression(),
-                                                              declaration,
-                                                              false);
+        ReadAccessor extractor = getFieldReadAccessor(context, implicitBinding, pattern, implicitBinding.getExpression(), declaration, false);
 
         if (extractor == null) {
             return null;
@@ -1751,7 +1741,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         }
     }
 
-    public static InternalReadAccessor getFieldReadAccessor(final RuleBuildContext context,
+    public static ReadAccessor getFieldReadAccessor(final RuleBuildContext context,
                                                             final BaseDescr descr,
                                                             final Pattern pattern,
                                                             String fieldName,
@@ -1760,7 +1750,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         return getFieldReadAccessor(context, descr, pattern, pattern.getObjectType(), fieldName, target, reportError);
     }
 
-    public static InternalReadAccessor getFieldReadAccessor(final RuleBuildContext context,
+    public static ReadAccessor getFieldReadAccessor(final RuleBuildContext context,
                                                             final BaseDescr descr,
                                                             final Pattern pattern,
                                                             final ObjectType objectType,
@@ -1768,7 +1758,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                             final AcceptsReadAccessor target,
                                                             final boolean reportError) {
         // reportError is needed as some times failure to build accessor is not a failure, just an indication that building is not possible so try something else.
-        InternalReadAccessor reader;
+        ReadAccessor reader;
 
         if (ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType())) {
             //@todo use accessor cache            

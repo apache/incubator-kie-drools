@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.ConsequenceMetaData;
@@ -44,15 +45,14 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.LogicTransformer;
-import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.Consequence;
-import org.drools.core.spi.Enabled;
-import org.drools.core.spi.Salience;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.consequence.Consequence;
+import org.drools.core.rule.accessor.Enabled;
+import org.drools.core.rule.accessor.Salience;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.Wireable;
 import org.drools.core.time.impl.Timer;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.rule.Query;
@@ -100,7 +100,7 @@ public class RuleImpl implements Externalizable,
 
     private String                   dialect;
 
-    private String                   agendaGroup = AgendaGroup.MAIN;
+    private String                   agendaGroup = InternalAgendaGroup.MAIN;
 
     private Map<String, Object>      metaAttributes = new HashMap<>();
 
@@ -170,7 +170,7 @@ public class RuleImpl implements Externalizable,
         out.writeObject( metaAttributes );
         out.writeObject( requiredDeclarations );
 
-        if ( Consequence.isCompiledInvoker( this.consequence ) ) {
+        if ( CompiledInvoker.isCompiledInvoker( this.consequence ) ) {
             out.writeObject( null );
             out.writeObject( null );
         } else {
@@ -392,7 +392,7 @@ public class RuleImpl implements Externalizable,
 
     @Override
     public boolean isMainAgendaGroup() {
-        return AgendaGroup.MAIN.equals( agendaGroup );
+        return InternalAgendaGroup.MAIN.equals( agendaGroup );
     }
 
     private void set( int flag, boolean b ) {
@@ -481,7 +481,6 @@ public class RuleImpl implements Externalizable,
      * @return The declaration or <code>null</code> if no declaration matches
      *         the <code>identifier</code>.
      */
-    @SuppressWarnings("unchecked")
     public Declaration getDeclaration(final String identifier) {
         if ( this.dirty || (this.declarations == null) ) {
             this.declarations = this.getExtendedLhs( this, null ).getOuterDeclarations();
@@ -527,7 +526,6 @@ public class RuleImpl implements Externalizable,
      * @return The Set of <code>Declarations</code> in order which specify the
      *         <i>root fact objects</i>.
      */
-    @SuppressWarnings("unchecked")
     public Map<String, Declaration> getDeclarations() {
         if ( this.dirty || (this.declarations == null) ) {
             this.declarations = this.getExtendedLhs( this, null ).getOuterDeclarations();

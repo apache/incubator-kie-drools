@@ -19,8 +19,7 @@ package org.drools.core.common;
 import java.util.function.BiFunction;
 
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.ObjectHashMap;
 import org.kie.api.runtime.rule.FactHandle;
 

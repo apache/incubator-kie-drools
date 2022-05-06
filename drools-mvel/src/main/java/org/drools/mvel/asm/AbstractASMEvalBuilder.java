@@ -32,7 +32,7 @@ import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.EvalConditionFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.rule.accessor.DeclarationScopeResolver;
 
 import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
 import static org.drools.compiler.rule.builder.PatternBuilder.createImplicitBindings;

@@ -30,11 +30,11 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.TupleValueExtractor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.TupleValueExtractor;
 import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.bitmask.BitMask;
@@ -62,7 +62,7 @@ public class LambdaConstraint extends AbstractConstraint {
     private final PredicateInformation predicateInformation;
 
     private FieldValue field;
-    private InternalReadAccessor readAccessor;
+    private ReadAccessor readAccessor;
     private AbstractIndexValueExtractor indexExtractor;
 
     public LambdaConstraint(ConstraintEvaluator evaluator,
@@ -250,7 +250,7 @@ public class LambdaConstraint extends AbstractConstraint {
     }
 
     @Override
-    public InternalReadAccessor getFieldExtractor() {
+    public ReadAccessor getFieldExtractor() {
         return readAccessor;
     }
 

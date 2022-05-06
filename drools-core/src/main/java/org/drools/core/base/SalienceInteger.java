@@ -22,8 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.Salience;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.accessor.Salience;
 import org.kie.api.definition.rule.Rule;
 
 public class SalienceInteger

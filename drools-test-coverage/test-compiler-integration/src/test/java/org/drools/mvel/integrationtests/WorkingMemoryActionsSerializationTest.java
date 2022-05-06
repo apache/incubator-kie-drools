@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -65,7 +66,7 @@ public class WorkingMemoryActionsSerializationTest {
     private final String drl =
                "package apackage\n" +
                " \n" +
-               "import org.drools.core.spi.KnowledgeHelper\n" +
+               "import " + KnowledgeHelper.class.getCanonicalName() + "\n" +
                "import " + AnEvent.class.getCanonicalName() + "\n" +
                " \n" +
                "declare DoRecord end\n" +

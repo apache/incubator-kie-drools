@@ -35,9 +35,9 @@ import org.drools.core.rule.Behavior;
 import org.drools.core.rule.BehaviorManager;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.base.ObjectType;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 
 /**

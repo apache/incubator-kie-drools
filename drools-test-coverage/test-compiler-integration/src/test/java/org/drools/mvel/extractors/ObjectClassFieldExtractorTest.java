@@ -14,21 +14,24 @@
 
 package org.drools.mvel.extractors;
 
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.core.base.TestBean;
-import org.drools.core.spi.InternalReadAccessor;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.TestBean;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
-    InternalReadAccessor reader;
+    ReadAccessor reader;
     TestBean             bean = new TestBean();
 
     @Before
@@ -146,7 +149,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
 
-        InternalReadAccessor nullExtractor = store.getReader( TestBean.class,
+        ReadAccessor nullExtractor = store.getReader( TestBean.class,
                                                               "nullAttr" );
         assertTrue( nullExtractor.isNullValue( null,
                                                       this.bean ) );

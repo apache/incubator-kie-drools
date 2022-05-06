@@ -18,8 +18,8 @@ import java.util.Iterator;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.ReactiveObject;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.Tuple;
 import org.drools.mvel.expr.MVELCompilationUnit;
 
 public class ReactiveMVELDataProvider extends MVELDataProvider {

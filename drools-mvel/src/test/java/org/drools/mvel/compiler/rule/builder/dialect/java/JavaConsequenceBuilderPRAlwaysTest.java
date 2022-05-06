@@ -34,9 +34,9 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Consequence;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.consequence.Consequence;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.compiler.Cheese;
@@ -97,7 +97,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         
         Declaration declr = p.addDeclaration( "age" );
 
-        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context,
+        final ReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context,
                                                                                    new BindingDescr("age", "age"),
                                                                                    p,
                                                                                    "age",

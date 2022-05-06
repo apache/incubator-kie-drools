@@ -28,7 +28,7 @@ import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 import org.drools.core.util.PropertyReactivityUtil;
 import org.drools.core.util.TimeIntervalParser;
@@ -152,7 +152,7 @@ public class TypeDeclarationUtil {
         type.setTimestampExtractor(getFieldExtractor( type, timestampField, long.class ));
     }
 
-    private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String field, Class<?> returnType ) {
+    private static ReadAccessor getFieldExtractor( TypeDeclaration type, String field, Class<?> returnType ) {
         return new LambdaReadAccessor( returnType, new LambdaFieldReader( type.getTypeClass(), field ) );
     }
 

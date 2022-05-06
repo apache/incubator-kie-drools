@@ -19,8 +19,8 @@ package org.drools.modelcompiler.constraints;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.EvalExpression;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.EvalExpression;
+import org.drools.core.reteoo.Tuple;
 import org.drools.model.SingleConstraint;
 
 public class LambdaEvalExpression implements EvalExpression {

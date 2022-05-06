@@ -28,8 +28,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;

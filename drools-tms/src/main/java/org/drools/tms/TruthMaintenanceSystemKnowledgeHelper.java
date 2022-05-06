@@ -25,7 +25,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;

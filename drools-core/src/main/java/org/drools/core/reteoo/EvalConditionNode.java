@@ -31,8 +31,8 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EvalCondition;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleComponent;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.definition.rule.Rule;
 

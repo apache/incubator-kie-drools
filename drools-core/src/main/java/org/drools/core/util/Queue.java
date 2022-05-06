@@ -16,7 +16,7 @@
 
 package org.drools.core.util;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 
 public interface Queue {
     void enqueue(Activation queueable);

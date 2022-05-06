@@ -17,7 +17,7 @@ package org.drools.mvel.asm;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.TestBean;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.asm.BeanInherit;
 import org.drools.core.util.asm.TestAbstract;
 import org.drools.core.util.asm.TestAbstractImpl;
@@ -44,7 +44,7 @@ public class BaseClassFieldAccessorFactoryTest {
         
         ClassFieldAccessorCache.CacheEntry cachEntry = new ClassFieldAccessorCache.CacheEntry( Thread.currentThread().getContextClassLoader()  );
 
-        InternalReadAccessor ex = factory.getClassFieldReader( TestBean.class,
+        ReadAccessor ex = factory.getClassFieldReader( TestBean.class,
                                                                "name",
                                                                cachEntry );
         assertEquals( "michael",
@@ -61,7 +61,7 @@ public class BaseClassFieldAccessorFactoryTest {
 
     @Test
     public void testInterface() throws Exception {
-        final InternalReadAccessor ex = store.getReader( TestInterface.class,
+        final ReadAccessor ex = store.getReader( TestInterface.class,
                                                          "something" );
         assertEquals( 1,
                       ex.getIndex() );
@@ -72,7 +72,7 @@ public class BaseClassFieldAccessorFactoryTest {
 
     @Test
     public void testAbstract() throws Exception {
-        final InternalReadAccessor ex = store.getReader( TestAbstract.class,
+        final ReadAccessor ex = store.getReader( TestAbstract.class,
                                                          "something" );
         assertEquals( 2,
                       ex.getIndex() );
@@ -83,7 +83,7 @@ public class BaseClassFieldAccessorFactoryTest {
 
     @Test
     public void testInherited() throws Exception {
-        final InternalReadAccessor ex = store.getReader( BeanInherit.class,
+        final ReadAccessor ex = store.getReader( BeanInherit.class,
                                                          "text" );
         assertEquals( "hola",
                       ex.getValue( null,
@@ -92,7 +92,7 @@ public class BaseClassFieldAccessorFactoryTest {
 
     @Test
     public void testSelfReference() throws Exception {
-        final InternalReadAccessor ex = store.getReader( BeanInherit.class,
+        final ReadAccessor ex = store.getReader( BeanInherit.class,
                                                          "this" );
         final TestBean bean = new TestBean();
         assertEquals( bean,

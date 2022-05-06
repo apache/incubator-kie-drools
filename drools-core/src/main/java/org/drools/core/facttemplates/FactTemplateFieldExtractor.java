@@ -25,12 +25,13 @@ import java.lang.reflect.Method;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 public class FactTemplateFieldExtractor
     implements
     Externalizable,
-    org.drools.core.spi.InternalReadAccessor {
+        ReadAccessor {
 
     private static final long serialVersionUID = 510l;
     private FactTemplate factTemplate;

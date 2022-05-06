@@ -39,10 +39,10 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.AcceptsClassObjectType;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
 import org.drools.util.ClassUtils;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -108,7 +108,7 @@ public class MVELKnowledgePackageImpl extends KnowledgePackageImpl {
     }
 
     @Override
-    public InternalReadAccessor getReader(String className, String fieldName, AcceptsReadAccessor target) {
+    public ReadAccessor getReader(String className, String fieldName, AcceptsReadAccessor target) {
         return classFieldAccessorStore.getReader(className, fieldName, target);
     }
 
@@ -118,8 +118,8 @@ public class MVELKnowledgePackageImpl extends KnowledgePackageImpl {
     }
 
     @Override
-    public InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, Class<?> returnType ) {
-        InternalReadAccessor reader = classFieldAccessorStore.getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+    public ReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, Class<?> returnType ) {
+        ReadAccessor reader = classFieldAccessorStore.getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                              type.getTypeClass().getName(),
                                                                              timestampField,
                                                                              type.isTypesafe(),

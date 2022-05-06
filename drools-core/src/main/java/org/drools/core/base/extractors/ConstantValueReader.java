@@ -19,11 +19,11 @@ import java.lang.reflect.Method;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
 
-public class ConstantValueReader implements InternalReadAccessor {
+public class ConstantValueReader implements ReadAccessor {
 
     private final Object value;
 

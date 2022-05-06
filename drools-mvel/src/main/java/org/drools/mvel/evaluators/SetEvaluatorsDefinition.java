@@ -30,9 +30,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 /**
  * This class defines all the set built in evaluators like contains, memberOf,
@@ -327,7 +327,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1,
                                 final FieldValue fieldValue) {
             final Object array = extractor.getValue( reteEvaluator,
@@ -368,9 +368,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
+                                final ReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
             final Object array = extractor1.getValue( reteEvaluator,
                                                       handle1.getObject() );
@@ -398,7 +398,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1,
                                 final FieldValue fieldValue) {
             final Object array = extractor.getValue( reteEvaluator,
@@ -437,9 +437,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
+                                final ReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
             final Object array = extractor1.getValue( reteEvaluator,
                                                       handle1 .getObject());
@@ -489,7 +489,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1,
                                 final FieldValue fieldValue) {
             if ( fieldValue.isNull() ) {
@@ -552,9 +552,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
+                                final ReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
             final Object object = extractor2.getValue( reteEvaluator,
                                                        handle2.getObject() );
@@ -598,7 +598,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1,
                                 final FieldValue fieldValue) {
             if ( fieldValue.isNull() ) {
@@ -664,9 +664,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
+                                final ReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
             final Object object = extractor2.getValue( reteEvaluator,
                                                        handle2.getObject() );
@@ -1000,7 +1000,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1,
                                 final FieldValue fieldValue) {
             final Object value = fieldValue.getValue();
@@ -1028,9 +1028,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
+                                final ReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
             final Object value = extractor2.getValue( reteEvaluator,
                                                       handle2.getObject() );
@@ -1054,7 +1054,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor,
+                                final ReadAccessor extractor,
                                 final InternalFactHandle handle1,
                                 final FieldValue fieldValue) {
             final Object value = fieldValue.getValue();
@@ -1082,9 +1082,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                final InternalReadAccessor extractor1,
+                                final ReadAccessor extractor1,
                                 final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
+                                final ReadAccessor extractor2,
                                 final InternalFactHandle handle2) {
             final Object value = extractor2.getValue( reteEvaluator,
                                                       handle2.getObject() );
@@ -1196,7 +1196,7 @@ public class SetEvaluatorsDefinition
 
         boolean contains(Object array,
                          ReteEvaluator reteEvaluator,
-                         InternalReadAccessor accessor,
+                         ReadAccessor accessor,
                          Object object);
         //        
         // boolean member(FieldValue array,
@@ -1204,7 +1204,7 @@ public class SetEvaluatorsDefinition
         //        
         // boolean member(Object object,
         // ReteEvaluator reteEvaluator,
-        // InternalReadAccessor accessor,
+        // ReadAccessor accessor,
         // Object array);
     }
 
@@ -1227,7 +1227,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             boolean[] boolArray = (boolean[]) array;
 
@@ -1259,7 +1259,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (byte[]) array,
                              accessor.getByteValue( reteEvaluator,
@@ -1295,7 +1295,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (short[]) array,
                              accessor.getShortValue( reteEvaluator,
@@ -1330,7 +1330,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (char[]) array,
                              accessor.getCharValue( reteEvaluator,
@@ -1366,7 +1366,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (int[]) array,
                              accessor.getIntValue( reteEvaluator,
@@ -1402,7 +1402,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (long[]) array,
                              accessor.getLongValue( reteEvaluator,
@@ -1438,7 +1438,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (float[]) array,
                              accessor.getFloatValue( reteEvaluator,
@@ -1473,7 +1473,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (double[]) array,
                              accessor.getDoubleValue( reteEvaluator,
@@ -1488,7 +1488,7 @@ public class SetEvaluatorsDefinition
         //
         // public boolean member(Object object,
         // ReteEvaluator reteEvaluator,
-        // InternalReadAccessor accessor,
+        // ReadAccessor accessor,
         // Object array) {
         // return contains( (double[]) accessor.getValue( reteEvaluator,
         // object ),
@@ -1523,7 +1523,7 @@ public class SetEvaluatorsDefinition
 
         public boolean contains(Object array,
                                 ReteEvaluator reteEvaluator,
-                                InternalReadAccessor accessor,
+                                ReadAccessor accessor,
                                 Object object) {
             return contains( (Object[]) array,
                              accessor.getValue( reteEvaluator,
@@ -1553,7 +1553,7 @@ public class SetEvaluatorsDefinition
         //
         // public boolean member(Object object,
         // ReteEvaluator reteEvaluator,
-        // InternalReadAccessor accessor,
+        // ReadAccessor accessor,
         // Object array) {
         // return contains( (Object[]) accessor.getValue( reteEvaluator,
         // object ),

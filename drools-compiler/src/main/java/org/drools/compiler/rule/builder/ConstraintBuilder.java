@@ -28,11 +28,11 @@ import org.drools.core.base.ValueType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
 import org.drools.core.time.TimerExpression;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.LiteralRestrictionDescr;
@@ -79,7 +79,7 @@ public interface ConstraintBuilder extends KieService {
                                        String leftValue,
                                        OperatorDescr operator,
                                        String rightValue,
-                                       InternalReadAccessor extractor,
+                                       ReadAccessor extractor,
                                        Declaration requiredDeclaration,
                                        RelationalExprDescr relDescr,
                                        Map<String, OperatorDescr> aliases);
@@ -93,7 +93,7 @@ public interface ConstraintBuilder extends KieService {
                                       String operator,
                                       boolean negated,
                                       String rightValue,
-                                      InternalReadAccessor extractor,
+                                      ReadAccessor extractor,
                                       LiteralRestrictionDescr restrictionDescr,
                                       Map<String, OperatorDescr> aliases);
 
@@ -126,7 +126,7 @@ public interface ConstraintBuilder extends KieService {
 
     AnalysisResult analyzeExpression(Class<?> thisClass, String expr);
 
-    InternalReadAccessor buildMvelFieldReadAccessor( RuleBuildContext context, BaseDescr descr, Pattern pattern,
+    ReadAccessor buildMvelFieldReadAccessor( RuleBuildContext context, BaseDescr descr, Pattern pattern,
                                                      ObjectType objectType, String fieldName, boolean reportError);
 
     void setExprInputs(RuleBuildContext context, PatternBuilder.ExprBindings descrBranch,
@@ -167,12 +167,12 @@ public interface ConstraintBuilder extends KieService {
         }
 
         @Override
-        public Constraint buildVariableConstraint( RuleBuildContext context, Pattern pattern, String expression, Declaration[] declarations, String leftValue, OperatorDescr operator, String rightValue, InternalReadAccessor extractor, Declaration requiredDeclaration, RelationalExprDescr relDescr, Map<String, OperatorDescr> aliases ) {
+        public Constraint buildVariableConstraint( RuleBuildContext context, Pattern pattern, String expression, Declaration[] declarations, String leftValue, OperatorDescr operator, String rightValue, ReadAccessor extractor, Declaration requiredDeclaration, RelationalExprDescr relDescr, Map<String, OperatorDescr> aliases ) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Constraint buildLiteralConstraint( RuleBuildContext context, Pattern pattern, ValueType vtype, FieldValue field, String expression, String leftValue, String operator, boolean negated, String rightValue, InternalReadAccessor extractor, LiteralRestrictionDescr restrictionDescr, Map<String, OperatorDescr> aliases ) {
+        public Constraint buildLiteralConstraint( RuleBuildContext context, Pattern pattern, ValueType vtype, FieldValue field, String expression, String leftValue, String operator, boolean negated, String rightValue, ReadAccessor extractor, LiteralRestrictionDescr restrictionDescr, Map<String, OperatorDescr> aliases ) {
             throw new UnsupportedOperationException();
         }
 
@@ -197,7 +197,7 @@ public interface ConstraintBuilder extends KieService {
         }
 
         @Override
-        public InternalReadAccessor buildMvelFieldReadAccessor( RuleBuildContext context, BaseDescr descr, Pattern pattern, ObjectType objectType, String fieldName, boolean reportError ) {
+        public ReadAccessor buildMvelFieldReadAccessor( RuleBuildContext context, BaseDescr descr, Pattern pattern, ObjectType objectType, String fieldName, boolean reportError ) {
             throw new UnsupportedOperationException();
         }
 

@@ -17,7 +17,7 @@ package org.drools.serialization.protobuf.marshalling;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 import static org.drools.core.marshalling.TupleKey.createTupleArray;
 

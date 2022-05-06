@@ -41,6 +41,7 @@ import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,7 +233,7 @@ public class ObjectTypeNodeCompiler {
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
 
         builder.append(String.format("private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%s.class);%n", generatedClassSimpleName));
-        builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
+        builder.append(ReadAccessor.class.getCanonicalName() + " readAccessor;\n");
     }
 
     /**
@@ -244,7 +245,7 @@ public class ObjectTypeNodeCompiler {
      *                                maps for the generate class
      */
     private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations, Map<String, AlphaRangeIndex> rangeIndexDeclarationMap) {
-        builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor, java.util.Map<String, " + AlphaRangeIndex.class.getCanonicalName() + "> rangeIndexDeclarationMap) {").append(NEWLINE);
+        builder.append("public ").append(generatedClassSimpleName).append("(" + ReadAccessor.class.getCanonicalName() + " readAccessor, java.util.Map<String, " + AlphaRangeIndex.class.getCanonicalName() + "> rangeIndexDeclarationMap) {").append(NEWLINE);
 
         builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids

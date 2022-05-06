@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.spi.FieldValue;
+import org.drools.core.rule.accessor.FieldValue;
 import org.drools.drl.ast.descr.LiteralRestrictionDescr;
 
 import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;

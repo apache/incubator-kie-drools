@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public class ReactiveCollection<T, W extends Collection<T>> extends AbstractReactiveObject implements Collection<T> {
 

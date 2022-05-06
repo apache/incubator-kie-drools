@@ -19,17 +19,17 @@ package org.drools.traits.compiler.factmodel.traits;
 import java.util.Map;
 
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
-import org.drools.traits.core.factmodel.Triple;
-import org.drools.traits.core.factmodel.TripleFactory;
-import org.drools.traits.core.factmodel.TripleFactoryImpl;
-import org.drools.traits.core.factmodel.TripleStore;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TraitTypeMapImpl;
+import org.drools.traits.core.factmodel.Triple;
 import org.drools.traits.core.factmodel.TripleBasedBean;
 import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.traits.core.factmodel.TripleBasedTypes;
+import org.drools.traits.core.factmodel.TripleFactory;
+import org.drools.traits.core.factmodel.TripleFactoryImpl;
+import org.drools.traits.core.factmodel.TripleStore;
 import org.kie.api.runtime.rule.Variable;
 
 
@@ -42,10 +42,10 @@ public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
     public final Imp2 object;
     private TripleStore map;
 
-    public static InternalReadAccessor name_reader;
+    public static ReadAccessor name_reader;
     public static WriteAccessor name_writer;
 
-    public static InternalReadAccessor bit_reader;
+    public static ReadAccessor bit_reader;
     public static WriteAccessor bit_writer;
 
 

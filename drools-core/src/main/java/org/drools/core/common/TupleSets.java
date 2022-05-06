@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public interface TupleSets<T extends Tuple> {
     T getInsertFirst();

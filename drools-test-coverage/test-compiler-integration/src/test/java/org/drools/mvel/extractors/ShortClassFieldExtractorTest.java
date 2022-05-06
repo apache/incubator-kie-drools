@@ -15,18 +15,20 @@
 package org.drools.mvel.extractors;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.TestBean;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final short VALUE = 3;
 
-    InternalReadAccessor       reader;
+    ReadAccessor reader;
     TestBean                   bean  = new TestBean();
 
     @Before

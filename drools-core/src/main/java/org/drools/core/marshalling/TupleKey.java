@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public class TupleKey {
     private final long[] tuple;

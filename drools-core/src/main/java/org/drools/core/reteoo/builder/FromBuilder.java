@@ -21,7 +21,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.rule.From;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 
 public class FromBuilder
     implements

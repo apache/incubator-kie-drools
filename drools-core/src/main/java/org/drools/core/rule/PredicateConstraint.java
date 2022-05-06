@@ -28,11 +28,12 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PredicateExpression;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.PredicateExpression;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
 
 /**
@@ -120,7 +121,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        if ( PredicateExpression.isCompiledInvoker(this.expression) ) {
+        if ( CompiledInvoker.isCompiledInvoker(this.expression) ) {
             out.writeObject( null );
         } else {
             out.writeObject( this.expression );
@@ -245,7 +246,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
     }
 
-    public boolean isAllowed(InternalReadAccessor extractor,
+    public boolean isAllowed(ReadAccessor extractor,
                              InternalFactHandle handle,
                              ReteEvaluator reteEvaluator,
                              ContextEntry context) {

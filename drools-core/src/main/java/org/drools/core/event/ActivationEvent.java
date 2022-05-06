@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.EventObject;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 
 public class ActivationEvent extends EventObject {
 

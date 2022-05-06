@@ -20,12 +20,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.DataProvider;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.Tuple;
 import org.drools.model.functions.Function0;
 
 public class SupplierDataProvider implements DataProvider {

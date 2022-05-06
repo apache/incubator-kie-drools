@@ -19,7 +19,6 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 
 public interface PropagationContextFactory {

@@ -24,8 +24,8 @@ import org.drools.core.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
 
@@ -94,7 +94,7 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
 
     @Override
     public boolean evaluate(ReteEvaluator reteEvaluator,
-                            final InternalReadAccessor extractor,
+                            final ReadAccessor extractor,
                             final InternalFactHandle object1,
                             final FieldValue object2) {
         long rightTS = extractor.isSelfReference() ?
@@ -140,9 +140,9 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
 
     @Override
     public boolean evaluate(ReteEvaluator reteEvaluator,
-                            final InternalReadAccessor extractor1,
+                            final ReadAccessor extractor1,
                             final InternalFactHandle handle1,
-                            final InternalReadAccessor extractor2,
+                            final ReadAccessor extractor2,
                             final InternalFactHandle handle2) {
         if ( extractor1.isNullValue( reteEvaluator, handle1.getObject() ) ||
              extractor2.isNullValue( reteEvaluator, handle2.getObject() ) ) {

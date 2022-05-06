@@ -21,8 +21,8 @@ import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.common.PropagationContext;
 
 public class AlphaTerminalNode extends LeftInputAdapterNode {
 

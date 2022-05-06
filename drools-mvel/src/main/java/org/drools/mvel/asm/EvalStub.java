@@ -15,7 +15,7 @@
 
 package org.drools.mvel.asm;
 
-import org.drools.core.spi.EvalExpression;
+import org.drools.core.rule.accessor.EvalExpression;
 
 public interface EvalStub extends EvalExpression, InvokerStub {
     void setEval(EvalExpression predicate);

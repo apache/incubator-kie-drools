@@ -25,9 +25,9 @@ import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.mvel.evaluators.BaseEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -167,13 +167,13 @@ public class CustomOperatorOnlyDrlTest {
             super(type, isNegated ? F_StrEvaluatorDefinition.NOT_STR_COMPARE : F_StrEvaluatorDefinition.STR_COMPARE);
         }
 
-        public boolean evaluate(final ReteEvaluator reteEvaluator, final InternalReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
+        public boolean evaluate(final ReteEvaluator reteEvaluator, final ReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
             final Object objectValue = extractor.getValue(reteEvaluator, factHandle);
             final String objectValueString = (String) objectValue;
             return evaluateAll((String) value.getValue(), objectValueString);
         }
 
-        public boolean evaluate(final ReteEvaluator reteEvaluator, final InternalReadAccessor ira, final InternalFactHandle left, final InternalReadAccessor ira1, final InternalFactHandle right) {
+        public boolean evaluate(final ReteEvaluator reteEvaluator, final ReadAccessor ira, final InternalFactHandle left, final ReadAccessor ira1, final InternalFactHandle right) {
             return evaluateAll((String) left.getObject(), (String) right.getObject());
         }
 

@@ -22,15 +22,8 @@ import java.util.Map;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.drl.parser.DrlExprParser;
-import org.drools.drl.parser.DroolsParserException;
-import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.lang.DescrDumper;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.BindingDescr;
-import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
-import org.drools.drl.ast.descr.ExprConstraintDescr;
-import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.compiler.lang.DumperContext;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.extractors.ArrayElementReader;
@@ -39,11 +32,18 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.accessor.DeclarationScopeResolver;
+import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.parser.DrlExprParser;
+import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
 
@@ -82,7 +82,7 @@ public class QueryElementBuilder
         List<Declaration> requiredDeclarations = new ArrayList<>();
 
         ObjectType argsObjectType = ClassObjectType.ObjectArray_ObjectType;
-        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
+        ReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
         Pattern pattern = new Pattern( context.getNextPatternId(),
                                        0, // tupleIndex is 0 by default
                                        0, // patternIndex is 0 by default
@@ -230,7 +230,7 @@ public class QueryElementBuilder
                                  Declaration[] params,
                                  QueryArgument[] arguments,
                                  List<Declaration> requiredDeclarations,
-                                 InternalReadAccessor arrayReader,
+                                 ReadAccessor arrayReader,
                                  Pattern pattern,
                                  BindingDescr bind ) {
         Declaration declr = context.getDeclarationResolver().getDeclaration( bind.getVariable() );
@@ -296,7 +296,7 @@ public class QueryElementBuilder
                                     Declaration[] params,
                                     QueryArgument[] arguments,
                                     List<Declaration> requiredDeclarations,
-                                    InternalReadAccessor arrayReader,
+                                    ReadAccessor arrayReader,
                                     Pattern pattern,
                                     BaseDescr base,
                                     String expression,
@@ -350,7 +350,7 @@ public class QueryElementBuilder
         return context.getDialect().analyzeBlock( context, base, expression, boundIds );
     }
 
-    private QueryArgument getVariableQueryArgument( InternalReadAccessor arrayReader, Declaration[] params, int pos, Pattern pattern, String expression) {
+    private QueryArgument getVariableQueryArgument( ReadAccessor arrayReader, Declaration[] params, int pos, Pattern pattern, String expression) {
         // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
         ArrayElementReader reader = new ArrayElementReader( arrayReader,
                                                             pos,

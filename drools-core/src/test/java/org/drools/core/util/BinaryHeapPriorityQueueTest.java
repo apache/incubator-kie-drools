@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.junit.Test;
 
 public class BinaryHeapPriorityQueueTest {

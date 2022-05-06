@@ -66,13 +66,13 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.rule.accessor.DeclarationScopeResolver;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.base.ObjectType;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -168,7 +168,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                String leftValue,
                                                OperatorDescr operatorDescr,
                                                String rightValue,
-                                               InternalReadAccessor extractor,
+                                               ReadAccessor extractor,
                                                Declaration requiredDeclaration,
                                                RelationalExprDescr relDescr,
                                                Map<String, OperatorDescr> aliases) {
@@ -232,7 +232,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                              String operator,
                                              boolean negated,
                                              String rightValue,
-                                             InternalReadAccessor extractor,
+                                             ReadAccessor extractor,
                                              LiteralRestrictionDescr restrictionDescr,
                                              Map<String, OperatorDescr> aliases) {
         if (!isMvelOperator(operator)) {
@@ -325,7 +325,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
     }
 
     private Evaluator buildLiteralEvaluator( RuleBuildContext context,
-                                                   InternalReadAccessor extractor,
+                                                   ReadAccessor extractor,
                                                    LiteralRestrictionDescr literalRestrictionDescr,
                                                    ValueType vtype) {
         EvaluatorDefinition.Target right = getRightTarget( extractor );
@@ -340,7 +340,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                              right );
     }
 
-    private EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor ) {
+    private EvaluatorDefinition.Target getRightTarget( final ReadAccessor extractor ) {
         return ( extractor.isSelfReference() &&
                  !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
                          Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
@@ -681,13 +681,13 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
     }
 
     @Override
-    public InternalReadAccessor buildMvelFieldReadAccessor( RuleBuildContext context,
+    public ReadAccessor buildMvelFieldReadAccessor( RuleBuildContext context,
                                                             BaseDescr descr,
                                                             Pattern pattern,
                                                             ObjectType objectType,
                                                             String fieldName,
                                                             boolean reportError) {
-        InternalReadAccessor reader;
+        ReadAccessor reader;
         Dialect dialect = context.getDialect();
         try {
             MVELDialect mvelDialect = (MVELDialect) context.getDialect("mvel");

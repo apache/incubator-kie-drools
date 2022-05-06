@@ -20,7 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 
 public class ArrayQueue implements Queue, Externalizable {
 

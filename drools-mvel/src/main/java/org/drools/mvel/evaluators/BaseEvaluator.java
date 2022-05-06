@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.spi.Evaluator;
+import org.drools.core.rule.accessor.Evaluator;
 import org.drools.core.time.Interval;
 
 /**

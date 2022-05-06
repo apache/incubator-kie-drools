@@ -20,7 +20,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,8 +37,8 @@ public class FactTemplateFieldExtractorTest {
         final FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
         final FactTemplate cheese = new FactTemplateImpl( pkg, "Cheese", fields );
 
-        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese, "name" );
-        final InternalReadAccessor extractPrice = new FactTemplateFieldExtractor( cheese, "price" );
+        final ReadAccessor extractName = new FactTemplateFieldExtractor( cheese, "name" );
+        final ReadAccessor extractPrice = new FactTemplateFieldExtractor( cheese, "price" );
 
         final Fact stilton = cheese.createFact();
         stilton.set( "name", "stilton" );
@@ -82,7 +82,7 @@ public class FactTemplateFieldExtractorTest {
                                                           "Cheese",
                                                           fields );
 
-        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese, "name" );
+        final ReadAccessor extractName = new FactTemplateFieldExtractor( cheese, "name" );
 
         final Pattern pattern = new Pattern( 0,
                                           new FactTemplateObjectType( cheese ) );

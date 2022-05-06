@@ -17,7 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 import java.util.Arrays;
 

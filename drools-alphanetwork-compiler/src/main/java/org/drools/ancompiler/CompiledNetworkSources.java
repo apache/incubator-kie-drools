@@ -25,7 +25,7 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,14 +86,14 @@ public class CompiledNetworkSources {
 
     public CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {
         try {
-            return (CompiledNetwork) aClass.getDeclaredConstructor(org.drools.core.spi.InternalReadAccessor.class, Map.class)
+            return (CompiledNetwork) aClass.getDeclaredConstructor(ReadAccessor.class, Map.class)
                     .newInstance(getFieldExtractor(), rangeIndexDeclarationMap);
         } catch (Exception e) {
             throw new CouldNotCreateAlphaNetworkCompilerException(e);
         }
     }
 
-    private InternalReadAccessor getFieldExtractor() {
+    private ReadAccessor getFieldExtractor() {
         return indexableConstraint == null ? null : indexableConstraint.getFieldExtractor();
     }
 

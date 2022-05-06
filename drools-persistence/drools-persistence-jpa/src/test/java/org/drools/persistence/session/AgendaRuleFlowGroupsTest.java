@@ -23,10 +23,11 @@ import java.util.Map;
 
 import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.util.io.ClassPathResource;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.util.DroolsPersistenceUtil;
+import org.drools.util.io.ClassPathResource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,8 +83,8 @@ public class AgendaRuleFlowGroupsTest {
 	public void testRuleFlowGroupOnly() throws Exception {
 		
 		CommandBasedStatefulKnowledgeSessionImpl ksession = createSession(-1, "ruleflow-groups.drl");
-		
-		org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
+
+        InternalAgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
 		// only main is available
 		assertEquals(1, groups.length);
 		assertEquals("MAIN", groups[0].getName());
@@ -108,8 +109,8 @@ public class AgendaRuleFlowGroupsTest {
     public void testAgendaGroupOnly() throws Exception {
         
         CommandBasedStatefulKnowledgeSessionImpl ksession = createSession(-1, "agenda-groups.drl");
-        
-        org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
+
+        InternalAgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // only main is available
         assertEquals(1, groups.length);
         assertEquals("MAIN", groups[0].getName());
@@ -135,8 +136,8 @@ public class AgendaRuleFlowGroupsTest {
     public void testAgendaGroupAndRuleFlowGroup() throws Exception {
         
         CommandBasedStatefulKnowledgeSessionImpl ksession = createSession(-1, "agenda-groups.drl", "ruleflow-groups.drl");
-        
-        org.drools.core.spi.AgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
+
+        InternalAgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // only main is available
         assertEquals(1, groups.length);
         assertEquals("MAIN", groups[0].getName());

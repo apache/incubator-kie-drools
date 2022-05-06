@@ -39,16 +39,13 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.PatternExtractor;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.base.AcceptsClassObjectType;
+import org.drools.core.rule.accessor.DataProvider;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.PatternExtractor;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.Tuple;
 import org.drools.util.ClassUtils;
 
 import static org.drools.util.ClassUtils.convertFromPrimitiveType;
@@ -161,7 +158,7 @@ public class XpathConstraint extends MutableTypeConstraint {
         this.declaration = declaration;
     }
 
-    public InternalReadAccessor getReadAccessor() {
+    public ReadAccessor getReadAccessor() {
         return new PatternExtractor( new ClassObjectType( getResultClass() ) );
     }
 

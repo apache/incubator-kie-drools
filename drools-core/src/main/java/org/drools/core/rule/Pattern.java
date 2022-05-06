@@ -34,11 +34,11 @@ import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Constraint.ConstraintType;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.PatternExtractor;
+import org.drools.core.base.AcceptsClassObjectType;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.rule.constraint.Constraint.ConstraintType;
+import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.PatternExtractor;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;

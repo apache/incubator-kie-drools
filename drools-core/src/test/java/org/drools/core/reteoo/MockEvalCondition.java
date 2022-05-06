@@ -23,8 +23,7 @@ import java.io.ObjectOutput;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
-import org.drools.core.spi.EvalExpression;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.EvalExpression;
 
 public class MockEvalCondition extends EvalCondition {
 

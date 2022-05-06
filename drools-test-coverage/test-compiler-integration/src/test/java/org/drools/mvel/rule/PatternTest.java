@@ -25,8 +25,8 @@ import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
 import org.drools.core.test.model.Cheese;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class PatternTest {
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();
-        final InternalReadAccessor ext = dec.getExtractor();
+        final ReadAccessor ext = dec.getExtractor();
         assertEquals( Cheese.class,
                       ext.getExtractToClass() );
 
@@ -68,7 +68,7 @@ public class PatternTest {
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();
-        final InternalReadAccessor ext = dec.getExtractor();
+        final ReadAccessor ext = dec.getExtractor();
         assertEquals( Fact.class,
                       ext.getExtractToClass() );
 

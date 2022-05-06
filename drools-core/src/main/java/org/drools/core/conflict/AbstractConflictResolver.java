@@ -16,7 +16,7 @@
 
 package org.drools.core.conflict;
 
-import org.drools.core.spi.ConflictResolver;
+import org.drools.core.rule.consequence.ConflictResolver;
 
 /**
  * Convenience base class for <code>ConflictResolver</code>s.

@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.core.process.WorkItemManager;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -69,7 +70,7 @@ public class ReTryWorkItemCommand implements ExecutableCommand<Void> {
 
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        ((org.drools.core.process.instance.WorkItemManager)ksession.getWorkItemManager()).retryWorkItem( workItemId, params );
+        ((WorkItemManager)ksession.getWorkItemManager()).retryWorkItem( workItemId, params );
         return null;
     }
 

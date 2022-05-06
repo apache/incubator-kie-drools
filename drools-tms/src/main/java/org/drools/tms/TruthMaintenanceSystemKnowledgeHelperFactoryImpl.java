@@ -15,7 +15,7 @@
 package org.drools.tms;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.kiesession.factory.KnowledgeHelperFactory;
 
 public class TruthMaintenanceSystemKnowledgeHelperFactoryImpl implements KnowledgeHelperFactory {

@@ -20,7 +20,7 @@ import java.io.Externalizable;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public interface ContextEntry
     extends

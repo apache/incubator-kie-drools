@@ -19,7 +19,7 @@ package org.drools.core.common;
 import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
-import org.drools.core.rule.QueryImpl;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.kie.api.internal.utils.KieService;
 
 public interface TruthMaintenanceSystemFactory extends KieService {

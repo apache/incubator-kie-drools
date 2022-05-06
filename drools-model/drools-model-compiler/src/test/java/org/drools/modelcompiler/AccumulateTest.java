@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.math3.util.Pair;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;

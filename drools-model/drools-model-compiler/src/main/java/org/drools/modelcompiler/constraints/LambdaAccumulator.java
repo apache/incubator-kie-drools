@@ -22,12 +22,11 @@ import java.util.Collection;
 import java.util.Objects;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 public abstract class LambdaAccumulator implements Accumulator {

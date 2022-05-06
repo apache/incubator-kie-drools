@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 
 public class FromNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;

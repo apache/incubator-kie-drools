@@ -38,9 +38,9 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.drools.core.spi.RuleComponent;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.core.rule.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
 
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;

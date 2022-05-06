@@ -16,8 +16,8 @@
 
 package org.drools.core.conflict;
 
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ConflictResolver;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.ConflictResolver;
 
 /**
  * <code>ConflictResolver</code> that uses the loadOrder of rules to resolve

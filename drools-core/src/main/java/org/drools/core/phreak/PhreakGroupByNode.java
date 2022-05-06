@@ -25,7 +25,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Accumulate;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.TupleList;
 
 public class PhreakGroupByNode extends PhreakAccumulateNode {

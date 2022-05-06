@@ -26,9 +26,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 /**
  * <p>The implementation of the 'str' evaluator definition.</p>
@@ -157,7 +157,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
          * @inheridDoc
          */
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
+                                ReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
             final Object objectValue = extractor.getValue(reteEvaluator, factHandle.getObject());
 
             switch (parameter) {
@@ -173,8 +173,8 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                InternalReadAccessor leftExtractor, InternalFactHandle left,
-                InternalReadAccessor rightExtractor, InternalFactHandle right) {
+                ReadAccessor leftExtractor, InternalFactHandle left,
+                ReadAccessor rightExtractor, InternalFactHandle right) {
             final Object value1 = leftExtractor.getValue(reteEvaluator, left.getObject());
             final Object value2 = rightExtractor.getValue(reteEvaluator, right.getObject());
 

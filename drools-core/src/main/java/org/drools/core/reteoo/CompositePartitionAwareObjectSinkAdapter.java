@@ -32,8 +32,8 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.common.PropagationContext;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -61,7 +61,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     }
 
     private boolean hashSink( ObjectSink sink ) {
-        InternalReadAccessor readAccessor = getHashableAccessor( sink );
+        ReadAccessor readAccessor = getHashableAccessor( sink );
         if (readAccessor != null) {
             int index = readAccessor.getIndex();
             if ( fieldIndex == null ) {
@@ -82,7 +82,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         return false;
     }
 
-    private InternalReadAccessor getHashableAccessor(ObjectSink sink) {
+    private ReadAccessor getHashableAccessor(ObjectSink sink) {
         if ( sink.getType() == NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             return CompositeObjectSinkAdapter.getHashableAccessor( alphaNode );

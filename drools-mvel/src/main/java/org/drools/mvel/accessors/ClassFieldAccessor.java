@@ -24,8 +24,9 @@ import java.lang.reflect.Method;
 
 import org.drools.core.base.FieldAccessor;
 import org.drools.core.base.ValueType;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 /**
  * This is a wrapper for a ClassFieldExtractor that provides
@@ -59,12 +60,67 @@ public class ClassFieldAccessor implements AcceptsReadAccessor, FieldAccessor, E
         this.writer = (ClassFieldWriter) is.readObject();
     }
 
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
+    public void setReadAccessor(ReadAccessor readAccessor) {
         this.reader = (ClassFieldReader) readAccessor;
     }
 
     public int getIndex() {
         return this.reader.getIndex();
+    }
+
+    @Override
+    public Object getValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getValue(reteEvaluator, object);
+    }
+
+    @Override
+    public char getCharValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getCharValue(reteEvaluator, object);
+    }
+
+    @Override
+    public int getIntValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getIntValue(reteEvaluator, object);
+    }
+
+    @Override
+    public byte getByteValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getByteValue(reteEvaluator, object);
+    }
+
+    @Override
+    public short getShortValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getShortValue(reteEvaluator, object);
+    }
+
+    @Override
+    public long getLongValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getLongValue(reteEvaluator, object);
+    }
+
+    @Override
+    public float getFloatValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getFloatValue(reteEvaluator, object);
+    }
+
+    @Override
+    public double getDoubleValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getDoubleValue(reteEvaluator, object);
+    }
+
+    @Override
+    public boolean getBooleanValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getBooleanValue(reteEvaluator, object);
+    }
+
+    @Override
+    public boolean isNullValue(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.isNullValue(reteEvaluator, object);
+    }
+
+    @Override
+    public int getHashCode(ReteEvaluator reteEvaluator, Object object) {
+        return this.reader.getHashCode(reteEvaluator, object);
     }
 
     public String getFieldName() {
@@ -132,6 +188,11 @@ public class ClassFieldAccessor implements AcceptsReadAccessor, FieldAccessor, E
 
     public boolean isGlobal() {
         return reader.isGlobal();
+    }
+
+    @Override
+    public boolean isSelfReference() {
+        return reader.isSelfReference();
     }
 
     public Class< ? > getFieldType() {

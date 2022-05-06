@@ -27,7 +27,7 @@ import org.drools.core.base.AccessorKeySupplier;
 import org.drools.core.base.FieldNameSupplier;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 import static org.drools.util.StringUtils.lcFirstForBean;
@@ -39,11 +39,11 @@ import static org.drools.util.StringUtils.lcFirstForBean;
  *  which allows serialization by regenerating the accessor classes
  * when needed.
  */
-public class ClassFieldReader implements Externalizable, InternalReadAccessor, FieldNameSupplier, AccessorKeySupplier {
+public class ClassFieldReader implements Externalizable, ReadAccessor, FieldNameSupplier, AccessorKeySupplier {
     private static final long              serialVersionUID = 510l;
     private String                         className;
     private String                         fieldName;
-    private transient InternalReadAccessor reader;
+    private transient ReadAccessor reader;
 
     public ClassFieldReader() {
 
@@ -66,7 +66,7 @@ public class ClassFieldReader implements Externalizable, InternalReadAccessor, F
         fieldName = (String) is.readObject();
     }
 
-    public void setReadAccessor(InternalReadAccessor reader) {
+    public void setReadAccessor(ReadAccessor reader) {
         this.reader = reader;
     }
 

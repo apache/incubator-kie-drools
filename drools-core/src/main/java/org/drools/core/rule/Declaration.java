@@ -26,10 +26,10 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.TupleValueExtractor;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.TupleValueExtractor;
 
 import static org.drools.util.ClassUtils.canonicalName;
 import static org.drools.util.ClassUtils.convertFromPrimitiveType;
@@ -47,7 +47,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
 
     private String               bindingName;
 
-    private InternalReadAccessor readAccessor;
+    private ReadAccessor         readAccessor;
 
     private Pattern              pattern;
 
@@ -93,7 +93,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
      *            The pattern this variable is declared in
      */
     public Declaration(final String identifier,
-                       final InternalReadAccessor extractor,
+                       final ReadAccessor extractor,
                        final Pattern pattern) {
         this( identifier,
               extractor,
@@ -115,7 +115,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
      *            of a collect CE
      */
     public Declaration(final String identifier,
-                       final InternalReadAccessor extractor,
+                       final ReadAccessor extractor,
                        final Pattern pattern,
                        final boolean internalFact) {
         this.identifier = identifier;
@@ -221,14 +221,14 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         return ( this.pattern != null && this.pattern.getDeclaration() == this ) || this.getIdentifier().equals( "this" ) ;
     }
 
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
+    public void setReadAccessor(ReadAccessor readAccessor) {
         this.readAccessor = readAccessor;
     }
 
     /**
      * Returns the Extractor expression
      */
-    public InternalReadAccessor getExtractor() {
+    public ReadAccessor getExtractor() {
         return this.readAccessor;
     }
 

@@ -62,16 +62,16 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.util.StringUtils.md5Hash;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
+import static org.drools.util.StringUtils.md5Hash;
 
 // As AssertCompiler and ModifyCompiler classes are quite similar except for the method they propagate in the Rete (assert vs modify) they share a common class
 public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler {
@@ -154,7 +154,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
 
     @Override
     public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
-        final InternalReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
+        final ReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
         fieldType = fieldExtractor.getExtractToClass();
 
         final SwitchStmt switchStmt;

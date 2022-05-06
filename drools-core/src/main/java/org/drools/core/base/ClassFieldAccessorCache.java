@@ -23,8 +23,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 
@@ -91,13 +91,13 @@ public class ClassFieldAccessorCache {
 
     }
     
-    public InternalReadAccessor getReadAccessor(String className, String fieldName) {
+    public ReadAccessor getReadAccessor(String className, String fieldName) {
         // get the ReaderAccessor for this key
         Class cls = getClass( className );
         return getCacheEntry( cls ).getReadAccessor( getAccessorKey( className, fieldName ), cls );
     }
 
-    public void setReadAcessor(String className, String fieldName, InternalReadAccessor readAccessor) {
+    public void setReadAcessor(String className, String fieldName, ReadAccessor readAccessor) {
         // get the ReaderAccessor for this key
         Class cls = getClass( className );
         getCacheEntry( cls ).setReadAccessor( getAccessorKey( className, fieldName ), readAccessor );
@@ -149,7 +149,7 @@ public class ClassFieldAccessorCache {
 
     public static class CacheEntry {
         private final ByteArrayClassLoader byteArrayClassLoader;
-        private final ConcurrentMap<AccessorKey, InternalReadAccessor> readCache  = new ConcurrentHashMap<>();
+        private final ConcurrentMap<AccessorKey, ReadAccessor> readCache  = new ConcurrentHashMap<>();
         private final ConcurrentMap<AccessorKey, WriteAccessor> writeCache = new ConcurrentHashMap<>();
 
         private final ConcurrentMap<Class< ? >, ClassFieldInspector>     inspectors  = new ConcurrentHashMap<>();
@@ -169,12 +169,12 @@ public class ClassFieldAccessorCache {
             return byteArrayClassLoader;
         }
 
-        public InternalReadAccessor getReadAccessor(AccessorKey key, Class cls) {
-            InternalReadAccessor reader = this.readCache.get( key );
+        public ReadAccessor getReadAccessor(AccessorKey key, Class cls) {
+            ReadAccessor reader = this.readCache.get( key );
             if ( reader == null ) {
                 reader = FieldAccessorFactory.get().getClassFieldReader( cls, key.getFieldName(), this );
                 if ( reader != null ) {
-                    InternalReadAccessor existingReader = this.readCache.putIfAbsent( key, reader );
+                    ReadAccessor existingReader = this.readCache.putIfAbsent( key, reader );
                     if ( existingReader != null ) {
                         // Raced, use the (now) existing entry
                         reader = existingReader;
@@ -185,7 +185,7 @@ public class ClassFieldAccessorCache {
             return reader;
         }
 
-        public void setReadAccessor(AccessorKey key, InternalReadAccessor reader) {
+        public void setReadAccessor(AccessorKey key, ReadAccessor reader) {
             this.readCache.put( key, reader );
         }
 

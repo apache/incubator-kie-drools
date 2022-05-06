@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import org.drools.core.base.AccessorKey;
 import org.drools.core.base.ReadAccessorSupplier;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 public class DroolsObjectInputStream extends ObjectInputStream
@@ -43,7 +43,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
     private Package pkg;
     private ReadAccessorSupplier store;
 
-    private Map<AccessorKey, List<Consumer<InternalReadAccessor>>> extractorBinders = new HashMap<>();
+    private Map<AccessorKey, List<Consumer<ReadAccessor>>> extractorBinders = new HashMap<>();
     
     private Map<String, Object> customExtensions = new HashMap<>();
 
@@ -136,10 +136,10 @@ public class DroolsObjectInputStream extends ObjectInputStream
         this.store = store;
     }
 
-    public void readExtractor( Consumer<InternalReadAccessor> binder ) throws ClassNotFoundException, IOException {
+    public void readExtractor( Consumer<ReadAccessor> binder ) throws ClassNotFoundException, IOException {
         Object accessor = readObject();
         if (accessor instanceof AccessorKey ) {
-            InternalReadAccessor reader = store != null ? store.getReader((AccessorKey) accessor) : null;
+            ReadAccessor reader = store != null ? store.getReader((AccessorKey) accessor) : null;
             if (reader == null) {
                 // when an accessor is used in a query it may have been defined in a different package and that package
                 // couldn't have been deserialized yet, so delay this binding at the end of the deserialization process
@@ -148,7 +148,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
                 binder.accept( reader );
             }
         } else {
-            binder.accept( (InternalReadAccessor) accessor );
+            binder.accept( (ReadAccessor) accessor );
         }
     }
 

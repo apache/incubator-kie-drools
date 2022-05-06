@@ -26,32 +26,32 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.time.Interval;
+import org.drools.mvel.evaluators.MvelEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.mvel.evaluators.MvelEvaluator;
-import org.drools.core.spi.Tuple;
-import org.drools.core.time.Interval;
 
 public class EvaluatorConstraint extends MutableTypeConstraint implements IntervalProviderConstraint {
 
     protected Declaration[] declarations;
     protected Evaluator evaluator;
-    protected InternalReadAccessor rightReadAccessor;
+    protected ReadAccessor rightReadAccessor;
     protected FieldValue field;
 
     public EvaluatorConstraint() { }
 
-    public EvaluatorConstraint(FieldValue field, Evaluator evaluator, InternalReadAccessor extractor) {
+    public EvaluatorConstraint(FieldValue field, Evaluator evaluator, ReadAccessor extractor) {
         this.field = field;
         this.declarations = new Declaration[0];
         this.evaluator = evaluator;
         this.rightReadAccessor = extractor;
     }
 
-    public EvaluatorConstraint(Declaration[] declarations, Evaluator evaluator, InternalReadAccessor extractor) {
+    public EvaluatorConstraint(Declaration[] declarations, Evaluator evaluator, ReadAccessor extractor) {
         this.declarations = declarations;
         this.evaluator = evaluator;
         this.rightReadAccessor = extractor;
@@ -129,7 +129,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return field;
     }
 
-    protected InternalReadAccessor getRightReadAccessor() {
+    protected ReadAccessor getRightReadAccessor() {
         return rightReadAccessor;
     }
 
@@ -161,14 +161,14 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         super.readExternal(in);
         field = (FieldValue) in.readObject();
         declarations = (Declaration[]) in.readObject();
-        rightReadAccessor = (InternalReadAccessor) in.readObject();
+        rightReadAccessor = (ReadAccessor) in.readObject();
         evaluator = (Evaluator) in.readObject();
     }
 
     protected static class LiteralContextEntry implements ContextEntry {
 
         private static final long   serialVersionUID = 510l;
-        public InternalReadAccessor extractor;
+        public ReadAccessor         extractor;
         public InternalFactHandle   factHandle;
         public ContextEntry         next;
         public ReteEvaluator        reteEvaluator;
@@ -176,13 +176,13 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         public LiteralContextEntry() {
         }
 
-        public LiteralContextEntry(final InternalReadAccessor extractor) {
+        public LiteralContextEntry(final ReadAccessor extractor) {
             this.extractor = extractor;
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            extractor = (InternalReadAccessor) in.readObject();
+            extractor = (ReadAccessor) in.readObject();
             factHandle = ( InternalFactHandle ) in.readObject();
             next = (ContextEntry) in.readObject();
             reteEvaluator = ( ReteEvaluator ) in .readObject();
@@ -195,7 +195,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
             out.writeObject( reteEvaluator );
         }
 
-        public InternalReadAccessor getFieldExtractor() {
+        public ReadAccessor getFieldExtractor() {
             return this.extractor;
         }
 

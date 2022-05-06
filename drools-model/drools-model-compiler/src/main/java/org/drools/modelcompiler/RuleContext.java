@@ -29,9 +29,9 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.GlobalExtractor;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.accessor.GlobalExtractor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
 import org.drools.model.Global;
 import org.drools.model.Variable;
 
@@ -114,7 +114,7 @@ public class RuleContext {
         } else {
             Global global = (( Global ) variable);
             ObjectType objectType = builder.getObjectType( global );
-            InternalReadAccessor globalExtractor = new GlobalExtractor( global.getName(), objectType );
+            ReadAccessor globalExtractor = new GlobalExtractor( global.getName(), objectType );
             return new Declaration( global.getName(), globalExtractor, new Pattern( 0, objectType ) );
         }
     }

@@ -24,7 +24,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.Constraint;
+import org.drools.core.rule.constraint.Constraint;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

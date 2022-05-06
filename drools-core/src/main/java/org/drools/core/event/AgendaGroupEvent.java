@@ -18,18 +18,18 @@ package org.drools.core.event;
 
 import java.util.EventObject;
 
-import org.drools.core.spi.AgendaGroup;
+import org.drools.core.common.InternalAgendaGroup;
 
 public class AgendaGroupEvent extends EventObject {
 
     private static final long serialVersionUID = 510l;
 
-    public AgendaGroupEvent(final AgendaGroup agendaGroup) {
+    public AgendaGroupEvent(final InternalAgendaGroup agendaGroup) {
         super( agendaGroup );
     }
 
-    public AgendaGroup getAgendaGroup() {
-        return (AgendaGroup) getSource();
+    public InternalAgendaGroup getAgendaGroup() {
+        return (InternalAgendaGroup) getSource();
     }
 
 }

@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.mvel.MVELConstraint;
@@ -35,19 +35,19 @@ public class MVELConstraintTestUtil extends MVELConstraint {
         MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;
     }
 
-    public MVELConstraintTestUtil(String expression, FieldValue fieldValue, InternalReadAccessor extractor) {
+    public MVELConstraintTestUtil(String expression, FieldValue fieldValue, ReadAccessor extractor) {
         super(null, expression, null, findConstraintTypeForExpression(expression), fieldValue, extractor, null);
     }
 
-    public MVELConstraintTestUtil(String expression, Declaration declaration, InternalReadAccessor extractor) {
+    public MVELConstraintTestUtil(String expression, Declaration declaration, ReadAccessor extractor) {
         super(new ArrayList<String>(), expression, new Declaration[] { declaration }, null, null, findConstraintTypeForExpression(expression), declaration, extractor, expression.contains(":="));
     }
 
-    public MVELConstraintTestUtil(String expression, String operator, Declaration declaration, InternalReadAccessor extractor) {
+    public MVELConstraintTestUtil(String expression, String operator, Declaration declaration, ReadAccessor extractor) {
         this(expression, IndexUtil.ConstraintType.decode(operator), declaration, extractor);
     }
 
-    public MVELConstraintTestUtil(String expression, IndexUtil.ConstraintType constraintType, Declaration declaration, InternalReadAccessor extractor) {
+    public MVELConstraintTestUtil(String expression, IndexUtil.ConstraintType constraintType, Declaration declaration, ReadAccessor extractor) {
         super(new ArrayList<String>(), expression, new Declaration[] { declaration }, null, null, constraintType, declaration, extractor, expression.contains(":="));
     }
 

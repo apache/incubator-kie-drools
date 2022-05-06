@@ -17,7 +17,7 @@ package org.drools.mvel;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.PatternExtractor;
+import org.drools.core.rule.accessor.PatternExtractor;
 import org.drools.model.Index;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;

@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.kie.api.event.rule.MatchCancelledCause;
 
 public class ActivationCancelledEvent extends ActivationEvent {

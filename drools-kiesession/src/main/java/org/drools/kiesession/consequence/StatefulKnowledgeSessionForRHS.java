@@ -36,10 +36,9 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.AsyncExceptionHandler;
-import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.spi.GlobalResolver;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -654,10 +653,6 @@ public class StatefulKnowledgeSessionForRHS
 
     public boolean tryDeactivate() {
         return delegate.tryDeactivate();
-    }
-
-    public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
-        delegate.setAsyncExceptionHandler(handler);
     }
 
     public Iterator<? extends PropagationEntry> getActionsIterator() {

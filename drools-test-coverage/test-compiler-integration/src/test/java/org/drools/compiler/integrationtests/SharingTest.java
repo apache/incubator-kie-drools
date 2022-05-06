@@ -27,7 +27,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.mvel.MVELConstraint;
 import org.drools.testcoverage.common.model.FactWithList;

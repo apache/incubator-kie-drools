@@ -28,8 +28,8 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
@@ -55,7 +55,7 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testSingleEntry() throws Exception {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 0,
@@ -109,7 +109,7 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testTwoDifferentEntries() throws Exception {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 0,
@@ -171,7 +171,7 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testTwoEqualEntries() throws Exception {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 0,
@@ -232,7 +232,7 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testTwoDifferentEntriesSameHashCode() throws Exception {
-        final InternalReadAccessor extractor = store.getReader( TestClass.class,
+        final ReadAccessor extractor = store.getReader( TestClass.class,
                                                                 "object" );
 
         final Pattern pattern = new Pattern( 0,
@@ -290,7 +290,7 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testRemove() throws Exception {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 0,
@@ -362,7 +362,7 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testResize() throws Exception {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 0,
@@ -586,7 +586,7 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testEmptyIterator() {
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+        final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
         final Pattern pattern = new Pattern( 0,

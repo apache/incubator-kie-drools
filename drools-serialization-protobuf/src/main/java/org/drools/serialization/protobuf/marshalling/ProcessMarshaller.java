@@ -21,7 +21,7 @@ import java.util.List;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.WorkItem;
 
 public interface ProcessMarshaller {
 

@@ -37,9 +37,9 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.traits.core.factmodel.CodedHierarchy;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.kie.api.runtime.ObjectFilter;
@@ -175,7 +175,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
          * @inheridDoc
          */
         public boolean evaluate( ReteEvaluator reteEvaluator,
-                                 InternalReadAccessor extractor, InternalFactHandle handle, FieldValue value ) {
+                                 ReadAccessor extractor, InternalFactHandle handle, FieldValue value ) {
             final Object objectValue = extractor.getValue( reteEvaluator, handle.getObject() );
             final Object literal = value.getValue();
             if ( cachedValue != literal) {
@@ -287,8 +287,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(ReteEvaluator reteEvaluator,
-                                InternalReadAccessor leftExtractor, InternalFactHandle left,
-                                InternalReadAccessor rightExtractor, InternalFactHandle right) {
+                                ReadAccessor leftExtractor, InternalFactHandle left,
+                                ReadAccessor rightExtractor, InternalFactHandle right) {
             Object source = leftExtractor.getValue( reteEvaluator, left != null ? left.getObject() : null );
             Object target = rightExtractor.getValue( reteEvaluator, right != null ? right.getObject() : null );
 

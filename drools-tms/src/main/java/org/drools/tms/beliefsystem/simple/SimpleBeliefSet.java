@@ -21,7 +21,7 @@ import org.drools.tms.SimpleMode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.tms.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 

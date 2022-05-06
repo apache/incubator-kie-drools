@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.core.process.instance.WorkItemManagerFactory;
+import org.drools.core.process.WorkItemManagerFactory;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.util.StringUtils;
 import org.kie.api.KieBase;

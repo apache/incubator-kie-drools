@@ -26,9 +26,9 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.Consequence;
-import org.drools.core.spi.PropagationContext;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.Consequence;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
 

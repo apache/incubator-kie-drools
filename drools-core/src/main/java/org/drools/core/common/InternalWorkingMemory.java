@@ -27,7 +27,7 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
 

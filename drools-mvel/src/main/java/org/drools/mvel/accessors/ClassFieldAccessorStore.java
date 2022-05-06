@@ -38,12 +38,12 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.ReadAccessorSupplier;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.ClassWireable;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.base.AcceptsClassObjectType;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.base.ClassWireable;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.kie.api.definition.type.FactField;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -135,7 +135,7 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
         return entry != null ? ( ClassFieldReader ) entry.getClassFieldReader() : null;
     }
 
-    public InternalReadAccessor getMVELReader(final String pkgName,
+    public ReadAccessor getMVELReader(final String pkgName,
                                                     final String className,
                                                     final String expr,
                                                     final boolean typesafe, 
@@ -148,7 +148,7 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
         return entry.getClassFieldReader();
     }
     
-    public static InternalReadAccessor getReadAcessor(String className, String expr, boolean typesafe, Class<?> returnType) {
+    public static ReadAccessor getReadAcessor(String className, String expr, boolean typesafe, Class<?> returnType) {
         return CoreComponentsBuilder.get().getReadAcessor(className, expr, typesafe, returnType);
     }
 
@@ -218,7 +218,7 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
                     FieldLookupEntry lookupEntry = (FieldLookupEntry) this.lookup.computeIfAbsent( entry.getKey(), e -> entry.getValue() );
                     // wire up ClassFieldReaders
                     if (lookupEntry.getClassFieldReader() != null ) {
-                        InternalReadAccessor reader = ((FieldLookupEntry)entry.getValue()).getClassFieldReader();
+                        ReadAccessor reader = ((FieldLookupEntry)entry.getValue()).getClassFieldReader();
                         BaseClassFieldReader accessor = wire(reader);
                         if (other.cache != null && reader instanceof ClassFieldReader) {
                             other.cache.setReadAcessor( ((ClassFieldReader) reader).getClassName(), ((ClassFieldReader) reader).getFieldName(), accessor );
@@ -254,7 +254,7 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
         for ( Entry<AccessorKey, BaseLookupEntry> entry : lookup.entrySet() ) {
             switch ( entry.getValue().getAccessorType() ) {
                 case FieldAccessor : {
-                    InternalReadAccessor reader = ((FieldLookupEntry) entry.getValue()).getClassFieldReader();
+                    ReadAccessor reader = ((FieldLookupEntry) entry.getValue()).getClassFieldReader();
                     if ( reader != null ) {
                         wire( reader );
                     }
@@ -274,9 +274,9 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
         }
     }
 
-    public BaseClassFieldReader wire(InternalReadAccessor reader) {
+    public BaseClassFieldReader wire(ReadAccessor reader) {
         if ( reader  instanceof ClassFieldReader ) {
-            InternalReadAccessor accessor = cache.getReadAccessor( ((ClassFieldReader) reader).getClassName(), ((ClassFieldReader) reader).getFieldName() );
+            ReadAccessor accessor = cache.getReadAccessor( ((ClassFieldReader) reader).getClassName(), ((ClassFieldReader) reader).getFieldName() );
             ((ClassFieldReader)reader).setReadAccessor( accessor );
             return (BaseClassFieldReader) accessor;
         }
@@ -374,16 +374,16 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
     }
 
     public static class FieldLookupEntry implements BaseLookupEntry {
-        private InternalReadAccessor reader;
+        private ReadAccessor reader;
         private ClassFieldWriter writer;
 
         public FieldLookupEntry() { }
 
-        public FieldLookupEntry(InternalReadAccessor reader) {
+        public FieldLookupEntry(ReadAccessor reader) {
             this( reader, null );
         }
 
-        public FieldLookupEntry(InternalReadAccessor reader,
+        public FieldLookupEntry(ReadAccessor reader,
                                 ClassFieldWriter writer) {
             this.writer = writer;
             this.reader = reader;
@@ -396,11 +396,11 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            reader = (InternalReadAccessor) in.readObject();
+            reader = (ReadAccessor) in.readObject();
             writer = (ClassFieldWriter) in.readObject();
         }
 
-        public InternalReadAccessor getClassFieldReader() {
+        public ReadAccessor getClassFieldReader() {
             return reader;
         }
 

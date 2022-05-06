@@ -18,7 +18,7 @@ import org.drools.serialization.protobuf.ProtobufInputMarshaller;
 import org.drools.tms.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.ProtobufWorkingMemoryAction;

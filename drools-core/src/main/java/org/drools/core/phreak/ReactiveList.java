@@ -17,12 +17,11 @@ package org.drools.core.phreak;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements List<T>{
 

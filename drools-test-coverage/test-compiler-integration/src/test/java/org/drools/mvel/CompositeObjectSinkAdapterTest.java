@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
@@ -34,8 +35,7 @@ import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.model.Cheese;
 import org.drools.mvel.model.MockObjectSource;
@@ -56,7 +56,7 @@ public class CompositeObjectSinkAdapterTest {
     private InternalKnowledgeBase        kBase;
     private BuildContext                 buildContext;
 	private CompositeObjectSinkAdapter ad;
-	private InternalReadAccessor extractor;
+	private ReadAccessor extractor;
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 

@@ -2,7 +2,7 @@ package org.drools.compiler.rule.builder.util;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.OperatorDescr;
