@@ -17,9 +17,9 @@ package org.drools.core.rule;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.TupleValueExtractor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.index.IndexUtil;
 

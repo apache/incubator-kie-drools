@@ -28,11 +28,12 @@ import org.drools.core.WorkingMemoryEventManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleFlowGroup;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.reteoo.Tuple;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
 import org.kie.api.definition.process.Node;
@@ -398,28 +399,28 @@ public abstract class WorkingMemoryLogger
         filterLogEvent(new RuleFlowGroupLogEvent(
                         LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED,
                         event.getRuleFlowGroup().getName(),
-                        ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
+                        ((RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
     
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.AFTER_RULEFLOW_GROUP_ACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
+                ((RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
 
     public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.BEFORE_RULEFLOW_GROUP_DEACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
+                ((RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
     
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.AFTER_RULEFLOW_GROUP_DEACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
+                ((RuleFlowGroup)event.getRuleFlowGroup()).size()));
     }
     
     public void beforeProcessStarted(ProcessStartedEvent event) {

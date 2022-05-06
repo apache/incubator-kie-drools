@@ -41,7 +41,7 @@ import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.time.impl.CompositeMaxDurationTimer;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.Timer;

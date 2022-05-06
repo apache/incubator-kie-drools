@@ -34,7 +34,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 public class BetaNodeBuilder {
     BuildContext buildContext;

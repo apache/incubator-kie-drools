@@ -23,8 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Lists;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.reteoo.Tuple;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -42,7 +42,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.Wireable;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.util.StringUtils;
 import org.drools.wiring.api.ComponentsFactory;

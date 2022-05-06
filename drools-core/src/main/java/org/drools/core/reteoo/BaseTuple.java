@@ -20,7 +20,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.spi.Tuple;
 
 public abstract class BaseTuple implements Tuple {
     private short  stagedType;

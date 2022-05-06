@@ -19,8 +19,7 @@ import java.util.List;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.TestBean;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.junit.Before;
 import org.junit.Test;

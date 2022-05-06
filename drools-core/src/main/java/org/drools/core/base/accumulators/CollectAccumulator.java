@@ -23,13 +23,12 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.reteoo.Tuple;
 
 /**
  * An accumulator to execute "collect" CEs

@@ -18,7 +18,7 @@ package org.drools.core.common;
 
 import java.util.Map;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 
 public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGroup {
 

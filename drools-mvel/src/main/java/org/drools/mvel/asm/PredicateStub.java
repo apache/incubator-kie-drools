@@ -15,7 +15,7 @@
 
 package org.drools.mvel.asm;
 
-import org.drools.core.spi.PredicateExpression;
+import org.drools.core.rule.accessor.PredicateExpression;
 
 public interface PredicateStub extends PredicateExpression, InvokerStub {
 

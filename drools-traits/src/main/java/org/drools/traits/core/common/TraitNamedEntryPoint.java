@@ -32,7 +32,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.common.PropagationContext;
 import org.drools.traits.core.base.TraitHelperImpl;
 

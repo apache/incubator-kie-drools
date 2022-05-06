@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import org.drools.core.common.MissingDependencyException;
 import org.drools.core.rule.DialectRuntimeData;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.Drools;
 import org.drools.core.util.MVELExecutor;
 import org.kie.api.internal.utils.KieService;

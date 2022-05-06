@@ -25,7 +25,7 @@ import org.drools.drl.parser.impl.Operator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.model.functions.Predicate2;

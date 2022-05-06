@@ -19,8 +19,8 @@ package org.drools.modelcompiler.attributes;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Enabled;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Enabled;
+import org.drools.core.reteoo.Tuple;
 import org.drools.model.DynamicValueSupplier;
 
 import static org.drools.modelcompiler.consequence.LambdaConsequence.declarationsToFacts;

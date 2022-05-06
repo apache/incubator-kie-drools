@@ -16,7 +16,7 @@
 package org.drools.core.common;
 
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 
 /**
  * A filter interface for agenda activations

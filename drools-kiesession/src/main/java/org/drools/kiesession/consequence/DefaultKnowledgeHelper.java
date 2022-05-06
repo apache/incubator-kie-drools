@@ -40,10 +40,10 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.AbstractProcessContext;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.Tuple;
+import org.drools.core.process.AbstractProcessContext;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -361,7 +361,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     protected AbstractProcessContext createProcessContext() {
-        return new org.drools.core.spi.ProcessContext(toStatefulKnowledgeSession().getKnowledgeRuntime());
+        return new org.drools.core.process.ProcessContext(toStatefulKnowledgeSession().getKnowledgeRuntime());
     }
 
     protected boolean sameNodeInstance( NodeInstance subNodeInstance, String nodeInstanceId ) {

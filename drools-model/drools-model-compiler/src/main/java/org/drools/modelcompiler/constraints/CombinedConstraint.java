@@ -21,13 +21,12 @@ import java.util.stream.Stream;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.index.IndexUtil;

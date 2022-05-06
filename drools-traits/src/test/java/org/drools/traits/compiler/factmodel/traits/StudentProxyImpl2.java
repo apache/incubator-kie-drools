@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.drools.traits.core.factmodel.ExternalizableLinkedHashMap;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TraitTypeMapImpl;

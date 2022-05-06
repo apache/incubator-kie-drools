@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.drools.core.base.CoercionUtil;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;

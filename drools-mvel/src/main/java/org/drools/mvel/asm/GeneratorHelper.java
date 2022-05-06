@@ -27,8 +27,8 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.reteoo.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

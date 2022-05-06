@@ -20,7 +20,7 @@ import java.io.Externalizable;
 
 import org.drools.core.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.spi.Evaluator;
+import org.drools.core.rule.accessor.Evaluator;
 
 /**
  * An evaluator definition interface that allows for pluggable

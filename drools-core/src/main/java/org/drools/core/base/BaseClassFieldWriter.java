@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 
 /**
  * This is the supertype for the ASM generated classes for writing values into fields.

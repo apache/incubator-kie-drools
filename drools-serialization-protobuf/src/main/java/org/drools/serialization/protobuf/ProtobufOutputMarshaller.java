@@ -52,7 +52,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.WorkItem;
 import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -63,8 +63,8 @@ import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.RuleFlowGroup;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.common.RuleFlowGroup;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.Trigger;
@@ -255,18 +255,6 @@ public class ProtobufOutputMarshaller {
 	}
 
 	private static void evaluateRuleActivations(StatefulKnowledgeSessionImpl wm) {
-        // ET: NOTE: initially we were only resolving partially evaluated rules
-        // but some tests fail because of that. Have to resolve all rule agenda items
-        // in order to fix the tests
-        
-        // find all partially evaluated rule activations
-//        ActivationIterator it = ActivationIterator.iterator( wm );
-//        Set<String> evaluated = new HashSet<String>();
-//        for ( org.drools.core.spi.Activation item = (org.drools.core.spi.Activation) it.next(); item != null; item = (org.drools.core.spi.Activation) it.next() ) {
-//            if ( !item.isRuleAgendaItem() ) {
-//                evaluated.add( item.getRule().getPackageName()+"."+item.getRule().getName() );
-//            }
-//        }
         // need to evaluate all lazy partially evaluated activations before serializing
         boolean dirty = true;
         while ( dirty) {
@@ -333,15 +321,15 @@ public class ProtobufOutputMarshaller {
 
         // serialize all dormant activations
         org.drools.core.util.Iterator it = ActivationIterator.iterator( wm );
-        List<org.drools.core.spi.Activation> dormant = new ArrayList<org.drools.core.spi.Activation>();
-        for ( org.drools.core.spi.Activation item = (org.drools.core.spi.Activation) it.next(); item != null; item = (org.drools.core.spi.Activation) it.next() ) {
+        List<Activation> dormant = new ArrayList<Activation>();
+        for (Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
             if ( !item.isQueued() ) {
                 dormant.add( item );
             }
         }
 
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
-        for ( org.drools.core.spi.Activation activation : dormant ) {
+        for ( Activation activation : dormant ) {
             _ab.addMatch( writeActivation( context, (AgendaItem) activation, true) );
         }
 
@@ -533,7 +521,7 @@ public class ProtobufOutputMarshaller {
             //_belief.setActivation( value )
 
             LogicalDependency dependency = (LogicalDependency) node.getObject();
-            org.drools.core.spi.Activation activation = dependency.getJustifier();
+            Activation activation = dependency.getJustifier();
             ProtobufMessages.Activation _activation = ProtobufMessages.Activation.newBuilder()
                     .setPackageName( activation.getRule().getPackage() )
                     .setRuleName( activation.getRule().getName() )
@@ -678,15 +666,15 @@ public class ProtobufOutputMarshaller {
 
     public static class ActivationsSorter
             implements
-            Comparator<org.drools.core.spi.Activation> {
+            Comparator<Activation> {
         public static final ActivationsSorter INSTANCE = new ActivationsSorter();
 
-        public int compare(org.drools.core.spi.Activation o1,
-                           org.drools.core.spi.Activation o2) {
+        public int compare(Activation o1,
+                           Activation o2) {
             int result = o1.getRule().getName().compareTo( o2.getRule().getName() );
             if ( result == 0 ) {
-                org.drools.core.spi.Tuple t1 = o1.getTuple();
-                org.drools.core.spi.Tuple t2 = o2.getTuple();
+                org.drools.core.reteoo.Tuple t1 = o1.getTuple();
+                org.drools.core.reteoo.Tuple t2 = o2.getTuple();
                 while ( result == 0 && t1 != null && t2 != null ) {
                     // can be null for eval, not and exists that have no right input
                     if ( t1.getFactHandle() == null ) {
@@ -737,14 +725,14 @@ public class ProtobufOutputMarshaller {
     }
 
     public static Tuple writeTuple( MarshallerWriteContext context, Activation activation, boolean isDormient ) {
-        org.drools.core.spi.Tuple tuple = activation.getTuple();
+        org.drools.core.reteoo.Tuple tuple = activation.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
 
         boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) activation);
 
         if (tuple != null) {
             // tuple can be null if this is a rule network evaluation activation, instead of terminal node left tuple.
-            for (org.drools.core.spi.Tuple entry = tuple.skipEmptyHandles(); entry != null; entry = entry.getParent()) {
+            for (org.drools.core.reteoo.Tuple entry = tuple.skipEmptyHandles(); entry != null; entry = entry.getParent()) {
                 InternalFactHandle handle = entry.getFactHandle();
                 _tb.addHandleId(handle.getId());
 

@@ -18,7 +18,7 @@ package org.drools.core.rule.constraint;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public interface BetaNodeFieldConstraint
     extends

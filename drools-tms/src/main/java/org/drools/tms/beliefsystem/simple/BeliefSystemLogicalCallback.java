@@ -26,7 +26,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.common.PropagationContext;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.rule.consequence.Activation;
 import org.drools.mvel.compiler.Bar;
 import org.drools.mvel.compiler.Foo;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -146,7 +147,7 @@ public class MatchTest {
                 "    $total : count()\n" +
                 "  )\n" +
                 "then\n" +
-                "  list.addAll(((org.drools.core.spi.Activation)kcontext.getMatch()).getObjectsDeep());\n" +
+                "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
                 "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -172,7 +173,7 @@ public class MatchTest {
                 "  $b : Bar(id == \"roadster\")\n" +
                 "  exists Foo(bar == $b)\n" +
                 "then\n" +
-                "  list.addAll(((org.drools.core.spi.Activation)kcontext.getMatch()).getObjectsDeep());\n" +
+                "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
                 "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
@@ -225,7 +226,7 @@ public class MatchTest {
                      "            $result : average($count)\n" +
                      "        )\n" +
                      "    then\n" +
-                     "        list.addAll( ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep() );" +
+                     "        list.addAll( ((" + Activation.class.getCanonicalName() + ") kcontext.getMatch()).getObjectsDeep() );" +
                      "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -256,7 +257,7 @@ public class MatchTest {
                 "            (Integer) $requiredCpuPowerTotal > $cpuPower\n" +
                 "        )\n" +
                 "    then\n" +
-                "        list.addAll(((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep());" +
+                "        list.addAll(((" + Activation.class.getCanonicalName() + ") kcontext.getMatch()).getObjectsDeep());" +
                 "end";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
@@ -323,7 +324,7 @@ public class MatchTest {
                         "    $t : count($f)\n" +
                         "  )\n" +
                         "then\n" +
-                        "  list.addAll(((org.drools.core.spi.Activation)kcontext.getMatch()).getObjectsDeep());\n" +
+                        "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
                         "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
@@ -371,7 +372,7 @@ public class MatchTest {
                 "    $t : count($b2)\n" +
                 "  )\n" +
                 "then\n" +
-                "  list.addAll(((org.drools.core.spi.Activation)kcontext.getMatch()).getObjectsDeep());\n" +
+                "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
                 "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);

@@ -24,7 +24,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;

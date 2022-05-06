@@ -90,9 +90,9 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.rule.impl.LiveQueryImpl;
 import org.drools.core.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.spi.GlobalResolver;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
@@ -496,7 +496,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         if (this.workItemManager != null) {
-            ((org.drools.core.process.instance.WorkItemManager)this.workItemManager).dispose();
+            ((org.drools.core.process.WorkItemManager)this.workItemManager).dispose();
         }
 
         this.kBase.disposeStatefulSession( this );

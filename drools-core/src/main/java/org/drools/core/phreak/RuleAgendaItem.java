@@ -20,7 +20,7 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;

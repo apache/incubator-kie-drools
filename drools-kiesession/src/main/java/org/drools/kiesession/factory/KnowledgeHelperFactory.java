@@ -17,7 +17,7 @@
 package org.drools.kiesession.factory;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.kie.api.internal.utils.KieService;
 

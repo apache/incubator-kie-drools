@@ -16,7 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
-import org.drools.core.spi.Evaluator;
+import org.drools.core.rule.accessor.Evaluator;
 import org.drools.model.functions.Operator;
 
 import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;

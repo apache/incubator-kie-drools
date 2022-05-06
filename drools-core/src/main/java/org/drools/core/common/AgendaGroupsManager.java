@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.kie.api.event.rule.MatchCancelledCause;
 
 public interface AgendaGroupsManager extends Externalizable {

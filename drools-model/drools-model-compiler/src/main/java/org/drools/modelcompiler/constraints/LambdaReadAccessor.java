@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.model.functions.Function1;
 
 public class LambdaReadAccessor extends BaseObjectClassFieldReader implements ReadAccessor {

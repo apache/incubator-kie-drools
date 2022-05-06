@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.spi.FieldValue;
+import org.drools.core.rule.accessor.FieldValue;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

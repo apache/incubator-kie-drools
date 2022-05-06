@@ -7,10 +7,10 @@
 
 @declare{"equals"}
     public boolean equals(Object object) {
-        if ( object == null || !(object instanceof  org.drools.core.spi.CompiledInvoker) ) {
+        if ( object == null || !(object instanceof  org.drools.core.rule.accessor.CompiledInvoker) ) {
             return false;
         }
-        return org.drools.mvel.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.core.spi.CompiledInvoker ) object).getMethodBytecode() );
+        return org.drools.mvel.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.core.rule.accessor.CompiledInvoker ) object).getMethodBytecode() );
     }
 @end{}
 
@@ -31,14 +31,14 @@
 @declare{"returnValueInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.spi.ReturnValueExpression, org.drools.core.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.core.rule.accessor.ReturnValueExpression, org.drools.core.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
-    public org.drools.core.spi.FieldValue evaluate(org.drools.core.common.InternalFactHandle handle,
-                            org.drools.core.spi.Tuple tuple,
+    public org.drools.core.rule.accessor.FieldValue evaluate(org.drools.core.common.InternalFactHandle handle,
+                            org.drools.core.reteoo.Tuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
                             org.drools.core.common.ReteEvaluator reteEvaluator,
@@ -81,14 +81,14 @@ public class @{invokerClassName} implements org.drools.core.spi.ReturnValueExpre
 @declare{"predicateInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.spi.PredicateExpression, org.drools.core.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.core.rule.accessor.PredicateExpression, org.drools.core.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     public Object createContext() { return null; }
 
     public boolean evaluate(org.drools.core.common.InternalFactHandle handle,
-                            org.drools.core.spi.Tuple tuple,
+                            org.drools.core.reteoo.Tuple tuple,
                             org.drools.core.rule.Declaration[] previousDeclarations,
                             org.drools.core.rule.Declaration[] localDeclarations,
                             org.drools.core.common.ReteEvaluator reteEvaluator,
@@ -123,14 +123,14 @@ public class @{invokerClassName} implements org.drools.core.spi.PredicateExpress
 @declare{"evalInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.spi.EvalExpression, org.drools.core.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.core.rule.accessor.EvalExpression, org.drools.core.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
     // no need for context
     public Object createContext() { return null; }
 
-    public boolean evaluate(org.drools.core.spi.Tuple tuple,
+    public boolean evaluate(org.drools.core.reteoo.Tuple tuple,
                             org.drools.core.rule.Declaration[] declarations,
                             org.drools.core.common.ReteEvaluator reteEvaluator,
                             Object context ) throws Exception {
@@ -148,7 +148,7 @@ public class @{invokerClassName} implements org.drools.core.spi.EvalExpression, 
             @end{","} );
     }
 
-    public org.drools.core.spi.EvalExpression clone() {
+    public org.drools.core.rule.accessor.EvalExpression clone() {
         // this class is stateless, so no cloning needed
         return this;
     }
@@ -167,7 +167,7 @@ public class @{invokerClassName} implements org.drools.core.spi.EvalExpression, 
 @declare{"accumulateInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org.drools.core.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.core.rule.accessor.Accumulator, org.drools.core.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
@@ -177,7 +177,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
 
     public Object init(java.lang.Object workingMemoryContext,
                      java.lang.Object context,
-                     org.drools.core.spi.Tuple tuple,
+                     org.drools.core.reteoo.Tuple tuple,
                      org.drools.core.rule.Declaration[] declarations,
                      org.drools.core.common.ReteEvaluator reteEvaluator) {
         @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
@@ -199,7 +199,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
 
     public Object accumulate(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.core.spi.Tuple tuple,
+                           org.drools.core.reteoo.Tuple tuple,
                            org.drools.core.common.InternalFactHandle handle,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
@@ -234,7 +234,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
 
     public boolean tryReverse(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
-                           org.drools.core.spi.Tuple tuple,
+                           org.drools.core.reteoo.Tuple tuple,
                            org.drools.core.common.InternalFactHandle handle,
                            java.lang.Object value,
                            org.drools.core.rule.Declaration[] declarations,
@@ -274,7 +274,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
 
     public Object getResult(java.lang.Object workingMemoryContext,
                             java.lang.Object context,
-                            org.drools.core.spi.Tuple tuple,
+                            org.drools.core.reteoo.Tuple tuple,
                             org.drools.core.rule.Declaration[] declarations,
                             org.drools.core.common.ReteEvaluator reteEvaluator) {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( reteEvaluator, tuple );
@@ -325,49 +325,14 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
 }
 @end{}
 
-@declare{"actionInvoker"}
-package @{package};
-
-public class @{invokerClassName} implements org.drools.core.spi.Action, org.drools.core.spi.CompiledInvoker
-{
-    private static final long serialVersionUID  = 510l;
-
-    public void execute(org.drools.core.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.core.common.ReteEvaluator reteEvaluator) throws Exception {
-        execute(knowledgeHelper, reteEvaluator, null);
-    }
-
-    public void execute(org.drools.core.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.core.common.ReteEvaluator reteEvaluator, org.drools.core.spi.ProcessContext context ) throws Exception {
-
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
-        @end{}
-
-        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
-        @end{}
-
-        @{processClassName}.@{methodName} (
-            knowledgeHelper@if{globals != empty},@end{}
-            @foreach{identifier : globals} @{identifier}
-            @end{","}@if{variables != empty},@end{}
-            @foreach{identifier : variables} @{identifier}
-            @end{","}, context );
-    }
-    
-    public String getMethodBytecode() {
-        return null;
-    }    
-}
-@end{}
-
 @declare{"returnValueEvaluatorInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.core.spi.ReturnValueEvaluator, org.drools.core.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.core.rule.accessor.ReturnValueEvaluator, org.drools.core.rule.accessor.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.drools.core.common.ReteEvaluator reteEvaluator, org.drools.core.spi.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.drools.core.common.ReteEvaluator reteEvaluator, org.drools.core.process.ProcessContext processContext) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) reteEvaluator.getGlobal( "@{identifier}" );
         @end{}

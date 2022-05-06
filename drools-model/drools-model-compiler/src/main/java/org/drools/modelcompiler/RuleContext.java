@@ -29,9 +29,9 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.GlobalExtractor;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.accessor.GlobalExtractor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
 import org.drools.model.Global;
 import org.drools.model.Variable;
 

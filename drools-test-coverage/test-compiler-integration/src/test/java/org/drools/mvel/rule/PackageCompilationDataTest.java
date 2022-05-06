@@ -28,8 +28,8 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.spi.EvalExpression;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.EvalExpression;
+import org.drools.core.reteoo.Tuple;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

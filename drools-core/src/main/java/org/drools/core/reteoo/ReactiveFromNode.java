@@ -25,7 +25,7 @@ import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.spi.DataProvider;
+import org.drools.core.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.TupleList;
 

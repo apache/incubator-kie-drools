@@ -24,8 +24,8 @@ import org.drools.core.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 import static org.drools.core.util.TimeIntervalParser.getTimestampFromDate;
 

@@ -31,7 +31,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.LinkedList;

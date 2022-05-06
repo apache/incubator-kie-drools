@@ -30,7 +30,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.rule.accessor.DeclarationScopeResolver;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.util.TypeResolver;

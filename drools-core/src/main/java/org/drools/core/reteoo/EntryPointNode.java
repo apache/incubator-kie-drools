@@ -33,7 +33,7 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.slf4j.Logger;

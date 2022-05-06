@@ -69,7 +69,7 @@ import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.kie.api.command.Command;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.ExecutionResults;

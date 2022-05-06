@@ -32,9 +32,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction.LeftStartRightEndContextEntry;
 import org.drools.mvel.evaluators.VariableRestriction.VariableContextEntry;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.time.Interval;
 
 /**

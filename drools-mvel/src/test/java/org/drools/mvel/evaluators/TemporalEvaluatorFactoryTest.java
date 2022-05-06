@@ -29,9 +29,9 @@ import org.drools.kiesession.entrypoints.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

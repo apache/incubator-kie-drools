@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.IndexUtil;
 import org.mvel2.MVEL;

@@ -23,9 +23,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
 

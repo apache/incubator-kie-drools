@@ -5,8 +5,8 @@ import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.mvel.field.FieldFactory;
 import org.drools.mvel.field.LongFieldImpl;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.mvel.model.Cheese;
 
 public class ConstraintTestUtil {

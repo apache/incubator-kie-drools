@@ -24,9 +24,9 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.time.Interval;
 
 import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
@@ -102,7 +102,7 @@ public class EvaluatorWrapper implements Evaluator {
 
     /**
      * @return
-     * @see org.drools.core.spi.Evaluator#getValueType()
+     * @see Evaluator#getValueType()
      */
     public ValueType getValueType() {
         return evaluator.getValueType();
@@ -110,7 +110,7 @@ public class EvaluatorWrapper implements Evaluator {
 
     /**
      * @return
-     * @see org.drools.core.spi.Evaluator#getOperator()
+     * @see Evaluator#getOperator()
      */
     public org.kie.api.runtime.rule.Operator getOperator() {
         return evaluator.getOperator();
@@ -118,7 +118,7 @@ public class EvaluatorWrapper implements Evaluator {
 
     /**
      * @return
-     * @see org.drools.core.spi.Evaluator#getCoercedValueType()
+     * @see Evaluator#getCoercedValueType()
      */
     public ValueType getCoercedValueType() {
         return evaluator.getCoercedValueType();
@@ -148,7 +148,7 @@ public class EvaluatorWrapper implements Evaluator {
 
     /**
      * @return
-     * @see org.drools.core.spi.Evaluator#isTemporal()
+     * @see Evaluator#isTemporal()
      */
     public boolean isTemporal() {
         return evaluator.isTemporal();
@@ -156,7 +156,7 @@ public class EvaluatorWrapper implements Evaluator {
 
     /**
      * @return
-     * @see org.drools.core.spi.Evaluator#getInterval()
+     * @see Evaluator#getInterval()
      */
     public Interval getInterval() {
         return evaluator.getInterval();

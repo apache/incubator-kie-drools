@@ -27,10 +27,10 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.Wireable;
 import org.drools.core.util.index.TupleList;
 import org.kie.internal.security.KiePolicyHelper;
 

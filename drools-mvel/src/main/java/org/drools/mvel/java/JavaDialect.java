@@ -91,7 +91,7 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.LineMappings;
 import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.Wireable;
 import org.drools.util.IoUtils;
 import org.drools.util.StringUtils;
 import org.drools.mvel.asm.ASMConsequenceStubBuilder;

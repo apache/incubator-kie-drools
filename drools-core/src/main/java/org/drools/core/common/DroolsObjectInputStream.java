@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import org.drools.core.base.AccessorKey;
 import org.drools.core.base.ReadAccessorSupplier;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 public class DroolsObjectInputStream extends ObjectInputStream

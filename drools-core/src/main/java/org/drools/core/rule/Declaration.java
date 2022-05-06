@@ -26,10 +26,10 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.TupleValueExtractor;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.TupleValueExtractor;
 
 import static org.drools.util.ClassUtils.canonicalName;
 import static org.drools.util.ClassUtils.convertFromPrimitiveType;

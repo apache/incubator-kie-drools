@@ -15,7 +15,7 @@
 
 package org.drools.mvel.asm;
 
-import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.rule.accessor.ReturnValueExpression;
 
 public interface ReturnValueStub extends ReturnValueExpression, InvokerStub {
 

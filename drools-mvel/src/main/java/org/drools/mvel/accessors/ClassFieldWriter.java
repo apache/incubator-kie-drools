@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.WriteAccessor;
 
 /**
  * This class implements the WriteAccessor interface

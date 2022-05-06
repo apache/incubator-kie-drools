@@ -47,7 +47,7 @@ import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
 import org.drools.core.marshalling.TupleKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.Drools;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.wiring.api.classloader.ProjectClassLoader;

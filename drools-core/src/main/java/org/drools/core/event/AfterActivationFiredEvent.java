@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 
 public class AfterActivationFiredEvent extends ActivationEvent {
     private static final long serialVersionUID = 510l;

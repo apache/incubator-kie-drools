@@ -20,9 +20,9 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.PredicateExpression;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.PredicateExpression;
+import org.drools.core.reteoo.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

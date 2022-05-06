@@ -24,7 +24,7 @@ import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.Salience;
+import org.drools.core.rule.accessor.Salience;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.expr.MVELSalienceExpression;

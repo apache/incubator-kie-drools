@@ -31,7 +31,7 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.AFact;
 import org.drools.testcoverage.common.model.Cheese;

@@ -18,7 +18,7 @@ package org.drools.traits.core.reteoo;
 
 import java.util.List;
 
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.traits.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectSource;

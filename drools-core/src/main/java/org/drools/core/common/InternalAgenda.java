@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.spi.InternalActivationGroup;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 

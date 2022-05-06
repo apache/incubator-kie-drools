@@ -1,6 +1,6 @@
 package org.drools.ruleunits.impl.factory;
 
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.factory.WorkingMemoryFactory;
 import org.drools.ruleunits.impl.facthandles.RuleUnitFactHandleFactory;

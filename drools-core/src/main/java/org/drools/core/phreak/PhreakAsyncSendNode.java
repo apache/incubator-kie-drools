@@ -30,7 +30,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.spi.DataProvider;
+import org.drools.core.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 

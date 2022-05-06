@@ -37,7 +37,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.spi.Salience;
+import org.drools.core.rule.accessor.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.time.impl.CronExpression;

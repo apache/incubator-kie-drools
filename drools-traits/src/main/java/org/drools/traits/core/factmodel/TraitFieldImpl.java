@@ -25,7 +25,7 @@ import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 
 import java.io.Externalizable;
 import java.io.IOException;

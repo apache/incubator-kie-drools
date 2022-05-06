@@ -17,9 +17,9 @@ package org.drools.mvel.compiler.command;
 
 import java.util.Collection;
 
-import org.drools.core.process.instance.WorkItem;
-import org.drools.core.process.instance.impl.DefaultWorkItemManager;
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.WorkItem;
+import org.drools.core.process.impl.DefaultWorkItemManager;
+import org.drools.core.process.impl.WorkItemImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;

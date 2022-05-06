@@ -18,7 +18,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.serialization.protobuf.WorkingMemoryReteAssertAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller;
 import org.drools.serialization.protobuf.ProtobufMessages;

@@ -27,8 +27,7 @@ import org.drools.core.base.AccessorKeySupplier;
 import org.drools.core.base.FieldNameSupplier;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 import static org.drools.util.StringUtils.lcFirstForBean;

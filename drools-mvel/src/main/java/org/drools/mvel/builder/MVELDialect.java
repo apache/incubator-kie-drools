@@ -83,7 +83,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.LineMappings;
 import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.util.StringUtils;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.asm.AsmUtil;

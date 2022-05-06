@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 
 import static java.util.stream.Collectors.toCollection;
 
@@ -48,9 +48,6 @@ public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
         this.counter = new AtomicLong( counter );
     }
 
-    /* (non-Javadoc)
-    * @see org.drools.core.spi.FactHandleFactory#newFactHandle()
-    */
     public final InternalFactHandle newFactHandle(Object object,
                                                   ObjectTypeConf conf,
                                                   ReteEvaluator reteEvaluator,
@@ -62,9 +59,6 @@ public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
                               wmEntryPoint );
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.core.spi.FactHandleFactory#newFactHandle(long)
-     */
     public final InternalFactHandle newFactHandle(long id,
                                                   Object object,
                                                   ObjectTypeConf conf,

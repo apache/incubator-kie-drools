@@ -21,11 +21,9 @@ public interface AgendaGroup {
      * @return
      *      The AgendaGroup name
      */
-    public String getName();
+    String getName();
 
-    public void clear();
+    void clear();
 
-    public void setFocus();
-
-    //public Collection<Activation> getActivations();
+    void setFocus();
 }

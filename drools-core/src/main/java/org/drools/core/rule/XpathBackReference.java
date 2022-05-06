@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.spi.PatternExtractor;
+import org.drools.core.rule.accessor.PatternExtractor;
 
 public class XpathBackReference {
     public static final String BACK_REFERENCE_HEAD = "$back$ref$";

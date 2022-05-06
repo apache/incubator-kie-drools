@@ -18,7 +18,7 @@ package org.drools.core.rule;
 
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 public interface DialectRuntimeData extends Cloneable {
     void removeRule( KnowledgePackageImpl pkg, RuleImpl rule );

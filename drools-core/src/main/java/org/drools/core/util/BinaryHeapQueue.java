@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

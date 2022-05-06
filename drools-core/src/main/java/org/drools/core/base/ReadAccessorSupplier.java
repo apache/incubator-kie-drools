@@ -16,7 +16,7 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 public interface ReadAccessorSupplier {
     ReadAccessor getReader(AccessorKey key);

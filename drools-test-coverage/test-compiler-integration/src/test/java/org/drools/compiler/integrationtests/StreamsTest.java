@@ -24,7 +24,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Cheese;

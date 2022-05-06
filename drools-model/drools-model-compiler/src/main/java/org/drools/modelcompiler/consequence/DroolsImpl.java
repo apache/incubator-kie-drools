@@ -22,7 +22,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.model.BitMask;
 import org.drools.model.Channel;
 import org.drools.model.Drools;

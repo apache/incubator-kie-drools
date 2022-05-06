@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.drools.core.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
-import org.drools.core.spi.Evaluator;
+import org.drools.core.rule.accessor.Evaluator;
 
 /**
  * A simple helper class to store Evaluators for a given set of

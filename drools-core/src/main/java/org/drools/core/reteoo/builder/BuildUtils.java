@@ -38,7 +38,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.TimeUtils;

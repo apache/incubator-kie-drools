@@ -27,9 +27,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.FieldValue;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.index.IndexUtil;
 

@@ -17,7 +17,7 @@ package org.drools.mvel;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public interface ConditionEvaluator {
     boolean evaluate(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple);

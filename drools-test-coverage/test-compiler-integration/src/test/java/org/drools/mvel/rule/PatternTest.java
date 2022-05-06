@@ -25,8 +25,8 @@ import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
 import org.drools.core.test.model.Cheese;
 import org.junit.Test;
 

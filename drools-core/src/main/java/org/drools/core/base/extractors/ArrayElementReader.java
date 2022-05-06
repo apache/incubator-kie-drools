@@ -24,9 +24,9 @@ import java.lang.reflect.Method;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
 import org.drools.core.base.ClassWireable;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
 

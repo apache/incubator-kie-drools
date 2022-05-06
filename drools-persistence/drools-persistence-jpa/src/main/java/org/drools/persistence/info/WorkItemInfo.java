@@ -32,8 +32,8 @@ import javax.persistence.Version;
 
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;
-import org.drools.core.process.instance.WorkItem;
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.WorkItem;
+import org.drools.core.process.impl.WorkItemImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.persistence.api.PersistentWorkItem;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller;

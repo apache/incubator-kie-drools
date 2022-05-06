@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.AbstractFactHandleFactory;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory implements Serializable {
 

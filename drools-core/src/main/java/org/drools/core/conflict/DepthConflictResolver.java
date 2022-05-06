@@ -16,8 +16,8 @@
 
 package org.drools.core.conflict;
 
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ConflictResolver;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.ConflictResolver;
 
 import java.io.Externalizable;
 import java.io.IOException;

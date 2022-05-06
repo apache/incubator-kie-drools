@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.time.impl.CronExpression;

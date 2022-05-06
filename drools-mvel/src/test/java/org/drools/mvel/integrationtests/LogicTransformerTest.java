@@ -31,7 +31,7 @@ import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.Pattern;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 
 import org.junit.Test;
 

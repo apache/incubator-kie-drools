@@ -29,7 +29,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.traits.core.factmodel.TraitProxyImpl;

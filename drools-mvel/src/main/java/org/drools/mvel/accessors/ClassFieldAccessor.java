@@ -25,8 +25,8 @@ import java.lang.reflect.Method;
 import org.drools.core.base.FieldAccessor;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 
 /**
  * This is a wrapper for a ClassFieldExtractor that provides

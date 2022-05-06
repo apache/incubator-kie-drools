@@ -20,7 +20,7 @@ import java.io.Serializable;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.factory.WorkingMemoryFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.ruleunits.impl.sessions.RuleUnitStatefulKnowledgeSessionImpl;

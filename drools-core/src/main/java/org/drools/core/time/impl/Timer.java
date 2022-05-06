@@ -22,7 +22,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.RuleComponent;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 

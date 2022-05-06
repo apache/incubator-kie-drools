@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.core.process.instance.WorkItemManagerFactory;
+import org.drools.core.process.WorkItemManagerFactory;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
@@ -366,7 +366,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
-        String className = getPropertyValue( "drools.workItemManagerFactory", "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory" );
+        String className = getPropertyValue( "drools.workItemManagerFactory", "org.drools.core.process.impl.DefaultWorkItemManagerFactory" );
         Class<WorkItemManagerFactory> clazz = null;
         try {
             clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );

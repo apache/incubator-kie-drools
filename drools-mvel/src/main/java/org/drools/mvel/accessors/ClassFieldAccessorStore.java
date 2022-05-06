@@ -38,12 +38,12 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.ReadAccessorSupplier;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.base.AcceptsClassObjectType;
+import org.drools.core.rule.accessor.AcceptsReadAccessor;
 import org.drools.core.base.ClassWireable;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.WriteAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.WriteAccessor;
 import org.kie.api.definition.type.FactField;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 

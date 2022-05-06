@@ -28,12 +28,12 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.PredicateExpression;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.Evaluator;
+import org.drools.core.rule.accessor.PredicateExpression;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
 
 /**

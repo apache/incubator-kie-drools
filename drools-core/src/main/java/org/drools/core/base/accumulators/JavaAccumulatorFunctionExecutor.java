@@ -25,12 +25,12 @@ import java.io.Serializable;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.ReturnValueExpression;
-import org.drools.core.spi.ReturnValueExpression.SafeReturnValueExpression;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.ReturnValueExpression;
+import org.drools.core.rule.accessor.ReturnValueExpression.SafeReturnValueExpression;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
 
 /**

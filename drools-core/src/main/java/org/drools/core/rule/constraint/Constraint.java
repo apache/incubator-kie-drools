@@ -25,7 +25,7 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleComponent;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;

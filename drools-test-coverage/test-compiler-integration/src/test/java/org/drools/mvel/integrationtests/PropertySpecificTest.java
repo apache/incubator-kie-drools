@@ -33,7 +33,7 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 import org.drools.mvel.compiler.Cheese;

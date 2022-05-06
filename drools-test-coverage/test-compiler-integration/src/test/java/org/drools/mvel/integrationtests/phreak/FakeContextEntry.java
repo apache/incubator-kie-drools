@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.Tuple;
+import org.drools.core.reteoo.Tuple;
 
 public class FakeContextEntry implements ContextEntry {
 

@@ -32,7 +32,7 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.common.PropagationContext;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {

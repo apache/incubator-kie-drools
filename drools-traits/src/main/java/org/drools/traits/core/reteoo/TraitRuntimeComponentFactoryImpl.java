@@ -22,7 +22,7 @@ import java.util.WeakHashMap;
 
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.traits.core.common.TraitEntryPointFactory;

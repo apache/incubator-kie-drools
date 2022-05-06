@@ -20,17 +20,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Consequence;
-import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.consequence.Consequence;
+import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.reteoo.Tuple;
 import org.drools.model.Variable;
 
 public class LambdaConsequence implements Consequence {

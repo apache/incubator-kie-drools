@@ -24,8 +24,8 @@ import java.io.ObjectOutput;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Enabled;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Enabled;
+import org.drools.core.reteoo.Tuple;
 
 public class EnabledBoolean
     implements

@@ -20,7 +20,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.ReadAccessor;
+import org.drools.core.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

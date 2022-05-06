@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 
-import org.drools.core.spi.FieldValue;
+import org.drools.core.rule.accessor.FieldValue;
 import org.drools.util.MathUtils;
 
 public class ObjectFieldImpl

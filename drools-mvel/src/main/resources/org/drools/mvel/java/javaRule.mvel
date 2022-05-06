@@ -1,5 +1,5 @@
 @declare{"returnValueMethod"}
-public static org.drools.core.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+public static org.drools.core.rule.accessor.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
     return org.drools.mvel.field.FieldFactory.getInstance().getFieldValue( @{text} );

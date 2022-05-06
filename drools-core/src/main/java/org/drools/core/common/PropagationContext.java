@@ -22,7 +22,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.spi.ObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.util.bitmask.BitMask;
 
 public interface PropagationContext extends Externalizable {

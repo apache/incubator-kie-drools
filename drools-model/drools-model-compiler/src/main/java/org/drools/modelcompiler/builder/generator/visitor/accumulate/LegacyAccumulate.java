@@ -46,7 +46,7 @@ import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.rule.accessor.DeclarationScopeResolver;
 import org.drools.util.StringUtils;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;

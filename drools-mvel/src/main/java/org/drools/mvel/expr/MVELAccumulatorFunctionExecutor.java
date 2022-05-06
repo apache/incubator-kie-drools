@@ -24,8 +24,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Accumulator;
+import org.drools.core.reteoo.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.mvel2.integration.VariableResolverFactory;
 

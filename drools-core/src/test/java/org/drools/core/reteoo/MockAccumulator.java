@@ -27,8 +27,7 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
+import org.drools.core.rule.accessor.Accumulator;
 
 /**
  * A Mock accumulate object.

@@ -30,7 +30,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.spi.Tuple;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a

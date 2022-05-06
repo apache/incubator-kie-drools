@@ -23,10 +23,9 @@ import java.io.ObjectOutput;
 import java.util.Objects;
 
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.ReadAccessor;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.TupleValueExtractor;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.index.TupleList;
 
 public abstract class AbstractHashTable

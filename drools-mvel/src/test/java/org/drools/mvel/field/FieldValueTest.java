@@ -16,7 +16,7 @@
 
 package org.drools.mvel.field;
 
-import org.drools.core.spi.FieldValue;
+import org.drools.core.rule.accessor.FieldValue;
 import org.junit.Before;
 import org.junit.Test;
 

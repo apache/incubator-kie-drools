@@ -27,7 +27,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.FieldValue;
+import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.core.util.index.RangeIndex.IndexType;
 

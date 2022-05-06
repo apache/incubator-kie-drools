@@ -31,9 +31,8 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.spi.DataProvider;
+import org.drools.core.rule.accessor.DataProvider;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.TupleList;
 
