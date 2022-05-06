@@ -1,0 +1,281 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    app.openshift.io/vcs-url: <<unknown>>
+    app.quarkus.io/commit-id: 9d9d867ae972619cd29012a4a8ffb5e5c4fdb368
+    app.quarkus.io/build-timestamp: 2022-05-03 - 17:27:05 +0000
+  labels:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+    app.openshift.io/runtime: quarkus
+  name: optaplanner-operator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.openshift.io/vcs-url: <<unknown>>
+    app.quarkus.io/commit-id: 9d9d867ae972619cd29012a4a8ffb5e5c4fdb368
+    app.quarkus.io/build-timestamp: 2022-05-03 - 17:27:05 +0000
+  labels:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+    app.openshift.io/runtime: quarkus
+  name: optaplanner-operator
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+  type: ClusterIP
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+  name: optaplanner-operator-view
+roleRef:
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+  name: view
+subjects:
+  - kind: ServiceAccount
+    name: optaplanner-operator
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+  name: openjdk-11
+spec:
+  dockerImageRepository: registry.access.redhat.com/ubi8/openjdk-11
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    app.openshift.io/vcs-url: <<unknown>>
+    app.quarkus.io/commit-id: 9d9d867ae972619cd29012a4a8ffb5e5c4fdb368
+    app.quarkus.io/build-timestamp: 2022-05-03 - 17:27:05 +0000
+  labels:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+    app.openshift.io/runtime: quarkus
+  name: optaplanner-operator
+spec: { }
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    app.openshift.io/vcs-url: <<unknown>>
+    app.quarkus.io/commit-id: 9d9d867ae972619cd29012a4a8ffb5e5c4fdb368
+    app.quarkus.io/build-timestamp: 2022-05-03 - 17:27:05 +0000
+  labels:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+    app.openshift.io/runtime: quarkus
+  name: optaplanner-operator
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: optaplanner-operator:latest
+  source:
+    binary: { }
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: openjdk-11:1.11
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: josdk-crd-validating-cluster-role
+rules:
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - get
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: solverreconciler-cluster-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - deployments
+      - services
+      - configmaps
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+  - apiGroups:
+      - "apps"
+    resources:
+      - deployments
+      - services
+      - configmaps
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+  - apiGroups:
+      - "org.optaplanner.solver"
+    resources:
+      - solvers
+      - solvers/status
+      - solvers/finalizers
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+  - apiGroups:
+      - "kafka.strimzi.io"
+    resources:
+      - kafkatopics
+      - kafkatopics/status
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: solverreconciler-cluster-role-binding
+roleRef:
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+  name: solverreconciler-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: optaplanner-operator
+    namespace: optaplanner-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: solverreconciler-crd-validating-role-binding
+roleRef:
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+  name: josdk-crd-validating-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: optaplanner-operator
+    namespace: optaplanner-operator
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    app.openshift.io/vcs-url: <<unknown>>
+    app.quarkus.io/commit-id: 9d9d867ae972619cd29012a4a8ffb5e5c4fdb368
+    app.quarkus.io/build-timestamp: 2022-05-03 - 17:27:05 +0000
+  labels:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+    app.openshift.io/runtime: quarkus
+  name: optaplanner-operator
+spec:
+  replicas: 1
+  selector:
+    app.kubernetes.io/name: optaplanner-operator
+    app.kubernetes.io/version: latest
+  template:
+    metadata:
+      annotations:
+        app.openshift.io/vcs-url: <<unknown>>
+        app.quarkus.io/commit-id: 9d9d867ae972619cd29012a4a8ffb5e5c4fdb368
+        app.quarkus.io/build-timestamp: 2022-05-03 - 17:27:05 +0000
+      labels:
+        app.kubernetes.io/name: optaplanner-operator
+        app.kubernetes.io/version: latest
+        app.openshift.io/runtime: quarkus
+    spec:
+      containers:
+        - command:
+            - java
+            - -Dquarkus.http.host=0.0.0.0
+            - -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+            - -jar
+            - /deployments/quarkus-run.jar
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: JAVA_APP_JAR
+              value: /deployments/optaplanner-operator-1.0-SNAPSHOT-runner.jar
+          image: optaplanner-operator/optaplanner-operator:latest
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: optaplanner-operator
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+      serviceAccountName: optaplanner-operator
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - optaplanner-operator
+        from:
+          kind: ImageStreamTag
+          name: optaplanner-operator:latest
+      type: ImageChange

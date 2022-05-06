@@ -56,11 +56,6 @@
         </plugin>
         <plugin>
           <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-maven-plugin</artifactId>
-          <version>${version.io.quarkus}</version>
-        </plugin>
-        <plugin>
-          <groupId>io.quarkus</groupId>
           <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
           <version>${version.io.quarkus}</version>
           <executions>

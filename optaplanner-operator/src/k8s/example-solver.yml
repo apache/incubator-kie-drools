@@ -1,0 +1,9 @@
+apiVersion: org.optaplanner.solver/v1
+kind: Solver
+metadata:
+  name: school-timetabling
+spec:
+  kafkaCluster: my-cluster
+  kafkaBootstrapServers: my-cluster-kafka-bootstrap.openshift-operators.svc.cluster.local:9092
+  solverImage: demo/solver-operator-demo-school-timetabling
+  replicas: 1

@@ -124,6 +124,7 @@
     <module>optaplanner-spring-integration</module>
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-examples</module>
+    <module>optaplanner-operator</module>
   </modules>
 
   <profiles>
