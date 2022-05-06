@@ -41,15 +41,12 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.util.io.ByteArrayResource;
-import org.drools.util.io.ClassPathResource;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
-import org.drools.traits.core.factmodel.HierarchyEncoder;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -57,6 +54,7 @@ import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.Person;
 import org.drools.traits.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.traits.core.factmodel.Entity;
+import org.drools.traits.core.factmodel.HierarchyEncoder;
 import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.traits.core.factmodel.MapWrapper;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
@@ -68,6 +66,8 @@ import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.drools.traits.core.util.CodedHierarchyImpl;
+import org.drools.util.io.ByteArrayResource;
+import org.drools.util.io.ClassPathResource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -99,9 +99,9 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -109,7 +109,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class TraitTest extends CommonTraitTest {
@@ -187,7 +186,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -385,7 +384,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -409,14 +408,14 @@ public class TraitTest extends CommonTraitTest {
             Class trait2 = kb.getFactType( "org.drools.compiler.trait.test",
                                            "Role" ).getFactClass();
 
-            assertNotNull( trait );
+            assertThat(trait).isNotNull();
             TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
                                                                       trait );
             proxy.getFields().put( "field",
                                    "xyz" );
             //            proxy.getFields().put("name", "aaa");
 
-            assertNotNull( proxy );
+            assertThat(proxy).isNotNull();
 
             TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(imp,
                                                                        trait );
@@ -425,7 +424,7 @@ public class TraitTest extends CommonTraitTest {
 
             TraitProxyImpl proxy3 = (TraitProxyImpl) tFactory.getProxy(imp,
                                                                        trait2 );
-            assertNotNull( proxy3 );
+            assertThat(proxy3).isNotNull();
             assertEquals( "xyz",
                           proxy3.getFields().get( "field" ) );
             assertEquals( "aaa",
@@ -463,7 +462,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -591,7 +590,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -672,7 +671,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -796,7 +795,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -824,9 +823,9 @@ public class TraitTest extends CommonTraitTest {
 
             assertTrue( proxy.getObject() instanceof TraitableBean );
 
-            assertNotNull( proxyFields );
-            assertNotNull( coreTraits );
-            assertNotNull( coreProperties );
+            assertThat(proxyFields).isNotNull();
+            assertThat(coreTraits).isNotNull();
+            assertThat(coreProperties).isNotNull();
 
             if ( mode == VirtualPropertyMode.MAP ) {
                 assertTrue( proxyFields instanceof MapWrapper );
@@ -859,7 +858,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -957,7 +956,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
+        assertThat(res).isNotNull();
         kbuilder.add( res,
                       ResourceType.DRL );
         if (kbuilder.hasErrors()) {
@@ -1013,7 +1012,7 @@ public class TraitTest extends CommonTraitTest {
             assertEquals( 0,
                           fields.get( "age" ) );
             assertNull( fields.get( "school" ) );
-            assertNotNull( fields.get( "name" ) );
+            assertThat(fields.get("name")).isNotNull();
 
             proxy.getFields().put( "surname",
                                    "xxx" );
@@ -1956,7 +1955,7 @@ public class TraitTest extends CommonTraitTest {
                 break;
             }
         }
-        assertNotNull( coreOld );
+        assertThat(coreOld).isNotNull();
 
         assertSame( TBean.class, coreOld.getClass().getSuperclass() );
 
@@ -1974,7 +1973,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull(res);
+        assertThat(res).isNotNull();
         kbuilder.add(res, ResourceType.DRL);
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -1992,7 +1991,7 @@ public class TraitTest extends CommonTraitTest {
             Class trait = kb.getFactType("org.drools.compiler.trait.test","Student").getFactClass();
             Class trait2 = kb.getFactType("org.drools.compiler.trait.test","Role").getFactClass();
 
-            assertNotNull( trait);
+            assertThat(trait).isNotNull();
 
             TraitProxyImpl proxy = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
             Thing thing = traitBuilder.getProxy(imp, Thing.class);
@@ -5580,7 +5579,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( 3, kSession.fireAllRules() );
         NamedEntryPoint nep = ( (NamedEntryPoint) kSession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) );
         ObjectTypeNode otn = nep.getEntryPointNode().getObjectTypeNodes().get( new ClassObjectType( Entity.class ) );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         assertEquals( 1, otn.getObjectSinkPropagator().getSinks().length );
     }
 

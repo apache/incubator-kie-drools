@@ -23,7 +23,6 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.KieProject;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -64,7 +63,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
                                                                     ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass()));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime);
@@ -78,7 +77,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         assertThat(updateResults.hasMessages(Level.ERROR)).isFalse();
 
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext2 = runtime.newContext();
@@ -97,7 +96,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
                                                                     ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass()));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime);
@@ -113,7 +112,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         assertThat(updateResults.hasMessages(Level.ERROR)).isFalse();
 
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext2 = runtime.newContext();
@@ -132,7 +131,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
                                                               ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass()));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime);
@@ -148,7 +147,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         assertThat(updateResults.hasMessages(Level.ERROR)).isFalse();
 
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext2 = runtime.newContext();
@@ -161,7 +160,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
 
         kieContainer = ks.newKieContainer(v100);
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime);
@@ -170,7 +169,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         assertThat(updateResults.hasMessages(Level.ERROR)).isFalse();
 
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         final DMNContext dmnContext4 = runtime.newContext();
@@ -192,7 +191,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         KieContainer kieContainer = ks.newKieContainer(v100);
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         kieContainer.dispose();
@@ -200,7 +199,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         kieContainer = ks.newKieContainer(v100);
 
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
     }
 
@@ -216,7 +215,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         KieContainer kieContainer = ks.newKieContainer(v100);
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         kieContainer.dispose();
@@ -224,7 +223,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         kieContainer = ks.newKieContainer(v100);
 
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         final ReleaseId v101 = ks.newReleaseId("org.kie", "dmn-test", "1.0.1");
@@ -238,7 +237,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         assertThat(updateResults.hasMessages(Level.ERROR)).isFalse();
 
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
     }
 
@@ -255,7 +254,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         KieSession kieSession = kieContainer.newKieSession();
         KieBase kieBase = kieSession.getKieBase();
         DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime);
@@ -270,7 +269,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         bais.close();
 
         runtime = kieSession.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime);
@@ -288,7 +287,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         final KieContainer kieContainer = ks.newKieContainer(v100);
         final KieSession kieSession = kieContainer.newKieSession();
         final DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime);
@@ -298,7 +297,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
         final KieSession kieSession2 = kieContainer2.newKieSession(); // exhibit the issue.
         final DMNRuntime runtime2 = kieSession2.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime2);
+        assertThat(runtime2).isNotNull();
         assertThat(runtime2.getModels()).hasSize(1);
 
         check0001_input_data_string(runtime2);
@@ -324,7 +323,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         final KieContainer kieContainer = ks.newKieContainer(v100);
         final KieSession kieSession = kieContainer.newKieSession();
         final DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime);
+        assertThat(runtime).isNotNull();
         assertThat(runtime.getModels()).hasSize(1);
 
         checkDMNHotColdDMN12WithNSScattered(runtime);
@@ -334,7 +333,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
         final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
         final KieSession kieSession2 = kieContainer2.newKieSession(); // exhibit the issue.
         final DMNRuntime runtime2 = kieSession2.getKieRuntime(DMNRuntime.class);
-        Assert.assertNotNull(runtime2);
+        assertThat(runtime2).isNotNull();
         assertThat(runtime2.getModels()).hasSize(1);
 
         checkDMNHotColdDMN12WithNSScattered(runtime2);

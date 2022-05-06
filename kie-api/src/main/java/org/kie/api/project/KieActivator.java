@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel;
+package org.kie.api.project;
 
-public interface BeanClassBuilder extends ClassBuilder {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.inject.Qualifier;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+/**
+ * It defines the annotation required to enable the Java LSP Extension functionality in kie-tools
+ */
+@Qualifier
+@Target({TYPE})
+@Retention(RUNTIME)
+public @interface KieActivator {
+
 }

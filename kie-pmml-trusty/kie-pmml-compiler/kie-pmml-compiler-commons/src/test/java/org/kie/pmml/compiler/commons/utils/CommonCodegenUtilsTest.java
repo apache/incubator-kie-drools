@@ -62,9 +62,9 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseBlock;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -95,7 +95,7 @@ public class CommonCodegenUtilsTest {
         String kiePMMLNameValueListParam = "KIEPMMLNAMEVALUELISTPARAM";
         String fieldNameToRef = "FIELDNAMETOREF";
         ExpressionStmt retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, true);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(\"%7$s\", %5$s.getName())).findFirst();",
                                         Optional.class.getName(),
                                         KiePMMLNameValue.class.getName(),
@@ -113,7 +113,7 @@ public class CommonCodegenUtilsTest {
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
         //
         retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, false);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(%7$s, %5$s.getName())).findFirst();",
                                         Optional.class.getName(),
                                         KiePMMLNameValue.class.getName(),
@@ -152,7 +152,7 @@ public class CommonCodegenUtilsTest {
             MethodReferenceExpr methodReferenceExpr = (MethodReferenceExpr) arguments.get(1);
             assertTrue(methodReferenceExpr.getScope() instanceof ThisExpr);
             final com.github.javaparser.ast.expr.Expression scope = methodCallExpr.getScope().orElse(null);
-            assertNotNull(scope);
+            assertThat(scope).isNotNull();
             assertTrue(scope instanceof NameExpr);
             assertEquals(mapName, ((NameExpr) scope).getNameAsString());
         }
@@ -259,7 +259,7 @@ public class CommonCodegenUtilsTest {
     @Test
     public void createArraysAsListExpression() {
         ExpressionStmt retrieved = CommonCodegenUtils.createArraysAsListExpression();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String expected = "java.util.Arrays.asList();";
         String retrievedString = retrieved.toString();
         assertEquals(expected, retrievedString);
@@ -271,7 +271,7 @@ public class CommonCodegenUtilsTest {
                 .mapToObj(i -> "Element" + i)
                 .collect(Collectors.toList());
         ExpressionStmt retrieved = CommonCodegenUtils.createArraysAsListFromList(strings);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String arguments = strings.stream()
                 .map(string -> "\"" + string + "\"")
                 .collect(Collectors.joining(", "));
@@ -282,7 +282,7 @@ public class CommonCodegenUtilsTest {
                 .mapToObj(i ->  i * 0.17)
                 .collect(Collectors.toList());
         retrieved = CommonCodegenUtils.createArraysAsListFromList(doubles);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         arguments = doubles.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
@@ -323,7 +323,7 @@ public class CommonCodegenUtilsTest {
         String className = "CLASS_NAME";
         List<String> typesName = Arrays.asList("TypeA", "TypeB");
         ClassOrInterfaceType retrieved = CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(className, typesName);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String expected = String.format("%1$s<%2$s,%3$s>", className, typesName.get(0), typesName.get(1));
         assertEquals(expected, retrieved.asString());
     }
@@ -358,16 +358,16 @@ public class CommonCodegenUtilsTest {
     public void getAssignExpression() {
         BlockStmt body = new BlockStmt();
         Optional<AssignExpr> retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertFalse(retrieved.isPresent());
         AssignExpr assignExpr = new AssignExpr();
         assignExpr.setTarget(new NameExpr("MATCH"));
         body.addStatement(assignExpr);
         retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertFalse(retrieved.isPresent());
         retrieved = CommonCodegenUtils.getAssignExpression(body, "MATCH");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isPresent());
         AssignExpr retrievedAssignExpr = retrieved.get();
         assertEquals(assignExpr, retrievedAssignExpr);
@@ -377,12 +377,12 @@ public class CommonCodegenUtilsTest {
     public void getExplicitConstructorInvocationStmt() {
         BlockStmt body = new BlockStmt();
         Optional<ExplicitConstructorInvocationStmt> retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertFalse(retrieved.isPresent());
         ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         body.addStatement(explicitConstructorInvocationStmt);
         retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isPresent());
         ExplicitConstructorInvocationStmt retrievedExplicitConstructorInvocationStmt = retrieved.get();
         assertEquals(explicitConstructorInvocationStmt, retrievedExplicitConstructorInvocationStmt);
@@ -501,11 +501,11 @@ public class CommonCodegenUtilsTest {
     public void getNameExprsFromBlock() {
         BlockStmt toRead = new BlockStmt();
         List<NameExpr> retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isEmpty());
         toRead = getBlockStmt();
         retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(2, retrieved.size());
     }
 
@@ -579,7 +579,7 @@ public class CommonCodegenUtilsTest {
                 .filter(node -> node instanceof NullLiteralExpr)
                 .map(NullLiteralExpr.class::cast)
                 .collect(Collectors.toList());
-        assertNotNull(nullExprs);
+        assertThat(nullExprs).isNotNull();
         assertTrue(nullExprs.isEmpty());
 
         final List<CommonCodegenUtils.ReplacementTupla> replacementTuplas =
@@ -598,7 +598,7 @@ public class CommonCodegenUtilsTest {
                 .filter(node -> node instanceof NullLiteralExpr)
                 .map(NullLiteralExpr.class::cast)
                 .collect(Collectors.toList());
-        assertNotNull(nullExprs);
+        assertThat(nullExprs).isNotNull();
         assertEquals(nullExprs.size(), retrievedNullExprs.size());
         nullExprs.forEach(nullExpr -> assertTrue(retrievedNullExprs.contains(nullExpr)));
     }
@@ -619,13 +619,13 @@ public class CommonCodegenUtilsTest {
     }
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {
-        assertNotNull(toValidate);
+        assertThat(toValidate).isNotNull();
         assertEquals(methodName, toValidate.getName().asString());
     }
 
     private void commonValidateMethodDeclarationParams(MethodDeclaration toValidate, Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
         final NodeList<Parameter> retrieved = toValidate.getParameters();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(parameterNameTypeMap.size(), retrieved.size());
         for (Parameter parameter : retrieved) {
             assertTrue(parameterNameTypeMap.containsKey(parameter.getNameAsString()));

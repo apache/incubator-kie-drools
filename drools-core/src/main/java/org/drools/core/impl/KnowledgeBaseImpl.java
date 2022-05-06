@@ -847,7 +847,9 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void registerAddedEntryNodeCache(EntryPointNode node) {
-        if (addedEntryNodeCache == null) addedEntryNodeCache = new HashSet<>();
+        if (addedEntryNodeCache == null) {
+            addedEntryNodeCache = new HashSet<>();
+        }
         addedEntryNodeCache.add(node);
     }
 

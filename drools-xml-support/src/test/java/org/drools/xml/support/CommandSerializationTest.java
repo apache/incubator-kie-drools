@@ -74,7 +74,6 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class CommandSerializationTest {
@@ -84,7 +83,7 @@ public class CommandSerializationTest {
     // HELPER METHODS -------------------------------------------------------------------------------------------------------------
 
     private void verifyDisconnectedFactHandle( DisconnectedFactHandle orig, DisconnectedFactHandle copy ) {
-        assertNotNull("copy disconnected fact handle is null", copy);
+        assertThat(copy).as("copy disconnected fact handle is null").isNotNull();
         assertEquals("id", orig.getId(), copy.getId());
         assertEquals("identity hash code", orig.getIdentityHashCode(), copy.getIdentityHashCode());
         assertEquals("object hash code", orig.getObjectHashCode(), copy.getObjectHashCode());
@@ -160,7 +159,7 @@ public class CommandSerializationTest {
 
         InsertObjectCommand copyCmd = roundTrip(cmd);
 
-        assertNotNull(copyCmd);
+        assertThat(copyCmd).isNotNull();
         assertThat(copyCmd.getObject()).isInstanceOf(List.class);
         assertEquals( "object", cmd.getObject(), copyCmd.getObject());
     }
@@ -174,7 +173,7 @@ public class CommandSerializationTest {
         // test list with 1 element
         InsertObjectCommand copyCmd = roundTrip(cmd);
 
-        assertNotNull(copyCmd);
+        assertThat(copyCmd).isNotNull();
         assertThat(copyCmd.getObject()).isInstanceOf(List.class);
         assertEquals( "object", cmd.getObject(), copyCmd.getObject());
 
@@ -182,7 +181,7 @@ public class CommandSerializationTest {
         objectList.clear();
         copyCmd = roundTrip(cmd);
 
-        assertNotNull(copyCmd);
+        assertThat(copyCmd).isNotNull();
         assertThat(copyCmd.getObject()).isInstanceOf(List.class);
         assertEquals( "object", cmd.getObject(), copyCmd.getObject());
 
@@ -425,9 +424,9 @@ public class CommandSerializationTest {
                                 continue;
                             }
                             Object origVal = cmdField.get(origCmd);
-                            assertNotNull( cmdClass.getSimpleName() + "." + cmdField.getName(), origVal );
+                            assertThat(origVal).as(cmdClass.getSimpleName() + "." + cmdField.getName()).isNotNull();
                             Object copyVal = cmdField.get(copyCmd);
-                            assertNotNull( "Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), copyVal );
+                            assertThat(copyVal).as("Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName()).isNotNull();
                             if( origVal instanceof FactHandle ) {
                                 compareFactHandles((FactHandle) origVal, (FactHandle) copyVal, cmdClass);
                             } else if( origVal instanceof ClassObjectSerializationFilter ) {

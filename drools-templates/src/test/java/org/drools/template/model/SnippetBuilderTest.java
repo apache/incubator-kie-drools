@@ -18,8 +18,8 @@ package org.drools.template.model;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class SnippetBuilderTest {
 
@@ -29,7 +29,7 @@ public class SnippetBuilderTest {
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String cellValue = "$42";
         final String result = snip.build(cellValue);
-        assertNotNull(result);
+        assertThat(result).isNotNull();
 
         assertEquals("something.param.getAnother().equals($42);",
                      result);
@@ -52,7 +52,7 @@ public class SnippetBuilderTest {
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String cellValue = "42";
         final String result = snip.build(cellValue);
-        assertNotNull(result);
+        assertThat(result).isNotNull();
 
         assertEquals("something.param.getAnother(42).equals(42);",
                      result);

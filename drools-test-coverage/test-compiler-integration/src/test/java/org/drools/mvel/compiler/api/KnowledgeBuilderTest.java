@@ -28,8 +28,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -38,7 +38,7 @@ public class KnowledgeBuilderTest {
     @Test
     public void testKnowledgeProvider() {
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        assertNotNull( builder );
+        assertThat(builder).isNotNull();
     }
 
     @Test
@@ -69,7 +69,7 @@ public class KnowledgeBuilderTest {
         builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
         Collection<KiePackage> pkgs = builder.getKnowledgePackages();
-        assertNotNull( pkgs );
+        assertThat(pkgs).isNotNull();
         assertEquals( 2, pkgs.size() );
 
         KiePackage test1 = getKnowledgePackage(pkgs, "org.drools.mvel.compiler.test1" );

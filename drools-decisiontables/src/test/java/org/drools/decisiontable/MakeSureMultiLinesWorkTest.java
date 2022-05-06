@@ -23,7 +23,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore
 public class MakeSureMultiLinesWorkTest {
@@ -37,6 +37,6 @@ public class MakeSureMultiLinesWorkTest {
         kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
                               ResourceType.DTABLE);
         KieBase kbase = kieHelper.build();
-        assertNotNull(kbase);
+        assertThat(kbase).isNotNull();
     }
 }

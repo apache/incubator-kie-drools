@@ -72,9 +72,9 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -219,7 +219,7 @@ public class PackageBuilderConfigurationTest {
                      ruleDescr.getConsequence());
         assertTrue(mockDialect2.isCompileAll());
 
-        assertNotNull(pkg.getRule("test rule"));
+        assertThat(pkg.getRule("test rule")).isNotNull();
 
         // make sure there were no other general errors.
         assertFalse(builder.hasErrors());

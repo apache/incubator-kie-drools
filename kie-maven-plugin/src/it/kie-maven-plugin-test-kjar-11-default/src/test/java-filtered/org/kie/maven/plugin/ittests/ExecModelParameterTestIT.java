@@ -22,7 +22,7 @@ import org.drools.modelcompiler.CanonicalKieModule;
 import org.junit.Test;
 import org.kie.api.builder.KieModule;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class ExecModelParameterTestIT {
@@ -35,7 +35,7 @@ public class ExecModelParameterTestIT {
     @Test
     public void testWithoutDroolsModelCompilerOnClassPathDoNotRunExecModel() throws Exception {
         KieModule kieModule = fireRule();
-        assertNotNull(kieModule);
+        assertThat(kieModule).isNotNull();
         assertTrue(kieModule instanceof CanonicalKieModule);
     }
 

@@ -33,8 +33,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class UnicodeInCSVTest {
@@ -68,14 +68,14 @@ public class UnicodeInCSVTest {
         ksession.execute(CommandFactory.newBatchExecution(commands));
 
         // people with age greater than 18 should be added to list of adults
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "přidej k dospělým"));
+        assertThat(kbase.getRule("org.drools.decisiontable", "přidej k dospělým")).isNotNull();
         assertEquals(dospělí.size(), 5);
         assertEquals(dospělí.iterator().next().getJméno(), "Řehoř");
 
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "привет мир"));
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "你好世界"));
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "hallå världen"));
-        assertNotNull(kbase.getRule("org.drools.decisiontable", "مرحبا العالم"));
+        assertThat(kbase.getRule("org.drools.decisiontable", "привет мир")).isNotNull();
+        assertThat(kbase.getRule("org.drools.decisiontable", "你好世界")).isNotNull();
+        assertThat(kbase.getRule("org.drools.decisiontable", "hallå världen")).isNotNull();
+        assertThat(kbase.getRule("org.drools.decisiontable", "مرحبا العالم")).isNotNull();
 
         ksession.dispose();
     }

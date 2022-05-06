@@ -28,9 +28,9 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
@@ -74,7 +74,7 @@ public class KiePMMLDiscretizeTest {
         assertNull(retrieved);
         kiePMMLDiscretize = getKiePMMLDiscretize(MAP_MISSING_TO, null);
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(MAP_MISSING_TO, retrieved);
     }
 
@@ -88,15 +88,15 @@ public class KiePMMLDiscretizeTest {
         kiePMMLDiscretize = getKiePMMLDiscretize(MAP_MISSING_TO, DEFAULTVALUE);
         processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(DEFAULTVALUE, retrieved);
         processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 21)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(DEFAULTVALUE, retrieved);
         processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 40)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(DEFAULTVALUE, retrieved);
     }
 

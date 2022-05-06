@@ -53,9 +53,9 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
@@ -77,7 +77,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     @Before
     public void setUp() throws Exception {
         samplePmml = TestUtils.loadFromFile(SOURCE_SAMPLE);
-        assertNotNull(samplePmml);
+        assertThat(samplePmml).isNotNull();
         assertEquals(1, samplePmml.getModels().size());
         assertTrue(samplePmml.getModels().get(0) instanceof Scorecard);
         scorecardModel = ((Scorecard) samplePmml.getModels().get(0));
@@ -216,7 +216,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                            "value <= 5.0",
                            1);
         KiePMMLReasonCodeAndValue retrieved = toValidate.getReasonCodeAndValue();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(characteristicReasonCode, retrieved.getReasonCode());
         double expected = attribute.getPartialScore().doubleValue() - characteristicBaselineScore;
         assertEquals(expected, retrieved.getValue(), 0);
@@ -489,7 +489,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
                 .getKiePMMLReasonCodeAndValue(attribute,
                                               characteristicReasonCode, null);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(characteristicReasonCode, retrieved.getReasonCode());
         double expected = attributePartialScore - baselineScore;
         assertEquals(expected, retrieved.getValue(), 0);
@@ -497,7 +497,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
                 .getKiePMMLReasonCodeAndValue(attribute,
                                               characteristicReasonCode, characteristicBaselineScore);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(characteristicReasonCode, retrieved.getReasonCode());
         expected = attributePartialScore - characteristicBaselineScore;
         assertEquals(expected, retrieved.getValue(), 0);
@@ -506,7 +506,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
                 .getKiePMMLReasonCodeAndValue(attribute,
                                               characteristicReasonCode, characteristicBaselineScore);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(attributeReasonCode, retrieved.getReasonCode());
         assertEquals(expected, retrieved.getValue(), 0);
     }

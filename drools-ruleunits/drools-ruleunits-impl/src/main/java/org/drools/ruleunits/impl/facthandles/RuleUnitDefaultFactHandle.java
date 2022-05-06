@@ -17,10 +17,9 @@ package org.drools.ruleunits.impl.facthandles;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.rule.EntryPointId;
-import org.drools.ruleunits.impl.InternalStoreCallback;
 import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.impl.InternalStoreCallback;
 
 public class RuleUnitDefaultFactHandle extends DefaultFactHandle implements RuleUnitInternalFactHandle {
 
@@ -35,20 +34,12 @@ public class RuleUnitDefaultFactHandle extends DefaultFactHandle implements Rule
         super(id, object, recency, wmEntryPoint);
     }
 
-    public RuleUnitDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint wmEntryPoint, boolean isTraitOrTraitable) {
-        super(id, object, recency, wmEntryPoint, isTraitOrTraitable);
+    public RuleUnitDefaultFactHandle(long id, int identityHashCode, Object object, long recency, WorkingMemoryEntryPoint wmEntryPoint) {
+        super(id, identityHashCode, object, recency, wmEntryPoint);
     }
 
-    public RuleUnitDefaultFactHandle(long id, int identityHashCode, Object object, long recency, WorkingMemoryEntryPoint wmEntryPoint, boolean isTraitOrTraitable) {
-        super(id, identityHashCode, object, recency, wmEntryPoint, isTraitOrTraitable);
-    }
-
-    public RuleUnitDefaultFactHandle(long id, int identityHashCode, Object object, long recency, EntryPointId entryPointId, boolean isTraitOrTraitable) {
-        super(id, identityHashCode, object, recency, entryPointId, isTraitOrTraitable);
-    }
-
-    public RuleUnitDefaultFactHandle(long id, int identityHashCode, Object object, long recency, EntryPointId entryPointId, TraitTypeEnum traitType) {
-        super(id, identityHashCode, object, recency, entryPointId, traitType);
+    public RuleUnitDefaultFactHandle(long id, int identityHashCode, Object object, long recency, EntryPointId entryPointId) {
+        super(id, identityHashCode, object, recency, entryPointId);
     }
 
     public RuleUnitDefaultFactHandle(long id, String wmEntryPointId, int identityHashCode, int objectHashCode, long recency, Object object) {

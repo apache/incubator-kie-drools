@@ -46,9 +46,9 @@ import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.xml.sax.SAXException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
@@ -83,7 +83,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(MINING_MODEL.getAlgorithmName(), retrieved.getAlgorithmName());
         assertEquals(MINING_MODEL.isScorable(), retrieved.isScorable());
         assertEquals(targetFieldName, retrieved.getTargetField());
@@ -101,7 +101,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(compilationDTO, nestedModels);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
         assertEquals(expectedNestedModels, nestedModels.size());
     }
@@ -137,7 +137,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         });
         final Map<String, String> retrieved =
                 KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMapCompiled(compilationDTO, nestedModels);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
         assertEquals(expectedNestedModels, nestedModels.size());
         expectedGeneratedClasses.forEach(expectedGeneratedClass -> {

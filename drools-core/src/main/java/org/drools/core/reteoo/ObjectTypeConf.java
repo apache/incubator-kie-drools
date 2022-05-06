@@ -34,8 +34,6 @@ public interface ObjectTypeConf {
 
     boolean isEvent();
 
-    boolean isTrait();
-
     boolean isDynamic();
    
     TypeDeclaration getTypeDeclaration();

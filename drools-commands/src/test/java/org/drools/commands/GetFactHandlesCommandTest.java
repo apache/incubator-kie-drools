@@ -33,7 +33,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -63,7 +63,7 @@ public class GetFactHandlesCommandTest {
         GetFactHandlesCommand command = new GetFactHandlesCommand();
         Object result = runner.execute(command, context);
         if( result instanceof Collection<?> ) { 
-            assertNotNull(result);
+            assertThat(result).isNotNull();
             assertTrue(((Collection<?>) result).isEmpty());
         }
         else { 
@@ -103,7 +103,7 @@ public class GetFactHandlesCommandTest {
         GetFactHandlesCommand command = new GetFactHandlesCommand(true);
         Object result = runner.execute(command, context);
         if( result instanceof Collection<?> ) { 
-            assertNotNull(result);
+            assertThat(result).isNotNull();
             assertTrue(((Collection<?>) result).isEmpty());
         }
         else { 

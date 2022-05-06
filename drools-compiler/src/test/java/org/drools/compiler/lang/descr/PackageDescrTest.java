@@ -27,7 +27,7 @@ import org.drools.drl.ast.dsl.impl.PackageDescrBuilderImpl;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PackageDescrTest {
 
@@ -39,7 +39,7 @@ public class PackageDescrTest {
         OutputStream os = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(os);
         descr.writeExternal(oo);
-        assertNotNull(os.toString());
+        assertThat(os.toString()).isNotNull();
     }
 
 }

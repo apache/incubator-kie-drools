@@ -17,10 +17,8 @@ package org.drools.ruleunits.impl.facthandles;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.rule.EntryPointId;
-import org.drools.ruleunits.impl.InternalStoreCallback;
 import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.impl.InternalStoreCallback;
 
 public class RuleUnitEventFactHandle extends EventFactHandle implements RuleUnitInternalFactHandle {
     public RuleUnitEventFactHandle() {
@@ -28,14 +26,6 @@ public class RuleUnitEventFactHandle extends EventFactHandle implements RuleUnit
 
     public RuleUnitEventFactHandle(long id, Object object, long recency, long timestamp, long duration, WorkingMemoryEntryPoint wmEntryPoint) {
         super(id, object, recency, timestamp, duration, wmEntryPoint);
-    }
-
-    public RuleUnitEventFactHandle(long id, Object object, long recency, long timestamp, long duration, WorkingMemoryEntryPoint wmEntryPoint, boolean isTraitOrTraitable) {
-        super(id, object, recency, timestamp, duration, wmEntryPoint, isTraitOrTraitable);
-    }
-
-    public RuleUnitEventFactHandle(long id, int identityHashCode, Object object, long recency, long timestamp, long duration, EntryPointId entryPointId, TraitTypeEnum traitType) {
-        super(id, identityHashCode, object, recency, timestamp, duration, entryPointId, traitType);
     }
 
     private DataHandle dataHandle;

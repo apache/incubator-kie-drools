@@ -21,23 +21,19 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.drools.core.common.EntryPointFactory;
-import org.drools.core.factmodel.ClassBuilderFactory;
-import org.drools.traits.core.factmodel.TraitRegistry;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.traits.core.common.TraitEntryPointFactory;
-import org.drools.traits.core.factmodel.TraitClassBuilderFactory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
+import org.drools.traits.core.factmodel.TraitRegistry;
 
 public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImpl implements TraitRuntimeComponentFactory {
 
     private final TraitFactHandleFactory traitFactHandleFactory = new TraitFactHandleFactory();
 
     private final Map<RuleBase, TraitFactoryImpl> traitFactoryCache = new WeakHashMap<>(new IdentityHashMap<>());
-
-    private final TraitClassBuilderFactory traitClassBuilderFactory = new TraitClassBuilderFactory();
 
     @Override
     public TraitFactoryImpl getTraitFactory(RuleBase knowledgeBase) {
@@ -50,11 +46,6 @@ public class TraitRuntimeComponentFactoryImpl extends RuntimeComponentFactoryImp
     @Override
     public TraitRegistry getTraitRegistry(RuleBase knowledgeBase) {
         return getTraitFactory(knowledgeBase).getTraitRegistry();
-    }
-
-    @Override
-    public ClassBuilderFactory getClassBuilderFactory() {
-        return traitClassBuilderFactory;
     }
 
     @Override

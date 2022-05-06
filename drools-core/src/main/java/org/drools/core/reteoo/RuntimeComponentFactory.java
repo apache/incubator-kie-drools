@@ -22,7 +22,6 @@ import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
@@ -41,8 +40,6 @@ import org.kie.api.runtime.StatelessKieSession;
 public interface RuntimeComponentFactory extends KieService {
 
     String NO_RUNTIME = "Missing runtime. Please add the module org.drools:drools-kiesession to your classpath.";
-
-    ClassBuilderFactory getClassBuilderFactory();
 
     AgendaFactory getAgendaFactory();
 

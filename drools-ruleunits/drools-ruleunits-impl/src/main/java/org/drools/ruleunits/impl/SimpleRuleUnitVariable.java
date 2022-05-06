@@ -15,6 +15,7 @@
  */
 package org.drools.ruleunits.impl;
 
+import org.drools.ruleunits.api.DataSource;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static org.drools.util.StringUtils.ucFirst;
@@ -44,7 +45,7 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
 
     @Override
     public boolean isDataSource() {
-        return dataSourceParameterType != null;
+        return DataSource.class.isAssignableFrom(type) && dataSourceParameterType != null;
     }
 
     @Override

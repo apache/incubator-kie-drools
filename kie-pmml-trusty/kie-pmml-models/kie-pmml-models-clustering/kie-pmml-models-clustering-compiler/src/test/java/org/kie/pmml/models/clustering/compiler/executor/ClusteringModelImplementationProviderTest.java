@@ -30,9 +30,9 @@ import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
@@ -43,7 +43,7 @@ public class ClusteringModelImplementationProviderTest {
     private static final ClusteringModelImplementationProvider PROVIDER = new ClusteringModelImplementationProvider();
 
     private static ClusteringModel getModel(PMML pmml) {
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
 
         Model model = pmml.getModels().get(0);
@@ -69,7 +69,7 @@ public class ClusteringModelImplementationProviderTest {
                                                                        new HasClassLoaderMock());
         KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
 
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved instanceof Serializable);
     }
 
@@ -84,9 +84,9 @@ public class ClusteringModelImplementationProviderTest {
                                                                        new HasClassLoaderMock());
         KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
 
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         Map<String, String> sourcesMap = retrieved.getSourcesMap();
-        assertNotNull(sourcesMap);
+        assertThat(sourcesMap).isNotNull();
         assertFalse(sourcesMap.isEmpty());
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

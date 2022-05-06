@@ -19,8 +19,8 @@ package org.drools.traits.core.factmodel;
 import java.io.Serializable;
 
 import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.factmodel.BuildUtils;
-import org.drools.core.factmodel.ClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
+import org.drools.compiler.builder.impl.classbuilder.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;

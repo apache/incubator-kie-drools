@@ -15,13 +15,17 @@
 
 package org.drools.template.parser;
 
-import org.junit.Test;
-
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class DefaultTemplateContainerTest {
 
@@ -35,7 +39,7 @@ public class DefaultTemplateContainerTest {
         Map<String, RuleTemplate> templates = t.getTemplates();
         assertEquals( 1, templates.size() );
         RuleTemplate template = templates.get( "template1" );
-        assertNotNull( template );
+        assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertEquals( 1, columns.size() );
         TemplateColumn column = (TemplateColumn) columns.get( 0 );
@@ -59,7 +63,7 @@ public class DefaultTemplateContainerTest {
         assertEquals( 1,
                       templates.size() );
         RuleTemplate template = templates.get( "template1" );
-        assertNotNull( template );
+        assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertEquals( 1, columns.size() );
         TemplateColumn column = (TemplateColumn) columns.get( 0 );
@@ -84,7 +88,7 @@ public class DefaultTemplateContainerTest {
         assertEquals( 1,
                       templates.size() );
         RuleTemplate template = templates.get( "template1" );
-        assertNotNull( template );
+        assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertEquals( 1, columns.size() );
         TemplateColumn column = (TemplateColumn) columns.get( 0 );
@@ -109,7 +113,7 @@ public class DefaultTemplateContainerTest {
         assertEquals( 1,
                       templates.size() );
         RuleTemplate template = templates.get( "template1" );
-        assertNotNull( template );
+        assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertEquals( 1, columns.size() );
         TemplateColumn column = (TemplateColumn) columns.get( 0 );
@@ -148,7 +152,7 @@ public class DefaultTemplateContainerTest {
         Map<String, RuleTemplate> templates = t.getTemplates();
         assertEquals( 1, templates.size() );
         RuleTemplate template = (RuleTemplate) templates.get( "template1" );
-        assertNotNull( template );
+        assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertEquals( 1, columns.size() );
         TemplateColumn templateColumn = (TemplateColumn) columns.get( 0 );
@@ -238,7 +242,7 @@ public class DefaultTemplateContainerTest {
         assertEquals( 2, templates.size() );
 
         RuleTemplate template = (RuleTemplate) templates.get( "template1" );
-        assertNotNull( template );
+        assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertEquals( 1, columns.size() );
         TemplateColumn column = (TemplateColumn) columns.get( 0 );
@@ -249,7 +253,7 @@ public class DefaultTemplateContainerTest {
         assertTrue( contents.endsWith( "then\nend\n" ) );
 
         template = (RuleTemplate) templates.get( "template2" );
-        assertNotNull( template );
+        assertThat(template).isNotNull();
         columns = template.getColumns();
         assertEquals( 2, columns.size() );
         column = (TemplateColumn) columns.get( 0 );

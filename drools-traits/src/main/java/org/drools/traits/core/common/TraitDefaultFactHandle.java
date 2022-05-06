@@ -20,39 +20,37 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.traits.core.base.TraitHelperImpl;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 
 public class TraitDefaultFactHandle extends DefaultFactHandle {
 
-    public TraitDefaultFactHandle(long id, Object initialFact, long recency, WorkingMemoryEntryPoint wmEntryPoint) {
-        this( id, determineIdentityHashCode( initialFact ), initialFact, recency, wmEntryPoint, false );
+    protected TraitTypeEnum traitType = TraitTypeEnum.NON_TRAIT;
+
+    public TraitDefaultFactHandle(final long id,
+                                  final Object object,
+                                  final long recency,
+                                  final WorkingMemoryEntryPoint wmEntryPoint) {
+        this(id, determineIdentityHashCode(object), object, recency, wmEntryPoint);
     }
 
     public TraitDefaultFactHandle(final long id,
-                             final Object object,
-                             final long recency,
-                             final WorkingMemoryEntryPoint wmEntryPoint,
-                             final boolean isTraitOrTraitable ) {
-        this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, isTraitOrTraitable );
-    }
-
-    public TraitDefaultFactHandle(final long id,
-                             final int identityHashCode,
-                             final Object object,
-                             final long recency,
-                             final WorkingMemoryEntryPoint wmEntryPoint,
-                             final boolean isTraitOrTraitable ) {
+                                  final int identityHashCode,
+                                  final Object object,
+                                  final long recency,
+                                  final WorkingMemoryEntryPoint wmEntryPoint) {
         this.id = id;
         this.entryPointId = wmEntryPoint == null ? null : wmEntryPoint.getEntryPoint();
         this.wmEntryPoint = wmEntryPoint;
         this.recency = recency;
+        this.traitType = determineTraitType(object);
         setObject(object);
         this.identityHashCode = identityHashCode;
-        this.traitType = determineTraitType(object, isTraitOrTraitable);
         if (wmEntryPoint != null) {
-            setLinkedTuples( wmEntryPoint.getKnowledgeBase() );
+            setLinkedTuples(wmEntryPoint.getKnowledgeBase());
             this.wmEntryPoint = wmEntryPoint;
         } else {
             this.linkedTuples = new SingleLinkedTuples();
@@ -60,10 +58,10 @@ public class TraitDefaultFactHandle extends DefaultFactHandle {
     }
 
     @Override
-    public <K> K as( Class<K> klass ) throws ClassCastException {
-        if ( klass.isAssignableFrom( object.getClass() ) ) {
+    public <K> K as(Class<K> klass) throws ClassCastException {
+        if (klass.isAssignableFrom(object.getClass())) {
             return (K) object;
-        } else if ( this.isTraitOrTraitable() ) {
+        } else if (this.isTraitOrTraitable()) {
             TraitHelperImpl traitHelper = new TraitHelperImpl();
             K k = traitHelper.extractTrait(this, klass);
             if (k != null) {
@@ -72,27 +70,73 @@ public class TraitDefaultFactHandle extends DefaultFactHandle {
                 throw new RuntimeException(String.format("Cannot trait to %s", klass));
             }
         }
-        throw new ClassCastException( "The Handle's Object can't be cast to " + klass );
+        throw new ClassCastException("The Handle's Object can't be cast to " + klass);
+    }
+
+    private TraitTypeEnum determineTraitType(Object object) {
+        if (object == null) {
+            return TraitTypeEnum.NON_TRAIT;
+        }
+        if (object instanceof TraitProxyImpl) {
+            return TraitTypeEnum.TRAIT;
+        }
+        if (object instanceof CoreWrapper) {
+            return TraitTypeEnum.WRAPPED_TRAITABLE;
+        }
+        if (object instanceof TraitableBean) {
+            return TraitTypeEnum.TRAITABLE;
+        }
+        if (object.getClass().getAnnotation(Traitable.class) != null) {
+            return TraitTypeEnum.LEGACY_TRAITABLE;
+        }
+        TypeDeclaration typeDeclaration = wmEntryPoint.getKnowledgeBase().getTypeDeclaration(object.getClass());
+        if (typeDeclaration != null && typeDeclaration.getTypeClassDef().getAnnotation(Traitable.class) != null) {
+            return TraitTypeEnum.LEGACY_TRAITABLE;
+        }
+        return TraitTypeEnum.NON_TRAIT;
     }
 
     @Override
-    protected TraitTypeEnum determineTraitType(Object object, boolean isTraitOrTraitable) {
-        if (isTraitOrTraitable) {
-            return determineTraitType(object);
-        } else {
-            return TraitTypeEnum.NON_TRAIT;
-        }
+    public TraitTypeEnum getTraitType() {
+        return traitType;
     }
 
-    public TraitTypeEnum determineTraitType(Object object ) {
-        if ( object instanceof TraitProxyImpl) {
-            return TraitTypeEnum.TRAIT;
-        } else if ( object instanceof CoreWrapper) {
-            return TraitTypeEnum.WRAPPED_TRAITABLE;
-        } else if ( object instanceof TraitableBean) {
-            return TraitTypeEnum.TRAITABLE;
+    @Override
+    protected void setTraitType(TraitTypeEnum traitType) {
+        this.traitType = traitType;
+    }
+
+    @Override
+    public boolean isTraitOrTraitable() {
+        return traitType != TraitTypeEnum.NON_TRAIT;
+    }
+
+    @Override
+    public boolean isTraitable() {
+        return traitType == TraitTypeEnum.TRAITABLE || traitType == TraitTypeEnum.WRAPPED_TRAITABLE;
+    }
+
+    @Override
+    public boolean isTraiting() {
+        return traitType == TraitTypeEnum.TRAIT;
+    }
+
+    @Override
+    public void setObject(final Object object) {
+        this.object = object;
+        this.objectClassName = null;
+        this.objectHashCode = 0;
+
+        if (isTraitOrTraitable()) {
+            TraitTypeEnum newType = determineTraitType(object);
+            if (!(this.traitType == TraitTypeEnum.LEGACY_TRAITABLE && newType != TraitTypeEnum.LEGACY_TRAITABLE)) {
+                this.identityHashCode = determineIdentityHashCode(object);
+            } else {
+                // we are replacing a non-traitable object with its proxy, so we need to preserve the identity hashcode
+            }
+            this.traitType = newType;
         } else {
-            return TraitTypeEnum.LEGACY_TRAITABLE;
+            this.identityHashCode = 0;
         }
     }
 }

@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.WorkingMemory;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.TypeResolver;
 import org.drools.core.common.InternalFactHandle;
@@ -303,7 +302,7 @@ public final class GeneratorHelper {
             for (int i = 0; i < globals.length; i++) {
                 mv.visitVarInsn(ALOAD, wmReg); // workingMemory
                 push(globals[i]);
-                invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
+                invokeInterface(ReteEvaluator.class, "getGlobal", Object.class, String.class);
                 Class<?> primitiveType = convertPrimitiveNameToType(globalTypes[i]);
                 if (primitiveType != null) {
                     cast(convertFromPrimitiveType(primitiveType), primitiveType);

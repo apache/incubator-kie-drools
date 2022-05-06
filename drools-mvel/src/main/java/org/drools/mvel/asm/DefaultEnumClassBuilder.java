@@ -18,11 +18,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-import org.drools.core.factmodel.BuildUtils;
+import org.drools.compiler.builder.impl.classbuilder.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.EnumClassBuilder;
-import org.drools.core.factmodel.EnumClassDefinition;
-import org.drools.core.factmodel.EnumLiteralDefinition;
+import org.drools.compiler.builder.impl.classbuilder.EnumClassBuilder;
+import org.drools.compiler.builder.impl.classbuilder.EnumClassDefinition;
+import org.drools.compiler.builder.impl.classbuilder.EnumLiteralDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;

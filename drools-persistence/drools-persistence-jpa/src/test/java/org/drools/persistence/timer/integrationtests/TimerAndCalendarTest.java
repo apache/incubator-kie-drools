@@ -57,6 +57,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
@@ -279,8 +280,7 @@ public class TimerAndCalendarTest {
 
         FactType type = kbase.getFactType( "org.drools.test",
                                            "TestEvent" );
-        Assert.assertNotNull( "could not get type",
-                              type );
+        assertThat(type).as("could not get type").isNotNull();
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );

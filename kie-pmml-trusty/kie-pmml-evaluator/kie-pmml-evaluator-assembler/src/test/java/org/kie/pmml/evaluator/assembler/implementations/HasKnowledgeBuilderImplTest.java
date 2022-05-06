@@ -25,8 +25,8 @@ import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -46,7 +46,7 @@ public class HasKnowledgeBuilderImplTest {
     @Test
     public void getClassLoader() {
         ClassLoader retrieved = hasKnowledgeBuilder.getClassLoader();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(knowledgeBuilder.getRootClassLoader(),retrieved);
         assertTrue(retrieved instanceof ProjectClassLoader);
     }
@@ -56,7 +56,7 @@ public class HasKnowledgeBuilderImplTest {
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(CLASS_SOURCE_NAME, CLASS_SOURCE);
         Class<?> retrieved = hasKnowledgeBuilder.compileAndLoadClass(sourcesMap, CLASS_SOURCE_NAME);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(CLASS_SOURCE_NAME, retrieved.getName());
     }
 

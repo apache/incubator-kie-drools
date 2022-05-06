@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 
@@ -39,19 +39,19 @@ public class KModuleXSDTest {
         SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
         URL url = getClass().getClassLoader().getResource("org/kie/api/kmodule.xsd");
-        assertNotNull( url );
+        assertThat(url).isNotNull();
         Schema schema = null;
         try {
             schema = factory.newSchema(url );
         } catch (SAXParseException ex ) {
             fail( "Unable to load XSD: " + ex.getMessage() + ":" + ex.getLineNumber() + ":" + ex.getColumnNumber()  );
         }
-        assertNotNull( schema );
+        assertThat(schema).isNotNull();
 
         Validator validator = schema.newValidator();
 
         Source source = new StreamSource(KModuleXSDTest.class.getResource( "kmod1.xml" ).openStream());
-        assertNotNull( source );
+        assertThat(source).isNotNull();
 
         try {
             validator.validate(source);

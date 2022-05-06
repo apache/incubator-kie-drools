@@ -85,7 +85,6 @@ public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
                                                    final ReteEvaluator reteEvaluator,
                                                    final WorkingMemoryEntryPoint wmEntryPoint ) {
         WorkingMemoryEntryPoint entryPoint = getWmEntryPoint(reteEvaluator, wmEntryPoint);
-        boolean isTrait = conf != null && conf.isTrait();
 
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
@@ -99,18 +98,18 @@ public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
             if ( type != null && type.getDurationExtractor() != null ) {
                 duration = type.getDurationExtractor().getLongValue( reteEvaluator, object );
             }
-            return createEventFactHandle(id, object, recency, entryPoint, isTrait, timestamp, duration);
+            return createEventFactHandle(id, object, recency, entryPoint, timestamp, duration);
         } else {
-            return createDefaultFactHandle(id, object, recency, entryPoint, isTrait);
+            return createDefaultFactHandle(id, object, recency, entryPoint);
         }
     }
 
-    protected DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, boolean isTrait) {
-        return new DefaultFactHandle(id, object, recency, entryPoint, isTrait);
+    protected DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint) {
+        return new DefaultFactHandle(id, object, recency, entryPoint);
     }
 
-    protected EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, boolean isTrait, long timestamp, long duration) {
-        return new EventFactHandle(id, object, recency, timestamp, duration, entryPoint, isTrait);
+    protected EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
+        return new EventFactHandle(id, object, recency, timestamp, duration, entryPoint);
     }
 
     protected WorkingMemoryEntryPoint getWmEntryPoint(ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint wmEntryPoint) {

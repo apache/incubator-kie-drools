@@ -34,9 +34,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -53,7 +53,7 @@ public class ExternalSpreadsheetCompilerTest {
                                               "/templates/test_template1.drl",
                                               11,
                                               2 );
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
         // System.out.println(drl);
 
@@ -72,7 +72,7 @@ public class ExternalSpreadsheetCompilerTest {
                                               11,
                                               2 );
         // System.out.println(drl);
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ExternalSpreadsheetCompilerTest {
                                               InputType.CSV,
                                               10,
                                               2 );
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
         assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
         assertTrue( drl.indexOf( "myObject.size () > 2" ) > 0 );
@@ -106,7 +106,7 @@ public class ExternalSpreadsheetCompilerTest {
                                                21,
                                                2 );
 
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
         Pattern p = Pattern.compile( ".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",
                                      Pattern.DOTALL | Pattern.MULTILINE );
@@ -134,7 +134,7 @@ public class ExternalSpreadsheetCompilerTest {
                                              InputType.XLS,
                                              10,
                                              2 );
-        assertNotNull( drl );
+        assertThat(drl).isNotNull();
 
         assertTrue( drl.indexOf( "This is a function block" ) > -1 );
         assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );

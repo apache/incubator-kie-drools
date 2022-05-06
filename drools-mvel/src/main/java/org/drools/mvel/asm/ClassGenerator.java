@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.util.TypeResolver;
-import org.drools.core.factmodel.ClassBuilderFactory;
+import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.WritableClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
@@ -135,7 +135,7 @@ public class ClassGenerator {
             }
             cw.visitEnd();
             bytecode = cw.toByteArray();
-            if (ClassBuilderFactory.DUMP_GENERATED_CLASSES) {
+            if (JavaCompiler.DUMP_GENERATED_CLASSES) {
                 dumpGeneratedClass(bytecode);
             }
         }
@@ -148,12 +148,6 @@ public class ClassGenerator {
             clazz = writableClassLoader.writeClass( className, bytecode );
         }
         return clazz;
-    }
-
-    public void dumpGeneratedClass() {
-        if (!ClassBuilderFactory.DUMP_GENERATED_CLASSES) {
-            dumpGeneratedClass(generateBytecode());
-        }
     }
 
     private void dumpGeneratedClass(byte[] bytecode) {

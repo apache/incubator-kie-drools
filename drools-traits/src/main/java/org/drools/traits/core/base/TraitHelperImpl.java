@@ -66,7 +66,7 @@ import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
+import static org.drools.traits.core.base.TraitUtils.supersetOrEqualset;
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
 public class TraitHelperImpl implements Externalizable,

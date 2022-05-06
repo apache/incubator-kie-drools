@@ -57,9 +57,9 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.model.KiePMMLNode;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -117,7 +117,7 @@ public class KiePMMLNodeFactoryTest {
                                                                         PACKAGE_NAME,
                                                                         1.0,
                                                                         new HasClassLoaderMock());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonVerifyNode(retrieved, node1);
     }
 
@@ -131,7 +131,7 @@ public class KiePMMLNodeFactoryTest {
         Map<String, String> retrieved = KiePMMLNodeFactory.getKiePMMLNodeSourcesMap(nodeNamesDTO,
                                                                                     getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
                                                                                     PACKAGE_NAME);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         commonVerifyNodeSource(retrieved, PACKAGE_NAME);
     }
 

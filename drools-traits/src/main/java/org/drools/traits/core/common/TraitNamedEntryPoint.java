@@ -26,7 +26,7 @@ import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.traits.core.factmodel.TraitProxy;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;

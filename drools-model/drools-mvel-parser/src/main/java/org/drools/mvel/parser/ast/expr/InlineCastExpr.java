@@ -84,7 +84,7 @@ public class InlineCastExpr extends Expression implements NodeWithType<InlineCas
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public InlineCastExpr setExpression(final Expression expression) {
-        assertNotNull(expression);
+    	assertNotNull(expression);
         if (expression == this.expression) {
             return (InlineCastExpr) this;
         }

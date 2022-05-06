@@ -42,6 +42,12 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
+import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.core.rule.Behavior;
+import org.drools.core.time.TimeUtils;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
@@ -49,13 +55,6 @@ import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.util.TypeResolver;
-import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.rule.Behavior;
-import org.drools.core.time.TimeUtils;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -65,6 +64,7 @@ import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.drools.util.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -136,8 +136,17 @@ public class ModelGenerator {
             return;
         }
 
+        packageModel.addRuleUnits( processRules(kbuilder, packageDescr, packageModel, typeResolver, ruleDescrs) );
+    }
+
+    private static Set<RuleUnitDescription> processRules(KnowledgeBuilderImpl kbuilder, PackageDescr packageDescr, PackageModel packageModel, TypeResolver typeResolver, List<RuleDescr> ruleDescrs) {
+        Set<RuleUnitDescription> ruleUnitDescrs = new HashSet<>();
+
         for (RuleDescr descr : ruleDescrs) {
             RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, descr);
+            if (context.getRuleUnitDescr() != null) {
+                ruleUnitDescrs.add(context.getRuleUnitDescr());
+            }
             context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQueryDef(packageModel, context);
@@ -151,7 +160,8 @@ public class ModelGenerator {
             List<RuleContext> ruleContexts = new ArrayList<>();
             int i = 0;
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                ruleContexts.add(new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ )) ;
+                RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ );
+                ruleContexts.add(context);
             }
             KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
                     ruleContexts.parallelStream().forEach(context -> processRuleDescr(context, packageDescr))
@@ -159,9 +169,12 @@ public class ModelGenerator {
         } else {
             int i = 0;
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                processRuleDescr(new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ ), packageDescr) ;
+                RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ );
+                processRuleDescr(context, packageDescr);
             }
         }
+
+        return ruleUnitDescrs;
     }
 
     private static void processRuleDescr(RuleContext context, PackageDescr packageDescr) {
@@ -171,10 +184,6 @@ public class ModelGenerator {
         }
         context.setDialectFromAttributes(packageDescr.getAttributes());
         processRule(packageDescr, context);
-        RuleUnitDescription rud = context.getRuleUnitDescr();
-        if (rud != null) {
-            context.getPackageModel().addRuleUnit(rud);
-        }
     }
 
     private static void processRule(PackageDescr packageDescr, RuleContext context) {
@@ -187,7 +196,6 @@ public class ModelGenerator {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
@@ -208,6 +216,7 @@ public class ModelGenerator {
         }
         ruleCall.addArgument( toStringLiteral( ruleDescr.getName() ) );
 
+        RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         MethodCallExpr buildCallScope = ruleUnitDescr != null ?
                 new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( toClassOrInterfaceType(ruleUnitDescr.getCanonicalName()) ) ) :
                 ruleCall;

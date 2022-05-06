@@ -34,9 +34,9 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -915,7 +915,7 @@ public class TemporalEvaluatorFactoryTest {
                 parameters = parameters.split( "\\]" )[0];
             }
             EvaluatorDefinition evalDef = registry.getEvaluatorDefinition( evaluatorStr );
-            assertNotNull( evalDef );
+            assertThat(evalDef).isNotNull();
             final MvelEvaluator evaluator = (MvelEvaluator) evalDef.getEvaluator( valueType, evaluatorStr, isNegated, parameters );
 
             checkEvaluatorMethodWith2Extractors( valueType,
@@ -1021,7 +1021,7 @@ public class TemporalEvaluatorFactoryTest {
         } catch ( RuntimeException e ) {
             exc = e;
         }
-        assertNotNull( exc );
+        assertThat(exc).isNotNull();
     }
 
     private VariableRestriction.VariableContextEntry getContextEntry(final Evaluator evaluator,

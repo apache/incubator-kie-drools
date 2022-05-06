@@ -26,25 +26,15 @@ import java.util.StringTokenizer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.RuleBuildWarning;
-import org.drools.drl.parser.lang.DroolsSoftKeywords;
-import org.drools.drl.ast.descr.AndDescr;
-import org.drools.drl.ast.descr.AnnotationDescr;
-import org.drools.drl.ast.descr.AttributeDescr;
-import org.drools.drl.ast.descr.EntryPointDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.QueryDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Salience;
@@ -55,16 +45,20 @@ import org.drools.core.time.impl.CronTimer;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.time.impl.Timer;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.QueryDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.parser.DroolsError;
+import org.drools.drl.parser.lang.DroolsSoftKeywords;
 import org.drools.util.DateUtils;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.rule.ActivationListener;
 import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
-import org.kie.api.definition.rule.Unit;
 
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
-import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
  * This builds the rule structure from an AST.
@@ -82,8 +76,6 @@ public class RuleBuilder {
         if ( null != ruleDescr.getParentName() && null != context.getPkg().getRule( ruleDescr.getParentName() ) ) {
             context.getRule().setParent( context.getPkg().getRule( ruleDescr.getParentName() ) );
         }
-
-        parseUnitAnnotations( context, context.getRule(), ruleDescr );
 
         // add all the rule's meta attributes
         buildMetaAttributes( context );
@@ -103,12 +95,7 @@ public class RuleBuilder {
 
         final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
-            Pattern prefixPattern = context.getPrefixPattern(); // this is established during pre-processing, if it's query
-            final GroupElement ce = (GroupElement) builder.build( context,
-                                                                  getLhsForRuleUnit( context.getRule(), ruleDescr.getLhs() ),
-                                                                  prefixPattern );
-
-            context.getRule().setLhs( ce );
+            context.getRule().setLhs( (GroupElement) builder.build( context, ruleDescr.getLhs(), context.getPrefixPattern() ) );
         } else {
             throw new RuntimeException( "BUG: builder not found for descriptor class " + ruleDescr.getLhs().getClass() );
         }
@@ -129,16 +116,6 @@ public class RuleBuilder {
                 consequenceBuilder.build( context, name );
             }
         }
-    }
-
-    private static AndDescr getLhsForRuleUnit(RuleImpl rule, AndDescr lhs) {
-        if (rule.hasRuleUnit()) {
-            PatternDescr unitPattern = new PatternDescr( rule.getRuleUnitClassName(), RULE_UNIT_DECLARATION );
-            unitPattern.setSource( EntryPointDescr.RULE_UNIT_ENTRY_POINT_DESCR );
-            unitPattern.setResource( rule.getResource() );
-            lhs.getDescrs().add(0, unitPattern);
-        }
-        return lhs;
     }
 
     public static void buildMetaAttributes(final RuleBuildContext context ) {
@@ -314,19 +291,6 @@ public class RuleBuilder {
 
             rule.setAllMatches(ruleDescr.hasAnnotation(All.class));
 
-        } catch (Exception e) {
-            DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                  e.getMessage() );
-            context.addError( err  );
-        }
-    }
-
-    private static void parseUnitAnnotations( RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr ) {
-        try {
-            Unit unit = getTypedAnnotation( ruleDescr, Unit.class );
-            if (unit != null) {
-                rule.setRuleUnitClass( unit.value() );
-            }
         } catch (Exception e) {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   e.getMessage() );

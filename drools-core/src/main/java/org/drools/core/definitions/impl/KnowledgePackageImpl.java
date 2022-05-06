@@ -189,14 +189,6 @@ public class KnowledgePackageImpl
         return Collections.unmodifiableCollection(list);
     }
 
-    public Map<String, FactType> getFactTypesMap() {
-        Map<String, FactType> types = new HashMap<>();
-        for (Map.Entry<String, TypeDeclaration> entry : typeDeclarations.entrySet()) {
-            types.put(entry.getKey(), entry.getValue().getTypeClassDef());
-        }
-        return types;
-    }
-
     public Collection<Query> getQueries() {
         List<Query> list = new ArrayList<>(rules.size());
         for (RuleImpl rule : rules.values()) {

@@ -29,8 +29,8 @@ import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class KiePMMLCharacteristicsTest {
@@ -58,7 +58,7 @@ public class KiePMMLCharacteristicsTest {
                                                                      REASONCODE_ALGORITHM.POINTS_BELOW,
                                                                      true,
                                                                      0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.isPresent());
         Double EVALUATION_20 = baselineScore - value2;
         Double EVALUATION_11 = baselineScore - value1;

@@ -28,15 +28,12 @@ import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.util.TimeIntervalParser;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.util.TimeIntervalParser;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Role.Type;
@@ -65,8 +62,6 @@ public class ClassObjectTypeConf
     private boolean isEvent;
 
     private long expirationOffset = -1;
-
-    private boolean isTrait;
 
     public ClassObjectTypeConf() {
 
@@ -98,8 +93,6 @@ public class ClassObjectTypeConf
             }
         }
 
-        isTrait = determineTraitStatus();
-
         this.objectType = ruleBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
 
         this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
@@ -115,7 +108,6 @@ public class ClassObjectTypeConf
         entryPoint = (EntryPointId) stream.readObject();
         tmsEnabled = stream.readBoolean();
         isEvent = stream.readBoolean();
-        isTrait = stream.readBoolean();
         expirationOffset = stream.readLong();
     }
 
@@ -128,7 +120,6 @@ public class ClassObjectTypeConf
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
         stream.writeBoolean( isEvent );
-        stream.writeBoolean(isTrait);
         stream.writeLong(expirationOffset);
     }
 
@@ -212,23 +203,6 @@ public class ClassObjectTypeConf
 
     public boolean isEvent() {
         return this.isEvent;
-    }
-
-    public boolean isTrait() {
-        return isTrait;
-    }
-
-    protected boolean determineTraitStatus() {
-        return typeDecl != null
-               // if cls implements an interface and cls is never actually used, typeDecl will reference the interface
-               // rather than the actual class, but this may not reflect the actual traitability
-               && typeDecl.getTypeClass() == cls && (
-                typeDecl.getKind() == TypeDeclaration.Kind.TRAIT
-                || typeDecl.getTypeClassDef().isTraitable()
-                || typeDecl.getTypeClass().getAnnotation( Traitable.class ) != null
-        ) || Thing.class.isAssignableFrom( cls )
-               || cls.getAnnotation( Traitable.class ) != null
-               || TraitableBean.class.isAssignableFrom( cls );
     }
 
     public TypeDeclaration getTypeDeclaration() {

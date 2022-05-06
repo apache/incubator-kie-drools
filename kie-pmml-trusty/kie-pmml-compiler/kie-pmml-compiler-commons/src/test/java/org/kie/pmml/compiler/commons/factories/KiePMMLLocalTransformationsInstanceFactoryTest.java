@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomLocalTransformations;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLDerivedField;
@@ -39,7 +39,7 @@ public class KiePMMLLocalTransformationsInstanceFactoryTest {
         KiePMMLLocalTransformations retrieved =
                 KiePMMLLocalTransformationsInstanceFactory.getKiePMMLLocalTransformations(toConvert,
                                                                                                                           Collections.emptyList());
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
 
         List<DerivedField> derivedFields = toConvert.getDerivedFields();
         List<KiePMMLDerivedField> derivedFieldsToVerify = retrieved.getDerivedFields();

@@ -35,7 +35,7 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.test.util.filesystem.FileUtils;
 import org.xml.sax.SAXException;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -61,13 +61,13 @@ public abstract class AbstractKiePMMLFactoryTest {
     protected static void innerSetup() throws JAXBException, SAXException, IOException {
         FileInputStream fis = FileUtils.getFileInputStream(SOURCE_MIXED);
         pmml = KiePMMLUtil.load(fis, SOURCE_MIXED);
-        assertNotNull(pmml);
+        assertThat(pmml).isNotNull();
         DATA_DICTIONARY = pmml.getDataDictionary();
-        assertNotNull(DATA_DICTIONARY);
+        assertThat(DATA_DICTIONARY).isNotNull();
         TRANSFORMATION_DICTIONARY = pmml.getTransformationDictionary();
         assertTrue(pmml.getModels().get(0) instanceof MiningModel);
         MINING_MODEL = (MiningModel) pmml.getModels().get(0);
-        assertNotNull(MINING_MODEL);
+        assertThat(MINING_MODEL).isNotNull();
         populateMissingIds(MINING_MODEL);
         DERIVED_FIELDS = getDerivedFields(TRANSFORMATION_DICTIONARY,
                                           MINING_MODEL.getLocalTransformations());

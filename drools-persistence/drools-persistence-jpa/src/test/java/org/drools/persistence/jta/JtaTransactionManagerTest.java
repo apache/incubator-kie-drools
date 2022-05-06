@@ -49,10 +49,10 @@ import org.kie.test.util.db.PersistenceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -305,7 +305,7 @@ public class JtaTransactionManagerTest {
             fail("Unable to retrieve " + fieldname + " field from " + sourceClassName + ": " + e.getCause());
         }
     
-        assertNotNull("." + fieldname + " field is null!?!", field);
+        assertThat(field).as("." + fieldname + " field is null!?!").isNotNull();
         Object fieldValue = null;
         try {
             fieldValue = field.get(source);

@@ -222,7 +222,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
         return KnowledgeBaseFactory.newKnowledgeBase(kBase);
     }
 
-    public static void checkStreamMode( KieBaseModelImpl kBaseModel, KieBaseConfiguration conf, Collection<? extends KiePackage> pkgs ) {
+    public static void checkStreamMode( KieBaseModel kBaseModel, KieBaseConfiguration conf, Collection<? extends KiePackage> pkgs ) {
         if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
              (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
             for (KiePackage kpkg : pkgs) {

@@ -42,7 +42,7 @@ public class ClassDefinition
     implements
     FactType {
 
-    public static enum TRAITING_MODE { NONE, BASIC, LOGICAL }
+    public enum TRAITING_MODE { NONE, BASIC, LOGICAL }
 
     private String                       className;
     private String                       superClass;
