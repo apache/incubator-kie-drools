@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -46,15 +45,14 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.SuperExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import io.quarkiverse.openapi.generator.annotations.GeneratedClass;
 import io.quarkiverse.openapi.generator.annotations.GeneratedMethod;
@@ -104,28 +102,39 @@ public class WorkflowOpenApiHandlerGenerator implements Runnable {
         final String packageName = context.getPackageName();
         final String methodName = m.annotation(generatedMethod).value().asString();
         final String className = OpenAPIOperationId.getClassName(fileName, methodName);
+        final ClassOrInterfaceType classNameType = parseClassOrInterfaceType(classInfo.name().toString());
         CompilationUnit unit = new CompilationUnit(packageName);
         ClassOrInterfaceDeclaration clazz = unit.addClass(className);
-        clazz.addExtendedType(OpenApiWorkItemHandler.class);
+        clazz.addExtendedType(parseClassOrInterfaceType(OpenApiWorkItemHandler.class.getCanonicalName()).setTypeArguments(classNameType));
         clazz.addAnnotation(ApplicationScoped.class);
-        clazz.addField(classInfo.name().toString(), OPEN_API_REF).addAnnotation(RestClient.class).addAnnotation(Inject.class);
-        MethodDeclaration executeMethod = clazz.addMethod("internalExecute", Keyword.PROTECTED).addParameter(parseClassOrInterfaceType(Map.class.getCanonicalName()).setTypeArguments(
-                parseClassOrInterfaceType(String.class.getCanonicalName()), parseClassOrInterfaceType(Object.class.getCanonicalName())), WORK_ITEM_PARAMETERS).setType(Object.class);
+        MethodDeclaration executeMethod =
+                clazz.addMethod("internalExecute", Keyword.PROTECTED).addParameter(classNameType, OPEN_API_REF).addParameter(parseClassOrInterfaceType(Map.class.getCanonicalName()).setTypeArguments(
+                        parseClassOrInterfaceType(String.class.getCanonicalName()), parseClassOrInterfaceType(Object.class.getCanonicalName())), WORK_ITEM_PARAMETERS).setType(Object.class);
         BlockStmt body = executeMethod.createBody();
-        MethodCallExpr methodCallExpr = new MethodCallExpr(new FieldAccessExpr(new ThisExpr(), OPEN_API_REF), m.name());
+        MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(OPEN_API_REF), m.name());
         final NameExpr parameters = new NameExpr(WORK_ITEM_PARAMETERS);
         if (m.returnType().kind() == Kind.VOID) {
             body.addStatement(methodCallExpr).addStatement(new ReturnStmt(new NullLiteralExpr()));
         } else {
             body.addStatement(new ReturnStmt(methodCallExpr));
         }
-        for (Type param : m.parameters()) {
-            if (param.hasAnnotation(generatedParam)) {
-                methodCallExpr.addArgument(new CastExpr(fromClass(param), new MethodCallExpr(parameters, "remove").addArgument(param.annotation(generatedParam).value().asString())));
+
+        // param.annotation(generatedParam) is not working
+        AnnotationInstance[] annotations = new AnnotationInstance[m.parameters().size()];
+        for (AnnotationInstance a : m.annotations(generatedParam)) {
+            annotations[a.target().asMethodParameter().position()] = a;
+        }
+        for (int i = 0; i < annotations.length; i++) {
+            AnnotationInstance annotation = annotations[i];
+            Type param = m.parameters().get(i);
+            if (annotation != null) {
+                methodCallExpr.addArgument(new CastExpr(fromClass(param), new MethodCallExpr(parameters, "remove").addArgument(new StringLiteralExpr(annotation.value().asString()))));
             } else {
-                methodCallExpr.addArgument(new MethodCallExpr(new SuperExpr(), "buildPojo").addArgument(parameters).addArgument(new ClassExpr(fromClass(param))));
+                methodCallExpr.addArgument(new MethodCallExpr(new SuperExpr(), "buildBody").addArgument(parameters).addArgument(new ClassExpr(fromClass(param))));
             }
         }
+        clazz.addMethod("getRestClass", Keyword.PROTECTED).setType(parseClassOrInterfaceType(Class.class.getCanonicalName()).setTypeArguments(classNameType))
+                .setBody(new BlockStmt().addStatement(new ReturnStmt(new ClassExpr(classNameType))));
         context.addGeneratedHandler(className);
         return fromCompilationUnit(unit, className);
     }

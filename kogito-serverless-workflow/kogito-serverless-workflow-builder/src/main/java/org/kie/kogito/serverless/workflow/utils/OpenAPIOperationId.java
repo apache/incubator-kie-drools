@@ -72,7 +72,7 @@ public class OpenAPIOperationId {
         return StringUtils.ucFirst(getClassIdentifier(removeExt(fileName.toLowerCase())) + "_" + onlyChars(operationId));
     }
 
-    private static String removeExt(String fileName) {
+    public static String removeExt(String fileName) {
         return fileName.replaceFirst(REGEX_NO_EXT, "");
     }
 

@@ -38,6 +38,8 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 
 public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvider {
 
+    private static final String KOGITO_PACKAGE_PREFIX = "org.kie.kogito.openapi.";
+
     @Override
     public List<SpecInputModel> read(CodeGenContext context) {
         Path inputDir = context.inputDir();
@@ -80,7 +82,8 @@ public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvide
             OpenAPIOperationId operationId = OpenAPIOperationId.fromOperation(function.getOperation());
             URI uri = operationId.getUri();
             return new SpecInputModel(operationId.getFileName(),
-                    URIContentLoaderFactory.buildLoader(uri, Thread.currentThread().getContextClassLoader(), workflow, function.getAuthRef()).getInputStream());
+                    URIContentLoaderFactory.buildLoader(uri, Thread.currentThread().getContextClassLoader(), workflow, function.getAuthRef()).getInputStream(),
+                    KOGITO_PACKAGE_PREFIX + operationId.getServiceName());
         } catch (IOException io) {
             throw new IllegalStateException(io);
         }

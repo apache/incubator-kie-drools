@@ -15,30 +15,59 @@
  */
 package org.kie.kogito.serverless.workflow.openapi;
 
+import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
 
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.process.meta.ProcessMeta;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 
-public abstract class OpenApiWorkItemHandler implements KogitoWorkItemHandler {
+import io.quarkus.restclient.runtime.RestClientBuilderFactory;
+
+public abstract class OpenApiWorkItemHandler<T> implements KogitoWorkItemHandler {
 
     @Override
     public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+        Class<T> clazz = getRestClass();
+        T ref = RestClientBuilderFactory.build(clazz).register(new ClientRequestFilter() {
+            @Override
+            public void filter(ClientRequestContext requestContext) throws IOException {
+                ProcessMeta.fromKogitoWorkItem(workItem).asMap().forEach((k, v) -> requestContext.getHeaders().put(k, Collections.singletonList(v)));
+            }
+        }).build(clazz);
+        Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
+        parameters.remove(SWFConstants.DEFAULT_WORKFLOW_VAR);
         manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap("Result",
-                JsonObjectUtils.fromValue(internalExecute(workItem.getParameters()))));
+                JsonObjectUtils.fromValue(internalExecute(ref, parameters))));
     }
 
     @Override
     public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
     }
 
-    protected final <T> T buildPojo(Map<String, Object> params, Class<T> clazz) {
+    protected final <V> V buildBody(Map<String, Object> params, Class<V> clazz) {
+        for (Object obj : params.values()) {
+            if (obj != null && clazz.isAssignableFrom(obj.getClass())) {
+                return clazz.cast(obj);
+            }
+        }
         return ObjectMapperFactory.get().convertValue(params, clazz);
     }
 
-    protected abstract Object internalExecute(Map<String, Object> parameters);
+    protected abstract Object internalExecute(T openAPIRef, Map<String, Object> parameters);
+
+    protected Class<T> getRestClass() {
+        // this does not work in quarkus dev mode, overriding through generation
+        return (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
 }
