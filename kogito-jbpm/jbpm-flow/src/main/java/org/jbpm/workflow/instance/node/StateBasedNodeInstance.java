@@ -27,7 +27,7 @@ import java.util.Optional;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;

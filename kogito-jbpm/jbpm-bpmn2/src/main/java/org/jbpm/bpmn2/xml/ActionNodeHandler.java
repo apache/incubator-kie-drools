@@ -49,7 +49,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 
         if (action != null) {
             String s = action.getConsequence();
-            if (s.startsWith("org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();")) {
+            if (s.startsWith("org.drools.core.process.impl.WorkItemImpl workItem = new org.drools.core.process.impl.WorkItemImpl();")) {
                 writeNode("intermediateThrowEvent",
                         actionNode,
                         xmlDump,

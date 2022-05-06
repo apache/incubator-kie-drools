@@ -18,11 +18,10 @@ package org.kie.kogito.process.workitems;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.process.instance.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 
-public interface InternalKogitoWorkItemManager extends org.drools.core.process.instance.WorkItemManager, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager {
+public interface InternalKogitoWorkItemManager extends org.drools.core.process.WorkItemManager, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager {
 
     void internalExecuteWorkItem(InternalKogitoWorkItem workItem);
 
@@ -40,7 +39,7 @@ public interface InternalKogitoWorkItemManager extends org.drools.core.process.i
 
     void retryWorkItem(String workItemID, Map<String, Object> params);
 
-    Set<WorkItem> getWorkItems();
+    Set<org.drools.core.process.WorkItem> getWorkItems();
 
     @Override
     default void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
@@ -48,12 +47,12 @@ public interface InternalKogitoWorkItemManager extends org.drools.core.process.i
     }
 
     @Override
-    default void internalExecuteWorkItem(org.drools.core.process.instance.WorkItem workItem) {
+    default void internalExecuteWorkItem(org.drools.core.process.WorkItem workItem) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    default void internalAddWorkItem(org.drools.core.process.instance.WorkItem workItem) {
+    default void internalAddWorkItem(org.drools.core.process.WorkItem workItem) {
         throw new UnsupportedOperationException();
     }
 
@@ -63,7 +62,7 @@ public interface InternalKogitoWorkItemManager extends org.drools.core.process.i
     }
 
     @Override
-    default WorkItem getWorkItem(long l) {
+    default org.drools.core.process.WorkItem getWorkItem(long l) {
         throw new UnsupportedOperationException();
     }
 

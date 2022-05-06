@@ -16,7 +16,7 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.spi.Activation;
+import org.drools.core.rule.consequence.Activation;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;

@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Wireable;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.accessor.Wireable;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.instance.NodeInstance;

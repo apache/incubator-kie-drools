@@ -78,8 +78,8 @@
                   </bannedImports>
                   <allowedImports>
                     <!-- WorkItem is allowed due to Set<WorkItem> (not covariant)
-                         in org.drools.core.process.instance.WorkItemManager -->
-                    <allowedImport>org.drools.core.process.instance.WorkItem</allowedImport>
+                         in org.drools.core.process.WorkItemManager -->
+                    <allowedImport>org.drools.core.process.WorkItem</allowedImport>
                   </allowedImports>
                 </restrictImports>
               </rules>

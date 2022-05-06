@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.spi.AbstractProcessContext;
+import org.drools.core.process.AbstractProcessContext;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;

@@ -25,7 +25,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-import org.drools.core.process.instance.WorkItem;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -166,7 +165,7 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
     }
 
     @Override
-    public Set<WorkItem> getWorkItems() {
+    public Set<org.drools.core.process.WorkItem> getWorkItems() {
         return new HashSet<>(workItems.values());
     }
 

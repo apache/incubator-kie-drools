@@ -18,7 +18,7 @@ package org.jbpm.process.instance;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.spi.AbstractProcessContext;
+import org.drools.core.process.AbstractProcessContext;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.process.CaseData;
