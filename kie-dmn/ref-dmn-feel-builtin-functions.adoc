@@ -723,6 +723,68 @@ split( "a;b;c;;", ";" ) = ["a","b","c","",""]
 --
 // ----------------------------------------------------------------------------
 
+string join( list, delimiter )::
++
+--
+Returns a string which is composed by joining all the string elements from the list parameter, separated by the delimiter.
+The `delimiter` can be an empty string.
+Null elements in the list parameter are ignored.
+If `list` is empty, the result is the empty string.
+If `delimiter` is null, the string elements are joined without a separator.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`list`
+|`list` of `string`
+
+|`delimiter`
+|`string`
+|===
+
+.Examples
+[source,FEEL]
+----
+string join(["a","b","c"], "_and_") = "a_and_b_and_c"
+string join(["a","b","c"], "") = "abc"
+string join(["a","b","c"], null) = "abc"
+string join(["a"], "X") = "a"
+string join(["a",null,"c"], "X") = "aXc"
+string join([], "X") = ""
+----
+--
+// ----------------------------------------------------------------------------
+
+string join( list )::
++
+--
+Returns a string which is composed by joining all the string elements from the list parameter.
+Null elements in the `list` parameter are ignored.
+If `list` is empty, the result is the empty string.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`list`
+|`list` of `string`
+|===
+
+.Examples
+[source,FEEL]
+----
+string join(["a","b","c"]) = "abc"
+string join(["a",null,"c"]) = "ac"
+string join([]) = ""
+----
+--
+// ----------------------------------------------------------------------------
+
 == List functions
 
 The following functions support list operations.
