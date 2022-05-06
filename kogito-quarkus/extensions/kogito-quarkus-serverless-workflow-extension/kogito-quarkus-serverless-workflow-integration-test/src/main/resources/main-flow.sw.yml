@@ -16,7 +16,7 @@ states:
         functionRef:
           refName: sout
           arguments:
-            message: "\"MainFlow has started: \" + \"$WORKFLOW.instanceId\""
+            message: "\"MainFlow has started: \" + $WORKFLOW.instanceId"
     transition: StartSubflow1FromMainFlow
   - name: StartSubflow1FromMainFlow
     type: operation
@@ -37,7 +37,7 @@ states:
         functionRef:
           refName: sout
           arguments:
-            message: "\"MainFlow has ended: \" + \"$WORKFLOW.instanceId\""
+            message: "\"MainFlow has ended: \" + $WORKFLOW.instanceId"
     end:
       terminate: true
 

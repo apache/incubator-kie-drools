@@ -24,17 +24,17 @@
     {
       "name": "secretMessage",
       "type": "expression",
-      "operation": ".message |= \"my name is $SECRET.my_name\""
+      "operation": ".message |= \"my name is \"+$SECRET.my_name"
     },
     {
       "name": "constantMessage",
       "type": "expression",
-      "operation": ".message |=.+\" and in my native language dog is translated to $CONST.dog.castellano\""
+      "operation": ".message |=.+\" and in my native language dog is translated to \"+$CONST.dog.castellano"
     },
     {
       "name": "contextMessage",
       "type": "expression",
-      "operation": ".message |=.+\" and the process id is $WORKFLOW.id\""
+      "operation": ".message |=.+\" and the process id is \"+$WORKFLOW.id"
     },
     {
       "name": "discardedResult",

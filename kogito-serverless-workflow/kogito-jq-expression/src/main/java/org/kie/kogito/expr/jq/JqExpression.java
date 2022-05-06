@@ -173,7 +173,7 @@ public class JqExpression implements Expression {
     }
 
     private void compile(Optional<KogitoProcessContext> context) throws JsonQueryException {
-        String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr, context);
+        String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr, context, JqExpressionHandler::inject);
         logger.debug("Resolved expr {}", resolvedExpr);
         if (this.query == null || !resolvedExpr.equals(compiledExpr)) {
             compiledExpr = resolvedExpr;

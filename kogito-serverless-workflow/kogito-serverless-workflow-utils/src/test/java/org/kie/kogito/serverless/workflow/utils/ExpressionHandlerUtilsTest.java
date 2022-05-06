@@ -70,6 +70,7 @@ public class ExpressionHandlerUtilsTest {
                 return (T) map.get(name);
             }
         });
-        assertEquals("My name is javierito carapito", prepareExpr(replaceExpr(workflow, "${ My name is $SECRET.name $CONST.name.surname }"), Optional.of(context)));
+        assertEquals("\"My name is\"+ javierito + \" \"+ carapito",
+                prepareExpr(replaceExpr(workflow, "${ \"My name is\"+ $SECRET.name + \" \"+ $CONST.name.surname }"), Optional.of(context), v -> v.toString()));
     }
 }

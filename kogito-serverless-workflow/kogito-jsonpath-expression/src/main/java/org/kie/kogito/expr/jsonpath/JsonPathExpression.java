@@ -26,6 +26,7 @@ import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -66,17 +67,39 @@ public class JsonPathExpression implements Expression {
 
     private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
         DocumentContext parsedContext = jsonPath.parse(context);
-        if (String.class.isAssignableFrom(returnClass)) {
-            StringBuilder sb = new StringBuilder();
-            for (String part : ExpressionHandlerUtils.prepareExpr(expr, Optional.ofNullable(processInfo)).split("((?=\\$))")) {
-                JsonNode partResult = parsedContext.read(part, JsonNode.class);
-                sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
+        String replacedExpr = ExpressionHandlerUtils.prepareExpr(expr, Optional.ofNullable(processInfo), JsonPathExpressionHandler::inject);
+        /*
+         * Handling the case where the expression is $SECRET, $CONSTANT or WORKFLOW (after a replacement that has changed something, the expression is not longer a selector)
+         * In this case we should just return the expr string cast to the desired return type
+         */
+        if (!replacedExpr.equals(expr) && !jsonPathRegexPattern.matcher(replacedExpr).matches()) {
+            if (replacedExpr.startsWith("'")) {
+                replacedExpr = replacedExpr.substring(1, replacedExpr.length() - 1);
             }
-            return (T) sb.toString();
+            if (String.class.isAssignableFrom(returnClass)) {
+                return (T) replacedExpr;
+            } else if (Boolean.class.equals(returnClass)) {
+                return (T) Boolean.valueOf(replacedExpr);
+            } else {
+                return (T) new TextNode(replacedExpr);
+            }
         } else {
-            Object result = parsedContext.read(ExpressionHandlerUtils.prepareExpr(expr, Optional.ofNullable(processInfo)));
-            return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
-                    : jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig);
+            /*
+             * Handling the case where the expr is a valid selector (or it is expected to be).
+             * Messages (expected output string) are special cases that requires splitting the string in chunks to analyze each potential expression separately
+             */
+            if (String.class.isAssignableFrom(returnClass)) {
+                StringBuilder sb = new StringBuilder();
+                for (String part : replacedExpr.split("((?=\\$))")) {
+                    JsonNode partResult = parsedContext.read(part, JsonNode.class);
+                    sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
+                }
+                return (T) sb.toString();
+            } else {
+                Object result = parsedContext.read(ExpressionHandlerUtils.prepareExpr(expr, Optional.ofNullable(processInfo), JsonPathExpressionHandler::inject));
+                return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
+                        : jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig);
+            }
         }
     }
 
@@ -93,7 +116,7 @@ public class JsonPathExpression implements Expression {
     @Override
     public boolean isValid(Optional<KogitoProcessContext> context) {
         if (isValid == null) {
-            isValid = jsonPathRegexPattern.matcher(ExpressionHandlerUtils.prepareExpr(expr, context)).matches();
+            isValid = jsonPathRegexPattern.matcher(expr).matches();
         }
         return isValid;
     }

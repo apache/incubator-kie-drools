@@ -19,15 +19,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.jayway.jsonpath.PathNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +43,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class JsonPathExpressionHandlerTest {
 
     private KogitoProcessContext context;
+
+    @BeforeEach
+    void setup() {
+        context = Mockito.mock(KogitoProcessContext.class);
+        KogitoProcessInstance processInstance = Mockito.mock(KogitoProcessInstance.class);
+        Mockito.when(context.getProcessInstance()).thenReturn(processInstance);
+        Mockito.when(processInstance.getId()).thenReturn("1111-2222-3333");
+    }
 
     @Test
     void testStringExpression() {
@@ -195,5 +208,12 @@ class JsonPathExpressionHandlerTest {
         assertTrue(targetNode.has("bar3"), "Property 'bar2' is missing in root.");
         assertTrue(targetNode.get("bar3").has("bar"), "Property 'bar3' should contain 'bar'.");
         assertEquals("value1", targetNode.get("bar3").get("bar").asText(), "Unexpected value under 'bar3'->'bar' property.");
+    }
+
+    @Test
+    void testMagicWord() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$WORKFLOW.instanceId");
+        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertEquals(new TextNode("1111-2222-3333"), parsedExpression.eval(ObjectMapperFactory.get().createObjectNode(), JsonNode.class, context));
     }
 }

@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -48,9 +49,9 @@ public class ExpressionHandlerUtils {
     protected static final String CONTEXT_MAGIC = "$WORKFLOW.";
     private static final Collection<String> MAGIC_WORDS = Arrays.asList(SECRET_MAGIC, CONST_MAGIC, CONTEXT_MAGIC);
 
-    public static String prepareExpr(String expr, Optional<KogitoProcessContext> context) {
-        expr = replaceMagic(expr, SECRET_MAGIC, ExpressionHandlerUtils::getSecret);
-        return context.isPresent() ? replaceMagic(expr, CONTEXT_MAGIC, key -> KogitoProcessContextResolver.get().readKey(context.get(), key)) : expr;
+    public static String prepareExpr(String expr, Optional<KogitoProcessContext> context, Function<Object, String> injector) {
+        expr = replaceMagic(expr, SECRET_MAGIC, ExpressionHandlerUtils::getSecret, injector);
+        return context.isPresent() ? replaceMagic(expr, CONTEXT_MAGIC, key -> KogitoProcessContextResolver.get().readKey(context.get(), key), injector) : expr;
     }
 
     public static Collection<String> getMagicWords() {
@@ -70,13 +71,13 @@ public class ExpressionHandlerUtils {
         return JsonObjectUtils.toJavaValue(result);
     }
 
-    private static <T extends Object> String replaceMagic(String expr, String magic, Function<String, T> replacer) {
+    private static <T extends Object> String replaceMagic(String expr, String magic, Function<String, T> replacer, Function<Object, String> injector) {
         int indexOf;
         while ((indexOf = expr.indexOf(magic)) != -1) {
             String key = extractKey(expr, indexOf + magic.length());
             T value = replacer.apply(key);
             if (value != null) {
-                expr = expr.replace(magic + key, value.toString());
+                expr = expr.replace(magic + key, injector.apply(value));
             } else {
                 break;
             }
@@ -117,20 +118,26 @@ public class ExpressionHandlerUtils {
 
     public static String replaceExpr(Workflow workflow, final String expr) {
         if (expr != null) {
-            String candidate = trimExpr(expr);
-            if (candidate.startsWith(FUNCTION_REFERENCE)) {
-                String functionName = candidate.substring(FUNCTION_REFERENCE.length());
-                //covert reference to reference case (and delegate on stack overflow limits for checking loop reference) 
-                return replaceExpr(workflow,
-                        workflow.getFunctions().getFunctionDefs().stream()
-                                .filter(f -> f.getType() == Type.EXPRESSION && f.getName().equals(functionName))
-                                .findAny()
-                                .map(FunctionDefinition::getOperation)
-                                .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName)));
-            }
-            return replaceMagic(candidate, CONST_MAGIC, key -> getConstant(key, workflow.getConstants()));
+            return replaceExpr(workflow, expr, ExpressionHandlerFactory.getValueInjector(workflow.getExpressionLang()));
         }
         return expr;
+    }
+
+    private static String replaceExpr(Workflow workflow, final String expr, Function<Object, String> injector) {
+        String candidate = trimExpr(expr);
+        if (candidate.startsWith(FUNCTION_REFERENCE)) {
+            String functionName = candidate.substring(FUNCTION_REFERENCE.length());
+            //covert reference to reference case (and delegate on stack overflow limits for checking loop reference) 
+            return replaceExpr(workflow,
+                    workflow.getFunctions().getFunctionDefs().stream()
+                            .filter(f -> f.getType() == Type.EXPRESSION && f.getName().equals(functionName))
+                            .findAny()
+                            .map(FunctionDefinition::getOperation)
+                            .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName)),
+                    injector);
+        }
+        return replaceMagic(candidate, CONST_MAGIC, key -> getConstant(key, workflow.getConstants()), injector);
+
     }
 
     public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {

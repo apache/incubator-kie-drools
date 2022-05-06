@@ -19,15 +19,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -37,6 +42,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class JqExpressionHandlerTest {
 
     private KogitoProcessContext context;
+
+    @BeforeEach
+    void setup() {
+        context = Mockito.mock(KogitoProcessContext.class);
+        KogitoProcessInstance processInstance = Mockito.mock(KogitoProcessInstance.class);
+        Mockito.when(context.getProcessInstance()).thenReturn(processInstance);
+        Mockito.when(processInstance.getId()).thenReturn("1111-2222-3333");
+    }
 
     @Test
     void testStringExpression() {
@@ -201,6 +214,13 @@ class JqExpressionHandlerTest {
         assertEquals(2, targetNode.get("bar").get(1).get("property").asInt(), "Unexpected value in 'bar' array at index 1.");
         assertEquals(3, targetNode.get("bar").get(2).get("property").asInt(), "Unexpected value in 'bar' array at index 2.");
         assertEquals(4, targetNode.get("bar").get(3).get("property").asInt(), "Unexpected value in 'bar' array at index 3.");
+    }
+
+    @Test
+    void testMagicWord() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", "$WORKFLOW.instanceId");
+        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertEquals(new TextNode("1111-2222-3333"), parsedExpression.eval(ObjectMapperFactory.get().createObjectNode(), JsonNode.class, context));
     }
 
 }

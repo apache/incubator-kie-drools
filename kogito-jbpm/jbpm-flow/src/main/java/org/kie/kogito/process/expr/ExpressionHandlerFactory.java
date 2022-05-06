@@ -15,7 +15,9 @@
  */
 package org.kie.kogito.process.expr;
 
+import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.function.Function;
 
 public class ExpressionHandlerFactory {
 
@@ -25,11 +27,19 @@ public class ExpressionHandlerFactory {
     private static final ServiceLoader<ExpressionHandler> serviceLoader = ServiceLoader.load(ExpressionHandler.class);
 
     public static Expression get(String lang, String expr) {
-        return serviceLoader.stream().filter(p -> p.get().lang().equals(lang)).findFirst().orElseThrow(
-                () -> new IllegalArgumentException("Unsupported language " + lang)).get().get(expr);
+        return getExpressionHandler(lang).orElseThrow(
+                () -> new IllegalArgumentException("Unsupported language " + lang)).get(expr);
     }
 
     public static boolean isSupported(String lang) {
         return serviceLoader.stream().anyMatch(p -> p.get().lang().equals(lang));
+    }
+
+    public static Function<Object, String> getValueInjector(String lang) {
+        return getExpressionHandler(lang).map(p -> p.getValueInjector()).orElse(Object::toString);
+    }
+
+    private static Optional<ExpressionHandler> getExpressionHandler(String lang) {
+        return serviceLoader.stream().filter(p -> p.get().lang().equals(lang)).findFirst().map(p -> p.get());
     }
 }

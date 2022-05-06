@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
+import java.util.function.Function;
+
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.CachedExpressionHandler;
 
@@ -28,5 +30,14 @@ public class JsonPathExpressionHandler extends CachedExpressionHandler {
     @Override
     public String lang() {
         return "jsonpath";
+    }
+
+    @Override
+    public Function<Object, String> getValueInjector() {
+        return JsonPathExpressionHandler::inject;
+    }
+
+    static String inject(Object value) {
+        return value instanceof String ? "'" + value + "'" : value.toString();
     }
 }

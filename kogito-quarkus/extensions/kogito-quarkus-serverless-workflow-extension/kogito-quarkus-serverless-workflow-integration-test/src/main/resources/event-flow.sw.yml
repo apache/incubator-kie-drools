@@ -20,7 +20,7 @@ states:
         functionRef:
           refName: sout
           arguments:
-            message: "\"Event1: \" + \"$WORKFLOW.instanceId\""
+            message: "\"Event1: \" + $WORKFLOW.instanceId"
     transition: WaitForCallbackEventFromEvent1
   - name: WaitForCallbackEventFromEvent1
     type: event
