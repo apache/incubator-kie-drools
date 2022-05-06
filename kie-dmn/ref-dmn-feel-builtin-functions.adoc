@@ -1443,7 +1443,8 @@ decimal( 1.065, 2 ) = 1.06
 floor( n )::
 +
 --
-Returns the greatest integer that is less than or equal to the specified number.
+Returns `n` with given scale and rounding mode _flooring_.
+If at least one of `n` or `scale` is null, the result is null.
 
 .Parameters
 [cols="30%,70%", options="header"]
@@ -1455,10 +1456,16 @@ Returns the greatest integer that is less than or equal to the specified number.
 |`number`
 |===
 
+.Alternative signature
+----
+floor( n, scale )
+----
+
 .Examples
 [source,FEEL]
 ----
 floor( 1.5 ) = 1
+floor( -1.56, 1 ) = -1.6
 floor( -1.5 ) = -2
 ----
 --
@@ -1467,7 +1474,8 @@ floor( -1.5 ) = -2
 ceiling( n )::
 +
 --
-Returns the smallest integer that is greater than or equal to the specified number.
+Returns `n` with given scale and rounding mode _ceiling_.
+If at least one of `n` or `scale` is null, the result is null.
 
 .Parameters
 [cols="30%,70%", options="header"]
@@ -1479,11 +1487,137 @@ Returns the smallest integer that is greater than or equal to the specified numb
 |`number`
 |===
 
+.Alternative signature
+----
+ceiling( n, scale )
+----
+
 .Examples
 [source,FEEL]
 ----
 ceiling( 1.5 ) = 2
+ceiling( -1.56, 1 ) = -1.5
 ceiling( -1.5 ) = -1
+----
+--
+// ----------------------------------------------------------------------------
+
+round up( n, scale )::
++
+--
+Returns `n` with given scale and rounding mode _round up_.
+If at least one of `n` or `scale` is null, the result is null.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`n`
+|`number`
+
+|`scale`
+|`number`
+|===
+
+.Examples
+[source,FEEL]
+----
+round up( 5.5, 0 ) = 6 
+round up( -5.5, 0 ) = -6 
+round up( 1.121, 2 ) = 1.13
+round up( -1.126, 2 ) = -1.13
+----
+--
+// ----------------------------------------------------------------------------
+
+round down( n, scale )::
++
+--
+Returns `n` with given scale and rounding mode _round down_.
+If at least one of `n` or `scale` is null, the result is null.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`n`
+|`number`
+
+|`scale`
+|`number`
+|===
+
+.Examples
+[source,FEEL]
+----
+round down( 5.5, 0 ) = 5 
+round down( -5.5, 0 ) = -5 
+round down( 1.121, 2 ) = 1.12
+round down( -1.126, 2 ) = -1.12
+----
+--
+// ----------------------------------------------------------------------------
+
+round half up( n, scale )::
++
+--
+Returns `n` with given scale and rounding mode _round half up_.
+If at least one of `n` or `scale` is null, the result is null.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`n`
+|`number`
+
+|`scale`
+|`number`
+|===
+
+.Examples
+[source,FEEL]
+----
+round half up( 5.5, 0 ) = 6 
+round half up( -5.5, 0 ) = -6 
+round half up( 1.121, 2 ) = 1.12
+round half up( -1.126, 2 ) = -1.13
+----
+--
+// ----------------------------------------------------------------------------
+
+round half down( n, scale )::
++
+--
+Returns `n` with given scale and rounding mode _round half down_.
+If at least one of `n` or `scale` is null, the result is null.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`n`
+|`number`
+
+|`scale`
+|`number`
+|===
+
+.Examples
+[source,FEEL]
+----
+round half down( 5.5, 0 ) = 5 
+round half down( -5.5, 0 ) = -5 
+round half down( 1.121, 2 ) = 1.12
+round half down( -1.126, 2 ) = -1.13
 ----
 --
 // ----------------------------------------------------------------------------
