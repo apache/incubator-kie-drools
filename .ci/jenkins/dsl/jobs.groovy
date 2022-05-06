@@ -95,14 +95,14 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', [
 void setupNativeJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Optaplanner Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: 'Native check',
+    ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-        }
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('NOTIFICATION_JOB_NAME', 'Native check')
         }
     }
 }
@@ -110,16 +110,14 @@ void setupNativeJob() {
 void setupMandrelJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Optaplanner Mandrel Testing')
     jobParams.triggers = [ cron : 'H 8 * * *' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: 'Mandrel check',
+    ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-
-            stringParam('NATIVE_BUILDER_IMAGE', Utils.getMandrelEnvironmentBuilderImage(this), 'Which native builder image to use ?')
-        }
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('NOTIFICATION_JOB_NAME', 'Mandrel check')
         }
     }
 }
@@ -130,6 +128,39 @@ void setupDeployJob(Folder jobFolder) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
+    }
+    jobParams.env.putAll([
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+    ])
+    if (jobFolder.isPullRequest()) {
+        jobParams.env.putAll([
+            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
+            MAVEN_DEPLOY_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
+            MAVEN_REPO_CREDS_ID: "${MAVEN_PR_CHECKS_REPOSITORY_CREDS_ID}",
+        ])
+    } else {
+        jobParams.env.putAll([
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+            AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+            GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+            GIT_AUTHOR_BOT: "${GIT_BOT_AUTHOR_NAME}",
+            BOT_CREDENTIALS_ID: "${GIT_BOT_AUTHOR_CREDENTIALS_ID}",
+
+            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+            MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        ])
+        if (jobFolder.isRelease()) {
+            jobParams.env.putAll([
+                NEXUS_RELEASE_URL: "${MAVEN_NEXUS_RELEASE_URL}",
+                NEXUS_RELEASE_REPOSITORY_ID: "${MAVEN_NEXUS_RELEASE_REPOSITORY}",
+                NEXUS_STAGING_PROFILE_ID: "${MAVEN_NEXUS_STAGING_PROFILE_ID}",
+                NEXUS_BUILD_PROMOTION_PROFILE_ID: "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}",
+            ])
+        }
     }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -157,40 +188,29 @@ void setupDeployJob(Folder jobFolder) {
             //Build branch name for quickstarts
             stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', Utils.isMainBranch(this) ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
         }
-
-        environmentVariables {
-            env('PROPERTIES_FILE_NAME', 'deployment.properties')
-
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-            env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
-
-            if (jobFolder.isPullRequest()) {
-                env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
-                env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
-                env('MAVEN_REPO_CREDS_ID', "${MAVEN_PR_CHECKS_REPOSITORY_CREDS_ID}")
-            } else {
-                env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-
-                env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-                env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-                env('GIT_AUTHOR_BOT', "${GIT_BOT_AUTHOR_NAME}")
-                env('BOT_CREDENTIALS_ID', "${GIT_BOT_AUTHOR_CREDENTIALS_ID}")
-
-                env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-                env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-                if (jobFolder.isRelease()) {
-                    env('NEXUS_RELEASE_URL', "${MAVEN_NEXUS_RELEASE_URL}")
-                    env('NEXUS_RELEASE_REPOSITORY_ID', "${MAVEN_NEXUS_RELEASE_REPOSITORY}")
-                    env('NEXUS_STAGING_PROFILE_ID', "${MAVEN_NEXUS_STAGING_PROFILE_ID}")
-                    env('NEXUS_BUILD_PROMOTION_PROFILE_ID', "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}")
-                }
-            }
-        }
     }
 }
 
 void setupPromoteJob(Folder jobFolder) {
-    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'optaplanner-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote'))?.with {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+        GIT_AUTHOR_BOT: "${GIT_BOT_AUTHOR_NAME}",
+        BOT_CREDENTIALS_ID: "${GIT_BOT_AUTHOR_CREDENTIALS_ID}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+        GITHUB_CLI_VERSION: '0.11.1',
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -207,29 +227,25 @@ void setupPromoteJob(Folder jobFolder) {
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
-
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-
-            env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-
-            env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-            env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-            env('GIT_AUTHOR_BOT', "${GIT_BOT_AUTHOR_NAME}")
-            env('BOT_CREDENTIALS_ID', "${GIT_BOT_AUTHOR_CREDENTIALS_ID}")
-
-            env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
-            env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-            env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-
-            env('PROPERTIES_FILE_NAME', 'deployment.properties')
-            env('GITHUB_CLI_VERSION', '0.11.1')
-        }
     }
 }
 
 void setupPostReleaseJob() {
-    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'optaplanner-post-release', Folder.RELEASE, "${jenkins_path}/Jenkinsfile.post-release", 'Optaplanner Post Release'))?.with {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-post-release', Folder.RELEASE, "${jenkins_path}/Jenkinsfile.post-release", 'Optaplanner Post Release')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+
+        GITHUB_CLI_VERSION: '0.11.1',
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -239,20 +255,6 @@ void setupPostReleaseJob() {
             stringParam('GIT_TAG', '', 'Git tag to use')
 
             booleanParam('SEND_NOTIFICATION', true, 'In case you want the pipeline to send a notification on CI channel for this run.')
-        }
-
-        environmentVariables {
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-
-            env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-
-            env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-            env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-
-            env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
-            env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-
-            env('GITHUB_CLI_VERSION', '0.11.1')
         }
     }
 }

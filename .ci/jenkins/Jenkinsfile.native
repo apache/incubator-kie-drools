@@ -171,5 +171,5 @@ void cleanContainers() {
 }
 
 String getNativeBuilderImage() {
-    return params.NATIVE_BUILDER_IMAGE
+    return env.NATIVE_BUILDER_IMAGE
 }

@@ -47,9 +47,9 @@ How to retest this PR or trigger a specific build:
   please add comment: <b>Jenkins (re)run [optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
   
 - for a <b>full downstream build</b> 
-  - for <b>jenkins</b> job:  
+  - for <b>jenkins</b> job: 
     please add comment: <b>Jenkins run fdb</b>
-  - for <b>github actions</b> job:  
+  - for <b>github actions</b> job: 
     add the label `run_fdb`
 
 - for a <b>compile downstream build</b>  
