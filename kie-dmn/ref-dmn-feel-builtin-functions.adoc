@@ -2436,3 +2436,132 @@ get entries( {key1 : "value1", key2 : "value2"} ) = [ { key : "key1", value : "v
 ----
 --
 // ----------------------------------------------------------------------------
+
+context( entries )::
++
+--
+Returns a new context that includes all specified entries.
+If a context item contains additional entries beyond the required "key" and "value" entries, the additional entries are ignored.
+If a context item is missing the required "key" and "value" entries, the final result is null.
+See also: get entries() built-in function.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`entries`
+|`list` of `context` , each item SHALL have two entries having keys named "key" and "value" respectively
+|===
+
+.Examples
+[source,FEEL]
+----
+context([{key:"a", value:1}, {key:"b", value:2}]) = {a:1, b:2}
+context([{key:"a", value:1}, {key:"b", value:2, something: "else"}]) = {a:1, b:2}
+context([{key:"a", value:1}, {key:"b"}]) = null
+----
+--
+// ----------------------------------------------------------------------------
+
+context put( context, key, value )::
++
+--
+Returns a new context that includes the new entry, or overriding the existing value if an entry for the same key already exists in the supplied context parameter.
+A new entry is added as the last entry of the new context.
+If overriding an existing entry, the order of the keys maintains the same order as in the original context.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`context`
+|`context`
+
+|`key`
+|`string`
+
+|`value`
+|`Any` type
+|===
+
+.Examples
+[source,FEEL]
+----
+context put({x:1}, "y", 2) = {x:1, y:2}
+context put({x:1, y:0}, "y", 2) = {x:1, y:2}
+context put({x:1, y:0, z:0}, "y", 2) = {x:1, y:2, z:0}
+----
+--
+// ----------------------------------------------------------------------------
+
+context put( context, keys, value )::
++
+--
+Returns the composite of nested invocations to `context put()` for each item in `keys` hierarchy in context.
+
+If `keys` is a list of 1 element, this is equivalent to `context put(context, key', value)`, where `key'` is the only element in the list keys.
+
+If `keys` is a list of 2 or more elements, this is equivalent of calling `context put(context, key', value')`, with: +
+`key'` is the head element in the list keys, +
+`value'` is the result of invocation of `context put(context', keys', value)`, where: +
+`context'` is the result of `context.key'`, +
+`keys'` is the remainder of the list keys without the head element `key'`.
+
+If `keys` is an empty list or null, the result is null.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`context`
+|`context`
+
+|`keys`
+|`list` of `string`
+
+|`value`
+|`Any` type
+|===
+
+.Examples
+[source,FEEL]
+----
+context put({x:1}, ["y"], 2) = context put({x:1}, "y", 2)
+context put({x:1}, ["y"], 2) = {x:1, y:2}
+context put({x:1, y: {a: 0} }, ["y", "a"], 2) = context put({x:1, y: {a: 0} }, "y", context put({a: 0}, ["a"], 2))
+context put({x:1, y: {a: 0} }, ["y", "a"], 2) = {x:1, y: {a: 2} }
+context put({x:1, y: {a: 0} }, [], 2) = null
+----
+--
+// ----------------------------------------------------------------------------
+
+context merge( contexts )::
++
+--
+Returns a new context that includes all entries from the given contexts; if some of the keys are equal, the entries are overriden.
+The entries are overridden in the same order as specified by the supplied parameter, with new entries added as the last entry in the new context.
+
+.Parameters
+[cols="30%,70%", options="header"]
+|===
+|Parameter
+|Type
+
+|`contexts`
+|`list` of `context`
+|===
+
+.Examples
+[source,FEEL]
+----
+context merge([{x:1}, {y:2}]) = {x:1, y:2}
+context merge([{x:1, y:0}, {y:2}]) = {x:1, y:2}
+----
+--
+// ----------------------------------------------------------------------------
