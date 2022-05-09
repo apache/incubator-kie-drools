@@ -17,21 +17,13 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.util.TypeResolver;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
@@ -51,6 +43,13 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
+import org.drools.util.TypeResolver;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
