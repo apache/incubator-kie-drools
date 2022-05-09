@@ -323,13 +323,12 @@ public class ExpressionTyper {
                 });
                 return typedExpression;
             } else {
-                String name = printNode(drlxExpr.asArrayAccessExpr().getName());
-                final Optional<TypedExpression> nameExpr = nameExpr(name, typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() )
                         .getTypedExpression()
                         .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
                         .getExpression();
-                return nameExpr.flatMap( te -> transformToArrayOrMapExpressionWithType(indexExpr, te));
+                return toTypedExpressionRec(drlxExpr.asArrayAccessExpr().getName())
+                        .flatMap( te -> transformToArrayOrMapExpressionWithType(indexExpr, te));
             }
         }
 
