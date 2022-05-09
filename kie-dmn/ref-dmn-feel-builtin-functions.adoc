@@ -2609,7 +2609,7 @@ These functions are provided as extension to the DMN Standard to enable support 
 invoke( namespace, modelName, decisionName, parameters )::
 +
 --
-Returns the result of the decision evaluation in the specified DMN model available to the `DMNRuntime` environment the current DMN model is executed in.
+Returns the result of the decision evaluation in the specified DMN model available to the `DMNRuntime` environment in the current DMN model is executed.
 
 This function is _deprecated_ in favour of encouraging the usage of DMN Standard capabilities wherever possible; since DMNv1.2 it shall be possible to use the DMN standard's _Import_ functionality to import Business Knowledge Model (BKM) nodes and Decision Service nodes, in order to be invoked from another model.
 
