@@ -114,7 +114,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         }
         HttpMethod method = getParam(parameters, METHOD, HttpMethod.class, HttpMethod.GET);
         String hostProp = getParam(parameters, HOST, String.class, "localhost");
-        int portProp = getParam(parameters, PORT, Integer.class, 8080);
+        int portProp = getParam(parameters, PORT, Integer.class, 80);
         RestWorkItemHandlerResult resultHandler = getClassParam(parameters, RESULT_HANDLER, RestWorkItemHandlerResult.class, DEFAULT_RESULT_HANDLER, resultHandlers);
         RestWorkItemHandlerBodyBuilder bodyBuilder = getClassParam(parameters, BODY_BUILDER, RestWorkItemHandlerBodyBuilder.class, DEFAULT_BODY_BUILDER, bodyBuilders);
         ParamsDecorator paramsDecorator = getClassParam(parameters, PARAMS_DECORATOR, ParamsDecorator.class, DEFAULT_PARAMS_DECORATOR, paramsDecorators);
@@ -126,7 +126,13 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         endPoint = pathParamResolver.apply(endPoint, parameters);
         Optional<URL> url = getUrl(endPoint);
         String host = url.map(java.net.URL::getHost).orElse(hostProp);
+        if (host == null) {
+            host = hostProp;
+        }
         int port = url.map(java.net.URL::getPort).orElse(portProp);
+        if (port < 0) {
+            port = portProp;
+        }
         String path = url.map(java.net.URL::getPath).orElse(endPoint).replace(" ", "%20");//fix issue with spaces in the path
         HttpRequest<Buffer> request = client.request(method, port, host, path);
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
