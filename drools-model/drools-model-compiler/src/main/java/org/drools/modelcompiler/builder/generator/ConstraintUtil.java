@@ -26,10 +26,10 @@ public class ConstraintUtil {
     // This is required to detect BigDecimal property from generated MethodCallExpr
     private static final String TO_BIG_DECIMAL = EvaluationUtil.class.getCanonicalName() + ".toBigDecimal";
 
-    private static final String GREATER_THAN_PREFIX = "greaterThan";
-    private static final String GREATER_OR_EQUAL_PREFIX = "greaterOrEqual";
-    private static final String LESS_THAN_PREFIX = "lessThan";
-    private static final String LESS_OR_EQUAL_PREFIX = "lessOrEqual";
+    public static final String GREATER_THAN_PREFIX = "greaterThan";
+    public static final String GREATER_OR_EQUAL_PREFIX = "greaterOrEqual";
+    public static final String LESS_THAN_PREFIX = "lessThan";
+    public static final String LESS_OR_EQUAL_PREFIX = "lessOrEqual";
 
     private static final boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(org.drools.compiler.rule.builder.util.ConstraintUtil.DROOLS_NORMALIZE_CONSTRAINT, "true"));
 
