@@ -217,6 +217,23 @@ class JqExpressionHandlerTest {
     }
 
     @Test
+    void testAssignWithNonExistentNodePathExpression() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".bar3");
+        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode toBeInserted = objectMapper.createObjectNode();
+        toBeInserted.put("bar", "value1");
+        ObjectNode targetNode = objectMapper.createObjectNode();
+        targetNode.put("bar2", "value2");
+        parsedExpression.assign(targetNode, toBeInserted, context);
+        assertFalse(targetNode.has("bar"), "Property 'bar' should not be in root.");
+        assertTrue(targetNode.has("bar2"), "Property 'bar2' is missing in root.");
+        assertTrue(targetNode.has("bar3"), "Property 'bar3' is missing in root.");
+        assertTrue(targetNode.get("bar3").has("bar"), "Property 'bar3' should contain 'bar'.");
+        assertEquals("value1", targetNode.get("bar3").get("bar").asText(), "Unexpected value under 'bar3'->'bar' property.");
+    }
+
+    @Test
     void testMagicWord() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", "$WORKFLOW.instanceId");
         assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
