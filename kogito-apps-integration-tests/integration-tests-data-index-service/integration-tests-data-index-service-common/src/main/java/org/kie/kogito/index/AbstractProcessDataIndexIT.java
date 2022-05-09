@@ -425,19 +425,29 @@ public abstract class AbstractProcessDataIndexIT {
                 .body("data.UserTaskInstances[0].comments.size()", is(1))
                 .extract().jsonPath().getMap("data.UserTaskInstances[0].comments[0]");
         checkExpectedCreatedItemData(commentCreationResult, commentMap);
-        String newCommentContent = "newCommentContent";
+        String commentNewContent = "commentNewContent";
         String commentUpdateResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"mutation { UserTaskInstanceCommentUpdate ( " +
                         "user: \\\"manager\\\", " +
                         "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"], " +
                         "commentId:  \\\"" + commentMap.get("id") + "\\\"" +
-                        "comment:  \\\"" + newCommentContent + "\\\"" +
+                        "comment:  \\\"" + commentNewContent + "\\\"" +
                         ")}\"}")
                 .when().post("/graphql")
                 .then()
                 .statusCode(200)
                 .body("errors", nullValue())
                 .extract().path("data.UserTaskInstanceCommentUpdate");
+
+        await()
+                .atMost(TIMEOUT)
+                .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                                "comments {id content updatedBy updatedAt} } }\"}")
+                        .when().post("/graphql")
+                        .then()
+                        .statusCode(200)
+                        .body("data.UserTaskInstances[0].comments[0].content", equalTo(commentNewContent)));
 
         Map<String, String> comment2Map = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
@@ -531,6 +541,16 @@ public abstract class AbstractProcessDataIndexIT {
                 .statusCode(200)
                 .body("errors", nullValue())
                 .extract().path("data.UserTaskInstanceAttachmentUpdate");
+
+        await()
+                .atMost(TIMEOUT)
+                .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                                "attachments {id name content updatedBy updatedAt} } }\"}")
+                        .when().post("/graphql")
+                        .then()
+                        .statusCode(200)
+                        .body("data.UserTaskInstances[0].attachments[0].content", equalTo(updatedAttachmentUri)));
 
         Map<String, String> attachmentMap2 = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
