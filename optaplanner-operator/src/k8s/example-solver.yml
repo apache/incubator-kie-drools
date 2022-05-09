@@ -5,5 +5,5 @@ metadata:
 spec:
   kafkaCluster: my-cluster
   kafkaBootstrapServers: my-cluster-kafka-bootstrap.openshift-operators.svc.cluster.local:9092
-  solverImage: demo/solver-operator-demo-school-timetabling
-  replicas: 1
+  solverImage: quay.io/rsynek/school-timetabling:latest
+  replicas: 3
