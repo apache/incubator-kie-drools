@@ -85,6 +85,10 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.PLUS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.REMAINDER;
 import static java.util.Arrays.asList;
 import static java.util.Optional.of;
+import static org.drools.modelcompiler.builder.generator.ConstraintUtil.GREATER_OR_EQUAL_PREFIX;
+import static org.drools.modelcompiler.builder.generator.ConstraintUtil.GREATER_THAN_PREFIX;
+import static org.drools.modelcompiler.builder.generator.ConstraintUtil.LESS_OR_EQUAL_PREFIX;
+import static org.drools.modelcompiler.builder.generator.ConstraintUtil.LESS_THAN_PREFIX;
 import static org.drools.util.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createConstraintCompiler;
@@ -784,10 +788,10 @@ public class ConstraintParser {
         switch (operator.asString()) {
             case "==" : return "equals";
             case "!=" : return "notEquals";
-            case "<" : return "lessThan";
-            case "<=" : return "lessOrEqual";
-            case ">" : return "greaterThan";
-            case ">=" : return "greaterOrEqual";
+            case "<" : return LESS_THAN_PREFIX;
+            case "<=" : return LESS_OR_EQUAL_PREFIX;
+            case ">" : return GREATER_THAN_PREFIX;
+            case ">=" : return GREATER_OR_EQUAL_PREFIX;
         }
         throw new RuntimeException( "unknown operator: " + operator );
     }

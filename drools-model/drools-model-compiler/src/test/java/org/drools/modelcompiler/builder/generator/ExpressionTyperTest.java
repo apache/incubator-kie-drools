@@ -147,7 +147,7 @@ public class ExpressionTyperTest {
 
     @Test
     public void mapAccessExpr() {
-        final TypedExpression expected3 = typedResult(THIS_PLACEHOLDER + ".get(\"type\")", Map.class);
+        final TypedExpression expected3 = typedResult(THIS_PLACEHOLDER + ".get(\"type\")", Object.class);
         final TypedExpression actual3 = toTypedExpression("this[\"type\"]", Map.class);
         assertEquals(expected3, actual3);
     }

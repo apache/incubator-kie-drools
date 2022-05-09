@@ -314,7 +314,7 @@ public class ExpressionTyper {
         if (drlxExpr instanceof ArrayAccessExpr) {
             final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
             if (Map.class.isAssignableFrom( typeCursor )) {
-                return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr(THIS_PLACEHOLDER) : arrayAccessExpr.getName(), Map.class);
+                return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr(THIS_PLACEHOLDER) : arrayAccessExpr.getName(), Object.class);
             } else if (arrayAccessExpr.getName() instanceof FieldAccessExpr ) {
                 Optional<TypedExpression> typedExpression = toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
                 typedExpression.ifPresent(te -> {
@@ -323,13 +323,12 @@ public class ExpressionTyper {
                 });
                 return typedExpression;
             } else {
-                String name = printNode(drlxExpr.asArrayAccessExpr().getName());
-                final Optional<TypedExpression> nameExpr = nameExpr(name, typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() )
                         .getTypedExpression()
                         .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
                         .getExpression();
-                return nameExpr.flatMap( te -> transformToArrayOrMapExpressionWithType(indexExpr, te));
+                return toTypedExpressionRec(drlxExpr.asArrayAccessExpr().getName())
+                        .flatMap( te -> transformToArrayOrMapExpressionWithType(indexExpr, te));
             }
         }
 

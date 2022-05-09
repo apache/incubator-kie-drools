@@ -60,8 +60,7 @@ public class MapConstraintTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class MapConstraintTest {
         final Map map = new HashMap();
         map.put("name", "Edson");
         map.put("surname", "Tirelli");
-        map.put("age", "28");
+        map.put("age", 28);
 
         ksession.insert(map);
 
@@ -281,5 +280,39 @@ public class MapConstraintTest {
         session.insert(pet2);
 
         session.fireAllRules();
+    }
+
+    @Test
+    public void testMapOfMap() {
+        // DROOLS-6599
+        final String str =
+                "package org.drools.compiler\n" +
+                "import " + MapOfMapContainerBean.class.getCanonicalName() + ";\n" +
+                "import java.util.Map\n" +
+                "rule \"test\"\n" +
+                "when\n" +
+                "  MapOfMapContainerBean( map['key1']['key2'] == \"ok\" )\n" +
+                "then\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+
+        MapOfMapContainerBean bean = new MapOfMapContainerBean();
+        Map<String, Map<String, String>> map = bean.getMap();
+        Map<String, String> innerMap = new HashMap<>();
+        innerMap.put("key2", "ok");
+        map.put("key1", innerMap);
+
+        ksession.insert(bean);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class MapOfMapContainerBean {
+        private final Map<String, Map<String, String>> map = new HashMap<>();
+
+        public Map<String, Map<String, String>> getMap() {
+            return map;
+        }
     }
 }

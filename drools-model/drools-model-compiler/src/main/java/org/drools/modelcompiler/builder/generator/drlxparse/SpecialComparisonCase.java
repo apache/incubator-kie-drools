@@ -59,11 +59,11 @@ abstract class SpecialComparisonCase {
             } else {
                 return new NumberComparisonWithoutCast(left, right);
             }
-        } else if (isMap(left.getRawClass()) && isMap(right.getRawClass())){
-            return new ComparisonWithCast(left, right, of(Comparable.class), of(Comparable.class));
-        } else {
-            return new PlainEvaluation(left, right);
         }
+        if (!isComparable(left.getRawClass()) && !isComparable(right.getRawClass())){
+            return new ComparisonWithCast(left, right, of(Comparable.class), of(Comparable.class));
+        }
+        return new PlainEvaluation(left, right);
     }
 
     private static Optional<Class<?>> typeNeedsCast(Type t) {
@@ -81,6 +81,10 @@ abstract class SpecialComparisonCase {
 
     private static boolean isMap(Class<?> t) {
         return Map.class.isAssignableFrom(t);
+    }
+
+    private static boolean isComparable(Class<?> t) {
+        return Comparable.class.isAssignableFrom(t) || Number.class.isAssignableFrom(t) || t.isPrimitive();
     }
 
     static boolean isObject(Class<?> clazz) {
