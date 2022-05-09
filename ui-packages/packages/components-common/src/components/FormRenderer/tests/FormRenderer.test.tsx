@@ -55,23 +55,19 @@ const MockedComponent = (): React.ReactElement => {
 };
 
 jest.mock('../../FormFooter/FormFooter');
-jest.mock('uniforms-patternfly/dist/es6', () => (
-  Object.assign(
-    {},
-    jest.requireActual('uniforms-patternfly/dist/es6'),
-    {
-      AutoForm: () => {
-        return <MockedComponent />;
-      },
-      AutoFields: () => {
-        return <MockedComponent />;
-      },
-      ErrorsField: () => {
-        return <MockedComponent />;
-      }
+jest.mock('uniforms-patternfly/dist/es6', () =>
+  Object.assign({}, jest.requireActual('uniforms-patternfly/dist/es6'), {
+    AutoForm: () => {
+      return <MockedComponent />;
+    },
+    AutoFields: () => {
+      return <MockedComponent />;
+    },
+    ErrorsField: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 let model;
 let props;

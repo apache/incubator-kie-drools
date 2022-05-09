@@ -23,23 +23,23 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
+jest.mock('@patternfly/react-icons', () =>
   Object.assign(
-      { __esModule: true },
+    { __esModule: true },
     jest.requireActual('@patternfly/react-icons'),
     {
       InfoCircleIcon: () => {
-        return <MockedComponent/>;
+        return <MockedComponent />;
       },
       SearchIcon: () => {
-        return <MockedComponent/>;
+        return <MockedComponent />;
       },
       ExclamationTriangleIcon: () => {
-        return <MockedComponent/>;
+        return <MockedComponent />;
       }
     }
   )
-));
+);
 
 const props = {
   title: 'No child process instances',

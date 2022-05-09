@@ -160,7 +160,8 @@ export const removeDuplicates = (arr, comp) => {
 
 export const isTestUserSystemEnabled = () => {
   const testSystemEnabled: boolean =
-    window.TEST_USER_SYSTEM_ENABLED || process.env.TEST_USER_SYSTEM_ENABLED === 'true';
+    window.TEST_USER_SYSTEM_ENABLED ||
+    process.env.TEST_USER_SYSTEM_ENABLED === 'true';
 
   return !isAuthEnabled() && testSystemEnabled;
 };

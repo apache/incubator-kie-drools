@@ -29,23 +29,19 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/components-common'),
-    {
-      ServerErrors: () => {
-        return <MockedComponent />;
-      },
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      },
-      LoadMore: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    ServerErrors: () => {
+      return <MockedComponent />;
+    },
+    KogitoEmptyState: () => {
+      return <MockedComponent />;
+    },
+    LoadMore: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 let driverQueryMock;
 let driverApplyFilterMock;

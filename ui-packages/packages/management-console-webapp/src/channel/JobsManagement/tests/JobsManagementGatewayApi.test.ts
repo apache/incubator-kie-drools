@@ -119,7 +119,10 @@ describe('JobsManagementChannelApiImpl tests', () => {
   it('rescheduleJob', async () => {
     const modalTitle = 'success';
     const modalContent = `Reschedule of job: 'eff4ee-11qw23-6675-pokau97-qwedjut45a0fj_0' is successful`;
-    (handleJobReschedule as jest.Mock).mockReturnValueOnce({ modalTitle, modalContent });
+    (handleJobReschedule as jest.Mock).mockReturnValueOnce({
+      modalTitle,
+      modalContent
+    });
     const repeatInterval = 0;
     const repeatLimit = 0;
     const scheduleDate = new Date('2021-08-27T03:35:50.147Z');
@@ -144,7 +147,10 @@ describe('JobsManagementChannelApiImpl tests', () => {
   it('bulkCancel', async () => {
     const successJobs = [];
     const failedJobs = [job];
-    (performMultipleCancel as jest.Mock).mockReturnValue({ successJobs, failedJobs });
+    (performMultipleCancel as jest.Mock).mockReturnValue({
+      successJobs,
+      failedJobs
+    });
     const result = await gatewayApi.bulkCancel([job]);
     expect(performMultipleCancel).toHaveBeenCalledWith([job]);
     expect(result).toEqual({ successJobs, failedJobs });

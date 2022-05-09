@@ -55,16 +55,13 @@ const mockMath = Object.create(global.Math);
 mockMath.random = () => 0.5;
 global.Math = mockMath;
 
-jest.mock('@kogito-apps/components-common', () => (
-  Object.assign(
-    jest.requireActual('@kogito-apps/components-common'),
-    {
-      ItemDescription: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign(jest.requireActual('@kogito-apps/components-common'), {
+    ItemDescription: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 describe('TaskDescription test', () => {
   it('Render task description with task des', () => {

@@ -17,17 +17,13 @@ const MockedServerErrors = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/common'),
-    {
-      ServerErrors: () => {
-        return <MockedServerErrors/>;
-      }
+jest.mock('@kogito-apps/common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/common'), {
+    ServerErrors: () => {
+      return <MockedServerErrors />;
     }
-  )
-));
+  })
+);
 
 const MockedBreadcrumb = (): React.ReactElement => {
   return <></>;
@@ -36,27 +32,19 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core'),
-    {
-      Breadcrumb: () => <MockedBreadcrumb/>
-    }
-  )
-));
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    Breadcrumb: () => <MockedBreadcrumb />
+  })
+);
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      SyncIcon: () => {
-        return <MockedIcon/>;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    SyncIcon: () => {
+      return <MockedIcon />;
     }
-  )
-));
+  })
+);
 describe('Jobs management page tests', () => {
   const mockOffset1: number = 0;
   const mockLimit1: number = 10;
@@ -210,14 +198,14 @@ describe('Jobs management page tests', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: { reload: jest.fn() },
+      value: { reload: jest.fn() }
     });
   });
 
   afterAll(() => {
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: location,
+      value: location
     });
   });
   it('snapshot test with mock data', async () => {

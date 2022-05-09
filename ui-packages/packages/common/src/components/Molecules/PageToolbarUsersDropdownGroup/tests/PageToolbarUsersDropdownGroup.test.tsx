@@ -30,16 +30,12 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core'),
-    {
-      DropdownSeparator: () => <MockedComponent />,
-      DropdownItem: () => <MockedComponent />
-    }
-  )
-));
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    DropdownSeparator: () => <MockedComponent />,
+    DropdownItem: () => <MockedComponent />
+  })
+);
 
 const getDropdownItem = (wrapper, userId: string) => {
   return wrapper.findWhere(

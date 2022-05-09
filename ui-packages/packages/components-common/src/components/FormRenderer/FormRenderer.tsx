@@ -16,7 +16,11 @@
 
 import React, { useImperativeHandle, useState } from 'react';
 import JSONSchemaBridge from 'uniforms-bridge-json-schema';
-import { AutoFields, AutoForm, ErrorsField } from 'uniforms-patternfly/dist/es6';
+import {
+  AutoFields,
+  AutoForm,
+  ErrorsField
+} from 'uniforms-patternfly/dist/es6';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { FormAction, lookupValidator, ModelConversionTool } from '../utils';
 import FormFooter from '../FormFooter/FormFooter';

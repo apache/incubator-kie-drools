@@ -24,29 +24,21 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      InfoCircleIcon: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    InfoCircleIcon: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
-jest.mock('@patternfly/react-core', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core'),
-    {
-      Tooltip: props => {
-        return <>{props.children} </>;
-      }
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    Tooltip: props => {
+      return <>{props.children} </>;
     }
-  )
-));
+  })
+);
 describe('Process details page milestones panel', () => {
   const props = {
     milestones: [

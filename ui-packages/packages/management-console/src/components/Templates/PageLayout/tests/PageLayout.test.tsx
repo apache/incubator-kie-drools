@@ -150,17 +150,13 @@ jest.mock('../../ProcessListPage/ProcessListPage.tsx');
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@kogito-apps/common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/common'),
-    {
-      KogitoPageLayout: () => {
-        return <MockedComponent/>;
-      }
+jest.mock('@kogito-apps/common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/common'), {
+    KogitoPageLayout: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 describe('PageLayout tests', () => {
   it('snapshot testing', async () => {
     let wrapper;

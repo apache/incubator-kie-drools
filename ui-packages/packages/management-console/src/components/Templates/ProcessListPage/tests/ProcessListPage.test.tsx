@@ -15,31 +15,23 @@ import wait from 'waait';
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@kogito-apps/common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/common'),
-    {
-      LoadMore: () => {
-        return <MockedComponent/>;
-      }
+jest.mock('@kogito-apps/common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/common'), {
+    LoadMore: () => {
+      return <MockedComponent />;
     }
-  )
-));
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      ExclamationTriangleIcon: () => {
-        return <MockedComponent/>;
-      },
-      ExclamationCircleIcon: () => {
-        return <MockedComponent/>;
-      }
+  })
+);
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    ExclamationTriangleIcon: () => {
+      return <MockedComponent />;
+    },
+    ExclamationCircleIcon: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 const match: match<{ domainName: string }> = {
   isExact: false,

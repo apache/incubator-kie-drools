@@ -6,7 +6,7 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 import { Button } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import * as Utils from '../../../../utils/Utils';
-import * as MockDate from "mockdate";
+import * as MockDate from 'mockdate';
 jest.mock('react-datetime-picker');
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline

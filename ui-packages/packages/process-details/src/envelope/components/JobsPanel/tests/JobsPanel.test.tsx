@@ -27,29 +27,25 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      ErrorCircleOIcon: () => {
-        return <MockedComponent />;
-      },
-      BanIcon: () => {
-        return <MockedComponent />;
-      },
-      CheckCircleIcon: () => {
-        return <MockedComponent />;
-      },
-      UndoIcon: () => {
-        return <MockedComponent />;
-      },
-      ClockIcon: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    ErrorCircleOIcon: () => {
+      return <MockedComponent />;
+    },
+    BanIcon: () => {
+      return <MockedComponent />;
+    },
+    CheckCircleIcon: () => {
+      return <MockedComponent />;
+    },
+    UndoIcon: () => {
+      return <MockedComponent />;
+    },
+    ClockIcon: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 const props = {
   jobs: [

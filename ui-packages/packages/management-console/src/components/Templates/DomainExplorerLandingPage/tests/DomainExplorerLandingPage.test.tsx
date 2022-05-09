@@ -7,31 +7,23 @@ import { mount } from 'enzyme';
 const MockedDomainExplorerListDomains = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@kogito-apps/common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/common'),
-    {
-      DomainExplorerListDomains: () => {
-        return <MockedDomainExplorerListDomains/>;
-      }
+jest.mock('@kogito-apps/common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/common'), {
+    DomainExplorerListDomains: () => {
+      return <MockedDomainExplorerListDomains />;
     }
-  )
-));
+  })
+);
 
 const MockedBreadcrumb = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core'),
-    {
-      Breadcrumb: () => <MockedBreadcrumb/>
-    }
-  )
-));
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    Breadcrumb: () => <MockedBreadcrumb />
+  })
+);
 
 describe('Domain Explorer Landing Page Component', () => {
   const props = {

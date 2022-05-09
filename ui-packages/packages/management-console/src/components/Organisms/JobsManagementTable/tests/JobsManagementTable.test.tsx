@@ -17,26 +17,22 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      HistoryIcon: () => {
-        return <MockedIcon/>;
-      },
-      ClockIcon: () => {
-        return <MockedIcon/>;
-      },
-      BanIcon: () => {
-        return <MockedIcon/>;
-      },
-      CheckCircleIcon: () => {
-        return <MockedIcon/>;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    HistoryIcon: () => {
+      return <MockedIcon />;
+    },
+    ClockIcon: () => {
+      return <MockedIcon />;
+    },
+    BanIcon: () => {
+      return <MockedIcon />;
+    },
+    CheckCircleIcon: () => {
+      return <MockedIcon />;
     }
-  )
-));
+  })
+);
 
 describe('Jobs management table component tests', () => {
   const props = {

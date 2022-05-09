@@ -40,50 +40,42 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      OnRunningIcon: () => {
-        return <MockedComponent/>;
-      },
-      CheckCircleIcon: () => {
-        return <MockedComponent/>;
-      },
-      BanIcon: () => {
-        return <MockedComponent/>;
-      },
-      PausedIcon: () => {
-        return <MockedComponent/>;
-      },
-      ErrorCircleOIcon: () => {
-        return <MockedComponent/>;
-      },
-      AngleRightIcon: () => {
-        return <MockedComponent/>;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    OnRunningIcon: () => {
+      return <MockedComponent />;
+    },
+    CheckCircleIcon: () => {
+      return <MockedComponent />;
+    },
+    BanIcon: () => {
+      return <MockedComponent />;
+    },
+    PausedIcon: () => {
+      return <MockedComponent />;
+    },
+    ErrorCircleOIcon: () => {
+      return <MockedComponent />;
+    },
+    AngleRightIcon: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
-jest.mock('@kogito-apps/common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/common'),
-    {
-      ItemDescriptor: () => {
-        return <MockedComponent/>;
-      },
-      KogitoSpinner: () => {
-        return <MockedComponent/>;
-      },
-      ServerErrors: () => {
-        return <MockedComponent/>;
-      }
+jest.mock('@kogito-apps/common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/common'), {
+    ItemDescriptor: () => {
+      return <MockedComponent />;
+    },
+    KogitoSpinner: () => {
+      return <MockedComponent />;
+    },
+    ServerErrors: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 const props = {
   match: {
@@ -645,7 +637,7 @@ describe('Process Details Page component tests', () => {
     const { location } = window;
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: { reload: jest.fn() },
+      value: { reload: jest.fn() }
     });
     let wrapper;
     await act(async () => {
@@ -684,7 +676,7 @@ describe('Process Details Page component tests', () => {
       ['onClose']();
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: location,
+      value: location
     });
     expect(handleVariableUpdateSpy).toHaveBeenCalled();
   });
@@ -694,7 +686,7 @@ describe('Process Details Page component tests', () => {
     const { location } = window;
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: { reload: jest.fn() },
+      value: { reload: jest.fn() }
     });
     let wrapper;
     await act(async () => {
@@ -721,7 +713,7 @@ describe('Process Details Page component tests', () => {
     });
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: location,
+      value: location
     });
     expect(handleVariableUpdateSpy).toHaveBeenCalled();
   });

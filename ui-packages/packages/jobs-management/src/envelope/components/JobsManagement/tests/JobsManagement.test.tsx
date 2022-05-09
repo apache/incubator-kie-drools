@@ -43,19 +43,15 @@ const MockedJobsRescheduleModal = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/components-common'),
-    {
-      LoadMore: () => {
-        return <MockedLoadMore />;
-      }
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    LoadMore: () => {
+      return <MockedLoadMore />;
     }
-  )
-));
+  })
+);
 
-jest.mock('@kogito-apps/management-console-shared', () => (
+jest.mock('@kogito-apps/management-console-shared', () =>
   Object.assign(
     {},
     jest.requireActual('@kogito-apps/management-console-shared'),
@@ -71,7 +67,7 @@ jest.mock('@kogito-apps/management-console-shared', () => (
       }
     }
   )
-));
+);
 describe('JobsManagement component tests', () => {
   const props = {
     ouiaId: null,

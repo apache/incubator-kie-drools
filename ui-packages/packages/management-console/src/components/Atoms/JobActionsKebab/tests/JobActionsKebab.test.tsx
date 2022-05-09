@@ -22,28 +22,20 @@ const MockedComponent = (): React.ReactElement => {
 };
 
 jest.mock('@patternfly/react-core', () =>
-    Object.assign(
-      {},
-      jest.requireActual('@patternfly/react-core'),
-      {
-        ModalBoxBody: () => <MockedComponent />
-      }
-    )
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    ModalBoxBody: () => <MockedComponent />
+  })
 );
 
 jest.mock('@patternfly/react-icons', () =>
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      InfoCircleIcon: () => {
-        return <MockedIcon/>;
-      },
-      TimesIcon: () => {
-        return <MockedIcon/>;
-      }
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    InfoCircleIcon: () => {
+      return <MockedIcon />;
+    },
+    TimesIcon: () => {
+      return <MockedIcon />;
     }
-  )
+  })
 );
 
 const props = {

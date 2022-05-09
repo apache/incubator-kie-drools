@@ -159,16 +159,21 @@ export const MockedMessageBusClientApi = jest.fn<
 }));
 
 export const MockedMessageBusServer = jest.fn<
-    MessageBusServer<ProcessDetailsEnvelopeApi, ProcessDetailsChannelApi>,
-    []
-    >(() => ({
+  MessageBusServer<ProcessDetailsEnvelopeApi, ProcessDetailsChannelApi>,
+  []
+>(() => ({
   receive: jest.fn()
 }));
 
 export const MockedEnvelopeBusMessageManager = jest.fn<
-    Partial<EnvelopeBusMessageManager<ProcessDetailsEnvelopeApi, ProcessDetailsChannelApi>>,
-    []
-    >(() => ({
+  Partial<
+    EnvelopeBusMessageManager<
+      ProcessDetailsEnvelopeApi,
+      ProcessDetailsChannelApi
+    >
+  >,
+  []
+>(() => ({
   callbacks: jest.fn(),
   remoteSubscriptions: jest.fn(),
   localSubscriptions: jest.fn(),
@@ -190,11 +195,16 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
 }));
 
 export const MockedEnvelopeBusControllerDefinition = jest.fn<
-    Partial<EnvelopeBusController<ProcessDetailsEnvelopeApi, ProcessDetailsChannelApi>>,
-    []
-    >(() => ({
+  Partial<
+    EnvelopeBusController<ProcessDetailsEnvelopeApi, ProcessDetailsChannelApi>
+  >,
+  []
+>(() => ({
   bus: jest.fn(),
-  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<ProcessDetailsEnvelopeApi, ProcessDetailsChannelApi>,
+  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<
+    ProcessDetailsEnvelopeApi,
+    ProcessDetailsChannelApi
+  >,
   associate: jest.fn(),
   channelApi: new MockedMessageBusClientApi(),
   startListening: jest.fn(),
@@ -203,7 +213,10 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<ProcessDetailsEnvelopeApi, ProcessDetailsChannelApi>;
+export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+  ProcessDetailsEnvelopeApi,
+  ProcessDetailsChannelApi
+>;
 
 export const MockedProcessDetailsEnvelopeViewApi = jest.fn<
   ProcessDetailsEnvelopeViewApi,

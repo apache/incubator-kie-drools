@@ -39,29 +39,25 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/components-common'),
-    {
-      DataTable: () => {
-        return <MockedComponent />;
-      },
-      LoadMore: () => {
-        return <MockedComponent />;
-      },
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      },
-      KogitoSpinner: () => {
-        return <MockedComponent />;
-      },
-      ServerErrors: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    DataTable: () => {
+      return <MockedComponent />;
+    },
+    LoadMore: () => {
+      return <MockedComponent />;
+    },
+    KogitoEmptyState: () => {
+      return <MockedComponent />;
+    },
+    KogitoSpinner: () => {
+      return <MockedComponent />;
+    },
+    ServerErrors: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 let driverQueryMock;
 let driverApplyFilterMock;

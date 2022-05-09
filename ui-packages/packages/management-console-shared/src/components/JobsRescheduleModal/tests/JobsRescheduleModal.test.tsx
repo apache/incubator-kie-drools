@@ -20,7 +20,7 @@ import { JobStatus } from '../../../types';
 import { mount } from 'enzyme';
 import { Button } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
-import * as MockDate from "mockdate";
+import * as MockDate from 'mockdate';
 jest.mock('react-datetime-picker');
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline

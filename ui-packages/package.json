@@ -15,7 +15,8 @@
     "test": "lerna run test:coverage --stream --",
     "test:it": "lerna run test:it --stream --concurrency=1 --no-bail --",
     "locktt": "locktt",
-    "test:e2e:trusty": "lerna run --scope @kogito-apps/trusty test:e2e:trusty --"
+    "test:e2e:trusty": "lerna run --scope @kogito-apps/trusty test:e2e:trusty --",
+    "format:all": "lerna run format --stream --"
   },
   "husky": {
     "hooks": {

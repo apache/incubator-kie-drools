@@ -82,16 +82,16 @@ export const MockedMessageBusClientApi = jest.fn<
 }));
 
 export const MockedMessageBusServer = jest.fn<
-    MessageBusServer<TaskInboxEnvelopeApi, TaskInboxChannelApi>,
-    []
-    >(() => ({
+  MessageBusServer<TaskInboxEnvelopeApi, TaskInboxChannelApi>,
+  []
+>(() => ({
   receive: jest.fn()
 }));
 
 export const MockedEnvelopeBusMessageManager = jest.fn<
-    Partial<EnvelopeBusMessageManager<TaskInboxEnvelopeApi, TaskInboxChannelApi>>,
-    []
-    >(() => ({
+  Partial<EnvelopeBusMessageManager<TaskInboxEnvelopeApi, TaskInboxChannelApi>>,
+  []
+>(() => ({
   callbacks: jest.fn(),
   remoteSubscriptions: jest.fn(),
   localSubscriptions: jest.fn(),
@@ -113,11 +113,14 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
 }));
 
 export const MockedEnvelopeBusControllerDefinition = jest.fn<
-    Partial<EnvelopeBusController<TaskInboxEnvelopeApi, TaskInboxChannelApi>>,
-    []
-    >(() => ({
+  Partial<EnvelopeBusController<TaskInboxEnvelopeApi, TaskInboxChannelApi>>,
+  []
+>(() => ({
   bus: jest.fn(),
-  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<TaskInboxEnvelopeApi, TaskInboxChannelApi>,
+  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<
+    TaskInboxEnvelopeApi,
+    TaskInboxChannelApi
+  >,
   associate: jest.fn(),
   channelApi: new MockedMessageBusClientApi(),
   startListening: jest.fn(),
@@ -126,7 +129,10 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<TaskInboxEnvelopeApi, TaskInboxChannelApi>;
+export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+  TaskInboxEnvelopeApi,
+  TaskInboxChannelApi
+>;
 
 export const MockedTaskInboxEnvelopeViewApi = jest.fn<
   TaskInboxEnvelopeViewApi,

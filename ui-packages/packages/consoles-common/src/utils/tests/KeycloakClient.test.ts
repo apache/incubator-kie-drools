@@ -21,18 +21,18 @@ import Keycloak from 'keycloak-js';
 
 describe('mocked function tests in KeycloakClient', () => {
   const getKeyCloakClientMock: any = jest.spyOn(
-      KeycloakClient,
-      'getKeycloakClient'
+    KeycloakClient,
+    'getKeycloakClient'
   );
 
   const checkAuthServerHealthMock = jest.spyOn(
-      KeycloakClient,
-      'checkAuthServerHealth'
+    KeycloakClient,
+    'checkAuthServerHealth'
   );
 
   const updateKeycloakTokenMock: any = jest.spyOn(
-      KeycloakClient,
-      'updateKeycloakToken'
+    KeycloakClient,
+    'updateKeycloakToken'
   );
 
   it('isAuthEnabled test', () => {
@@ -71,10 +71,10 @@ describe('mocked function tests in KeycloakClient', () => {
         //logs out the user
       },
       tokenParsed: {
-        preferred_username: "Dev User",
+        preferred_username: 'Dev User',
         groups: []
       },
-      token: "token",
+      token: 'token'
     });
     const success = jest.fn();
     const failure = jest.fn();
@@ -174,10 +174,10 @@ describe('Tests for keycloak client functions', () => {
         //logs out the user
       },
       tokenParsed: {
-        preferred_username: "Dev User",
+        preferred_username: 'Dev User',
         groups: []
       },
-      token: "token",
+      token: 'token'
     });
     const mockInitializeKeycloak = jest.spyOn(
       KeycloakClient,
@@ -199,10 +199,10 @@ describe('Tests for keycloak client functions', () => {
         //logs out the user
       },
       tokenParsed: {
-        preferred_username: "Dev User",
+        preferred_username: 'Dev User',
         groups: []
       },
-      token: "token",
+      token: 'token'
     });
     checkAuthServerHealthMock.mockRejectedValue({});
     const mockInitializeKeycloak = jest.spyOn(
@@ -224,10 +224,10 @@ describe('Tests for keycloak client functions', () => {
         // logs out the user
       },
       tokenParsed: {
-        preferred_username: "Dev User",
+        preferred_username: 'Dev User',
         groups: []
       },
-      token: "token",
+      token: 'token'
     });
     checkAuthServerHealthMock.mockResolvedValue(Promise.resolve());
     const success = jest.fn();
@@ -314,10 +314,10 @@ describe('Tests for keycloak client functions', () => {
         //logs out the user
       },
       tokenParsed: {
-        preferred_username: "Dev User",
+        preferred_username: 'Dev User',
         groups: []
       },
-      token: "token",
+      token: 'token'
     });
     checkAuthServerHealthMock.mockResolvedValue(Promise.resolve());
     const getTokenMock = jest.spyOn(KeycloakClient, 'getToken');

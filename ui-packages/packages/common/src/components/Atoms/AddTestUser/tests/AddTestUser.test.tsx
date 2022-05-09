@@ -30,18 +30,14 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core'),
-    {
-      Alert: () => <MockedComponent />,
-      Button: () => <MockedComponent />,
-      Checkbox: () => <MockedComponent />,
-      TextInput: () => <MockedComponent />
-    }
-  )
-));
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    Alert: () => <MockedComponent />,
+    Button: () => <MockedComponent />,
+    Checkbox: () => <MockedComponent />,
+    TextInput: () => <MockedComponent />
+  })
+);
 
 const findFormInput = (wrapper, id: string) => {
   return wrapper.findWhere(element => element.prop('id') === id);

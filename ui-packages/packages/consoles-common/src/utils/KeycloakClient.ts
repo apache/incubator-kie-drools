@@ -77,7 +77,9 @@ export const getKeycloakClient = (): Keycloak.KeycloakInstance => {
   });
 };
 
-export const initializeKeycloak = (onloadSuccess: () => void): Promise<void> => {
+export const initializeKeycloak = (
+  onloadSuccess: () => void
+): Promise<void> => {
   keycloak = getKeycloakClient();
   return keycloak
     .init({

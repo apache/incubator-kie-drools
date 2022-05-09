@@ -36,38 +36,31 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/components-common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/components-common'),
-    {
-      LoadMore: () => {
-        return <MockedComponent />;
-      },
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      },
-      KogitoSpinner: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    LoadMore: () => {
+      return <MockedComponent />;
+    },
+    KogitoEmptyState: () => {
+      return <MockedComponent />;
+    },
+    KogitoSpinner: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 const mockMath = Object.create(global.Math);
 mockMath.random = () => 0.5;
 global.Math = mockMath;
 
-jest.mock('@kogito-apps/management-console-shared', () => (
-  Object.assign(
-    jest.requireActual('@kogito-apps/management-console-shared'),
-    {
-      ProcessInfo: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@kogito-apps/management-console-shared', () =>
+  Object.assign(jest.requireActual('@kogito-apps/management-console-shared'), {
+    ProcessInfo: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 const props = {
   processInstances: ProcessInstances,

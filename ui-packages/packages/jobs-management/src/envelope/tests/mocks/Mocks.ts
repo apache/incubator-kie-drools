@@ -85,16 +85,21 @@ export const MockedMessageBusClientApi = jest.fn<
 }));
 
 export const MockedMessageBusServer = jest.fn<
-    MessageBusServer<JobsManagementEnvelopeApi, JobsManagementChannelApi>,
-    []
-    >(() => ({
+  MessageBusServer<JobsManagementEnvelopeApi, JobsManagementChannelApi>,
+  []
+>(() => ({
   receive: jest.fn()
 }));
 
 export const MockedEnvelopeBusMessageManager = jest.fn<
-    Partial<EnvelopeBusMessageManager<JobsManagementEnvelopeApi, JobsManagementChannelApi>>,
-    []
-    >(() => ({
+  Partial<
+    EnvelopeBusMessageManager<
+      JobsManagementEnvelopeApi,
+      JobsManagementChannelApi
+    >
+  >,
+  []
+>(() => ({
   callbacks: jest.fn(),
   remoteSubscriptions: jest.fn(),
   localSubscriptions: jest.fn(),
@@ -116,11 +121,16 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
 }));
 
 export const MockedEnvelopeBusControllerDefinition = jest.fn<
-    Partial<EnvelopeBusController<JobsManagementEnvelopeApi, JobsManagementChannelApi>>,
-    []
-    >(() => ({
+  Partial<
+    EnvelopeBusController<JobsManagementEnvelopeApi, JobsManagementChannelApi>
+  >,
+  []
+>(() => ({
   bus: jest.fn(),
-  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<JobsManagementEnvelopeApi, JobsManagementChannelApi>,
+  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<
+    JobsManagementEnvelopeApi,
+    JobsManagementChannelApi
+  >,
   associate: jest.fn(),
   channelApi: new MockedMessageBusClientApi(),
   startListening: jest.fn(),
@@ -129,7 +139,10 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<JobsManagementEnvelopeApi, JobsManagementChannelApi>;
+export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+  JobsManagementEnvelopeApi,
+  JobsManagementChannelApi
+>;
 
 export const MockedJobsManagementEnvelopeViewApi = jest.fn<
   JobsManagementEnvelopeViewApi,

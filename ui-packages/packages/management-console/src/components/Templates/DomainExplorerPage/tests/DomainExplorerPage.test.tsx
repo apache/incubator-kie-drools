@@ -9,30 +9,22 @@ import * as H from 'history';
 const MockedDomainExplorer = (): React.ReactElement => {
   return <></>;
 };
-jest.mock('@kogito-apps/common', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/common'),
-    {
-      DomainExplorer: () => {
-        return <MockedDomainExplorer/>;
-      }
+jest.mock('@kogito-apps/common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/common'), {
+    DomainExplorer: () => {
+      return <MockedDomainExplorer />;
     }
-  )
-));
+  })
+);
 const MockedBreadcrumb = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core'),
-    {
-      Breadcrumb: () => <MockedBreadcrumb/>
-    }
-  )
-));
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    Breadcrumb: () => <MockedBreadcrumb />
+  })
+);
 const props = {
   domains: ['Travels', 'VisaApplications'],
   loadingState: false

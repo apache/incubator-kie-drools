@@ -57,23 +57,19 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      OnRunningIcon: () => {
-        return <MockedComponent />;
-      },
-      BanIcon: () => {
-        return <MockedComponent />;
-      },
-      CheckCircleIcon: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    OnRunningIcon: () => {
+      return <MockedComponent />;
+    },
+    BanIcon: () => {
+      return <MockedComponent />;
+    },
+    CheckCircleIcon: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 
 describe('TaskState', () => {
   it('Test show active task', () => {

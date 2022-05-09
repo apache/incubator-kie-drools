@@ -145,7 +145,10 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
         breadcrumbText={['Home', 'Processes', processName]}
         breadcrumbPath={[
           '/',
-          { pathname: '/ProcessInstances', state: Object.assign({}, props.location.state) }
+          {
+            pathname: '/ProcessInstances',
+            state: Object.assign({}, props.location.state)
+          }
         ]}
       />
       <PageSection>{renderItems()}</PageSection>

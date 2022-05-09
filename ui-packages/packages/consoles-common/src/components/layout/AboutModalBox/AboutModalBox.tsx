@@ -43,7 +43,8 @@ const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const dataIndexURL = window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
+  const dataIndexURL =
+    window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
   const brandContext = useBrandContext();
   return (
     <AboutModal

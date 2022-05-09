@@ -38,17 +38,13 @@ const MockedJobsRescheduleModal = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core'),
-    {
-      ModalBoxBody: () => <MockedComponent />
-    }
-  ))
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    ModalBoxBody: () => <MockedComponent />
+  })
 );
 
-jest.mock('@kogito-apps/management-console-shared', () => (
+jest.mock('@kogito-apps/management-console-shared', () =>
   Object.assign(
     {},
     jest.requireActual('@kogito-apps/management-console-shared'),
@@ -57,22 +53,18 @@ jest.mock('@kogito-apps/management-console-shared', () => (
       JobsRescheduleModal: () => <MockedJobsRescheduleModal />
     }
   )
-));
+);
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      InfoCircleIcon: () => {
-        return <MockedIcon />;
-      },
-      TimesIcon: () => {
-        return <MockedIcon />;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    InfoCircleIcon: () => {
+      return <MockedIcon />;
+    },
+    TimesIcon: () => {
+      return <MockedIcon />;
     }
-  )
-));
+  })
+);
 
 const props = {
   job: {
@@ -237,7 +229,8 @@ describe('job actions kebab tests', () => {
     await act(async () => {
       wrapper
         .find('JobsRescheduleModal')
-        .props()['handleJobReschedule'](repeatInterval, repeatLimit, scheduleDate);
+        .props()
+        ['handleJobReschedule'](repeatInterval, repeatLimit, scheduleDate);
     });
     expect(prop2.driver.rescheduleJob).toHaveBeenCalledWith(
       prop2.job,

@@ -61,17 +61,13 @@ const MockedComponent = (): React.ReactElement => {
 jest.mock('react-json-view', () =>
   jest.fn(_props => <MockedComponent {..._props} />)
 );
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      InfoCircleIcon: () => {
-        return <MockedComponent />;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    InfoCircleIcon: () => {
+      return <MockedComponent />;
     }
-  )
-));
+  })
+);
 const props = {
   setUpdateJson: jest.fn(),
   displayLabel: false,

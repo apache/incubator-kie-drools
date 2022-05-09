@@ -18,29 +18,25 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      UserIcon: () => {
-        return <MockedIcon/>;
-      },
-      CheckCircleIcon: () => {
-        return <MockedIcon/>;
-      },
-      ErrorCircleOIcon: () => {
-        return <MockedIcon/>;
-      },
-      OnRunningIcon: () => {
-        return <MockedIcon/>;
-      },
-      OutlinedClockIcon: () => {
-        return <MockedIcon/>;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    UserIcon: () => {
+      return <MockedIcon />;
+    },
+    CheckCircleIcon: () => {
+      return <MockedIcon />;
+    },
+    ErrorCircleOIcon: () => {
+      return <MockedIcon />;
+    },
+    OnRunningIcon: () => {
+      return <MockedIcon />;
+    },
+    OutlinedClockIcon: () => {
+      return <MockedIcon />;
     }
-  )
-));
+  })
+);
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const props1 = {
   data: {

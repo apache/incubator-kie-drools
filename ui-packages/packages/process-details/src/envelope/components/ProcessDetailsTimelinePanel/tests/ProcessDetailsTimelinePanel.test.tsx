@@ -31,29 +31,25 @@ const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-icons', () => (
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-icons'),
-    {
-      UserIcon: () => {
-        return <MockedIcon />;
-      },
-      CheckCircleIcon: () => {
-        return <MockedIcon />;
-      },
-      ErrorCircleOIcon: () => {
-        return <MockedIcon />;
-      },
-      OnRunningIcon: () => {
-        return <MockedIcon />;
-      },
-      OutlinedClockIcon: () => {
-        return <MockedIcon />;
-      }
+jest.mock('@patternfly/react-icons', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    UserIcon: () => {
+      return <MockedIcon />;
+    },
+    CheckCircleIcon: () => {
+      return <MockedIcon />;
+    },
+    ErrorCircleOIcon: () => {
+      return <MockedIcon />;
+    },
+    OnRunningIcon: () => {
+      return <MockedIcon />;
+    },
+    OutlinedClockIcon: () => {
+      return <MockedIcon />;
     }
-  )
-));
+  })
+);
 
 const driver = new TestProcessDetailsDriver(
   '2d962eef-45b8-48a9-ad4e-9cde0ad6af89'

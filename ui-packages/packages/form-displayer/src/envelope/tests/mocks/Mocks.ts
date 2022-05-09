@@ -54,16 +54,18 @@ export const MockedMessageBusClientApi = jest.fn<
 }));
 
 export const MockedMessageBusServer = jest.fn<
-    MessageBusServer<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>,
-    []
-    >(() => ({
+  MessageBusServer<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>,
+  []
+>(() => ({
   receive: jest.fn()
 }));
 
 export const MockedEnvelopeBusMessageManager = jest.fn<
-    Partial<EnvelopeBusMessageManager<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>>,
-    []
-    >(() => ({
+  Partial<
+    EnvelopeBusMessageManager<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>
+  >,
+  []
+>(() => ({
   callbacks: jest.fn(),
   remoteSubscriptions: jest.fn(),
   localSubscriptions: jest.fn(),
@@ -85,11 +87,16 @@ export const MockedEnvelopeBusMessageManager = jest.fn<
 }));
 
 export const MockedEnvelopeBusControllerDefinition = jest.fn<
-    Partial<EnvelopeBusController<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>>,
-    []
-    >(() => ({
+  Partial<
+    EnvelopeBusController<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>
+  >,
+  []
+>(() => ({
   bus: jest.fn(),
-  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>,
+  manager: new MockedEnvelopeBusMessageManager() as EnvelopeBusMessageManager<
+    FormDisplayerEnvelopeApi,
+    FormDisplayerChannelApi
+  >,
   associate: jest.fn(),
   channelApi: new MockedMessageBusClientApi(),
   startListening: jest.fn(),
@@ -98,7 +105,10 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<FormDisplayerEnvelopeApi, FormDisplayerChannelApi>;
+export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+  FormDisplayerEnvelopeApi,
+  FormDisplayerChannelApi
+>;
 
 export const MockedFormDisplayerEnvelopeViewApi = jest.fn<
   FormDisplayerEnvelopeViewApi,
