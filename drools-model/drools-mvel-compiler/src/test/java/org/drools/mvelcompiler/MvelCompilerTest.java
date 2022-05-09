@@ -354,6 +354,14 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testSetterBigDecimalLiteralModifyNegative() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify ( $p )  { salary = -50000B }; }",
+             "{ { $p.setSalary(new java.math.BigDecimal(\"-50000\")); } }",
+             result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
+    }
+
+    @Test
     public void testBigDecimalModulo() {
         test(ctx -> ctx.addDeclaration("$b1", BigDecimal.class),
              "{ java.math.BigDecimal result = $b1 % 2; }",

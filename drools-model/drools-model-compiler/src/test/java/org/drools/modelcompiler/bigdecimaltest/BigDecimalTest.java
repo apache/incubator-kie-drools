@@ -1,3 +1,20 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.bigdecimaltest;
 
 import java.math.BigDecimal;
@@ -365,6 +382,10 @@ public class BigDecimalTest extends BaseModelTest {
         private BigDecimal bd1;
         private BigDecimal bd2;
 
+        public BdHolder() {
+            super();
+        }
+
         public BdHolder(BigDecimal bd1, BigDecimal bd2) {
             super();
             this.bd1 = bd1;
@@ -458,5 +479,47 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(holder);
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimalLiteralLhsNegative() {
+        // DROOLS-6596
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     "    $holder : BdHolder(bd1 > -10.5B)\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BdHolder holder = new BdHolder();
+        holder.setBd1(new BigDecimal("10"));
+        ksession.insert(holder);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
+    }
+
+    @Test
+    public void testBigDecimalLiteralRhsNegative() {
+        // DROOLS-6596
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     "    $holder : BdHolder()\n" +
+                     "then\n" +
+                     "    $holder.bd1 = -10.5B;\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BdHolder holder = new BdHolder();
+        ksession.insert(holder);
+        ksession.fireAllRules();
+
+        assertEquals(new BigDecimal("-10.5"), holder.getBd1());
     }
 }
