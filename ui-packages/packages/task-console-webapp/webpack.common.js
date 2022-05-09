@@ -17,12 +17,10 @@ module.exports = {
       chunks: ['app']
     }),
     new webpack.EnvironmentPlugin({
-      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:4000/graphql',
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Task Console',
       KOGITO_TASK_STATES_LIST: 'Ready,Reserved,Completed,Aborted,Skipped',
-      KOGITO_TASK_ACTIVE_STATES_LIST: 'Ready,Reserved',
-      TEST_USER_SYSTEM_ENABLED: false
+      KOGITO_TASK_ACTIVE_STATES_LIST: 'Ready,Reserved'
     }),
   ],
   module: {
@@ -59,7 +57,7 @@ module.exports = {
             '../../node_modules/@patternfly/patternfly/assets/pficon'
           ),
           path.resolve(
-              '../../node_modules/@kogito-apps/consoles-common/dist/static'
+            '../../node_modules/@kogito-apps/consoles-common/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/form-displayer/dist/static'
@@ -122,7 +120,7 @@ module.exports = {
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images'
           ),
           path.resolve(
-              '../../node_modules/@kogito-apps/consoles-common/dist/static'
+            '../../node_modules/@kogito-apps/consoles-common/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/form-displayer/dist/static'
@@ -132,7 +130,7 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/components-common/dist/static'
-        )
+          )
         ],
         use: [
           {

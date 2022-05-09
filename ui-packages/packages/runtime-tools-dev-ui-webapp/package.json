@@ -21,7 +21,7 @@
     "dev:restServer": "nodemon ./server/restServer.js",
     "dev:server": "nodemon ./server/app.js",
     "dev": "concurrently 'yarn start' 'yarn run dev:server' 'yarn workspace @kogito-apps/trusty mock-server'",
-    "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"'",
+    "dev-remote-dataindex": "yarn start --env KOGITO_DATAINDEX_HTTP_URL='http://localhost:8180/graphql'",
     "lint": "eslint './{src,cypress}/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './{src,cypress}/**/*.{tsx,ts,js}'",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",

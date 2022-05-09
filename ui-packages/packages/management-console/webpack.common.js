@@ -14,10 +14,8 @@ module.exports = {
       favicon: 'src/favicon.ico'
     }),
     new webpack.EnvironmentPlugin({
-      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:4000/graphql',
       KOGITO_APP_VERSION: 'DEV',
-      KOGITO_APP_NAME: 'Management Console',
-      TEST_USER_SYSTEM_ENABLED: false
+      KOGITO_APP_NAME: 'Management Console'
     })
   ],
   module: {

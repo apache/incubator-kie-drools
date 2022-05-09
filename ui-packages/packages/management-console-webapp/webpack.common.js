@@ -17,8 +17,7 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin({
       KOGITO_APP_VERSION: 'DEV',
-      KOGITO_APP_NAME: 'Management Console',
-      TEST_USER_SYSTEM_ENABLED: false
+      KOGITO_APP_NAME: 'Management Console'
     })
   ],
   module: {

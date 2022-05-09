@@ -17,8 +17,8 @@
     "update-snapshot": "jest --updateSnapshot",
     "test:coverage": "rimraf coverage && yarn test --coverage",
     "lint": "eslint './src/**/*.ts{,x}'",
-    "dev": "concurrently 'yarn run   start  --define process.env.TEST_USER_SYSTEM_ENABLED=true' 'yarn run dev:server'",
-    "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"' --define process.env.TEST_USER_SYSTEM_ENABLED=true",
+    "dev": "concurrently 'yarn run start' 'yarn run dev:server'",
+    "dev-remote-dataindex": "yarn start --env KOGITO_DATAINDEX_HTTP_URL='http://localhost:8180/graphql'",
     "dev:server": "nodemon ./server/app.js",
     "format": "prettier --config ../../.prettierrc --check --write './{src,server}/**/*.{tsx,ts,js,html}'",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
@@ -51,7 +51,14 @@
       "tsx",
       "js"
     ],
-    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
+    "coverageReporters": [
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
     "globals": {
       "ts-jest": {
         "isolatedModules": true
@@ -72,7 +79,9 @@
     "moduleNameMapper": {
       "\\.(scss|sass|css)$": "identity-obj-proxy"
     },
-    "testPathIgnorePatterns": ["./src/index.tsx"]
+    "testPathIgnorePatterns": [
+      "./src/index.tsx"
+    ]
   },
   "lint-staged": {
     "*.{ts,tsx}": [
