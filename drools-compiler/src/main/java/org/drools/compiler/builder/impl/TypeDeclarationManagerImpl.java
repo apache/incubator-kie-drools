@@ -16,9 +16,9 @@
 package org.drools.compiler.builder.impl;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.ObjectType;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 
 /**

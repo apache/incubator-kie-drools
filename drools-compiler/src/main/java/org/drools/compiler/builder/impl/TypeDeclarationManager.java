@@ -15,8 +15,8 @@
 
 package org.drools.compiler.builder.impl;
 
+import org.drools.core.base.ObjectType;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.ObjectType;
 
 /**
  * Public interface to a {@link TypeDeclarationBuilder}

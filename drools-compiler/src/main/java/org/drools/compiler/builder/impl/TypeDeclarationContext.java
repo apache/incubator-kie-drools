@@ -16,8 +16,6 @@
 package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.ObjectType;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
