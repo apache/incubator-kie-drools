@@ -6279,7 +6279,7 @@ DrlxExpression DrlxExpression():
   |
   expr = Expression() { ret = new DrlxExpression(decl, expr); }
   )
-  ( ":" right = Expression() { ret = parseBindingAfterAnd(range(ret, token()), ret, right); } )*
+  ( ":" right = Expression() { ret = parseBindingAfterAndOr(range(ret, token()), ret, right); } )*
   { return ret; }
 }
 

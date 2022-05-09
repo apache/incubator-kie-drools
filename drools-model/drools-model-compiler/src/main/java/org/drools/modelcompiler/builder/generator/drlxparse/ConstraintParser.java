@@ -96,6 +96,7 @@ import static org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxP
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
+import static org.drools.mvel.parser.utils.AstUtils.isLogicalOperator;
 
 /**
  * Parses the MVEL String Constraint and compiles it to a Java Expression
@@ -640,7 +641,7 @@ public class ConstraintParser {
 
     private boolean isMultipleResult(DrlxParseResult leftResult, BinaryExpr.Operator operator, DrlxParseResult rightResult) {
         return leftResult.isSuccess() && rightResult.isSuccess() && (
-                (operator == AND && (((DrlxParseSuccess) leftResult).getExprBinding() != null || ((DrlxParseSuccess) rightResult).getExprBinding() != null)) ||
+                (isLogicalOperator(operator) && (((DrlxParseSuccess) leftResult).getExprBinding() != null || ((DrlxParseSuccess) rightResult).getExprBinding() != null)) ||
                 ((DrlxParseSuccess) leftResult).isTemporal() || ((DrlxParseSuccess) rightResult).isTemporal()
         );
     }
@@ -674,10 +675,6 @@ public class ConstraintParser {
 
     private boolean isCombinable( BinaryExpr binaryExpr ) {
         return !(binaryExpr.getRight() instanceof HalfBinaryExpr) && ( !(binaryExpr.getRight() instanceof HalfPointFreeExpr) || binaryExpr.getLeft() instanceof PointFreeExpr );
-    }
-
-    private static boolean isLogicalOperator( BinaryExpr.Operator operator ) {
-        return operator == BinaryExpr.Operator.AND || operator == BinaryExpr.Operator.OR;
     }
 
     private static PointFreeExpr completeHalfExpr(Expression left, HalfPointFreeExpr halfRight) {
