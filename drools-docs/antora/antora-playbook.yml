@@ -1,0 +1,22 @@
+# This file serves for generating the Drools documentation website.
+# For local development, see antora-playbook-author.yml.
+site:
+  title: Drools Documentation
+  url: https://www.drools.org/docs
+  start_page: drools::rule-engine/index.adoc
+  robots: allow
+content:
+  edit_url: '{web_url}/edit/main/{path}'
+  sources:
+    - url: git@github.com:kiegroup/drools.git
+      # Update with every release.
+      branches: [main]
+      start_path: drools-docs/src
+ui:
+  bundle:
+    url: ./ui-bundle/ui-bundle.zip
+    snapshot: true
+antora:
+  extensions:
+    - '@antora/lunr-extension'
+

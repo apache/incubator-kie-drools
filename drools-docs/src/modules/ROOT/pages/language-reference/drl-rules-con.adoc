@@ -1,0 +1,58 @@
+[id='drl-rules-con_{context}']
+= DRL (Drools Rule Language) rules
+
+DRL (Drools Rule Language) rules are business rules that you define directly in `.drl` text files. These DRL files are the source in which all other rule assets in {CENTRAL} are ultimately rendered. You can create and manage DRL files within the {CENTRAL} interface, or create them externally as part of a Maven or Java project using Red Hat CodeReady Studio or another integrated development environment (IDE). A DRL file can contain one or more rules that define at a minimum the rule conditions (`when`) and actions (`then`). The DRL designer in {CENTRAL} provides syntax highlighting for Java, DRL, and XML.
+
+DRL files consist of the following components:
+
+.Components in a DRL file
+[source,subs="attributes+"]
+----
+package
+
+import
+
+function  // Optional
+
+query  // Optional
+
+declare   // Optional
+
+global   // Optional
+
+rule "rule name"
+    // Attributes
+    when
+        // Conditions
+    then
+        // Actions
+end
+
+rule "rule2 name"
+
+...
+
+----
+
+The following example DRL rule determines the age limit in a loan application decision service:
+
+.Example rule for loan application age limit
+[source]
+----
+rule "Underage"
+  salience 15
+  agenda-group "applicationGroup"
+  when
+    $application : LoanApplication()
+    Applicant( age < 21 )
+  then
+    $application.setApproved( false );
+    $application.setExplanation( "Underage" );
+end
+----
+
+A DRL file can contain single or multiple rules, queries, and functions, and can define resource declarations such as imports, globals, and attributes that are assigned and used by your rules and queries. The DRL package must be listed at the top of a DRL file and the rules are typically listed last. All other DRL components can follow any order.
+
+Each rule must have a unique name within the rule package. If you use the same rule name more than once in any DRL file in the package, the rules fail to compile. Always enclose rule names with double quotation marks (`rule "rule name"`) to  prevent possible compilation errors, especially if you use spaces in rule names.
+
+All data objects related to a DRL rule must be in the same project package as the DRL file in {CENTRAL}. Assets in the same package are imported by default. Existing assets in other packages can be imported with the DRL rule.

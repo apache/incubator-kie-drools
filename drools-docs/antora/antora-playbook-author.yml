@@ -1,0 +1,20 @@
+# This file serves for local development. Keep it in sync with antora-playbook.yml.
+site:
+  title: Drools Documentation
+  url: https://www.drools.org/docs
+  start_page: drools::rule-engine/index.adoc
+  robots: allow
+content:
+  edit_url: '{web_url}/edit/main/{path}'
+  sources:
+    - url: ../..
+      branches: [HEAD]
+      start_path: drools-docs/src
+ui:
+  bundle:
+    url: ./ui-bundle/ui-bundle.zip
+  supplemental_files: ./supplemental-ui
+antora:
+  extensions:
+    - '@antora/lunr-extension'
+

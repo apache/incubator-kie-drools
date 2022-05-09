@@ -1,0 +1,122 @@
+//Module included in the following assemblies:
+//product-assembly_guided-rules/../main.adoc
+//product-assembly_guided-rule-templates/../main.adoc
+
+[id='rules-attributes-ref_{context}']
+
+ifeval::["{context}" == "drl-rules"]
+= Rule attributes in DRL
+endif::[]
+ifeval::["{context}" != "drl-rules"]
+= Rule attributes
+endif::[]
+
+ifdef::DROOLS,JBPM,OP[]
+.Rule attributes
+image::language-reference/rule_attributes.png[align="center"]
+endif::[]
+
+Rule attributes are additional specifications that you can add to business rules to modify rule behavior.
+ifeval::["{context}" == "drl-rules"]
+In DRL files, you typically define rule attributes above the rule conditions and actions, with multiple attributes on separate lines, in the following format:
+
+[source]
+----
+rule "rule_name"
+    // Attribute
+    // Attribute
+    when
+        // Conditions
+    then
+        // Actions
+end
+----
+endif::[]
+
+The following table lists the names and supported values of the attributes that you can assign to rules:
+
+.Rule attributes
+[cols="30%,70%", options="header"]
+|===
+|Attribute
+|Value
+
+|`salience`
+|An integer defining the priority of the rule. Rules with a higher salience value are given higher priority when ordered in the activation queue.
+
+Example: `salience 10`
+
+|`enabled`
+|A Boolean value. When the option is selected, the rule is enabled. When the option is not selected, the rule is disabled.
+
+Example: `enabled true`
+
+|`date-effective`
+|A string containing a date and time definition. The rule can be activated only if the current date and time is after a `date-effective` attribute.
+
+Example: `date-effective "4-Sep-2018"`
+
+|`date-expires`
+|A string containing a date and time definition. The rule cannot be activated if the current date and time is after the `date-expires` attribute.
+
+Example: `date-expires "4-Oct-2018"`
+
+|`no-loop`
+|A Boolean value. When the option is selected, the rule cannot be reactivated (looped) if a consequence of the rule re-triggers a previously met condition. When the condition is not selected, the rule can be looped in these circumstances.
+
+Example: `no-loop true`
+
+|`agenda-group`
+|A string identifying an agenda group to which you want to assign the rule. Agenda groups allow you to partition the agenda to provide more execution control over groups of rules. Only rules in an agenda group that has acquired a focus are able to be activated.
+
+Example: `agenda-group "GroupName"`
+
+|`activation-group`
+|A string identifying an activation (or XOR) group to which you want to assign the rule. In activation groups, only one rule can be activated. The first rule to fire will cancel all pending activations of all rules in the activation group.
+
+Example: `activation-group "GroupName"`
+
+|`duration`
+|A long integer value defining the duration of time in milliseconds after which the rule can be activated, if the rule conditions are still met.
+
+Example: `duration 10000`
+
+|`timer`
+|A string identifying either `int` (interval) or `cron` timer definitions for scheduling the rule.
+
+Example: `timer ( cron:* 0/15 * * * ? )`  (every 15 minutes)
+
+|`calendar`
+|A http://www.quartz-scheduler.org/[Quartz] calendar definition for scheduling the rule.
+
+Example: `calendars "* * 0-7,18-23 ? * *"`  (exclude non-business hours)
+
+|`auto-focus`
+|A Boolean value, applicable only to rules within agenda groups. When the option is selected, the next time the rule is activated, a focus is automatically given to the agenda group to which the rule is assigned.
+
+Example: `auto-focus true`
+
+|`lock-on-active`
+|A Boolean value, applicable only to rules within rule flow groups or agenda groups. When the option is selected, the next time the ruleflow group for the rule becomes active or the agenda group for the rule receives a focus, the rule cannot be activated again until the ruleflow group is no longer active or the agenda group loses the focus. This is a stronger version of the `no-loop` attribute, because the activation of a matching rule is discarded regardless of the origin of the update (not only by the rule itself). This attribute is ideal for calculation rules where you have a number of rules that modify a fact and you do not want any rule re-matching and firing again.
+
+Example: `lock-on-active true`
+
+|`ruleflow-group`
+|A string identifying a rule flow group. In rule flow groups, rules can fire only when the group is activated by the associated rule flow.
+
+Example: `ruleflow-group "GroupName"`
+
+|`dialect`
+a|A string identifying either `JAVA` or `MVEL` as the language to be used for code expressions in the rule. By default, the rule uses the dialect specified at the package level. Any dialect specified here overrides the package dialect setting for the rule.
+
+Example: `dialect "JAVA"`
+
+NOTE: When you use {PRODUCT} without the executable model, the `dialect "JAVA"` rule consequences support only Java 5 syntax. For more information about executable models, see
+ifdef::DM,PAM[]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#executable-model-con_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+xref:executable-model-con_packaging-deploying[].
+endif::[]
+
+|===

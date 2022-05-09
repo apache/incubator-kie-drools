@@ -1,0 +1,39 @@
+[id='drl-functions-con_{context}']
+= Functions in DRL
+
+ifdef::DROOLS,JBPM,OP[]
+.Function
+image::language-reference/function.png[align="center"]
+endif::[]
+
+Functions in DRL files put semantic code in your rule source file instead of in Java classes. Functions are especially useful if an action (`then`) part of a rule is used repeatedly and only the parameters differ for each rule. Above the rules in the DRL file, you can declare the function or import a static method from a helper class as a function, and then use the function by name in an action (`then`) part of the rule.
+
+The following examples illustrate a function that is either declared or imported in a DRL file:
+
+.Example function declaration with a rule (option 1)
+[source]
+----
+function String hello(String applicantName) {
+    return "Hello " + applicantName + "!";
+}
+
+rule "Using a function"
+  when
+    // Empty
+  then
+    System.out.println( hello( "James" ) );
+end
+----
+
+.Example function import with a rule (option 2)
+[source]
+----
+import function my.package.applicant.hello;
+
+rule "Using a function"
+  when
+    // Empty
+  then
+    System.out.println( hello( "James" ) );
+end
+----

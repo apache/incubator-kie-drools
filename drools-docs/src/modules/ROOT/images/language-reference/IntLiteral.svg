@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="231" height="116"
+     viewBox="0 0 231 118">
+<title>IntLiteral</title>
+<rect x='35.5' y='22' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='41' y='31.93'>+</text>
+<rect x='35.5' y='43' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='41' y='52.93'>-</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 39.5 L 30 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 39.5 L 62.4 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 34 A 5 5 0 0 1 35 29'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 35 50 A 5 5 0 0 1 30 45'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 45 L 30 34'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 34 A 5 5 0 0 0 52.40 29'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 50 A 5 5 0 0 0 57.40 45'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 45 L 57.4 34'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 29 L 52.4 29'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 50 L 52.4 50'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 23 37.5 L 25 39.5 L 23 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 63 L 77.4 63'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 63 A 5 5 0 0 0 15 58'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 44.5 A 5 5 0 0 1 20 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 39.5 L 25 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 77.40 63 A 5 5 0 0 1 72.40 58'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 72.40 44.5 A 5 5 0 0 0 67.40 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 62.40 39.5 L 67.4 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 58 L 15 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 72.40 58 L 72.4 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 77.40 63 L 82.4 63'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 80.40 61 L 82.4 63 L 80.4 65'/>
+<rect x='102.9' y='32.5' width='30' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Digit.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='19' x='108.40' y='41.83'>Digit</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 92.40 39.5 L 102.4 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 132.90 39.5 L 142.9 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.40 39.5 A 5 5 0 0 1 97.40 34.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 97.40 31.5 A 5 5 0 0 1 102.40 26.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 132.90 39.5 A 5 5 0 0 0 137.90 34.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 137.90 31.5 A 5 5 0 0 0 132.90 26.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 97.40 34.5 L 97.4 31.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 137.90 34.5 L 137.9 31.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.40 26.5 L 132.9 26.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 119.65 24.5 L 117.65 26.5 L 119.65 28.5'/>
+<rect x='92.9' y='79.5' rx='7.75' ry='7.75' width='22.3' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='0x.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='11.3' x='98.40' y='89.43'>0x</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 115.20 86.5 L 120.2 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 118.20 84.5 L 120.2 86.5 L 118.2 88.5'/>
+<rect x='140.7' y='58.5' width='30' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Digit.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='19' x='146.20' y='67.83'>Digit</text>
+</a>
+<rect x='140.7' y='79.5' rx='7.75' ry='7.75' width='54.7' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='43.7' x='146.20' y='89.43'>'a'..'f'</text>
+<rect x='140.7' y='100.5' rx='7.75' ry='7.75' width='54.7' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='43.7' x='146.20' y='110.43'>'A'..'F'</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 130.20 86.5 L 135.2 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 200.40 86.5 L 205.4 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 135.20 70.5 A 5 5 0 0 1 140.20 65.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 140.20 107.5 A 5 5 0 0 1 135.20 102.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 135.20 102.5 L 135.2 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 200.40 70.5 A 5 5 0 0 0 195.40 65.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 195.40 107.5 A 5 5 0 0 0 200.40 102.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 200.40 102.5 L 200.4 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 135.20 86.5 L 140.2 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 195.40 86.5 L 200.4 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 170.70 65.5 L 195.4 65.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 195.40 86.5 L 195.4 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 195.40 107.5 L 195.4 107.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 120.20 86.5 L 130.2 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 205.40 86.5 L 215.4 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 130.20 86.5 A 5 5 0 0 1 125.20 81.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 125.20 57.5 A 5 5 0 0 1 130.20 52.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 205.40 86.5 A 5 5 0 0 0 210.40 81.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 210.40 57.5 A 5 5 0 0 0 205.40 52.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 125.20 81.5 L 125.2 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 210.40 81.5 L 210.4 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 130.20 52.5 L 205.4 52.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 169.80 50.5 L 167.8 52.5 L 169.8 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 82.40 63 L 87.4 63'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 220.40 63 L 225.4 63'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 87.40 44.5 A 5 5 0 0 1 92.40 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 92.40 86.5 A 5 5 0 0 1 87.40 81.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 87.40 81.5 L 87.4 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 220.40 44.5 A 5 5 0 0 0 215.40 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 215.40 86.5 A 5 5 0 0 0 220.40 81.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 220.40 81.5 L 220.4 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 142.90 39.5 L 215.4 39.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 215.40 86.5 L 215.4 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 225.40 63 L 230.4 63'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 228.40 61 L 230.4 63 L 228.4 65'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='IntLiteral' x='0' y='8.83'>IntLiteral</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 63 L 10 63'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 61 L 10 63 L 8 65'/>
+</svg>

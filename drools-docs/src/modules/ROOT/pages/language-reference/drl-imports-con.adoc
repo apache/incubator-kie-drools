@@ -1,0 +1,17 @@
+[id='drl-imports-con_{context}']
+= Import statements in DRL
+
+ifdef::DROOLS,JBPM,OP[]
+.Import
+image::language-reference/import.png[align="center"]
+endif::[]
+
+Similar to import statements in Java, imports in DRL files identify the fully qualified paths and type names for any objects that you want to use in the rules. You specify the package and data object in the format `packageName.objectName`, with multiple imports on separate lines. The {RULE_ENGINE} automatically imports classes from the Java package with the same name as the DRL package and from the package `java.lang`.
+
+The following example is an import statement for a loan application object in a mortgage application decision service:
+
+.Example import statement in a DRL file
+[source]
+----
+import org.mortgages.LoanApplication;
+----

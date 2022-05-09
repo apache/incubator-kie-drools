@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="162" height="89"
+     viewBox="0 0 162 91">
+<title>IdentifierSuffix</title>
+<rect x='30.5' y='26.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='36' y='36.43'>[</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 33.5 L 52.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 50.40 31.5 L 52.4 33.5 L 50.4 35.5'/>
+<rect x='52.9' y='26.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='58.40' y='36.43'>]</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 33.5 L 30 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 69.80 33.5 L 79.8 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 33.5 A 5 5 0 0 1 25 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 25.5 A 5 5 0 0 1 30 20.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 69.80 33.5 A 5 5 0 0 0 74.80 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 74.80 25.5 A 5 5 0 0 0 69.80 20.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 28.5 L 25 25.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 74.80 28.5 L 74.8 25.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 20.5 L 69.8 20.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 51.90 18.5 L 49.9 20.5 L 51.9 22.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 79.80 33.5 L 84.8 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 82.80 31.5 L 84.8 33.5 L 82.8 35.5'/>
+<rect x='85.3' y='26.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='90.80' y='36.43'>.</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.20 33.5 L 107.2 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 105.20 31.5 L 107.2 33.5 L 105.2 35.5'/>
+<rect x='107.7' y='26.5' rx='7.75' ry='7.75' width='38.5' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='class.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='27.5' x='113.20' y='36.43'>class</text>
+</a>
+<rect x='30.5' y='52.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='36' y='62.43'>[</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 59.5 L 52.4 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 50.40 57.5 L 52.4 59.5 L 50.4 61.5'/>
+<rect x='52.9' y='52.5' width='51.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Expression.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='40.49' x='58.40' y='61.83'>Expression</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 104.39 59.5 L 109.39 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 107.39 57.5 L 109.39 59.5 L 107.39 61.5'/>
+<rect x='109.89' y='52.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='115.39' y='62.43'>]</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 59.5 L 30 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 126.79 59.5 L 136.79 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 59.5 A 5 5 0 0 1 25 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 51.5 A 5 5 0 0 1 30 46.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 126.79 59.5 A 5 5 0 0 0 131.79 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 131.79 51.5 A 5 5 0 0 0 126.79 46.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 54.5 L 25 51.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 131.79 54.5 L 131.79 51.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 46.5 L 126.79 46.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 80.39 44.5 L 78.39 46.5 L 80.39 48.5'/>
+<rect x='20.5' y='73.5' width='51.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Arguments.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='40.49' x='26' y='82.83'>Arguments</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 57 L 15 57'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 151.20 57 L 156.2 57'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 38.5 A 5 5 0 0 1 20 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 80.5 A 5 5 0 0 1 15 75.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 75.5 L 15 38.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 151.20 38.5 A 5 5 0 0 0 146.20 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 146.20 80.5 A 5 5 0 0 0 151.20 75.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 151.20 75.5 L 151.2 38.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 59.5 L 20 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 146.20 59.5 L 151.2 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 146.20 33.5 L 146.2 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 136.79 59.5 L 146.2 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 71.99 80.5 L 146.2 80.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 156.20 57 L 161.2 57'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 159.20 55 L 161.2 57 L 159.2 59'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='IdentifierSuffix' x='0' y='8.33'>IdentifierSuffix</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 57 L 10 57'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 55 L 10 57 L 8 59'/>
+</svg>
