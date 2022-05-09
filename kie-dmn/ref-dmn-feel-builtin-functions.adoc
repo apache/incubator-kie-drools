@@ -2573,7 +2573,7 @@ For example, when a decision depends on the current date, like deciding the supp
 
 It is important to note that the functions in this section are intended to be side-effect-free, but they are not deterministic and not idempotent from the perspective of an external observer.
 
-As a user you are encouraged to isolate the decision logic that uses these functions in specific DRG elements, such as Decisions.
+As a user, you are encouraged to isolate the decision logic that uses these functions in specific DRG elements, such as Decisions.
 The encapsulation enables them to be overridden with synthetic values during Scenario Testing, that remain constant across executions of the DMN model's test cases.
 
 now()::
