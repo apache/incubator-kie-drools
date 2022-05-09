@@ -26,11 +26,11 @@ public interface Handler {
     Object start(String uri,
                  String localName,
                  Attributes attrs,
-                 ExtensibleXmlParser xmlPackageReader) throws SAXException;
+                 Parser xmlPackageReader) throws SAXException;
 
     Object end(String uri,
                String localName,
-               ExtensibleXmlParser xmlPackageReader) throws SAXException;
+               Parser xmlPackageReader) throws SAXException;
 
     Set<Class<?>> getValidParents();
 

@@ -45,8 +45,8 @@ import org.drools.commands.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.commands.runtime.rule.QueryCommand;
 import org.drools.commands.runtime.rule.UpdateCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.drools.commands.runtime.ExecutionResultImpl;
+import org.drools.commands.runtime.FlatQueryResults;
 
 public class XStreamHelper {
     public static void setAliases(XStream xstream) {

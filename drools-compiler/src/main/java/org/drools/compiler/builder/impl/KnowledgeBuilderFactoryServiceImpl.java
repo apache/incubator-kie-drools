@@ -33,6 +33,11 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     }
 
     @Override
+    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(ClassLoader classLoader) {
+        return new KnowledgeBuilderConfigurationImpl(classLoader);
+    }
+
+    @Override
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader) {
         return new KnowledgeBuilderConfigurationImpl(properties, classLoader);
     }

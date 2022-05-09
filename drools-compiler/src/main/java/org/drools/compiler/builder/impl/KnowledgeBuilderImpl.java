@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.PackageRegistryManager;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
@@ -58,10 +59,9 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
-import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
+import org.drools.core.base.ObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
@@ -69,7 +69,6 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.base.ObjectType;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -116,7 +115,6 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import static java.util.Arrays.asList;
 
@@ -456,27 +454,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.resource = null;
     }
 
-    public void addPackageFromXml(final Resource resource) throws DroolsParserException,
-            IOException {
-        this.resource = resource;
-        addPackage(xmlToPackageDescr(resource));
-        this.resource = null;
-    }
-
-    PackageDescr xmlToPackageDescr(Resource resource) throws DroolsParserException,
-            IOException {
-        final XmlPackageReader xmlReader = new XmlPackageReader(this.configuration.getSemanticModules());
-        xmlReader.getParser().setClassLoader(this.rootClassLoader);
-
-        try (Reader reader = resource.getReader()) {
-            xmlReader.read(reader);
-        } catch (final SAXException e) {
-            throw new DroolsParserException(e.toString(),
-                                            e.getCause());
-        }
-        return xmlReader.getPackageDescr();
-    }
-
     public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
             IOException {
         this.resource = resource;
@@ -586,8 +563,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 addPackageFromDslr(resource);
             } else if (ResourceType.DSL.equals(type)) {
                 addDsl(resource);
-            } else if (ResourceType.XDRL.equals(type)) {
-                addPackageFromXml(resource);
             } else if (ResourceType.DTABLE.equals(type)) {
                 addPackageFromDecisionTable(resource, configuration);
             } else if (ResourceType.XSD.equals(type)) {

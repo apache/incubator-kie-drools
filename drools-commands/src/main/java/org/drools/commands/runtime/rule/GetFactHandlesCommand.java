@@ -24,9 +24,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
@@ -79,7 +80,7 @@ public class GetFactHandlesCommand
                     disconnectedFactHandles.add(handle);
                 }
                 if (outIdentifier != null) {
-                    ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, disconnectedFactHandles );
+                    ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult( this.outIdentifier, disconnectedFactHandles );
                 }
                 return disconnectedFactHandles;
             }
@@ -87,7 +88,7 @@ public class GetFactHandlesCommand
 
                 Collection<FactHandle> ksessionFactHandles = ksession.getFactHandles( this.filter );
                 if (outIdentifier != null) {
-                    ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, new ArrayList<FactHandle>(ksessionFactHandles));
+                    ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, new ArrayList<FactHandle>(ksessionFactHandles));
                 }
                 return ksessionFactHandles;
             }
@@ -100,14 +101,14 @@ public class GetFactHandlesCommand
                     disconnectedFactHandles.add(handle);
                 }
                 if (outIdentifier != null) {
-                    ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, disconnectedFactHandles);
+                    ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, disconnectedFactHandles);
                 }
                 return disconnectedFactHandles;
             }
             else {
                 Collection<FactHandle> ksessionFactHandles =  ksession.getFactHandles();
                 if (outIdentifier != null) {
-                    ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, new ArrayList<FactHandle>(ksessionFactHandles));
+                    ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, new ArrayList<FactHandle>(ksessionFactHandles));
                 }
                 return ksessionFactHandles;
             }

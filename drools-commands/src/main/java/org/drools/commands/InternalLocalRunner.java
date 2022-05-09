@@ -21,12 +21,12 @@ import java.util.List;
 import org.drools.commands.fluent.Batch;
 import org.drools.commands.fluent.BatchImpl;
 import org.drools.commands.fluent.InternalExecutable;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.RegistryContext;
 
@@ -40,14 +40,14 @@ public interface InternalLocalRunner extends ExecutableRunner<RequestContext> {
     default <T> T execute( Command<T> command ) {
         Context ctx = execute( new SingleCommandExecutable( command ) );
         return command instanceof BatchExecutionCommand ?
-               (T) ( (RegistryContext) ctx ).lookup( ExecutionResultImpl.class ) :
+               (T) ( (RegistryContext) ctx ).lookup( ExecutionResults.class ) :
                (T) ( (RequestContext) ctx ).getResult();
     }
 
     default <T> T execute( Command<T> command, Context ctx ) {
         execute( new SingleCommandExecutable( command ), (RequestContext) ctx );
         return command instanceof BatchExecutionCommand ?
-               (T) ( (RegistryContext) ctx ).lookup( ExecutionResultImpl.class ) :
+               (T) ( (RegistryContext) ctx ).lookup( ExecutionResults.class ) :
                (T) ( (RequestContext) ctx ).getResult();
     }
 

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.commands.runtime.rule.InsertObjectCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;

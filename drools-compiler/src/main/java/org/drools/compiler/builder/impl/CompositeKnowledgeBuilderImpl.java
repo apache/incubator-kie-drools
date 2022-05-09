@@ -167,7 +167,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.DESCR, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
         buildResource(packages, ResourceType.DSLR, ResourceToPkgDescrMapper.DSLR_TO_PKG_DESCR);
         buildResource(packages, ResourceType.RDSLR, ResourceToPkgDescrMapper.DSLR_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.XDRL, ResourceToPkgDescrMapper.XML_TO_PKG_DESCR);
         buildResource(packages, ResourceType.DTABLE, ResourceToPkgDescrMapper.DTABLE_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TDRL, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TEMPLATE, ResourceToPkgDescrMapper.TEMPLATE_TO_PKG_DESCR);
@@ -342,12 +341,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
             ProcessorDslr processor = new ProcessorDslr(kBuilder.getBuilderConfiguration());
             PackageDescr pkg = processor.process(resourceDescr.resource, kBuilder.getDslExpander());
-            processor.getResults().forEach(kBuilder::addBuilderResult);
-            return pkg;
-        };
-        ResourceToPkgDescrMapper XML_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
-            ProcessorXml processor = new ProcessorXml(kBuilder.getBuilderConfiguration());
-            PackageDescr pkg = processor.process(resourceDescr.resource);
             processor.getResults().forEach(kBuilder::addBuilderResult);
             return pkg;
         };

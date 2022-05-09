@@ -27,9 +27,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.process.WorkItem;
 import org.drools.core.process.WorkItemManager;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
 
@@ -60,8 +61,7 @@ public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
         }
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
-                                                                                      workItemIds);
+            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, workItemIds);
         }
 
         return workItemIds;

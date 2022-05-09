@@ -29,10 +29,11 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.commands.IdentifiableResult;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.drools.commands.runtime.ExecutionResultImpl;
+import org.drools.commands.jaxb.JaxbMapAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -133,7 +134,7 @@ public class StartProcessCommand implements ExecutableCommand<ProcessInstance>, 
         }
         ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters, agendaFilter);
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, processInstance.getId());
+            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, processInstance.getId());
         }
         return processInstance;
     }

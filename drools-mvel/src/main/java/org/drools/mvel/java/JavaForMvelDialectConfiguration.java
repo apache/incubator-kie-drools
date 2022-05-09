@@ -40,7 +40,13 @@ import org.slf4j.LoggerFactory;
 public class JavaForMvelDialectConfiguration extends JavaDialectConfiguration {
 
     protected static final transient Logger logger = LoggerFactory.getLogger( JavaForMvelDialectConfiguration.class);
-    
+
+    public JavaForMvelDialectConfiguration() { }
+
+    public JavaForMvelDialectConfiguration(KnowledgeBuilderConfigurationImpl conf) {
+        super( conf );
+    }
+
     @Override
     public Dialect newDialect(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, PackageRegistry pkgRegistry, InternalKnowledgePackage pkg) {
         return new JavaDialect(rootClassLoader, pkgConf, pkgRegistry, pkg);

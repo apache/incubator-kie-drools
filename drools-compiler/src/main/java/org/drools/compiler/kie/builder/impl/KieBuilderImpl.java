@@ -70,6 +70,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.Drools.hasXmlSupport;
 import static org.drools.util.StringUtils.codeAwareIndexOf;
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 
 public class KieBuilderImpl
         implements
@@ -719,7 +720,7 @@ public class KieBuilderImpl
         }
 
         if ( !javaFiles.isEmpty() || !javaTestFiles.isEmpty() ) {
-            KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
+            KnowledgeBuilderConfigurationImpl kconf = ((KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(classLoader));
             JavaConfiguration javaConf = (JavaConfiguration) kconf.getDialectConfiguration( "java" );
             compileJavaClasses( javaConf, classLoader, javaFiles, JAVA_ROOT );
             compileJavaClasses( javaConf, classLoader, javaTestFiles, JAVA_TEST_ROOT );

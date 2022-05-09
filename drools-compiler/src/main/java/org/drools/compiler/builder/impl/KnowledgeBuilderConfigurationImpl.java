@@ -17,7 +17,6 @@
 package org.drools.compiler.builder.impl;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,20 +28,12 @@ import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.util.ConfFileUtils;
-import org.drools.core.xml.DefaultSemanticModule;
-import org.drools.core.xml.Handler;
-import org.drools.core.xml.SemanticModule;
-import org.drools.core.xml.SemanticModules;
-import org.drools.core.xml.WrapperSemanticModule;
 import org.drools.drl.parser.DrlParser;
-import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -121,8 +112,6 @@ public class KnowledgeBuilderConfigurationImpl
     private Map<String, AccumulateFunction>   accumulateFunctions;
 
     private EvaluatorRegistry                 evaluatorRegistry;
-
-    private SemanticModules                   semanticModules;
 
     private File                              dumpDirectory;
 
@@ -367,17 +356,17 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     private void buildDialectConfigurationMap() {
-        DialectConfiguration mvel = ConstraintBuilder.get().createMVELDialectConfiguration();
+        DialectConfiguration mvel = ConstraintBuilder.get().createMVELDialectConfiguration(this);
         if (mvel != null) {
             mvel.init( this );
             dialectConfigurations.put( "mvel", mvel );
         }
 
-        DialectConfiguration java = ConstraintBuilder.get().createJavaDialectConfiguration();
+        DialectConfiguration java = ConstraintBuilder.get().createJavaDialectConfiguration(this);
         java.init(this);
         dialectConfigurations.put("java", java);
 
-        Map<String, String> dialectProperties = new HashMap<String, String>();
+        Map<String, String> dialectProperties = new HashMap<>();
         this.chainedProperties.mapStartsWith(dialectProperties, "drools.dialect", false);
         setDefaultDialect(dialectProperties.get(DefaultDialectOption.PROPERTY_NAME));
     }
@@ -416,98 +405,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     public ClassLoader getClassLoader() {
         return this.classLoader;
-    }
-
-    public void addSemanticModule(SemanticModule module) {
-        if (this.semanticModules == null) {
-            initSemanticModules();
-        }
-        this.semanticModules.addSemanticModule(module);
-    }
-
-    public SemanticModules getSemanticModules() {
-        if (this.semanticModules == null) {
-            initSemanticModules();
-        }
-        return this.semanticModules;
-    }
-
-    public void initSemanticModules() {
-        this.semanticModules = new SemanticModules();
-
-        RulesSemanticModule ruleModule = new RulesSemanticModule("http://ddefault");
-
-        this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.0", ruleModule));
-        this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.2", ruleModule));
-
-        // split on each space
-        String locations[] = this.chainedProperties.getProperty("semanticModules", "").split("\\s");
-
-        // load each SemanticModule
-        for (String moduleLocation : locations) {
-            // trim leading/trailing spaces and quotes
-            moduleLocation = moduleLocation.trim();
-            if (moduleLocation.startsWith("\"")) {
-                moduleLocation = moduleLocation.substring(1);
-            }
-            if (moduleLocation.endsWith("\"")) {
-                moduleLocation = moduleLocation.substring(0, moduleLocation.length() - 1);
-            }
-            if (!moduleLocation.equals("")) {
-                loadSemanticModule(moduleLocation);
-            }
-        }
-    }
-
-    public void loadSemanticModule(String moduleLocation) {
-        URL url = ConfFileUtils.getURL(moduleLocation, getClassLoader(), getClass());
-        if (url == null) {
-            throw new IllegalArgumentException(moduleLocation + " is specified but cannot be found.'");
-        }
-
-        Properties properties = ConfFileUtils.getProperties(url);
-        if (properties == null) {
-            throw new IllegalArgumentException(moduleLocation + " is specified but cannot be found.'");
-        }
-
-        loadSemanticModule(properties);
-    }
-
-    public void loadSemanticModule(Properties properties) {
-        String uri = properties.getProperty("uri", null);
-        if (uri == null || uri.trim().equals("")) {
-            throw new RuntimeException("Semantic Module URI property must not be empty");
-        }
-
-        DefaultSemanticModule module = new DefaultSemanticModule(uri);
-
-        for (Entry<Object, Object> entry : properties.entrySet()) {
-            String elementName = (String) entry.getKey();
-
-            //uri is processed above, so skip
-            if ("uri".equals(elementName)) {
-                continue;
-            }
-
-            if (elementName == null || elementName.trim().equals("")) {
-                throw new RuntimeException("Element name must be specified for Semantic Module handler");
-            }
-            String handlerName = (String) entry.getValue();
-            if (handlerName == null || handlerName.trim().equals("")) {
-                throw new RuntimeException("Handler name must be specified for Semantic Module");
-            }
-
-            Handler handler = (Handler) ClassUtils.instantiateObject(handlerName,
-                    getClassLoader());
-
-            if (handler == null) {
-                throw new RuntimeException("Unable to load Semantic Module handler '" + elementName + ":" + handlerName + "'");
-            } else {
-                module.addHandler(elementName,
-                        handler);
-            }
-        }
-        this.semanticModules.addSemanticModule(module);
     }
 
     public void addAccumulateFunction(String identifier, String className) {

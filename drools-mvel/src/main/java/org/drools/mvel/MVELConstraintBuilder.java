@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -145,12 +146,12 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
     }
 
     @Override
-    public DialectConfiguration createJavaDialectConfiguration() {
-        return new JavaForMvelDialectConfiguration();
+    public DialectConfiguration createJavaDialectConfiguration(KnowledgeBuilderConfigurationImpl conf) {
+        return new JavaForMvelDialectConfiguration(conf);
     }
 
-    public DialectConfiguration createMVELDialectConfiguration() {
-        return new MVELDialectConfiguration();
+    public DialectConfiguration createMVELDialectConfiguration(KnowledgeBuilderConfigurationImpl conf) {
+        return new MVELDialectConfiguration(conf);
     }
 
     public boolean isMvelOperator(String operator) {

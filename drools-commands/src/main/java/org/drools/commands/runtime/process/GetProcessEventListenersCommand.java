@@ -22,10 +22,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
 
@@ -51,8 +52,7 @@ public class GetProcessEventListenersCommand
         Collection<ProcessEventListener> processEventListeners = ksession.getProcessEventListeners();
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
-                                                                                      processEventListeners);
+            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, processEventListeners);
         }
 
         return processEventListeners;

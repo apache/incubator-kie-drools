@@ -35,9 +35,9 @@ import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
@@ -46,6 +46,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -241,7 +242,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
 
         try {
             if ( command instanceof BatchExecutionCommand ) {
-                context.register( ExecutionResultImpl.class, new ExecutionResultImpl() );
+                context.register( ExecutionResults.class, KieServices.get().getCommands().newExecutionResults() );
             }
 
             ((StatefulKnowledgeSessionImpl) ksession).startBatchExecution();
@@ -253,7 +254,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
                 ksession.fireAllRules();
             }
             if ( command instanceof BatchExecutionCommand ) {
-                return (T) context.lookup( ExecutionResultImpl.class );
+                return (T) context.lookup( ExecutionResults.class );
             } else {
                 return (T) o;
             }

@@ -21,9 +21,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.ProcessInstanceIdCommand;
@@ -85,7 +86,7 @@ public class GetProcessInstanceCommand implements ExecutableCommand<ProcessInsta
         final ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId, readOnly);
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, processInstance);
+            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, processInstance);
         }
 
         return processInstance;

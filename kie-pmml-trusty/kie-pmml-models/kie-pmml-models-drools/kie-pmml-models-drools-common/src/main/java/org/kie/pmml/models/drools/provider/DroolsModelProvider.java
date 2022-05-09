@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.PackageModel.getPkgUUID;
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 import static org.kie.pmml.commons.Constants.EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 
@@ -235,7 +236,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
      */
     protected List<GeneratedFile> generateRulesFiles(PackageDescr packageDescr) {
         ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources,
-                                                                               new KnowledgeBuilderConfigurationImpl(getClass().getClassLoader()),
+                                                                               (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(getClass().getClassLoader()),
                                                                                new ReleaseIdImpl("dummy:dummy:0.0.0"),
                                                                                false);
         CompositeKnowledgeBuilder batch = modelBuilder.batch();

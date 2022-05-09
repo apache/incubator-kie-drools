@@ -21,7 +21,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -29,7 +28,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
@@ -37,9 +35,8 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.drools.core.rule.EntryPointId;
 import org.kie.api.runtime.rule.FactHandle;
 
 @XmlRootElement(name="disconnected-fact-handle")
@@ -72,7 +69,6 @@ public class DisconnectedFactHandle
      *  This could be a {@link DroolsQuery} object or other almost-impossible-to-serialize class
      */
     @XmlElement
-    @XmlJavaTypeAdapter(value=JaxbUnknownAdapter.class)
     private Object object;
 
     @XmlElement

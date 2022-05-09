@@ -19,11 +19,11 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.QueryResultsRowImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.runtime.rule.impl.FlatQueryResultRow;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
 import org.junit.Before;
