@@ -56,6 +56,19 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-persistence-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-agroal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-internal</artifactId>
       <scope>test</scope>
@@ -90,9 +103,39 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-persistence-jdbc-deployment</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${shared.test.resources.dir}/exec</directory>
+        <includes>
+          <include>callback-state.sw.json</include>
+          <include>callback-state-timeouts.sw.json</include>
+          <include>switch-state-data-condition-transition.sw.json</include>
+          <include>switch-state-data-condition-end.sw.json</include>
+          <include>switch-state-event-condition-timeouts-transition.sw.json</include>
+          <include>switch-state-event-condition-timeouts-transition2.sw.json</include>
+          <include>switch-state-event-condition-timeouts-end.sw.json</include>
+        </includes>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -128,44 +171,6 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.basedir}/src/main/resources/shared</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${shared.test.resources.dir}/exec</directory>
-                  <includes>
-                    <include>callback-state.sw.json</include>
-                    <include>callback-state-timeouts.sw.json</include>
-                    <include>switch-state-data-condition-transition.sw.json</include>
-                    <include>switch-state-data-condition-end.sw.json</include>
-                    <include>switch-state-event-condition-timeouts-transition.sw.json</include>
-                    <include>switch-state-event-condition-timeouts-transition2.sw.json</include>
-                    <include>switch-state-event-condition-timeouts-end.sw.json</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-      <artifactId>maven-clean-plugin</artifactId>
-      <configuration>
-        <filesets>
-          <fileset>
-            <directory>${project.basedir}/src/main/resources/shared</directory>
-          </fileset>
-        </filesets>
-      </configuration>
-    </plugin>
     </plugins>
   </build>
 
@@ -192,9 +197,9 @@
                   <goal>verify</goal>
                 </goals>
                 <configuration>
-                  <systemProperties>
+                  <systemPropertyVariables>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                  </systemProperties>
+                  </systemPropertyVariables>
                 </configuration>
               </execution>
             </executions>
