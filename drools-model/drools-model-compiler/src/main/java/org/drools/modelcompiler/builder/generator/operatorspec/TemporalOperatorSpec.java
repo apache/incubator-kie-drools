@@ -28,6 +28,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.DSL_NAMESPACE;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
@@ -35,7 +36,7 @@ public class TemporalOperatorSpec implements OperatorSpec {
     public static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
 
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr( null, "D." + pointFreeExpr.getOperator().asString() );
+        MethodCallExpr methodCallExpr = new MethodCallExpr( DSL_NAMESPACE, pointFreeExpr.getOperator().asString() );
         if (pointFreeExpr.getArg1() != null) {
             addArgumentToMethodCall( pointFreeExpr.getArg1(), methodCallExpr );
             if (pointFreeExpr.getArg2() != null) {
