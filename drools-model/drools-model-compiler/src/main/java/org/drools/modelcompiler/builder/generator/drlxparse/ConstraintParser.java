@@ -37,7 +37,6 @@ import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
@@ -95,7 +94,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createCon
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isBooleanBoxedUnboxed;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.stripEnclosedExpr;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess.createMultipleDrlxParseSuccess;
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
@@ -274,8 +272,13 @@ public class ConstraintParser {
             return parseOOPathExpr( (OOPathExpr) drlxExpr, patternType, bindingId, drlxExpr, hasBind, expression);
         }
 
-        if (drlxExpr instanceof LiteralExpr ) {
+        if (drlxExpr instanceof LiteralExpr) {
             Class<?> literalExpressionType = getLiteralExpressionType(((LiteralExpr) drlxExpr));
+            if (drlxExpr instanceof BigIntegerLiteralExpr) {
+                drlxExpr = ((BigIntegerLiteralExpr) drlxExpr).convertToObjectCreationExpr();
+            } else if (drlxExpr instanceof BigDecimalLiteralExpr) {
+                drlxExpr = ((BigDecimalLiteralExpr) drlxExpr).convertToObjectCreationExpr();
+            }
             return new SingleDrlxParseSuccess(patternType, bindingId, drlxExpr, literalExpressionType)
                     .setIsPredicate(isBooleanBoxedUnboxed(literalExpressionType));
         }
@@ -837,9 +840,9 @@ public class ConstraintParser {
             arg = arg.asEnclosedExpr().getInner();
         }
         if (arg instanceof BigIntegerLiteralExpr) {
-            arg = new ObjectCreationExpr(null, toClassOrInterfaceType(BigInteger.class), NodeList.nodeList( new StringLiteralExpr(((BigIntegerLiteralExpr) arg).asBigInteger().toString()) ));
+            arg = ((BigIntegerLiteralExpr) arg).convertToObjectCreationExpr();
         } else if (arg instanceof BigDecimalLiteralExpr ) {
-            arg = new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class), NodeList.nodeList( new StringLiteralExpr(((BigDecimalLiteralExpr) arg).asBigDecimal().toString()) ));
+            arg = ((BigDecimalLiteralExpr) arg).convertToObjectCreationExpr();
         }
         toBigDecimalMethod.addArgument( arg );
         return toBigDecimalMethod;
