@@ -32,8 +32,10 @@ WHEN : 'when';
 THEN : 'then';
 END : 'end';
 
+EXISTS : 'exists';
 NOT : 'not';
 IN : 'in';
+FROM : 'from';
 
 SALIENCE : 'salience';
 ENABLED : 'enabled';

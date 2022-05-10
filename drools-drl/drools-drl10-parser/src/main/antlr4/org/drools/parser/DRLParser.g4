@@ -33,7 +33,11 @@ lhsUnary : ( lhsExists namedConsequence?
            ) SEMI? ;
 */
 
-lhsUnary : lhsPatternBind ;
+lhsUnary : (
+           lhsExists
+           | lhsNot
+           | lhsPatternBind
+           ) ;
 lhsPatternBind : label? ( LPAREN lhsPattern (OR lhsPattern)* RPAREN | lhsPattern ) ;
 
 /*
@@ -41,7 +45,7 @@ lhsPattern : xpathPrimary (OVER patternFilter)? |
              ( QUESTION? qualifiedIdentifier LPAREN positionalConstraints? constraints? RPAREN (OVER patternFilter)? (FROM patternSource)? ) ;
 */
 
-lhsPattern : QUESTION? objectType=qualifiedName LPAREN positionalConstraints? constraints? RPAREN ;
+lhsPattern : QUESTION? objectType=qualifiedName LPAREN (positionalConstraints? constraints? ) RPAREN (FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : label? ( nestedConstraint | conditionalOrExpression ) ;
@@ -60,6 +64,34 @@ drlExpression : conditionalExpression ( op=assignmentOperator right=drlExpressio
 conditionalExpression : left=conditionalOrExpression ternaryExpression? ;
 ternaryExpression : QUESTION ts=drlExpression COLON fs=drlExpression ;
 
+/*
+ patternSource := FROM
+                ( fromAccumulate
+                | fromCollect
+                | fromEntryPoint
+                | fromWindow
+                | fromExpression )
+*/
+patternSource : fromExpression ;
+fromExpression : conditionalOrExpression ;
+
+/*
+ lhsExists := EXISTS
+           ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
+           | LEFT_PAREN lhsOr RIGHT_PAREN
+           | lhsPatternBind
+           )
+*/
+lhsExists : EXISTS lhsPatternBind ;
+/*
+ lhsNot := NOT
+           ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
+           | LEFT_PAREN lhsOr RIGHT_PAREN
+           | lhsPatternBind
+           )
+*/
+lhsNot : NOT lhsPatternBind ;
+
 rhs : blockStatement+ ;
 
 stringId : ( IDENTIFIER | STRING_LITERAL ) ;
@@ -76,7 +108,7 @@ drlAnnotation : AT name=qualifiedName drlArguments? ;
 
 attributes : attribute ( COMMA? attribute )* ;
 attribute : ( 'salience' DECIMAL_LITERAL )
-          | ( 'enabled' | 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOLEAN?
+          | ( 'enabled' | 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOL_LITERAL?
           | ( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) STRING_LITERAL
           |   'calendars' STRING_LITERAL ( COMMA STRING_LITERAL )*
           |   'timer' ( DECIMAL_LITERAL | TEXT )
