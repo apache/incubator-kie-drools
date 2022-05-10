@@ -20,13 +20,13 @@ import javax.ws.rs.core.HttpHeaders;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 
-import io.quarkus.arc.properties.IfBuildProperty;
+import io.quarkus.arc.properties.UnlessBuildProperty;
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 
 /**
  * Decorators for Http CloudEvents outgoing messages
  */
-@IfBuildProperty(name = "kogito.messaging.as-cloudevents", stringValue = "true")
+@UnlessBuildProperty(name = "kogito.messaging.as-cloudevents", stringValue = "false")
 @ApplicationScoped
 public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
 
