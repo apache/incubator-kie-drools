@@ -1,3 +1,21 @@
+/*
+ *
+ *  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ */
+
 package org.optaplanner.constraint.drl;
 
 import java.util.ArrayList;
@@ -10,9 +28,13 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Score<Score_>>
         extends AbstractDrlScoreDirectorFactoryService<Solution_, Score_> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DrlScoreDirectorFactoryService.class);
 
     @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
@@ -32,6 +54,10 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
             return null;
         }
 
+        LOGGER.info("Score DRL is deprecated and will be removed in a future major version of OptaPlanner.\n" +
+                "Consider migrating to the Constraint Streams API.\n" +
+                "See migration recipe at https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html.");
+
         List<String> scoreDrlList = new ArrayList<>();
         if (config.getGizmoKieBaseSupplier() == null) {
             if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
@@ -43,7 +69,6 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
                 }
             }
         }
-
         return () -> buildScoreDirectorFactory(classLoader, solutionDescriptor, config, scoreDrlList);
     }
 

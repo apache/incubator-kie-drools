@@ -83,6 +83,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected Supplier<KieBase> gizmoKieBaseSupplier = null;
 
     protected Boolean droolsAlphaNetworkCompilationEnabled = null;
+    @Deprecated(forRemoval = true)
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
 
@@ -211,10 +212,20 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
+    /**
+     * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
+     * See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint Streams migration recipe</a>.
+     */
+    @Deprecated(forRemoval = true)
     public Map<String, String> getKieBaseConfigurationProperties() {
         return kieBaseConfigurationProperties;
     }
 
+    /**
+     * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
+     * See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint Streams migration recipe</a>.
+     */
+    @Deprecated(forRemoval = true)
     public void setKieBaseConfigurationProperties(Map<String, String> kieBaseConfigurationProperties) {
         this.kieBaseConfigurationProperties = kieBaseConfigurationProperties;
     }
