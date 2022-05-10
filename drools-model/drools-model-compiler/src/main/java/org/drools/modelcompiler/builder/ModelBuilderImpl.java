@@ -122,24 +122,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         DrlxParseUtil.clearAccessorCache();
     }
 
-    @Override
-    protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        throw new UnsupportedOperationException("unreachable code");
-    }
-
-
-    @Override
-    protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
-        throw new UnsupportedOperationException("unreachable code");
-    }
 
     @Override
     protected void buildRules(Collection<CompositePackageDescr> packages) {
-        throw new UnsupportedOperationException("unreachable code");
-    }
-
-    @Override
-    protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         throw new UnsupportedOperationException("unreachable code");
     }
 

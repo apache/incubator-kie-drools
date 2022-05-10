@@ -21,6 +21,8 @@ import java.util.Map;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationFactory;
+import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
+import org.drools.compiler.builder.impl.processors.OtherDeclarationCompilationPhase;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -111,6 +113,24 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
         buildRules(packages);
     }
 
+    protected void buildOtherDeclarations(Collection<CompositePackageDescr> packages) {
+        for (CompositePackageDescr packageDescr : packages) {
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            setAssetFilter(packageDescr.getFilter());
+            OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
+                    pkgRegistry,
+                    packageDescr,
+                    getGlobalVariableContext(),
+                    this,
+                    getKnowledgeBase(),
+                    getBuilderConfiguration(),
+                    this.getAssetFilter());
+            otherDeclarationProcessor.process();
+            this.getBuildResultCollector().addAll(otherDeclarationProcessor.getResults());
+            setAssetFilter(null);
+        }
+    }
+
     private Collection<CompositePackageDescr> findPackages(Collection<CompositePackageDescr> compositePackages) {
         Collection<CompositePackageDescr> packages;
         if (compositePackages != null && !compositePackages.isEmpty()) {
@@ -123,7 +143,6 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
         return packages;
     }
 
-    @Override
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         for ( CompositePackageDescr packageDescr : packages ) {
             if ( StringUtils.isEmpty(packageDescr.getName()) ) {
@@ -154,7 +173,14 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
     }
 
     private void processTypeDeclarationDescr(InternalKnowledgePackage pkg, AbstractClassTypeDeclarationDescr typeDescr) {
-        normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
+        AnnotationNormalizer annotationNormalizer =
+                AnnotationNormalizer.of(
+                        pkg.getTypeResolver(),
+                        getBuilderConfiguration().getLanguageLevel().useJavaAnnotations());
+
+        annotationNormalizer.normalize(typeDescr);
+        this.getBuildResultCollector().addAll(annotationNormalizer.getResults());
+
         try {
             Class<?> typeClass = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
             String typePkg = typeClass.getPackage().getName();
