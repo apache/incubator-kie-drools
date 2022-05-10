@@ -28,8 +28,7 @@ import org.kie.dmn.model.api.ContextEntry;
 import org.kie.dmn.validation.AbstractValidatorTest;
 import org.kie.dmn.validation.ValidatorUtil;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
@@ -43,7 +42,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION))); // this is schema validation
             assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
         }
@@ -54,7 +53,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("context/CONTEXT_MISSING_EXPR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION))); // this is schema validation
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
     }
@@ -66,7 +65,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "CONTEXT_MISSING_EXPR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
     }
 
@@ -76,7 +75,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
             assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
         }
     }
@@ -86,7 +85,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("context/CONTEXT_MISSING_ENTRIES.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
     }
 
@@ -97,7 +96,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "CONTEXT_MISSING_EXPR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
     }
 
@@ -107,11 +106,11 @@ public class ValidatorContextTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
             assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
             // check that it reports and error for the second context entry, but not for the last one
             final ContextEntry ce = (ContextEntry) validate.get(0).getSourceReference();
-            assertThat(((Context) ce.getParent()).getContextEntry().indexOf(ce), is(1));
+            assertThat(((Context) ce.getParent()).getContextEntry().indexOf(ce)).isEqualTo(1);
         }
     }
 
@@ -120,11 +119,11 @@ public class ValidatorContextTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("context/CONTEXT_ENTRY_MISSING_VARIABLE.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
         // check that it reports and error for the second context entry, but not for the last one
         final ContextEntry ce = (ContextEntry) validate.get(0).getSourceReference();
-        assertThat(((Context) ce.getParent()).getContextEntry().indexOf(ce), is(1));
+        assertThat(((Context) ce.getParent()).getContextEntry().indexOf(ce)).isEqualTo(1);
     }
 
     @Test
@@ -134,11 +133,11 @@ public class ValidatorContextTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "CONTEXT_MISSING_EXPR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
         // check that it reports and error for the second context entry, but not for the last one
         final ContextEntry ce = (ContextEntry) validate.get(0).getSourceReference();
-        assertThat(((Context) ce.getParent()).getContextEntry().indexOf(ce), is(1));
+        assertThat(((Context) ce.getParent()).getContextEntry().indexOf(ce)).isEqualTo(1);
     }
 
     @Test
@@ -147,7 +146,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
         }
     }
@@ -157,7 +156,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("context/CONTEXT_DUP_ENTRY.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
     }
 
@@ -168,7 +167,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "CONTEXT_DUP_ENTRY"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
     }
 
@@ -178,7 +177,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF)));
         }
     }
@@ -188,7 +187,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("context/CONTEXT_ENTRY_NOTYPEREF.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF)));
     }
 
@@ -199,7 +198,7 @@ public class ValidatorContextTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "CONTEXT_ENTRY_NOTYPEREF"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF)));
     }
 }

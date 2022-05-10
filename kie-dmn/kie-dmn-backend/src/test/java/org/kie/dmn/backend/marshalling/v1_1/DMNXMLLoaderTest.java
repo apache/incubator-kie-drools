@@ -32,12 +32,8 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.InputData;
 import org.kie.dmn.model.api.LiteralExpression;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DMNXMLLoaderTest {
 
@@ -49,36 +45,37 @@ public class DMNXMLLoaderTest {
         final InputStreamReader isr = new InputStreamReader( is );
         final Definitions def = DMNMarshaller.unmarshal( isr );
 
-        assertThat( def, not( nullValue() ) );
-        assertThat( def.getName(), is("0001-input-data-string") );
-        assertThat( def.getId(), is("_0001-input-data-string") );
-        assertThat( def.getNamespace(), is("https://github.com/agilepro/dmn-tck") );
+        assertThat(def).isNotNull();
+        assertThat(def.getName()).isEqualTo("0001-input-data-string");
+        assertThat(def.getId()).isEqualTo("_0001-input-data-string");
+        assertThat(def.getNamespace()).isEqualTo("https://github.com/agilepro/dmn-tck");
 
-        assertThat( def.getDrgElement().size(), is( 2 ) );
-        assertThat( def.getDrgElement().get( 0 ), is( instanceOf( Decision.class ) ) );
+        assertThat(def.getDrgElement()).hasSize(2);
+        assertThat(def.getDrgElement().get(0)).isInstanceOf(Decision.class) ;
 
         Decision dec = (Decision) def.getDrgElement().get( 0 );
-        assertThat( dec.getName(), is("Greeting Message") );
-        assertThat( dec.getId(), is("d_GreetingMessage") );
-        assertThat( dec.getVariable().getName(), is("Greeting Message") );
-        assertThat( dec.getVariable().getTypeRef().getPrefix(), is( "feel" ) );
-        assertThat( dec.getVariable().getTypeRef().getLocalPart(), is( "string" ) );
-        assertThat( dec.getVariable().getTypeRef().getNamespaceURI(), is( XMLConstants.NULL_NS_URI ) );
+        assertThat(dec.getName()).isEqualTo("Greeting Message");
+        assertThat(dec.getId()).isEqualTo("d_GreetingMessage");        
+        assertThat(dec.getVariable().getName()).isEqualTo("Greeting Message");
+        assertThat(dec.getVariable().getTypeRef().getPrefix()).isEqualTo( "feel");
+        assertThat(dec.getVariable().getTypeRef().getLocalPart()).isEqualTo( "string");
+        assertThat(dec.getVariable().getTypeRef().getNamespaceURI()).isEqualTo(XMLConstants.NULL_NS_URI);
 
-        assertThat( dec.getInformationRequirement().size(), is( 1 ) );
-        assertThat( dec.getInformationRequirement().get( 0 ).getRequiredInput().getHref(), is( "#i_FullName" ) );
-        assertThat( dec.getExpression(), is( instanceOf( LiteralExpression.class ) ) );
+        assertThat(dec.getInformationRequirement()).hasSize(1);
+        assertThat(dec.getInformationRequirement().get(0).getRequiredInput().getHref()).isEqualTo( "#i_FullName");
+        
+        assertThat(dec.getExpression()).isInstanceOf(LiteralExpression.class);
 
         LiteralExpression le = (LiteralExpression) dec.getExpression();
-        assertThat( le.getText(), is("\"Hello \" + Full Name") );
+        assertThat(le.getText()).isEqualTo("\"Hello \" + Full Name");
 
         InputData idata = (InputData) def.getDrgElement().get( 1 );
-        assertThat( idata.getId(), is( "i_FullName" ) );
-        assertThat( idata.getName(), is( "Full Name" ) );
-        assertThat( idata.getVariable().getName(), is( "Full Name" ) );
-        assertThat( idata.getVariable().getTypeRef().getPrefix(), is( "feel" ) );
-        assertThat( idata.getVariable().getTypeRef().getLocalPart(), is( "string" ) );
-        assertThat( idata.getVariable().getTypeRef().getNamespaceURI(), is( XMLConstants.NULL_NS_URI ) );
+        assertThat(idata.getId()).isEqualTo( "i_FullName");
+        assertThat(idata.getName()).isEqualTo( "Full Name");
+        assertThat(idata.getVariable().getName()).isEqualTo( "Full Name");
+        assertThat(idata.getVariable().getTypeRef().getPrefix()).isEqualTo( "feel");
+        assertThat(idata.getVariable().getTypeRef().getLocalPart()).isEqualTo( "string");
+        assertThat(idata.getVariable().getTypeRef().getNamespaceURI()).isEqualTo( XMLConstants.NULL_NS_URI);
     }
 
     @Test
@@ -89,27 +86,27 @@ public class DMNXMLLoaderTest {
         final InputStreamReader isr = new InputStreamReader(is);
         final Definitions def = DMNMarshaller.unmarshal(isr);
 
-        assertThat(def.getDecisionService().size(), is(2));
+        assertThat(def.getDecisionService()).hasSize(2);
 
         DecisionService decisionService1 = def.getDecisionService().get(0);
-        assertThat(decisionService1.getId(), is("_70386614-9838-420b-a2ae-ff901ada63fb"));
-        assertThat(decisionService1.getName(), is("A Only Knowing B and C"));
-        assertThat(decisionService1.getDescription(), is("Description of A (BC)"));
-        assertThat(decisionService1.getOutputDecision().size(), is(1));
-        assertThat(decisionService1.getEncapsulatedDecision().size(), is(0));
-        assertThat(decisionService1.getInputDecision().size(), is(2));
-        assertThat(decisionService1.getInputData().size(), is(0));
-        assertThat(decisionService1.getOutputDecision().get(0).getHref(), is("#_c2b44706-d479-4ceb-bb74-73589d26dd04"));
+        assertThat(decisionService1.getId()).isEqualTo("_70386614-9838-420b-a2ae-ff901ada63fb");
+        assertThat(decisionService1.getName()).isEqualTo("A Only Knowing B and C");
+        assertThat(decisionService1.getDescription()).isEqualTo("Description of A (BC)");
+        assertThat(decisionService1.getOutputDecision()).hasSize(1);
+        assertThat(decisionService1.getEncapsulatedDecision()).hasSize(0);
+        assertThat(decisionService1.getInputDecision()).hasSize(2);
+        assertThat(decisionService1.getInputData()).hasSize(0);
+        assertThat(decisionService1.getOutputDecision().get(0).getHref()).isEqualTo("#_c2b44706-d479-4ceb-bb74-73589d26dd04");
 
         DecisionService decisionService2 = def.getDecisionService().get(1);
-        assertThat(decisionService2.getId(), is("_4620ef13-248a-419e-bc68-6b601b725a03"));
-        assertThat(decisionService2.getName(), is("A only as output knowing D and E"));
-        assertThat(decisionService2.getOutputDecision().size(), is(1));
-        assertThat(decisionService2.getEncapsulatedDecision().size(), is(2));
-        assertThat(decisionService2.getInputDecision().size(), is(0));
-        assertThat(decisionService2.getInputData().size(), is(2));
-        assertThat(decisionService2.getInputData().get(0).getHref(), is("#_bcea16fb-6c19-4bde-b37d-73407002c064"));
-        assertThat(decisionService2.getInputData().get(1).getHref(), is("#_207b9195-a441-47f2-9414-2fad64b463f9"));
+        assertThat(decisionService2.getId()).isEqualTo("_4620ef13-248a-419e-bc68-6b601b725a03");
+        assertThat(decisionService2.getName()).isEqualTo("A only as output knowing D and E");
+        assertThat(decisionService2.getOutputDecision()).hasSize(1);
+        assertThat(decisionService2.getEncapsulatedDecision()).hasSize(2);
+        assertThat(decisionService2.getInputDecision()).hasSize(0);
+        assertThat(decisionService2.getInputData()).hasSize(2);
+        assertThat(decisionService2.getInputData().get(0).getHref()).isEqualTo("#_bcea16fb-6c19-4bde-b37d-73407002c064");
+        assertThat(decisionService2.getInputData().get(1).getHref()).isEqualTo("#_207b9195-a441-47f2-9414-2fad64b463f9");
 
     }
 
@@ -121,7 +118,7 @@ public class DMNXMLLoaderTest {
         final InputStreamReader isr = new InputStreamReader(is);
         final Definitions def = DMNMarshaller.unmarshal(isr);
 
-        assertThat(def.getDecisionService().size(), is(0)); // check if No DecisionServices in extended v1.1 does not NPE.
+        assertThat(def.getDecisionService()).hasSize(0); // check if No DecisionServices in extended v1.1 does not NPE.
     }
 
     @Test
@@ -132,7 +129,7 @@ public class DMNXMLLoaderTest {
         final InputStreamReader isr = new InputStreamReader(is);
         final Definitions def = marshaller.unmarshal(isr);
 
-        assertThat(def.getExtensionElements().getAny().size(), is(1));
+        assertThat(def.getExtensionElements().getAny()).hasSize(1);
         // if arrived here, means it did not fail with exception while trying to unmarshall unknown rss extension element, hence it just skipped it.
     }
 

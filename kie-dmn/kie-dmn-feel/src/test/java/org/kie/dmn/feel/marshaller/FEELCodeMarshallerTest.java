@@ -13,9 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FEELCodeMarshallerTest {
@@ -100,9 +98,9 @@ public class FEELCodeMarshallerTest {
 
     protected void assertResult( Object value, String result ) {
         if( result == null ) {
-            assertThat( "Marshalling: '" + value + "'", FEELCodeMarshaller.INSTANCE.marshall( value ), is( nullValue() ) );
+            assertThat(FEELCodeMarshaller.INSTANCE.marshall( value )).as("Marshalling: '" + value + "'").isNull();
         } else {
-            assertThat( "Marshalling: '"+value+"'", FEELCodeMarshaller.INSTANCE.marshall( value ), is( result ) );
+            assertThat(FEELCodeMarshaller.INSTANCE.marshall( value )).as("Marshalling: '" + value + "'").isEqualTo(result);
         }
     }
 }

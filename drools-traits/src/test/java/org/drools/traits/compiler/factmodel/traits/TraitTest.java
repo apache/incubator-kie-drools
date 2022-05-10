@@ -99,8 +99,6 @@ import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
 import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -111,6 +109,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class TraitTest extends CommonTraitTest {
@@ -1444,12 +1443,9 @@ public class TraitTest extends CommonTraitTest {
 
         List<AfterMatchFiredEvent> values = cap.getAllValues();
 
-        assertThat( values.get( 0 ).getMatch().getRule().getName(),
-                    is( "create student" ) );
-        assertThat( values.get( 1 ).getMatch().getRule().getName(),
-                    is( "print student" ) );
-        assertThat( values.get( 2 ).getMatch().getRule().getName(),
-                    is( "print school" ) );
+        assertThat(values.get(0).getMatch().getRule().getName()).isEqualTo("create student");
+        assertThat(values.get(1).getMatch().getRule().getName()).isEqualTo("print student");
+        assertThat(values.get(2).getMatch().getRule().getName()).isEqualTo("print school");
 
     }
 

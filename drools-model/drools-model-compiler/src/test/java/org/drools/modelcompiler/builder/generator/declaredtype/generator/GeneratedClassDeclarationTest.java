@@ -23,11 +23,9 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GeneratedClassDeclarationTest {
 
@@ -201,9 +199,9 @@ public class GeneratedClassDeclarationTest {
     // TODO DT-ANC remove duplication
     void verifyBodyWithBetterDiff(Object expected, Object actual) {
         try {
-            MatcherAssert.assertThat(actual.toString(), equalToIgnoringWhiteSpace(expected.toString()));
+            assertThat(actual).asString().isEqualToIgnoringWhitespace(expected.toString());
         } catch (AssertionError e) {
-            MatcherAssert.assertThat(actual, equalTo(expected));
+            assertThat(actual).isEqualTo(expected);
         }
     }
 }

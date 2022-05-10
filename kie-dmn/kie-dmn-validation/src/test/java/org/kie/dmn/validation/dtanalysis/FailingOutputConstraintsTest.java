@@ -23,9 +23,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
@@ -39,9 +37,9 @@ public class FailingOutputConstraintsTest extends AbstractDTAnalysisTest {
         debugValidatorMsg(validate);
 
         DTAnalysis analysis = getAnalysis(validate, "_E72BD036-C550-4992-AA6D-A8AD4666C63A");
-        assertThat(analysis.isError(), is(false));
-        assertThat(analysis.getGaps(), hasSize(1));
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.isError()).isFalse();
+        assertThat(analysis.getGaps()).hasSize(1);
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
     
     @Test
@@ -52,8 +50,8 @@ public class FailingOutputConstraintsTest extends AbstractDTAnalysisTest {
                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR)));
 
         DTAnalysis analysis = getAnalysis(validate, "_E72BD036-C550-4992-AA6D-A8AD4666C63A");
-        assertThat(analysis.isError(), is(false));
-        assertThat(analysis.getGaps(), hasSize(1));
-        assertThat(analysis.getOverlaps(), hasSize(0));
+        assertThat(analysis.isError()).isFalse();
+        assertThat(analysis.getGaps()).hasSize(1);
+        assertThat(analysis.getOverlaps()).hasSize(0);
     }
 }

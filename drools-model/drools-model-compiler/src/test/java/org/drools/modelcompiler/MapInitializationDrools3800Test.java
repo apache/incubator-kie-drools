@@ -6,9 +6,8 @@ import java.util.Objects;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MapInitializationDrools3800Test extends BaseModelTest {
 
@@ -69,7 +68,7 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertThat(fact.getResult(), is("OK"));
+        assertThat(fact.getResult()).isEqualTo("OK");
     }
 
     @Test
@@ -99,6 +98,6 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules(3));
 
-        assertThat(fact.getResult(), is("OK"));
+        assertThat(fact.getResult()).isEqualTo("OK");
     }
 }

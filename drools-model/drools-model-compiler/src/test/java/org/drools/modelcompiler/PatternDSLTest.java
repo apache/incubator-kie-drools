@@ -90,8 +90,6 @@ import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.PatternDSL.when;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -352,7 +350,7 @@ public class PatternDSLTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(49)));
+        assertThat(results).contains(new Result(49));
     }
 
     @Test

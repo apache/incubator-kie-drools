@@ -28,8 +28,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.xls2dmn.cli.TestUtils.validateRuntime;
 
 public class XLS2DMNParserTest {
@@ -59,8 +58,8 @@ public class XLS2DMNParserTest {
         dmnContext.set("FICO Score", 650);
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Loan Approval").getResult(), is("Not approved"));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Loan Approval").getResult()).isEqualTo("Not approved");
     }
     
     @Test
@@ -71,7 +70,7 @@ public class XLS2DMNParserTest {
         dmnContext.set("FICO Score", 800);
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("Loan Approval").getResult(), is("Approved"));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Loan Approval").getResult()).isEqualTo("Approved");
     }
 }

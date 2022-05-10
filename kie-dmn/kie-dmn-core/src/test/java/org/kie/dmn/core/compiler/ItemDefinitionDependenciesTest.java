@@ -25,9 +25,7 @@ import org.junit.Test;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_1.TItemDefinition;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 
@@ -69,8 +67,8 @@ public class ItemDefinitionDependenciesTest {
         
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
 
-        assertThat(orderedList.subList(0, 2), containsInAnyOrder(a,b));
-        assertThat(orderedList.subList(2, 4), contains(c,d));
+        assertThat(orderedList.subList(0, 2)).contains(a,b);
+        assertThat(orderedList.subList(2, 4)).contains(c,d);
     }
     
     @Test
@@ -225,7 +223,7 @@ public class ItemDefinitionDependenciesTest {
 
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
 
-        assertThat(orderedList.subList(0, 2), containsInAnyOrder(fhirAge, fhirExtension));
-        assertThat(orderedList.subList(2, 3), contains(fhirT1));
+        assertThat(orderedList.subList(0, 2)).contains(fhirAge, fhirExtension);
+        assertThat(orderedList.subList(2, 3)).contains(fhirT1);
     }
 }
