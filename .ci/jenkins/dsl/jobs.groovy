@@ -37,12 +37,6 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
                 ]
             ], [
-                id: 'kogito-examples',
-                repository: 'kogito-examples',
-                env : [
-                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() || jobFolder.isMandrel() ? '-Poptaplanner-downstream-native' : '-Poptaplanner-downstream'
-                ]
-            ], [
                 id: 'optaweb-employee-rostering',
                 repository: 'optaweb-employee-rostering'
             ], [
