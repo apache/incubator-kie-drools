@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -343,7 +343,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
     private TypeDeclaration getTypeDeclaration(RuleBuildContext context, Class<?> userProvidedClass) {
         String packageName = ClassUtils.getPackage(userProvidedClass);
-        DroolsAssemblerContext kbuilder = context.getKnowledgeBuilder();
+        TypeDeclarationContext kbuilder = context.getKnowledgeBuilder();
         PackageRegistry pkgr = kbuilder.getPackageRegistry(packageName);
         TypeDeclaration typeDeclaration = pkgr != null ? pkgr.getPackage().getTypeDeclaration(userProvidedClass) : null;
         if (typeDeclaration == null && kbuilder.getKnowledgeBase() != null) {

@@ -17,12 +17,12 @@
 
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.util.TypeResolver;
@@ -43,7 +43,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     private final PackageRegistryManager pkgRegistryManager;
     private final TypeDeclarationBuilder typeBuilder;
     private GlobalVariableContext globalVariableContext;
-    private DroolsAssemblerContext droolsAssemblerContext;
+    private TypeDeclarationContext typeDeclarationContext;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
 
@@ -54,7 +54,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
             PackageRegistryManager pkgRegistryManager,
             TypeDeclarationBuilder typeBuilder,
             GlobalVariableContext globalVariableContext,
-            DroolsAssemblerContext droolsAssemblerContext,
+            TypeDeclarationContext typeDeclarationContext,
             BuildResultCollector buildResultCollector,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration) {
@@ -62,7 +62,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         this.pkgRegistryManager = pkgRegistryManager;
         this.typeBuilder = typeBuilder;
         this.globalVariableContext = globalVariableContext;
-        this.droolsAssemblerContext = droolsAssemblerContext;
+        this.typeDeclarationContext = typeDeclarationContext;
         this.buildResultCollector = buildResultCollector;
         this.kBase = kBase;
         this.configuration = configuration;
@@ -85,7 +85,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
 
                 // begin OtherDeclarationCompilationPhase
                 iteratingPhase(AccumulateFunctionCompilationPhase::new),
-                iteratingPhase((reg, desc) -> new WindowDeclarationCompilationPhase(reg, desc, droolsAssemblerContext)),
+                iteratingPhase((reg, desc) -> new WindowDeclarationCompilationPhase(reg, desc, typeDeclarationContext)),
                 iteratingPhase((reg, desc) -> new FunctionCompilationPhase(reg, desc, configuration)),
                 iteratingPhase((reg, desc) -> new GlobalCompilationPhase(reg, desc, kBase, globalVariableContext, desc.getFilter())),
                 // end OtherDeclarationCompilationPhase

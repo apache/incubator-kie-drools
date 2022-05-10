@@ -40,6 +40,8 @@ public interface BuildResultCollector {
      */
     KnowledgeBuilderResults getResults(ResultSeverity... severities);
 
+    boolean hasResults(ResultSeverity... problemTypes);
+
     default Collection<? extends KnowledgeBuilderResult> getAllResults() {
         return getResults(ResultSeverity.values());
     }

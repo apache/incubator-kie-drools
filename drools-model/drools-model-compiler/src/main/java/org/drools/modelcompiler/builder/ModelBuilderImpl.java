@@ -32,9 +32,9 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.processors.DeclaredTypeCompilationPhase;
 import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
 import org.drools.modelcompiler.builder.processors.ModelMainCompilationPhase;
-import org.drools.util.StringUtils;
+import org.drools.modelcompiler.builder.processors.SourceCodeGenerationPhase;
 import org.kie.api.builder.ReleaseId;
-import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.Collection;
 import java.util.List;
@@ -89,6 +89,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected void doSecondBuildStep(Collection<CompositePackageDescr> compositePackages) {
         Collection<CompositePackageDescr> packages = compositePackagesManager.findPackages(compositePackages);
 
+
         List<CompilationPhase> phases = asList(
                 new DeclaredTypeCompilationPhase(
                         this.packageModels,
@@ -96,25 +97,28 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                         this.getBuildContext(),
                         this.getBuilderConfiguration(),
                         packages),
-                new ModelMainCompilationPhase(
+                new ModelMainCompilationPhase<>(
+                        this.packageModels,
                         this.getPackageRegistryManager(),
                         packages,
                         this.getBuilderConfiguration(),
                         hasMvel(),
                         this.getKnowledgeBase(),
                         this,
-                        this.getGlobalVariableContext()));
+                        this.getGlobalVariableContext(),
+                        this.sourcesGenerator,
+                        this.packageSources,
+                        oneClassPerRule));
 
         for (CompilationPhase phase : phases) {
             phase.process();
-            this.getBuildResultAccumulator().addAll(phase.getResults());
-            if (this.getBuildResultAccumulator().hasErrors()) {
-                break;
+            Collection<? extends KnowledgeBuilderResult> results = phase.getResults();
+            this.getBuildResultCollector().addAll(results);
+            if (this.getBuildResultCollector().hasErrors()) {
+                return;
             }
         }
 
-        deregisterTypeDeclarations(packages);
-        buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
     }
 
@@ -129,47 +133,14 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         throw new UnsupportedOperationException("unreachable code");
     }
 
-    private void deregisterTypeDeclarations(Collection<CompositePackageDescr> packages) {
-        for (CompositePackageDescr packageDescr : packages) {
-            getOrCreatePackageRegistry(packageDescr).getPackage().getTypeDeclarations().clear();
-        }
-    }
-
     @Override
     protected void buildRules(Collection<CompositePackageDescr> packages) {
-        if (hasErrors()) { // if Error while generating pojo do not try compile rule as they very likely depends hence fail too.
-            return;
-        }
-
-        for (CompositePackageDescr packageDescr : packages) {
-            setAssetFilter(packageDescr.getFilter());
-            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            compileKnowledgePackages(packageDescr, pkgRegistry);
-            setAssetFilter(null);
-
-            PackageModel pkgModel = packageModels.remove(pkgRegistry.getPackage().getName());
-            pkgModel.setOneClassPerRule(oneClassPerRule);
-            if (getResults(ResultSeverity.ERROR).isEmpty()) {
-                packageSources.put(pkgModel.getName(), sourcesGenerator.apply(pkgModel));
-            }
-        }
+        throw new UnsupportedOperationException("unreachable code");
     }
 
     @Override
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        PackageRegistry packageRegistry = this.getPackageRegistryManager().getPackageRegistry(packageDescr.getNamespace());
-        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        PackageModel packageModel = this.packageModels.getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-
-        List<CompilationPhase> phases = asList(
-                new RuleValidator(packageRegistry, packageDescr, this.getBuilderConfiguration()), // validateUniqueRuleNames
-                new ModelGeneratorPhase(pkgRegistry, packageDescr, packageModel, this));
-
-        for (CompilationPhase phase : phases) {
-            phase.process();
-            this.getBuildResultAccumulator().addAll(phase.getResults());
-        }
-
+        throw new UnsupportedOperationException("unreachable code");
     }
 
     protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName) {

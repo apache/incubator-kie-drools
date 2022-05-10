@@ -2,6 +2,7 @@ package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
@@ -46,10 +47,18 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
     //The map contains a map of AttributeDescr's keyed on the AttributeDescr's name.
     private final Map<String, AttributeDescr> packageAttributes;
     private final Resource resource;
-    private final DroolsAssemblerContext kBuilder;
+    private final TypeDeclarationContext kBuilder;
 
 
-    public RuleCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, int parallelRulesBuildThreshold, KnowledgeBuilderImpl.AssetFilter assetFilter, Map<String, AttributeDescr> packageAttributes, Resource resource, DroolsAssemblerContext kBuilder) {
+    public RuleCompiler(
+            PackageRegistry pkgRegistry,
+            PackageDescr packageDescr,
+            InternalKnowledgeBase kBase,
+            int parallelRulesBuildThreshold,
+            KnowledgeBuilderImpl.AssetFilter assetFilter,
+            Map<String, AttributeDescr> packageAttributes,
+            Resource resource,
+            TypeDeclarationContext kBuilder) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.parallelRulesBuildThreshold = parallelRulesBuildThreshold;

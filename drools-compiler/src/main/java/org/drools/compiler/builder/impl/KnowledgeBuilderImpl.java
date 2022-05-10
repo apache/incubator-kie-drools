@@ -61,7 +61,6 @@ import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -157,7 +156,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private AssetFilter assetFilter = null;
 
-    private final TypeDeclarationBuilder typeBuilder;
+    private TypeDeclarationManagerImpl typeDeclarationManager;
 
     private Map<String, Object> builderCache;
 
@@ -231,7 +230,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        this.typeBuilder = createTypeDeclarationBuilder();
+        this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
     }
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
@@ -262,7 +261,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
 
-        this.typeBuilder = createTypeDeclarationBuilder();
+        this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
     }
 
     private TypeDeclarationBuilder createTypeDeclarationBuilder() {
@@ -305,7 +304,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public TypeDeclarationBuilder getTypeBuilder() {
-        return typeBuilder;
+        return typeDeclarationManager.getTypeDeclarationBuilder();
     }
 
     /**
@@ -692,7 +691,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.results.addBuilderResult(result);
     }
 
-    protected BuildResultCollector getBuildResultAccumulator() {
+    protected BuildResultCollector getBuildResultCollector() {
         return this.results;
     }
 
@@ -875,7 +874,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 new PackageCompilationPhase(this,
                         kBase,
                         configuration,
-                        typeBuilder,
+                        typeDeclarationManager.getTypeDeclarationBuilder(),
                         assetFilter,
                         pkgRegistry,
                         packageDescr);
@@ -920,16 +919,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String packageName) {
-        if (kBase != null) {
-            InternalKnowledgePackage pkg = kBase.getPackage(packageName);
-            if (pkg != null) {
-                TypeDeclaration typeDeclaration = pkg.getTypeDeclaration(cls);
-                if (typeDeclaration != null) {
-                    return typeDeclaration;
-                }
-            }
-        }
-        return typeBuilder.getAndRegisterTypeDeclaration(cls, packageName);
+        return typeDeclarationManager.getAndRegisterTypeDeclaration(cls, packageName);
     }
 
     protected void processWindowDeclarations(PackageRegistry pkgRegistry,
@@ -1127,7 +1117,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             }
         }
 
-        Collection<String> removedTypes = typeBuilder.removeTypesGeneratedFromResource(resource);
+        Collection<String> removedTypes = typeDeclarationManager.getTypeDeclarationBuilder().removeTypesGeneratedFromResource(resource);
 
         for (List<PackageDescr> pkgDescrs : pkgRegistryManager.getPackageDescrs()) {
             for (PackageDescr pkgDescr : pkgDescrs) {
@@ -1216,13 +1206,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {
-        return cls != null ? typeBuilder.getTypeDeclaration(cls) : null;
+        return typeDeclarationManager.getTypeDeclaration(cls);
     }
 
     public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
-        return objectType.isTemplate() ?
-                typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) :
-                typeBuilder.getTypeDeclaration(((ClassObjectType) objectType).getClassType());
+        return typeDeclarationManager.getTypeDeclaration(objectType);
     }
 
     protected void normalizeAnnotations(AnnotatedBaseDescr annotationsContainer, TypeResolver typeResolver, boolean isStrict) {
@@ -1281,7 +1269,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 new CompositePackageCompilationPhase(
                         packages,
                         pkgRegistryManager,
-                        typeBuilder,
+                        typeDeclarationManager.getTypeDeclarationBuilder(),
                         globals,
                         this, // as DroolsAssemblerContext
                         results,

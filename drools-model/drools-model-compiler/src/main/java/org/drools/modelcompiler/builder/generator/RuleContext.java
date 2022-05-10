@@ -17,23 +17,6 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.lang.reflect.Method;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -41,7 +24,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
@@ -65,6 +48,23 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
+import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
@@ -75,7 +75,7 @@ public class RuleContext {
 
     private static final String SCOPE_SUFFIX = "_sCoPe";
 
-    private final KnowledgeBuilderImpl kbuilder;
+    private final TypeDeclarationContext kbuilder;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
     private final RuleDescr ruleDescr;
@@ -130,11 +130,11 @@ public class RuleContext {
 
     private AndDescr parentDescr;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
+    public RuleContext(TypeDeclarationContext kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
         this(kbuilder, packageModel, typeResolver, ruleDescr, -1);
     }
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
+    public RuleContext(TypeDeclarationContext kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
@@ -174,7 +174,7 @@ public class RuleContext {
         return ruleUnitDescr;
     }
 
-    public KnowledgeBuilderImpl getKbuilder() {
+    public TypeDeclarationContext getKbuilder() {
         return kbuilder;
     }
 

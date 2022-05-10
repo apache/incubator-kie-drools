@@ -35,11 +35,11 @@ import org.drools.util.TypeResolver;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.core.util.Drools.hasMvel;
 
-public class TypeDeclarationRegistrationPhase extends AbstractPackageCompilationPhase {
+public class DeclaredTypeRegistrationPhase extends AbstractPackageCompilationPhase {
 
     private final PackageRegistryManager pkgRegistryManager;
 
-    public TypeDeclarationRegistrationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, PackageRegistryManager pkgRegistryManager) {
+    public DeclaredTypeRegistrationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, PackageRegistryManager pkgRegistryManager) {
         super(pkgRegistry, packageDescr);
         this.pkgRegistryManager = pkgRegistryManager;
     }

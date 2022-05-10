@@ -17,55 +17,69 @@
 
 package org.drools.modelcompiler.builder.processors;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
+import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
 import org.drools.compiler.builder.impl.processors.IteratingPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.PackageModelManager;
+import org.drools.modelcompiler.builder.PackageSourceManager;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
-public class ModelMainCompilationPhase implements CompilationPhase {
+public class ModelMainCompilationPhase<T> implements CompilationPhase {
 
+    private final PackageModelManager packageModels;
     private final PackageRegistryManager pkgRegistryManager;
     private final Collection<CompositePackageDescr> packages;
 
     private final KnowledgeBuilderConfiguration configuration;
     private final boolean hasMvel;
     private final InternalKnowledgeBase kBase;
-    private final DroolsAssemblerContext assemblerContext;
+    private final TypeDeclarationContext typeDeclarationContext;
     private final GlobalVariableContext globalVariableContext;
 
     private final BuildResultCollector results = new BuildResultCollectorImpl();
+    private final Function<PackageModel, T> sourceGenerator;
+    private final PackageSourceManager<T> packageSourceManager;
+    private final boolean oneClassPerRule;
 
     public ModelMainCompilationPhase(
+            PackageModelManager packageModels,
             PackageRegistryManager pkgRegistryManager,
             Collection<CompositePackageDescr> packages,
             KnowledgeBuilderConfiguration configuration,
             boolean hasMvel,
             InternalKnowledgeBase kBase,
-            DroolsAssemblerContext assemblerContext,
-            GlobalVariableContext globalVariableContext) {
+            TypeDeclarationContext typeDeclarationContext,
+            GlobalVariableContext globalVariableContext, Function<PackageModel, T> sourceGenerator, PackageSourceManager<T> packageSourceManager, boolean oneClassPerRule) {
+        this.packageModels = packageModels;
         this.pkgRegistryManager = pkgRegistryManager;
         this.packages = packages;
         this.configuration = configuration;
         this.hasMvel = hasMvel;
         this.kBase = kBase;
-        this.assemblerContext = assemblerContext;
+        this.typeDeclarationContext = typeDeclarationContext;
         this.globalVariableContext = globalVariableContext;
+        this.sourceGenerator = sourceGenerator;
+        this.packageSourceManager = packageSourceManager;
+        this.oneClassPerRule = oneClassPerRule;
     }
 
     @Override
@@ -73,18 +87,26 @@ public class ModelMainCompilationPhase implements CompilationPhase {
         List<CompilationPhase> phases = new ArrayList<>();
         phases.add(iteratingPhase(AccumulateFunctionCompilationPhase::new));
         if (hasMvel) {
-            phases.add(iteratingPhase((reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, assemblerContext)));
+            phases.add(iteratingPhase((reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, typeDeclarationContext)));
         }
         phases.add(iteratingPhase((reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
         phases.add(iteratingPhase((reg, acc) -> new GlobalCompilationPhase(reg, acc, kBase, globalVariableContext, acc.getFilter())));
+        phases.add(new DeclaredTypeDeregistrationPhase(packages, pkgRegistryManager));
+
+        phases.add(iteratingPhase((reg, acc) -> new RuleValidator(reg, acc, configuration))); // validateUniqueRuleNames
+        phases.add(iteratingPhase((reg, acc) -> new ModelGeneratorPhase(reg, acc, packageModels.getPackageModel(acc, reg, acc.getName()), typeDeclarationContext))); // validateUniqueRuleNames
+        phases.add(iteratingPhase((reg, acc) -> new SourceCodeGenerationPhase<>(
+                packageModels.getPackageModel(acc, reg, acc.getName()), packageSourceManager, sourceGenerator, oneClassPerRule))); // validateUniqueRuleNames
+
 
         for (CompilationPhase phase : phases) {
             phase.process();
             this.results.addAll(phase.getResults());
             if (this.results.hasErrors()) {
-                break;
+                return;
             }
         }
+
     }
 
 

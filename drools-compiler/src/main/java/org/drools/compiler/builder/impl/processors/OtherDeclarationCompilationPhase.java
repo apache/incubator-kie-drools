@@ -1,8 +1,8 @@
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -15,7 +15,7 @@ import static java.util.Arrays.asList;
 public class OtherDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
 
     private final GlobalVariableContext globalVariableContext;
-    private final DroolsAssemblerContext droolsAssemblerContext;
+    private final TypeDeclarationContext typeDeclarationContext;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfiguration configuration;
     private final KnowledgeBuilderImpl.AssetFilter assetFilter;
@@ -24,13 +24,13 @@ public class OtherDeclarationCompilationPhase extends AbstractPackageCompilation
             PackageRegistry pkgRegistry,
             PackageDescr packageDescr,
             GlobalVariableContext globalVariableContext,
-            DroolsAssemblerContext droolsAssemblerContext,
+            TypeDeclarationContext typeDeclarationContext,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfiguration configuration,
             KnowledgeBuilderImpl.AssetFilter assetFilter) {
         super(pkgRegistry, packageDescr);
         this.globalVariableContext = globalVariableContext;
-        this.droolsAssemblerContext = droolsAssemblerContext;
+        this.typeDeclarationContext = typeDeclarationContext;
         this.kBase = kBase;
         this.configuration = configuration;
         this.assetFilter = assetFilter;
@@ -40,7 +40,7 @@ public class OtherDeclarationCompilationPhase extends AbstractPackageCompilation
     public void process() {
         List<CompilationPhase> phases = asList(
                 new AccumulateFunctionCompilationPhase(pkgRegistry, packageDescr),
-                new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, droolsAssemblerContext),
+                new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, typeDeclarationContext),
                 new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration),
                 new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, globalVariableContext, assetFilter));
 

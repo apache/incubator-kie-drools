@@ -17,28 +17,35 @@
 
 package org.drools.modelcompiler.builder.processors;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.processors.AbstractPackageCompilationPhase;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+
+import java.util.Collection;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 
 public class ModelGeneratorPhase extends AbstractPackageCompilationPhase {
-    private final KnowledgeBuilderImpl kbuilder;
+    private final TypeDeclarationContext typeDeclarationContext;
     private final PackageModel packageModel;
 
-    public ModelGeneratorPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, PackageModel packageModel, KnowledgeBuilderImpl kbuilder) {
+    public ModelGeneratorPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, PackageModel packageModel, TypeDeclarationContext typeDeclarationContext) {
         super(pkgRegistry, packageDescr);
         this.packageModel = packageModel;
-        this.kbuilder = kbuilder;
+        this.typeDeclarationContext = typeDeclarationContext;
     }
 
     @Override
     public void process() {
-        PackageModel.initPackageModel( kbuilder, pkgRegistry.getPackage(), pkgRegistry.getTypeResolver(), packageDescr, packageModel );
-        generateModel(kbuilder, pkgRegistry.getPackage(), packageDescr, packageModel);
+        PackageModel.initPackageModel(typeDeclarationContext, pkgRegistry.getPackage(), pkgRegistry.getTypeResolver(), packageDescr, packageModel );
+        generateModel(typeDeclarationContext, pkgRegistry.getPackage(), packageDescr, packageModel);
     }
 
+    @Override
+    public Collection<? extends KnowledgeBuilderResult> getResults() {
+        return typeDeclarationContext.getAllResults();
+    }
 }

@@ -41,6 +41,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -127,7 +128,7 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public static void generateModel(TypeDeclarationContext kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
 
         List<RuleDescr> ruleDescrs = packageDescr.getRules();
@@ -138,7 +139,7 @@ public class ModelGenerator {
         packageModel.addRuleUnits( processRules(kbuilder, packageDescr, packageModel, typeResolver, ruleDescrs) );
     }
 
-    private static Set<RuleUnitDescription> processRules(KnowledgeBuilderImpl kbuilder, PackageDescr packageDescr, PackageModel packageModel, TypeResolver typeResolver, List<RuleDescr> ruleDescrs) {
+    private static Set<RuleUnitDescription> processRules(TypeDeclarationContext kbuilder, PackageDescr packageDescr, PackageModel packageModel, TypeResolver typeResolver, List<RuleDescr> ruleDescrs) {
         Set<RuleUnitDescription> ruleUnitDescrs = new HashSet<>();
 
         for (RuleDescr descr : ruleDescrs) {

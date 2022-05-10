@@ -17,6 +17,8 @@ package org.drools.compiler.builder.impl;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.base.ObjectType;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.io.Resource;
@@ -26,37 +28,61 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class TypeDeclarationContextImpl implements TypeDeclarationContext {
 
     private KnowledgeBuilderConfigurationImpl configuration;
     private final PackageRegistryManager packageRegistryManager;
+    private GlobalVariableContext globalVariableContext;
     private final BuildResultCollectorImpl buildResultAccumulator = new BuildResultCollectorImpl();
-    private TypeDeclarationBuilder typeBuilder;
 
-    public TypeDeclarationContextImpl(KnowledgeBuilderConfigurationImpl configuration, PackageRegistryManager packageRegistryManager) {
+    private TypeDeclarationManagerImpl typeDeclarationManager;
+
+    public TypeDeclarationContextImpl(KnowledgeBuilderConfigurationImpl configuration, PackageRegistryManager packageRegistryManager, GlobalVariableContext globalVariableContext) {
         this.configuration = configuration;
         this.packageRegistryManager = packageRegistryManager;
+        this.globalVariableContext = globalVariableContext;
     }
 
-    public void setTypeDeclarationBuilder(TypeDeclarationBuilder typeBuilder) {
-        this.typeBuilder = typeBuilder;
+    public void setTypeDeclarationManager(TypeDeclarationManagerImpl typeDeclarationManagerImpl) {
+        this.typeDeclarationManager = typeDeclarationManagerImpl;
     }
 
     @Override
     public TypeDeclarationBuilder getTypeBuilder() {
-        return typeBuilder;
+        return typeDeclarationManager.getTypeDeclarationBuilder();
     }
 
     @Override
     public Resource getCurrentResource() {
-        return null;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override
     public boolean filterAccepts(ResourceChange.Type declaration, String namespace, String typeName) {
         return false;
+    }
+
+    @Override
+    public TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String name) {
+        return typeDeclarationManager.getAndRegisterTypeDeclaration(cls, name);
+    }
+
+    @Override
+    public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
+        return typeDeclarationManager.getTypeDeclaration(objectType);
+    }
+
+    @Override
+    public TypeDeclaration getTypeDeclaration(Class<?> objectType) {
+        return typeDeclarationManager.getTypeDeclaration(objectType);
+    }
+
+    @Override
+    public List<PackageDescr> getPackageDescrs(String namespace) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override
@@ -114,5 +140,20 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
     public KnowledgeBuilderResults getResults(ResultSeverity... severities) {
         // this is not really used by TypeDeclarationContext!!
         return buildResultAccumulator.getResults(severities);
+    }
+
+    @Override
+    public boolean hasResults(ResultSeverity... problemTypes) {
+        return buildResultAccumulator.hasResults(problemTypes);
+    }
+
+    @Override
+    public Map<String, Class<?>> getGlobals() {
+        return globalVariableContext.getGlobals();
+    }
+
+    @Override
+    public void addGlobal(String identifier, Class<?> clazz) {
+        globalVariableContext.addGlobal(identifier, clazz);
     }
 }

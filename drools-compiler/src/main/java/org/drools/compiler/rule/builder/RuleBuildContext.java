@@ -22,6 +22,7 @@ import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
@@ -67,7 +68,7 @@ public class RuleBuildContext extends PackageBuildContext {
     /**
      * Default constructor
      */
-    public RuleBuildContext(final DroolsAssemblerContext kBuilder,
+    public RuleBuildContext(final TypeDeclarationContext kBuilder,
                             final RuleDescr ruleDescr,
                             final DialectCompiletimeRegistry dialectCompiletimeRegistry,
                             final InternalKnowledgePackage pkg,
@@ -79,7 +80,7 @@ public class RuleBuildContext extends PackageBuildContext {
         this.rule.setDialect(ruleDescr.getDialect());
         this.rule.setLoadOrder(ruleDescr.getLoadOrder());
 
-        init(kBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule);
+        initContext(kBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule);
 
         if (this.rule.getDialect() == null) {
             this.rule.setDialect(getDialect().getId());

@@ -17,20 +17,13 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.util.TypeResolver;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
@@ -50,6 +43,13 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
+import org.drools.util.TypeResolver;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -85,13 +85,13 @@ public class WindowReferenceGenerator {
         }
     }
 
-    public void addWindowReferences( KnowledgeBuilderImpl kbuilder, Set<WindowDeclarationDescr> windowReferences ) {
+    public void addWindowReferences(TypeDeclarationContext kbuilder, Set<WindowDeclarationDescr> windowReferences ) {
         for (WindowDeclarationDescr descr : windowReferences) {
             addField(kbuilder, packageModel, descr);
         }
     }
 
-    private void addField( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, WindowDeclarationDescr descr ) {
+    private void addField( TypeDeclarationContext kbuilder, PackageModel packageModel, WindowDeclarationDescr descr ) {
 
         final String windowName = toVar(descr.getName());
 
@@ -128,7 +128,7 @@ public class WindowReferenceGenerator {
         packageModel.addAllWindowReferences(windowName, initializer);
     }
 
-    private List<Expression> parseConditions( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
+    private List<Expression> parseConditions( TypeDeclarationContext kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
         List<? extends BaseDescr> descrs = pattern.getConstraint().getDescrs();
         if (descrs == null) {
             return Collections.emptyList();
