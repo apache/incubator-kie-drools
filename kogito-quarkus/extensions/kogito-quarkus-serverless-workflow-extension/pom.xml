@@ -29,6 +29,7 @@
       </activation>
       <modules>
         <module>kogito-quarkus-serverless-workflow-integration-test</module>
+        <module>kogito-quarkus-serverless-workflow-image-integration-test</module>
       </modules>
     </profile>
   </profiles>
