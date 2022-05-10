@@ -3,8 +3,11 @@ package org.drools.parser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.PackageDescr;
 
 public class DRLParserHelper {
@@ -45,5 +48,28 @@ public class DRLParserHelper {
                 return token.getTokenIndex();
         }
         return null;
+    }
+
+    /**
+     * RuleContext.getText() connects all nodes including ErrorNode. This method appends texts only from valid nodes
+     */
+    public static String getTextWithoutErrorNode(ParseTree tree) {
+        if (tree.getChildCount() == 0) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < tree.getChildCount(); i++) {
+            ParseTree child = tree.getChild(i);
+            if (!(child instanceof ErrorNode)) {
+                if (child instanceof TerminalNode) {
+                    builder.append(child.getText());
+                } else {
+                    builder.append(getTextWithoutErrorNode(child));
+                }
+            }
+        }
+
+        return builder.toString();
     }
 }
