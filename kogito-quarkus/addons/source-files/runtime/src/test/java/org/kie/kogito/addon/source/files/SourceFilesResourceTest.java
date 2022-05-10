@@ -15,12 +15,10 @@
  */
 package org.kie.kogito.addon.source.files;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,46 +86,4 @@ class SourceFilesResourceTest {
                 .isInstanceOf(UnauthorizedException.class);
     }
 
-    @Test
-    @TestSecurity(user = "scott", roles = "source-files-client")
-    void getSourceFile() throws IOException {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("petstore.json"));
-
-        Response response = sourceFilesResource.getSourceFile("petstore.json");
-
-        assertThat(response.getStatus())
-                .isEqualTo(200);
-
-        assertThat(response.getHeaderString("Content-Disposition"))
-                .isEqualTo("inline; filename=\"petstore.json\"");
-
-        assertThat(response.getHeaderString("Content-Length"))
-                .isEqualTo("5189");
-    }
-
-    @Test
-    void getSourceFileNonAuthenticated() {
-        assertThatCode(() -> sourceFilesResource.getSourceFile("petstore.json"))
-                .isInstanceOf(UnauthorizedException.class);
-    }
-
-    @Test
-    @TestSecurity(user = "scott", roles = "source-files-client")
-    void getSourceFileThatNotExistsShouldReturn404() throws IOException {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("file_that_not_exists.json"));
-
-        Response response = sourceFilesResource.getSourceFile("file_that_not_exists.json");
-
-        assertThat(response.getStatus())
-                .isEqualTo(404);
-    }
-
-    @Test
-    @TestSecurity(user = "scott", roles = "source-files-client")
-    void getSourceFileThatIsNotInSourceFilesProviderShouldReturn404() throws IOException {
-        Response response = sourceFilesResource.getSourceFile("petstore.json");
-
-        assertThat(response.getStatus())
-                .isEqualTo(404);
-    }
 }

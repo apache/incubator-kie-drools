@@ -92,24 +92,4 @@ class SourceFilesAddOnIT {
                 .statusCode(401);
     }
 
-    @Test
-    void testGetSourceFile() {
-        given()
-                .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
-                .when()
-                .get(PATH + "sources/download?fileName=petstore.json")
-                .then()
-                .statusCode(200)
-                .header("Content-Disposition", "inline; filename=\"petstore.json\"")
-                .header("Content-Length", "5189");
-    }
-
-    @Test
-    void testGetSourceFileNonAuthenticated() {
-        given()
-                .when()
-                .get(PATH + "sources/download?fileName=petstore.json")
-                .then()
-                .statusCode(401);
-    }
 }
