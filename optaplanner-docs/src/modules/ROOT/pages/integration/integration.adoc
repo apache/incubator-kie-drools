@@ -485,7 +485,7 @@ the _OptaPlanner AI constraint solver_ extension before generating your applicat
 
 [WARNING]
 ====
-DRL score calculation is currently incompatible with the `quarkus:dev` mode.
+xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] is incompatible with the `quarkus:dev` mode and deprecated.
 ====
 
 Following properties are supported in the Quarkus `application.properties`:
@@ -501,8 +501,9 @@ and read the xref:quickstart/spring-boot/spring-boot-quickstart.adoc#springBootJ
 
 [WARNING]
 ====
-DRL score calculation is currently incompatible with the dependency `spring-boot-devtools`:
+xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] is currently incompatible with the dependency `spring-boot-devtools`:
 none of the DRL rules will fire, due to ClassLoader issues.
+Also, Drools score calculation is deprecated.
 ====
 
 These properties are supported in Spring's `application.properties`:

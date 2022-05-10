@@ -194,7 +194,7 @@ We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProper
 . The `computerList` property holds a list of computers.
 OptaPlanner cannot change the computers.
 Therefore, a computer is a problem fact.
-Especially for xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation],
+Especially for xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams],
 the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the rule engine.
 
 . The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
@@ -418,7 +418,6 @@ There are several ways to implement such a score function:
 * <<cloudBalancingEasyJavaScoreConfiguration, Easy Java>>
 * <<cloudBalancingConstraintStreamsScoreConfiguration, Constraint Streams>>
 * <<cloudBalancingIncrementalJavaScoreConfiguration, Incremental Java>>
-* <<cloudBalancingDroolsScoreConfiguration, Drools>>
 
 
 [[cloudBalancingEasyJavaScoreConfiguration]]
@@ -497,7 +496,7 @@ To fix that, either use constraint streams, incremental Java score calculation o
 
 
 [[cloudBalancingConstraintStreamsScoreConfiguration]]
-=== Drools score configuration
+=== Constraint streams score configuration
 
 Constraint Streams use incremental calculation.
 To use it, implement the interface `ConstraintProvider` in Java.
@@ -566,9 +565,6 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
 }
 ----
 ====
-
-You may have noticed similarities between xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation].
-That is no coincidence, as Constraint Streams are implemented using Drools under the hood.
 
 
 [[cloudBalancingIncrementalJavaScoreConfiguration]]
@@ -718,84 +714,6 @@ public class CloudBalancingIncrementalScoreCalculator
 This score calculation is the fastest we can possibly make it.
 It reacts to every planning variable change, making the smallest possible adjustment to the score.
 
-
-[[cloudBalancingDroolsScoreConfiguration]]
-=== Drools score configuration
-
-Drools score calculation uses incremental calculation.
-Each score constraint is written as one or more score rules.
-
-*Prerequisite*
-To use the Drools rule engine as a score function, simply add a `scoreDrl` resource in the classpath:
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/cloudbalancing/optional/score/cloudBalancingConstraints.drl</scoreDrl>
-  </scoreDirectorFactory>
-----
-
-. We want to make sure that all computers have enough CPU, RAM and network bandwidth to support all their processes, so we make these hard constraints:
-+
-.cloudBalancingConstraints.drl - Hard Constraints
-====
-[source,options="nowrap"]
-----
-...
-
-import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
-import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
-
-global HardSoftScoreHolder scoreHolder;
-
-// ############################################################################
-// Hard constraints
-// ############################################################################
-
-rule "requiredCpuPowerTotal"
-    when
-        $computer : CloudComputer($cpuPower : cpuPower)
-        accumulate(
-            CloudProcess(
-                computer == $computer,
-                $requiredCpuPower : requiredCpuPower);
-            $requiredCpuPowerTotal : sum($requiredCpuPower);
-            $requiredCpuPowerTotal > $cpuPower
-        )
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, $cpuPower - $requiredCpuPowerTotal);
-end
-
-rule "requiredMemoryTotal"
-    ...
-end
-
-rule "requiredNetworkBandwidthTotal"
-    ...
-end
-----
-====
-
-. If those constraints are met, we want to minimize the maintenance cost, so we add that as a soft constraint:
-+
-.cloudBalancingConstraints.drl - Soft Constraints
-====
-[source,options="nowrap"]
-----
-// ############################################################################
-// Soft constraints
-// ############################################################################
-
-rule "computerCost"
-    when
-        $computer : CloudComputer($cost : cost)
-        exists CloudProcess(computer == $computer)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
-end
-----
-====
 
 [[cloudBalancingBeyondThisTutorial]]
 == Beyond this tutorial

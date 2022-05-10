@@ -1111,7 +1111,7 @@ This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> 
 [[problemFacts]]
 ==== Problem facts of a solution (`@ProblemFactCollectionProperty`)
 
-For xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation],
+For xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation (Deprecated)],
 OptaPlanner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
 All objects returned by those methods are available to use by Constraint Streams or Drools rules.

@@ -14,8 +14,8 @@ A classpath resource to read the solver configuration XML.
 Defaults to `solverConfig.xml`.
 If this property isn't specified, that file is optional.
 
-{property_prefix}optaplanner.score-drl::
-A classpath resource to read the score DRL.
+{property_prefix}optaplanner.score-drl (deprecated)::
+A classpath resource to read the xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[score DRL].
 Defaults to `constraints.drl`.
 Do not define this property when a `ConstraintProvider`, `EasyScoreCalculator` or `IncrementalScoreCalculator` class exists.
 

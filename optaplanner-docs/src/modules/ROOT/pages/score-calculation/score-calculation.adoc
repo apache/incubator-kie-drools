@@ -391,7 +391,7 @@ There are several ways to calculate the `Score` of a solution:
 * **<<easyJavaScoreCalculation,Easy Java score calculation>>**: Implement all constraints together in a single method in Java (or another JVM language). Does not scale.
 * **xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams score calculation]**: Implement each constraint as a separate Constraint Stream in Java (or another JVM language). Fast and scalable.
 * **<<incrementalJavaScoreCalculation,Incremental Java score calculation>>** (not recommended): Implement multiple low-level methods in Java (or another JVM language). Fast and scalable. Very difficult to implement and maintain.
-* **xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation]**: Implement each constraint as a separate score rule in DRL. Scalable.
+* **xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] (Deprecated)**: Implement each constraint as a separate score rule in DRL. Scalable.
 
 Every score calculation type can work with any Score definition (such as ``HardSoftScore`` or ``HardMediumSoftScore``).
 All score calculation types are Object Oriented and can reuse existing Java code.
@@ -1088,7 +1088,7 @@ These connect the constraint weight with the constraint implementation.
 *For each constraint weight, there must be a constraint implementation with the same package and the same name.*
 
 * The `@ConstraintConfiguration` annotation has a `constraintPackage` property that defaults to the package of the constraint configuration class.
-Most cases with xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation], need to override that because the DRLs use another package.
+Most cases with xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation (Deprecated)], need to override that because the DRLs use another package.
 For example, the DRL below uses the package `...conferencescheduling.score`,
 so the constraint configuration above specifies a `constraintPackage`.
 Cases with xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams], normally don't need to specify it.

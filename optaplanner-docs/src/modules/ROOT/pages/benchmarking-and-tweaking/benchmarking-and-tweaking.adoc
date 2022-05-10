@@ -884,7 +884,7 @@ To see which constraints are matched in the best score (and how much) over time,
 image::benchmarking-and-tweaking/constraintMatchTotalBestScoreStatistic.png[align="center"]
 
 Requires the score calculation to support xref:score-calculation/score-calculation.adoc#explainingTheScore[constraint matches].
-xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and <<droolsScoreCalculation,Drools score calculation>> support constraint matches automatically,
+xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and <<droolsScoreCalculation,Drools score calculation (Deprecated)>> support constraint matches automatically,
 but xref:score-calculation/score-calculation.adoc#incrementalJavaScoreCalculation[incremental Java score calculation] requires more work.
 
 [WARNING]
