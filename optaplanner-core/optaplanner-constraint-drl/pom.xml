@@ -11,13 +11,13 @@
 
   <artifactId>optaplanner-constraint-drl</artifactId>
 
-  <name>OptaPlanner constraints: DRL</name>
+  <name>OptaPlanner constraints: DRL (Deprecated)</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains implementation of constraint DRL.
+    This module contains a deprecated implementation of constraint DRL.
   </description>
   <url>https://www.optaplanner.org</url>
 
