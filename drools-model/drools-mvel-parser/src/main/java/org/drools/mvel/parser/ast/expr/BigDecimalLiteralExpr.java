@@ -28,14 +28,18 @@ import java.math.BigDecimal;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.LiteralStringValueExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.CloneVisitor;
-import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.metamodel.LongLiteralExprMetaModel;
+import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
 public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
 
@@ -107,5 +111,9 @@ public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
     @Override
     public LongLiteralExprMetaModel getMetaModel() {
         return JavaParserMetaModel.longLiteralExprMetaModel;
+    }
+
+    public ObjectCreationExpr convertToObjectCreationExpr() {
+        return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, BigDecimal.class.getCanonicalName()), NodeList.nodeList(new StringLiteralExpr(getValue())));
     }
 }

@@ -25,6 +25,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class ConstraintParserTest {
 
     @Before
     public void setup() {
-        PackageModel packageModel = new PackageModel(new ReleaseIdImpl("org.kie.test", "constraint-parser-test", "1.0.0"), "org.kie.test", null, null, null);
+        PackageModel packageModel = new PackageModel(new ReleaseIdImpl("org.kie.test", "constraint-parser-test", "1.0.0"), "org.kie.test", null, null, new DRLIdGenerator());
         Set<String> imports = new HashSet<>();
         imports.add("org.drools.modelcompiler.domain.Person");
         TypeResolver typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
@@ -92,5 +93,19 @@ public class ConstraintParserTest {
         // instanceof check is done after the first constraint
         assertEquals("\"Mark\" == _this.toString() || _this instanceof org.drools.modelcompiler.domain.Person && \"Mark\" == ((org.drools.modelcompiler.domain.Person) _this).getAddress().getCity()",
                      result.getExpr().toString());
+    }
+
+    @Test
+    public void testBigDecimalLiteralWithBindVariable() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "$bd : 10.3B");
+
+        assertEquals("new java.math.BigDecimal(\"10.3\")", result.getExpr().toString());
+    }
+
+    @Test
+    public void testBigIntegerLiteralWithBindVariable() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "$bi : 10I");
+
+        assertEquals("new java.math.BigInteger(\"10\")", result.getExpr().toString());
     }
 }
