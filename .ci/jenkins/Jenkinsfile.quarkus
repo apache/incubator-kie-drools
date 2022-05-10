@@ -76,9 +76,6 @@ pipeline {
                 script {
                     getMavenCommand('kogito-runtimes')
                         .withProperty('maven.test.failure.ignore', true)
-                        // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
-                        // https://github.com/quarkusio/quarkus/issues/23205
-                        .withProperty('quarkus.bootstrap.effective-model-builder', true)
                         .run('clean install')
                 }
             }
@@ -115,9 +112,6 @@ pipeline {
                 script {
                     getMavenCommand('kogito-apps')
                         .withProperty('maven.test.failure.ignore', true)
-                        // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
-                        // https://github.com/quarkusio/quarkus/issues/23205
-                        .withProperty('quarkus.bootstrap.effective-model-builder', true)
                         .run('clean install')
                 }
             }
@@ -251,6 +245,9 @@ void checkoutDroolsRepo() {
 MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
+                // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
+                // https://github.com/quarkusio/quarkus/issues/23205
+                .withProperty('quarkus.bootstrap.effective-model-builder', true)
                 .inDirectory(directory)
     if (addQuarkusVersion) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
