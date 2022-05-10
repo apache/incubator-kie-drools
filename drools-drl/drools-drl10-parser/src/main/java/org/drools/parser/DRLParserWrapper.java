@@ -2,6 +2,7 @@ package org.drools.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -37,6 +38,10 @@ public class DRLParserWrapper {
 
     public List<DRLParserError> getErrors() {
         return errors;
+    }
+
+    public List<String> getErrorMessages() {
+        return errors.stream().map(DRLParserError::getMessage).collect(Collectors.toList());
     }
 
     public boolean hasErrors() {
