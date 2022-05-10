@@ -23,7 +23,8 @@ import org.optaplanner.core.api.score.holder.ScoreHolder;
 /**
  * @see SimpleLongScore
  * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
- * See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint Streams migration recipe</a>.
+ *             See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint
+ *             Streams migration recipe</a>.
  */
 @Deprecated(forRemoval = true)
 public interface SimpleLongScoreHolder extends ScoreHolder<SimpleLongScore> {

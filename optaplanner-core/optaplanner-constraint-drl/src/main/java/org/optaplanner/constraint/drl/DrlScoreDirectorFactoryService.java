@@ -18,6 +18,7 @@ package org.optaplanner.constraint.drl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import org.kie.api.KieBase;
@@ -33,6 +34,7 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
         extends AbstractDrlScoreDirectorFactoryService<Solution_, Score_> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DrlScoreDirectorFactoryService.class);
+    private static final AtomicBoolean DRL_DEPRECATION_MESSAGE_SHOWN = new AtomicBoolean();
 
     @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
@@ -52,9 +54,11 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
             return null;
         }
 
-        LOGGER.info("Score DRL is deprecated and will be removed in a future major version of OptaPlanner.\n" +
-                "Consider migrating to the Constraint Streams API.\n" +
-                "See migration recipe at https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html.");
+        if (!DRL_DEPRECATION_MESSAGE_SHOWN.getAndSet(true)) {
+            LOGGER.info("Score DRL is deprecated and will be removed in a future major version of OptaPlanner.\n" +
+                    "Consider migrating to the Constraint Streams API.\n" +
+                    "See migration recipe: https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html");
+        }
 
         List<String> scoreDrlList = new ArrayList<>();
         if (config.getGizmoKieBaseSupplier() == null) {
