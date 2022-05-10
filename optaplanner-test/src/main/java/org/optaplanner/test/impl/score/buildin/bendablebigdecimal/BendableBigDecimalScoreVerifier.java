@@ -1,17 +1,19 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 package org.optaplanner.test.impl.score.buildin.bendablebigdecimal;
@@ -32,7 +34,10 @@ import org.optaplanner.test.impl.score.AbstractScoreVerifier;
  * If you're using {@link ConstraintStream}s, use {@link ConstraintVerifier} instead.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
+ * See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint Streams migration recipe</a>.
  */
+@Deprecated(forRemoval = true)
 public class BendableBigDecimalScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
 
     protected final int hardLevelsSize;
