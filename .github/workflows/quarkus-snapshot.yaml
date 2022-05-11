@@ -15,7 +15,7 @@ env:
   # Repo specific setting #
   #########################
 
-  ECOSYSTEM_CI_REPO_PATH:  kogito-quarkus
+  ECOSYSTEM_CI_REPO_PATH: kogito-quarkus
 
 jobs:
   quarkus-main:
