@@ -77,6 +77,7 @@ public class $Type$Resource {
         ProcessInstance<$Type$> pi = processService.createProcessInstance(process,
                                                                           businessKey,
                                                                           Optional.ofNullable(resource).orElse(new $Type$Input()).toModel(),
+                                                                          httpHeaders.getRequestHeaders(),
                                                                           httpHeaders.getHeaderString("X-KOGITO-StartFromNode"));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(pi.id()).build())
                 .entity(pi.checkError().variables().toModel())

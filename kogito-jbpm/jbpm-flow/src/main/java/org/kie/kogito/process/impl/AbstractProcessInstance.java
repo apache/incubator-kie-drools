@@ -210,18 +210,31 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void start() {
-        start(null, null);
+        start(Collections.emptyMap());
+    }
+
+    @Override
+    public void start(Map<String, List<String>> headers) {
+        start(null, null, headers);
     }
 
     @Override
     public void start(String trigger, String referenceId) {
+        start(trigger, referenceId, Collections.emptyMap());
+    }
+
+    private void start(String trigger, String referenceId, Map<String, List<String>> headers) {
         if (this.status != KogitoProcessInstance.STATE_PENDING) {
-            throw new IllegalStateException("Impossible to start process instance that already was started");
+            throw new IllegalStateException("Impossible to start process instance that already has started");
         }
         this.status = KogitoProcessInstance.STATE_ACTIVE;
 
         if (referenceId != null) {
             processInstance.setReferenceId(referenceId);
+        }
+
+        if (headers != null) {
+            this.processInstance.setHeaders(headers);
         }
 
         getProcessRuntime().getProcessInstanceManager().setLock(((MutableProcessInstances<T>) process.instances()).lock());
@@ -337,11 +350,20 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void startFrom(String nodeId) {
-        startFrom(nodeId, null);
+        startFrom(nodeId, Collections.emptyMap());
+    }
+
+    @Override
+    public void startFrom(String nodeId, Map<String, List<String>> headers) {
+        startFrom(nodeId, null, headers);
     }
 
     @Override
     public void startFrom(String nodeId, String referenceId) {
+        startFrom(nodeId, referenceId, Collections.emptyMap());
+    }
+
+    private void startFrom(String nodeId, String referenceId, Map<String, List<String>> headers) {
         processInstance.setStartDate(new Date());
         processInstance.setState(STATE_ACTIVE);
         getProcessRuntime().getProcessInstanceManager().addProcessInstance(this.processInstance);
@@ -349,6 +371,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         addCompletionEventListener();
         if (referenceId != null) {
             processInstance.setReferenceId(referenceId);
+        }
+        if (headers != null) {
+            this.processInstance.setHeaders(headers);
         }
         triggerNode(nodeId);
         unbind(variables, processInstance.getVariables());

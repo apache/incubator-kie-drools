@@ -57,14 +57,14 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey,
-            T model,
+            T model, Map<String, List<String>> headers,
             String startFromNodeId) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<T> pi = process.createInstance(businessKey, model);
             if (startFromNodeId != null) {
-                pi.startFrom(startFromNodeId);
+                pi.startFrom(startFromNodeId, headers);
             } else {
-                pi.start();
+                pi.start(headers);
             }
             return pi;
         });

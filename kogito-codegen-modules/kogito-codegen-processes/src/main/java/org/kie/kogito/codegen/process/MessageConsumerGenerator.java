@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.process;
 
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
@@ -26,18 +27,26 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
 import static org.kie.kogito.codegen.core.CodegenUtils.isApplicationField;
 import static org.kie.kogito.codegen.core.CodegenUtils.isObjectMapperField;
@@ -135,6 +144,13 @@ public class MessageConsumerGenerator {
         if (!(trigger.getNode() instanceof StartNode)) {
             template.findAll(MethodDeclaration.class, m -> m.getName().getIdentifier().equals("getModelConverter"))
                     .stream().findFirst().ifPresent(template::remove);
+        }
+
+        if (!trigger.dataOnly()) {
+            template.addMethod("getDataResolver", Keyword.PROTECTED).addAnnotation(Override.class).addParameter(boolean.class, "useCloudEvent")
+                    .setType(parseClassOrInterfaceType(UnaryOperator.class.getCanonicalName()).setTypeArguments(NodeList.nodeList(parseClassOrInterfaceType(Object.class.getCanonicalName()))))
+                    .setBody(new BlockStmt().addStatement(new ReturnStmt(
+                            new MethodReferenceExpr(new NameExpr(AbstractMessageConsumer.class.getSimpleName()), NodeList.nodeList(), "eventResolver"))));
         }
     }
 

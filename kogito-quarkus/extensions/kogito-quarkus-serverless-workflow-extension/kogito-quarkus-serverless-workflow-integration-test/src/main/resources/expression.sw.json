@@ -34,7 +34,7 @@
     {
       "name": "contextMessage",
       "type": "expression",
-      "operation": ".message |=.+\" and the process id is \"+$WORKFLOW.id"
+      "operation": ".message |=.+\" and the header pepe is \"+$WORKFLOW.headers.pepe"
     },
     {
       "name": "discardedResult",

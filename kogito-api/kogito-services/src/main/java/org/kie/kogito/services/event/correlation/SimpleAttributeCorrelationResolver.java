@@ -20,15 +20,15 @@ import java.util.Optional;
 import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.correlation.CorrelationResolver;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class SimpleAttributeCorrelationResolver implements CorrelationResolver {
 
     private String referenceKey = CloudEventExtensionConstants.PROCESS_REFERENCE_ID;
-    private ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());//todo to be injected
+    private ObjectMapper objectMapper = ObjectMapperFactory.get();
     private Optional<Class<?>> type;
 
     public SimpleAttributeCorrelationResolver(String referenceKey) {

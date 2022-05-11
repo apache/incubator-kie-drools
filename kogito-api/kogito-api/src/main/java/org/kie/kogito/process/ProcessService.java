@@ -16,6 +16,7 @@
 package org.kie.kogito.process;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,8 +32,14 @@ import org.kie.kogito.process.workitem.Comment;
 
 public interface ProcessService {
 
-    <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey,
+    default <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey,
             T model,
+            String startFromNodeId) {
+        return createProcessInstance(process, businessKey, model, Collections.emptyMap(), startFromNodeId);
+    }
+
+    <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey,
+            T model, Map<String, List<String>> headers,
             String startFromNodeId);
 
     <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey, T model,

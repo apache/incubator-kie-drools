@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.internal.process.runtime;
 
+import java.util.List;
 import java.util.Map;
 
 import org.kie.api.runtime.KieRuntime;
@@ -39,6 +40,10 @@ public interface KogitoProcessContext {
      *         executed in this context
      */
     KogitoNodeInstance getNodeInstance();
+
+    default Map<String, List<String>> getHeaders() {
+        return getProcessInstance().getHeaders();
+    }
 
     /**
      * Returns the value of the variable with the given name.

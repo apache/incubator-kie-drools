@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -26,6 +27,7 @@ import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.SubscriptionInfo;
+import org.kie.kogito.event.SubscriptionInfo.SubscriptionInfoBuilder;
 import org.kie.kogito.event.process.ProcessDataEvent;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
@@ -67,15 +69,27 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
             ExecutorService executorService,
             EventUnmarshaller<Object> eventUnmarshaller) {
         this.trigger = trigger;
-        this.eventDispatcher = new ProcessEventDispatcher<>(process, getModelConverter().orElse(null), processService, executorService);
-
+        this.eventDispatcher = new ProcessEventDispatcher<>(process, getModelConverter().orElse(null), processService, executorService, getDataResolver(useCloudEvents));
+        SubscriptionInfoBuilder builder = SubscriptionInfo.builder().converter(eventUnmarshaller).type(trigger);
         if (useCloudEvents) {
-            eventReceiver.subscribe(this::consume,
-                    SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(ProcessDataEvent.class).parametrizedClasses(dataClass).type(trigger).createSubscriptionInfo());
+            builder.outputClass(ProcessDataEvent.class).parametrizedClasses(dataClass);
         } else {
-            eventReceiver.subscribe(this::consume, SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(dataClass).type(trigger).createSubscriptionInfo());
+            builder.outputClass(dataClass);
         }
+        eventReceiver.subscribe(this::consume, builder.createSubscriptionInfo());
         logger.info("Consumer for {} started", trigger);
+    }
+
+    protected UnaryOperator<Object> getDataResolver(boolean useCloudEvents) {
+        return useCloudEvents ? AbstractMessageConsumer::cloudEventResolver : AbstractMessageConsumer::eventResolver;
+    }
+
+    protected static Object cloudEventResolver(Object object) {
+        return ((ProcessDataEvent) object).getData();
+    }
+
+    protected static Object eventResolver(Object object) {
+        return object;
     }
 
     private CompletionStage<?> consume(Object payload) {

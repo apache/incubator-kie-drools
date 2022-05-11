@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kie.kogito.Model;
@@ -28,7 +29,6 @@ import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.services.event.correlation.EventDataCorrelationResolver;
 import org.kie.kogito.services.event.correlation.SimpleAttributeCorrelationResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
     private CorrelationResolver businessKeyResolver = new SimpleAttributeCorrelationResolver(BUSINESS_KEY);
     private CorrelationResolver nodeIdResolver = new SimpleAttributeCorrelationResolver(PROCESS_START_FROM_NODE);
     private CorrelationResolver referenceIdResolver = new SimpleAttributeCorrelationResolver(PROCESS_INSTANCE_ID);
-    private CorrelationResolver dataResolver = new EventDataCorrelationResolver();
+    private UnaryOperator<Object> dataResolver;
 
     private ProcessService processService;
     private Function<Object, M> modelConverter;
@@ -55,11 +55,13 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessEventDispatcher.class);
     private ExecutorService executor;
 
-    public ProcessEventDispatcher(Process<M> process, Function<Object, M> modelConverter, ProcessService processService, ExecutorService executor) {
+    public ProcessEventDispatcher(Process<M> process, Function<Object, M> modelConverter, ProcessService processService, ExecutorService executor,
+            UnaryOperator<Object> dataResolver) {
         this.process = process;
         this.modelConverter = modelConverter;
         this.processService = processService;
         this.executor = executor;
+        this.dataResolver = dataResolver;
     }
 
     @Override
@@ -76,16 +78,11 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
 
         //if the trigger is for a start event (model converter is set only for start node)
         if (modelConverter != null) {
-            return CompletableFuture.supplyAsync(() -> handleMessageWithoutReference(trigger, event), executor);
+            return CompletableFuture.supplyAsync(() -> startNewInstance(trigger, event), executor);
         }
 
         LOGGER.info("No matches found for trigger {} in process {}. Skipping consumed message {}", trigger, process.id(), event);
         return CompletableFuture.completedFuture(null);
-    }
-
-    private ProcessInstance<M> handleMessageWithoutReference(String trigger, Object event) {
-        LOGGER.debug("Starting new process instance with trigger '{}'", trigger);
-        return startNewInstance(trigger, event);
     }
 
     private ProcessInstance<M> handleMessageWithReference(String trigger, Object event, String kogitoReferenceId) {
@@ -99,25 +96,21 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
                     return instance;
                 })
                 .orElseGet(() -> {
-                    LOGGER.info("Process instance with id '{}' not found for triggering signal '{}', starting a new one",
-                            kogitoReferenceId,
-                            trigger);
-                    return startNewInstance(trigger, event);
+                    LOGGER.info("Process instance with id '{}' not found for triggering signal '{}'", kogitoReferenceId, trigger);
+                    return modelConverter != null ? startNewInstance(trigger, event) : null;
                 });
     }
 
     private Optional<M> signalProcessInstance(String trigger, String id, Object event) {
-        return processService.signalProcessInstance((Process) process, id, dataResolver.resolve(event).getValue(), "Message-" + trigger);
+        return processService.signalProcessInstance((Process) process, id, dataResolver.apply(event), "Message-" + trigger);
     }
 
     private ProcessInstance<M> startNewInstance(String trigger, Object event) {
-        if (modelConverter == null) {
-            return null;
-        }
+        LOGGER.info("Starting new process instance with signal '{}'", trigger);
         String businessKey = businessKeyResolver.resolve(event).asString();
         String fromNode = nodeIdResolver.resolve(event).asString();
         String referenceId = referenceIdResolver.resolve(event).asString();//keep reference with the caller starting the instance (usually the caller process instance)
-        Object data = dataResolver.resolve(event).getValue();
+        Object data = dataResolver.apply(event);
         return processService.createProcessInstance(process, businessKey, modelConverter.apply(data), fromNode, trigger, referenceId);
     }
 

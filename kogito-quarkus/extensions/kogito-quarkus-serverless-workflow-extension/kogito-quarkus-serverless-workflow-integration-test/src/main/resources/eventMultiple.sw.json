@@ -10,7 +10,7 @@
       "name": "quietEvent",
       "source": "",
       "type": "quiet",
-      "metadata" : { "dataOnly" : "false"}
+      "dataOnly" : "false"
     },
     {
       "name": "neverArrivingEvent",
