@@ -1,16 +1,15 @@
 = OptaPlanner Operator (experimental)
 
-*Please note that the OptaPlanner Operator is experimental. As such, it provides no guarantees
-in terms of maturity and backward compatibility.*
-
 The OptaPlanner solver operator enables running OptaPlanner workloads on Kubernetes.
 
+*Please note that the OptaPlanner Operator is experimental. As such, it provides no guarantees
+in terms of maturity and backward compatibility.*
 
 == Prerequisites
 
 === Get your environment running
 
-Log in to an existing OpenShift cluster or use either https://developers.redhat.com/products/codeready-containers/overview[RedHat CodeReady Containers] or https://minikube.sigs.k8s.io/docs/start/[Minikube] for a local development.
+Use an existing OpenShift cluster or download and start either https://developers.redhat.com/products/codeready-containers/overview[RedHat CodeReady Containers] or https://minikube.sigs.k8s.io/docs/start/[Minikube] for a local development.
 
 === Install Strimzi
 
@@ -19,25 +18,42 @@ see the following sections.
 
 == Local development with Minikube
 
-. Install Strimzi by following their https://strimzi.io/quickstarts/[quickstart].
+. Install Strimzi and create a new Kafka cluster by following their https://strimzi.io/quickstarts/[quickstart].
 . Run `mvn quarkus:dev` to start the solver operator locally. The operator will connect to the Kubernetes cluster you are logged in.
 
+[#deployToOpenShift]
 == Deployment to OpenShift
 
+Login as a user with the `cluster-admin` role.
+
+[#installStrimzi]
 === Install Strimzi
 
-In the OpenShift console, navigate to the menu Operators -> Operator Hub. Find the "Strimzi" operator and install it.
+. In the OpenShift console, navigate to the menu _Operators -> Operator Hub_. Find the _Strimzi_ operator and install it.
+. Open the _Strimzi_ operator, select the _Kafka_ tab and create a new Kafka cluster. You will need the Kafka cluster name
+to create the `Solver` custom resource later.
 
+[#deployOperator]
 === Deploy the OptaPlanner Operator
 
-. Create the `optaplanner-operator` project by running `oc new-project optaplanner-operator`
+. Create the `optaplanner-operator` project by running `oc new-project optaplanner-operator`.
 . Run `mvn clean package -Dopenshift`.
-. Apply the generated CRD by running `oc create -f target/kubernetes/solvers.org.optaplanner.solver-v1.yml.
-. Apply the generated template by running `oc apply -f src/k8s/openshift.yml.
+. Apply the generated CRD by running `oc create -f target/kubernetes/solvers.org.optaplanner.solver-v1.yml`.
+. Apply the prepared template by running `oc apply -f src/k8s/openshift.yml`.
+
+TIP: If you encounter the `Caused by: javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed` exception due to self-signed certificate during the build, add the `-Dquarkus.kubernetes-client.trust-certs=true` property.
 
 == Try the OptaPlanner Operator
 
 === Create a solver custom resource
 
-. Create a solver resource that follows the generated CRD. There is an example you can use by running either `kubectl apply -f src/k8s/example-resource.yml -n <namespace>` (Minikube) or `oc apply -f src/k8s/example-resource.yml` (OpenShift).
-. Check the created resource: `kubectl get solver -n <namespace>` (Minikube) or `oc get solver` (OpenShift).
+The Solver custom resource describes the problem to be solved on Kubernetes and the infrastructure it requires.
+Below are the mandatory spec properties:
+
+- `kafkaCluster` - the name of the Kafka cluster created during the <<#installStrimzi, Strimzi installation>>
+- `kafkaBootstrapServers` - the address of the Kafka bootstrap servers
+- `solverImage` - the container image available in a registry of your choice
+
+There is an example you can use by running either `kubectl apply -f src/k8s/example-resource.yml -n <namespace>` (Minikube) or `oc apply -f src/k8s/example-resource.yml` (OpenShift).
+
+To check the created resource, run `kubectl get solver -n <namespace>` (Minikube) or `oc get solver` (OpenShift).
