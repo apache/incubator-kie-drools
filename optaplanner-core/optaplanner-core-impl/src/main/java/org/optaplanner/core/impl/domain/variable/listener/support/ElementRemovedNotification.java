@@ -16,29 +16,29 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
-final class EntityAddedNotification<Solution_> extends AbstractNotification implements EntityNotification<Solution_> {
+final class ElementRemovedNotification<Solution_> extends AbstractNotification implements ListVariableNotification<Solution_> {
 
-    EntityAddedNotification(Object entity) {
-        super(entity);
+    ElementRemovedNotification(Object entity, int index) {
+        super(entity, index);
     }
 
     @Override
-    public void triggerBefore(AbstractVariableListener<Solution_, Object> variableListener,
+    public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeEntityAdded(scoreDirector, entity);
+        variableListener.beforeElementRemoved(scoreDirector, entity, index);
     }
 
     @Override
-    public void triggerAfter(AbstractVariableListener<Solution_, Object> variableListener,
+    public void triggerAfter(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterEntityAdded(scoreDirector, entity);
+        variableListener.afterElementRemoved(scoreDirector, entity, index);
     }
 
     @Override
     public String toString() {
-        return "EntityAdded(" + entity + ")";
+        return "ElementRemoved(" + entity + "[" + index + "])";
     }
 }

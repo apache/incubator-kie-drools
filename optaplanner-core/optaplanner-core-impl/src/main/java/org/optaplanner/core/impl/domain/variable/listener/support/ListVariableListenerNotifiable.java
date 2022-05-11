@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,21 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 /**
- * A notifiable specialized to receive {@link BasicVariableNotification}s and trigger them on a given {@link VariableListener}.
+ * A notifiable specialized to receive {@link ListVariableNotification}s and trigger them on a given
+ * {@link ListVariableListener}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Solution_, VariableListener<Solution_, Object>> {
+final class ListVariableListenerNotifiable<Solution_>
+        extends AbstractNotifiable<Solution_, ListVariableListener<Solution_, Object>> {
 
-    VariableListenerNotifiable(
+    ListVariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
-            VariableListener<Solution_, Object> variableListener,
+            ListVariableListener<Solution_, Object> variableListener,
             int globalOrder) {
         super(scoreDirector, variableListener, globalOrder);
     }

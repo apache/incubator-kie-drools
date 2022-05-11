@@ -98,7 +98,7 @@ public class DefaultSubChainSelector<Solution_> extends AbstractSelector<Solutio
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
     }

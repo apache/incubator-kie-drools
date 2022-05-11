@@ -155,14 +155,12 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
 
-        innerScoreDirector.beforeVariableChanged(variableDescriptor, sourceEntity);
+        innerScoreDirector.beforeElementMoved(variableDescriptor,
+                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
         Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
-        if (sourceEntity != destinationEntity) {
-            innerScoreDirector.afterVariableChanged(variableDescriptor, sourceEntity);
-            innerScoreDirector.beforeVariableChanged(variableDescriptor, destinationEntity);
-        }
         variableDescriptor.addElement(destinationEntity, destinationIndex, element);
-        innerScoreDirector.afterVariableChanged(variableDescriptor, destinationEntity);
+        innerScoreDirector.afterElementMoved(variableDescriptor,
+                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
     @Override

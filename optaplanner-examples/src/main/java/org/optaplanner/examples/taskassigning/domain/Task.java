@@ -42,7 +42,9 @@ public class Task extends AbstractPersistable implements Labeled {
     private Employee employee;
     @IndexShadowVariable(sourceVariableName = "tasks")
     private Integer index;
-    // This API will change in https://issues.redhat.com/browse/PLANNER-2582.
+    // The starTime should be sourced on Employee.tasks but the @CustomShadowVariable does not allow that yet.
+    // Sourcing it on Task.employee and Task.index is a temporary workaround.
+    // See https://issues.redhat.com/browse/PLANNER-2706.
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
             sources = {
                     @PlanningVariableReference(variableName = "employee"),

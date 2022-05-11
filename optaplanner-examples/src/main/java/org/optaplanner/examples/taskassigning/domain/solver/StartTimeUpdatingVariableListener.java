@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.taskassigning.domain.solver;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.VariableListener;
@@ -57,21 +58,27 @@ public class StartTimeUpdatingVariableListener implements VariableListener<TaskA
     }
 
     protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
-        Integer startTime = calculateStartTime(task);
-        if (!Objects.equals(task.getStartTime(), startTime)) {
-            scoreDirector.beforeVariableChanged(task, "startTime");
-            task.setStartTime(startTime);
-            scoreDirector.afterVariableChanged(task, "startTime");
+        Employee employee = task.getEmployee();
+        if (employee == null) {
+            return;
+        }
+        Integer index = task.getIndex();
+        List<Task> tasks = employee.getTasks();
+        Integer previousEndTime = index == 0 ? Integer.valueOf(0) : tasks.get(index - 1).getEndTime();
+
+        for (int i = index; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            Integer startTime = calculateStartTime(t, previousEndTime);
+            if (!Objects.equals(t.getStartTime(), startTime)) {
+                scoreDirector.beforeVariableChanged(t, "startTime");
+                t.setStartTime(startTime);
+                scoreDirector.afterVariableChanged(t, "startTime");
+            }
+            previousEndTime = t.getEndTime();
         }
     }
 
-    private Integer calculateStartTime(Task task) {
-        Employee employee = task.getEmployee();
-        if (employee == null) {
-            return null;
-        }
-        Integer index = task.getIndex();
-        Integer previousEndTime = index == 0 ? Integer.valueOf(0) : employee.getTasks().get(index - 1).getEndTime();
+    private Integer calculateStartTime(Task task, Integer previousEndTime) {
         if (previousEndTime == null) {
             return null;
         }

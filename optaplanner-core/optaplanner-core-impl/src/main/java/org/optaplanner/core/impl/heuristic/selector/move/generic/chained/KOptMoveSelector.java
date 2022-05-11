@@ -80,7 +80,7 @@ public class KOptMoveSelector<Solution_> extends GenericMoveSelector<Solution_> 
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         anchorVariableSupply = supplyManager.demand(new AnchorVariableDemand<>(variableDescriptor));
     }

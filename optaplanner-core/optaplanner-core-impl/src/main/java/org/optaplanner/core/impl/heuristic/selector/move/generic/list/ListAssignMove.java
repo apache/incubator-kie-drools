@@ -70,9 +70,9 @@ public class ListAssignMove<Solution_> extends AbstractMove<Solution_> {
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         // Add planningValue to destinationEntity's list variable (at destinationIndex).
-        innerScoreDirector.beforeVariableChanged(variableDescriptor, destinationEntity);
+        innerScoreDirector.beforeElementAdded(variableDescriptor, destinationEntity, destinationIndex);
         variableDescriptor.addElement(destinationEntity, destinationIndex, planningValue);
-        innerScoreDirector.afterVariableChanged(variableDescriptor, destinationEntity);
+        innerScoreDirector.afterElementAdded(variableDescriptor, destinationEntity, destinationIndex);
     }
 
     @Override

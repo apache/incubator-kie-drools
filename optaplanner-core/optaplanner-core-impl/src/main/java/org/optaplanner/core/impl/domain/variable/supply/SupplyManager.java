@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.domain.variable.supply;
 /**
  * Provides a {@link Supply} for subsystems that submit a {@link Demand}.
  */
-public interface SupplyManager<Solution_> {
+public interface SupplyManager {
 
     /**
      * Returns the {@link Supply} for a {@link Demand}, preferably an existing one.
@@ -29,6 +29,6 @@ public interface SupplyManager<Solution_> {
      * @param <Supply_> Subclass of {@link Supply}
      * @return never null
      */
-    <Supply_ extends Supply> Supply_ demand(Demand<Solution_, Supply_> demand);
+    <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand);
 
 }

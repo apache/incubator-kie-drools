@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.variable.anchor;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -27,8 +28,10 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
 /**
  * Alternative to {@link AnchorVariableListener}.
  */
-public class ExternalizedAnchorVariableSupply<Solution_>
-        implements SourcedVariableListener<Solution_, Object>, AnchorVariableSupply {
+public class ExternalizedAnchorVariableSupply<Solution_> implements
+        SourcedVariableListener<Solution_>,
+        VariableListener<Solution_, Object>,
+        AnchorVariableSupply {
 
     protected final VariableDescriptor<Solution_> previousVariableDescriptor;
     protected final SingletonInverseVariableSupply nextVariableSupply;

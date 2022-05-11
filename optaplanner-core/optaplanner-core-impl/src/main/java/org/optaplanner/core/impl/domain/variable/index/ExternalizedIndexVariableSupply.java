@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -29,8 +30,10 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
 /**
  * Alternative to {@link IndexVariableListener}.
  */
-public class ExternalizedIndexVariableSupply<Solution_>
-        implements SourcedVariableListener<Solution_, Object>, IndexVariableSupply {
+public class ExternalizedIndexVariableSupply<Solution_> implements
+        SourcedVariableListener<Solution_>,
+        ListVariableListener<Solution_, Object>,
+        IndexVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
@@ -58,13 +61,6 @@ public class ExternalizedIndexVariableSupply<Solution_>
     }
 
     @Override
-    public boolean requiresUniqueEntityEvents() {
-        // A move on a single entity produces multiple before/after variable changed events for the given entity
-        // but the corrupted supply checks in insert/retract methods require a unique pair of before/after events.
-        return true;
-    }
-
-    @Override
     public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
@@ -75,37 +71,68 @@ public class ExternalizedIndexVariableSupply<Solution_>
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract(entity);
+    public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(entity);
+    public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        updateIndexes(entity, index);
+    }
+
+    @Override
+    public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        Object element = sourceVariableDescriptor.getElement(entity, index);
+        Integer oldIndex = indexMap.remove(element);
+        if (oldIndex == null) {
+            throw new IllegalStateException("The supply (" + this + ") is corrupted,"
+                    + " because the element (" + element
+                    + ") at index (" + index
+                    + ") has an oldIndex (" + oldIndex
+                    + ") which is null.");
+        }
+    }
+
+    @Override
+    public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        updateIndexes(entity, index);
+    }
+
+    @Override
+    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        // Do nothing
+    }
+
+    @Override
+    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        updateIndexes(sourceEntity, sourceIndex);
+        updateIndexes(destinationEntity, destinationIndex);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // When the entity is removed, its values become unassigned. An unassigned value has no inverse entity and no index.
-        retract(entity);
+        // Do nothing
     }
 
     @Override
     public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // Do nothing
+        // When the entity is removed, its values become unassigned. An unassigned value has no inverse entity and no index.
+        retract(entity);
     }
 
     private void insert(Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         int index = 0;
-        for (Object value : listVariable) {
-            Integer oldIndex = indexMap.put(value, index);
+        for (Object element : listVariable) {
+            Integer oldIndex = indexMap.put(element, index);
             if (oldIndex != null) {
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                        + " because the entity (" + entity
-                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be inserted: one of its values (" + value
-                        + ") at index (" + index + ") already has a non-null oldIndex (" + oldIndex + ").");
+                        + " because the element (" + element
+                        + ") at index (" + index
+                        + ") has an oldIndex (" + oldIndex
+                        + ") which is not null.");
             }
             index++;
         }
@@ -114,22 +141,38 @@ public class ExternalizedIndexVariableSupply<Solution_>
     private void retract(Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         int index = 0;
-        for (Object value : listVariable) {
-            Integer oldIndex = indexMap.remove(value);
+        for (Object element : listVariable) {
+            Integer oldIndex = indexMap.remove(element);
             if (!Objects.equals(oldIndex, index)) {
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                        + " because the entity (" + entity
-                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be retracted: one of its values (" + value
-                        + ") at index (" + index + ") already has an unexpected oldIndex (" + oldIndex + ").");
+                        + " because the element (" + element
+                        + ") at index (" + index
+                        + ") has an oldIndex (" + oldIndex
+                        + ") which is unexpected.");
             }
             index++;
         }
     }
 
+    private void updateIndexes(Object entity, int startIndex) {
+        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
+        for (int index = startIndex; index < listVariable.size(); index++) {
+            Object element = listVariable.get(index);
+            Integer oldIndex = indexMap.put(element, index);
+            // The first element is allowed to have a null oldIndex because it might have been just assigned.
+            if (oldIndex == null && index != startIndex) {
+                throw new IllegalStateException("The supply (" + this + ") is corrupted,"
+                        + " because the element (" + element
+                        + ") at index (" + index
+                        + ") has an oldIndex (" + oldIndex
+                        + ") which is null.");
+            }
+        }
+    }
+
     @Override
-    public Integer getIndex(Object planningValue) {
-        return indexMap.get(planningValue);
+    public Integer getIndex(Object element) {
+        return indexMap.get(element);
     }
 
     @Override

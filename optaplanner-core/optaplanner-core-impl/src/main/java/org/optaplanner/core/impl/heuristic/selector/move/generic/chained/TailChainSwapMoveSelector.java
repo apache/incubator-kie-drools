@@ -71,7 +71,7 @@ public class TailChainSwapMoveSelector<Solution_> extends GenericMoveSelector<So
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         anchorVariableSupply = supplyManager.demand(new AnchorVariableDemand<>(variableDescriptor));

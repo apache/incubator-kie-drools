@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.supply;
 
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-
 /**
  * A subsystem submits a demand for a {@link Supply}.
  * Implementations must overwrite {@link Object#equals(Object)} and {@link Object#hashCode()}.
@@ -26,15 +24,15 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * @see Supply
  * @see SupplyManager
  */
-public interface Demand<Solution_, Supply_ extends Supply> {
+public interface Demand<Supply_ extends Supply> {
 
     /**
      * Only called if the domain model doesn't already support the demand (through a shadow variable usually).
      * Equal demands share the same {@link Supply}.
      *
-     * @param scoreDirector never null
+     * @param supplyManager never null
      * @return never null
      */
-    Supply_ createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector);
+    Supply_ createExternalizedSupply(SupplyManager supplyManager);
 
 }

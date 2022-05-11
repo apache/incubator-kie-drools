@@ -60,9 +60,9 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         // Remove a planning value from sourceEntity's list variable (at sourceIndex).
-        innerScoreDirector.beforeVariableChanged(variableDescriptor, sourceEntity);
+        innerScoreDirector.beforeElementRemoved(variableDescriptor, sourceEntity, sourceIndex);
         variableDescriptor.removeElement(sourceEntity, sourceIndex);
-        innerScoreDirector.afterVariableChanged(variableDescriptor, sourceEntity);
+        innerScoreDirector.afterElementRemoved(variableDescriptor, sourceEntity, sourceIndex);
     }
 
     // ************************************************************************

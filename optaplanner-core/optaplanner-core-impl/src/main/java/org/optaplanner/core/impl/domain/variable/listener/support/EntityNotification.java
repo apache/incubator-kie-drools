@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
-import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
-/**
- * Used to externalize data for a {@link Supply} from the domain model itself.
- */
-public interface SourcedVariableListener<Solution_> extends AbstractVariableListener<Solution_, Object>, Supply {
-
-    VariableDescriptor<Solution_> getSourceVariableDescriptor();
+public interface EntityNotification<Solution_> extends Notification<Solution_, AbstractVariableListener<Solution_, Object>> {
 
 }

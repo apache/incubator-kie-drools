@@ -158,7 +158,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public SupplyManager<Solution_> getSupplyManager() {
+    public SupplyManager getSupplyManager() {
         return variableListenerSupport;
     }
 
@@ -395,8 +395,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore++;
-        } else if (variableDescriptor.isGenuineListVariable()) {
-            workingInitScore -= ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
     }
@@ -405,8 +403,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore--;
-        } else if (variableDescriptor.isGenuineListVariable()) {
-            workingInitScore += ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }
@@ -416,6 +412,42 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         beforeVariableChanged(variableDescriptor, entity);
         variableDescriptor.setValue(entity, newValue);
         afterVariableChanged(variableDescriptor, entity);
+    }
+
+    @Override
+    public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        variableListenerSupport.beforeElementAdded(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        workingInitScore++;
+        variableListenerSupport.afterElementAdded(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        variableListenerSupport.beforeElementRemoved(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        workingInitScore--;
+        variableListenerSupport.afterElementRemoved(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        variableListenerSupport.beforeElementMoved(variableDescriptor,
+                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+    }
+
+    @Override
+    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        variableListenerSupport.afterElementMoved(variableDescriptor,
+                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {

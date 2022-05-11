@@ -25,6 +25,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 
@@ -129,6 +130,28 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         session.update(entity);
         super.afterVariableChanged(variableDescriptor, entity);
+    }
+
+    @Override
+    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        session.update(entity);
+        super.afterElementAdded(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        session.update(entity);
+        super.afterElementRemoved(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        session.update(sourceEntity);
+        if (sourceEntity != destinationEntity) {
+            session.update(destinationEntity);
+        }
+        super.afterElementMoved(variableDescriptor, sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing

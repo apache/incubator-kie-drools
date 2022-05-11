@@ -18,15 +18,15 @@ package org.optaplanner.core.impl.domain.variable.custom;
 
 import java.util.Objects;
 
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.Supply;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
 /**
  * Unlike other {@link Demand}s, a custom demand isn't equalized based on its sources, but based on its target.
  * Therefore a custom shadow variable cannot be reused by built-in systems.
  */
-public class CustomShadowVariableDemand<Solution_> implements Demand<Solution_, SingletonInverseVariableSupply> {
+public class CustomShadowVariableDemand<Solution_> implements Demand<CustomShadowVariableDemand.NoSupply> {
 
     private final CustomShadowVariableDescriptor<Solution_> targetShadowVariableDescriptor;
 
@@ -39,7 +39,7 @@ public class CustomShadowVariableDemand<Solution_> implements Demand<Solution_, 
     // ************************************************************************
 
     @Override
-    public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public NoSupply createExternalizedSupply(SupplyManager supplyManager) {
         throw new IllegalArgumentException("A custom shadow variable cannot be externalized.");
     }
 
@@ -69,4 +69,6 @@ public class CustomShadowVariableDemand<Solution_> implements Demand<Solution_, 
         return getClass().getSimpleName();
     }
 
+    public interface NoSupply extends Supply {
+    }
 }

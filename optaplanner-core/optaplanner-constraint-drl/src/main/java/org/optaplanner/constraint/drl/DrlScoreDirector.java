@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 
@@ -169,9 +170,31 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
     // public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         update(entity, variableDescriptor.getVariableName());
         super.afterVariableChanged(variableDescriptor, entity);
+    }
+
+    @Override
+    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        update(entity, variableDescriptor.getVariableName());
+        super.afterElementAdded(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        update(entity, variableDescriptor.getVariableName());
+        super.afterElementRemoved(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        update(sourceEntity, variableDescriptor.getVariableName());
+        if (sourceEntity != destinationEntity) {
+            update(destinationEntity, variableDescriptor.getVariableName());
+        }
+        super.afterElementMoved(variableDescriptor, sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
     private void update(Object entity, String variableName) {

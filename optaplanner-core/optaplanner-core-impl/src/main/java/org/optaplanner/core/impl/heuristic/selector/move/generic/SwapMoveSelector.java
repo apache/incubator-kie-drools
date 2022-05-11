@@ -91,7 +91,7 @@ public class SwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> 
         super.solvingStarted(solverScope);
         if (anyChained) {
             inverseVariableSupplyList = new ArrayList<>(variableDescriptorList.size());
-            SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+            SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
             for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
                 SingletonInverseVariableSupply inverseVariableSupply;
                 if (variableDescriptor.isChained()) {

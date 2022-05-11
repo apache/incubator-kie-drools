@@ -22,9 +22,9 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
-public class AnchorVariableDemand<Solution_> implements Demand<Solution_, AnchorVariableSupply> {
+public class AnchorVariableDemand<Solution_> implements Demand<AnchorVariableSupply> {
 
     protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
 
@@ -37,8 +37,8 @@ public class AnchorVariableDemand<Solution_> implements Demand<Solution_, Anchor
     // ************************************************************************
 
     @Override
-    public AnchorVariableSupply createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector) {
-        SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
+    public AnchorVariableSupply createExternalizedSupply(SupplyManager supplyManager) {
+        SingletonInverseVariableSupply inverseVariableSupply = supplyManager
                 .demand(new SingletonInverseVariableDemand<>(sourceVariableDescriptor));
         return new ExternalizedAnchorVariableSupply<>(sourceVariableDescriptor, inverseVariableSupply);
     }

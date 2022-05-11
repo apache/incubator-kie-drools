@@ -53,18 +53,18 @@ class IndexVariableListenerTest {
         assertThat(v2.getIndex()).isEqualTo(1);
         assertThat(v3.getIndex()).isEqualTo(2);
 
-        indexVariableListener.beforeVariableChanged(scoreDirector, entity);
+        indexVariableListener.beforeElementAdded(scoreDirector, entity, 2);
         entity.getValueList().add(2, v4);
-        indexVariableListener.afterVariableChanged(scoreDirector, entity);
+        indexVariableListener.afterElementAdded(scoreDirector, entity, 2);
 
         assertThat(v1.getIndex()).isEqualTo(0);
         assertThat(v2.getIndex()).isEqualTo(1);
         assertThat(v4.getIndex()).isEqualTo(2);
         assertThat(v3.getIndex()).isEqualTo(3);
 
-        indexVariableListener.beforeVariableChanged(scoreDirector, entity);
+        indexVariableListener.beforeElementRemoved(scoreDirector, entity, 0);
         entity.getValueList().remove(v1);
-        indexVariableListener.afterVariableChanged(scoreDirector, entity);
+        indexVariableListener.afterElementRemoved(scoreDirector, entity, 0);
 
         assertThat(v2.getIndex()).isEqualTo(0);
         assertThat(v4.getIndex()).isEqualTo(1);

@@ -30,7 +30,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
-import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
@@ -94,12 +93,12 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     // ************************************************************************
 
     @Override
-    public Demand<Solution_, ?> getProvidedDemand() {
+    public AnchorVariableDemand<Solution_> getProvidedDemand() {
         return new AnchorVariableDemand<>(sourceVariableDescriptor);
     }
 
     @Override
-    public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public AnchorVariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new SingletonInverseVariableDemand<>(sourceVariableDescriptor));
         return new AnchorVariableListener<>(this, sourceVariableDescriptor, inverseVariableSupply);

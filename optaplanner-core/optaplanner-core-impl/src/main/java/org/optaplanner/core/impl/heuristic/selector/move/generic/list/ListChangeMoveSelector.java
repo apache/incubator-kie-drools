@@ -59,7 +59,7 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
         indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
     }

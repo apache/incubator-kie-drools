@@ -31,7 +31,6 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
@@ -217,7 +216,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     // ************************************************************************
 
     @Override
-    public Demand<Solution_, ?> getProvidedDemand() {
+    public CustomShadowVariableDemand<Solution_> getProvidedDemand() {
         return new CustomShadowVariableDemand<>(this);
     }
 
@@ -227,7 +226,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public VariableListener<Solution_, Object> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor

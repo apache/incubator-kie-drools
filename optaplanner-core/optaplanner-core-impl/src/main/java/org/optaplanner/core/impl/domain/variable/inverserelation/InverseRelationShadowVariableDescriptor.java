@@ -22,11 +22,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
-import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -146,7 +146,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     @Override
-    public Class<? extends VariableListener> getVariableListenerClass() {
+    public Class<? extends AbstractVariableListener> getVariableListenerClass() {
         if (singleton) {
             if (chained) {
                 return SingletonInverseVariableListener.class;
@@ -163,7 +163,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     // ************************************************************************
 
     @Override
-    public Demand<Solution_, ?> getProvidedDemand() {
+    public Demand<?> getProvidedDemand() {
         if (singleton) {
             if (chained) {
                 return new SingletonInverseVariableDemand<>(sourceVariableDescriptor);
@@ -177,7 +177,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     @Override
-    public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public AbstractVariableListener<Solution_, Object> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (singleton) {
             if (chained) {
                 return new SingletonInverseVariableListener<>(this, sourceVariableDescriptor);

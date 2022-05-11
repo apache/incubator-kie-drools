@@ -59,19 +59,17 @@ class ExternalizedIndexVariableSupplyTest {
         assertThat(supply.getIndex(v3)).isEqualTo(0);
 
         // Move v3 from e2[0] to e1[2].
-        supply.beforeVariableChanged(scoreDirector, e2);
+        supply.beforeElementMoved(scoreDirector, e2, 0, e1, 2);
         e2.getValueList().remove(v3);
-        supply.afterVariableChanged(scoreDirector, e2);
-        supply.beforeVariableChanged(scoreDirector, e1);
         e1.getValueList().add(v3);
-        supply.afterVariableChanged(scoreDirector, e1);
+        supply.afterElementMoved(scoreDirector, e2, 0, e1, 2);
 
         assertThat(supply.getIndex(v3)).isEqualTo(2);
 
         // Unassign v1 from e1.
-        supply.beforeVariableChanged(scoreDirector, e1);
+        supply.beforeElementRemoved(scoreDirector, e1, 0);
         e1.getValueList().remove(v1);
-        supply.afterVariableChanged(scoreDirector, e1);
+        supply.afterElementRemoved(scoreDirector, e1, 0);
 
         assertThat(supply.getIndex(v1)).isNull();
         assertThat(supply.getIndex(v2)).isEqualTo(0);
@@ -84,6 +82,13 @@ class ExternalizedIndexVariableSupplyTest {
 
         assertThat(supply.getIndex(v2)).isNull();
         assertThat(supply.getIndex(v3)).isNull();
+
+        // Assign v1 to e2.
+        supply.beforeElementAdded(scoreDirector, e2, 0);
+        e2.getValueList().add(0, v1);
+        supply.afterElementAdded(scoreDirector, e2, 0);
+
+        assertThat(supply.getIndex(v1)).isEqualTo(0);
 
         supply.close();
     }

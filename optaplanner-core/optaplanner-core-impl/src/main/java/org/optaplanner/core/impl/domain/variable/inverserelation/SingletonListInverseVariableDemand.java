@@ -20,9 +20,9 @@ import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
-public class SingletonListInverseVariableDemand<Solution_> implements Demand<Solution_, SingletonInverseVariableSupply> {
+public class SingletonListInverseVariableDemand<Solution_> implements Demand<SingletonInverseVariableSupply> {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
@@ -35,7 +35,7 @@ public class SingletonListInverseVariableDemand<Solution_> implements Demand<Sol
     // ************************************************************************
 
     @Override
-    public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public SingletonInverseVariableSupply createExternalizedSupply(SupplyManager supplyManager) {
         return new ExternalizedSingletonListInverseVariableSupply<>(sourceVariableDescriptor);
     }
 

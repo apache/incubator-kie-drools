@@ -20,12 +20,13 @@ import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * To get an instance, demand a {@link CollectionInverseVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
  */
-public class CollectionInverseVariableDemand<Solution_> implements Demand<Solution_, CollectionInverseVariableSupply> {
+public class CollectionInverseVariableDemand<Solution_> implements Demand<CollectionInverseVariableSupply> {
 
     protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
 
@@ -38,7 +39,7 @@ public class CollectionInverseVariableDemand<Solution_> implements Demand<Soluti
     // ************************************************************************
 
     @Override
-    public CollectionInverseVariableSupply createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public CollectionInverseVariableSupply createExternalizedSupply(SupplyManager supplyManager) {
         return new ExternalizedCollectionInverseVariableSupply<>(sourceVariableDescriptor);
     }
 
