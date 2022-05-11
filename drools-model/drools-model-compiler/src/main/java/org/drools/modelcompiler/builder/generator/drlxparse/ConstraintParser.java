@@ -94,6 +94,8 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createCon
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isBooleanBoxedUnboxed;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.stripEnclosedExpr;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess.createMultipleDrlxParseSuccess;
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
@@ -515,11 +517,29 @@ public class ConstraintParser {
             innerExpression = innerResult.getExpr();
         }
 
-        return new SingleDrlxParseSuccess(patternType, bindingId, new UnaryExpr(innerExpression, unaryExpr.getOperator()), typedExpression.getType())
-                .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(typedExpressionResult.getUsedDeclarations())
-                .setReactOnProperties(typedExpressionResult.getReactOnProperties())
-                .setLeft(new TypedExpression(innerResult.getExpr(), innerResult.getExprType()))
-                .setIsPredicate(innerResult.isPredicate());
+        if (isTemporalMethodCallExpr(innerExpression) && unaryExpr.getOperator() == UnaryExpr.Operator.LOGICAL_COMPLEMENT) {
+            Expression inner = stripEnclosedExpr(innerExpression);
+            MethodCallExpr negatedTemporalExpr = createDslTopLevelMethod(NOT_CALL).addArgument(inner.asMethodCallExpr());
+            return new SingleDrlxParseSuccess(patternType, bindingId, negatedTemporalExpr, typedExpression.getType())
+                    .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(typedExpressionResult.getUsedDeclarations())
+                    .setReactOnProperties(typedExpressionResult.getReactOnProperties())
+                    .setLeft(innerResult.getLeft())
+                    .setRight(innerResult.getRight())
+                    .setStatic(innerResult.isStatic())
+                    .setTemporal(innerResult.isTemporal())
+                    .setIsPredicate(innerResult.isPredicate());
+        } else {
+            return new SingleDrlxParseSuccess(patternType, bindingId, new UnaryExpr(innerExpression, unaryExpr.getOperator()), typedExpression.getType())
+                    .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(typedExpressionResult.getUsedDeclarations())
+                    .setReactOnProperties(typedExpressionResult.getReactOnProperties())
+                    .setLeft(new TypedExpression(innerResult.getExpr(), innerResult.getExprType()))
+                    .setIsPredicate(innerResult.isPredicate());
+        }
+    }
+
+    private boolean isTemporalMethodCallExpr(Expression expression) {
+        Expression inner = stripEnclosedExpr(expression);
+        return inner.isMethodCallExpr() && ModelGenerator.temporalOperators.contains(inner.asMethodCallExpr().getNameAsString());
     }
 
     private DrlxParseResult parseBinaryExpr(BinaryExpr binaryExpr, Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr,
