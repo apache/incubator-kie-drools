@@ -1229,7 +1229,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         compositePackageCompilationPhase.process();
     }
 
-    protected void buildRules(Collection<CompositePackageDescr> packages) {
+    private void buildRules(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
             setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
