@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -28,9 +29,16 @@ import javax.xml.validation.Validator;
 
 import org.drools.util.IoUtils;
 import org.kie.api.builder.model.KieModuleModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 public class KieModuleValidator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KieModuleValidator.class);
+
     private static final Schema schema = loadSchema("org/kie/api/kmodule.xsd");
     private static final Schema oldSchema = loadSchema("org/kie/api/old-kmodule.xsd");
 
@@ -98,8 +106,16 @@ public class KieModuleValidator {
         try {
             Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
             Validator validator = schema.newValidator();
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            try {
+                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            } catch (SAXNotRecognizedException | SAXNotSupportedException notSupportedException) {
+                LOGGER.warn("{} is not supported", XMLConstants.ACCESS_EXTERNAL_DTD);
+            }
+            try {
+                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            } catch (SAXNotRecognizedException | SAXNotSupportedException notSupportedException) {
+                LOGGER.warn("{} is not supported", XMLConstants.ACCESS_EXTERNAL_SCHEMA);
+            }
             validator.validate(source);
         } finally {
             Thread.currentThread().setContextClassLoader(tccl);
