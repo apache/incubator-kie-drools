@@ -1053,10 +1053,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void updateEntryPointsCache() {
         if (kBase.getAddedEntryNodeCache() != null) {
             for (EntryPointNode addedNode : kBase.getAddedEntryNodeCache()) {
-                EntryPointId id = addedNode.getEntryPoint();
-                if (EntryPointId.DEFAULT.equals(id)) continue;
-                WorkingMemoryEntryPoint wmEntryPoint = createNamedEntryPoint(addedNode, id, this);
-                entryPoints.put(id.getEntryPointId(), wmEntryPoint);
+                entryPoints.computeIfAbsent(addedNode.getEntryPoint().getEntryPointId(), x -> createNamedEntryPoint(addedNode, this));
             }
         }
 
@@ -1067,19 +1064,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id, StatefulKnowledgeSessionImpl wm) {
-        return kBase.getConfiguration().getComponentFactory().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, id, wm);
+    private NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, StatefulKnowledgeSessionImpl wm) {
+        return kBase.getConfiguration().getComponentFactory().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, addedNode.getEntryPoint(), wm);
     }
 
     protected void initDefaultEntryPoint() {
-        this.defaultEntryPoint = createDefaultEntryPoint();
+        this.defaultEntryPoint = createNamedEntryPoint(this.kBase.getRete().getEntryPointNode( EntryPointId.DEFAULT ), this);
         this.entryPoints.clear();
-        this.entryPoints.put("DEFAULT", this.defaultEntryPoint);
-    }
-
-    protected InternalWorkingMemoryEntryPoint createDefaultEntryPoint() {
-        EntryPointNode epn = this.kBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
-        return createNamedEntryPoint(epn, EntryPointId.DEFAULT, this);
+        this.entryPoints.put(EntryPointId.DEFAULT.getEntryPointId(), this.defaultEntryPoint);
     }
 
     public SessionConfiguration getSessionConfiguration() {
