@@ -34,19 +34,16 @@
   },
   "devDependencies": {
     "@kogito-apps/ouia-tools": "^1.0.0",
-    "@storybook/addon-a11y": "5.3.19",
-    "@storybook/addon-actions": "5.3.18",
-    "@storybook/addon-backgrounds": "5.3.19",
-    "@storybook/addon-console": "1.2.1",
-    "@storybook/addon-knobs": "5.3.18",
-    "@storybook/addon-links": "5.3.18",
-    "@storybook/addon-options": "5.3.18",
-    "@storybook/addon-storysource": "5.3.18",
-    "@storybook/addon-viewport": "5.3.18",
-    "@storybook/react": "5.3.18",
-    "@storybook/source-loader": "5.3.18",
-    "react-docgen-typescript-loader": "3.7.2",
-    "storybook-react-router": "1.0.8"
+    "@storybook/addon-a11y": "6.4.22",
+    "@storybook/addon-console": "1.2.3",
+    "@storybook/addon-links": "6.4.22",
+    "@storybook/addon-storysource": "6.4.22",
+    "@storybook/react": "6.4.22",
+    "@storybook/source-loader": "6.4.22",
+    "storybook-react-router": "1.0.8",
+    "@storybook/addon-controls":"6.4.22",
+    "@storybook/addon-essentials":"6.4.22",
+    "@storybook/addon-interactions":"6.4.22"
   },
   "jest": {
     "setupFiles": [

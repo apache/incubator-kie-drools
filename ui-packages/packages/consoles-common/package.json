@@ -34,8 +34,7 @@
     "keycloak-js": "^13.0.1"
   },
   "devDependencies": {
-    "@kogito-apps/ouia-tools": "^1.0.0",
-    "react-docgen-typescript-loader": "3.7.2"
+    "@kogito-apps/ouia-tools": "^1.0.0"
   },
   "jest": {
     "setupFiles": [
