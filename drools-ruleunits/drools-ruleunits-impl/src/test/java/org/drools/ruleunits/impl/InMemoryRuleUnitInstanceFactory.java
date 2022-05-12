@@ -29,8 +29,8 @@ public class InMemoryRuleUnitInstanceFactory {
 
     private static final Map<Class, ClassLoader> kieModuleClassLoaders = new HashMap<>();
 
-    public static <T extends RuleUnitData> RuleUnitInstance<T> generateAndInstance(T ruleUnit) {
-        ClassLoader kieModuleClassLoader = kieModuleClassLoaders.computeIfAbsent(ruleUnit.getClass(), c -> createRuleUnitKieProject(c).getClassLoader());
+    public static <T extends RuleUnitData> RuleUnitInstance<T> generateAndInstance(T ruleUnit, String... drls) {
+        ClassLoader kieModuleClassLoader = kieModuleClassLoaders.computeIfAbsent(ruleUnit.getClass(), c -> createRuleUnitKieProject(c, drls).getClassLoader());
         return loadRuleUnits(kieModuleClassLoader).get(ruleUnit.getClass().getCanonicalName()).createInstance(ruleUnit);
     }
 

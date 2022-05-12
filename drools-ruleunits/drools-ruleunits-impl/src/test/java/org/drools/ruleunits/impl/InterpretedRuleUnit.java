@@ -81,20 +81,38 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
                 new KieModuleKieProject(kieModule, kieModule.getModuleClassLoader());
     }
 
-    private static InternalKieModule createRuleUnitKieModule(Class<?> unitClass, boolean useExecModel) {
-        // transform foo.bar.Baz to /foo/bar/Baz.drl
-        // this currently only works for single files
-        String path = String.format("%s.drl", unitClass.getCanonicalName().replace('.', '/'));
+    private static InternalKieModule createRuleUnitKieModule(Class<?> unitClass, boolean useExecModel, String... drls) {
+        if (drls == null || drls.length == 0) {
+            drls = new String[] { unitClassToDrlPath(unitClass) };
+        } else {
+            for (int i = 0; i < drls.length; i++) {
+                drls[i] = unitClassToDrlPath(unitClass, drls[i]);
+            }
+        }
 
         KieServices ks = KieServices.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ks.getResources().newClassPathResource(path));
+        for (String drl : drls) {
+            kfs.write(ks.getResources().newClassPathResource(drl));
+        }
         return (InternalKieModule) ks.newKieBuilder( kfs )
                 .getKieModule(useExecModel ? ExecutableModelProject.class : DrlProject.class);
     }
 
-    public static KieModuleKieProject createRuleUnitKieProject(Class<?> unitClass) {
-        InternalKieModule kieModule = createRuleUnitKieModule(unitClass, true);
+    private static String unitClassToDrlPath(Class<?> unitClass) {
+        // transform foo.bar.Baz to /foo/bar/Baz.drl
+        // this currently only works for single files
+        return String.format("%s.drl", unitClass.getCanonicalName().replace('.', '/'));
+    }
+
+    private static String unitClassToDrlPath(Class<?> unitClass, String drl) {
+        String unitClassName = unitClass.getCanonicalName();
+        String unitPackage = unitClassName.substring(0, unitClassName.lastIndexOf('.'));
+        return unitPackage.replace('.', '/') + "/" + drl + ".drl";
+    }
+
+    public static KieModuleKieProject createRuleUnitKieProject(Class<?> unitClass, String... drls) {
+        InternalKieModule kieModule = createRuleUnitKieModule(unitClass, true, drls);
         return createRuleUnitKieProject(kieModule, true);
     }
 }
