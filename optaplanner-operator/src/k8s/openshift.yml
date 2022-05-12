@@ -55,9 +55,9 @@ metadata:
   labels:
     app.kubernetes.io/name: optaplanner-operator
     app.kubernetes.io/version: latest
-  name: openjdk-11
+  name: openjdk-17
 spec:
-  dockerImageRepository: registry.access.redhat.com/ubi8/openjdk-11
+  dockerImageRepository: registry.access.redhat.com/ubi8/openjdk-17
 ---
 apiVersion: image.openshift.io/v1
 kind: ImageStream
