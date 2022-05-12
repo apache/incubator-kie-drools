@@ -84,7 +84,7 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
     }
 
     private GraphQLInputType getInputTypeByField(GraphQLFieldDefinition field) {
-        String name = ((GraphQLNamedType) field.getType()).getName();
+        String name = resolveBaseTypeName(field.getType());
         switch (name) {
             case "Int":
             case "Long":

@@ -23,7 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import graphql.schema.GraphQLInputObjectType;
+import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLNamedType;
 import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 
@@ -70,5 +73,17 @@ public abstract class AbstractInputObjectTypeMapper implements Function<GraphQLO
 
     protected GraphQLInputObjectType getInputObjectType(String name) {
         return (GraphQLInputObjectType) schema.getType(name);
+    }
+
+    protected String resolveBaseTypeName(GraphQLOutputType graphQLOutputType) {
+        if (graphQLOutputType instanceof GraphQLList) {
+            String baseType = ((GraphQLNamedType) graphQLOutputType.getChildren().get(0)).getName();
+            if ("String".equals(baseType)) {
+                return "StringArray";
+            }
+            return baseType;
+        } else {
+            return ((GraphQLNamedType) graphQLOutputType).getName();
+        }
     }
 }

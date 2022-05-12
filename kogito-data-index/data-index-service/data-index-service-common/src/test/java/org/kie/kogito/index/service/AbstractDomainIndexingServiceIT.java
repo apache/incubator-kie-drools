@@ -194,6 +194,20 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
         travellerMap.put("firstName", "Maciej");
         travellerMap.put("email", "mail@mail.com");
         travellerMap.put("nationality", "Polish");
+        Map<String, Object> location1Map = new HashMap<>();
+        location1Map.put("street", "street1");
+        location1Map.put("city", "city1");
+        location1Map.put("zipCode", "zc1");
+        location1Map.put("country", "country1");
+
+        Map<String, Object> location2Map = new HashMap<>();
+        location2Map.put("street", "street2");
+        location2Map.put("city", "city2");
+        location2Map.put("zipCode", "zc2");
+        location2Map.put("country", "country2");
+
+        travellerMap.put("locations", asList(location1Map, location2Map));
+        travellerMap.put("aliases", asList("alias1", "alias2"));
         subProcessStartEvent.getData().update().variables(Maps.of("traveller", travellerMap));
         indexProcessCloudEvent(subProcessStartEvent);
 
@@ -230,6 +244,12 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].traveller.email", is("mail@mail.com"))
                 .body("data.Travels[0].traveller.nationality", is("Polish"))
+                .body("data.Travels[0].traveller.locations.size()", is(2))
+                .body("data.Travels[0].traveller.aliases.size()", is(2))
+                .body("data.Travels[0].traveller.locations[0].city", is("city1"))
+                .body("data.Travels[0].traveller.locations[0].street", is("street1"))
+                .body("data.Travels[0].traveller.locations[0].country", is("country1"))
+                .body("data.Travels[0].traveller.locations[0].zipCode", is("zc1"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))

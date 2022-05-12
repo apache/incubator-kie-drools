@@ -173,7 +173,7 @@
     }
   },
   "TravelsByProcessInstanceId": {
-    "query": "query ( $id: String ) { Travels ( where: { metadata: { processInstances : {  id : { equal : $id } } } }){ id, __typename, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end, endpoint, serviceUrl, lastUpdate }, userTasks { id, description, name, priority, processInstanceId, actualOwner, lastUpdate } } } }",
+    "query": "query ( $id: String ) { Travels ( where: { metadata: { processInstances : {  id : { equal : $id } } } }){ id, __typename, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality, locations { city, street, country, zipCode }, aliases}, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end, endpoint, serviceUrl, lastUpdate }, userTasks { id, description, name, priority, processInstanceId, actualOwner, lastUpdate } } } }",
     "variables": {
       "id": "%s"
     }

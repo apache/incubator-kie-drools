@@ -15,10 +15,14 @@
  */
 package org.kie.kogito.index.graphql;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -26,6 +30,13 @@ import graphql.schema.DataFetchingEnvironment;
 public class JsonPropertyDataFetcher implements DataFetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonPropertyDataFetcher.class);
+    private static ObjectMapper mapper = new ObjectMapper();
+    private static TypeReference stringListTypeRef = new TypeReference<List<String>>() {
+    };
+    private static TypeReference numberListTypeRef = new TypeReference<List<Number>>() {
+    };
+    private static TypeReference booleanListTypeRef = new TypeReference<List<Boolean>>() {
+    };
 
     @Override
     public Object get(DataFetchingEnvironment environment) {
@@ -41,7 +52,18 @@ public class JsonPropertyDataFetcher implements DataFetcher {
                 switch (value.getNodeType()) {
                     case OBJECT:
                     case POJO:
+                        return value;
                     case ARRAY:
+                        if (!value.isNull() && !value.isEmpty()) {
+                            switch (value.get(0).getNodeType()) {
+                                case STRING:
+                                    return mapper.readerFor(stringListTypeRef).readValue(value);
+                                case NUMBER:
+                                    return mapper.readerFor(numberListTypeRef).readValue(value);
+                                case BOOLEAN:
+                                    return mapper.readerFor(booleanListTypeRef).readValue(value);
+                            }
+                        }
                         return value;
                     case NUMBER:
                         return value.numberValue();

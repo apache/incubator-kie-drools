@@ -66,7 +66,7 @@ public class ProtoDomainModelProducer {
 
         @Override
         public AttributeDescriptor apply(FieldDescriptor field) {
-            return new AttributeDescriptor(field.getName(), new FieldTypeMapper().apply(field));
+            return new AttributeDescriptor(field.getName(), new FieldTypeMapper().apply(field), field.getLabel().toString());
         }
     }
 

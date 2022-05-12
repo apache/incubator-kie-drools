@@ -57,7 +57,11 @@ message Traveller {
 	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
 	optional string lastName = 4; 
 	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional string nationality = 5; 
+	optional string nationality = 5;
+	/* @Field(index = Index.NO, store = Store.YES) */
+	repeated Address locations = 6;
+	/* @Field(index = Index.NO, store = Store.YES) */
+	repeated string aliases=7;
 }
 /* @Indexed */ 
 message Travels { 

@@ -38,6 +38,8 @@ message Traveller {
     optional string firstName = 3;
     optional string lastName = 4;
     optional string nationality = 5;
+    repeated Address locations = 6;
+    repeated string aliases = 7;
 }
 
 message Travels {

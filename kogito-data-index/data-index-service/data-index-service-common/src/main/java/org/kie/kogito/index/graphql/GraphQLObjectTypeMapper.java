@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import graphql.Scalars;
 import graphql.scalars.ExtendedScalars;
+import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLSchema;
@@ -95,7 +96,12 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
                         type = getGraphQLType(field, schema, additionalTypes, allTypes);
                 }
                 if (type != null) {
-                    builder.field(newFieldDefinition().name(field.getName()).type(type));
+                    if (field.getLabel() != null && field.getLabel().contains("REPEATED")) {
+                        GraphQLOutputType listOfType = new GraphQLList(type);
+                        builder.field(newFieldDefinition().name(field.getName()).type(listOfType));
+                    } else {
+                        builder.field(newFieldDefinition().name(field.getName()).type(type));
+                    }
                 }
             }
         });

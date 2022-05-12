@@ -21,13 +21,19 @@ public class AttributeDescriptor {
 
     private String name;
     private String typeName;
+    private String label;
 
     public AttributeDescriptor() {
     }
 
     public AttributeDescriptor(String name, String typeName) {
+        this(name, typeName, null);
+    }
+
+    public AttributeDescriptor(String name, String typeName, String label) {
         this.name = name;
         this.typeName = typeName;
+        this.label = label;
     }
 
     public String getTypeName() {
@@ -44,6 +50,14 @@ public class AttributeDescriptor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override
