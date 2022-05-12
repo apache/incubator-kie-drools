@@ -57,17 +57,14 @@ public class NamedEntryPointsManager implements EntryPointsManager {
         return this.entryPoints.values();
     }
 
-    public InternalWorkingMemoryEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id) {
-        return RuntimeComponentFactory.get().getEntryPointFactory().createEntryPoint(addedNode, id, reteEvaluator);
+    private InternalWorkingMemoryEntryPoint createNamedEntryPoint(EntryPointNode addedNode) {
+        return RuntimeComponentFactory.get().getEntryPointFactory().createEntryPoint(addedNode, addedNode.getEntryPoint(), reteEvaluator);
     }
 
     public void updateEntryPointsCache() {
         if (ruleBase.getAddedEntryNodeCache() != null) {
             for (EntryPointNode addedNode : ruleBase.getAddedEntryNodeCache()) {
-                EntryPointId id = addedNode.getEntryPoint();
-                if (EntryPointId.DEFAULT.equals(id)) continue;
-                WorkingMemoryEntryPoint wmEntryPoint = createNamedEntryPoint(addedNode, id);
-                entryPoints.put(id.getEntryPointId(), wmEntryPoint);
+                entryPoints.computeIfAbsent(addedNode.getEntryPoint().getEntryPointId(), x -> createNamedEntryPoint(addedNode));
             }
         }
 
@@ -84,13 +81,8 @@ public class NamedEntryPointsManager implements EntryPointsManager {
     }
 
     private void initDefaultEntryPoint() {
-        this.defaultEntryPoint = createDefaultEntryPoint();
+        this.defaultEntryPoint = createNamedEntryPoint( this.ruleBase.getRete().getEntryPointNode( EntryPointId.DEFAULT ) );
         this.entryPoints.clear();
-        this.entryPoints.put("DEFAULT", this.defaultEntryPoint);
-    }
-
-    private InternalWorkingMemoryEntryPoint createDefaultEntryPoint() {
-        EntryPointNode epn = this.ruleBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
-        return createNamedEntryPoint(epn, EntryPointId.DEFAULT);
+        this.entryPoints.put(EntryPointId.DEFAULT.getEntryPointId(), this.defaultEntryPoint);
     }
 }
