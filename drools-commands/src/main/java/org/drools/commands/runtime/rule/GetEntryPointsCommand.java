@@ -21,7 +21,6 @@ import java.util.Collection;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.commands.EntryPointCreator;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
@@ -60,7 +59,7 @@ public class GetEntryPointsCommand
         }
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, result);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, result);
         }
 
         return result;

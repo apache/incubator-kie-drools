@@ -17,6 +17,7 @@
 package org.kie.api.runtime;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,5 +32,9 @@ public interface ExecutionResults {
     Object getValue(String identifier);
 
     Object getFactHandle(String identifier);
+
+    Map<String, Object> getResults();
+
+    void setResult(String identifier, Object result);
 
 }

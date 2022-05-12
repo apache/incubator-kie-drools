@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.drools.commands.IdentifiableResult;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedFactHandle;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
@@ -100,7 +99,7 @@ public class GetObjectCommand
         Object object = ksession.getObject( factHandle );
 
         if (this.outIdentifier != null) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult( this.outIdentifier, object );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, object );
         }
 
         return object;

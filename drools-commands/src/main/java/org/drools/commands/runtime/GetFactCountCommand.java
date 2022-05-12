@@ -49,7 +49,7 @@ public class GetFactCountCommand
         final Long factCount = ksession.getFactCount();
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, factCount);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, factCount);
         }
         
         return factCount;

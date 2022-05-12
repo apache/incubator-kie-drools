@@ -18,7 +18,6 @@ package org.drools.commands.runtime.rule;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -68,7 +67,7 @@ public class GetFactHandleCommand
             }
 
             if ( this.outIdentifier != null ) {
-                ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, handle);
+                ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, handle);
             }
 
             return handle;

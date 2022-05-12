@@ -60,7 +60,7 @@ public class ExecuteCommand
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         ExecutionResults kresults = ksession.execute(this.command);
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult( this.outIdentifier, kresults );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, kresults );
         }
         if (disconnected) {
             ExecutionResultImpl disconnectedResults = new ExecutionResultImpl();
@@ -74,7 +74,7 @@ public class ExecuteCommand
                 }
             }
             disconnectedResults.setFactHandles(disconnectedHandles);
-            disconnectedResults.setResults((HashMap)((ExecutionResultImpl)kresults).getResults());
+            disconnectedResults.setResults(kresults.getResults());
             return disconnectedResults;
         }
         

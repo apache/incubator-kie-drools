@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
@@ -84,7 +83,7 @@ public class GetObjectsInEntryPointCommand
         if ( this.outIdentifier != null ) {
             List objects = new ArrayList( col );
 
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult( this.outIdentifier, objects );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, objects );
         }
 
         return col;

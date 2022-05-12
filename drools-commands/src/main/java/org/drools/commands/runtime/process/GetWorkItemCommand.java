@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.process.WorkItem;
 import org.drools.core.process.WorkItemManager;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
@@ -69,7 +68,7 @@ public class GetWorkItemCommand implements ExecutableCommand<WorkItem> {
         final WorkItem workItem = ((WorkItemManager) ksession.getWorkItemManager()).getWorkItem(workItemId);
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, workItem);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, workItem);
         }
 
         return workItem;

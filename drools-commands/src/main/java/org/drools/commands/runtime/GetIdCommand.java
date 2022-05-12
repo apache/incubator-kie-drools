@@ -54,7 +54,7 @@ public class GetIdCommand
         final Long identifier = ksession.getIdentifier();
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, identifier);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, identifier);
         }
 
         return identifier;

@@ -70,7 +70,7 @@ public class GetGlobalCommand
         KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
 
         Object object = ksession.getGlobal( identifier );
-        ExecutionResultImpl results = (ExecutionResultImpl) ((RegistryContext)context).lookup( ExecutionResults.class );
+        ExecutionResults results = ((RegistryContext)context).lookup( ExecutionResults.class );
         if ( results != null ) {
             results.getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier, object );
         }

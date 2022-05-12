@@ -67,7 +67,7 @@ public class AdvanceSessionTimeCommand implements ExecutableCommand<Long>, Ident
         sessionClock.advanceTime( amount, unit );
         long result = sessionClock.getCurrentTime();
 
-        ExecutionResultImpl results = (ExecutionResultImpl) ((RegistryContext)context).lookup( ExecutionResults.class );
+        ExecutionResults results = ((RegistryContext)context).lookup( ExecutionResults.class );
         if ( results != null ) {
             results.getResults().put( this.outIdentifier, result );
         }

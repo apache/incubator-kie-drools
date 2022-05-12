@@ -49,11 +49,11 @@ public class GetSessionTimeCommand implements ExecutableCommand<Long>, Identifia
     @Override
     public Long execute(Context context ) {
         KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
-        SessionClock sessionClock = ksession.<SessionClock>getSessionClock();
+        SessionClock sessionClock = ksession.getSessionClock();
 
         long result = sessionClock.getCurrentTime();
 
-        ExecutionResultImpl results = (ExecutionResultImpl) ((RegistryContext)context).lookup( ExecutionResults.class );
+        ExecutionResults results = ((RegistryContext)context).lookup( ExecutionResults.class );
         if ( results != null ) {
             results.getResults().put( this.outIdentifier, result );
         }

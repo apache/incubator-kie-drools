@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.drools.commands.jaxb.JaxbUnknownAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -112,7 +111,7 @@ public class FireAllRulesCommand implements ExecutableCommand<Integer>, Identifi
         }
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, fired);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, fired);
         }
         return fired;
     }

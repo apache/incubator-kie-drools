@@ -73,7 +73,7 @@ public class InsertObjectInEntryPointCommand
 
         if (outIdentifier != null) {
             if (this.returnObject) {
-                ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, object);
+                ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, object);
             }
             ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).getFactHandles().put(this.outIdentifier, disconnectedHandle);
         }

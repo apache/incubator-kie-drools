@@ -37,39 +37,38 @@ public class ExecutionResultImpl implements ExecutionResults, Serializable {
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="results")
-    HashMap<String, Object> results = new HashMap<String, Object>();
+    Map<String, Object> results = new HashMap<>();
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="facts")
-    HashMap<String, Object> facts = new HashMap<String, Object>();
+    Map<String, Object> facts = new HashMap<>();
     
-    /* (non-Javadoc)
-     * @see org.kie.batchexecution.BatchExecutionResult#getIdentifiers()
-     */
+    @Override
     public Collection<String> getIdentifiers() {
         return this.results.keySet();
     }
-    
+
+    @Override
     public Object getValue(String identifier) {
         return this.results.get( identifier );
     }
-    
+
+    @Override
     public Object getFactHandle(String identifier) {
         return this.facts.get( identifier );
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.batchexecution.BatchExecutionResult#getResults()
-     */
+    @Override
     public Map<String, Object> getResults() {
         return this.results;
     }
 
+    @Override
     public void setResult(String identifier, Object result) {
         this.results.put( identifier, result );
     }
 
-    public void setResults(HashMap<String, Object> results) {
+    public void setResults(Map<String, Object> results) {
         this.results = results;
     }
     

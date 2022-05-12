@@ -19,7 +19,6 @@ package org.drools.commands.runtime.rule;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.commands.EntryPointCreator;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
@@ -62,7 +61,7 @@ public class GetEntryPointCommand
         final EntryPoint entryPoint = epCreator != null ? epCreator.getEntryPoint(name) : ep;
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, entryPoint);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, entryPoint);
         }
 
         return entryPoint;

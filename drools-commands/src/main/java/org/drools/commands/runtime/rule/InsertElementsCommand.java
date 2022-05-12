@@ -95,7 +95,7 @@ public class InsertElementsCommand
 
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {
-                ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult( this.outIdentifier, objects );
+                ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, objects );
             }
             ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).getFactHandles().put( this.outIdentifier, handles );
         }

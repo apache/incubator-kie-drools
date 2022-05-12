@@ -19,7 +19,6 @@ package org.drools.commands.runtime.process;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -28,7 +27,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.drools.commands.jaxb.JaxbMapAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -124,7 +122,7 @@ public class CreateProcessInstanceCommand implements ExecutableCommand<ProcessIn
         }
         ProcessInstance processInstance = (ProcessInstance) ksession.createProcessInstance(processId, parameters);
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, processInstance.getId());
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, processInstance.getId());
         }
         return processInstance;
     }

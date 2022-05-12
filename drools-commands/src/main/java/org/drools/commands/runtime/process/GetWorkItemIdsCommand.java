@@ -19,7 +19,6 @@ package org.drools.commands.runtime.process;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,7 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.process.WorkItem;
 import org.drools.core.process.WorkItemManager;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
@@ -61,7 +59,7 @@ public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
         }
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult(this.outIdentifier, workItemIds);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, workItemIds);
         }
 
         return workItemIds;

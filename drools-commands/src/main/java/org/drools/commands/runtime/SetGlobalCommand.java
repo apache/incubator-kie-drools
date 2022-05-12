@@ -60,7 +60,7 @@ public class SetGlobalCommand
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult( this.outIdentifier, object );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, object );
         }
 
         ksession.setGlobal( this.identifier, this.object );

@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.drools.commands.IdentifiableResult;
 import org.drools.core.ClassObjectSerializationFilter;
-import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.Context;
@@ -96,7 +95,7 @@ public class GetObjectsCommand
         if ( this.outIdentifier != null ) {
             List objects = new ArrayList( col );
 
-            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).setResult( this.outIdentifier, objects );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, objects );
         }
 
         return col;
