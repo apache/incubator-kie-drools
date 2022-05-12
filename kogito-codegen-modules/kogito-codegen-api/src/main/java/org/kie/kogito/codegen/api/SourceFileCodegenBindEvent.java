@@ -15,9 +15,29 @@
  */
 package org.kie.kogito.codegen.api;
 
-public interface SourceFileCodegenBindEvent {
+public final class SourceFileCodegenBindEvent {
 
-    String getSourceFileId();
+    private final String processId;
 
-    String getUri();
+    private final String sourceFile;
+
+    public SourceFileCodegenBindEvent(String processId, String sourceFile) {
+        this.processId = processId;
+        this.sourceFile = sourceFile;
+    }
+
+    public String getSourceFileId() {
+        return processId;
+    }
+
+    public String getUri() {
+        return sourceFile;
+    }
+
+    public String toString() {
+        return "SourceFileProcessBindEvent{" +
+                "processId='" + processId + '\'' +
+                ", sourceFile='" + sourceFile + '\'' +
+                '}';
+    }
 }

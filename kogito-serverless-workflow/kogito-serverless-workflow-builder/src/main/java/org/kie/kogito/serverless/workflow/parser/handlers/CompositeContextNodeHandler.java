@@ -30,13 +30,13 @@ import org.jbpm.ruleflow.core.factory.AbstractCompositeNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.kie.kogito.codegen.api.SourceFileCodegenBindEvent;
 import org.kie.kogito.jackson.utils.JsonNodeVisitor;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.parser.SourceFileServerlessWorkflowBindEvent;
 import org.kie.kogito.serverless.workflow.parser.rest.RestOperationHandlerFactory;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ObjectResolverSupplier;
@@ -222,7 +222,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     private void notifySourceFileCodegenBindListeners(String uri) {
         parserContext.getContext()
                 .getSourceFileCodegenBindNotifier()
-                .ifPresent(notifier -> notifier.notify(new SourceFileServerlessWorkflowBindEvent(workflow.getId(), uri)));
+                .ifPresent(notifier -> notifier.notify(new SourceFileCodegenBindEvent(workflow.getId(), uri)));
     }
 
     private <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addFunctionArgs(WorkItemNodeFactory<T> node, FunctionRef functionRef) {

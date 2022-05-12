@@ -22,7 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.addon.source.files.SourceFile;
-import org.kie.kogito.codegen.process.SourceFileProcessBindEvent;
+import org.kie.kogito.codegen.api.SourceFileCodegenBindEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,7 +42,7 @@ class SourceFileCodegenBindListenerImplTest {
 
         String processId = "a_process";
 
-        SourceFileProcessBindEvent event = new SourceFileProcessBindEvent(processId, eventSourceFile);
+        SourceFileCodegenBindEvent event = new SourceFileCodegenBindEvent(processId, eventSourceFile);
 
         FakeSourceFilesRecorder sourceFilesRecorder = new FakeSourceFilesRecorder();
 

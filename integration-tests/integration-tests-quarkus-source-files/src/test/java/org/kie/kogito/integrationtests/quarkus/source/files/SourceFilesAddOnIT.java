@@ -16,6 +16,7 @@
 package org.kie.kogito.integrationtests.quarkus.source.files;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.addon.source.files.SourceFile;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -36,40 +37,6 @@ class SourceFilesAddOnIT {
     }
 
     @Test
-    void testGetSourceFiles() {
-        given()
-                .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
-                .contentType(ContentType.JSON)
-                .when()
-                .get(PATH + "sources")
-                .then()
-                .statusCode(200)
-                .body("size()", is(8))
-                .body("petstore",
-                        hasItems(hasEntry("uri", "org/kie/kogito/examples/petstore.sw.json"),
-                                hasEntry("uri", "petstore.json")))
-                .body("petstore_http",
-                        hasItems(hasEntry("uri", "org/kie/kogito/examples/petstore_http.sw.json"),
-                                hasEntry("uri", "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v2.0/json/petstore-simple.json")))
-                .body("approvals", hasItems(hasEntry("uri", "org/kie/kogito/examples/approval.bpmn")))
-                .body("jsongreet", hasItems(hasEntry("uri", "org/kie/kogito/examples/jsongreet.sw.json")))
-                .body("ymlgreet", hasItems(hasEntry("uri", "org/kie/kogito/examples/ymlgreet.sw.yml")))
-                .body("yamlgreet", hasItems(hasEntry("uri", "org/kie/kogito/examples/yamlgreet.sw.yaml")))
-                .body("'demo.orders'", hasItems(hasEntry("uri", "org/kie/kogito/examples/orders.bpmn2")))
-                .body("'demo.orderItems'", hasItems(hasEntry("uri", "org/kie/kogito/examples/orderItems.bpmn2")));
-    }
-
-    @Test
-    void testGetSourceFilesNonAuthenticated() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get(PATH + "sources")
-                .then()
-                .statusCode(401);
-    }
-
-    @Test
     void testGetSourceFilesByProcessId() {
         given()
                 .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
@@ -79,7 +46,7 @@ class SourceFilesAddOnIT {
                 .then()
                 .statusCode(200)
                 .body("size()", is(1))
-                .body("", hasItems(hasEntry("uri", "org/kie/kogito/examples/ymlgreet.sw.yml")));
+                .body("", hasItems(hasEntry("uri", SourceFile.SOURCES_HTTP_PATH + "org/kie/kogito/examples/ymlgreet.sw.yml")));
     }
 
     @Test
@@ -92,4 +59,34 @@ class SourceFilesAddOnIT {
                 .statusCode(401);
     }
 
+    @Test
+    void testGetSourceFileFromResourcesRoot() {
+        given()
+                .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
+                .when()
+                .get("/sources/petstore.json")
+                .then()
+                .statusCode(200)
+                .header("Content-Length", "5189");
+    }
+
+    @Test
+    void testGetSourceFileFromInternalDirectory() {
+        given()
+                .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
+                .when()
+                .get("/sources/org/kie/kogito/examples/ymlgreet.sw.yml")
+                .then()
+                .statusCode(200)
+                .header("Content-Length", "1012");
+    }
+
+    @Test
+    void testGetSourceFileNonAuthenticated() {
+        given()
+                .when()
+                .get("/sources/petstore.json")
+                .then()
+                .statusCode(401);
+    }
 }

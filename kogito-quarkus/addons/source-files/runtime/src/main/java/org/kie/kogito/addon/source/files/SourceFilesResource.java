@@ -15,10 +15,7 @@
  */
 package org.kie.kogito.addon.source.files;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -27,9 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @ApplicationScoped
 @Path("/management/process/")
@@ -44,35 +39,5 @@ public final class SourceFilesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<SourceFile> getSourceFiles(@PathParam("id") String processId) {
         return sourceFilesProvider.getSourceFiles(processId);
-    }
-
-    @GET
-    @Path("sources")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Collection<SourceFile>> getSourceFiles() {
-        return sourceFilesProvider.getSourceFiles();
-    }
-
-    @GET
-    @Path("sources/download")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getSourceFile(@QueryParam("fileName") String fileName) throws IOException {
-        if (sourceFilesProvider.contains(fileName)) {
-            try (InputStream file = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)) {
-                if (file == null) {
-                    return Response.status(Response.Status.NOT_FOUND).build();
-                } else {
-                    java.nio.file.Path path = java.nio.file.Paths.get(fileName);
-                    byte[] bytes = file.readAllBytes();
-                    return Response.ok(bytes, MediaType.APPLICATION_OCTET_STREAM)
-                            .header("Content-Disposition", "inline; filename=\""
-                                    + path.subpath(path.getNameCount() - 1, path.getNameCount()) + "\"")
-                            .header("Content-Length", bytes.length)
-                            .build();
-                }
-            }
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
     }
 }

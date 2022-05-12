@@ -16,7 +16,6 @@
 package org.kie.kogito.addon.source.files;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface SourceFilesProvider {
 
@@ -27,19 +26,4 @@ public interface SourceFilesProvider {
      * @return the source files collection. The collection may be empty but not null.
      */
     Collection<SourceFile> getSourceFiles(String id);
-
-    /**
-     * Return all the source files.
-     * 
-     * @return the source files collection. The collection may be empty but not null.
-     */
-    Map<String, Collection<SourceFile>> getSourceFiles();
-
-    /**
-     * Returns true if this provider has the specified source file.
-     * 
-     * @param sourceFile the source file
-     * @return true if this provider has the specified source file.
-     */
-    boolean contains(String sourceFile);
 }

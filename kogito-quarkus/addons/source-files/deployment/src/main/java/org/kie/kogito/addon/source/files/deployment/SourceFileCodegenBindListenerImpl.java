@@ -26,7 +26,7 @@ import org.kie.kogito.codegen.api.SourceFileCodegenBindListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class SourceFileCodegenBindListenerImpl<T extends SourceFileCodegenBindEvent> implements SourceFileCodegenBindListener<T> {
+abstract class SourceFileCodegenBindListenerImpl implements SourceFileCodegenBindListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SourceFileCodegenBindListenerImpl.class);
 
@@ -40,7 +40,7 @@ abstract class SourceFileCodegenBindListenerImpl<T extends SourceFileCodegenBind
     }
 
     @Override
-    public void onSourceFileCodegenBind(T event) {
+    public void onSourceFileCodegenBind(SourceFileCodegenBindEvent event) {
         LOGGER.debug("Received event {}", event);
 
         Path sourceFilePath = Path.of(event.getUri());

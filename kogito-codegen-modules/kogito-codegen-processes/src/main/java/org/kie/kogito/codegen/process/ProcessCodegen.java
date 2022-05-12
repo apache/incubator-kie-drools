@@ -50,6 +50,7 @@ import org.kie.api.io.Resource;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedInfo;
+import org.kie.kogito.codegen.api.SourceFileCodegenBindEvent;
 import org.kie.kogito.codegen.api.context.ContextAttributesConstants;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
@@ -157,7 +158,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private static void notifySourceFileCodegenBindListeners(KogitoBuildContext context, Resource resource, Collection<Process> processes) {
         context.getSourceFileCodegenBindNotifier()
-                .ifPresent(notifier -> processes.forEach(p -> notifier.notify(new SourceFileProcessBindEvent(p.getId(), resource.getSourcePath()))));
+                .ifPresent(notifier -> processes.forEach(p -> notifier.notify(new SourceFileCodegenBindEvent(p.getId(), resource.getSourcePath()))));
     }
 
     private static void handleValidation() {

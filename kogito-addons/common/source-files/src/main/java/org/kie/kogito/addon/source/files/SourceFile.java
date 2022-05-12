@@ -19,6 +19,8 @@ import java.util.Objects;
 
 public final class SourceFile {
 
+    public static final String SOURCES_HTTP_PATH = "/sources/";
+
     // Serialization requires it not read-only
     private String uri;
 
@@ -26,8 +28,14 @@ public final class SourceFile {
         // Needed for serialization
     }
 
+    /**
+     * Creates a new SourceFile with the given URI under the {@link SourceFile#SOURCES_HTTP_PATH}.
+     * Ex.: {@code new SourceFile("path/to/file.txt")} will create a SourceFile with URI {@code SourceFilesProvider.SOURCES_HTTP_PATH + path/to/file.txt}.
+     *
+     * @param uri the URI of the source file under the {@link SourceFile#SOURCES_HTTP_PATH}
+     */
     public SourceFile(String uri) {
-        this.uri = Objects.requireNonNull(uri);
+        this.uri = SOURCES_HTTP_PATH + Objects.requireNonNull(uri);
     }
 
     // Needed for serialization

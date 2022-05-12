@@ -16,7 +16,6 @@
 package org.kie.kogito.addon.source.files;
 
 import java.util.Collection;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,30 +45,6 @@ class SourceFilesResourceTest {
 
     @Test
     @TestSecurity(user = "scott", roles = "source-files-client")
-    void getSourceFiles() {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("petstore.json"));
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("petstore.sw.json"));
-        sourceFilesProvider.addSourceFile("ymlgreet", new SourceFile("ymlgreet.sw.json"));
-
-        Map<String, Collection<SourceFile>> sourceFiles = sourceFilesResource.getSourceFiles();
-
-        assertThat(sourceFiles).hasSize(2);
-
-        assertThat(sourceFiles.get("a_process"))
-                .containsExactlyInAnyOrder(new SourceFile("petstore.json"), new SourceFile("petstore.sw.json"));
-
-        assertThat(sourceFiles.get("ymlgreet"))
-                .containsExactlyInAnyOrder(new SourceFile("ymlgreet.sw.json"));
-    }
-
-    @Test
-    void getSourceFilesNonAuthenticated() {
-        assertThatCode(() -> sourceFilesResource.getSourceFiles())
-                .isInstanceOf(UnauthorizedException.class);
-    }
-
-    @Test
-    @TestSecurity(user = "scott", roles = "source-files-client")
     void getSourceFilesByProcessId() {
         sourceFilesProvider.addSourceFile("a_process", new SourceFile("petstore.json"));
         sourceFilesProvider.addSourceFile("a_process", new SourceFile("petstore.sw.json"));
@@ -85,5 +60,4 @@ class SourceFilesResourceTest {
         assertThatCode(() -> sourceFilesResource.getSourceFiles("a_process"))
                 .isInstanceOf(UnauthorizedException.class);
     }
-
 }

@@ -18,16 +18,10 @@ package org.kie.kogito.addon.source.files.deployment;
 import java.io.File;
 
 import org.kie.kogito.addon.source.files.SourceFilesRecorder;
-import org.kie.kogito.codegen.process.SourceFileProcessBindEvent;
 
-final class SourceFileProcessBindListenerImpl extends SourceFileCodegenBindListenerImpl<SourceFileProcessBindEvent> {
+final class SourceFileProcessBindListenerImpl extends SourceFileCodegenBindListenerImpl {
 
     SourceFileProcessBindListenerImpl(File[] resourcePaths, SourceFilesRecorder sourceFilesRecorder) {
         super(resourcePaths, sourceFilesRecorder);
-    }
-
-    @Override
-    public Class<SourceFileProcessBindEvent> getEventType() {
-        return SourceFileProcessBindEvent.class;
     }
 }

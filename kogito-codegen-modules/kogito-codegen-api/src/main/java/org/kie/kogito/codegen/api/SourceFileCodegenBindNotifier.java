@@ -21,17 +21,13 @@ import java.util.Collections;
 
 public class SourceFileCodegenBindNotifier {
 
-    private final Collection<SourceFileCodegenBindListener<?>> listeners = new ArrayList<>();
+    private final Collection<SourceFileCodegenBindListener> listeners = new ArrayList<>();
 
-    public void addListeners(SourceFileCodegenBindListener<?>... listeners) {
+    public void addListeners(SourceFileCodegenBindListener... listeners) {
         Collections.addAll(this.listeners, listeners);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends SourceFileCodegenBindEvent> void notify(T event) {
-        listeners.stream()
-                .filter(listener -> listener.getEventType().isAssignableFrom(event.getClass()))
-                .map(listener -> (SourceFileCodegenBindListener<T>) listener)
-                .forEach(listener -> listener.onSourceFileCodegenBind(event));
+    public void notify(SourceFileCodegenBindEvent event) {
+        listeners.forEach(listener -> listener.onSourceFileCodegenBind(event));
     }
 }

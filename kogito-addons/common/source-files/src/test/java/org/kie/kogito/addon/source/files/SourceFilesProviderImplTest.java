@@ -15,9 +15,6 @@
  */
 package org.kie.kogito.addon.source.files;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,43 +56,5 @@ class SourceFilesProviderImplTest {
 
         assertThat(sourceFilesProvider.getSourceFiles("a_process"))
                 .isEmpty();
-    }
-
-    @Test
-    void getAllSourceFiles() {
-        SourceFilesProviderImpl sourceFilesProvider = new SourceFilesProviderImpl();
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.yaml"));
-
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.yaml"));
-
-        Map<String, Collection<SourceFile>> sourceFiles = sourceFilesProvider.getSourceFiles();
-
-        assertThat(sourceFiles)
-                .containsOnlyKeys("a_process", "another_process");
-
-        assertThat(sourceFiles.get("a_process"))
-                .containsExactlyInAnyOrder(
-                        new SourceFile("myworkflow.sw.json"),
-                        new SourceFile("myworkflow.sw.yaml"));
-
-        assertThat(sourceFiles.get("another_process"))
-                .containsExactlyInAnyOrder(
-                        new SourceFile("myanotherworkflow.sw.json"),
-                        new SourceFile("myanotherworkflow.sw.yaml"));
-    }
-
-    @Test
-    void contains() {
-        SourceFilesProviderImpl sourceFilesProvider = new SourceFilesProviderImpl();
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.yaml"));
-
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.yaml"));
-
-        assertThat(sourceFilesProvider.contains("myworkflow.sw.yaml")).isTrue();
-        assertThat(sourceFilesProvider.contains("anyworkflow.sw.yaml")).isFalse();
     }
 }
