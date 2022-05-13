@@ -1261,4 +1261,57 @@ public class CepTest extends BaseModelTest {
             Locale.setDefault(defaultLoc);
         }
     }
+
+    @Test
+    public void testNegate() throws Exception {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "    $a : StockTick( company == \"DROO\" )\n" +
+                        "    $b : StockTick( company == \"ACME\", !(this after[5s,8s] $a ))\n" +
+                        "then\n" +
+                        "  System.out.println(\"fired\");\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockTick( "DROO" ) );
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testNegateFromCollect() throws Exception {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                        "import " + List.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "    $a : StockTick( company == \"DROO\" )\n" +
+                        "    List(size() > 0) from collect (StockTick( company == \"ACME\", !(this after[5s,8s] $a )))\n" +
+                        "then\n" +
+                        "  System.out.println(\"fired\");\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockTick( "DROO" ) );
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
