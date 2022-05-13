@@ -91,7 +91,7 @@ public class ServerlessWorkflowParser {
                 .visibility("Public")
                 .variable(DEFAULT_WORKFLOW_VAR, new ObjectDataType(JsonNode.class), ObjectMapperFactory.get().createObjectNode());
         ParserContext parserContext = new ParserContext(idGenerator, factory, context);
-        loadConstants(workflow, parserContext);
+        loadConstants(workflow, factory, parserContext);
         Collection<StateHandler<?>> handlers =
                 workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))
                         .filter(Optional::isPresent).map(Optional::get).filter(state -> !state.usedForCompensation()).collect(Collectors.toList());
@@ -141,16 +141,19 @@ public class ServerlessWorkflowParser {
         return processInfo;
     }
 
-    private static void loadConstants(Workflow workflow, ParserContext parserContext) {
+    private static void loadConstants(Workflow workflow, RuleFlowProcessFactory factory, ParserContext parserContext) {
         Constants constants = workflow.getConstants();
-        if (constants != null && constants.getRefValue() != null) {
-            processResourceFile(workflow, parserContext, constants.getRefValue()).ifPresent(bytes -> {
-                try {
-                    constants.setConstantsDef(ObjectMapperFactory.get().readValue(bytes, JsonNode.class));
-                } catch (IOException e) {
-                    throw new IllegalArgumentException("Invalid file " + constants.getRefValue(), e);
-                }
-            });
+        if (constants != null) {
+            if (constants.getRefValue() != null) {
+                processResourceFile(workflow, parserContext, constants.getRefValue()).ifPresent(bytes -> {
+                    try {
+                        constants.setConstantsDef(ObjectMapperFactory.get().readValue(bytes, JsonNode.class));
+                    } catch (IOException e) {
+                        throw new IllegalArgumentException("Invalid file " + constants.getRefValue(), e);
+                    }
+                });
+            }
+            factory.metaData(Metadata.CONSTANTS, constants.getConstantsDef());
         }
     }
 }

@@ -17,7 +17,6 @@ package org.kie.kogito.expr.jq;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
@@ -25,12 +24,9 @@ import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.Output;
@@ -40,16 +36,12 @@ import net.thisptr.jackson.jq.exception.JsonQueryException;
 
 public class JqExpression implements Expression {
 
-    private static final Logger logger = LoggerFactory.getLogger(JqExpression.class);
-
     private final Supplier<Scope> scope;
     private final String expr;
     private JsonQuery query;
-    private String compiledExpr;
 
     public JqExpression(Supplier<Scope> scope, String expr) {
         this.expr = expr;
-        this.compiledExpr = expr;
         this.scope = scope;
     }
 
@@ -161,43 +153,39 @@ public class JqExpression implements Expression {
         ExpressionHandlerUtils.assign(targetNode, eval(targetNode, JsonNode.class, context), JsonObjectUtils.fromValue(value), expr);
     }
 
+    private Scope getScope(KogitoProcessContext processInfo) {
+        Scope childScope = Scope.newChildScope(scope.get());
+        childScope.setValue(ExpressionHandlerUtils.SECRET_MAGIC, new FunctionJsonNode(ExpressionHandlerUtils::getSecret));
+        childScope.setValue(ExpressionHandlerUtils.CONTEXT_MAGIC, new FunctionJsonNode(ExpressionHandlerUtils.getContextFunction(processInfo)));
+        childScope.setValue(ExpressionHandlerUtils.CONST_MAGIC, ExpressionHandlerUtils.getConstants(processInfo));
+        return childScope;
+    }
+
     private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
         try {
             TypedOutput<T> output = output(returnClass);
-            compile(Optional.ofNullable(processInfo));
-            query.apply(scope.get(), context, output);
+            compile();
+            query.apply(getScope(processInfo), context, output);
             return output.getResult();
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);
         }
     }
 
-    private void compile(Optional<KogitoProcessContext> context) throws JsonQueryException {
-        String resolvedExpr = ExpressionHandlerUtils.prepareExpr(expr, context, JqExpressionHandler::inject);
-        logger.debug("Resolved expr {}", resolvedExpr);
-        if (this.query == null || !resolvedExpr.equals(compiledExpr)) {
-            compiledExpr = resolvedExpr;
-            logger.debug("Compiled expr {}", compiledExpr);
-            this.query = JsonQuery.compile(compiledExpr, Versions.JQ_1_6);
+    private void compile() throws JsonQueryException {
+        if (this.query == null) {
+            this.query = JsonQuery.compile(expr, Versions.JQ_1_6);
         }
     }
 
     @Override
-    public boolean isValid(Optional<KogitoProcessContext> context) {
+    public boolean isValid() {
         try {
-            compile(context);
-            // jq considers a string not containing any special char a valid one, for those ones, validate with a null context
-            if (isConstantString()) {
-                query.apply(scope.get(), NullNode.instance, output(JsonNode.class));
-            }
+            compile();
             return true;
         } catch (JsonQueryException e) {
             return false;
         }
-    }
-
-    private boolean isConstantString() {
-        return compiledExpr.chars().allMatch(Character::isJavaIdentifierPart);
     }
 
     @Override

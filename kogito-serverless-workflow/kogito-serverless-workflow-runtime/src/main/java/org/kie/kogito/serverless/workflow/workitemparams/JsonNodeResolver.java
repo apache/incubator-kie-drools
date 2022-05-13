@@ -15,18 +15,20 @@
  */
 package org.kie.kogito.serverless.workflow.workitemparams;
 
-import java.util.Optional;
-
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonNodeVisitor;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.expr.ExpressionWorkItemResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonNodeResolver extends ExpressionWorkItemResolver {
+
+    private static final Logger logger = LoggerFactory.getLogger(JsonNodeResolver.class);
 
     public JsonNodeResolver(String exprLang, Object expr, String paramName) {
         super(exprLang, expr, paramName);
@@ -39,6 +41,11 @@ public class JsonNodeResolver extends ExpressionWorkItemResolver {
 
     private JsonNode transform(JsonNode node, Object inputModel, KogitoProcessContext context) {
         Expression expr = ExpressionHandlerFactory.get(language, node.asText());
-        return expr.isValid(Optional.ofNullable(context)) ? expr.eval(inputModel, JsonNode.class, context) : node;
+        try {
+            return expr.isValid() ? expr.eval(inputModel, JsonNode.class, context) : node;
+        } catch (Exception ex) {
+            logger.info("Error evaluating expression, returning original text {}", node);
+            return node;
+        }
     }
 }

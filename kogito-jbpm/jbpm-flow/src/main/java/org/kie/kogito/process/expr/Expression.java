@@ -15,15 +15,13 @@
  */
 package org.kie.kogito.process.expr;
 
-import java.util.Optional;
-
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public interface Expression {
 
     <T> T eval(Object target, Class<T> returnClass, KogitoProcessContext context);
 
-    boolean isValid(Optional<KogitoProcessContext> context);
+    boolean isValid();
 
     void assign(Object target, Object value, KogitoProcessContext context);
 

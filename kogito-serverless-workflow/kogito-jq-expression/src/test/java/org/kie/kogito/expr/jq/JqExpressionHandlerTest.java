@@ -17,12 +17,14 @@ package org.kie.kogito.expr.jq;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Collections;
 
+import org.jbpm.ruleflow.core.Metadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
@@ -31,6 +33,7 @@ import org.mockito.Mockito;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
@@ -46,15 +49,18 @@ class JqExpressionHandlerTest {
     @BeforeEach
     void setup() {
         context = Mockito.mock(KogitoProcessContext.class);
-        KogitoProcessInstance processInstance = Mockito.mock(KogitoProcessInstance.class);
+        KogitoWorkflowProcessInstance processInstance = Mockito.mock(KogitoWorkflowProcessInstance.class);
         Mockito.when(context.getProcessInstance()).thenReturn(processInstance);
+        KogitoWorkflowProcess process = Mockito.mock(KogitoWorkflowProcess.class);
+        Mockito.when(processInstance.getProcess()).thenReturn(process);
         Mockito.when(processInstance.getId()).thenReturn("1111-2222-3333");
+        Mockito.when(process.getMetaData()).thenReturn(Collections.singletonMap(Metadata.CONSTANTS, NullNode.instance));
     }
 
     @Test
     void testStringExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "javierito");
         assertEquals("javierito", parsedExpression.eval(node, String.class, context));
     }
@@ -62,7 +68,7 @@ class JqExpressionHandlerTest {
     @Test
     void testBooleanExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", true);
         assertTrue(parsedExpression.eval(node, Boolean.class, context));
     }
@@ -70,7 +76,7 @@ class JqExpressionHandlerTest {
     @Test
     void testNumericExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".number*.number");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         JsonNode node = new ObjectMapper().createObjectNode().put("number", 2);
         assertEquals(4, parsedExpression.eval(node, JsonNode.class, context).asInt());
     }
@@ -78,7 +84,7 @@ class JqExpressionHandlerTest {
     @Test
     void testNumericAssignment() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", "{\"result\" : .number*.number}");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         JsonNode node = new ObjectMapper().createObjectNode().put("number", 2);
         assertEquals(4, parsedExpression.eval(node, JsonNode.class, context).get("result").asInt());
     }
@@ -86,7 +92,7 @@ class JqExpressionHandlerTest {
     @Test
     void testJsonNodeExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.createObjectNode().set("foo", mapper.createObjectNode().put("name", "Javierito"));
         assertEquals("Javierito", parsedExpression.eval(node, ObjectNode.class, context).get("name").asText());
@@ -95,7 +101,7 @@ class JqExpressionHandlerTest {
     @Test
     void testMultiExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo,.main,.another");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         JsonNode node = new ObjectMapper().createObjectNode().put("foo", "Javierito").put("main", "Pepito").put("another", "Fulanito");
         assertEquals("Javierito Pepito Fulanito", parsedExpression.eval(node, String.class, context));
     }
@@ -103,7 +109,7 @@ class JqExpressionHandlerTest {
     @Test
     void testCollection() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode node = objectMapper.createObjectNode().set("foo", objectMapper.createArrayNode().add("pepe").add(false).add(3).add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3)));
         assertEquals(Arrays.asList("pepe", false, 3, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(node, Collection.class, context));
@@ -112,7 +118,7 @@ class JqExpressionHandlerTest {
     @Test
     void testCollectFromArrayJsonNode() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo | .[] | .bar");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();
         ArrayNode node = objectNode.putArray("foo");
@@ -131,7 +137,7 @@ class JqExpressionHandlerTest {
     @Test
     void testCollectFromArrayCollection() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo | .[] | .bar");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();
         ArrayNode node = objectNode.putArray("foo");
@@ -145,13 +151,13 @@ class JqExpressionHandlerTest {
     @Test
     void testNonValidExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".-");
-        assertEquals(false, parsedExpression.isValid(Optional.ofNullable(context)), "Exception was not thrown for invalid expression.");
+        assertEquals(false, parsedExpression.isValid(), "Exception was not thrown for invalid expression.");
     }
 
     @Test
     void testNonMatchingExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo | .bar");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.putArray("foo").add(objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("bar", "1")).add(objectMapper.createObjectNode().put("bar", "2")));
@@ -161,7 +167,7 @@ class JqExpressionHandlerTest {
     @Test
     void testAssignSimpleObjectUnderGivenProperty() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".bar2");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.put("bar", "value1");
@@ -177,7 +183,7 @@ class JqExpressionHandlerTest {
     @Test
     void testAssignArrayUnderGivenProperty() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".bar2");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.putArray("bar").add("value1").add("value2");
@@ -196,7 +202,7 @@ class JqExpressionHandlerTest {
     @Test
     void testAssignCollectedFromArrayUnderRootAsFallback() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo | .[] | .bar");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode targetNode = objectMapper.createObjectNode();
         ArrayNode node = targetNode.putArray("foo");
@@ -219,7 +225,7 @@ class JqExpressionHandlerTest {
     @Test
     void testAssignWithNonExistentNodePathExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".bar3");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.put("bar", "value1");
@@ -236,7 +242,7 @@ class JqExpressionHandlerTest {
     @Test
     void testMagicWord() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", "$WORKFLOW.instanceId");
-        assertTrue(parsedExpression.isValid(Optional.ofNullable(context)));
+        assertTrue(parsedExpression.isValid());
         assertEquals(new TextNode("1111-2222-3333"), parsedExpression.eval(ObjectMapperFactory.get().createObjectNode(), JsonNode.class, context));
     }
 

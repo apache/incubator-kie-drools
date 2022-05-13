@@ -18,6 +18,7 @@ package org.kie.kogito.serverless.workflow;
 import java.util.Collections;
 
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.ruleflow.core.Metadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.NullNode;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -54,7 +56,7 @@ class JsonNodeJqResolverTest {
         when(ni.getProcessInstance()).thenReturn(pi);
         Process process = mock(Process.class);
         when(pi.getProcess()).thenReturn(process);
-        when(process.getMetaData()).thenReturn(Collections.emptyMap());
+        when(process.getMetaData()).thenReturn(Collections.singletonMap(Metadata.CONSTANTS, NullNode.instance));
     }
 
     @Test

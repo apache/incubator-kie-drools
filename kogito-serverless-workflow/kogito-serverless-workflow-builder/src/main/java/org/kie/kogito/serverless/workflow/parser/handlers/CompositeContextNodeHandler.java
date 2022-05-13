@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
@@ -344,7 +343,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private void processArg(String key, Object value, WorkItemNodeFactory<?> workItemFactory, String paramName) {
-        boolean isExpr = value instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), value.toString()).isValid(Optional.empty()) || value instanceof JsonNode;
+        boolean isExpr = value instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), value.toString()).isValid() || value instanceof JsonNode;
         workItemFactory
                 .workParameter(key,
                         isExpr ? new ObjectResolverSupplier(workflow.getExpressionLang(), value, paramName) : value)

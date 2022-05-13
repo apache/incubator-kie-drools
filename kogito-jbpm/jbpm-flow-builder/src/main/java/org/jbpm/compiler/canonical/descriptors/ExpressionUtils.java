@@ -79,6 +79,11 @@ public class ExpressionUtils {
         }
     }
 
+    public static boolean isTypeSupported(Object object) {
+        return object == null || object instanceof Supplier<?> || object instanceof Expression || object instanceof Boolean || object instanceof Character || object instanceof Number
+                || object instanceof String || object instanceof Enum || object instanceof Collection || object instanceof Class<?> || isTypeRegistered(object.getClass());
+    }
+
     public static Expression getLiteralExpr(Object object) {
         if (object == null) {
             return new NullLiteralExpr();
@@ -132,4 +137,10 @@ public class ExpressionUtils {
         }
     }
 
+    private static boolean isTypeRegistered(Class<?> objectClass) {
+        while (objectClass != null && !TypeConverterRegistry.get().isRegistered(objectClass.getName())) {
+            objectClass = objectClass.getSuperclass();
+        }
+        return objectClass != null;
+    }
 }

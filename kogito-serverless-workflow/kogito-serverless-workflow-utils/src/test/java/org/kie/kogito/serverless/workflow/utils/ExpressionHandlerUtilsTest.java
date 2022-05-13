@@ -15,62 +15,16 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.definition.process.Process;
-import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-
-import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.workflow.Constants;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils.prepareExpr;
-import static org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils.replaceExpr;
 import static org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils.trimExpr;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ExpressionHandlerUtilsTest {
-
-    private KogitoProcessContext context;
-    private Workflow workflow;
-
-    @BeforeEach
-    void setup() {
-        context = mock(KogitoProcessContext.class);
-        KogitoProcessInstance pi = mock(KogitoProcessInstance.class);
-        when(context.getProcessInstance()).thenReturn(pi);
-        Process process = mock(Process.class);
-        when(pi.getProcess()).thenReturn(process);
-        workflow = mock(Workflow.class);
-        Constants constants = mock(Constants.class);
-        when(workflow.getConstants()).thenReturn(constants);
-        when(constants.getConstantsDef()).thenReturn(ObjectMapperFactory.get().createObjectNode().set("name", ObjectMapperFactory.get().createObjectNode().put("surname", "carapito")));
-    }
-
     @Test
     void testTrimExpression() {
         assertEquals(".pepe", trimExpr("${ .pepe }"));
         assertEquals("{name:.pepe}", trimExpr("${ {name:.pepe} }"));
     }
 
-    @Test
-    void testPrepareString() {
-        Map<String, String> map = Collections.singletonMap("name", "javierito");
-        ConfigResolverHolder.setConfigResolver(new ConfigResolver() {
-
-            @Override
-            public <T> T getConfigProperty(String name, Class<T> clazz, T defaultValue) {
-                return (T) map.get(name);
-            }
-        });
-        assertEquals("\"My name is\"+ javierito + \" \"+ carapito",
-                prepareExpr(replaceExpr(workflow, "${ \"My name is\"+ $SECRET.name + \" \"+ $CONST.name.surname }"), Optional.of(context), v -> v.toString()));
-    }
 }
