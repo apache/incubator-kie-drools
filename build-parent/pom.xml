@@ -117,7 +117,6 @@
     <version.org.mvel>2.4.14.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.slf4j>1.7.30</version.org.slf4j>
-    <version.org.springframework.boot>2.3.4.RELEASE</version.org.springframework.boot>
     <version.org.subethamail>1.2</version.org.subethamail>
     <version.org.subethamail.subethasmtp>3.1.6</version.org.subethamail.subethasmtp>
     <version.xerces>2.12.0.SP03</version.xerces>
@@ -1074,32 +1073,6 @@
             <artifactId>log4j</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-autoconfigure</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-configuration-processor</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-autoconfigure-processor</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-test</artifactId>
-        <version>${version.org.springframework.boot}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-test-autoconfigure</artifactId>
-        <version>${version.org.springframework.boot}</version>
       </dependency>
 
       <dependency>
@@ -2142,11 +2115,6 @@
               <version>${version.plexus.archiver}</version>
             </dependency>
           </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${version.org.springframework.boot}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
