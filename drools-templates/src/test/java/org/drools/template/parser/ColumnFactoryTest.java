@@ -35,7 +35,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column: String[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn) column).getCellType());
+        assertEquals("StringCell", column.getCellType());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column: Long[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("LongCell", ((ArrayColumn) column).getCellType());
+        assertEquals("LongCell", column.getCellType());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn) column).getCellType());
+        assertEquals("StringCell", column.getCellType());
     }
 
     @Test
@@ -61,6 +61,14 @@ public class ColumnFactoryTest {
         ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column: Long");
         assertTrue(column instanceof LongColumn);
+        assertEquals("column", column.getName());
+    }
+
+    @Test
+    public void testGetDoubleColumn() {
+        ColumnFactory f = new ColumnFactory();
+        Column column = f.getColumn("column: Double");
+        assertTrue(column instanceof DoubleColumn);
         assertEquals("column", column.getName());
     }
 
@@ -90,7 +98,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("$column[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("$column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn) column).getCellType());
+        assertEquals("StringCell", column.getCellType());
     }
 
     @Test
@@ -108,7 +116,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("$column: Long[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("$column", column.getName());
-        assertEquals("LongCell", ((ArrayColumn) column).getCellType());
+        assertEquals("LongCell", column.getCellType());
     }
 
 }

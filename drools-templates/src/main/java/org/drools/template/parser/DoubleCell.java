@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,16 @@
 
 package org.drools.template.parser;
 
-import java.util.Map;
-
-import org.kie.api.runtime.KieSession;
-
 /**
- * A cell in a decision table
+ * A cell in a decision table containing a long value
  */
-public interface Cell<T> {
-    Row getRow();
+public class DoubleCell extends AbstractCell<Double> {
 
-    Column getColumn();
+    public DoubleCell(Row row, Column column) {
+        super(row, column);
+    }
 
-    void setValue(String value);
-
-    T getValue();
-
-    void addValue(Map<String, Object> vars);
-
-    void insert(KieSession session);
-
-    void setIndex(int i);
-
-    int getIndex();
-
-    boolean isEmpty();
+    public void setValue(String v) {
+        value = Double.valueOf(v);
+    }
 }

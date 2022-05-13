@@ -24,10 +24,6 @@ public class LongColumn extends AbstractColumn {
     public LongColumn(String n) {
         super(n);
     }
-    //
-    //    public void addValue(Map vars, Object value) {
-    //        vars.put(getName(), value);
-    //    }
 
     public Cell createCell(Row row) {
         return new LongCell(row, this);

@@ -20,11 +20,11 @@ import org.drools.template.parser.Column;
 import org.drools.template.parser.ColumnFactory;
 import org.drools.template.parser.LongColumn;
 import org.drools.template.parser.StringColumn;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ColumnFactoryTest {
 
@@ -42,7 +42,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column: String[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn)column).getCellType());
+        assertEquals("StringCell", column.getCellType());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column: Long[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("LongCell", ((ArrayColumn)column).getCellType());
+        assertEquals("LongCell", column.getCellType());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn)column).getCellType());
+        assertEquals("StringCell", column.getCellType());
 
     }
 
