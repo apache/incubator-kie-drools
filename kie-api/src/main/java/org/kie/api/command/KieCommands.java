@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
@@ -144,4 +145,6 @@ public interface KieCommands extends KieService {
     Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit, String outIdentifier);
 
     Command newApplyPmmlModel(PMMLRequestData request);
+
+    ExecutionResults newExecutionResults();
 }

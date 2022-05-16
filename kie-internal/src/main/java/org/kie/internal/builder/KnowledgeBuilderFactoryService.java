@@ -38,6 +38,15 @@ public interface KnowledgeBuilderFactoryService extends KieService {
     /**
      * Instantiate and return a new KnowledgeBuilderConfiguration
      *
+     * @param classLoader
+     *     Provided ClassLoader, can be null and then ClassLoader defaults to Thread.currentThread().getContextClassLoader()
+     * @return
+     */
+    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(ClassLoader classLoader);
+
+    /**
+     * Instantiate and return a new KnowledgeBuilderConfiguration
+     *
      * @param properties
      *     Properties file to process, can be null;
      * @param classLoader

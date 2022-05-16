@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
 
@@ -70,10 +70,9 @@ public class GetGlobalCommand
         KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
 
         Object object = ksession.getGlobal( identifier );
-        ExecutionResultImpl results = ((RegistryContext)context).lookup( ExecutionResultImpl.class );
+        ExecutionResults results = ((RegistryContext)context).lookup( ExecutionResults.class );
         if ( results != null ) {
-            results.getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
-                                      object );
+            results.getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier, object );
         }
         return object;
     }

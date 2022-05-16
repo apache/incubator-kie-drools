@@ -24,10 +24,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.drools.commands.jaxb.JaxbUnknownAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
 
@@ -60,11 +60,10 @@ public class SetGlobalCommand
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, object );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, object );
         }
 
-        ksession.setGlobal( this.identifier,
-                            this.object );
+        ksession.setGlobal( this.identifier, this.object );
 
         // returning the object is necessary for drools-simulator
         return this.object;

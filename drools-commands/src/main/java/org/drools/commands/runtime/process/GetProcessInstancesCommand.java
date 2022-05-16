@@ -18,15 +18,14 @@ package org.drools.commands.runtime.process;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.RegistryContext;
@@ -59,8 +58,7 @@ public class GetProcessInstancesCommand
         }
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
-                                                                                      new ArrayList<>(result));
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, new ArrayList<>(result));
         }
 
         return result;

@@ -18,7 +18,6 @@ package org.drools.commands.runtime.pmml;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,11 +26,11 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.pmml.PMMLCommandExecutorFactory;
 import org.slf4j.Logger;
@@ -134,7 +133,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
         PMML4Result toReturn = PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData, context);
         // Needed to update the ExecutionResultImpl and the Registry context,
         // as done inside legacy implementation
-        Optional<ExecutionResultImpl> execRes = Optional.ofNullable(registryContext.lookup(ExecutionResultImpl.class));
+        Optional<ExecutionResults> execRes = Optional.ofNullable(registryContext.lookup(ExecutionResults.class));
         registryContext.register(PMML4Result.class, toReturn);
         execRes.ifPresent(result -> result.setResult("results", toReturn));
         return toReturn;

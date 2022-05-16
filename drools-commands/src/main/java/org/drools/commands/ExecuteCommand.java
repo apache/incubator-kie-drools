@@ -19,7 +19,7 @@ package org.drools.commands;
 import java.util.HashMap;
 
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -60,11 +60,11 @@ public class ExecuteCommand
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         ExecutionResults kresults = ksession.execute(this.command);
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, kresults );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, kresults );
         }
         if (disconnected) {
             ExecutionResultImpl disconnectedResults = new ExecutionResultImpl();
-            HashMap<String, Object> disconnectedHandles = new HashMap<String, Object>();
+            HashMap<String, Object> disconnectedHandles = new HashMap<>();
             for (String key : kresults.getIdentifiers()) {
                 FactHandle handle = (FactHandle) kresults.getFactHandle(key);
                 if (handle != null) {
@@ -74,7 +74,7 @@ public class ExecuteCommand
                 }
             }
             disconnectedResults.setFactHandles(disconnectedHandles);
-            disconnectedResults.setResults((HashMap)((ExecutionResultImpl)kresults).getResults());
+            disconnectedResults.setResults(kresults.getResults());
             return disconnectedResults;
         }
         

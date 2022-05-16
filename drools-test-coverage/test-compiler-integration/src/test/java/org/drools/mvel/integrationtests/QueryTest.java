@@ -39,7 +39,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteDumper;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.core.base.ObjectType;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Address;

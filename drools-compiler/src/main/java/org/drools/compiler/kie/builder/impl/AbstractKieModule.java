@@ -31,18 +31,18 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
-import org.drools.util.io.ResourceConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.util.StringUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.util.StringUtils;
+import org.drools.util.io.ResourceConfigurationImpl;
 import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
@@ -69,6 +69,8 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
+
 public abstract class AbstractKieModule implements InternalKieModule, Serializable {
 
     private static final String SPRING_BOOT_PREFIX = "BOOT-INF/classes/";
@@ -88,7 +90,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
     // Map< KBaseName, CompilationCache>
     protected Map<String, CompilationCache> compilationCache = new HashMap<>();
 
-    private transient Map<String, ResourceConfiguration> resourceConfigurationCache = new HashMap<>();
+    private final transient Map<String, ResourceConfiguration> resourceConfigurationCache = new HashMap<>();
 
     protected transient PomModel pomModel;
 
@@ -106,7 +108,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
     }
 
     public Map<ReleaseId, InternalKieModule> getKieDependencies() {
-        return kieDependencies == null ? Collections.<ReleaseId, InternalKieModule> emptyMap() : kieDependencies;
+        return kieDependencies == null ? Collections.emptyMap() : kieDependencies;
     }
 
     public void addKieDependency(InternalKieModule dependency) {
@@ -124,11 +126,11 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
         if( pomModel != null ) {
             deps = pomModel.getDependencies(filter);
         }
-        return deps == null ? Collections.<ReleaseId> emptyList() : deps;
+        return deps == null ? Collections.emptyList() : deps;
     }
 
     public Collection<ReleaseId> getUnresolvedDependencies() {
-        return unresolvedDependencies == null ? Collections.<ReleaseId> emptyList() : unresolvedDependencies;
+        return unresolvedDependencies == null ? Collections.emptyList() : unresolvedDependencies;
     }
 
     public void setUnresolvedDependencies(Collection<ReleaseId> unresolvedDependencies) {
@@ -244,7 +246,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
     }
 
     public KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader) {
-        KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(classLoader);
+        KnowledgeBuilderConfigurationImpl pconf = ((KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(classLoader));
         pconf.setCompilationCache(getCompilationCache(kBaseModel.getName()));
         setModelPropsOnConf( ((KieBaseModelImpl) kBaseModel).getKModule(), pconf );
         return pconf;

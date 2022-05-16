@@ -37,5 +37,12 @@ public class ObjectFactory {
     public SetGlobalCommand createSetGlobalCommand() {
         return new SetGlobalCommand();
     }
-    
+
+    public ExecutionResultImpl createExecutionResultImpl() {
+        return new ExecutionResultImpl();
+    }
+
+    public FlatQueryResults createFlatQueryResults() {
+        return new FlatQueryResults();
+    }
 }

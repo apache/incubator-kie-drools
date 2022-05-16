@@ -38,6 +38,10 @@ public class MVELDialectConfiguration
     
     private int                         langLevel;
 
+    public MVELDialectConfiguration(KnowledgeBuilderConfigurationImpl conf) {
+        this.conf = conf;
+    }
+
     public Dialect newDialect(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, PackageRegistry pkgRegistry, InternalKnowledgePackage pkg) {
         return new MVELDialect(rootClassLoader, pkgConf, pkgRegistry, pkg);
     }

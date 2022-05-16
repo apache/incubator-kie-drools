@@ -39,16 +39,13 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.ModelLoader;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.Model;
+import org.drools.compiler.builder.conf.JaxbConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
-import org.drools.compiler.builder.conf.JaxbConfigurationImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.xml.jaxb.util.JaxbListWrapper;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
@@ -80,10 +77,10 @@ public class DroolsJaxbHelperProviderImpl
             "org.drools.commands.runtime.process.SignalEventCommand",
             "org.drools.commands.runtime.process.StartProcessCommand",
             "org.drools.commands.runtime.BatchExecutionCommandImpl",
-            ExecutionResultImpl.class.getName(),
+            "org.drools.commands.runtimeExecutionResultImpl",
             DefaultFactHandle.class.getName(),
-            JaxbListWrapper.class.getName(),
-            FlatQueryResults.class.getName(),
+            "org.drools.commands.jaxb.JaxbListWrapper",
+            "org.drools.commands.runtime.FlatQueryResults",
             "org.drools.commands.runtime.process.CompleteWorkItemCommand",
             "org.drools.commands.runtime.rule.GetObjectsCommand"
     };

@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.util.StringUtils;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.drools.commands.jaxb.JaxbUnknownAdapter;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;

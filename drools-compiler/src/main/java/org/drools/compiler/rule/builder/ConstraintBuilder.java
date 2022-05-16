@@ -20,19 +20,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.kie.util.BeanCreator;
+import org.drools.core.base.ObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
-import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.rule.accessor.Evaluator;
 import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.base.ObjectType;
+import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.time.TimerExpression;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.LiteralRestrictionDescr;
@@ -66,9 +67,9 @@ public interface ConstraintBuilder extends KieService {
 
     List<EvaluatorDefinition> getEvaluatorDefinitions();
 
-    DialectConfiguration createJavaDialectConfiguration();
+    DialectConfiguration createJavaDialectConfiguration(KnowledgeBuilderConfigurationImpl conf);
 
-    DialectConfiguration createMVELDialectConfiguration();
+    DialectConfiguration createMVELDialectConfiguration(KnowledgeBuilderConfigurationImpl conf);
 
     boolean isMvelOperator(String operator);
 
@@ -147,12 +148,12 @@ public interface ConstraintBuilder extends KieService {
         }
 
         @Override
-        public DialectConfiguration createJavaDialectConfiguration() {
+        public DialectConfiguration createJavaDialectConfiguration(KnowledgeBuilderConfigurationImpl conf) {
             return new JavaDialectConfiguration();
         }
 
         @Override
-        public DialectConfiguration createMVELDialectConfiguration() {
+        public DialectConfiguration createMVELDialectConfiguration(KnowledgeBuilderConfigurationImpl conf) {
             return null;
         }
 

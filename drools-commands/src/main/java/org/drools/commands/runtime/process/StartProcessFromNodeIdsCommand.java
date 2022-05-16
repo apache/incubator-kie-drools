@@ -18,7 +18,6 @@ package org.drools.commands.runtime.process;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -26,8 +25,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.CorrelationKeyCommand;
@@ -104,7 +103,7 @@ public class StartProcessFromNodeIdsCommand extends StartProcessCommand implemen
             processInstance = ((CorrelationAwareProcessRuntime) ksession).startProcessFromNodeIds(getProcessId(), correlationKey, getParameters(), ids);
         }
         if ( getOutIdentifier() != null ) {
-            ((RegistryContext) context).lookup(ExecutionResultImpl.class).setResult(getOutIdentifier(), processInstance.getId());
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(getOutIdentifier(), processInstance.getId());
         }
         return processInstance;
     }

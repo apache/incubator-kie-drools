@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.command.RegistryContext;
@@ -49,11 +49,11 @@ public class GetSessionTimeCommand implements ExecutableCommand<Long>, Identifia
     @Override
     public Long execute(Context context ) {
         KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
-        SessionClock sessionClock = ksession.<SessionClock>getSessionClock();
+        SessionClock sessionClock = ksession.getSessionClock();
 
         long result = sessionClock.getCurrentTime();
 
-        ExecutionResultImpl results = ((RegistryContext)context).lookup( ExecutionResultImpl.class );
+        ExecutionResults results = ((RegistryContext)context).lookup( ExecutionResults.class );
         if ( results != null ) {
             results.getResults().put( this.outIdentifier, result );
         }

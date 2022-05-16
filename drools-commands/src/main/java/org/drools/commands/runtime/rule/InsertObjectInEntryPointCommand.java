@@ -23,9 +23,10 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.drools.commands.IdentifiableResult;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -72,9 +73,9 @@ public class InsertObjectInEntryPointCommand
 
         if (outIdentifier != null) {
             if (this.returnObject) {
-                ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, object);
+                ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, object);
             }
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).getFactHandles().put(this.outIdentifier, disconnectedHandle);
+            ((ExecutionResultImpl) ((RegistryContext) context).lookup(ExecutionResults.class)).getFactHandles().put(this.outIdentifier, disconnectedHandle);
         }
 
         return disconnectedHandle;

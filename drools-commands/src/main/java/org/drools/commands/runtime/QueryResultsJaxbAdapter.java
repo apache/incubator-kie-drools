@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.api.runtime;
+package org.drools.commands.runtime;
 
-import java.util.Collection;
-import java.util.Map;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-/**
- * <p>
- * Contains the results for the BatchExecution Command. If the identifier is reference the results of a query, you'll need to cast the value to
- * QueryResults.
- * </p>
- */
-public interface ExecutionResults {
+import org.drools.core.QueryResultsImpl;
 
-    Collection<String> getIdentifiers();
 
-    Object getValue(String identifier);
+public class QueryResultsJaxbAdapter extends XmlAdapter<QueryResultsImpl, FlatQueryResults>{
 
-    Object getFactHandle(String identifier);
+    @Override
+    public QueryResultsImpl marshal(FlatQueryResults v) throws Exception {
+        return null;
+    }
 
-    Map<String, Object> getResults();
+    @Override
+    public FlatQueryResults unmarshal(QueryResultsImpl v) throws Exception {
+        return new FlatQueryResults(v);
+    }
 
-    void setResult(String identifier, Object result);
 
 }

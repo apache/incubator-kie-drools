@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.CorrelationKeyCommand;
@@ -81,8 +81,7 @@ public class GetProcessInstanceByCorrelationKeyCommand implements ExecutableComm
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).getProcessInstance(correlationKey);
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
-                                                                                      processInstance);
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, processInstance);
         }
 
         return processInstance;

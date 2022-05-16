@@ -19,18 +19,17 @@ package org.drools.commands.runtime.rule;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.drools.core.QueryResultsImpl;
 import org.drools.commands.IdentifiableResult;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.drools.commands.runtime.FlatQueryResults;
+import org.drools.core.QueryResultsImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
@@ -105,7 +104,7 @@ public class QueryCommand implements ExecutableCommand<QueryResults>, Identifiab
         QueryResults results = ksession.getQueryResults( name, this.arguments.toArray() );
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, new FlatQueryResults( (QueryResultsImpl) results) );
+            ((RegistryContext) context).lookup(ExecutionResults.class).setResult( this.outIdentifier, new FlatQueryResults( (QueryResultsImpl) results) );
         }
 
         return results;

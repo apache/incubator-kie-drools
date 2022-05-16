@@ -21,9 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.commands.impl.ContextImpl;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
@@ -44,13 +45,13 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
     private Exception exception;
 
     public RequestContextImpl() {
-        register( ExecutionResultImpl.class, new ExecutionResultImpl() );
+        register( ExecutionResults.class, new ExecutionResultImpl() );
     }
 
     public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationContextManager cvnManager) {
         super(Long.toString(requestId), ctxManager);
         this.cvnManager = cvnManager;
-        register( ExecutionResultImpl.class, new ExecutionResultImpl() );
+        register( ExecutionResults.class, new ExecutionResultImpl() );
     }
 
     public Context getApplicationContext() {

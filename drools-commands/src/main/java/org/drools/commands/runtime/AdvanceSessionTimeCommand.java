@@ -17,16 +17,15 @@
 package org.drools.commands.runtime;
 
 import java.util.concurrent.TimeUnit;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.commands.IdentifiableResult;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.command.RegistryContext;
@@ -68,7 +67,7 @@ public class AdvanceSessionTimeCommand implements ExecutableCommand<Long>, Ident
         sessionClock.advanceTime( amount, unit );
         long result = sessionClock.getCurrentTime();
 
-        ExecutionResultImpl results = ((RegistryContext)context).lookup( ExecutionResultImpl.class );
+        ExecutionResults results = ((RegistryContext)context).lookup( ExecutionResults.class );
         if ( results != null ) {
             results.getResults().put( this.outIdentifier, result );
         }

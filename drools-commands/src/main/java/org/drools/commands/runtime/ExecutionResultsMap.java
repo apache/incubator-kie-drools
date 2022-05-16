@@ -14,27 +14,35 @@
  * limitations under the License.
  */
 
-package org.kie.api.runtime;
+package org.drools.commands.runtime;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/**
- * <p>
- * Contains the results for the BatchExecution Command. If the identifier is reference the results of a query, you'll need to cast the value to
- * QueryResults.
- * </p>
- */
-public interface ExecutionResults {
+import org.drools.commands.jaxb.JaxbMapAdapter;
 
-    Collection<String> getIdentifiers();
+@XmlJavaTypeAdapter(JaxbMapAdapter.class)
+public class ExecutionResultsMap {
 
-    Object getValue(String identifier);
+    Map<String, Object> results = new HashMap<String, Object>();
 
-    Object getFactHandle(String identifier);
+    public Collection<String> keySet() {
+        return results.keySet();
+    }
 
-    Map<String, Object> getResults();
+    public Object get(String identifier) {
+        return results.get(identifier);
+    }
 
-    void setResult(String identifier, Object result);
+    public Map<String, Object> getResults() {
+        return this.results;
+    }
+
+    public void setResults(Map<String, Object> results) {
+        this.results = results;
+
+    }
 
 }

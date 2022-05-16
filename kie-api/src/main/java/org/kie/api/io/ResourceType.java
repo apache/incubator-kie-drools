@@ -110,12 +110,6 @@ public class ResourceType implements Serializable {
                                                                       "src/main/resources",
                                                                       "rdrl");
 
-    /** Drools XML Rule Language */
-    public static final ResourceType XDRL = addResourceTypeToRegistry("XDRL",
-                                                                      "Drools XML Rule Language",
-                                                                      "src/main/resources",
-                                                                      "xdrl");
-
     /** Drools DSL */
     public static final ResourceType DSL = addResourceTypeToRegistry("DSL",
                                                                      "Drools DSL",

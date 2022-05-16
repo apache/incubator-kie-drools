@@ -29,7 +29,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;

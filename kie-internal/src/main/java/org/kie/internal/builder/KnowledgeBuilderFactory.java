@@ -79,6 +79,10 @@ public class KnowledgeBuilderFactory {
         return FactoryServiceHolder.factoryService.newKnowledgeBuilderConfiguration();
     }
 
+    public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(ClassLoader classLoader) {
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilderConfiguration( classLoader );
+    }
+
     /**
      * Create a KnowledgeBuilderConfiguration on which properties can be set. Use
      * the given properties file and ClassLoader - either of which can be null.
