@@ -15,8 +15,8 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.mvel.java.JavaDialect;
+import org.jbpm.compiler.xml.compiler.XmlDumper;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;

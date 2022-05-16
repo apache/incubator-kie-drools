@@ -15,10 +15,10 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import org.drools.core.xml.DefaultSemanticModule;
 import org.jbpm.bpmn2.xml.di.BPMNEdgeHandler;
 import org.jbpm.bpmn2.xml.di.BPMNPlaneHandler;
 import org.jbpm.bpmn2.xml.di.BPMNShapeHandler;
+import org.jbpm.compiler.xml.core.DefaultSemanticModule;
 
 public class BPMNDISemanticModule extends DefaultSemanticModule {
 

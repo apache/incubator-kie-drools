@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.definition.process.Process;
 import org.w3c.dom.Element;
@@ -47,7 +47,7 @@ public class GlobalHandler extends BaseAbstractHandler
     public Object start(final String uri,
             final String localName,
             final Attributes attrs,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
 
@@ -71,7 +71,7 @@ public class GlobalHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
             final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         return null;
     }

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -67,7 +67,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
     }
 
     @Override
-    protected Node handleNode(Node newNode, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+    protected Node handleNode(Node newNode, Element element, String uri, String localName, Parser parser) throws SAXException {
         NodeImpl node = (NodeImpl) newNode;
         // determine type of event definition, so the correct type of node
         // can be generated
@@ -126,7 +126,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
     }
 
     protected void handleLinkNode(Element element, Node node,
-            org.w3c.dom.Node xmlLinkNode, ExtensibleXmlParser parser) {
+            org.w3c.dom.Node xmlLinkNode, Parser parser) {
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 
         node.setName(element.getAttribute("name"));
@@ -182,7 +182,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
 
     protected void handleSignalNode(final Node node, final Element element,
             final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EventNode eventNode = (EventNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -214,7 +214,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
     @SuppressWarnings("unchecked")
     protected void handleMessageNode(final Node node, final Element element,
             final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EventNode eventNode = (EventNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -253,7 +253,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
 
     protected void handleTimerNode(final Node node, final Element element,
             final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         TimerNode timerNode = (TimerNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -296,7 +296,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
 
     protected void handleStateNode(final Node node, final Element element,
             final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StateNode stateNode = (StateNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();

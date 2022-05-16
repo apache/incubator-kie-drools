@@ -18,8 +18,8 @@ package org.jbpm.compiler.xml.processes;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.compiler.XmlDumper;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DataDefinition;
@@ -78,7 +78,7 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
     }
 
     protected void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         ForEachNode forEachNode = (ForEachNode) node;
         final String variableName = element.getAttribute("variableName");

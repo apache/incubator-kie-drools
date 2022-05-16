@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.actions.HandleEscalationAction;
@@ -53,7 +53,6 @@ import static org.jbpm.ruleflow.core.Metadata.PRODUCE_MESSAGE;
 import static org.jbpm.ruleflow.core.Metadata.SIGNAL_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
-import static org.jbpm.ruleflow.core.Metadata.VARIABLE;
 
 public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
@@ -72,7 +71,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
     }
 
     @Override
-    protected Node handleNode(Node newNode, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+    protected Node handleNode(Node newNode, Element element, String uri, String localName, Parser parser) throws SAXException {
         Node node = newNode;
 
         IOSpecification ioSpecification = readThrowSpecification(parser, element);
@@ -122,7 +121,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
     }
 
     protected void handleLinkNode(Element element, Node node,
-            org.w3c.dom.Node xmlLinkNode, ExtensibleXmlParser parser) {
+            org.w3c.dom.Node xmlLinkNode, Parser parser) {
 
         node.setName(element.getAttribute("name"));
 
@@ -193,7 +192,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
     public void handleSignalNode(final Node node, final Element element,
             final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         ActionNode actionNode = (ActionNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -233,7 +232,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
     @SuppressWarnings("unchecked")
     public void handleMessageNode(final Node node, final Element element,
             final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         ActionNode actionNode = (ActionNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -271,7 +270,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
     @SuppressWarnings("unchecked")
     public void handleEscalationNode(final Node node, final Element element,
             final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         ActionNode actionNode = (ActionNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {

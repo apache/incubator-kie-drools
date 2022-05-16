@@ -17,7 +17,7 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashMap;
 
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.w3c.dom.Element;
@@ -35,7 +35,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
     }
 
     protected Node handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         SubProcessNode subProcessNode = (SubProcessNode) node;
         String processId = element.getAttribute("calledElement");

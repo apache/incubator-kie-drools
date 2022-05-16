@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
@@ -63,7 +63,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 
     @SuppressWarnings("unchecked")
     public Object start(final String uri, final String localName,
-            final Attributes attrs, final ExtensibleXmlParser parser)
+            final Attributes attrs, final Parser parser)
             throws SAXException {
         parser.startElementBuilder(localName, attrs);
 
@@ -113,7 +113,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
     }
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         SequenceFlow sequenceFlow = (SequenceFlow) parser.getCurrent();
 

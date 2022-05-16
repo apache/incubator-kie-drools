@@ -26,6 +26,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.mvel.java.JavaDialect;
+import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.instance.KogitoProcessContextImpl;
@@ -50,7 +51,7 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText("list.add( \"hello world\" );");
 
-        builder = new KnowledgeBuilderImpl(pkg);
+        builder = new KnowledgeBuilderImpl(pkg, new SemanticKnowledgeBuilderConfigurationImpl());
         DialectCompiletimeRegistry dialectRegistry = builder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
         JavaDialect javaDialect = (JavaDialect) dialectRegistry.getDialect("java");
 

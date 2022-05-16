@@ -18,8 +18,8 @@ package org.jbpm.bpmn2.xml;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.mvel.java.JavaDialect;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -52,7 +52,7 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
     }
 
     protected Node handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         ActionNode actionNode = (ActionNode) node;
         node.setMetaData("NodeType", "ScriptTask");

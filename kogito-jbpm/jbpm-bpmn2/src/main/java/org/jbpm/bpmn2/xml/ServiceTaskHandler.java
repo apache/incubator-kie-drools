@@ -17,9 +17,9 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.List;
 
-import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Interface;
 import org.jbpm.bpmn2.core.Interface.Operation;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.WorkItemNode;
@@ -40,7 +40,7 @@ public class ServiceTaskHandler extends TaskHandler {
 
     @SuppressWarnings("unchecked")
     protected Node handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         Node currentNode = super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;
         String operationRef = element.getAttribute("operationRef");

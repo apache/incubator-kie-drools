@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.drools.core.xml.SemanticModule;
-import org.drools.core.xml.SemanticModules;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.compiler.xml.SemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;

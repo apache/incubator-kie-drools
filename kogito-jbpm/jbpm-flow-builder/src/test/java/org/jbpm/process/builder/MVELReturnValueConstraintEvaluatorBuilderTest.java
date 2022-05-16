@@ -26,6 +26,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ReturnValueDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
+import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.builder.dialect.mvel.MVELReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.MVELReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
@@ -47,7 +48,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
         ReturnValueDescr descr = new ReturnValueDescr();
         descr.setText("return value");
 
-        builder = new KnowledgeBuilderImpl(pkg);
+        builder = new KnowledgeBuilderImpl(pkg, new SemanticKnowledgeBuilderConfigurationImpl());
         DialectCompiletimeRegistry dialectRegistry = builder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect("mvel");
 

@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -47,7 +47,7 @@ public class VariableHandler extends BaseAbstractHandler
     public Object start(final String uri,
             final String localName,
             final Attributes attrs,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
         ContextContainer contextContainer = (ContextContainer) parser.getParent();
@@ -74,7 +74,7 @@ public class VariableHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
             final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.endElementBuilder();
         return null;
     }

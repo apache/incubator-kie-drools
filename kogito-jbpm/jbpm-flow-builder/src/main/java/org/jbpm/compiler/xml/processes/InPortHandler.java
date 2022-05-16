@@ -17,9 +17,9 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -42,7 +42,7 @@ public class InPortHandler extends BaseAbstractHandler
     public Object start(final String uri,
             final String localName,
             final Attributes attrs,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
         CompositeNode compositeNode = (CompositeNode) parser.getParent();
@@ -58,7 +58,7 @@ public class InPortHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
             final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.endElementBuilder();
         return null;
     }

@@ -22,10 +22,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.compiler.XmlDumper;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
@@ -61,7 +61,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     public Object start(final String uri, final String localName, final Attributes attrs,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
 
@@ -83,7 +83,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected abstract Node createNode();
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         Node node = (Node) parser.getCurrent();
         handleNode(node, element, uri, localName, parser);
@@ -91,7 +91,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     protected void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         final String x = element.getAttribute("x");
         if (x != null && x.length() != 0) {
             try {

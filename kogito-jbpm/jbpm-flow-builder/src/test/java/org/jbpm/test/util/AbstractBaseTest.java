@@ -17,6 +17,7 @@ package org.jbpm.test.util;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.RuleBaseFactory;
+import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.junit.jupiter.api.AfterAll;
@@ -34,7 +35,7 @@ public abstract class AbstractBaseTest {
 
     @BeforeEach
     public void before() {
-        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
     }
 
     public KogitoProcessRuntime createKogitoProcessRuntime() {

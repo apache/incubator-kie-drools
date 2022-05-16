@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.XmlWorkflowProcessDumper;
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 public class WorkItemNodeHandler extends AbstractNodeHandler {
 
     public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+            final String localName, final Parser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;

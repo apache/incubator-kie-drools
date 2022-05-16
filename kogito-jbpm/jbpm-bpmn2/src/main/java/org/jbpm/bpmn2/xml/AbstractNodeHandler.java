@@ -29,10 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 
-import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.Definitions;
@@ -41,7 +37,12 @@ import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.bpmn2.core.Signal;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.compiler.xml.compiler.XmlDumper;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
+import org.jbpm.compiler.xml.core.ExtensibleXmlParser;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -122,7 +123,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     @Override
     public Object start(final String uri, final String localName, final Attributes attrs,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.startElementBuilder(localName, attrs);
         final Node node = createNode(attrs);
         String id = attrs.getValue("id");
@@ -160,7 +161,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     @Override
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         Node node = (Node) parser.getCurrent();
         node = handleNode(node, element, uri, localName, parser);
@@ -171,7 +172,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     protected Node handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+            final String localName, final Parser parser)
             throws SAXException {
         final String x = element.getAttribute("x");
         if (x != null && x.length() != 0) {
@@ -419,7 +420,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     }
 
-    protected DataDefinition getVariableDataSpec(ExtensibleXmlParser parser, String propertyIdRef) {
+    protected DataDefinition getVariableDataSpec(Parser parser, String propertyIdRef) {
         RuleFlowProcess process = (RuleFlowProcess) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.CURRENT_PROCESS);
         Optional<Variable> var = process.getVariableScope().getVariables().stream().filter(e -> e.getId().equals(propertyIdRef)).findAny();
         if (var.isEmpty()) {
@@ -429,13 +430,13 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return new DataDefinition(variable.getId(), variable.getName(), variable.getType().getStringType());
     }
 
-    protected ItemDefinition getStructureRef(ExtensibleXmlParser parser, String id) {
+    protected ItemDefinition getStructureRef(Parser parser, String id) {
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
         Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>) buildData.getMetaData("ItemDefinitions");
         return itemDefinitions.get(id);
     }
 
-    protected IOSpecification readCatchSpecification(ExtensibleXmlParser parser, Element element) {
+    protected IOSpecification readCatchSpecification(Parser parser, Element element) {
         IOSpecification ioSpec = new IOSpecification();
         ioSpec.getDataOutputs().addAll(readDataOutput(parser, element));
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -450,7 +451,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return ioSpec;
     }
 
-    protected IOSpecification readThrowSpecification(ExtensibleXmlParser parser, Element element) {
+    protected IOSpecification readThrowSpecification(Parser parser, Element element) {
         IOSpecification ioSpec = new IOSpecification();
         ioSpec.getDataInputs().addAll(readDataInput(parser, element));
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -464,7 +465,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return ioSpec;
     }
 
-    protected IOSpecification readIOEspecification(ExtensibleXmlParser parser, Element element) {
+    protected IOSpecification readIOEspecification(Parser parser, Element element) {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         IOSpecification ioSpec = new IOSpecification();
         while (xmlNode != null) {
@@ -486,11 +487,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     /*
      * given a parent node it reads all data inputs and creates the dataSpec input/output for that node
      */
-    protected List<DataDefinition> readDataInput(ExtensibleXmlParser parser, org.w3c.dom.Node parent) {
+    protected List<DataDefinition> readDataInput(Parser parser, org.w3c.dom.Node parent) {
         return readData(parser, parent, "dataInput");
     }
 
-    protected List<DataDefinition> readDataOutput(ExtensibleXmlParser parser, org.w3c.dom.Node parent) {
+    protected List<DataDefinition> readDataOutput(Parser parser, org.w3c.dom.Node parent) {
         return readData(parser, parent, "dataOutput");
     }
 
@@ -498,7 +499,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
      * this read an data definition (input or output depending on the tag)
      * dtype is used for backward compatibility
      */
-    protected List<DataDefinition> readData(ExtensibleXmlParser parser, org.w3c.dom.Node parent, String tag) {
+    protected List<DataDefinition> readData(Parser parser, org.w3c.dom.Node parent, String tag) {
         List<DataDefinition> dataSet = new ArrayList<>();
         readChildrenElementsByTag(parent, tag).forEach(element -> {
             String id = element.getAttribute("id");
@@ -542,7 +543,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return !elements.isEmpty() ? Optional.of(elements.get(0)) : Optional.empty();
     }
 
-    protected Optional<DataAssociation> readDataAssociation(ExtensibleXmlParser parser, org.w3c.dom.Element element, Function<String, DataDefinition> sourceResolver,
+    protected Optional<DataAssociation> readDataAssociation(Parser parser, org.w3c.dom.Element element, Function<String, DataDefinition> sourceResolver,
             Function<String, DataDefinition> targetResolver) {
         List<DataDefinition> sources = readSources(element, sourceResolver);
         DataDefinition target = readTarget(element, targetResolver);
@@ -781,7 +782,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     // this is only for compiling purposes
-    protected MultiInstanceSpecification readMultiInstanceSpecification(ExtensibleXmlParser parser, org.w3c.dom.Node parent, IOSpecification ioSpecification) {
+    protected MultiInstanceSpecification readMultiInstanceSpecification(Parser parser, org.w3c.dom.Node parent, IOSpecification ioSpecification) {
         MultiInstanceSpecification multiInstanceSpecification = new MultiInstanceSpecification();
         Optional<Element> multiInstanceParent = readSingleChildElementByTag(parent, "multiInstanceLoopCharacteristics");
         if (multiInstanceParent.isEmpty()) {
@@ -864,7 +865,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     protected void handleThrowCompensationEventNode(final Node node, final Element element,
-            final String uri, final String localName, final ExtensibleXmlParser parser) {
+            final String uri, final String localName, final Parser parser) {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         if (!(node instanceof ActionNode || node instanceof EndNode)) {
             throw new IllegalArgumentException("Node is neither an ActionNode nor an EndNode but a " + node.getClass().getSimpleName());
@@ -994,7 +995,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     private static final String SIGNAL_NAMES = "signalNames";
 
-    protected String checkSignalAndConvertToRealSignalNam(ExtensibleXmlParser parser, String signalName) {
+    protected String checkSignalAndConvertToRealSignalNam(Parser parser, String signalName) {
 
         Signal signal = findSignalByName(parser, signalName);
         if (signal != null) {
@@ -1007,7 +1008,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return signalName;
     }
 
-    protected Signal findSignalByName(ExtensibleXmlParser parser, String signalName) {
+    protected Signal findSignalByName(Parser parser, String signalName) {
         ProcessBuildData buildData = ((ProcessBuildData) parser.getData());
 
         Set<String> signalNames = (Set<String>) buildData.getMetaData(SIGNAL_NAMES);
@@ -1025,7 +1026,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return null;
     }
 
-    protected String retrieveDataType(String itemSubjectRef, String dtype, ExtensibleXmlParser parser) {
+    protected String retrieveDataType(String itemSubjectRef, String dtype, Parser parser) {
         if (dtype != null && !dtype.isEmpty()) {
             return dtype;
         }
@@ -1046,11 +1047,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
      * @param parser parser instance
      * @return returns found variable name or given 'variableName' otherwise
      */
-    protected String findVariable(String variableName, final ExtensibleXmlParser parser) {
+    protected String findVariable(String variableName, final Parser parser) {
         if (variableName == null) {
             return null;
         }
-        Collection<?> parents = parser.getParents();
+        Collection<?> parents = ((ExtensibleXmlParser) parser).getParents();
 
         for (Object parent : parents) {
             if (parent instanceof ContextContainer) {

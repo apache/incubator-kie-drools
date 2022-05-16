@@ -15,7 +15,7 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import org.drools.core.xml.DefaultSemanticModule;
+import org.jbpm.compiler.xml.core.DefaultSemanticModule;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;

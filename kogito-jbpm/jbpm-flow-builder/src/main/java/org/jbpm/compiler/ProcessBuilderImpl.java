@@ -42,6 +42,7 @@ import org.drools.mvel.java.JavaDialect;
 import org.jbpm.assembler.DuplicateProcess;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessNodeBuilder;
 import org.jbpm.process.builder.ProcessNodeBuilderRegistry;
@@ -97,7 +98,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     }
 
     public void configurePackageBuilder(KnowledgeBuilder packageBuilder) {
-        KnowledgeBuilderConfigurationImpl conf = ((KnowledgeBuilderImpl) packageBuilder).getBuilderConfiguration();
+        SemanticKnowledgeBuilderConfigurationImpl conf = (SemanticKnowledgeBuilderConfigurationImpl) ((KnowledgeBuilderImpl) packageBuilder).getBuilderConfiguration();
         if (conf.getSemanticModules().getSemanticModule(ProcessSemanticModule.URI) == null) {
             conf.addSemanticModule(new ProcessSemanticModule());
         }
@@ -269,7 +270,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     public List<Process> addProcessFromXml(final Resource resource) throws IOException {
         Reader reader = resource.getReader();
         KnowledgeBuilderConfigurationImpl configuration = knowledgeBuilder.getBuilderConfiguration();
-        XmlProcessReader xmlReader = new XmlProcessReader(configuration.getSemanticModules(), knowledgeBuilder.getRootClassLoader());
+        XmlProcessReader xmlReader = new XmlProcessReader(((SemanticKnowledgeBuilderConfigurationImpl) configuration).getSemanticModules(), knowledgeBuilder.getRootClassLoader());
 
         List<Process> processes = null;
 

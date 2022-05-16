@@ -19,11 +19,11 @@ package org.jbpm.bpmn2.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Collaboration;
 import org.jbpm.bpmn2.core.CorrelationKey;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 public class CollaborationHandler extends BaseAbstractHandler implements Handler {
 
     @Override
-    public Object start(String uri, String localName, Attributes attrs, ExtensibleXmlParser parser) throws SAXException {
+    public Object start(String uri, String localName, Attributes attrs, Parser parser) throws SAXException {
         parser.startElementBuilder(localName, attrs);
 
         String collaborationPropertyId = attrs.getValue("id");
@@ -47,7 +47,7 @@ public class CollaborationHandler extends BaseAbstractHandler implements Handler
     }
 
     @Override
-    public Object end(String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+    public Object end(String uri, String localName, Parser parser) throws SAXException {
         Element element = parser.endElementBuilder();
         Collaboration collaboration = (Collaboration) parser.getCurrent();
         buildCorrelationKeys(collaboration, element.getChildNodes());

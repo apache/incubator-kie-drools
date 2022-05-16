@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.instance.impl.actions.HandleMessageAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
@@ -61,7 +61,7 @@ public class EndEventHandler extends AbstractNodeHandler {
     }
 
     @Override
-    protected Node handleNode(Node newNode, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+    protected Node handleNode(Node newNode, Element element, String uri, String localName, Parser parser) throws SAXException {
         NodeImpl node = (NodeImpl) newNode;
         // determine type of event definition, so the correct type of node
         // can be generated
@@ -121,7 +121,7 @@ public class EndEventHandler extends AbstractNodeHandler {
     }
 
     public void handleTerminateNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         ((EndNode) node).setTerminate(true);
 
         EndNode endNode = (EndNode) node;
@@ -141,7 +141,7 @@ public class EndEventHandler extends AbstractNodeHandler {
     }
 
     public void handleSignalNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         EndNode endNode = (EndNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -174,7 +174,7 @@ public class EndEventHandler extends AbstractNodeHandler {
 
     @SuppressWarnings("unchecked")
     public void handleMessageNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         EndNode endNode = (EndNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -207,7 +207,7 @@ public class EndEventHandler extends AbstractNodeHandler {
 
     @SuppressWarnings("unchecked")
     public void handleErrorNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         FaultNode faultNode = (FaultNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -239,7 +239,7 @@ public class EndEventHandler extends AbstractNodeHandler {
 
     @SuppressWarnings("unchecked")
     public void handleEscalationNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         FaultNode faultNode = (FaultNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {

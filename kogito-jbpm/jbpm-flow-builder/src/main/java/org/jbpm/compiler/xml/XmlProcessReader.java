@@ -24,8 +24,8 @@ import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.SemanticModules;
+import org.jbpm.compiler.xml.core.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.kie.api.definition.process.Process;
 import org.xml.sax.Attributes;

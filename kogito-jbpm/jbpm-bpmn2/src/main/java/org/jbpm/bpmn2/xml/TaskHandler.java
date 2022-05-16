@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.datatype.DataTypeResolver;
@@ -49,7 +49,7 @@ public class TaskHandler extends AbstractNodeHandler {
     }
 
     protected Node handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
 
         WorkItemNode workItemNode = (WorkItemNode) node;
@@ -110,7 +110,7 @@ public class TaskHandler extends AbstractNodeHandler {
     }
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         Node node = (Node) parser.getCurrent();
         // determine type of event definition, so the correct type of node can be generated

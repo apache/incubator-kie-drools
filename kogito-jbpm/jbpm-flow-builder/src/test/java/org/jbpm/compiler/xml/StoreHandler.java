@@ -17,9 +17,7 @@ package org.jbpm.compiler.xml;
 
 import java.util.HashSet;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -48,7 +46,7 @@ public class StoreHandler extends BaseAbstractHandler
     public Object start(final String uri,
             final String localName,
             final Attributes attrs,
-            final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+            final Parser xmlPackageReader) throws SAXException {
         xmlPackageReader.startElementBuilder(localName,
                 attrs);
 
@@ -72,7 +70,7 @@ public class StoreHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
             final String localName,
-            final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+            final Parser xmlPackageReader) throws SAXException {
         final Element element = xmlPackageReader.endElementBuilder();
 
         ActionNode actionNode = (ActionNode) xmlPackageReader.getCurrent();

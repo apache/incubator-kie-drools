@@ -17,9 +17,9 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -47,7 +47,7 @@ public class ConnectionHandler extends BaseAbstractHandler implements Handler {
     public Object start(final String uri,
             final String localName,
             final Attributes attrs,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.startElementBuilder(localName, attrs);
         String fromId = attrs.getValue("from");
         emptyAttributeCheck(localName, "from", fromId, parser);
@@ -84,7 +84,7 @@ public class ConnectionHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         return parser.getCurrent();
     }

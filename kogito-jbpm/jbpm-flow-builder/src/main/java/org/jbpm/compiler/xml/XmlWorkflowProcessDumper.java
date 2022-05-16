@@ -20,9 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.core.xml.Handler;
-import org.drools.core.xml.SemanticModule;
+import org.jbpm.compiler.xml.compiler.XmlDumper;
 import org.jbpm.compiler.xml.processes.AbstractNodeHandler;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;

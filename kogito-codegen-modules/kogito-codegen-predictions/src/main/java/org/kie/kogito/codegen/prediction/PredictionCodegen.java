@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -50,6 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.model.project.codegen.KogitoPackageSources.getReflectConfigFile;
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
@@ -86,7 +88,7 @@ public class PredictionCodegen extends AbstractGenerator {
 
     private static List<PMMLResource> parsePredictions(Path path, List<Resource> resources) {
         final InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase("PMML", null);
-        KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(knowledgeBase);
+        KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(knowledgeBase, (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration());
         List<PMMLResource> toReturn = new ArrayList<>();
         resources.forEach(resource -> {
             List<KiePMMLModel> kiePMMLModels = getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource);

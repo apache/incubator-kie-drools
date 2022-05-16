@@ -17,8 +17,8 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.Map;
 
-import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.compiler.XmlDumper;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionRef;
@@ -38,7 +38,7 @@ public class StateNodeHandler extends AbstractNodeHandler {
     }
 
     public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+            final String localName, final Parser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StateNode stateNode = (StateNode) node;

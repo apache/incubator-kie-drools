@@ -15,7 +15,7 @@
  */
 package org.jbpm.compiler.xml.processes;
 
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.process.core.Work;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 public class HumanTaskNodeHandler extends WorkItemNodeHandler {
 
     public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+            final String localName, final Parser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         HumanTaskNode humanTaskNode = (HumanTaskNode) node;

@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.core.xml.SemanticModules;
+import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;

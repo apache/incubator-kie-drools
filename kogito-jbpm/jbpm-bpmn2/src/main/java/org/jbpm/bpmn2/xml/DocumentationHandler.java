@@ -17,9 +17,9 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashSet;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -45,13 +45,13 @@ public class DocumentationHandler extends BaseAbstractHandler implements Handler
     public Object start(final String uri,
             final String localName,
             final Attributes attrs,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.startElementBuilder(localName, attrs);
         return null;
     }
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         Element element = parser.endElementBuilder();
         Object parent = parser.getParent();
         if (parent instanceof NodeImpl) {

@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -47,6 +48,8 @@ import org.kie.pmml.evaluator.assembler.service.PMMLCompilerService;
 import org.kie.pmml.evaluator.assembler.service.PMMLLoaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 
 /**
  * Utility class to replace the <b>Assembler</b> mechanism where this is not available
@@ -103,7 +106,7 @@ public class KieRuntimeFactoryBuilder {
 
     private static KnowledgeBuilderImpl createEmptyKnowledgeBuilderImpl(final Resource resource) {
         InternalKnowledgeBase defaultKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase("PMML", null);
-        return new KnowledgeBuilderImpl(defaultKnowledgeBase);
+        return new KnowledgeBuilderImpl(defaultKnowledgeBase, (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration());
     }
 
     private static KnowledgeBuilderImpl createPopulatedKnowledgeBuilderImpl(final Resource resource) {

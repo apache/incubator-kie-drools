@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.drools.util.io.ClassPathResource;
 import org.drools.util.io.InputStreamResource;
+import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -45,7 +46,7 @@ public class DroolsDeclaredTypeSequenceFlowExpressionTest {
                 + "value: Integer\n"
                 + "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         Resource drlResource = new InputStreamResource(new ByteArrayInputStream(drl.getBytes(StandardCharsets.UTF_8)));

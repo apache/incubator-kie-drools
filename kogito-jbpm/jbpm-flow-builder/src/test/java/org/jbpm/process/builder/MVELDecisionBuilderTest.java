@@ -27,6 +27,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
+import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.builder.dialect.mvel.MVELActionBuilder;
 import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.impl.Action;
@@ -50,7 +51,7 @@ public class MVELDecisionBuilderTest extends AbstractBaseTest {
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText("list.add( 'hello world' )");
 
-        builder = new KnowledgeBuilderImpl(pkg);
+        builder = new KnowledgeBuilderImpl(pkg, new SemanticKnowledgeBuilderConfigurationImpl());
 
         PackageRegistry pkgReg = builder.getPackageRegistry(pkg.getName());
         MVELDialect mvelDialect = (MVELDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("mvel");

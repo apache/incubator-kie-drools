@@ -25,6 +25,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.drl.ast.descr.ReturnValueDescr;
 import org.drools.mvel.java.JavaDialect;
+import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.builder.dialect.java.JavaReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
@@ -56,7 +57,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
         ReturnValueDescr descr = new ReturnValueDescr();
         descr.setText("return value;");
 
-        builder = new KnowledgeBuilderImpl(pkg);
+        builder = new KnowledgeBuilderImpl(pkg, new SemanticKnowledgeBuilderConfigurationImpl());
         DialectCompiletimeRegistry dialectRegistry = builder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
         JavaDialect javaDialect = (JavaDialect) dialectRegistry.getDialect("java");
 

@@ -15,8 +15,7 @@
  */
 package org.jbpm.compiler.xml;
 
-import org.drools.core.xml.DefaultSemanticModule;
-import org.drools.core.xml.SemanticModule;
+import org.jbpm.compiler.xml.core.DefaultSemanticModule;
 import org.jbpm.compiler.xml.processes.ActionNodeHandler;
 import org.jbpm.compiler.xml.processes.CompositeNodeHandler;
 import org.jbpm.compiler.xml.processes.ConnectionHandler;

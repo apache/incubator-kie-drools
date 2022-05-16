@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.xml.di.BPMNEdgeHandler.ConnectionInfo;
 import org.jbpm.bpmn2.xml.di.BPMNShapeHandler.NodeInfo;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -55,7 +55,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object start(final String uri, final String localName,
-            final Attributes attrs, final ExtensibleXmlParser parser)
+            final Attributes attrs, final Parser parser)
             throws SAXException {
         parser.startElementBuilder(localName, attrs);
 
@@ -65,7 +65,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.endElementBuilder();
         ProcessInfo processInfo = (ProcessInfo) parser.getCurrent();
         List<Process> processes = ((ProcessBuildData) parser.getData()).getProcesses();

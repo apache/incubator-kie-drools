@@ -17,11 +17,11 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashSet;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Interface;
 import org.jbpm.bpmn2.core.Interface.Operation;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -42,7 +42,7 @@ public class OperationHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object start(final String uri, final String localName,
-            final Attributes attrs, final ExtensibleXmlParser parser)
+            final Attributes attrs, final Parser parser)
             throws SAXException {
         parser.startElementBuilder(localName, attrs);
 
@@ -59,7 +59,7 @@ public class OperationHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         parser.endElementBuilder();
         return parser.getCurrent();
     }

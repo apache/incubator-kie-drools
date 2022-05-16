@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.parser.DroolsError;
 import org.drools.model.project.codegen.KogitoPackageSources;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableToCompiler;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 
 /**
  * Utility class to wrap ModelBuilderImpl + KnowledgeBuilder and extract the generated source code or metadata
@@ -128,9 +130,19 @@ public class DroolsModelBuilder {
 
         return new ModelBuilderImpl<>(
                 KogitoPackageSources::dumpSources,
-                KogitoKnowledgeBuilderConfigurationImpl.fromContext(context),
+                fromContext(context),
                 DUMMY_RELEASE_ID,
                 hotReloadMode);
+    }
+
+    private static KnowledgeBuilderConfigurationImpl fromContext(KogitoBuildContext buildContext) {
+        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(buildContext.getClassLoader());
+        for (String prop : buildContext.getApplicationProperties()) {
+            if (prop.startsWith("drools")) {
+                conf.setProperty(prop, buildContext.getApplicationProperty(prop).orElseThrow());
+            }
+        }
+        return conf;
     }
 
     private List<GeneratedFile> generateInternalResource(KogitoPackageSources pkgSources) {

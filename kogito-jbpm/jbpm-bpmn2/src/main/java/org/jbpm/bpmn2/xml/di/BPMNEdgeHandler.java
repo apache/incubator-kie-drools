@@ -17,12 +17,12 @@ package org.jbpm.bpmn2.xml.di;
 
 import java.util.HashSet;
 
-import org.drools.core.xml.BaseAbstractHandler;
-import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.xml.ProcessParsingValidationException;
 import org.jbpm.bpmn2.xml.di.BPMNPlaneHandler.ProcessInfo;
 import org.jbpm.bpmn2.xml.di.BPMNShapeHandler.NodeInfo;
+import org.jbpm.compiler.xml.Handler;
+import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -48,7 +48,7 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object start(final String uri, final String localName,
-            final Attributes attrs, final ExtensibleXmlParser parser)
+            final Attributes attrs, final Parser parser)
             throws SAXException {
         parser.startElementBuilder(localName, attrs);
 
@@ -60,7 +60,7 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object end(final String uri, final String localName,
-            final ExtensibleXmlParser parser) throws SAXException {
+            final Parser parser) throws SAXException {
         Element element = parser.endElementBuilder();
         // now get bendpoints
         String bendpoints = null;

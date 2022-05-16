@@ -15,7 +15,7 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import org.drools.compiler.compiler.xml.XmlDumper;
+import org.jbpm.compiler.xml.compiler.XmlDumper;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.StateNode;
 import org.xml.sax.Attributes;

@@ -15,7 +15,7 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import org.drools.core.xml.Handler;
+import org.jbpm.compiler.xml.Handler;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.xml.sax.Attributes;

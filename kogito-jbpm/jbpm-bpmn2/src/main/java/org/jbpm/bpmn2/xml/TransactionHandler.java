@@ -15,7 +15,7 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.workflow.core.Node;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 public class TransactionHandler extends SubProcessHandler {
 
     protected Node handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         node.setMetaData("Transaction", true);
         return node;

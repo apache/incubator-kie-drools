@@ -17,7 +17,7 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.Map;
 
-import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.w3c.dom.Element;
@@ -30,7 +30,7 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
     }
 
     public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+            final String localName, final Parser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         SubProcessNode subProcessNode = (SubProcessNode) node;

@@ -17,11 +17,11 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.List;
 
-import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.SequenceFlow;
+import org.jbpm.compiler.xml.Parser;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -63,7 +63,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
     }
 
     @Override
-    protected Node handleNode(Node node, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+    protected Node handleNode(Node node, Element element, String uri, String localName, Parser parser) throws SAXException {
         CompositeContextNode compositeNode = (CompositeContextNode) node;
         super.handleNode(node, element, uri, localName, parser);
 
