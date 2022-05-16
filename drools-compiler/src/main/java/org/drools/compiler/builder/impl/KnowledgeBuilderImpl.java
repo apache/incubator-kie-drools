@@ -37,20 +37,16 @@ import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
-import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.AnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompositePackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
-import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
-import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
 import org.drools.compiler.builder.impl.processors.OtherDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
-import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DuplicateFunction;
@@ -618,14 +614,23 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
 
         // merge into existing package
-        mergePackage(pkgRegistry, packageDescr );
+        PackageCompilationPhase packageProcessor =
+                new PackageCompilationPhase(this,
+                        kBase,
+                        configuration,
+                        typeDeclarationManager.getTypeDeclarationBuilder(),
+                        assetFilter,
+                        pkgRegistry,
+                        packageDescr);
+        packageProcessor.process();
+        this.results.addAll(packageProcessor.getResults());
 
         compileKnowledgePackages( packageDescr, pkgRegistry);
         wireAllRules();
         compileRete(pkgRegistry, packageDescr);
     }
 
-    protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+    private void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
         PackageRegistry packageRegistry = this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
         Map<String, AttributeDescr> packageAttributes = this.pkgRegistryManager.getPackageAttributes().get(packageDescr.getNamespace());
@@ -750,7 +755,16 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         if (pkg == null) {
             PackageDescr packageDescr = new PackageDescr(newPkg.getName());
             pkgRegistry = getOrCreatePackageRegistry(packageDescr);
-            mergePackage(this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()), packageDescr);
+            PackageCompilationPhase packageProcessor =
+                    new PackageCompilationPhase(this,
+                            kBase,
+                            configuration,
+                            typeDeclarationManager.getTypeDeclarationBuilder(),
+                            assetFilter,
+                            this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()),
+                            packageDescr);
+            packageProcessor.process();
+            this.results.addAll(packageProcessor.getResults());
             pkg = pkgRegistry.getPackage();
         }
 
@@ -844,65 +858,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        PackageCompilationPhase packageProcessor =
-                new PackageCompilationPhase(this,
-                        kBase,
-                        configuration,
-                        typeDeclarationManager.getTypeDeclarationBuilder(),
-                        assetFilter,
-                        pkgRegistry,
-                        packageDescr);
-        packageProcessor.process();
-        this.results.addAll(packageProcessor.getResults());
-    }
-
-    protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        OtherDeclarationCompilationPhase otherDeclarationProcessor = new OtherDeclarationCompilationPhase(
-                pkgRegistry,
-                packageDescr,
-                globals,
-                this,
-                kBase,
-                configuration,
-                assetFilter);
-        otherDeclarationProcessor.process();
-        this.results.addAll(otherDeclarationProcessor.getResults());
-    }
-
-    protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
-        GlobalCompilationPhase globalProcessor =
-                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, this, assetFilter);
-        globalProcessor.process();
-        this.results.addAll(globalProcessor.getResults());
-    }
-
-    protected void processAccumulateFunctions(PackageRegistry pkgRegistry,
-                                              PackageDescr packageDescr) {
-        AccumulateFunctionCompilationPhase accumulateFunctionProcessor =
-                new AccumulateFunctionCompilationPhase(pkgRegistry, packageDescr);
-        accumulateFunctionProcessor.process();
-        this.results.addAll(accumulateFunctionProcessor.getResults());
-    }
-
-    protected void processFunctions(PackageRegistry pkgRegistry,
-                                    PackageDescr packageDescr) {
-        FunctionCompilationPhase functionProcessor =
-                new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration);
-        functionProcessor.process();
-        this.results.addAll(functionProcessor.getResults());
-    }
-
     public TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String packageName) {
         return typeDeclarationManager.getAndRegisterTypeDeclaration(cls, packageName);
-    }
-
-    protected void processWindowDeclarations(PackageRegistry pkgRegistry,
-                                             PackageDescr packageDescr) {
-        WindowDeclarationCompilationPhase windowDeclarationProcessor =
-                new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, this);
-        windowDeclarationProcessor.process();
-        this.results.addAll(windowDeclarationProcessor.getResults());
     }
 
     public InternalKnowledgePackage[] getPackages() {
@@ -1133,6 +1090,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.assetFilter = assetFilter;
     }
 
+    protected AssetFilter getAssetFilter() {
+        return this.assetFilter;
+    }
+
     public void add(Resource resource, ResourceType type) {
         ResourceConfiguration resourceConfiguration = resource instanceof BaseResource ? resource.getConfiguration() : null;
         add(resource, type, resourceConfiguration);
@@ -1186,16 +1147,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
         return typeDeclarationManager.getTypeDeclaration(objectType);
-    }
-
-    protected void normalizeAnnotations(AnnotatedBaseDescr annotationsContainer, TypeResolver typeResolver, boolean isStrict) {
-        AnnotationNormalizer annotationNormalizer =
-                AnnotationNormalizer.of(
-                        typeResolver,
-                        configuration.getLanguageLevel().useJavaAnnotations());
-
-        annotationNormalizer.normalize(annotationsContainer);
-        this.results.addAll(annotationNormalizer.getResults());
     }
 
     private Map<String, Object> getBuilderCache() {
@@ -1253,25 +1204,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         compositePackageCompilationPhase.process();
     }
 
-    protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
-        for ( CompositePackageDescr packageDescr : packages ) {
-            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
-                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
-            }
-            getOrCreatePackageRegistry( packageDescr );
-        }
-    }
-
-    protected void buildOtherDeclarations(Collection<CompositePackageDescr> packages) {
-        for (CompositePackageDescr packageDescr : packages) {
-            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            setAssetFilter(packageDescr.getFilter());
-            processOtherDeclarations( pkgRegistry, packageDescr );
-            setAssetFilter(null);
-        }
-    }
-
-    protected void buildRules(Collection<CompositePackageDescr> packages) {
+    private void buildRules(Collection<CompositePackageDescr> packages) {
         for (CompositePackageDescr packageDescr : packages) {
             setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
