@@ -26,10 +26,7 @@ import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BooleanFunctionsTest {
 
@@ -72,10 +69,10 @@ public class BooleanFunctionsTest {
     public void getIsMissingValueCorrectInput() {
         Object[] input1 = {null};
         Object retrieved = BooleanFunctions.IS_MISSING.getValue(input1, EMPTY_MINING_FIELD);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {35};
         retrieved = BooleanFunctions.IS_MISSING.getValue(input2, EMPTY_MINING_FIELD);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         for (INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod : INVALID_VALUE_TREATMENT_METHOD.values()) {
             MiningField referredByFieldRef = getReferredByFieldRef(
                     invalidValueTreatmentMethod,
@@ -83,7 +80,7 @@ public class BooleanFunctionsTest {
                     Arrays.asList(new Interval(20, 29),
                                   new Interval(41, 50)));
             boolean expected = INVALID_VALUE_TREATMENT_METHOD.AS_MISSING.equals(invalidValueTreatmentMethod);
-            assertEquals(expected, BooleanFunctions.IS_MISSING.getValue(input2, referredByFieldRef));
+            assertThat(BooleanFunctions.IS_MISSING.getValue(input2, referredByFieldRef)).isEqualTo(expected);
         }
     }
 
@@ -103,17 +100,17 @@ public class BooleanFunctionsTest {
     public void getIsNotMissingValueCorrectInput() {
         Object[] input1 = {35};
         Object retrieved = BooleanFunctions.IS_NOT_MISSING.getValue(input1, EMPTY_MINING_FIELD);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {null};
         retrieved = BooleanFunctions.IS_NOT_MISSING.getValue(input2, EMPTY_MINING_FIELD);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         for (INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod : INVALID_VALUE_TREATMENT_METHOD.values()) {
             MiningField referredByFieldRef = getReferredByFieldRef(
                     invalidValueTreatmentMethod,
                     null,
                     Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
             boolean expected = !INVALID_VALUE_TREATMENT_METHOD.AS_MISSING.equals(invalidValueTreatmentMethod);
-            assertEquals(expected, BooleanFunctions.IS_NOT_MISSING.getValue(input1, referredByFieldRef));
+            assertThat(BooleanFunctions.IS_NOT_MISSING.getValue(input1, referredByFieldRef)).isEqualTo(expected);
         }
     }
 
@@ -138,41 +135,41 @@ public class BooleanFunctionsTest {
                                                                                                                 40),
                                                                              new Interval(41, 50)));
         Object retrieved = BooleanFunctions.IS_VALID.getValue(input1, referredByFieldRef);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         referredByFieldRef = getReferredByFieldRef(
                 null,
                 null,
                 Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_VALID.getValue(input1, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "35"),
                                                    Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_VALID.getValue(input1, referredByFieldRef);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "36"),
                                                    Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_VALID.getValue(input1, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
 
         Object[] input2 = {"VALUE"};
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "VALUE"),
                                                    Collections.emptyList());
         retrieved = BooleanFunctions.IS_VALID.getValue(input2, referredByFieldRef);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "VELUE"),
                                                    Collections.emptyList());
         retrieved = BooleanFunctions.IS_VALID.getValue(input2, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input3 = {null};
         retrieved = BooleanFunctions.IS_VALID.getValue(input3, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -212,52 +209,52 @@ public class BooleanFunctionsTest {
                                                                                                                 40),
                                                                              new Interval(41, 50)));
         Object retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         referredByFieldRef = getReferredByFieldRef(null,
                                                    null,
                                                    Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "35"),
                                                    Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(INVALID_VALUE_TREATMENT_METHOD.AS_MISSING,
                                                    Arrays.asList("123", "36"),
                                                    Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(INVALID_VALUE_TREATMENT_METHOD.AS_IS,
                                                    Arrays.asList("123", "36"),
                                                    Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "36"),
                                                    Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
 
         Object[] input2 = {"VALUE"};
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "VALUE"),
                                                    Collections.emptyList());
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input2, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(null,
                                                    Arrays.asList("123", "VELUE"),
                                                    Collections.emptyList());
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input2, referredByFieldRef);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input3 = {null};
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input3, referredByFieldRef);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -292,10 +289,10 @@ public class BooleanFunctionsTest {
     public void getEqualValueCorrectInput() {
         Object[] input1 = {35, 12};
         Object retrieved = BooleanFunctions.EQUAL.getValue(input1, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input2 = {35, 35};
         retrieved = BooleanFunctions.EQUAL.getValue(input2, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -308,10 +305,10 @@ public class BooleanFunctionsTest {
     public void getNotEqualValueCorrectInput() {
         Object[] input1 = {35, 12};
         Object retrieved = BooleanFunctions.NOT_EQUAL.getValue(input1, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {35, 35};
         retrieved = BooleanFunctions.NOT_EQUAL.getValue(input2, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -324,13 +321,13 @@ public class BooleanFunctionsTest {
     public void getLessThanValueCorrectInput() {
         Object[] input1 = {35, 37};
         Object retrieved = BooleanFunctions.LESS_THAN.getValue(input1, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {35, 35};
         retrieved = BooleanFunctions.LESS_THAN.getValue(input2, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input3 = {35, 12};
         retrieved = BooleanFunctions.LESS_THAN.getValue(input3, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -343,13 +340,13 @@ public class BooleanFunctionsTest {
     public void getLessOrEqualValueCorrectInput() {
         Object[] input1 = {35, 37};
         Object retrieved = BooleanFunctions.LESS_OR_EQUAL.getValue(input1, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {35, 35};
         retrieved = BooleanFunctions.LESS_OR_EQUAL.getValue(input2, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input3 = {35, 12};
         retrieved = BooleanFunctions.LESS_OR_EQUAL.getValue(input3, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -362,13 +359,13 @@ public class BooleanFunctionsTest {
     public void getGreaterThanValueCorrectInput() {
         Object[] input1 = {35, 37};
         Object retrieved = BooleanFunctions.GREATER_THAN.getValue(input1, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input2 = {35, 35};
         retrieved = BooleanFunctions.GREATER_THAN.getValue(input2, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input3 = {35, 12};
         retrieved = BooleanFunctions.GREATER_THAN.getValue(input3, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -381,13 +378,13 @@ public class BooleanFunctionsTest {
     public void getGreaterOrEqualValueCorrectInput() {
         Object[] input1 = {35, 37};
         Object retrieved = BooleanFunctions.GREATER_OR_EQUAL.getValue(input1, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input2 = {35, 35};
         retrieved = BooleanFunctions.GREATER_OR_EQUAL.getValue(input2, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input3 = {35, 12};
         retrieved = BooleanFunctions.GREATER_OR_EQUAL.getValue(input3, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -400,10 +397,10 @@ public class BooleanFunctionsTest {
     public void getAndValueCorrectInput() {
         Object[] input1 = {true, Boolean.valueOf("false")};
         Object retrieved = BooleanFunctions.AND.getValue(input1, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input2 = {true, Boolean.valueOf("true")};
         retrieved = BooleanFunctions.AND.getValue(input2, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -416,13 +413,13 @@ public class BooleanFunctionsTest {
     public void getOrValueCorrectInput() {
         Object[] input1 = {true, Boolean.valueOf("false")};
         Object retrieved = BooleanFunctions.OR.getValue(input1, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {false, Boolean.valueOf("true")};
         retrieved = BooleanFunctions.OR.getValue(input2, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input3 = {false, Boolean.valueOf("false")};
         retrieved = BooleanFunctions.OR.getValue(input3, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -435,10 +432,10 @@ public class BooleanFunctionsTest {
     public void getNotValueCorrectInput() {
         Object[] input1 = {true};
         Object retrieved = BooleanFunctions.NOT.getValue(input1, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
         Object[] input2 = {Boolean.valueOf("false")};
         retrieved = BooleanFunctions.NOT.getValue(input2, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -451,10 +448,10 @@ public class BooleanFunctionsTest {
     public void getIsInValueCorrectInput() {
         Object[] input1 = {35, 12, 35, 435, "A"};
         Object retrieved = BooleanFunctions.IS_IN.getValue(input1, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {35, 36, "35"};
         retrieved = BooleanFunctions.IS_IN.getValue(input2, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -467,10 +464,10 @@ public class BooleanFunctionsTest {
     public void getIsNotInValueCorrectInput() {
         Object[] input1 = {35, 36, "35"};
         Object retrieved = BooleanFunctions.IS_NOT_IN.getValue(input1, null);
-        assertTrue((boolean) retrieved);
+        assertThat((boolean) retrieved).isTrue();
         Object[] input2 = {35, 12, 35, 435, "A"};
         retrieved = BooleanFunctions.IS_NOT_IN.getValue(input2, null);
-        assertFalse((boolean) retrieved);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -483,13 +480,13 @@ public class BooleanFunctionsTest {
     public void getIfFValueCorrectInput() {
         Object[] input1 = {true, 36, "35"};
         Object retrieved = BooleanFunctions.IF.getValue(input1, null);
-        assertEquals(36, retrieved);
+        assertThat(retrieved).isEqualTo(36);
         Object[] input2 = {false, 12, 35};
         retrieved = BooleanFunctions.IF.getValue(input2, null);
-        assertEquals(35, retrieved);
+        assertThat(retrieved).isEqualTo(35);
         Object[] input3 = {false, 12};
         retrieved = BooleanFunctions.IF.getValue(input3, null);
-        assertNull(retrieved);
+        assertThat(retrieved).isNull();
     }
 
     @Test(expected = IllegalArgumentException.class)

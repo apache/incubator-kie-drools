@@ -69,8 +69,6 @@ import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHO
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getCategoricalPredictor;
@@ -163,13 +161,12 @@ public class KiePMMLRegressionModelFactoryTest {
         KiePMMLRegressionModel retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
-        assertEquals(regressionModel.getModelName(), retrieved.getName());
-        assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()),
-                     retrieved.getMiningFunction());
-        assertEquals(miningFields.get(0).getName().getValue(), retrieved.getTargetField());
+        assertThat(retrieved.getName()).isEqualTo(regressionModel.getModelName());
+        assertThat(retrieved.getMiningFunction()).isEqualTo(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()));
+        assertThat(retrieved.getTargetField()).isEqualTo(miningFields.get(0).getName().getValue());
         final AbstractKiePMMLTable regressionTable = retrieved.getRegressionTable();
         assertThat(regressionTable).isNotNull();
-        assertTrue(regressionTable instanceof KiePMMLClassificationTable);
+        assertThat(regressionTable).isInstanceOf(KiePMMLClassificationTable.class);
         evaluateCategoricalRegressionTable((KiePMMLClassificationTable) regressionTable);
     }
 
@@ -185,7 +182,7 @@ public class KiePMMLRegressionModelFactoryTest {
         assertThat(retrieved).isNotNull();
         int expectedSize = regressionTables.size()
                 + 2; // One for classification and one for the whole model
-        assertEquals(expectedSize, retrieved.size());
+        assertThat(retrieved).hasSize(expectedSize);
     }
 
     @Test
@@ -198,10 +195,10 @@ public class KiePMMLRegressionModelFactoryTest {
         Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
                 .getRegressionTablesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         int expectedSize = regressionTables.size() + 1; // One for classification
-        assertEquals(expectedSize, retrieved.size());
+        assertThat(retrieved).hasSize(expectedSize);
         final Collection<KiePMMLTableSourceCategory> values = retrieved.values();
         regressionTables.forEach(regressionTable ->
-                                         assertTrue(values.stream().anyMatch(kiePMMLTableSourceCategory -> kiePMMLTableSourceCategory.getCategory().equals(regressionTable.getTargetCategory()))));
+                                         assertThat(values.stream().anyMatch(kiePMMLTableSourceCategory -> kiePMMLTableSourceCategory.getCategory().equals(regressionTable.getTargetCategory()))).isTrue());
     }
 
     @Test
@@ -236,16 +233,15 @@ public class KiePMMLRegressionModelFactoryTest {
         MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_MODEL).get(0);
         String text = getFileContent(TEST_01_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     private void evaluateCategoricalRegressionTable(KiePMMLClassificationTable regressionTable) {
-        assertEquals(REGRESSION_NORMALIZATION_METHOD.byName(regressionModel.getNormalizationMethod().value()),
-                     regressionTable.getRegressionNormalizationMethod());
-        assertEquals(OP_TYPE.CATEGORICAL, regressionTable.getOpType());
+        assertThat(regressionTable.getRegressionNormalizationMethod()).isEqualTo(REGRESSION_NORMALIZATION_METHOD.byName(regressionModel.getNormalizationMethod().value()));
+        assertThat(regressionTable.getOpType()).isEqualTo(OP_TYPE.CATEGORICAL);
         final Map<String, KiePMMLRegressionTable> categoryTableMap = regressionTable.getCategoryTableMap();
         for (RegressionTable originalRegressionTable : regressionTables) {
-            assertTrue(categoryTableMap.containsKey(originalRegressionTable.getTargetCategory().toString()));
+            assertThat(categoryTableMap).containsKey(originalRegressionTable.getTargetCategory().toString());
             evaluateRegressionTable(categoryTableMap.get(originalRegressionTable.getTargetCategory().toString()),
                                     originalRegressionTable);
         }
@@ -253,21 +249,21 @@ public class KiePMMLRegressionModelFactoryTest {
 
     private void evaluateRegressionTable(KiePMMLRegressionTable regressionTable,
                                          RegressionTable originalRegressionTable) {
-        assertEquals(originalRegressionTable.getIntercept(), regressionTable.getIntercept());
+        assertThat(regressionTable.getIntercept()).isEqualTo(originalRegressionTable.getIntercept());
         final Map<String, SerializableFunction<Double, Double>> numericFunctionMap =
                 regressionTable.getNumericFunctionMap();
         for (NumericPredictor numericPredictor : originalRegressionTable.getNumericPredictors()) {
-            assertTrue(numericFunctionMap.containsKey(numericPredictor.getName().getValue()));
+            assertThat(numericFunctionMap).containsKey(numericPredictor.getName().getValue());
         }
         final Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 regressionTable.getCategoricalFunctionMap();
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
-            assertTrue(categoricalFunctionMap.containsKey(categoricalPredictor.getName().getValue()));
+        	assertThat(categoricalFunctionMap).containsKey(categoricalPredictor.getName().getValue());
         }
         final Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
                 regressionTable.getPredictorTermsFunctionMap();
         for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
-            assertTrue(predictorTermsFunctionMap.containsKey(predictorTerm.getName().getValue()));
+        	assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue());
         }
     }
 }

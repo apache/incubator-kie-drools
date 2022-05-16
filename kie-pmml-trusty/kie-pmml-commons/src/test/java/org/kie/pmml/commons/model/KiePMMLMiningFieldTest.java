@@ -25,8 +25,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLMiningFieldTest {
 
@@ -35,8 +34,8 @@ public class KiePMMLMiningFieldTest {
         final KiePMMLMiningField kiePMMLMiningField = KiePMMLMiningField
                 .builder("NAME", Collections.emptyList())
                 .build();
-        assertTrue(kiePMMLMiningField.isMatching(null));
-        assertTrue(kiePMMLMiningField.isMatching("VALUE"));
+        assertThat(kiePMMLMiningField.isMatching(null)).isTrue();
+        assertThat(kiePMMLMiningField.isMatching("VALUE")).isTrue();
     }
 
     @Test
@@ -46,9 +45,9 @@ public class KiePMMLMiningFieldTest {
                 .builder("NAME", Collections.emptyList())
                 .withAllowedValues(allowedValues)
                 .build();
-        assertFalse(kiePMMLMiningField.isMatching(null));
-        assertFalse(kiePMMLMiningField.isMatching("VALUE"));
-        allowedValues.forEach(allowedValue -> assertTrue(kiePMMLMiningField.isMatching(allowedValue)));
+        assertThat(kiePMMLMiningField.isMatching(null)).isFalse();
+        assertThat(kiePMMLMiningField.isMatching("VALUE")).isFalse();
+        allowedValues.forEach(allowedValue -> assertThat(kiePMMLMiningField.isMatching(allowedValue)).isTrue());
     }
 
     @Test
@@ -58,12 +57,12 @@ public class KiePMMLMiningFieldTest {
                 .builder("NAME", Collections.emptyList())
                 .withIntervals(intervals)
                 .build();
-        assertFalse(kiePMMLMiningField.isMatching(null));
-        assertFalse(kiePMMLMiningField.isMatching("VALUE"));
+        assertThat(kiePMMLMiningField.isMatching(null)).isFalse();
+        assertThat(kiePMMLMiningField.isMatching("VALUE")).isFalse();
         intervals.forEach(interval -> {
             double delta = (interval.getRightMargin().doubleValue() - interval.getLeftMargin().doubleValue()) / 2;
             Number toVerify = interval.getLeftMargin().doubleValue() + delta;
-            assertTrue(kiePMMLMiningField.isMatching(toVerify));
+            assertThat(kiePMMLMiningField.isMatching(toVerify)).isTrue();
         });
     }
 
@@ -76,13 +75,13 @@ public class KiePMMLMiningFieldTest {
                 .withAllowedValues(allowedValues)
                 .withIntervals(intervals)
                 .build();
-        assertFalse(kiePMMLMiningField.isMatching(null));
-        assertFalse(kiePMMLMiningField.isMatching("VALUE"));
-        allowedValues.forEach(allowedValue -> assertTrue(kiePMMLMiningField.isMatching(allowedValue)));
+        assertThat(kiePMMLMiningField.isMatching(null)).isFalse();
+        assertThat(kiePMMLMiningField.isMatching("VALUE")).isFalse();
+        allowedValues.forEach(allowedValue -> assertThat(kiePMMLMiningField.isMatching(allowedValue)).isTrue());
         intervals.forEach(interval -> {
             double delta = (interval.getRightMargin().doubleValue() - interval.getLeftMargin().doubleValue()) / 2;
             Number toVerify = interval.getLeftMargin().doubleValue() + delta;
-            assertFalse(kiePMMLMiningField.isMatching(toVerify));
+            assertThat(kiePMMLMiningField.isMatching(toVerify)).isFalse();
         });
     }
 

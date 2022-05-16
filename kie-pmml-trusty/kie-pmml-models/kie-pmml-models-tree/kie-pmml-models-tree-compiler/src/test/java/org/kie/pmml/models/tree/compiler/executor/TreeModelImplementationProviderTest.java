@@ -31,10 +31,7 @@ import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class TreeModelImplementationProviderTest {
@@ -50,7 +47,7 @@ public class TreeModelImplementationProviderTest {
 
     @Test
     public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.TREE_MODEL, PROVIDER.getPMMLModelType());
+        assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.TREE_MODEL);
     }
 
     @Test
@@ -63,7 +60,7 @@ public class TreeModelImplementationProviderTest {
                                                                        new HasClassLoaderMock());
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved instanceof Serializable);
+        assertThat(retrieved).isInstanceOf(Serializable.class);
     }
 
     @Test
@@ -78,12 +75,12 @@ public class TreeModelImplementationProviderTest {
         assertThat(retrieved).isNotNull();
         final Map<String, String> sourcesMap = retrieved.getSourcesMap();
         assertThat(sourcesMap).isNotNull();
-        assertFalse(sourcesMap.isEmpty());
+        assertThat(sourcesMap).isNotEmpty();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
             final Map<String, Class<?>> compiled = KieMemoryCompiler.compile(sourcesMap, classLoader);
             for (Class<?> clazz : compiled.values()) {
-                assertTrue(clazz instanceof Serializable);
+                assertThat(clazz).isInstanceOf(Serializable.class);
             }
         } catch (Throwable t) {
             fail(t.getMessage());

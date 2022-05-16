@@ -36,7 +36,7 @@ import org.kie.pmml.api.enums.IN_NOTIN;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getArray;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getStringObjects;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
@@ -76,7 +76,7 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
                                                                       arrayTypeString,
                                                                       booleanOperatorString,
                                                                       valuesString));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLSimpleSetPredicate.class, Arrays.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

@@ -32,7 +32,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLLinearNorm;
 import org.kie.pmml.commons.model.expressions.KiePMMLNormContinuous;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomLinearNorm;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomNormContinuous;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
@@ -63,7 +63,7 @@ public class KiePMMLNormContinuousFactoryTest {
                                                                       linearNorms.get(2).getOrig(),
                                                                       linearNorms.get(2).getNorm(),
                                                                       outlierString, normContinuous.getMapMissingTo()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLLinearNorm.class,
                                                KiePMMLNormContinuous.class, OUTLIER_TREATMENT_METHOD.class);
         commonValidateCompilationWithImports(retrieved, imports);
@@ -78,6 +78,6 @@ public class KiePMMLNormContinuousFactoryTest {
         Expression expected = JavaParserUtils.parseExpression(String.format(text, name,
                                                                             linearNorm.getOrig(),
                                                                             linearNorm.getNorm()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 }

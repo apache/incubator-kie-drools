@@ -40,10 +40,7 @@ import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;
 import org.kie.test.util.filesystem.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class MiningModelImplementationProviderTest {
@@ -58,7 +55,7 @@ public class MiningModelImplementationProviderTest {
 
     @Test
     public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.MINING_MODEL, PROVIDER.getPMMLModelType());
+        assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.MINING_MODEL);
     }
 
     @Test
@@ -134,7 +131,7 @@ public class MiningModelImplementationProviderTest {
                                                                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved instanceof Serializable);
+        assertThat(retrieved).isInstanceOf(Serializable.class);
         commonVerifyIsDeepCloneable(retrieved);
     }
 
@@ -152,9 +149,9 @@ public class MiningModelImplementationProviderTest {
         assertThat(retrieved).isNotNull();
         commonVerifyIsDeepCloneable(retrieved);
         assertThat(retrieved.getNestedModels()).isNotNull();
-        assertFalse(retrieved.getNestedModels().isEmpty());
+        assertThat(retrieved.getNestedModels()).isNotEmpty();
         final Map<String, String> sourcesMap = new HashMap<>(retrieved.getSourcesMap());
-        assertFalse(sourcesMap.isEmpty());
+        assertThat(sourcesMap).isNotEmpty();
         try {
             KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
             fail("Expecting compilation error without nested models sources");
@@ -173,13 +170,13 @@ public class MiningModelImplementationProviderTest {
         final FileInputStream fis = FileUtils.getFileInputStream(source);
         final PMML toReturn = KiePMMLUtil.load(fis, source);
         assertThat(toReturn).isNotNull();
-        assertEquals(1, toReturn.getModels().size());
-        assertTrue(toReturn.getModels().get(0) instanceof MiningModel);
+        assertThat(toReturn.getModels()).hasSize(1);
+        assertThat(toReturn.getModels().get(0)).isInstanceOf(MiningModel.class);
         return toReturn;
     }
 
     private void commonVerifyIsDeepCloneable(AbstractKiePMMLComponent toVerify) {
-        assertTrue(toVerify instanceof Serializable);
+        assertThat(toVerify).isInstanceOf(Serializable.class);
         ExternalizableMock externalizableMock = new ExternalizableMock();
         externalizableMock.setKiePMMLComponent(toVerify);
         ClassUtils.deepClone(externalizableMock);

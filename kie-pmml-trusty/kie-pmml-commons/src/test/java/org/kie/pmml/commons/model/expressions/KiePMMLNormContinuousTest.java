@@ -26,7 +26,6 @@ import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class KiePMMLNormContinuousTest {
 
@@ -36,13 +35,13 @@ public class KiePMMLNormContinuousTest {
         KiePMMLLinearNorm ln1 = new KiePMMLLinearNorm("1", Collections.emptyList(), 32, 5);
         KiePMMLLinearNorm ln2 = new KiePMMLLinearNorm("2", Collections.emptyList(), 33, 34);
         List<KiePMMLLinearNorm> linearNorms = Arrays.asList(ln0, ln1, ln2);
-        assertEquals(ln0, linearNorms.get(0));
-        assertEquals(ln1, linearNorms.get(1));
-        assertEquals(ln2, linearNorms.get(2));
+        assertThat(linearNorms.get(0)).isEqualTo(ln0);
+        assertThat(linearNorms.get(1)).isEqualTo(ln1);
+        assertThat(linearNorms.get(2)).isEqualTo(ln2);
         KiePMMLNormContinuous.sortLinearNorms(linearNorms);
-        assertEquals(ln1, linearNorms.get(0));
-        assertEquals(ln2, linearNorms.get(1));
-        assertEquals(ln0, linearNorms.get(2));
+        assertThat(linearNorms.get(0)).isEqualTo(ln1);
+        assertThat(linearNorms.get(1)).isEqualTo(ln2);
+        assertThat(linearNorms.get(2)).isEqualTo(ln0);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class KiePMMLNormContinuousTest {
                 kiePMMLNormContinuous.linearNorms.get(0).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(1).getOrig() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(1).getNorm() - kiePMMLNormContinuous.linearNorms.get(0).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -74,49 +73,49 @@ public class KiePMMLNormContinuousTest {
                 kiePMMLNormContinuous.linearNorms.get(0).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(1).getOrig() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(1).getNorm() - kiePMMLNormContinuous.linearNorms.get(0).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 28;
         expected =
                 kiePMMLNormContinuous.linearNorms.get(0).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(1).getOrig() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(1).getNorm() - kiePMMLNormContinuous.linearNorms.get(0).getNorm());
         retrieved = kiePMMLNormContinuous.evaluate(input);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 30;
         retrieved = kiePMMLNormContinuous.evaluate(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(1).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(2).getOrig() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(2).getNorm() - kiePMMLNormContinuous.linearNorms.get(1).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 31;
         retrieved = kiePMMLNormContinuous.evaluate(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(1).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(2).getOrig() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(2).getNorm() - kiePMMLNormContinuous.linearNorms.get(1).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 36;
         retrieved = kiePMMLNormContinuous.evaluate(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 37;
         retrieved = kiePMMLNormContinuous.evaluate(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 40;
         retrieved = kiePMMLNormContinuous.evaluate(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -129,14 +128,14 @@ public class KiePMMLNormContinuousTest {
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(1).getOrig() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(1).getNorm() - kiePMMLNormContinuous.linearNorms.get(0).getNorm());
 
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 41;
         retrieved = kiePMMLNormContinuous.evaluate(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -145,10 +144,10 @@ public class KiePMMLNormContinuousTest {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_MISSING_VALUES, missingValue);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluate(input);
-        assertEquals(missingValue, retrieved);
+        assertThat(retrieved).isEqualTo(missingValue);
         input = 41;
         retrieved = kiePMMLNormContinuous.evaluate(input);
-        assertEquals(missingValue, retrieved);
+        assertThat(retrieved).isEqualTo(missingValue);
     }
 
     @Test
@@ -156,10 +155,10 @@ public class KiePMMLNormContinuousTest {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_EXTREME_VALUES, null);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluate(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(0).getNorm(), retrieved);
+        assertThat(retrieved).isEqualTo(kiePMMLNormContinuous.linearNorms.get(0).getNorm());
         input = 41;
         retrieved = kiePMMLNormContinuous.evaluate(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(3).getNorm(), retrieved);
+        assertThat(retrieved).isEqualTo(kiePMMLNormContinuous.linearNorms.get(3).getNorm());
     }
 
     @Test
@@ -171,49 +170,49 @@ public class KiePMMLNormContinuousTest {
                 kiePMMLNormContinuous.linearNorms.get(0).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(1).getOrig() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(1).getNorm() - kiePMMLNormContinuous.linearNorms.get(0).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 28;
         expected =
                 kiePMMLNormContinuous.linearNorms.get(0).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(1).getOrig() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(1).getNorm() - kiePMMLNormContinuous.linearNorms.get(0).getNorm());
         retrieved = kiePMMLNormContinuous.evaluateExpectedValue(input);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 30;
         retrieved = kiePMMLNormContinuous.evaluateExpectedValue(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(1).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(2).getOrig() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(2).getNorm() - kiePMMLNormContinuous.linearNorms.get(1).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 31;
         retrieved = kiePMMLNormContinuous.evaluateExpectedValue(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(1).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(2).getOrig() - kiePMMLNormContinuous.linearNorms.get(1).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(2).getNorm() - kiePMMLNormContinuous.linearNorms.get(1).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 36;
         retrieved = kiePMMLNormContinuous.evaluateExpectedValue(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 37;
         retrieved = kiePMMLNormContinuous.evaluateExpectedValue(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 40;
         retrieved = kiePMMLNormContinuous.evaluateExpectedValue(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -226,14 +225,14 @@ public class KiePMMLNormContinuousTest {
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(1).getOrig() - kiePMMLNormContinuous.linearNorms.get(0).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(1).getNorm() - kiePMMLNormContinuous.linearNorms.get(0).getNorm());
 
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         input = 41;
         retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
         expected =
                 kiePMMLNormContinuous.linearNorms.get(2).getNorm() +
                         ((input.doubleValue() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()) / (kiePMMLNormContinuous.linearNorms.get(3).getOrig() - kiePMMLNormContinuous.linearNorms.get(2).getOrig()))
                                 * (kiePMMLNormContinuous.linearNorms.get(3).getNorm() - kiePMMLNormContinuous.linearNorms.get(2).getNorm());
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -242,10 +241,10 @@ public class KiePMMLNormContinuousTest {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_MISSING_VALUES, missingValue);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
-        assertEquals(missingValue, retrieved);
+        assertThat(retrieved).isEqualTo(missingValue);
         input = 41;
         retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
-        assertEquals(missingValue, retrieved);
+        assertThat(retrieved).isEqualTo(missingValue);
     }
 
     @Test
@@ -253,10 +252,10 @@ public class KiePMMLNormContinuousTest {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_EXTREME_VALUES, null);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(0).getNorm(), retrieved);
+        assertThat(retrieved).isEqualTo(kiePMMLNormContinuous.linearNorms.get(0).getNorm());
         input = 41;
         retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(3).getNorm(), retrieved);
+        assertThat(retrieved).isEqualTo(kiePMMLNormContinuous.linearNorms.get(3).getNorm());
     }
 
     @Test
@@ -264,32 +263,32 @@ public class KiePMMLNormContinuousTest {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, null, null);
         Number input = 24;
         KiePMMLLinearNorm[] retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(0), retrieved[0]);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(1), retrieved[1]);
+        assertThat(retrieved[0]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(0));
+        assertThat(retrieved[1]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(1));
         input = 28;
         retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(0), retrieved[0]);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(1), retrieved[1]);
+        assertThat(retrieved[0]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(0));
+        assertThat(retrieved[1]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(1));
         input = 30;
         retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(1), retrieved[0]);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(2), retrieved[1]);
+        assertThat(retrieved[0]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(1));
+        assertThat(retrieved[1]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(2));
         input = 31;
         retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(1), retrieved[0]);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(2), retrieved[1]);
+        assertThat(retrieved[0]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(1));
+        assertThat(retrieved[1]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(2));
         input = 36;
         retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(2), retrieved[0]);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(3), retrieved[1]);
+        assertThat(retrieved[0]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(2));
+        assertThat(retrieved[1]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(3));
         input = 37;
         retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(2), retrieved[0]);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(3), retrieved[1]);
+        assertThat(retrieved[0]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(2));
+        assertThat(retrieved[1]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(3));
         input = 40;
         retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(2), retrieved[0]);
-        assertEquals(kiePMMLNormContinuous.linearNorms.get(3), retrieved[1]);
+        assertThat(retrieved[0]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(2));
+        assertThat(retrieved[1]).isEqualTo(kiePMMLNormContinuous.linearNorms.get(3));
     }
 
     @Test
@@ -312,7 +311,7 @@ public class KiePMMLNormContinuousTest {
         assertThat(retrieved).isNotNull();
         Number expected =
                 startNorm + ((input.doubleValue() - startOrig) / (endOrig - startOrig)) * (endNorm - startNorm);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     private KiePMMLNormContinuous getKiePMMLNormContinuous(String name,

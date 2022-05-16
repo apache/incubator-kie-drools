@@ -29,9 +29,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DateFunctionsTest {
 
@@ -59,7 +58,7 @@ public class DateFunctionsTest {
         logger.debug("{}", inputDate.getTime());
         Object[] input1 = {inputDate, 1960};
         Object retrieved = DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input1);
-        assertEquals(0, retrieved);
+        assertThat(retrieved).isEqualTo(0);
         //--
         inputDateLocalDateTime = LocalDateTime.of(2003, 4, 1, 0, 0, 0);
         logger.debug("inputDateLocalDateTime {}", inputDateLocalDateTime);
@@ -70,7 +69,7 @@ public class DateFunctionsTest {
         logger.debug("{}", inputDate.getTime());
         Object[] input2 = {inputDate, 1960};
         retrieved = DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input2);
-        assertEquals(15796, retrieved);
+        assertThat(retrieved).isEqualTo(15796);
 
 
 
@@ -94,7 +93,7 @@ public class DateFunctionsTest {
                 DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input);
                 fail("Expecting IllegalArgumentException");
             } catch (Exception e) {
-                assertTrue(e instanceof IllegalArgumentException);
+                assertThat(e).isInstanceOf(IllegalArgumentException.class);
             }
         }
     }
@@ -104,7 +103,7 @@ public class DateFunctionsTest {
         Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 3, 3, 30, 3).getTime();
         Object[] input1 = {inputDate, 1960};
         Object retrieved = DateFunctions.DATE_SECONDS_SINCE_YEAR.getValue(input1);
-        assertEquals(185403, retrieved);
+        assertThat(retrieved).isEqualTo(185403);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -124,7 +123,7 @@ public class DateFunctionsTest {
                 DateFunctions.DATE_SECONDS_SINCE_YEAR.getValue(input);
                 fail("Expecting IllegalArgumentException");
             } catch (Exception e) {
-                assertTrue(e instanceof IllegalArgumentException);
+                assertThat(e).isInstanceOf(IllegalArgumentException.class);
             }
         }
     }
@@ -134,15 +133,15 @@ public class DateFunctionsTest {
         Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 2, 0, 0, 1).getTime();
         Object[] input1 = {inputDate};
         Object retrieved = DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input1);
-        assertEquals(1, retrieved);
+        assertThat(retrieved).isEqualTo(1);
         inputDate = new GregorianCalendar(1960, Calendar.MARCH, 12, 0, 1, 0).getTime();
         Object[] input2 = {inputDate};
         retrieved = DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input2);
-        assertEquals(60, retrieved);
+        assertThat(retrieved).isEqualTo(60);
         inputDate = new GregorianCalendar(1960, Calendar.DECEMBER, 23, 5, 23, 30).getTime();
         Object[] input3 = {inputDate};
         retrieved = DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input3);
-        assertEquals(19410, retrieved);
+        assertThat(retrieved).isEqualTo(19410);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -163,7 +162,7 @@ public class DateFunctionsTest {
                 DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input);
                 fail("Expecting IllegalArgumentException");
             } catch (Exception e) {
-                assertTrue(e instanceof IllegalArgumentException);
+                assertThat(e).isInstanceOf(IllegalArgumentException.class);
             }
         }
     }

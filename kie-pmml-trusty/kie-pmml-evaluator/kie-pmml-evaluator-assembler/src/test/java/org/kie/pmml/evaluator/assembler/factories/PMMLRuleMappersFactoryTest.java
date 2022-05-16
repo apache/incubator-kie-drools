@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class PMMLRuleMappersFactoryTest {
 
@@ -21,9 +20,9 @@ public class PMMLRuleMappersFactoryTest {
                                                                            generatedRuleMappers);
         assertThat(retrieved).isNotNull();
         String expected = String.format("package %s;", packageName);
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved).contains(expected);
         List<String> mod = generatedRuleMappers.stream().map(gen -> "new " + gen + "()").collect(Collectors.toList());
         expected = "Arrays.asList(" + String.join(", ", mod) + ");";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved).contains(expected);
     }
 }
