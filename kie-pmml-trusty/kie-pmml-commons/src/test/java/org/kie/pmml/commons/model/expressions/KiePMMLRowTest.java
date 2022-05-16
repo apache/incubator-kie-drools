@@ -24,9 +24,7 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLRowTest {
 
@@ -45,37 +43,37 @@ public class KiePMMLRowTest {
     public void evaluateKeyNotFound() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("NOT-KEY", 0), "KEY-0", null);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateKeyFoundNotMatching() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", 435345), "KEY-0", null);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateKeyFoundMatching() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", 1), "KEY-0", null);
-        assertTrue(retrieved.isPresent());
-        assertEquals(COLUMN_VALUES.get("KEY-0"), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(COLUMN_VALUES.get("KEY-0"));
     }
 
     @Test
     public void evaluateKeyFoundNotMatchingRegex() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", "[435345]"), "KEY-0", REGEX_FIELD);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateKeyFoundMatchingRegex() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", "[0-9]"), "KEY-0", REGEX_FIELD);
-        assertTrue(retrieved.isPresent());
-        assertEquals(COLUMN_VALUES.get("KEY-0"), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(COLUMN_VALUES.get("KEY-0"));
     }
 
     @Test
@@ -86,22 +84,22 @@ public class KiePMMLRowTest {
                                           integer -> integer));
         columnPairsMap.put("NOT-KEY", 4);
         Optional<Object> retrieved = kiePMMLRow.evaluate(columnPairsMap, "KEY-0", null);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateKeyFoundMatchingNoOutputColumnFound() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", 1), "NOT-KEY", null);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateKeyFoundMatchingOutputColumnFound() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", 1), "KEY-0", null);
-        assertTrue(retrieved.isPresent());
-        assertEquals(COLUMN_VALUES.get("KEY-0"), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(COLUMN_VALUES.get("KEY-0"));
     }
 
     @Test
@@ -111,8 +109,8 @@ public class KiePMMLRowTest {
                 .collect(Collectors.toMap(i -> "KEY-" + i,
                                           integer -> integer));
         Optional<Object> retrieved = kiePMMLRow.evaluate(columnPairsMap, "KEY-0", null);
-        assertTrue(retrieved.isPresent());
-        assertEquals(COLUMN_VALUES.get("KEY-0"), retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(COLUMN_VALUES.get("KEY-0"));
     }
 
 }

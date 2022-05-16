@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 public class KiePMMLDroolsModelTest {
@@ -42,9 +42,9 @@ public class KiePMMLDroolsModelTest {
 
     @Test
     public void constructor() {
-        assertEquals(MODEL_NAME, kiePMMLDroolsModel.getName());
-        assertEquals(EXTENSIONS, kiePMMLDroolsModel.getExtensions());
-        assertEquals(getSanitizedPackageName(MODEL_NAME), kiePMMLDroolsModel.getKModulePackageName());
+        assertThat(kiePMMLDroolsModel.getName()).isEqualTo(MODEL_NAME);
+        assertThat(kiePMMLDroolsModel.getExtensions()).isEqualTo(EXTENSIONS);
+        assertThat(kiePMMLDroolsModel.getKModulePackageName()).isEqualTo(getSanitizedPackageName(MODEL_NAME));
     }
 
     @Test(expected = KiePMMLException.class)

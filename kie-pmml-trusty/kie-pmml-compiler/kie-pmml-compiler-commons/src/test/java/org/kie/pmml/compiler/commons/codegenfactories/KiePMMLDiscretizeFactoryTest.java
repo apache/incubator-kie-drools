@@ -35,7 +35,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLDiscretizeBin;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
@@ -76,7 +76,7 @@ public class KiePMMLDiscretizeFactoryTest {
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, NAME, MAP_MISSING_TO,
                                                                       DEFAULTVALUE, dataTypeString));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLDiscretize.class,
                                                KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);

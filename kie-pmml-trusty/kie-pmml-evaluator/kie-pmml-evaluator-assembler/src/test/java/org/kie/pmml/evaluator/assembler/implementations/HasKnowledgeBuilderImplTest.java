@@ -26,9 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class HasKnowledgeBuilderImplTest {
 
@@ -47,8 +45,8 @@ public class HasKnowledgeBuilderImplTest {
     public void getClassLoader() {
         ClassLoader retrieved = hasKnowledgeBuilder.getClassLoader();
         assertThat(retrieved).isNotNull();
-        assertEquals(knowledgeBuilder.getRootClassLoader(),retrieved);
-        assertTrue(retrieved instanceof ProjectClassLoader);
+        assertThat(retrieved).isEqualTo(knowledgeBuilder.getRootClassLoader());
+        assertThat(retrieved).isInstanceOf(ProjectClassLoader.class);
     }
 
     @Test
@@ -57,7 +55,7 @@ public class HasKnowledgeBuilderImplTest {
         sourcesMap.put(CLASS_SOURCE_NAME, CLASS_SOURCE);
         Class<?> retrieved = hasKnowledgeBuilder.compileAndLoadClass(sourcesMap, CLASS_SOURCE_NAME);
         assertThat(retrieved).isNotNull();
-        assertEquals(CLASS_SOURCE_NAME, retrieved.getName());
+        assertThat(retrieved.getName()).isEqualTo(CLASS_SOURCE_NAME);
     }
 
     @Test

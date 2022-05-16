@@ -20,8 +20,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 
 public class KiePMMLFactoryFactoryTest {
@@ -37,16 +35,16 @@ public class KiePMMLFactoryFactoryTest {
 
     private void validateNotCodegen(Expression toValidate, String kiePMMLModelClass) {
         assertThat(toValidate).isNotNull();
-        assertTrue(toValidate instanceof MethodCallExpr);
+        assertThat(toValidate).isInstanceOf(MethodCallExpr.class);
         MethodCallExpr methodCallExpr = (MethodCallExpr) toValidate;
-        assertEquals(kiePMMLModelClass, methodCallExpr.getScope().get().asNameExpr().toString());
-        assertEquals(GET_MODEL, methodCallExpr.getName().asString());
+        assertThat(methodCallExpr.getScope().get().asNameExpr().toString()).isEqualTo(kiePMMLModelClass);
+        assertThat(methodCallExpr.getName().asString()).isEqualTo(GET_MODEL);
     }
 
     private void validateCodegen(Expression toValidate, String kiePMMLModelClass) {
         assertThat(toValidate).isNotNull();
-        assertTrue(toValidate instanceof ObjectCreationExpr);
+        assertThat(toValidate).isInstanceOf(ObjectCreationExpr.class);
         ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr) toValidate;
-        assertEquals(kiePMMLModelClass, objectCreationExpr.getType().asString());
+        assertThat(objectCreationExpr.getType().asString()).isEqualTo(kiePMMLModelClass);
     }
 }

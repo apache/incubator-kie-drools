@@ -31,8 +31,7 @@ import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
@@ -60,7 +59,7 @@ public class KiePMMLMiningFieldFactoryTest {
         Statement expected = JavaParserUtils.parseBlock(String.format(text, VARIABLE_NAME,
                                                                       miningField.getName().getValue(),
                                                                       dataTypeString));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
                                                KiePMMLMiningField.class, DATA_TYPE.class);
         commonValidateCompilationWithImports(retrieved, imports);
@@ -84,7 +83,7 @@ public class KiePMMLMiningFieldFactoryTest {
                                                                       dataField.getValues().get(0).getValue(),
                                                                       dataField.getValues().get(1).getValue(),
                                                                       dataField.getValues().get(2).getValue()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
                                                KiePMMLMiningField.class, DATA_TYPE.class);
         commonValidateCompilationWithImports(retrieved, imports);
@@ -119,7 +118,7 @@ public class KiePMMLMiningFieldFactoryTest {
                                                                       dataField.getIntervals().get(2).getLeftMargin(),
                                                                       dataField.getIntervals().get(2).getRightMargin(),
                                                                       dataField.getIntervals().get(2).getClosure().name()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
                                                KiePMMLMiningField.class, DATA_TYPE.class);
         commonValidateCompilationWithImports(retrieved, imports);
