@@ -372,7 +372,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     }
 
     private void commonValidateObjectValues(List<Object> toValidate, SimpleSetPredicate simpleSetPredicate) {
-        assertThat(simpleSetPredicate.getArray().getN().intValue()).isEqualTo(toValidate.size());
+        assertThat(toValidate).hasSize(simpleSetPredicate.getArray().getN().intValue());
         String[] retrieved = ((String) simpleSetPredicate.getArray().getValue()).split(" ");
         for (int i = 0; i < toValidate.size(); i++) {
             assertThat(toValidate.get(i)).isEqualTo("\"" + retrieved[i] + "\"");

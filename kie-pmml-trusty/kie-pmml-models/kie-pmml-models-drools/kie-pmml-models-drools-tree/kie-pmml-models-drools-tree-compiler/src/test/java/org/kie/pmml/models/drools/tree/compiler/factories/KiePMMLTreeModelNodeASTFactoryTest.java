@@ -53,12 +53,12 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     public void setUp() throws Exception {
         golfingPmml = TestUtils.loadFromFile(SOURCE_GOLFING);
         assertThat(golfingPmml).isNotNull();
-        assertThat(golfingPmml.getModels().size()).isEqualTo(1);
+        assertThat(golfingPmml.getModels()).hasSize(1);
         assertThat(golfingPmml.getModels().get(0)).isInstanceOf(TreeModel.class);
         golfingModel = ((TreeModel) golfingPmml.getModels().get(0));
         irisPmml = TestUtils.loadFromFile(SOURCE_IRIS);
         assertThat(irisPmml).isNotNull();
-        assertThat(irisPmml.getModels().size()).isEqualTo(1);
+        assertThat(irisPmml.getModels()).hasSize(1);
         assertThat(irisPmml.getModels().get(0)).isInstanceOf(TreeModel.class);
         irisModel = ((TreeModel) irisPmml.getModels().get(0));
     }

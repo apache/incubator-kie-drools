@@ -137,7 +137,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         Map<String, KiePMMLRegressionTable> retrieved =
                 KiePMMLRegressionTableFactory.getRegressionTables(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(regressionModel.getRegressionTables().size());
+        assertThat(retrieved).hasSameSizeAs(regressionModel.getRegressionTables());
         regressionModel.getRegressionTables().forEach(regrTabl -> {
             assertThat(retrieved).containsKey(regrTabl.getTargetCategory().toString());
             commonEvaluateRegressionTable(retrieved.get(regrTabl.getTargetCategory().toString()), regrTabl);
@@ -612,7 +612,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
     private void commonEvaluateRegressionTable(KiePMMLRegressionTable retrieved, RegressionTable source) {
         Map<String, SerializableFunction<Double, Double>> numericFunctionMap = retrieved.getNumericFunctionMap();
-        assertThat(numericFunctionMap).hasSize(source.getNumericPredictors().size());
+        assertThat(numericFunctionMap).hasSameSizeAs(source.getNumericPredictors());
         source.getNumericPredictors().forEach(numericPredictor -> assertThat(numericFunctionMap).containsKey(numericPredictor.getName().getValue()));
         Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 retrieved.getCategoricalFunctionMap();
@@ -622,7 +622,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         groupedCollectors.keySet().forEach(categorical -> assertThat(categoricalFunctionMap).containsKey(categorical));
         Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
                 retrieved.getPredictorTermsFunctionMap();
-        assertThat(predictorTermsFunctionMap).hasSize(source.getPredictorTerms().size());
+        assertThat(predictorTermsFunctionMap).hasSameSizeAs(source.getPredictorTerms());
         source.getPredictorTerms().forEach(predictorTerm -> assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue()));
     }
 

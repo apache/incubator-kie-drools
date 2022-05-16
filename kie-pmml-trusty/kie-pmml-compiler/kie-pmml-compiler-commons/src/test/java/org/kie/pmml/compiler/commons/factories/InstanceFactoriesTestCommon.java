@@ -167,7 +167,7 @@ public class InstanceFactoriesTestCommon {
     static void commonVerifyKKiePMMLCompoundPredicate(KiePMMLCompoundPredicate toVerify, CompoundPredicate source) {
         assertThat(toVerify).isNotNull();
         assertThat(toVerify.getBooleanOperator().getName()).isEqualTo(source.getBooleanOperator().value());
-        assertThat(toVerify.getKiePMMLPredicates()).hasSize(source.getPredicates().size());
+        assertThat(toVerify.getKiePMMLPredicates()).hasSameSizeAs(source.getPredicates());
         IntStream.range(0, source.getPredicates().size()).forEach(i -> {
             commonVerifyKiePMMLPredicate(toVerify.getKiePMMLPredicates().get(i), source.getPredicates().get(i));
         });
@@ -262,7 +262,7 @@ public class InstanceFactoriesTestCommon {
         assertThat(toVerify.getDefaultValue()).isEqualTo(source.getDefaultValue());
         assertThat(toVerify.getInvalidValueTreatmentMethod().getName()).isEqualTo(source.getInvalidValueTreatment().value());
         List<KiePMMLExpression> kiePMMLExpressionList = toVerify.getKiePMMLExpressions();
-        assertThat(kiePMMLExpressionList).hasSize(source.getExpressions().size());
+        assertThat(kiePMMLExpressionList).hasSameSizeAs(source.getExpressions());
         IntStream.range(0, source.getExpressions().size()).forEach(i -> commonVerifyKiePMMLExpression(kiePMMLExpressionList.get(i), source.getExpressions().get(i)));
     }
 
@@ -277,7 +277,7 @@ public class InstanceFactoriesTestCommon {
         assertThat(toVerify.getMapMissingTo()).isEqualTo(source.getMapMissingTo());
         assertThat(toVerify.getDefaultValue()).isEqualTo(source.getDefaultValue());
         assertThat(toVerify.getDataType().getName()).isEqualTo(source.getDataType().value());
-        assertThat(toVerify.getDiscretizeBins()).hasSize(source.getDiscretizeBins().size());
+        assertThat(toVerify.getDiscretizeBins()).hasSameSizeAs(source.getDiscretizeBins());
         IntStream.range(0, source.getDiscretizeBins().size()).forEach(i -> commonVerifyKiePMMLDiscretizeBin(toVerify.getDiscretizeBins().get(i), source.getDiscretizeBins().get(i)));
     }
 
@@ -294,7 +294,7 @@ public class InstanceFactoriesTestCommon {
         assertThat(toVerify.getDefaultValue()).isEqualTo(source.getDefaultValue().toString());
         assertThat(toVerify.getDataType().getName()).isEqualTo(source.getDataType().value());
         commonVerifyKiePMMLInlineTableWithCells(toVerify.getInlineTable(), source.getInlineTable());
-        assertThat(toVerify.getFieldColumnPairs()).hasSize(source.getFieldColumnPairs().size());
+        assertThat(toVerify.getFieldColumnPairs()).hasSameSizeAs(source.getFieldColumnPairs());
         IntStream.range(0, source.getFieldColumnPairs().size()).forEach(i -> commonVerifyKiePMMLFieldColumnPair(toVerify.getFieldColumnPairs().get(i), source.getFieldColumnPairs().get(i)));
     }
 
@@ -322,7 +322,7 @@ public class InstanceFactoriesTestCommon {
         assertThat(toVerify.getCountHits().getName()).isEqualTo(source.getCountHits().value());
         assertThat(toVerify.getWordSeparatorCharacterRE()).isEqualTo(StringEscapeUtils.escapeJava(source.getWordSeparatorCharacterRE()));
         commonVerifyKiePMMLExpression(toVerify.getExpression(), source.getExpression());
-        assertThat(toVerify.getTextIndexNormalizations()).hasSize(source.getTextIndexNormalizations().size());
+        assertThat(toVerify.getTextIndexNormalizations()).hasSameSizeAs(source.getTextIndexNormalizations());
         IntStream.range(0, source.getTextIndexNormalizations().size()).forEach(i -> {
             commonVerifyKiePMMLTextIndexNormalization(toVerify.getTextIndexNormalizations().get(i),
                                                       source.getTextIndexNormalizations().get(i));
@@ -353,7 +353,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLInlineTableWithCells(KiePMMLInlineTable toVerify, InlineTable source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getRows()).hasSize(source.getRows().size());
+        assertThat(toVerify.getRows()).hasSameSizeAs(source.getRows());
         IntStream.range(0, source.getRows().size()).forEach(i -> commonVerifyKiePMMLRowWithCells(toVerify.getRows().get(i), source.getRows().get(i)));
     }
 
@@ -392,7 +392,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLTarget(KiePMMLTarget toVerify, Target source) {
         assertThat(toVerify).isNotNull();
-        assertThat(source.getTargetValues()).hasSize(toVerify.getTargetValues().size());
+        assertThat(source.getTargetValues()).hasSameSizeAs(toVerify.getTargetValues());
         OP_TYPE expectedOpType = OP_TYPE.byName(source.getOpType().value());
         assertThat(toVerify.getOpType()).isEqualTo(expectedOpType);
         assertThat(toVerify.getField()).isEqualTo(source.getField().getValue());
@@ -413,7 +413,7 @@ public class InstanceFactoriesTestCommon {
     static void commonVerifyKiePMMLRowWithCells(KiePMMLRow toVerify,
                                                 Row source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getColumnValues().size()).isEqualTo(2);
+        assertThat(toVerify.getColumnValues()).hasSize(2);
     }
 
     static void commonVerifyKiePMMLTargetValue(KiePMMLTargetValue toVerify,

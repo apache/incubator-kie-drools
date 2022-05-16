@@ -120,7 +120,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         KiePMMLClassificationTable retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTable(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved.getCategoryTableMap().size()).isEqualTo(regressionModel.getRegressionTables().size());
+        assertThat(retrieved.getCategoryTableMap()).hasSameSizeAs(regressionModel.getRegressionTables());
         regressionModel.getRegressionTables().forEach(regressionTable ->
                                                               assertThat(retrieved.getCategoryTableMap()).containsKey(regressionTable.getTargetCategory().toString()));
         assertThat(retrieved.getRegressionNormalizationMethod().getName()).isEqualTo(regressionModel.getNormalizationMethod().value());

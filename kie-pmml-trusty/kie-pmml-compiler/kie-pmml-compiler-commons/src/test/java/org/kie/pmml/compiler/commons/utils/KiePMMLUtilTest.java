@@ -429,6 +429,6 @@ public class KiePMMLUtilTest {
                 .stream()
                 .map(segment -> segment.getModel().getModelName())
                 .collect(Collectors.toList());
-        assertThat(modelNames.stream().distinct()).hasSize(modelNames.size());
+        assertThat(modelNames.stream().distinct()).hasSameSizeAs(modelNames);
     }
 }
