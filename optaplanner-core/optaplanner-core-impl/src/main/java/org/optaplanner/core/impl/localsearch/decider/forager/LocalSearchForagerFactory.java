@@ -40,7 +40,7 @@ public class LocalSearchForagerFactory<Solution_> {
         int acceptedCountLimit_ = Objects.requireNonNullElse(foragerConfig.getAcceptedCountLimit(), Integer.MAX_VALUE);
         FinalistPodiumType finalistPodiumType_ =
                 Objects.requireNonNullElse(foragerConfig.getFinalistPodiumType(), FinalistPodiumType.HIGHEST_SCORE);
-        // Breaking ties randomly leads statistically to much better results
+        // Breaking ties randomly leads to better results statistically
         boolean breakTieRandomly_ = Objects.requireNonNullElse(foragerConfig.getBreakTieRandomly(), true);
         return new AcceptedLocalSearchForager<>(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_,
                 acceptedCountLimit_, breakTieRandomly_);

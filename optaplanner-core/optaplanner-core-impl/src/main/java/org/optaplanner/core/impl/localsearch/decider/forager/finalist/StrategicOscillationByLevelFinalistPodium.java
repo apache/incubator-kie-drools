@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  *
  * @see FinalistPodium
  */
-public class StrategicOscillationByLevelFinalistPodium<Solution_> extends AbstractFinalistPodium<Solution_> {
+public final class StrategicOscillationByLevelFinalistPodium<Solution_> extends AbstractFinalistPodium<Solution_> {
 
     protected final boolean referenceBestScoreInsteadOfLastStepScore;
 

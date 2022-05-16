@@ -23,8 +23,6 @@ import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleList
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link FinalistPodium}.
@@ -36,16 +34,14 @@ public abstract class AbstractFinalistPodium<Solution_> extends LocalSearchPhase
 
     protected static final int FINALIST_LIST_MAX_SIZE = 1_024_000;
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
     protected boolean finalistIsAccepted;
-    protected List<LocalSearchMoveScope<Solution_>> finalistList;
+    protected List<LocalSearchMoveScope<Solution_>> finalistList = new ArrayList<>(1024);
 
     @Override
     public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         finalistIsAccepted = false;
-        finalistList = new ArrayList<>(1024);
+        finalistList.clear();
     }
 
     protected void clearAndAddFinalist(LocalSearchMoveScope<Solution_> moveScope) {
@@ -70,7 +66,7 @@ public abstract class AbstractFinalistPodium<Solution_> extends LocalSearchPhase
     public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         finalistIsAccepted = false;
-        finalistList = null;
+        finalistList.clear();
     }
 
 }

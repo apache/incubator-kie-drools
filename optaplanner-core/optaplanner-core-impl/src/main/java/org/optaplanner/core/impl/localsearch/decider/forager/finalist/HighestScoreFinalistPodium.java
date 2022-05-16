@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  *
  * @see FinalistPodium
  */
-public class HighestScoreFinalistPodium<Solution_> extends AbstractFinalistPodium<Solution_> {
+public final class HighestScoreFinalistPodium<Solution_> extends AbstractFinalistPodium<Solution_> {
 
     protected Score finalistScore;
 
