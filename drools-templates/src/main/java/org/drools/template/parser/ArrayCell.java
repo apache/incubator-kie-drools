@@ -20,23 +20,17 @@
  */
 package org.drools.template.parser;
 
+import java.util.Map;
+
 import org.drools.util.StringUtils;
 import org.kie.api.runtime.KieSession;
 
-import java.util.Map;
-
-public class ArrayCell implements Cell {
-    Row row;
-
-    String value;
-
-    ArrayColumn column;
+public class ArrayCell extends AbstractCell<String> {
 
     private String[] values;
 
     public ArrayCell(final Row r, final ArrayColumn c) {
-        row = r;
-        column = c;
+        super(r, c);
     }
 
     public void addValue(Map<String, Object> vars) {
@@ -45,22 +39,10 @@ public class ArrayCell implements Cell {
         }
     }
 
-    public Column getColumn() {
-        return column;
-    }
-
-    public Row getRow() {
-        return row;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
     public void insert(KieSession session) {
         session.insert(this);
         for (int i = 0; i < values.length; i++) {
-            Cell cell = column.getType().createCell(row);
+            Cell cell = ((ArrayColumn) column).getType().createCell(row);
             cell.setValue(values[i]);
             cell.setIndex(i);
             cell.insert(session);

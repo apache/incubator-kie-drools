@@ -16,68 +16,16 @@
 
 package org.drools.template.parser;
 
-import org.kie.api.runtime.KieSession;
-
-import java.util.Map;
-
 /**
  * A cell in a decision table containing a long value
  */
-public class BooleanCell implements Cell {
-    Row row;
-
-    Boolean value;
-
-    Column column;
-
-    private int index;
-
-    public BooleanCell() {
-
-    }
+public class BooleanCell extends AbstractCell<Boolean> {
 
     BooleanCell(Row r, Column c) {
-        row = r;
-        column = c;
-    }
-
-    public String toString() {
-        return "Cell[" + column + ": " + value + "]";
-    }
-
-    public Row getRow() {
-        return row;
-    }
-
-    public Column getColumn() {
-        return column;
-    }
-
-    public Boolean getValue() {
-        return value;
-    }
-
-    public void addValue(Map<String, Object> vars) {
-        vars.put(column.getName(), value);
-    }
-
-    public void insert(KieSession session) {
-        session.insert(this);
-    }
-
-    public void setIndex(int i) {
-        index = i;
-    }
-
-    public int getIndex() {
-        return index;
+        super(r, c);
     }
 
     public void setValue(String v) {
         value = Boolean.valueOf(v);
-    }
-
-    public boolean isEmpty() {
-        return value == null;
     }
 }

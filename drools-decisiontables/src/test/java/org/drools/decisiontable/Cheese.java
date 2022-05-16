@@ -17,29 +17,20 @@
 package org.drools.decisiontable;
 
 public class Cheese {
-    private String type;
-    private int    price;
+    private final String type;
+    private final double price;
 
-    public Cheese() {
-
-    }
-    public Cheese(final String type,
-                  final int price) {
+    public Cheese(String type, double price) {
         super();
         this.type = type;
         this.price = price;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return this.price;
     }
 
     public String getType() {
         return this.type;
     }
-
-    public void setPrice(final int price) {
-        this.price = price;
-    }
-
 }

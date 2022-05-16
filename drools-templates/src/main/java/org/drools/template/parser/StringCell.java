@@ -17,61 +17,14 @@
 package org.drools.template.parser;
 
 import org.drools.util.StringUtils;
-import org.kie.api.runtime.KieSession;
-
-import java.util.Map;
 
 /**
  * A cell in a decision table containing a String value
  */
-public class StringCell implements Cell {
-    Row row;
-
-    String value;
-
-    Column column;
-
-    private int index;
-
-    public StringCell() {
-
-    }
+public class StringCell extends AbstractCell<String> {
 
     StringCell(Row r, Column c) {
-        row = r;
-        column = c;
-    }
-
-    public String toString() {
-        return "Cell[" + column + ": " + value + "]";
-    }
-
-    public Row getRow() {
-        return row;
-    }
-
-    public Column getColumn() {
-        return column;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void addValue(Map<String, Object> vars) {
-        vars.put(column.getName(), value);
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void insert(KieSession session) {
-        session.insert(this);
-    }
-
-    public void setIndex(int i) {
-        index = i;
+        super(r, c);
     }
 
     public void setValue(String v) {

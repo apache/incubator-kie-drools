@@ -151,7 +151,7 @@ public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testIntegration() throws Exception {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final String drl = converter.compile("/data/IntegrationExampleTest.drl.xls", "/templates/test_integration.drl", 18, 3);
+        final String drl = converter.compile("/data/IntegrationExampleTestForTemplates.drl.xls", "/templates/test_integration.drl", 18, 3);
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
@@ -164,7 +164,7 @@ public class ExternalSpreadsheetCompilerTest {
         //ASSERT AND FIRE
         kSession.insert( new Cheese( "stilton", 42 ) );
         kSession.insert( new Person( "michael", "stilton", 42 ) );
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
         assertEquals( 1, list.size() );
