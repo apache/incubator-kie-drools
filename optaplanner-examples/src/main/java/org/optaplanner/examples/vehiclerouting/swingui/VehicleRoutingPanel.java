@@ -17,6 +17,8 @@
 package org.optaplanner.examples.vehiclerouting.swingui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JTabbedPane;
@@ -96,6 +98,10 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemChange((vehicleRoutingSolution, problemChangeDirector) -> {
+            // Clone the fact collection before adding a new fact.
+            List<Location> locationList = new ArrayList<>(vehicleRoutingSolution.getLocationList());
+            vehicleRoutingSolution.setLocationList(locationList);
+
             problemChangeDirector.addProblemFact(newLocation, vehicleRoutingSolution.getLocationList()::add);
             Customer newCustomer = createCustomer(vehicleRoutingSolution, newLocation);
             problemChangeDirector.addEntity(newCustomer, vehicleRoutingSolution.getCustomerList()::add);
