@@ -34,6 +34,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-jackson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+        </dependency>
         <!-- this is used implicitly by hot reload tests so let's make Maven aware of it -->
         <dependency>
             <groupId>org.kie.kogito</groupId>

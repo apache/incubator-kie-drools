@@ -25,11 +25,13 @@ import java.util.function.Supplier;
 import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexEventPublisher;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexInMemoryContainer;
+import org.kie.kogito.quarkus.processes.devservices.DevModeWorkflowLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.utility.DockerImageName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.processor.DotNames;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.IsDockerWorking;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -61,6 +63,11 @@ public class KogitoDevServicesProcessor {
     static volatile boolean first = true;
 
     private final IsDockerWorking isDockerWorking = new IsDockerWorking(true);
+
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public void logger(BuildProducer<AdditionalBeanBuildItem> additionalBean) {
+        additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DevModeWorkflowLogger.class).setUnremovable().setDefaultScope(DotNames.APPLICATION_SCOPED).build());
+    }
 
     @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })
     public void startDataIndexDevService(
