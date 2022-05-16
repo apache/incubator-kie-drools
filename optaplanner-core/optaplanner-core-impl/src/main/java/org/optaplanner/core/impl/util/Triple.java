@@ -17,21 +17,24 @@
 package org.optaplanner.core.impl.util;
 
 /**
- * A key-value tuple.
- * Two instances {@link #equals(Object) are equal} if both values in the first instance are equal to their counterpart in
+ * A tuple of three values.
+ * Two instances {@link #equals(Object) are equal} if all three values in the first instance are equal to their counterpart in
  * the other instance.
  *
  * @param <A>
  * @param <B>
+ * @param <C>
  */
-public interface Pair<A, B> {
+public interface Triple<A, B, C> {
 
-    static <A, B> Pair<A, B> of(A key, B value) {
-        return new MutablePairImpl<>(key, value);
+    static <A, B, C> Triple<A, B, C> of(A a, B b, C c) {
+        return new MutableTripleImpl<>(a, b, c);
     }
 
-    A getKey();
+    A getA();
 
-    B getValue();
+    B getB();
+
+    C getC();
 
 }

@@ -799,7 +799,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -827,7 +826,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_0Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -853,7 +851,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_0Mapping3Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -926,7 +923,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -949,7 +945,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -982,7 +977,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_1Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -1056,7 +1050,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1090,7 +1083,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_2Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -1161,7 +1153,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_3Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)

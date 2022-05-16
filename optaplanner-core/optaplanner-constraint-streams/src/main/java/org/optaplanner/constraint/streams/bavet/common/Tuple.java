@@ -27,4 +27,10 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
  */
 public interface Tuple {
 
+    BavetTupleState getState();
+
+    void setState(BavetTupleState state);
+
+    Object[] getStore();
+
 }

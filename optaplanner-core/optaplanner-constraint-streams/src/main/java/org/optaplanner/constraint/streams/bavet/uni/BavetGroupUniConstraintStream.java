@@ -17,43 +17,27 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
-import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
-import org.optaplanner.constraint.streams.bavet.bi.GroupUniToBiNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, ResultContainer_, NewB>
+public final class BavetGroupUniConstraintStream<Solution_, A>
         extends BavetAbstractUniConstraintStream<Solution_, A> {
 
-    private final BavetAbstractUniConstraintStream<Solution_, A> parent;
-    private final Function<A, NewA> groupKeyMapping;
-    private final UniConstraintCollector<A, ResultContainer_, NewB> collector;
-    private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
+    private final BavetAbstractConstraintStream<Solution_> parent;
 
-    public BavetGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
-            UniConstraintCollector<A, ResultContainer_, NewB> collector) {
+    public BavetGroupUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractConstraintStream<Solution_> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        this.groupKeyMapping = groupKeyMapping;
-        this.collector = collector;
     }
 
     @Override
     public boolean guaranteesDistinct() {
-        return parent.guaranteesDistinct();
-    }
-
-    public void setGroupStream(BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream) {
-        this.groupStream = groupStream;
+        return true;
     }
 
     // ************************************************************************
@@ -68,24 +52,12 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
 
     @Override
     public ConstraintStream getTupleSource() {
-        return parent.getTupleSource();
+        return this;
     }
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        if (!childStreamList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
-        }
-        int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
-        Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
-        int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        GroupUniToBiNode<A, NewA, NewB, ResultContainer_> node = new GroupUniToBiNode<>(
-                groupKeyMapping, inputStoreIndex, collector,
-                insert, retract, outputStoreSize);
-        buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertA, node::retractA);
+        // Do nothing. BavetGroupBridgeUniConstraintStream, etc build everything.
     }
 
     // ************************************************************************
@@ -96,7 +68,7 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
 
     @Override
     public String toString() {
-        return "GroupBridge()";
+        return "Group() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

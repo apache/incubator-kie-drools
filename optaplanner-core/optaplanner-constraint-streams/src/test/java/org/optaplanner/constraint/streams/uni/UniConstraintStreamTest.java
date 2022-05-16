@@ -977,7 +977,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
 
     @TestTemplate
     public void groupBy_1Mapping0Collect_filtered() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -1002,7 +1001,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
 
     @TestTemplate
     public void groupBy_1Mapping1Collect_filtered() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -1029,7 +1027,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
 
     @TestTemplate
     public void groupBy_joinedAndFiltered() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -1058,7 +1055,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -1094,7 +1090,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1122,7 +1117,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_1Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1187,7 +1181,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -1197,9 +1190,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
         solution.getEntityList().add(entity2);
         TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
-        solution.getEntityList().add(entity3);
-        // Insert the same entity twice, make sure it doesn't matter.
-        // This will exercise code in Drools that removes duplicates.
         solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -1222,7 +1212,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_0Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1247,7 +1236,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_0Mapping3Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1352,7 +1340,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -1409,7 +1396,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_2Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -1485,7 +1471,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_3Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 5);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
