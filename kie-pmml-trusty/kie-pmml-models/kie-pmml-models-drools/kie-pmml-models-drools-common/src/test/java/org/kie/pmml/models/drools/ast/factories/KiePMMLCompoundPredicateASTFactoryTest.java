@@ -153,7 +153,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                                                                                      fieldTypeMap);
         KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, true);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
-        assertThat(rules.size()).isEqualTo(expectedRules);
+        assertThat(rules).hasSize(expectedRules);
         String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
         for (KiePMMLDroolsRule retrieved : rules) {
             String ruleName = retrieved.getName();
@@ -218,7 +218,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                                                                                      fieldTypeMap);
         KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, false);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
-        assertThat(rules.size()).isEqualTo(expectedRules);
+        assertThat(rules).hasSize(expectedRules);
         String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
         for (KiePMMLDroolsRule retrieved : rules) {
             String ruleName = retrieved.getName();

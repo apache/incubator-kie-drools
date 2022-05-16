@@ -64,7 +64,7 @@ public class KiePMMLScorecardModelFactoryTest {
     public static void setUp() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
         assertThat(pmml).isNotNull();
-        assertThat(pmml.getModels().size()).isEqualTo(1);
+        assertThat(pmml.getModels()).hasSize(1);
         assertThat(pmml.getModels().get(0)).isInstanceOf(Scorecard.class);
         scorecardModel = (Scorecard) pmml.getModels().get(0);
         assertThat(scorecardModel).isNotNull();

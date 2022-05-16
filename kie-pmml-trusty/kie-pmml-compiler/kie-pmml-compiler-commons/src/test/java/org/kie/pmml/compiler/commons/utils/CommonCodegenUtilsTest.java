@@ -436,7 +436,7 @@ public class CommonCodegenUtilsTest {
         final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
         assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName)).isEmpty();
         CommonCodegenUtils.addMethod(methodTemplate, classOrInterfaceDeclaration, methodName);
-        assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName).size()).isEqualTo(1);
+        assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName)).hasSize(1);
         assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName).get(0).getBody().get()).isEqualTo(body);
     }
 

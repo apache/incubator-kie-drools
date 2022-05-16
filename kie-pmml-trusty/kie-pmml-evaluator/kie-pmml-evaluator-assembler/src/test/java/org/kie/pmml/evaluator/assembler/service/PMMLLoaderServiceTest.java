@@ -62,7 +62,7 @@ public class PMMLLoaderServiceTest {
         assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
         final List<PMMLRuleMapper> pmmlRuleMappers = getPMMLRuleMappers();
         PMMLLoaderService.loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
-        assertThat(kbuilderImpl.getPackageNames().size()).isEqualTo(1);
+        assertThat(kbuilderImpl.getPackageNames()).hasSize(1);
         assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNotNull();
     }
 

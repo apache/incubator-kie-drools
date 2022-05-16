@@ -309,7 +309,7 @@ public class KiePMMLNodeFactoryTest {
     public void nodeNamesDTO() {
         KiePMMLNodeFactory.NodeNamesDTO retrieved = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot, createNodeClassName(),
                                                                                         PACKAGE_NAME, 1.0);
-        assertThat(retrieved.childrenNodes.size()).isEqualTo(nodeRoot.getNodes().size());
+        assertThat(retrieved.childrenNodes).hasSameSizeAs(nodeRoot.getNodes());
     }
 
     private void commonVerifyEvaluateNode(final KiePMMLNodeFactory.JavaParserDTO toPopulate,
@@ -345,7 +345,7 @@ public class KiePMMLNodeFactoryTest {
         } else {
             assertThat(scope.toString()).isEqualTo(Arrays.class.getName());
             assertThat(methodCallExpr.getName().asString()).isEqualTo(AS_LIST);
-            assertThat(methodCallExpr.getArguments().size()).isEqualTo(nestedNodesFullClasses.size());
+            assertThat(methodCallExpr.getArguments()).hasSameSizeAs(nestedNodesFullClasses);
         }
     }
 
