@@ -42,7 +42,7 @@ public class KiePMMLTruePredicateFactoryTest {
         BlockStmt retrieved = KiePMMLTruePredicateFactory.getTruePredicateVariableDeclaration(variableName, new True());
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLTruePredicate.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

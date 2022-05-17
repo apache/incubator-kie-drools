@@ -43,7 +43,7 @@ public class KiePMMLFalsePredicateFactoryTest {
                                                                                                 new False());
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFalsePredicate.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

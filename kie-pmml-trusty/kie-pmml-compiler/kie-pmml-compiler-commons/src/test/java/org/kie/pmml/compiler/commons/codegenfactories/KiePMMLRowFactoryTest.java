@@ -76,7 +76,7 @@ public class KiePMMLRowFactoryTest {
                                                                           MAPVALUED_ROW);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Collectors.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
@@ -88,7 +88,7 @@ public class KiePMMLRowFactoryTest {
                                                                           DATAENCODED_ROW);
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Collectors.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

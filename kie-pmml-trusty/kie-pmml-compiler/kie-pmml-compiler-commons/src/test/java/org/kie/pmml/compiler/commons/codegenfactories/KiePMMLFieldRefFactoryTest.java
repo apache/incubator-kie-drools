@@ -48,7 +48,7 @@ public class KiePMMLFieldRefFactoryTest {
         BlockStmt retrieved = KiePMMLFieldRefFactory.getFieldRefVariableDeclaration(variableName, fieldRef);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, mapMissingTo));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

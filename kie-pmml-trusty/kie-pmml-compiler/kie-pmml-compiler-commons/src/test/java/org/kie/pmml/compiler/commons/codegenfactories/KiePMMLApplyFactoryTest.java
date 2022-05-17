@@ -70,7 +70,7 @@ public class KiePMMLApplyFactoryTest {
         Statement expected = JavaParserUtils.parseBlock(String.format(text, value1, value2, variableName, function,
                                                                       defaultValue, mapMissingTo,
                                                                       invalidValueTreatmentMethod.value()));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, KiePMMLApply.class, Collections.class,
                                                Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
@@ -97,7 +97,7 @@ public class KiePMMLApplyFactoryTest {
         Statement expected = JavaParserUtils.parseBlock(String.format(text, PARAM_1, PARAM_2, variableName, function,
                                                                       defaultValue, mapMissingTo,
                                                                       invalidValueTreatmentMethod.value()));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class,
                                                Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
@@ -131,7 +131,7 @@ public class KiePMMLApplyFactoryTest {
                                                                       nestedInvalidValueTreatmentMethod.value(),
                                                                       variableName,
                                                                       invalidValueTreatmentMethod.value()));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class,
                                                Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
