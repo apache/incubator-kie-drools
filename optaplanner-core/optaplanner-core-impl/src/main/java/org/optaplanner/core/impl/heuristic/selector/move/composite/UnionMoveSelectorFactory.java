@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
@@ -59,13 +58,15 @@ public class UnionMoveSelectorFactory<Solution_>
                 MoveSelectorConfig<?> innerMoveSelectorConfig = config.getMoveSelectorList().get(i);
                 MoveSelector<Solution_> moveSelector = moveSelectorList.get(i);
                 Double fixedProbabilityWeight = innerMoveSelectorConfig.getFixedProbabilityWeight();
-                if (fixedProbabilityWeight == null) {
-                    // Default to equal probability for each move type => unequal probability for each move instance
-                    fixedProbabilityWeight = 1.0;
+                if (fixedProbabilityWeight != null) {
+                    fixedProbabilityWeightMap.put(moveSelector, fixedProbabilityWeight);
                 }
-                fixedProbabilityWeightMap.put(moveSelector, fixedProbabilityWeight);
             }
-            selectorProbabilityWeightFactory = new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap);
+            if (fixedProbabilityWeightMap.isEmpty()) { // Will end up using UniformRandomUnionMoveIterator.
+                selectorProbabilityWeightFactory = null;
+            } else { // Will end up using BiasedRandomUnionMoveIterator.
+                selectorProbabilityWeightFactory = new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap);
+            }
         } else {
             selectorProbabilityWeightFactory = null;
         }
