@@ -101,9 +101,9 @@ pipeline {
             steps {
                 script {
                     getMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
-                    if (isRelease()) {
-                        updateAntoraYaml(droolsRepository)
-                    }
+                    // if (isRelease()) {
+                    //     updateAntoraYaml(droolsRepository)
+                    // }
                 }
             }
             post {
