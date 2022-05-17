@@ -52,9 +52,7 @@ final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_
     protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, A, Object> group) {
         A factA = group.groupKey;
         Pair<B, C> result = finisher.apply(group.resultContainer);
-        B factB = result.getKey();
-        C factC = result.getValue();
-        return new TriTuple<>(factA, factB, factC, outputStoreSize);
+        return new TriTuple<>(factA, result.getKey(), result.getValue(), outputStoreSize);
     }
 
     @Override

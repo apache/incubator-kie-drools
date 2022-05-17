@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
         extends AbstractScoreDirector<Solution_, Score_, BavetConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
 
-    protected BavetConstraintSession<Solution_, Score_> session;
+    protected BavetConstraintSession<Score_> session;
 
     public BavetConstraintStreamScoreDirector(
             BavetConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
@@ -197,7 +197,7 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
     // Getters/setters
     // ************************************************************************
 
-    public BavetConstraintSession<Solution_, Score_> getSession() {
+    public BavetConstraintSession<Score_> getSession() {
         return session;
     }
 }

@@ -41,7 +41,7 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
         this.outputStoreSize = outputStoreSize;
     }
 
-    private static <OldA, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
+    static <OldA, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
             UniConstraintCollector<OldA, Object, Triple<A, B, C>> mergeCollectors(
                     UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
                     UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
@@ -59,10 +59,7 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
     protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, String, Object> group) {
         Object resultContainer = group.resultContainer;
         Triple<A, B, C> result = finisher.apply(resultContainer);
-        A a = result.getA();
-        B b = result.getB();
-        C c = result.getC();
-        return new TriTuple<>(a, b, c, outputStoreSize);
+        return new TriTuple<>(result.getA(), result.getB(), result.getC(), outputStoreSize);
     }
 
     @Override

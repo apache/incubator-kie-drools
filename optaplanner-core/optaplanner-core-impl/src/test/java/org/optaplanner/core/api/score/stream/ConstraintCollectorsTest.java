@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import static java.util.Collections.emptySortedSet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.compose;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongBi;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongQuad;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongTri;
@@ -43,7 +43,6 @@ import java.time.Period;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -59,6 +58,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Quadruple;
 
 class ConstraintCollectorsTest {
 
@@ -3896,46 +3896,6 @@ class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, Quadruple.of(0, null, null, null));
-    }
-
-    private static final class Quadruple<A, B, C, D> {
-
-        public static <A, B, C, D> Quadruple<A, B, C, D> of(A a, B b, C c, D d) {
-            return new Quadruple<>(a, b, c, d);
-        }
-
-        private final A a;
-        private final B b;
-        private final C c;
-        private final D d;
-
-        private Quadruple(A a, B b, C c, D d) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-            this.d = d;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
-            Quadruple<?, ?, ?, ?> quadruple = (Quadruple<?, ?, ?, ?>) o;
-            return Objects.equals(a, quadruple.a) && Objects.equals(b, quadruple.b) && Objects.equals(c, quadruple.c)
-                    && Objects.equals(d, quadruple.d);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(a, b, c, d);
-        }
-
-        @Override
-        public String toString() {
-            return "{" + a + ", " + b + ", " + c + ", " + d + "}";
-        }
     }
 
     private static <A, B, C, Container_, Result_> Runnable accumulate(

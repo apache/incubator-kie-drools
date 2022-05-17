@@ -58,9 +58,7 @@ final class Group0Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, ResultContain
     protected BiTuple<A, B> createOutTuple(Group<BiTuple<A, B>, String, Object> group) {
         Object resultContainer = group.resultContainer;
         Pair<A, B> result = finisher.apply(resultContainer);
-        A a = result.getKey();
-        B b = result.getValue();
-        return new BiTuple<>(a, b, outputStoreSize);
+        return new BiTuple<>(result.getKey(), result.getValue(), outputStoreSize);
     }
 
     @Override

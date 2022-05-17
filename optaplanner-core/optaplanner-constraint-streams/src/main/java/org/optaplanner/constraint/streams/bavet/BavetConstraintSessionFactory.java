@@ -50,7 +50,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
     // Node creation
     // ************************************************************************
 
-    public BavetConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled,
+    public BavetConstraintSession<Score_> buildSession(boolean constraintMatchEnabled,
             Solution_ workingSolution) {
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreInliner<Score_> scoreInliner = AbstractScoreInliner.buildScoreInliner(scoreDefinition,

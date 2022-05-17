@@ -21,17 +21,16 @@ import java.util.List;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
-import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
 /**
- * Combs an array of {@link TriJoiner} instances into a mergedJoiner and a mergedFiltering.
+ * Combs an array of {@link QuadJoiner} instances into a mergedJoiner and a mergedFiltering.
  * 
  * @param <A>
  * @param <B>
  * @param <C>
  * @param <D>
  */
-public class QuadJoinerComber<A, B, C, D> {
+public final class QuadJoinerComber<A, B, C, D> {
 
     public static <A, B, C, D> QuadJoinerComber<A, B, C, D> comb(QuadJoiner<A, B, C, D>[] joiners) {
         List<DefaultQuadJoiner<A, B, C, D>> defaultJoinerList = new ArrayList<>(joiners.length);
@@ -62,28 +61,29 @@ public class QuadJoinerComber<A, B, C, D> {
     }
 
     private static <A, B, C, D> QuadPredicate<A, B, C, D> mergeFiltering(List<QuadPredicate<A, B, C, D>> filteringList) {
-        if (filteringList.size() == 0) {
+        if (filteringList.isEmpty()) {
             return null;
-        } else if (filteringList.size() == 1) {
-            return filteringList.get(0);
-        } else if (filteringList.size() == 2) {
-            return filteringList.get(0).and(filteringList.get(1));
-        } else {
-            // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
-            QuadPredicate<A, B, C, D>[] predicates = filteringList.toArray(QuadPredicate[]::new);
-            return (A a, B b, C c, D d) -> {
-                for (QuadPredicate<A, B, C, D> predicate : predicates) {
-                    if (!predicate.test(a, b, c, d)) {
-                        return false;
+        }
+        switch (filteringList.size()) {
+            case 1:
+                return filteringList.get(0);
+            case 2:
+                return filteringList.get(0).and(filteringList.get(1));
+            default:
+                // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
+                return (A a, B b, C c, D d) -> {
+                    for (QuadPredicate<A, B, C, D> predicate : filteringList) {
+                        if (!predicate.test(a, b, c, d)) {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            };
+                    return true;
+                };
         }
     }
 
-    private DefaultQuadJoiner<A, B, C, D> mergedJoiner;
-    private QuadPredicate<A, B, C, D> mergedFiltering;
+    private final DefaultQuadJoiner<A, B, C, D> mergedJoiner;
+    private final QuadPredicate<A, B, C, D> mergedFiltering;
 
     public QuadJoinerComber(DefaultQuadJoiner<A, B, C, D> mergedJoiner, QuadPredicate<A, B, C, D> mergedFiltering) {
         this.mergedJoiner = mergedJoiner;

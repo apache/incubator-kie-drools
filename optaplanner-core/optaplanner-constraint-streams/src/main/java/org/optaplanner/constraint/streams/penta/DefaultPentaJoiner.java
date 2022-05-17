@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.penta;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -27,6 +28,8 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
 
+    private static final DefaultPentaJoiner NONE =
+            new DefaultPentaJoiner(new QuadFunction[0], new JoinerType[0], new Function[0]);
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
 
     public <Property_> DefaultPentaJoiner(QuadFunction<A, B, C, D, Property_> leftMapping, JoinerType joinerType,
@@ -39,6 +42,13 @@ public final class DefaultPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> i
             Function<E, Property_>[] rightMappings) {
         super(rightMappings, joinerTypes);
         this.leftMappings = leftMappings;
+    }
+
+    public static <A, B, C, D, E> DefaultPentaJoiner<A, B, C, D, E> merge(List<DefaultPentaJoiner<A, B, C, D, E>> joinerList) {
+        if (joinerList.size() == 1) {
+            return joinerList.get(0);
+        }
+        return joinerList.stream().reduce(NONE, DefaultPentaJoiner::and);
     }
 
     @Override

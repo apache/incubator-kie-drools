@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void filter_entity() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -125,7 +124,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void filter_consecutive() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
         TestdataLavishEntity entity1 = solution.getEntityList().get(0);
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -162,7 +160,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifExists_unknownClass() {
-        assumeDrools();
         assertThatThrownBy(() -> buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
@@ -180,7 +177,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifExists_0Joiner0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -210,7 +206,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifExists_0Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -248,7 +243,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifExists_1Join0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -286,7 +280,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifExists_1Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -336,7 +329,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifNotExists_unknownClass() {
-        assumeDrools();
         assertThatThrownBy(() -> buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
                     .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
@@ -354,7 +346,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -384,7 +375,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifNotExists_0Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -422,7 +412,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifNotExists_1Join0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -456,7 +445,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void ifNotExists_1Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -512,7 +500,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_0Mapping1Collector() {
-        assumeDrools();
         /*
          * E1 has G1 and V1
          * E2 has G2 and V2
@@ -547,7 +534,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_0Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -574,7 +560,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_0Mapping3Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -611,7 +596,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_0Mapping4Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -649,7 +633,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -674,7 +657,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_1Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -709,7 +691,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_1Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -743,7 +724,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_1Mapping3Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -785,7 +765,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -821,7 +800,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_2Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -859,7 +837,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_2Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -897,7 +874,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_3Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -936,7 +912,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_3Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -973,7 +948,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void groupBy_4Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -1017,7 +991,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void distinct() { // On a distinct stream, this is a no-op.
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -1336,7 +1309,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void penalize_Int() {
-        assumeDrools();
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
         solution.setValueList(singletonList(v1));
@@ -1364,7 +1336,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void penalize_Long() {
-        assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
         solution.setValueList(asList(v1));
@@ -1393,7 +1364,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void penalize_BigDecimal() {
-        assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
         solution.setValueList(asList(v1));
@@ -1424,7 +1394,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void penalize_negative() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
 
         String constraintName = "myConstraint";
@@ -1441,7 +1410,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void reward_Int() {
-        assumeDrools();
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
         solution.setValueList(asList(v1));
@@ -1469,7 +1437,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void reward_Long() {
-        assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
         solution.setValueList(asList(v1));
@@ -1498,7 +1465,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void reward_BigDecimal() {
-        assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
         solution.setValueList(asList(v1));
@@ -1529,7 +1495,6 @@ class QuadConstraintStreamTest extends AbstractConstraintStreamTest implements C
     @Override
     @TestTemplate
     public void reward_negative() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
 
         String constraintName = "myConstraint";

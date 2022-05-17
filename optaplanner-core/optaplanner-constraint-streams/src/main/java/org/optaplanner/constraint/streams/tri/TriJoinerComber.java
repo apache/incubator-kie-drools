@@ -29,7 +29,7 @@ import org.optaplanner.core.api.score.stream.tri.TriJoiner;
  * @param <B>
  * @param <C>
  */
-public class TriJoinerComber<A, B, C> {
+public final class TriJoinerComber<A, B, C> {
 
     public static <A, B, C> TriJoinerComber<A, B, C> comb(TriJoiner<A, B, C>[] joiners) {
         List<DefaultTriJoiner<A, B, C>> defaultJoinerList = new ArrayList<>(joiners.length);
@@ -60,28 +60,29 @@ public class TriJoinerComber<A, B, C> {
     }
 
     private static <A, B, C> TriPredicate<A, B, C> mergeFiltering(List<TriPredicate<A, B, C>> filteringList) {
-        if (filteringList.size() == 0) {
+        if (filteringList.isEmpty()) {
             return null;
-        } else if (filteringList.size() == 1) {
-            return filteringList.get(0);
-        } else if (filteringList.size() == 2) {
-            return filteringList.get(0).and(filteringList.get(1));
-        } else {
-            // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
-            TriPredicate<A, B, C>[] predicates = filteringList.toArray(TriPredicate[]::new);
-            return (A a, B b, C c) -> {
-                for (TriPredicate<A, B, C> predicate : predicates) {
-                    if (!predicate.test(a, b, c)) {
-                        return false;
+        }
+        switch (filteringList.size()) {
+            case 1:
+                return filteringList.get(0);
+            case 2:
+                return filteringList.get(0).and(filteringList.get(1));
+            default:
+                // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
+                return (A a, B b, C c) -> {
+                    for (TriPredicate<A, B, C> predicate : filteringList) {
+                        if (!predicate.test(a, b, c)) {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            };
+                    return true;
+                };
         }
     }
 
-    private DefaultTriJoiner<A, B, C> mergedJoiner;
-    private TriPredicate<A, B, C> mergedFiltering;
+    private final DefaultTriJoiner<A, B, C> mergedJoiner;
+    private final TriPredicate<A, B, C> mergedFiltering;
 
     public TriJoinerComber(DefaultTriJoiner<A, B, C> mergedJoiner, TriPredicate<A, B, C> mergedFiltering) {
         this.mergedJoiner = mergedJoiner;

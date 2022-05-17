@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ final class BavetSessionBasedAssertionBuilder<Solution_, Score_ extends Score<Sc
     @Override
     public DefaultMultiConstraintAssertion<Solution_, Score_> multiConstraintGiven(
             ConstraintProvider constraintProvider, Object... facts) {
-        BavetConstraintSession<Solution_, Score_> constraintSession =
+        BavetConstraintSession<Score_> constraintSession =
                 constraintStreamScoreDirectorFactory.newSession(true, null);
         Arrays.stream(facts).forEach(constraintSession::insert);
         return new DefaultMultiConstraintAssertion<>(constraintProvider, constraintSession.calculateScore(0),
@@ -46,7 +46,7 @@ final class BavetSessionBasedAssertionBuilder<Solution_, Score_ extends Score<Sc
 
     @Override
     public DefaultSingleConstraintAssertion<Solution_, Score_> singleConstraintGiven(Object... facts) {
-        BavetConstraintSession<Solution_, Score_> constraintSession =
+        BavetConstraintSession<Score_> constraintSession =
                 constraintStreamScoreDirectorFactory.newSession(true, null);
         Arrays.stream(facts).forEach(constraintSession::insert);
         return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory,

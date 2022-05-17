@@ -87,8 +87,8 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
                 inputStoreIndexA, inputStoreIndexB, insert, retract,
                 outputStoreSize, indexerA, indexerB);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(leftParent, node::insertA, node::retractA);
-        buildHelper.putInsertRetract(rightParent, node::insertB, node::retractB);
+        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::retractLeft);
+        buildHelper.putInsertRetract(rightParent, node::insertRight, node::retractRight);
     }
 
     // ************************************************************************

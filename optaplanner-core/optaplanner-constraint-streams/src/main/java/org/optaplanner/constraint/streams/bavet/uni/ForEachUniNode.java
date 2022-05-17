@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 
@@ -30,13 +29,11 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     private final Class<A> forEachClass;
     /**
-     * Calls for example {@link UniScorer#insert(UniTuple)}, {@link JoinBiNode#insertA(UniTuple)},
-     * {@link JoinBiNode#insertB(UniTuple)} and/or ...
+     * Calls for example {@link UniScorer#insert(UniTuple)}, and/or ...
      */
     private final Consumer<UniTuple<A>> nextNodesInsert;
     /**
-     * Calls for example {@link UniScorer#retract(UniTuple)}, {@link JoinBiNode#retractA(UniTuple)},
-     * {@link JoinBiNode#retractB(UniTuple)} and/or ...
+     * Calls for example {@link UniScorer#retract(UniTuple)}, and/or ...
      */
     private final Consumer<UniTuple<A>> nextNodesRetract;
     private final int outputStoreSize;
