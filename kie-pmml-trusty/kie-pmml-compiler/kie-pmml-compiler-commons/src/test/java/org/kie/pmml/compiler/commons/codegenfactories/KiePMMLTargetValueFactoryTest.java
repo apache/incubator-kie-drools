@@ -48,7 +48,7 @@ public class KiePMMLTargetValueFactoryTest {
                                                                             targetValue.getDisplayValue(),
                                                                             targetValue.getPriorProbability(),
                                                                             targetValue.getDefaultValue()));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTargetValue.class, TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

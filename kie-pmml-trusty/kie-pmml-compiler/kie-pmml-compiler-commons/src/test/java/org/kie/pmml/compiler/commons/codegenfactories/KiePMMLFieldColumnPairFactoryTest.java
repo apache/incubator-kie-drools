@@ -50,7 +50,7 @@ public class KiePMMLFieldColumnPairFactoryTest {
                                                                                                   fieldColumnPair);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, column));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLFieldColumnPair.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

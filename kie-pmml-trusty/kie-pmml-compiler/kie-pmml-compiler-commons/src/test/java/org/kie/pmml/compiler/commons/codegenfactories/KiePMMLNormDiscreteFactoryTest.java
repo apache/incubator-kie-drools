@@ -53,7 +53,7 @@ public class KiePMMLNormDiscreteFactoryTest {
                                                                                                 normDiscrete);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, fieldValue, mapMissingTo));
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLNormDiscrete.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
