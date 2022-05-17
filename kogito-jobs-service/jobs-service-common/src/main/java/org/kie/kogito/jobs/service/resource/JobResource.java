@@ -102,7 +102,6 @@ public class JobResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public CompletionStage<ScheduledJob> delete(@PathParam("id") String id) {
-        LOGGER.debug("REST delete id {}", id);
         return scheduler
                 .cancel(id)
                 .thenApply(result -> Optional
@@ -115,7 +114,6 @@ public class JobResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public CompletionStage<ScheduledJob> get(@PathParam("id") String id) {
-        LOGGER.debug("REST get {}", id);
         return jobRepository
                 .get(id)
                 .thenApply(result -> Optional
