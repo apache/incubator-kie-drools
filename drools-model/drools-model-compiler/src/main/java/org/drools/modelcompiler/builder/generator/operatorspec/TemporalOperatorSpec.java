@@ -36,7 +36,7 @@ public class TemporalOperatorSpec implements OperatorSpec {
     public static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
 
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr( DSL_NAMESPACE, pointFreeExpr.getOperator().asString() );
+        MethodCallExpr methodCallExpr = new MethodCallExpr( DSL_NAMESPACE.clone(), pointFreeExpr.getOperator().asString() );
         if (pointFreeExpr.getArg1() != null) {
             addArgumentToMethodCall( pointFreeExpr.getArg1(), methodCallExpr );
             if (pointFreeExpr.getArg2() != null) {
