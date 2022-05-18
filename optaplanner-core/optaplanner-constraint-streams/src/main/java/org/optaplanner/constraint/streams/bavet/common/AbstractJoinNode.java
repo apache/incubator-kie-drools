@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -70,11 +71,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
         Map<UniTuple<Right_>, OutTuple_> outTupleMapLeft = new HashMap<>();
         indexerLeft.put(indexProperties, leftTuple, outTupleMapLeft);
-        indexerRight.visit(indexProperties, (rightTuple, outTupleMapRight) -> {
+        indexerRight.visit(indexProperties, (rightTuple, emptyMap) -> {
             OutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
             outTuple.setState(BavetTupleState.CREATING);
             outTupleMapLeft.put(rightTuple, outTuple);
-            outTupleMapRight.put(leftTuple, outTuple);
             dirtyTupleQueue.add(outTuple);
         });
     }
@@ -92,17 +92,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         }
         tupleStore[inputStoreIndexLeft] = null;
 
-        indexerLeft.remove(indexProperties, leftTuple);
-        // Remove out tuples from the other side
-        indexerRight.visit(indexProperties, (rightTuple, outTupleMapRight) -> {
-            OutTuple_ outTuple = outTupleMapRight.remove(leftTuple);
-            if (outTuple == null) {
-                throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
-                        + ") with indexProperties (" + indexProperties
-                        + ") has tuples on the left side that didn't exist on the right side.");
-            }
+        Map<UniTuple<Right_>, OutTuple_> outTupleMapLeft = indexerLeft.remove(indexProperties, leftTuple);
+        for (OutTuple_ outTuple : outTupleMapLeft.values()) {
             killTuple(outTuple);
-        });
+        }
     }
 
     public final void insertRight(UniTuple<Right_> rightTuple) {
@@ -113,12 +106,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         IndexProperties indexProperties = mappingRight.apply(rightTuple.factA);
         rightTuple.store[inputStoreIndexRight] = indexProperties;
 
-        Map<LeftTuple_, OutTuple_> outTupleMapRight = new HashMap<>();
-        indexerRight.put(indexProperties, rightTuple, outTupleMapRight);
+        indexerRight.put(indexProperties, rightTuple, Collections.emptyMap());
         indexerLeft.visit(indexProperties, (leftTuple, outTupleMapLeft) -> {
             OutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
             outTuple.setState(BavetTupleState.CREATING);
-            outTupleMapRight.put(leftTuple, outTuple);
             outTupleMapLeft.put(rightTuple, outTuple);
             dirtyTupleQueue.add(outTuple);
         });
