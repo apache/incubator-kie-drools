@@ -1159,11 +1159,11 @@ But when 2 overlapping talks share 3 content tags, the match weight is `3`, so t
 [[explainingTheScore]]
 == Explaining the score: which constraints are broken?
 
-The easiest way to explain the score during development is to print the return value of `explainScore()`, but only use that method for diagnostic purposes:
+The easiest way to explain the score during development is to print the return value of `getSummary()`, but only use that method for diagnostic purposes:
 
 [source,java,options="nowrap"]
 ----
-System.out.println(scoreManager.explainScore(solution));
+System.out.println(scoreManager.getSummary(solution));
 ----
 
 For example in conference scheduling, this prints that talk `S51` is responsible for breaking the hard constraint `Speaker required room tag`:
@@ -1200,7 +1200,7 @@ If other parts of your application, for example your webUI, need to calculate th
 [source,java,options="nowrap"]
 ----
 ScoreManager<CloudBalance, HardSoftScore> scoreManager = ScoreManager.create(solverFactory);
-ScoreExplanation<CloudBalance, HardSoftScore> scoreExplanation = scoreManager.explain(cloudBalance);
+ScoreExplanation<CloudBalance, HardSoftScore> scoreExplanation = scoreManager.explainScore(cloudBalance);
 ----
 
 Then use it when you need to calculate the `Score` of a solution:
