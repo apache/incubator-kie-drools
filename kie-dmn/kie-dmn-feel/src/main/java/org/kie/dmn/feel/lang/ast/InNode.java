@@ -23,6 +23,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.functions.ListContainsFunction;
 import org.kie.dmn.feel.util.Msg;
 
 public class InNode
@@ -91,7 +92,7 @@ public class InNode
                 return null;
             }
         } else if ( value != null ) {
-            return value.equals( expr );
+            return ListContainsFunction.itemEqualsSC(value, expr);
         } else {
             // value == null, expr != null
             return Boolean.FALSE;

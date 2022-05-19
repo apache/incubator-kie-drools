@@ -42,14 +42,18 @@ public class ListContainsFunction
         ListIterator<?> it = list.listIterator();
         while (it.hasNext() && !found) {
             Object next = EvalHelper.coerceNumber(it.next());
-            if (e instanceof String) {
-                found = e.equals(next);
-            } else {
-                Boolean dmnEqual = EvalHelper.isEqual(e, next, null);
-                found = dmnEqual != null && dmnEqual;
-            }
+            found = itemEqualsSC(e, next);
         }
         return FEELFnResult.ofResult(found);
+    }
+
+    public static boolean itemEqualsSC(Object value, Object itemFromList) {
+        if (value instanceof String) {
+            return value.equals(itemFromList);
+        } else {
+            Boolean dmnEqual = EvalHelper.isEqual(value, itemFromList, null);
+            return dmnEqual != null && dmnEqual;
+        }
     }
 
 }
