@@ -25,20 +25,21 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 @QuarkusIntegrationTest
-public class ExpressionRestITFromImage {
+public class ExpressionRestFromImageIT {
 
     @Test
     void testExpressionRest() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
+                .header("pepe", "pepa")
                 .body("{\"workflowdata\":{\"numbers\":[{\"x\":2, \"y\": 1},{\"x\":4, \"y\": 3}]}}").when()
                 .post("/expression")
                 .then()
                 .statusCode(201)
                 .body("workflowdata.result", is(4))
                 .body("workflowdata.number", nullValue())
-                .body("workflowdata.message", is("my name is javierito and in my native language dog is translated to perro and the process id is expression"))
+                .body("workflowdata.message", is("my name is javierito and in my native language dog is translated to perro and the header pepe is pepa"))
                 .body("workflowdata.discardedResult", nullValue());
     }
 }

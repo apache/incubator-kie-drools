@@ -79,6 +79,18 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.root.dir}/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources</directory>
+                <includes>
+                    <include>expression.sw.json</include>
+                    <include>schema/expression.json</include>
+                </includes>
+            </resource>
+        </resources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -88,35 +100,6 @@
                         <noDeps>true</noDeps>
                         <skip>${skipTests}</skip>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.7</version>
-                    <executions>
-                        <execution>
-                            <id>copy-resources</id>
-                            <!-- here the phase you need -->
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>${basedir}/src/main/resources</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>${project.parent.basedir}/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/</directory>
-                                        <includes>
-                                            <include>expression.sw.json</include>
-                                        </includes>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.parent.basedir}/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/schema</directory>
-                                        <targetPath>${basedir}/src/main/resources/schema</targetPath>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
