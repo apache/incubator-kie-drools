@@ -64,9 +64,15 @@ public class KogitoDevServicesProcessor {
 
     private final IsDockerWorking isDockerWorking = new IsDockerWorking(true);
 
-    @BuildStep(onlyIf = IsDevelopment.class)
-    public void logger(BuildProducer<AdditionalBeanBuildItem> additionalBean) {
-        additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DevModeWorkflowLogger.class).setUnremovable().setDefaultScope(DotNames.APPLICATION_SCOPED).build());
+    @BuildStep
+    public void logger(BuildProducer<AdditionalBeanBuildItem> additionalBean, LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config) {
+        if (shouldInclude(launchMode, config)) {
+            additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DevModeWorkflowLogger.class).setUnremovable().setDefaultScope(DotNames.APPLICATION_SCOPED).build());
+        }
+    }
+
+    private static boolean shouldInclude(LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config) {
+        return launchMode.getLaunchMode().isDevOrTest() || config.alwaysInclude;
     }
 
     @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })

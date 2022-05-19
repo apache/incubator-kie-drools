@@ -28,4 +28,11 @@ public class KogitoBuildTimeConfig {
      */
     @ConfigItem
     public KogitoDevServicesBuildTimeConfig devservices;
+
+    /**
+     * Always include the Workflow debug logger. By default this will only be included in dev and test.
+     * Setting this to true will also include the Workflow debug logger in Prod
+     */
+    @ConfigItem(name = "logger.always-include", defaultValue = "false")
+    public boolean alwaysInclude;
 }
