@@ -1183,7 +1183,7 @@
       "allPublicFields" : true
     },
     {
-      "name":"org.drools.core.command.impl.CommandFactoryServiceImpl",
+      "name":"org.drools.commands.impl.CommandFactoryServiceImpl",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
