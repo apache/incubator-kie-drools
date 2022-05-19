@@ -47,6 +47,7 @@ import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.modelcompiler.util.EvaluationUtil.convertDate;
 import static org.junit.Assert.assertEquals;
 
@@ -1313,5 +1314,65 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick( "ACME" ) );
 
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testNegateFromCollectWithDeclaredTimestamp() throws Exception {
+        String str =
+                "import " + TransactionHistory.class.getCanonicalName() + ";" +
+                        "import " + List.class.getCanonicalName() + ";" +
+                        "declare TransactionHistory\n" +
+                        "  @role( event )\n" +
+                        "  @timestamp(timeStamp)\n" +
+                        "end\n" +
+                        "rule R when\n" +
+                        "    $a : TransactionHistory( merchantId == 10 )\n" +
+                        "    List(size() > 0) from collect (TransactionHistory( merchantId == 20, !(this before [10d] $a.timeStamp )))\n" +
+                        "then\n" +
+                        "  System.out.println(\"fired\");\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert(new TransactionHistory(10, toEpochMilliYMD(2022, 5, 12)));
+        ksession.insert(new TransactionHistory(20, toEpochMilliYMD(2022, 2, 8)));
+
+        assertThat(ksession.fireAllRules()).isZero();
+
+        ksession.insert(new TransactionHistory(20, toEpochMilliYMD(2022, 5, 15)));
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    private long toEpochMilliYMD(int year, int month, int dayOfMonth) {
+        return LocalDateTime.of(year, month, dayOfMonth, 0, 0, 0).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
+    }
+
+    public static class TransactionHistory {
+
+        private int merchantId;
+        private long timeStamp;
+
+        public TransactionHistory(int merchantId, long timeStamp) {
+            this.merchantId = merchantId;
+            this.timeStamp = timeStamp;
+        }
+
+        public int getMerchantId() {
+            return merchantId;
+        }
+
+        public void setMerchantId(int merchantId) {
+            this.merchantId = merchantId;
+        }
+
+        public long getTimeStamp() {
+            return timeStamp;
+        }
+
+        public void setTimeStamp(long timeStamp) {
+            this.timeStamp = timeStamp;
+        }
     }
 }
