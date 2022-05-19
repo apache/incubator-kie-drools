@@ -45,7 +45,6 @@ public class LambdaConsequence implements Consequence {
     private TupleFactSupplier[] factSuppliers;
     private GlobalSupplier[]    globalSuppliers;
     private Object[]            facts;
-    private boolean             suppliersInitialized = false;
 
     private FactHandleLookup    fhLookup;
 
@@ -118,7 +117,7 @@ public class LambdaConsequence implements Consequence {
     }
 
     private Object[] fetchFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory ) {
-        if (!suppliersInitialized) {
+        if (factSuppliers == null) {
             return initConsequence(knowledgeHelper, workingMemory);
         }
 
@@ -212,14 +211,14 @@ public class LambdaConsequence implements Consequence {
             tupleFactSupplier.resolveAndStore(facts, workingMemory, current.getFactHandle(), fhLookup);
         }
 
-        this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
+        // factSuppliers has to be last because factSuppliers is used as an initialization flag in fetchFacts(). See DROOLS-6961
         this.globalSuppliers = globalSuppliers.isEmpty() ? null : globalSuppliers.toArray( new GlobalSupplier[globalSuppliers.size()] );
+        this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
 
         if (!workingMemory.getSessionConfiguration().isThreadSafe()) {
             this.facts = facts;
             this.fhLookup = fhLookup;
         }
-        suppliersInitialized = true;
         return facts;
     }
 
