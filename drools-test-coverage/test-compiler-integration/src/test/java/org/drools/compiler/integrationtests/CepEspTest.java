@@ -99,7 +99,6 @@ import org.mockito.ArgumentCaptor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -195,10 +194,10 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
             clock.advanceTime(10, TimeUnit.SECONDS);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -252,10 +251,10 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
             clock.advanceTime(10, TimeUnit.SECONDS);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -287,8 +286,8 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
             final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -340,10 +339,10 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -410,10 +409,10 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -505,7 +504,7 @@ public class CepEspTest extends AbstractCepEspTest {
         final Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes(EntryPointId.DEFAULT);
         final ObjectTypeNode node = objectTypeNodes.get(new ClassObjectType(StockTick.class));
 
-        assertNotNull(node);
+        assertThat(node).isNotNull();
 
         // the expiration policy @expires(10m) should override the temporal operator usage
         assertEquals(TimeIntervalParser.parse("10m")[0] + 1, node.getExpirationOffset());
@@ -619,14 +618,14 @@ public class CepEspTest extends AbstractCepEspTest {
             clock.advanceTime(2, TimeUnit.MILLISECONDS);
             final InternalFactHandle handle8 = (InternalFactHandle) wm.insert(tick8);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
-            assertNotNull(handle5);
-            assertNotNull(handle6);
-            assertNotNull(handle7);
-            assertNotNull(handle8);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
+            assertThat(handle5).isNotNull();
+            assertThat(handle6).isNotNull();
+            assertThat(handle7).isNotNull();
+            assertThat(handle8).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -849,8 +848,8 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle2 = (InternalFactHandle) wm.insert(tick2);
             final InternalFactHandle handle1 = (InternalFactHandle) wm.insert(tick1);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -1204,10 +1203,10 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
             clock.advanceTime(10, TimeUnit.SECONDS);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -3562,7 +3561,7 @@ public class CepEspTest extends AbstractCepEspTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            assertNotNull(ksession);
+            assertThat(ksession).isNotNull();
 
             final List list = new ArrayList();
             ksession.setGlobal("list", list);
@@ -5187,7 +5186,7 @@ public class CepEspTest extends AbstractCepEspTest {
             }
         } finally {
             ksession.dispose();
-            assertNotNull(kieSessionDeserialized);
+            assertThat(kieSessionDeserialized).isNotNull();
             kieSessionDeserialized.insert(new TestEvent("test2"));
             kieSessionDeserialized.fireAllRules();
         }
@@ -5548,7 +5547,7 @@ public class CepEspTest extends AbstractCepEspTest {
                 final Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kieBase);
 
                 try {
-                    assertNotNull(serializedSession);
+                    assertThat(serializedSession).isNotNull();
                     final ByteArrayInputStream bais = new ByteArrayInputStream(serializedSession);
                     ksession2 = marshaller.unmarshall(bais, ksession.getSessionConfiguration(), null);
                     ksession2.setGlobal("list", list);

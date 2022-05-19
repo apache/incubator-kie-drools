@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLModel;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLSimplePredicate;
 
@@ -41,9 +41,9 @@ public class KiePMMLSegmentTest {
     public static void setup() {
         BUILDER = KiePMMLSegment.builder(SEGMENT_NAME, Collections.emptyList(),
                                          KIE_PMML_PREDICATE, KIE_PMML_MODEL);
-        assertNotNull(BUILDER);
+        assertThat(BUILDER).isNotNull();
         KIE_PMML_SEGMENT = BUILDER.build();
-        assertNotNull(KIE_PMML_SEGMENT);
+        assertThat(KIE_PMML_SEGMENT).isNotNull();
     }
 
 

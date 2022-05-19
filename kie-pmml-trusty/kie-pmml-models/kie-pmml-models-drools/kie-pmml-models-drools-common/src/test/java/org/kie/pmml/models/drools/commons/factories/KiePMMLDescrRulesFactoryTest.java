@@ -33,8 +33,8 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class KiePMMLDescrRulesFactoryTest {
@@ -46,7 +46,7 @@ public class KiePMMLDescrRulesFactoryTest {
     @Before
     public void setUp() throws Exception {
         builder = DescrFactory.newPackage().name(PACKAGE_NAME);
-        assertNotNull(builder.getDescr());
+        assertThat(builder.getDescr()).isNotNull();
         assertEquals(PACKAGE_NAME, builder.getDescr().getName());
     }
 
@@ -65,7 +65,7 @@ public class KiePMMLDescrRulesFactoryTest {
                 .withOrConstraints(orConstraints)
                 .build();
         KiePMMLDescrRulesFactory.factory(builder).declareRule(rule);
-        assertNotNull(builder.getDescr().getRules());
+        assertThat(builder.getDescr().getRules()).isNotNull();
         assertEquals(1, builder.getDescr().getRules().size());
         final RuleDescr retrieved = builder.getDescr().getRules().get(0);
         assertEquals(name, retrieved.getName());

@@ -26,7 +26,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BayesRuntimeTest {
 
@@ -44,7 +44,7 @@ public class BayesRuntimeTest {
 
         BayesRuntime bayesRuntime = ksession.getKieRuntime(BayesRuntime.class);
         BayesInstance<Garden> instance = bayesRuntime.createInstance(Garden.class);
-        assertNotNull(  instance );
+        assertThat(instance).isNotNull();
     }
 
     protected InternalKnowledgeBase getKnowledgeBase() {

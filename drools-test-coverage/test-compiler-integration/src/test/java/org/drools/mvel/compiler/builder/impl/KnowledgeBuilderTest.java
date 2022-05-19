@@ -105,9 +105,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -250,7 +250,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
         //check that packageDescr is serializable
         final PackageDescr back = (PackageDescr) SerializationHelper.serializeObject( packageDescr );
-        assertNotNull( back );
+        assertThat(back).isNotNull();
         assertEquals( "p1",
                       back.getName() );
 
@@ -302,13 +302,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             builder.addPackage( new PackageDescr( null ) );
             fail( "should have errored here." );
         } catch ( final RuntimeException e ) {
-            assertNotNull( e.getMessage() );
+            assertThat(e.getMessage()).isNotNull();
         }
         try {
             builder.addPackage( new PackageDescr( "" ) );
             fail( "should have errored here." );
         } catch ( final RuntimeException e ) {
-            assertNotNull( e.getMessage() );
+            assertThat(e.getMessage()).isNotNull();
         }
 
         builder.addPackageFromDrl( new StringReader( "package foo" ) );
@@ -1076,7 +1076,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage bp = builder.getPackage(pkgDescr.getName());
 
         Class newBean = bp.getPackageClassLoader().loadClass( "org.drools.mvel.compiler.test.NewBean" );
-        assertNotNull( newBean );
+        assertThat(newBean).isNotNull();
     }
 
     @Test
@@ -1098,12 +1098,12 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage bp = builder.getPackage(pkgDescr.getName());
 
         final FactType factType = bp.getFactType("org.drools.mvel.compiler.test.TypeWithFieldMeta");
-        assertNotNull( factType );
+        assertThat(factType).isNotNull();
         final FactField field = factType.getField( "field" );
-        assertNotNull( field );
+        assertThat(field).isNotNull();
 
         final Map<String, Object> fieldMetaData = field.getMetaData();
-        assertNotNull("No field-level custom metadata got compiled", fieldMetaData);
+        assertThat(fieldMetaData).as("No field-level custom metadata got compiled").isNotNull();
         assertTrue("Field metadata does not include expected value", fieldMetaData.containsKey("custom"));
     }
 
@@ -1279,7 +1279,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         InternalKnowledgePackage pkg = builder.getPackageRegistry().get( "p1" ).getPackage();
         final RuleImpl rule = pkg.getRule( "rule-1" );
-        assertNotNull( rule );
+        assertThat(rule).isNotNull();
 
         final Pattern pattern = (Pattern) rule.getLhs().getChildren().get( 0 );
         assertEquals( StockTick.class.getName(),

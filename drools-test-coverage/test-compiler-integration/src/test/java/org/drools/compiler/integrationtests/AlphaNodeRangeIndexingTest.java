@@ -52,7 +52,6 @@ import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
@@ -120,7 +119,7 @@ public class AlphaNodeRangeIndexingTest {
 
     private void assertSinks(KieBase kbase, Class<?> factClass, int sinksLength, int sinkAdapterSize, int rangeIndexableSinksSize, int rangeIndexSize) {
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, factClass);
-        assertNotNull(otn);
+        assertThat(otn).isNotNull();
 
         ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
         if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
@@ -687,7 +686,7 @@ public class AlphaNodeRangeIndexingTest {
         final KieSession ksession = kbase.newKieSession();
 
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
-        assertNotNull(otn);
+        assertThat(otn).isNotNull();
         ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
         if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
             objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
@@ -962,7 +961,7 @@ public class AlphaNodeRangeIndexingTest {
         final KieSession ksession = kbase.newKieSession();
 
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
-        assertNotNull(otn);
+        assertThat(otn).isNotNull();
         ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
         if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
             objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();

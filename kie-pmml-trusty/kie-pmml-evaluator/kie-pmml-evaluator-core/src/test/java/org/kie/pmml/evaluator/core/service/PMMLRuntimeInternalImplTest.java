@@ -43,7 +43,7 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 import org.kie.pmml.evaluator.core.implementations.PMMLRuntimeStep;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.mockito.ArgumentMatchers.any;
@@ -154,7 +154,7 @@ public class PMMLRuntimeInternalImplTest {
 
     private void commonValuateStep(final PMMLStep toVerify, final PMML_STEP pmmlStep, final KiePMMLModel kiePMMLModel,
                                    final PMMLRequestData requestData) {
-        assertNotNull(toVerify);
+        assertThat(toVerify).isNotNull();
         assertTrue(toVerify instanceof PMMLRuntimeStep);
         assertEquals(pmmlStep, ((PMMLRuntimeStep) toVerify).getPmmlStep());
         Map<String, Object> info = toVerify.getInfo();

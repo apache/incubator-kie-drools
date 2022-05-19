@@ -55,8 +55,8 @@ import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
 import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristics;
 import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -116,7 +116,7 @@ public class KiePMMLCharacteristicsFactoryTest {
                                                                        new HasClassLoaderMock());
         final KiePMMLCharacteristics retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristics(ScorecardCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -129,7 +129,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
         String expected = compilationDTO.getPackageCanonicalCharacteristicsClassName();
         assertTrue(retrieved.containsKey(expected));

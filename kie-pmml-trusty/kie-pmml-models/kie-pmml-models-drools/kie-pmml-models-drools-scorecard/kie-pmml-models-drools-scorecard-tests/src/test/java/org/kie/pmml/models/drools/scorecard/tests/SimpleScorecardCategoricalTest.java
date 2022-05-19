@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,7 +91,7 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
 
     @Test
     public void testSimpleScorecardCategoricalVerifyNoException() {
-        getSamples().stream().map(sample -> evaluate(pmmlRuntime, sample, MODEL_NAME)).forEach(Assert::assertNotNull);
+        getSamples().stream().map(sample -> evaluate(pmmlRuntime, sample, MODEL_NAME)).forEach((x) -> assertThat(x).isNotNull());
     }
 
     @Test

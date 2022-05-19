@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLNormDiscreteTest {
@@ -36,7 +36,7 @@ public class KiePMMLNormDiscreteTest {
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(mapMissingTo, retrieved);
     }
 
@@ -48,7 +48,7 @@ public class KiePMMLNormDiscreteTest {
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, fieldValue)));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1.0, retrieved);
     }
 
@@ -60,7 +60,7 @@ public class KiePMMLNormDiscreteTest {
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, "anotherValue")));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(0.0, retrieved);
     }
 

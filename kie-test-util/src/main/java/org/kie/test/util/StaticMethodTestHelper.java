@@ -15,7 +15,7 @@
 
 package org.kie.test.util;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -78,7 +78,7 @@ public class StaticMethodTestHelper {
                         projVersionStr = model.getParent().getVersion();
                     }
                     String projectName = model.getGroupId() + ":" + model.getArtifactId();
-                    assertNotNull("Unable to resolve project version for " + projectName, projVersionStr );
+                    assertThat(projVersionStr).as("Unable to resolve project version for " + projectName).isNotNull();
                 } catch( FileNotFoundException fnfe ) {
                     throw new RuntimeException("Unable to open " + pomFile.getAbsolutePath(), fnfe );
                 } catch( IOException ioe ) {

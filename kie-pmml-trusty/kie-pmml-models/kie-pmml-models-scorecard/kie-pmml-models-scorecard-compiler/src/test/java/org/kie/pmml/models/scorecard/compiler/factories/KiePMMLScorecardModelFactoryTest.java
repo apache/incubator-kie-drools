@@ -44,8 +44,8 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
@@ -96,7 +96,7 @@ public class KiePMMLScorecardModelFactoryTest {
                                                                        new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.fromCompilationDTO(source));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -109,7 +109,7 @@ public class KiePMMLScorecardModelFactoryTest {
         ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(2, retrieved.size());
         assertTrue(retrieved.containsKey(compilationDTO.getPackageCanonicalClassName()));
         assertTrue(retrieved.containsKey(compilationDTO.getPackageCanonicalCharacteristicsClassName()));

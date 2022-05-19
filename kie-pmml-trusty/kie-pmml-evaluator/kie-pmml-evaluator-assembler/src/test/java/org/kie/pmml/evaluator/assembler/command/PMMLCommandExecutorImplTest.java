@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -28,7 +27,9 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PMMLCommandExecutorImplTest {
 
@@ -71,7 +72,7 @@ public class PMMLCommandExecutorImplTest {
         PMMLRequestData pmmlRequestData = getPMMLRequestData();
         PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
         PMMLRequestData retrieved = cmdExecutor.getCleanedRequestData(pmmlRequestData);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(pmmlRequestData.getSource(), retrieved.getSource());
         assertEquals(pmmlRequestData.getCorrelationId(), retrieved.getCorrelationId());
         assertEquals(pmmlRequestData.getModelName(), retrieved.getModelName());

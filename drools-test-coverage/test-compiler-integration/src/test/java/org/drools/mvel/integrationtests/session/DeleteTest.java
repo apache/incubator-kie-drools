@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -279,8 +278,8 @@ public class DeleteTest {
 
         assertEquals(sum, stilton.getPrice());
         assertEquals(1, ksession.getFactCount());
-        assertNotNull(ksession.getObject(stiltonHandle));
-        assertNotNull(ksession.getFactHandle(stilton));
+        assertThat(ksession.getObject(stiltonHandle)).isNotNull();
+        assertThat(ksession.getFactHandle(stilton)).isNotNull();
 
         assertNull(ksession.getObject(muzzarellaHandle));
         assertNull(ksession.getFactHandle(muzzarella));

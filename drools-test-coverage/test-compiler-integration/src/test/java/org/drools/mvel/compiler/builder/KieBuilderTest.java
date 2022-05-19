@@ -47,8 +47,8 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -116,7 +116,7 @@ public class KieBuilderTest {
         }
         KieRepository kr = ks.getRepository();
         KieModule kModule1 = kr.getKieModule(releaseId1);
-        assertNotNull( kModule1 );
+        assertThat(kModule1).isNotNull();
         
         
         String namespace2 = "org.kie.test2";
@@ -136,7 +136,7 @@ public class KieBuilderTest {
             fail("Unable to build KieJar\n" + kb2.getResults( ).toString() );
         }
         KieModule kModule2= kr.getKieModule(releaseId2);
-        assertNotNull( kModule2);
+        assertThat(kModule2).isNotNull();
         
         KieContainer kContainer = ks.newKieContainer(releaseId2);
         KieBase kBase = kContainer.getKieBase( namespace2 );
@@ -424,7 +424,7 @@ public class KieBuilderTest {
         }
         KieRepository kr = ks.getRepository();
         KieModule kJar = kr.getKieModule(releaseId);
-        assertNotNull( kJar );
+        assertThat(kJar).isNotNull();
         
         KieContainer kContainer = ks.newKieContainer(releaseId);
         KieBase kBase = kBaseName != null ? kContainer.getKieBase( kBaseName ) : kContainer.getKieBase();

@@ -19,7 +19,6 @@ import org.dmg.pmml.Expression;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 
-import static org.junit.Assert.*;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomApply;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomConstant;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDiscretize;

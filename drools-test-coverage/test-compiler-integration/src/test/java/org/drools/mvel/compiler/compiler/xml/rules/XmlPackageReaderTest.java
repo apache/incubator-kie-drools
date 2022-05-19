@@ -43,7 +43,6 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -54,7 +53,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFrom.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
         PatternDescr patterndescr = (PatternDescr) obj.getLhs().getDescrs().get( 0 );
 
@@ -76,7 +75,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseAccumulate.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
 
         Object patternobj = obj.getLhs().getDescrs().get( 0 );
@@ -123,7 +122,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseAccumulate.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 1 );
 
         Object patternobj = obj.getLhs().getDescrs().get( 0 );
@@ -159,7 +158,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseForall.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
 
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
         ForallDescr forall = (ForallDescr) obj.getLhs().getDescrs().get( 0 );
@@ -182,7 +181,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseExists.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
 
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
         Object existdescr = obj.getLhs().getDescrs().get( 0 );
@@ -222,7 +221,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParsePackageName.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         assertEquals( "com.sample",
                       packageDescr.getName() );
     }
@@ -232,7 +231,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseImport.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         assertEquals( "com.sample",
                       packageDescr.getName() );
 
@@ -255,7 +254,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseGlobal.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         assertEquals( "com.sample",
                       packageDescr.getName() );
 
@@ -287,7 +286,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFunction.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         assertEquals( "com.sample",
                       packageDescr.getName() );
 
@@ -350,7 +349,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_SimpleRule1.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         assertEquals( "com.sample",
                       packageDescr.getName() );
 
@@ -446,7 +445,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRhs.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         assertEquals( "com.sample",
                       packageDescr.getName() );
 
@@ -493,7 +492,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       ruleDescr.getName() );
 
         final String consequence = (String) ruleDescr.getConsequence();
-        assertNotNull( consequence );
+        assertThat(consequence).isNotNull();
         assertEquals( "System.out.println( \"hello\" );",
                       consequence.trim() );
     }
@@ -503,7 +502,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseQuery.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
+        assertThat(packageDescr).isNotNull();
         assertEquals( "com.sample",
                       packageDescr.getName() );
 

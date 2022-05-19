@@ -34,8 +34,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -71,7 +71,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         commands.add(CommandFactory.newFireAllRules("fired"));
         Command<?> cmds = CommandFactory.newBatchExecution(commands);
         ExecutionResults result = (ExecutionResults) ksession.execute(cmds);
-        assertNotNull("Batch execution result is null!", result);
+        assertThat(result).as("Batch execution result is null!").isNotNull();
 
         Object firedObject = result.getValue("fired");
         assertTrue("Retrieved object is null or incorrect!", firedObject != null && firedObject instanceof Integer);
@@ -104,7 +104,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         commands.add(CommandFactory.newQuery("numStinkyCheeses", "simple query"));
         Command<?> cmds = CommandFactory.newBatchExecution(commands);
         ExecutionResults result = (ExecutionResults) ksession.execute(cmds);
-        assertNotNull("Batch execution result is null!", result);
+        assertThat(result).as("Batch execution result is null!").isNotNull();
 
         Object queryResultsObject = result.getValue("numStinkyCheeses");
         assertTrue("Retrieved object is null or incorrect!", queryResultsObject != null && queryResultsObject instanceof QueryResults);

@@ -43,7 +43,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -297,8 +296,8 @@ public class DMNFeelExpressionEvaluatorTest {
     // DROOLS-6337 today() and now() functions not evaluated correctly in Test Scenarios
         ZonedDateTime now = (ZonedDateTime) expressionEvaluator.evaluateLiteralExpression("now()", ZonedDateTime.class.getCanonicalName(), Collections.emptyList()); 
         LocalDate today = (LocalDate) expressionEvaluator.evaluateLiteralExpression("today()", LocalDate.class.getCanonicalName(), Collections.emptyList());
-        assertNotNull(now);
-        assertNotNull(today);
+        assertThat(now).isNotNull();
+        assertThat(today).isNotNull();
         assertTrue(expressionEvaluator.evaluateUnaryExpression("now() > ?", now.minusDays(1), ZonedDateTime.class).isSuccessful());
         assertTrue(expressionEvaluator.evaluateUnaryExpression("today() > ?", today.minusDays(1), LocalDate.class).isSuccessful());
     }

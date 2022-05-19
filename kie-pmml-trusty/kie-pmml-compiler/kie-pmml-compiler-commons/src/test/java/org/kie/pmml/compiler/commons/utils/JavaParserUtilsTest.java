@@ -24,9 +24,9 @@ import com.github.javaparser.ast.expr.Name;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class JavaParserUtilsTest {
@@ -39,7 +39,7 @@ public class JavaParserUtilsTest {
     @Test
     public void getFromFileName() {
         CompilationUnit retrieved = JavaParserUtils.getFromFileName(TEMPLATE_FILE);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test(expected = KiePMMLInternalException.class)
@@ -57,7 +57,7 @@ public class JavaParserUtilsTest {
         String className = "ClassName";
         String packageName = "apackage";
         CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,  TEMPLATE_FILE, TEMPLATE_CLASS);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertTrue(retrieved.getPackageDeclaration().isPresent());
         assertEquals(packageName, retrieved.getPackageDeclaration().get().getName().asString());
         assertFalse(retrieved.getClassByName(TEMPLATE_CLASS).isPresent());
@@ -68,7 +68,7 @@ public class JavaParserUtilsTest {
     public void getKiePMMLModelCompilationUnitWithoutPackage() {
         String className = "ClassName";
         CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, null,  TEMPLATE_FILE, TEMPLATE_CLASS);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertFalse(retrieved.getPackageDeclaration().isPresent());
         assertFalse(retrieved.getClassByName(TEMPLATE_CLASS).isPresent());
         assertTrue(retrieved.getClassByName(className).isPresent());

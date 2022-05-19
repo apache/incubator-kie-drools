@@ -70,7 +70,6 @@ import org.mockito.Mockito;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -1173,7 +1172,7 @@ public class AccumulateTest {
                 final Cheese c = (Cheese) next;
                 data.cheese[c.getOldPrice()] = c;
                 data.cheeseHandles[c.getOldPrice()] = session.getFactHandle(c);
-                assertNotNull(data.cheeseHandles[c.getOldPrice()]);
+                assertThat(data.cheeseHandles[c.getOldPrice()]).isNotNull();
             } else if (next instanceof Person) {
                 data.bob = (Person) next;
                 data.bobHandle = session.getFactHandle(data.bob);
