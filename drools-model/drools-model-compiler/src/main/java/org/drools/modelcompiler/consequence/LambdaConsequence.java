@@ -45,6 +45,7 @@ public class LambdaConsequence implements Consequence {
     private TupleFactSupplier[] factSuppliers;
     private GlobalSupplier[]    globalSuppliers;
     private Object[]            facts;
+    private boolean             suppliersInitialized = false;
 
     private FactHandleLookup    fhLookup;
 
@@ -117,7 +118,7 @@ public class LambdaConsequence implements Consequence {
     }
 
     private Object[] fetchFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory ) {
-        if (factSuppliers == null) {
+        if (!suppliersInitialized) {
             return initConsequence(knowledgeHelper, workingMemory);
         }
 
@@ -218,6 +219,7 @@ public class LambdaConsequence implements Consequence {
             this.facts = facts;
             this.fhLookup = fhLookup;
         }
+        suppliersInitialized = true;
         return facts;
     }
 
