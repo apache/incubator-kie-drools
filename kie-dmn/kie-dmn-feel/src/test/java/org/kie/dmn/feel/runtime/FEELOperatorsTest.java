@@ -70,6 +70,8 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {" duration(\"PT24H\") in [ duration(\"P1Y2M\") .. duration(\"P1Y3M\")] ", null, FEELEvent.Severity.ERROR},
                 {" date and time(\"2021-07-01T00:00:00@Europe/Rome\") > date and time(\"2021-06-01T00:00:00\") ", Boolean.TRUE, null},
                 {" date and time(\"2021-07-01T00:00:00@Europe/Rome\") in [ date and time(\"2021-06-01T00:00:00\") .. date and time(\"2021-12-31T23:59:59\")] ", Boolean.TRUE, null},
+                { "3 in [2.2, 3.0, 4.0]", Boolean.TRUE , null},
+                { "3.000 in [2, 3, 4]", Boolean.TRUE , null}, 
 
                 // instance of
                 {"10 instance of number", Boolean.TRUE , null},
