@@ -18,8 +18,7 @@ package org.kie.pmml.models.naive_bayes.compiler.executor;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NaiveBayesModelImplementationProviderTest {
 
@@ -27,7 +26,7 @@ public class NaiveBayesModelImplementationProviderTest {
 
     @Test
     public void getPMMLModelType(){
-        assertEquals(PMML_MODEL.NAIVEBAYES_MODEL,PROVIDER.getPMMLModelType());
+        assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.NAIVEBAYES_MODEL);
     }
 
     @Test

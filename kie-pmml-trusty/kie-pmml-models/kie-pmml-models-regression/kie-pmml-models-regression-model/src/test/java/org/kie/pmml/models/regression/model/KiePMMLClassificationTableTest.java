@@ -24,13 +24,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class KiePMMLClassificationTableTest {
@@ -78,10 +79,10 @@ public class KiePMMLClassificationTableTest {
         input.put(CASE_A, firstTableResult);
         input.put(CASE_B, secondTableResult);
         Object retrieved = classificationTable.evaluateRegression(input, pmmlContextTest);
-        assertEquals(expectedResult, retrieved);
+        assertThat(retrieved).isEqualTo(expectedResult);
         final Map<String, Double> probabilityResultMap = pmmlContextTest.getProbabilityResultMap();
-        assertEquals(firstExpectedValue, probabilityResultMap.get(CASE_A), 0);
-        assertEquals(secondExpectedValue, probabilityResultMap.get(CASE_B), 0);
+        assertThat(probabilityResultMap.get(CASE_A)).isCloseTo(firstExpectedValue, Offset.offset(0.0));
+        assertThat(probabilityResultMap.get(CASE_B)).isCloseTo(secondExpectedValue, Offset.offset(0.0));
     }
 
     @Test
@@ -93,9 +94,10 @@ public class KiePMMLClassificationTableTest {
                                                                                                FIRST_ITEM_OPERATOR,
                                                                                                SECOND_ITEM_OPERATOR);
         double expectedDouble = FIRST_ITEM_OPERATOR.applyAsDouble(firstTableResult);
-        assertEquals(expectedDouble, retrieved.get(CASE_B), 0.0);
+
+        assertThat(retrieved.get(CASE_B)).isCloseTo(expectedDouble, Offset.offset(0.0));      
         expectedDouble = SECOND_ITEM_OPERATOR.applyAsDouble(expectedDouble);
-        assertEquals(expectedDouble, retrieved.get(CASE_A), 0.0);
+        assertThat(retrieved.get(CASE_A)).isCloseTo(expectedDouble, Offset.offset(0.0));      
     }
 
     @Test(expected = KiePMMLException.class)

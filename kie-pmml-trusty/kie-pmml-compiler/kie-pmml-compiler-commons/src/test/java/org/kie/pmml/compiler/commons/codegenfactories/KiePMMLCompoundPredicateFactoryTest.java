@@ -39,7 +39,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getSimplePredicate;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getStringObjects;
@@ -98,7 +98,7 @@ public class KiePMMLCompoundPredicateFactoryTest {
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
                                                                       valuesString,
                                                                       booleanOperatorString));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLCompoundPredicate.class, KiePMMLSimplePredicate.class,
                                                KiePMMLSimpleSetPredicate.class, Arrays.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);

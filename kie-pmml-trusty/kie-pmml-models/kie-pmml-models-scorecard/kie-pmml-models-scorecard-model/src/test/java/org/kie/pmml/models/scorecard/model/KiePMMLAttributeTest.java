@@ -30,8 +30,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLAttributeTest {
 
@@ -48,8 +47,8 @@ public class KiePMMLAttributeTest {
         KiePMMLAttribute attribute = KiePMMLAttribute.builder(ATTRIBUTE, Collections.emptyList(), KiePMMLFalsePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .build();
-        assertNull(attribute.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                      Collections.emptyMap()));
+        assertThat(attribute.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+                                      Collections.emptyMap())).isNull();
     }
 
     @Test
@@ -57,8 +56,8 @@ public class KiePMMLAttributeTest {
         KiePMMLAttribute attribute = KiePMMLAttribute.builder(ATTRIBUTE, Collections.emptyList(), KiePMMLTruePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .build();
-        assertEquals(value1, attribute.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                      Collections.emptyMap()));
+        assertThat(attribute.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+                                      Collections.emptyMap())).isEqualTo(value1);
     }
 
     @Test
@@ -67,8 +66,8 @@ public class KiePMMLAttributeTest {
                 .withComplexPartialScore(getKiePMMLComplexPartialScore())
                 .build();
         Object expected = value1 / value2;
-        assertEquals(expected, attribute.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
-                                                Collections.emptyMap()));
+        assertThat(attribute.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
+                                                Collections.emptyMap())).isEqualTo(expected);
     }
 
     @Test
@@ -78,8 +77,8 @@ public class KiePMMLAttributeTest {
                 .withComplexPartialScore(getKiePMMLComplexPartialScore())
                 .build();
         Object expected = value1 / value2;
-        assertEquals(expected, attribute.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
-                                                  Collections.emptyMap()));
+        assertThat(attribute.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
+                                                  Collections.emptyMap())).isEqualTo(expected);
     }
 
     private KiePMMLComplexPartialScore getKiePMMLComplexPartialScore() {

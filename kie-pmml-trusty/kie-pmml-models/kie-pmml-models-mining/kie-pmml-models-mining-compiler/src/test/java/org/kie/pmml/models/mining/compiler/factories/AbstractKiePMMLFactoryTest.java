@@ -36,7 +36,6 @@ import org.kie.test.util.filesystem.FileUtils;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -65,7 +64,7 @@ public abstract class AbstractKiePMMLFactoryTest {
         DATA_DICTIONARY = pmml.getDataDictionary();
         assertThat(DATA_DICTIONARY).isNotNull();
         TRANSFORMATION_DICTIONARY = pmml.getTransformationDictionary();
-        assertTrue(pmml.getModels().get(0) instanceof MiningModel);
+        assertThat(pmml.getModels().get(0)).isInstanceOf(MiningModel.class);
         MINING_MODEL = (MiningModel) pmml.getModels().get(0);
         assertThat(MINING_MODEL).isNotNull();
         populateMissingIds(MINING_MODEL);

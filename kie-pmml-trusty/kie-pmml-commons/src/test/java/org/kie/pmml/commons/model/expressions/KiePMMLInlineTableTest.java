@@ -25,9 +25,7 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLInlineTableTest {
 
@@ -49,7 +47,7 @@ public class KiePMMLInlineTableTest {
     public void evaluateKeyNotFound() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
         Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("NOT-KEY", 0), "KEY-0-0", null);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
@@ -57,15 +55,15 @@ public class KiePMMLInlineTableTest {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
         Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("KEY-1-1", 435345), "KEY-0" +
                 "-0", null);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateKeyFoundMatching() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
         Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("KEY-1-1", "VALUE-1-1"), "KEY-1-2", null);
-        assertTrue(retrieved.isPresent());
-        assertEquals("VALUE-1-2", retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo("VALUE-1-2");
     }
 
     @Test
@@ -76,7 +74,7 @@ public class KiePMMLInlineTableTest {
                                           i -> "VALUE-1-" + i));
         columnPairsMap.put("KEY-1-2", 4);
         Optional<Object> retrieved = kiePMMLInlineTable.evaluate(columnPairsMap, "KEY-0-0", null);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
@@ -86,7 +84,7 @@ public class KiePMMLInlineTableTest {
                 .collect(Collectors.toMap(i -> "KEY-1-" + i,
                                           i -> "VALUE-1-" + i));
         Optional<Object> retrieved = kiePMMLInlineTable.evaluate(columnPairsMap, "KEY-1-2", null);
-        assertTrue(retrieved.isPresent());
-        assertEquals("VALUE-1-2", retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo("VALUE-1-2");
     }
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.model.expressions.KiePMMLTextIndex.DEFAULT_TOKENIZER;
 
 public class KiePMMLTextIndexNormalizationTest {
@@ -42,7 +42,7 @@ public class KiePMMLTextIndexNormalizationTest {
                 .build();
         String text = "interfacea";
         String retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
-        assertEquals("fooa", retrieved);
+        assertThat(retrieved).isEqualTo("fooa");
 
         //---
         columnValues.put("string", "is|are|seem(ed|s?)|were?");
@@ -55,7 +55,7 @@ public class KiePMMLTextIndexNormalizationTest {
                 .build();
         text = "Why they seem so ?";
         retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
-        assertEquals( "Why they be so ?", retrieved);
+        assertThat(retrieved).isEqualTo("Why they be so ?");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class KiePMMLTextIndexNormalizationTest {
                 .build();
         String text = "Why the interfacea seem so ?";
         String retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
-        assertEquals("Why the fooa be so ?", retrieved);
+        assertThat(retrieved).isEqualTo("Why the fooa be so ?");
     }
 
     @Test
@@ -105,6 +105,6 @@ public class KiePMMLTextIndexNormalizationTest {
                 .build();
         String text = "Why they interfaceems so ?";
         String retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
-        assertEquals("Why they final so ?", retrieved);
+        assertThat(retrieved).isEqualTo("Why they final so ?");
     }
 }

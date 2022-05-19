@@ -46,7 +46,7 @@ import org.kie.pmml.models.scorecard.model.KiePMMLAttribute;
 import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
 import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getSimplePredicate;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getStringObjects;
@@ -128,7 +128,7 @@ public class KiePMMLCharacteristicFactoryTest {
                                                                       valuesString2,
                                                                       characteristic.getBaselineScore(),
                                                                       characteristic.getReasonCode()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLAttribute.class,
                                                KiePMMLCharacteristic.class,
                                                KiePMMLComplexPartialScore.class,

@@ -56,9 +56,7 @@ import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristics;
 import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getDerivedFields;
@@ -130,9 +128,9 @@ public class KiePMMLCharacteristicsFactoryTest {
         final Map<String, String> retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved).hasSize(1);
         String expected = compilationDTO.getPackageCanonicalCharacteristicsClassName();
-        assertTrue(retrieved.containsKey(expected));
+        assertThat(retrieved).containsKey(expected);
         try {
             KieMemoryCompiler.compile(retrieved, Thread.currentThread().getContextClassLoader());
         } catch (Exception e) {
@@ -166,17 +164,17 @@ public class KiePMMLCharacteristicsFactoryTest {
     public void addGetCharacteristicMethod() throws IOException {
         final String characteristicName = "CharacteristicName";
         String expectedMethod = "get" + characteristicName;
-        assertTrue(characteristicsTemplate.getMethodsByName(expectedMethod).isEmpty());
+        assertThat(characteristicsTemplate.getMethodsByName(expectedMethod)).isEmpty();
         KiePMMLCharacteristicsFactory.addGetCharacteristicMethod(characteristicName,
                                                                  basicComplexPartialScoreFirstCharacteristic,
                                                                  getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
                                                                  characteristicsTemplate);
-        assertEquals(1, characteristicsTemplate.getMethodsByName(expectedMethod).size());
+        assertThat(characteristicsTemplate.getMethodsByName(expectedMethod)).hasSize(1);
         MethodDeclaration retrieved = characteristicsTemplate.getMethodsByName(expectedMethod).get(0);
         String text = getFileContent(TEST_01_SOURCE);
         MethodDeclaration expected = JavaParserUtils
                 .parseMethod(String.format(text, characteristicName));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLApply.class,
                                                KiePMMLAttribute.class,
                                                KiePMMLCharacteristic.class,

@@ -18,43 +18,43 @@ package org.kie.pmml.api.enums;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CAST_INTEGERTest {
 
     @Test
     public void getRound() {
         int retrieved = CAST_INTEGER.getRound(2.718);
-        assertEquals(3, retrieved);
+        assertThat(retrieved).isEqualTo(3);
         retrieved = CAST_INTEGER.getRound(-2.718);
-        assertEquals(-3, retrieved);
+        assertThat(retrieved).isEqualTo(-3);
         retrieved = CAST_INTEGER.getRound(2.418);
-        assertEquals(2, retrieved);
+        assertThat(retrieved).isEqualTo(2);
         retrieved = CAST_INTEGER.getRound(-2.418);
-        assertEquals(-2, retrieved);
+        assertThat(retrieved).isEqualTo(-2);
     }
 
     @Test
     public void getCeiling() {
         int retrieved = CAST_INTEGER.getCeiling(2.718);
-        assertEquals(3, retrieved);
+        assertThat(retrieved).isEqualTo(3);
         retrieved = CAST_INTEGER.getCeiling(-2.718);
-        assertEquals(-2, retrieved);
+        assertThat(retrieved).isEqualTo(-2);
         retrieved = CAST_INTEGER.getCeiling(2.418);
-        assertEquals(3, retrieved);
+        assertThat(retrieved).isEqualTo(3);
         retrieved = CAST_INTEGER.getCeiling(-2.418);
-        assertEquals(-2, retrieved);
+        assertThat(retrieved).isEqualTo(-2);
     }
 
     @Test
     public void getFloor() {
         int retrieved = CAST_INTEGER.getFloor(2.718);
-        assertEquals(2, retrieved);
+        assertThat(retrieved).isEqualTo(2);
         retrieved = CAST_INTEGER.getFloor(-2.718);
-        assertEquals(-3, retrieved);
+        assertThat(retrieved).isEqualTo(-3);
         retrieved = CAST_INTEGER.getFloor(2.418);
-        assertEquals(2, retrieved);
+        assertThat(retrieved).isEqualTo(2);
         retrieved = CAST_INTEGER.getFloor(-2.418);
-        assertEquals(-3, retrieved);
+        assertThat(retrieved).isEqualTo(-3);
     }
 }
