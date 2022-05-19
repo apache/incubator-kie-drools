@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRouting
     @Override
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
-                testData(CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -743441), EnvironmentMode.REPRODUCIBLE),
+                testData(CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242), EnvironmentMode.REPRODUCIBLE),
                 testData(CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -745420), EnvironmentMode.FAST_ASSERT),
                 testData(CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1798722), EnvironmentMode.REPRODUCIBLE),
                 testData(CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1812202), EnvironmentMode.FAST_ASSERT));

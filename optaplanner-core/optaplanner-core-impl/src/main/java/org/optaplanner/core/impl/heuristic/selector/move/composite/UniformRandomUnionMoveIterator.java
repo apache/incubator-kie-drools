@@ -33,6 +33,7 @@ final class UniformRandomUnionMoveIterator<Solution_> extends SelectionIterator<
     public UniformRandomUnionMoveIterator(List<MoveSelector<Solution_>> childMoveSelectorList, Random workingRandom) {
         this.moveIteratorList = childMoveSelectorList.stream()
                 .map(Iterable::iterator)
+                .filter(Iterator::hasNext)
                 .collect(Collectors.toList());
         this.workingRandom = workingRandom;
     }
