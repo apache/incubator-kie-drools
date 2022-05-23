@@ -44,9 +44,6 @@ import static org.drools.util.ClassUtils.findParentClassLoader;
 public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader, WritableClassLoader {
 
     private static final boolean CACHE_NON_EXISTING_CLASSES = true;
-    private static final ClassNotFoundException dummyCFNE = CACHE_NON_EXISTING_CLASSES ?
-                                                            new ClassNotFoundException("This is just a cached Exception. Disable non existing classes cache to see the actual one.") :
-                                                            null;
 
     private static boolean enableStoreFirst = Boolean.valueOf(System.getProperty("drools.projectClassLoader.enableStoreFirst", "true"));
 
@@ -64,7 +61,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     private InternalTypesClassLoader typesClassLoader;
 
-    private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
+    private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<>();
 
     protected Set<String> generatedClassNames = new HashSet<>();
 
@@ -150,7 +147,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     // This method has to be public because is also used by the android ClassLoader
     public Class<?> internalLoadClass(String name, boolean resolve) throws ClassNotFoundException {
         if (CACHE_NON_EXISTING_CLASSES && nonExistingClasses.contains(name)) {
-            throw dummyCFNE;
+            throw getClassNotFoundExceptionWithName(name);
         }
 
         if (droolsClassLoader != null) {
@@ -184,21 +181,20 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return tryDefineType(name, cnfe);
     }
 
-    // This method has to be public because is also used by the android ClassLoader
     public Class<?> tryDefineType(String name, ClassNotFoundException cnfe) throws ClassNotFoundException {
         byte[] bytecode = getBytecode( ClassUtils.convertClassToResourcePath(name));
         if (bytecode == null) {
             if (CACHE_NON_EXISTING_CLASSES) {
                 nonExistingClasses.add(name);
             }
-            throw cnfe != null ? cnfe : new ClassNotFoundException(name);
+            throw cnfe != null ? cnfe : getClassNotFoundExceptionWithName(name);
         }
         return defineType(name, bytecode);
     }
 
     private synchronized Class<?> defineType(String name, byte[] bytecode) {
         if (definedTypes == null) {
-            definedTypes = new HashMap<String, ClassBytecode>();
+            definedTypes = new HashMap<>();
         } else {
             ClassBytecode existingClass = definedTypes.get(name);
             if (existingClass != null && Arrays.equals(bytecode, existingClass.bytes)) {
@@ -255,7 +251,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public void storeClass(String name, String resourceName, byte[] bytecode) {
         if (store == null) {
-            store = new HashMap<String, byte[]>();
+            store = new HashMap<>();
         }
         store.put(resourceName, bytecode);
         if (CACHE_NON_EXISTING_CLASSES) {
@@ -422,7 +418,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     public void initFrom(ProjectClassLoader other) {
         if (other.store != null) {
             if (store == null) {
-                store = new HashMap<String, byte[]>();
+                store = new HashMap<>();
             }
             store.putAll(other.store);
         }
@@ -436,7 +432,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException;
         default Class<?> findLoadedClassWithoutParent(String name) {
             throw new UnsupportedOperationException();
-        };
+        }
     }
 
     public synchronized List<String> reinitTypes() {
@@ -458,6 +454,26 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         private ClassBytecode(Class<?> clazz, byte[] bytes) {
             this.clazz = clazz;
             this.bytes = bytes;
+        }
+    }
+
+    private ClassNotFoundException getClassNotFoundExceptionWithName(String name) {
+        if (CACHE_NON_EXISTING_CLASSES) {
+            DummyClassNotFoundException.INSTANCE.name = name;
+            return DummyClassNotFoundException.INSTANCE;
+        }
+        return new ClassNotFoundException(name);
+    }
+
+    public static class DummyClassNotFoundException extends ClassNotFoundException {
+
+        private static final DummyClassNotFoundException INSTANCE = CACHE_NON_EXISTING_CLASSES ? new DummyClassNotFoundException() : null;
+
+        private String name;
+
+        @Override
+        public String getMessage() {
+            return name + "\n(Note: This is just a cached Exception for performance reasons, the stack trace is not correct and also the name of the class may be wrong in multithreaded situations. Disable non existing classes cache to see the actual one.)";
         }
     }
 }

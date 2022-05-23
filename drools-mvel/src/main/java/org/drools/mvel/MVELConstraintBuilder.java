@@ -411,7 +411,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                             final PredicateDescr predicateDescr,
                                                             final AnalysisResult analysis ) {
         if (context.isTypesafe() && analysis instanceof MVELAnalysisResult ) {
-            Class<?> returnClass = ((MVELAnalysisResult)analysis).getReturnType();
+            Class<?> returnClass = analysis.getReturnType();
             if (returnClass != Boolean.class && returnClass != Boolean.TYPE) {
                 context.addError( new DescrBuildError( context.getParentDescr(),
                         predicateDescr,

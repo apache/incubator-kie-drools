@@ -51,4 +51,8 @@ public interface AnalysisResult {
     Set<String> getLocalVariables();
 
     Class<?> getReturnType();
+
+    default boolean isTypesafe() {
+        return true;
+    }
 }
