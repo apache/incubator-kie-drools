@@ -34,7 +34,7 @@ public abstract class BaseProcessAsyncIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseProcessAsyncIT.class);
     public static final String ASYNC = "async";
-    public static final Duration TIMEOUT = Duration.ofSeconds(40);
+    public static final Duration TIMEOUT = Duration.ofMinutes(5);
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
