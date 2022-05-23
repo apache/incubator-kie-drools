@@ -210,8 +210,9 @@ public class LambdaConsequence implements Consequence {
             tupleFactSupplier.resolveAndStore(facts, reteEvaluator, current.getFactHandle(), fhLookup);
         }
 
-        this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
+        // factSuppliers has to be last because factSuppliers is used as an initialization flag in fetchFacts(). See DROOLS-6961
         this.globalSuppliers = globalSuppliers.isEmpty() ? null : globalSuppliers.toArray( new GlobalSupplier[globalSuppliers.size()] );
+        this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
 
         if (!reteEvaluator.getSessionConfiguration().isThreadSafe()) {
             this.facts = facts;
