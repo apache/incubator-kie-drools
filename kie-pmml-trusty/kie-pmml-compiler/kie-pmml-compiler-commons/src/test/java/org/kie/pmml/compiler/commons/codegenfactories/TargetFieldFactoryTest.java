@@ -32,7 +32,7 @@ import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
@@ -69,8 +69,8 @@ public class TargetFieldFactoryTest {
                                                                             kieTargetField.getMax(),
                                                                             kieTargetField.getRescaleConstant(),
                                                                             kieTargetField.getRescaleFactor()));
-        assertEquals(expected.toString(), retrieved.toString());
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(retrieved.toString()).isEqualTo(expected.toString());
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTarget.class,
                                                KiePMMLTargetValue.class, TargetField.class, TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);

@@ -26,8 +26,6 @@ import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ModelImplementationProviderFinderImplTest {
 
@@ -42,7 +40,7 @@ public class ModelImplementationProviderFinderImplTest {
     public <T extends Model, E extends KiePMMLModel> void getImplementations() {
         final List<ModelImplementationProvider<T, E>> retrieved = modelImplementationProviderFinder.getImplementations(false);
         assertThat(retrieved).isNotNull();
-        assertEquals(1, retrieved.size());
-        assertTrue(retrieved.get(0) instanceof TestingModelImplementationProvider);
+        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved.get(0)).isInstanceOf(TestingModelImplementationProvider.class);
     }
 }

@@ -42,6 +42,7 @@ import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.assertj.core.data.Offset;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.PMML;
@@ -58,9 +59,6 @@ import org.kie.pmml.models.tree.model.KiePMMLNode;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionaryAndDerivedFields;
@@ -176,9 +174,9 @@ public class KiePMMLNodeFactoryTest {
 
         MethodReferenceExpr retrieved = evaluateNodeInitializer.getArguments().get(0).asMethodReferenceExpr();
         String expected = toPopulate.nodeClassName;
-        assertEquals(expected, retrieved.getScope().asNameExpr().toString());
+        assertThat(retrieved.getScope().asNameExpr().toString()).isEqualTo(expected);
         expected = EVALUATE_NODE + nestedNodeClassName;
-        assertEquals(expected, retrieved.getIdentifier());
+        assertThat(retrieved.getIdentifier()).isEqualTo(expected);
     }
 
     @Test
@@ -217,7 +215,7 @@ public class KiePMMLNodeFactoryTest {
         variableDeclarator.setType("Object");
         variableDeclarator.setName(NODE_FUNCTIONS);
         toPopulate.addStatement(new VariableDeclarationExpr(variableDeclarator));
-        assertFalse(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isNotPresent();
         // empty list
         List<String> nestedNodesFullClasses = Collections.emptyList();
         KiePMMLNodeFactory.populateEvaluateNodeWithNodeFunctions(toPopulate, nestedNodesFullClasses);
@@ -235,8 +233,8 @@ public class KiePMMLNodeFactoryTest {
     public void getEvaluateNodeMethodReference() {
         String fullNodeClassName = "full.node.NodeClassName";
         MethodReferenceExpr retrieved = KiePMMLNodeFactory.getEvaluateNodeMethodReference(fullNodeClassName);
-        assertEquals(fullNodeClassName, retrieved.getScope().toString());
-        assertEquals(EVALUATE_NODE, retrieved.getIdentifier());
+        assertThat(retrieved.getScope().toString()).isEqualTo(fullNodeClassName);
+        assertThat(retrieved.getIdentifier()).isEqualTo(EVALUATE_NODE);
     }
 
     @Test
@@ -246,7 +244,7 @@ public class KiePMMLNodeFactoryTest {
         variableDeclarator.setType("Object");
         variableDeclarator.setName(SCORE);
         toPopulate.addStatement(new VariableDeclarationExpr(variableDeclarator));
-        assertFalse(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isNotPresent();
         // null score
         Object score = null;
         KiePMMLNodeFactory.populateEvaluateNodeWithScore(toPopulate, score);
@@ -268,7 +266,7 @@ public class KiePMMLNodeFactoryTest {
         variableDeclarator.setType("List");
         variableDeclarator.setName(SCORE_DISTRIBUTIONS);
         toPopulate.addStatement(new VariableDeclarationExpr(variableDeclarator));
-        assertFalse(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isNotPresent();
         // Without probability
         List<ScoreDistribution> scoreDistributions = getRandomPMMLScoreDistributions(false);
         KiePMMLNodeFactory.populateEvaluateNodeWithScoreDistributions(toPopulate, scoreDistributions);
@@ -286,14 +284,14 @@ public class KiePMMLNodeFactoryTest {
         variableDeclarator.setType("double");
         variableDeclarator.setName(MISSING_VALUE_PENALTY);
         toPopulate.addStatement(new VariableDeclarationExpr(variableDeclarator));
-        assertFalse(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isNotPresent();
         final double missingValuePenalty = new Random().nextDouble();
         KiePMMLNodeFactory.populateEvaluateNodeWithMissingValuePenalty(toPopulate, missingValuePenalty);
-        assertTrue(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isPresent();
         Expression expression = variableDeclarator.getInitializer().get();
-        assertTrue(expression instanceof DoubleLiteralExpr);
+        assertThat(expression).isInstanceOf(DoubleLiteralExpr.class);
         DoubleLiteralExpr doubleLiteralExpr = (DoubleLiteralExpr) expression;
-        assertEquals(missingValuePenalty, doubleLiteralExpr.asDouble(), 0.0);
+        assertThat(doubleLiteralExpr.asDouble()).isCloseTo(missingValuePenalty, Offset.offset(0.0));
     }
 
     @Test
@@ -304,14 +302,14 @@ public class KiePMMLNodeFactoryTest {
                                                              getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2));
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, toPopulate));
+        assertThat(JavaParserUtils.equalsNode(expected, toPopulate)).isTrue();
     }
 
     @Test
     public void nodeNamesDTO() {
         KiePMMLNodeFactory.NodeNamesDTO retrieved = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot, createNodeClassName(),
                                                                                         PACKAGE_NAME, 1.0);
-        assertEquals(nodeRoot.getNodes().size(), retrieved.childrenNodes.size());
+        assertThat(retrieved.childrenNodes).hasSameSizeAs(nodeRoot.getNodes());
     }
 
     private void commonVerifyEvaluateNode(final KiePMMLNodeFactory.JavaParserDTO toPopulate,
@@ -334,46 +332,46 @@ public class KiePMMLNodeFactoryTest {
 
     private void commonVerifyEvaluateNodeWithNodeFunctions(final VariableDeclarator variableDeclarator,
                                                            final List<String> nestedNodesFullClasses) {
-        assertTrue(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isPresent();
         Expression expression = variableDeclarator.getInitializer().get();
-        assertTrue(expression instanceof MethodCallExpr);
+        assertThat(expression).isInstanceOf(MethodCallExpr.class);
         MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
         Expression scope = methodCallExpr.getScope().orElseThrow(() -> new RuntimeException("No scope in generated " +
                                                                                                     "methodCallExpr"));
         if (nestedNodesFullClasses.isEmpty()) {
-            assertEquals(Collections.class.getName(), scope.toString());
-            assertEquals(EMPTY_LIST, methodCallExpr.getName().asString());
-            assertTrue(methodCallExpr.getArguments().isEmpty());
+            assertThat(scope.toString()).isEqualTo(Collections.class.getName());
+            assertThat(methodCallExpr.getName().asString()).isEqualTo(EMPTY_LIST);
+            assertThat(methodCallExpr.getArguments()).isEmpty();
         } else {
-            assertEquals(Arrays.class.getName(), scope.toString());
-            assertEquals(AS_LIST, methodCallExpr.getName().asString());
-            assertEquals(nestedNodesFullClasses.size(), methodCallExpr.getArguments().size());
+            assertThat(scope.toString()).isEqualTo(Arrays.class.getName());
+            assertThat(methodCallExpr.getName().asString()).isEqualTo(AS_LIST);
+            assertThat(methodCallExpr.getArguments()).hasSameSizeAs(nestedNodesFullClasses);
         }
     }
 
     private void commonVerifyEvaluateNodeWithScore(final VariableDeclarator variableDeclarator, final Object score) {
-        assertTrue(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isPresent();
         Expression expression = variableDeclarator.getInitializer().get();
         if (score == null) {
-            assertTrue(expression instanceof NullLiteralExpr);
+            assertThat(expression).isInstanceOf(NullLiteralExpr.class);
         } else {
-            assertTrue(expression instanceof NameExpr);
+            assertThat(expression).isInstanceOf(NameExpr.class);
             String toFormat = score instanceof String ? "\"%s\"" : "%s";
-            assertEquals(String.format(toFormat, score), expression.toString());
+            assertThat(expression.toString()).isEqualTo(String.format(toFormat, score));
         }
     }
 
     private void commonVerifyEvaluateNodeWithScoreDistributions(final VariableDeclarator variableDeclarator,
                                                                 final List<ScoreDistribution> scoreDistributions) {
-        assertTrue(variableDeclarator.getInitializer().isPresent());
+        assertThat(variableDeclarator.getInitializer()).isPresent();
         Expression expression = variableDeclarator.getInitializer().get();
-        assertTrue(expression instanceof MethodCallExpr);
+        assertThat(expression).isInstanceOf(MethodCallExpr.class);
         MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
-        assertEquals("Arrays", methodCallExpr.getScope().get().toString());
-        assertEquals("asList", methodCallExpr.getName().toString());
+        assertThat(methodCallExpr.getScope().get().toString()).isEqualTo("Arrays");
+        assertThat(methodCallExpr.getName().toString()).isEqualTo("asList");
         NodeList<Expression> arguments = methodCallExpr.getArguments();
-        assertEquals(scoreDistributions.size(), arguments.size());
-        arguments.forEach(argument -> assertTrue(argument instanceof ObjectCreationExpr));
+        assertThat(arguments).hasSameSizeAs(scoreDistributions);
+        arguments.forEach(argument -> assertThat(argument).isInstanceOf(ObjectCreationExpr.class));
         List<ObjectCreationExpr> objectCreationExprs = arguments.stream()
                 .map(ObjectCreationExpr.class::cast)
                 .collect(Collectors.toList());
@@ -381,27 +379,27 @@ public class KiePMMLNodeFactoryTest {
             Optional<ObjectCreationExpr> retrieved = objectCreationExprs.stream()
                     .filter(objectCreationExpr -> scoreDistribution.getValue().equals(objectCreationExpr.getArgument(2).asStringLiteralExpr().asString()))
                     .findFirst();
-            assertTrue(retrieved.isPresent());
+            assertThat(retrieved).isPresent();
             Expression recordCountExpected = getExpressionForObject(scoreDistribution.getRecordCount().intValue());
             Expression confidenceExpected = getExpressionForObject(scoreDistribution.getConfidence().doubleValue());
             Expression probabilityExpected = scoreDistribution.getProbability() != null ?
                     getExpressionForObject(scoreDistribution.getProbability().doubleValue()) : new NullLiteralExpr();
             retrieved.ifPresent(objectCreationExpr -> {
-                assertEquals(recordCountExpected, objectCreationExpr.getArgument(3));
-                assertEquals(confidenceExpected, objectCreationExpr.getArgument(4));
-                assertEquals(probabilityExpected, objectCreationExpr.getArgument(5));
+                assertThat(objectCreationExpr.getArgument(3)).isEqualTo(recordCountExpected);
+                assertThat(objectCreationExpr.getArgument(4)).isEqualTo(confidenceExpected);
+                assertThat(objectCreationExpr.getArgument(5)).isEqualTo(probabilityExpected);
             });
         });
     }
 
     private void commonVerifyNode(KiePMMLNode toVerify, Node original) {
-        assertEquals(original.getId(), toVerify.getName());
+        assertThat(toVerify.getName()).isEqualTo(original.getId());
     }
 
     private void commonVerifyNodeSource(final Map<String, String> retrieved, final String packageName) {
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved).hasSize(1);
         String toVerify = retrieved.values().iterator().next();
         CompilationUnit nodeCompilationUnit = getFromSource(toVerify);
-        assertEquals(packageName, nodeCompilationUnit.getPackageDeclaration().get().getName().asString());
+        assertThat(nodeCompilationUnit.getPackageDeclaration().get().getName().asString()).isEqualTo(packageName);
     }
 }

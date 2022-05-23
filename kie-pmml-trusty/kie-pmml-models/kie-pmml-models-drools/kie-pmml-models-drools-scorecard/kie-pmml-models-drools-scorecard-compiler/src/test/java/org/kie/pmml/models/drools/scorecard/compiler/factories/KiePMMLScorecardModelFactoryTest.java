@@ -43,8 +43,6 @@ import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
@@ -66,8 +64,8 @@ public class KiePMMLScorecardModelFactoryTest {
     public static void setUp() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
         assertThat(pmml).isNotNull();
-        assertEquals(1, pmml.getModels().size());
-        assertTrue(pmml.getModels().get(0) instanceof Scorecard);
+        assertThat(pmml.getModels()).hasSize(1);
+        assertThat(pmml.getModels().get(0)).isInstanceOf(Scorecard.class);
         scorecardModel = (Scorecard) pmml.getModels().get(0);
         assertThat(scorecardModel).isNotNull();
         CompilationUnit templateCU = getFromFileName(KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA);
@@ -92,8 +90,8 @@ public class KiePMMLScorecardModelFactoryTest {
                                                         fieldTypeMap);
         KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(droolsCompilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(scorecardModel.getModelName(), retrieved.getName());
-        assertEquals(TARGET_FIELD, retrieved.getTargetField());
+        assertThat(retrieved.getName()).isEqualTo(scorecardModel.getModelName());
+        assertThat(retrieved.getTargetField()).isEqualTo(TARGET_FIELD);
     }
 
     @Test
@@ -115,7 +113,7 @@ public class KiePMMLScorecardModelFactoryTest {
         Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(droolsCompilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved).hasSize(1);
     }
 
     @Test
@@ -155,8 +153,8 @@ public class KiePMMLScorecardModelFactoryTest {
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
-        assertTrue(commonEvaluateConstructor(constructorDeclaration,
+        assertThat(commonEvaluateConstructor(constructorDeclaration,
                                              getSanitizedClassName(scorecardModel.getModelName()),
-                                             superInvocationExpressionsMap, assignExpressionMap));
+                                             superInvocationExpressionsMap, assignExpressionMap)).isTrue();
     }
 }

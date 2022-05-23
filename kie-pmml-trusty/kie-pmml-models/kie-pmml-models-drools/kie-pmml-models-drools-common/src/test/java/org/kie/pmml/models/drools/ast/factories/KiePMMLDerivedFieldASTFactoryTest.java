@@ -33,8 +33,6 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class KiePMMLDerivedFieldASTFactoryTest {
@@ -55,7 +53,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
                 .mapToObj(value -> getDerivedField("FieldName-" + value))
                 .collect(Collectors.toList());
         List<KiePMMLDroolsType> retrieved = fieldASTFactory.declareTypes(derivedFields);
-        assertEquals(derivedFields.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(derivedFields);
         for (int i = 0; i < derivedFields.size(); i++)  {
             commonValidateKiePMMLDroolsType(retrieved.get(i), derivedFields.get(i));
         }
@@ -71,13 +69,13 @@ public class KiePMMLDerivedFieldASTFactoryTest {
     private void commonValidateKiePMMLDroolsType(KiePMMLDroolsType toValidate, DerivedField derivedField) {
         String derivedFieldName = derivedField.getName().getValue();
         String expectedName = getSanitizedClassName(derivedFieldName.toUpperCase());
-        assertEquals(expectedName, toValidate.getName());
+        assertThat(toValidate.getName()).isEqualTo(expectedName);
         String expectedType = DATA_TYPE.byName(derivedField.getDataType().value()).getMappedClass().getSimpleName();
-        assertEquals(expectedType, toValidate.getType());
-        assertTrue(fieldTypeMap.containsKey(derivedFieldName));
+        assertThat(toValidate.getType()).isEqualTo(expectedType);
+        assertThat(fieldTypeMap).containsKey(derivedFieldName);
         KiePMMLOriginalTypeGeneratedType retrieved = fieldTypeMap.get(derivedFieldName);
-        assertEquals(derivedField.getDataType().value(), retrieved.getOriginalType());
-        assertEquals(expectedName, retrieved.getGeneratedType());
+        assertThat(retrieved.getOriginalType()).isEqualTo(derivedField.getDataType().value());
+        assertThat(retrieved.getGeneratedType()).isEqualTo(expectedName);
     }
 
     private DerivedField getDerivedField(String fieldName) {

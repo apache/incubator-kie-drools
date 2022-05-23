@@ -47,9 +47,6 @@ import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 public class PMMLRuntimeFactoryInternalTest {
@@ -74,7 +71,7 @@ public class PMMLRuntimeFactoryInternalTest {
         File pmmlFile = getFile("MissingDataRegression.pmml");
         KieBase retrieved = PMMLRuntimeFactoryInternal.createKieBase(pmmlFile);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved.getKiePackages().isEmpty());
+        assertThat(retrieved.getKiePackages()).isEmpty();
     }
 
     @Test
@@ -88,8 +85,8 @@ public class PMMLRuntimeFactoryInternalTest {
         pmmlKnowledgePackage.getResourceTypePackages().put(ResourceType.PMML, pmmlPkg);
         KieBase retrieved = PMMLRuntimeFactoryInternal.createKieBase(knowledgeBuilder);
         assertThat(retrieved).isNotNull();
-        assertFalse(retrieved.getKiePackages().isEmpty());
-        assertEquals(knowledgeBuilder.getKnowledgePackages().size(), retrieved.getKiePackages().size());
+        assertThat(retrieved.getKiePackages()).isNotEmpty();
+        assertThat(retrieved.getKiePackages()).hasSameSizeAs(knowledgeBuilder.getKnowledgePackages());
         knowledgeBuilder.getKnowledgePackages()
                 .forEach(kBuilderPackage -> {
                     assertThat(retrieved.getKiePackage(kBuilderPackage.getName())).isNotNull();
@@ -98,7 +95,7 @@ public class PMMLRuntimeFactoryInternalTest {
                         InternalKnowledgePackage retrievedKiePackage = (InternalKnowledgePackage) retrieved.getKiePackage(kBuilderPackage.getName());
                         ResourceTypePackage retrievedResourceTypePackage=  retrievedKiePackage.getResourceTypePackages().get(ResourceType.PMML);
                         assertThat(retrievedKiePackage.getResourceTypePackages().get(ResourceType.PMML)).isNotNull();
-                        assertEquals(knowledgeBuilderResourceTypePackage, retrievedResourceTypePackage);
+                        assertThat(retrievedResourceTypePackage).isEqualTo(knowledgeBuilderResourceTypePackage);
                     }
                 });
     }
@@ -116,11 +113,11 @@ public class PMMLRuntimeFactoryInternalTest {
         PackageDescr packageDescr = new PackageDescr();
         DescrResource retrieved = PMMLRuntimeFactoryInternal.createDescrResource(packageDescr);
         assertThat(retrieved).isNotNull();
-        assertEquals(packageDescr, retrieved.getDescr());
-        assertFalse(retrieved.hasURL());
+        assertThat(retrieved.getDescr()).isEqualTo(packageDescr);
+        assertThat(retrieved.hasURL()).isFalse();
         String retrievedSourcePath = retrieved.getSourcePath();
-        assertTrue(retrievedSourcePath.startsWith("src/main/resources/file_"));
-        assertTrue(retrievedSourcePath.endsWith(".descr"));
+        assertThat(retrievedSourcePath).startsWith("src/main/resources/file_");
+        assertThat(retrievedSourcePath).endsWith(".descr");
     }
 
     @Test
@@ -142,8 +139,8 @@ public class PMMLRuntimeFactoryInternalTest {
                 .populateNestedKiePackageList(Collections.singleton(kiePMMLModel),
                                               toPopulate,
                                               kieBase);
-        assertFalse(toPopulate.isEmpty());
-        assertEquals(kiePackages.size(), toPopulate.size());
+        assertThat(toPopulate).isNotEmpty();
+        assertThat(toPopulate).hasSameSizeAs(kiePackages);
     }
 
     @Test
@@ -169,7 +166,7 @@ public class PMMLRuntimeFactoryInternalTest {
 
     private void commonValidatePMMLRuntime(PMMLRuntime toValidate) {
         assertThat(toValidate).isNotNull();
-        assertTrue(toValidate instanceof PMMLRuntimeInternalImpl);
+        assertThat(toValidate).isInstanceOf(PMMLRuntimeInternalImpl.class);
         assertThat(((PMMLRuntimeInternalImpl)toValidate).getKnowledgeBase()).isNotNull();
     }
 

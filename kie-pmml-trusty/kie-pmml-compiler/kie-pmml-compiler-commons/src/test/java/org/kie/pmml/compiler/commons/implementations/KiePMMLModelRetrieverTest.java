@@ -30,8 +30,6 @@ import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithMiningRandomTestModel;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithRandomTestModel;
@@ -59,8 +57,8 @@ public class KiePMMLModelRetrieverTest {
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved.isPresent());
-        assertTrue(retrieved.get() instanceof KiePMMLTestingModel);
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isInstanceOf(KiePMMLTestingModel.class);
     }
 
     @Test
@@ -73,7 +71,7 @@ public class KiePMMLModelRetrieverTest {
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
@@ -100,7 +98,7 @@ public class KiePMMLModelRetrieverTest {
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
@@ -116,7 +114,7 @@ public class KiePMMLModelRetrieverTest {
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isPresent();
     }
 
     @Test
@@ -133,7 +131,7 @@ public class KiePMMLModelRetrieverTest {
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
 }

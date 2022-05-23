@@ -48,11 +48,9 @@ import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.compiler.dto.SegmentCompilationDTO;
 import org.xml.sax.SAXException;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
@@ -132,7 +130,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
             hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedNestedModelGeneratedClass);
             fail("Expecting class not found: " + expectedNestedModelGeneratedClass);
         } catch (Exception e) {
-            assertTrue(e instanceof ClassNotFoundException);
+            assertThat(e).isInstanceOf(ClassNotFoundException.class);
         }
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
@@ -194,8 +192,8 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("weight", new DoubleLiteralExpr(weight));
         assignExpressionMap.put("id", new StringLiteralExpr(segmentName));
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName,
-                                             superInvocationExpressionsMap, assignExpressionMap));
+        assertThat(commonEvaluateConstructor(constructorDeclaration, generatedClassName,
+                                             superInvocationExpressionsMap, assignExpressionMap)).isTrue();
     }
 
     @Test
@@ -222,7 +220,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         assignExpressionMap.put("id", new StringLiteralExpr(segmentName));
         String text = getFileContent(TEST_01_SOURCE);
         BlockStmt expected = JavaParserUtils.parseConstructorBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, constructorDeclaration.getBody()));
+        assertThat(JavaParserUtils.equalsNode(expected, constructorDeclaration.getBody())).isTrue();
     }
 
     private void commonEvaluateMap(final Map<String, String> toEvaluate, final Segment segment) {
@@ -230,7 +228,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     private void commonEvaluateNestedModels(final List<KiePMMLModel> toEvaluate) {
-        assertFalse(toEvaluate.isEmpty());
-        toEvaluate.forEach(kiePMMLModel -> assertTrue(kiePMMLModel instanceof HasSourcesMap));
+        assertThat(toEvaluate).isNotEmpty();
+        toEvaluate.forEach(kiePMMLModel -> assertThat(kiePMMLModel instanceof HasSourcesMap).isTrue());
     }
 }

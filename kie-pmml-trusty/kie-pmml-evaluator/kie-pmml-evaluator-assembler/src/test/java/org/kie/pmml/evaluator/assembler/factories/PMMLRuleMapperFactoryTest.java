@@ -19,7 +19,6 @@ package org.kie.pmml.evaluator.assembler.factories;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class PMMLRuleMapperFactoryTest {
 
@@ -29,7 +28,7 @@ public class PMMLRuleMapperFactoryTest {
         String retrieved = PMMLRuleMapperFactory.getPMMLRuleMapperSource(fullRuleName);
         assertThat(retrieved).isNotNull();
         String expected = String.format("public final static Model model = new %s();", fullRuleName);
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved).contains(expected);
     }
 
     @Test
@@ -40,8 +39,8 @@ public class PMMLRuleMapperFactoryTest {
         String retrieved = PMMLRuleMapperFactory.getPMMLRuleMapperSource(fullRuleName);
         assertThat(retrieved).isNotNull();
         String expected = String.format("package %s;", packageName);
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved).contains(expected);
         expected = String.format("public final static Model model = new %s();", fullRuleName);
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved).contains(expected);
     }
 }

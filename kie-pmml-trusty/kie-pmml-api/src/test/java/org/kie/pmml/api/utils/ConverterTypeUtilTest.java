@@ -22,8 +22,8 @@ import java.util.Map;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ConverterTypeUtilTest {
 
@@ -96,7 +96,7 @@ public class ConverterTypeUtilTest {
         CONVERTIBLE_TO_STRING.forEach((s, o) -> {
             Class<?> expectedClass = o.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
-            assertEquals(retrieved, o);
+            assertThat(o).isEqualTo(retrieved);
         });
     }
 
@@ -105,7 +105,7 @@ public class ConverterTypeUtilTest {
         CONVERTIBLE_FROM_STRING.forEach((s, expected) -> {
             Class<?> expectedClass = expected.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
     }
 
@@ -117,7 +117,7 @@ public class ConverterTypeUtilTest {
                 ConverterTypeUtil.convert(expectedClass, s);
                 fail(String.format("Expecting KiePMMLException for %s %s", s, o));
             } catch (Exception e) {
-                assertEquals(KiePMMLException.class, e.getClass());
+                assertThat(e.getClass()).isEqualTo(KiePMMLException.class);
             }
         });
     }
@@ -127,7 +127,7 @@ public class ConverterTypeUtilTest {
         CONVERTIBLE_FROM_INTEGER.forEach((s, expected) -> {
             Class<?> expectedClass = expected.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
     }
 
@@ -139,7 +139,7 @@ public class ConverterTypeUtilTest {
                 ConverterTypeUtil.convert(expectedClass, s);
                 fail(String.format("Expecting KiePMMLException for %s %s", s, o));
             } catch (Exception e) {
-                assertEquals(KiePMMLException.class, e.getClass());
+                assertThat(e.getClass()).isEqualTo(KiePMMLException.class);
             }
         });
     }
@@ -149,7 +149,7 @@ public class ConverterTypeUtilTest {
         CONVERTIBLE_FROM_DOUBLE.forEach((s, expected) -> {
             Class<?> expectedClass = expected.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
     }
 
@@ -161,7 +161,7 @@ public class ConverterTypeUtilTest {
                 ConverterTypeUtil.convert(expectedClass, s);
                 fail(String.format("Expecting KiePMMLException for %s %s", s, o));
             } catch (Exception e) {
-                assertEquals(KiePMMLException.class, e.getClass());
+                assertThat(e.getClass()).isEqualTo(KiePMMLException.class);
             }
         });
     }

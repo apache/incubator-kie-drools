@@ -28,7 +28,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLDefineFunctionTest {
@@ -85,7 +85,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                kiePMMLConstant1);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = defineFunction.evaluate(processingDTO, Collections.emptyList());
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                kiePMMLFieldRef);
         ProcessingDTO processingDTO = getProcessingDTO(new ArrayList<>());
         Object retrieved = defineFunction.evaluate(processingDTO, Collections.singletonList(value1));
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class KiePMMLDefineFunctionTest {
         ProcessingDTO processingDTO = getProcessingDTO(new ArrayList<>());
         Object retrieved = defineFunction.evaluate(processingDTO, Arrays.asList(value1, value2));
         Object expected = value1 / value2;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
 }

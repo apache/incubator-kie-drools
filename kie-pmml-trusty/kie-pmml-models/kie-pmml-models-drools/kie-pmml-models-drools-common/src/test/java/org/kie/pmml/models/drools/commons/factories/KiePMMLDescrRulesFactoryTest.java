@@ -34,8 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class KiePMMLDescrRulesFactoryTest {
 
@@ -47,7 +45,7 @@ public class KiePMMLDescrRulesFactoryTest {
     public void setUp() throws Exception {
         builder = DescrFactory.newPackage().name(PACKAGE_NAME);
         assertThat(builder.getDescr()).isNotNull();
-        assertEquals(PACKAGE_NAME, builder.getDescr().getName());
+        assertThat(builder.getDescr().getName()).isEqualTo(PACKAGE_NAME);
     }
 
     @Test
@@ -66,13 +64,13 @@ public class KiePMMLDescrRulesFactoryTest {
                 .build();
         KiePMMLDescrRulesFactory.factory(builder).declareRule(rule);
         assertThat(builder.getDescr().getRules()).isNotNull();
-        assertEquals(1, builder.getDescr().getRules().size());
+        assertThat(builder.getDescr().getRules()).hasSize(1);
         final RuleDescr retrieved = builder.getDescr().getRules().get(0);
-        assertEquals(name, retrieved.getName());
-        assertEquals(2, retrieved.getAttributes().size());
-        assertTrue(retrieved.getAttributes().containsKey("agenda-group"));
-        assertEquals(agendaGroup, retrieved.getAttributes().get("agenda-group").getValue());
-        assertTrue(retrieved.getAttributes().containsKey("activation-group"));
-        assertEquals(activationGroup, retrieved.getAttributes().get("activation-group").getValue());
+        assertThat(retrieved.getName()).isEqualTo(name);
+        assertThat(retrieved.getAttributes()).hasSize(2);
+        assertThat(retrieved.getAttributes()).containsKey("agenda-group");
+        assertThat(retrieved.getAttributes().get("agenda-group").getValue()).isEqualTo(agendaGroup);
+        assertThat(retrieved.getAttributes()).containsKey("activation-group");
+        assertThat(retrieved.getAttributes().get("activation-group").getValue()).isEqualTo(activationGroup);
     }
 }

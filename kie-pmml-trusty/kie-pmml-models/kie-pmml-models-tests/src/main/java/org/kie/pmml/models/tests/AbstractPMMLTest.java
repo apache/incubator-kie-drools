@@ -31,7 +31,7 @@ import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 public class AbstractPMMLTest {
@@ -78,7 +78,7 @@ public class AbstractPMMLTest {
     }
 
     private void commonValidateListener(final PMMLListenerTest toValidate, final List<PMMLStep> expectedSteps) {
-        assertEquals(expectedSteps, toValidate.getSteps());
+        assertThat(toValidate.getSteps()).isEqualTo(expectedSteps);
     }
 
     protected static class PMMLListenerTest implements PMMLListener {

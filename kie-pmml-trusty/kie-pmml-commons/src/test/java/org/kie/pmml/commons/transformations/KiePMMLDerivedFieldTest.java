@@ -30,7 +30,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLDerivedFieldTest {
@@ -54,7 +54,7 @@ public class KiePMMLDerivedFieldTest {
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class KiePMMLDerivedFieldTest {
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
                                                         Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
         Object retrieved = derivedField.evaluate(processingDTO);
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class KiePMMLDerivedFieldTest {
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), getKiePMMLNameValues());
         Object retrieved = derivedField.evaluate(processingDTO);
         Object expected = value1 / value2;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class KiePMMLDerivedFieldTest {
         ProcessingDTO processingDTO = getProcessingDTO(getDerivedFields(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);
         Object expected = value1 / value2;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     private List<KiePMMLNameValue> getKiePMMLNameValues() {

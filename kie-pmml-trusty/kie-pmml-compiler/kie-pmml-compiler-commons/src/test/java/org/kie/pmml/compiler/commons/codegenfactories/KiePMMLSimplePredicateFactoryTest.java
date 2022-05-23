@@ -33,7 +33,7 @@ import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
@@ -62,7 +62,7 @@ public class KiePMMLSimplePredicateFactoryTest {
                                                                       simplePredicate.getField().getValue(),
                                                                       operatorString,
                                                                       simplePredicate.getValue()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLSimplePredicate.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

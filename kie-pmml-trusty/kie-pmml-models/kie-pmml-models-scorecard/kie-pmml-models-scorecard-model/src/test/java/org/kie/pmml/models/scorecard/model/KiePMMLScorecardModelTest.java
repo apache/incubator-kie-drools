@@ -29,8 +29,6 @@ import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class KiePMMLScorecardModelTest {
 
@@ -62,13 +60,13 @@ public class KiePMMLScorecardModelTest {
         Double EVALUATION_20 = baselineScore - value2;
         Double EVALUATION_11 = baselineScore - value1;
         Double expected = initialScore + value2 + value1 + 1;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         final Map<String, Object> outputFieldsMap = pmmlContextTest.getOutputFieldsMap();
-        assertEquals(2, outputFieldsMap.size());
-        assertTrue(outputFieldsMap.containsKey("REASON_CODE_20"));
-        assertEquals(EVALUATION_20, outputFieldsMap.get("REASON_CODE_20"));
-        assertTrue(outputFieldsMap.containsKey("REASON_CODE_11"));
-        assertEquals(EVALUATION_11, outputFieldsMap.get("REASON_CODE_11"));
+        assertThat(outputFieldsMap).hasSize(2);
+        assertThat(outputFieldsMap).containsKey("REASON_CODE_20");
+        assertThat(outputFieldsMap.get("REASON_CODE_20")).isEqualTo(EVALUATION_20);
+        assertThat(outputFieldsMap).containsKey("REASON_CODE_11");
+        assertThat(outputFieldsMap.get("REASON_CODE_11")).isEqualTo(EVALUATION_11);
     }
 
     private KiePMMLCharacteristics getKiePMMLCharacteristics() {

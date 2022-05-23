@@ -32,9 +32,6 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
@@ -62,23 +59,23 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
                                                                                      currentRule,
                                                                                      fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, true);
-        assertEquals(1, rules.size());
+        assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(DONE, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(ResultCode.OK, retrieved.getResultCode());
-        assertEquals(result, retrieved.getResult());
+        assertThat(retrieved.getName()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(DONE);
+        assertThat(retrieved.getStatusConstraint()).isEqualTo(String.format(STATUS_PATTERN, parentPath));
+        assertThat(retrieved.getResultCode()).isEqualTo(ResultCode.OK);
+        assertThat(retrieved.getResult()).isEqualTo(result);
         assertThat(retrieved.getInConstraints()).isNotNull();
         final Map<String, List<Object>> inConstraints = retrieved.getInConstraints();
-        assertEquals(1, inConstraints.size());
-        assertTrue(inConstraints.containsKey(declaredType));
+        assertThat(inConstraints).hasSize(1);
+        assertThat(inConstraints).containsKey(declaredType);
         final List<Object> retrievedValues = inConstraints.get(declaredType);
         List<String> originalPredicateValues = Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
-        assertEquals(originalPredicateValues.size(), retrievedValues.size());
+        assertThat(retrievedValues).hasSameSizeAs(originalPredicateValues);
         retrievedValues.forEach(retrievedValue -> {
-            assertTrue(originalPredicateValues.contains(retrievedValue));
+            assertThat(originalPredicateValues).contains((String) retrievedValue);
         });
     }
 
@@ -102,23 +99,23 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
                                                                                      currentRule,
                                                                                      fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, false);
-        assertEquals(1, rules.size());
+        assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertNull(retrieved.getResultCode());
-        assertNull(retrieved.getResult());
+        assertThat(retrieved.getName()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusConstraint()).isEqualTo(String.format(STATUS_PATTERN, parentPath));
+        assertThat(retrieved.getResultCode()).isNull();
+        assertThat(retrieved.getResult()).isNull();
         assertThat(retrieved.getInConstraints()).isNotNull();
         final Map<String, List<Object>> inConstraints = retrieved.getInConstraints();
-        assertEquals(1, inConstraints.size());
-        assertTrue(inConstraints.containsKey(declaredType));
+        assertThat(inConstraints).hasSize(1);
+        assertThat(inConstraints).containsKey(declaredType);
         final List<Object> retrievedValues = inConstraints.get(declaredType);
         List<String> originalPredicateValues = Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
-        assertEquals(originalPredicateValues.size(), retrievedValues.size());
+        assertThat(retrievedValues).hasSameSizeAs(originalPredicateValues);
         retrievedValues.forEach(retrievedValue -> {
-            assertTrue(originalPredicateValues.contains(retrievedValue));
+            assertThat(originalPredicateValues).contains((String) retrievedValue);
         });
     }
 
@@ -143,23 +140,23 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
                                                                                      currentRule,
                                                                                      fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, true);
-        assertEquals(1, rules.size());
+        assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(statusToSet, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(ResultCode.OK, retrieved.getResultCode());
-        assertEquals(result, retrieved.getResult());
+        assertThat(retrieved.getName()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(statusToSet);
+        assertThat(retrieved.getStatusConstraint()).isEqualTo(String.format(STATUS_PATTERN, parentPath));
+        assertThat(retrieved.getResultCode()).isEqualTo(ResultCode.OK);
+        assertThat(retrieved.getResult()).isEqualTo(result);
         assertThat(retrieved.getNotInConstraints()).isNotNull();
         final Map<String, List<Object>> notInConstraints = retrieved.getNotInConstraints();
-        assertEquals(1, notInConstraints.size());
-        assertTrue(notInConstraints.containsKey(declaredType));
+        assertThat(notInConstraints).hasSize(1);
+        assertThat(notInConstraints).containsKey(declaredType);
         final List<Object> retrievedValues = notInConstraints.get(declaredType);
         List<String> originalPredicateValues = Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
-        assertEquals(originalPredicateValues.size(), retrievedValues.size());
+        assertThat(retrievedValues).hasSameSizeAs(originalPredicateValues);
         retrievedValues.forEach(retrievedValue -> {
-            assertTrue(originalPredicateValues.contains(retrievedValue));
+            assertThat(originalPredicateValues).contains((String) retrievedValue);
         });
     }
 
@@ -183,23 +180,23 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
                                                                                      currentRule,
                                                                                      fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, false);
-        assertEquals(1, rules.size());
+        assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertNull(retrieved.getResultCode());
-        assertNull(retrieved.getResult());
+        assertThat(retrieved.getName()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusConstraint()).isEqualTo(String.format(STATUS_PATTERN, parentPath));
+        assertThat(retrieved.getResultCode()).isNull();
+        assertThat(retrieved.getResult()).isNull();
         assertThat(retrieved.getNotInConstraints()).isNotNull();
         final Map<String, List<Object>> notInConstraints = retrieved.getNotInConstraints();
-        assertEquals(1, notInConstraints.size());
-        assertTrue(notInConstraints.containsKey(declaredType));
+        assertThat(notInConstraints).hasSize(1);
+        assertThat(notInConstraints).containsKey(declaredType);
         final List<Object> retrievedValues = notInConstraints.get(declaredType);
         List<String> originalPredicateValues = Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
-        assertEquals(originalPredicateValues.size(), retrievedValues.size());
+        assertThat(retrievedValues).hasSameSizeAs(originalPredicateValues);
         retrievedValues.forEach(retrievedValue -> {
-            assertTrue(originalPredicateValues.contains(retrievedValue));
+            assertThat(originalPredicateValues).contains((String) retrievedValue);
         });
     }
 
