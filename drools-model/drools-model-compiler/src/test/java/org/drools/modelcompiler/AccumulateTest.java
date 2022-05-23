@@ -4131,4 +4131,21 @@ public class AccumulateTest extends BaseModelTest {
             fail("Should not have thrown.", ex);
         }
     }
+
+    @Test
+    public void testExistsFromAccumulate() {
+        // DROOLS-6959
+        String str =
+                "import " + Set.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                 "  exists Set(size > 1) from accumulate ( $s: String(), collectSet($s) )\n" +
+                 "then\n" +
+                 "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("String1");
+        ksession.insert("String2");
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
