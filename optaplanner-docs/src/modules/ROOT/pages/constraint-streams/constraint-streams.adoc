@@ -183,16 +183,16 @@ However, with <<constraintStreamsMappingTuples,tuple mapping>> effectively infin
                 .join(Shift.class)          // BiConstraintStream<Shift, Shift>
                 .join(Shift.class)          // TriConstraintStream<Shift, Shift, Shift>
                 .join(Shift.class)          // QuadConstraintStream<Shift, Shift, Shift, Shift>
-                .map(Tuple::of)             // UniConstraintStream<Tuple<Shift, Shift, Shift, Shift>>
-                .join(Shift.class)          // BiConstraintStream<Tuple<Shift, Shift, Shift, Shift>, Shift>
+                .map(MyTuple::of)           // UniConstraintStream<MyTuple<Shift, Shift, Shift, Shift>>
+                .join(Shift.class)          // BiConstraintStream<MyTuple<Shift, Shift, Shift, Shift>, Shift>
                 ...                         // This BiConstraintStream carries 5 Shift elements.
     }
 ----
 
 [NOTE]
 ====
-OptaPlanner does not provide any `Tuple` implementations out of the box.
-It's recommended to use one of the myriad freely available 3rd party implementations.
+OptaPlanner does not provide any tuple implementations out of the box.
+It's recommended to use one of the freely available 3rd party implementations.
 Should a custom implementation be necessary, see <<constraintStreamsDesigningMappingFunction,guidelines for mapping functions>>.
 ====
 
