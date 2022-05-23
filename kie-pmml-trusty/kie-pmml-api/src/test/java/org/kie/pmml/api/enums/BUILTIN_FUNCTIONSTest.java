@@ -17,15 +17,14 @@
 package org.kie.pmml.api.enums;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctionsTest.supportedArithmeticFunctions;
 import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctionsTest.unsupportedArithmeticFunctions;
 import static org.kie.pmml.api.enums.builtinfunctions.BooleanFunctionsTest.supportedBooleanFunctions;
@@ -72,7 +71,7 @@ public class BUILTIN_FUNCTIONSTest {
                                                                 null, null, null, null, null));
                 fail("Expecting IllegalArgumentException");
             } catch (Exception e) {
-                assertTrue(e instanceof IllegalArgumentException);
+                assertThat(e).isInstanceOf(IllegalArgumentException.class);
             }
         });
     }
@@ -85,7 +84,7 @@ public class BUILTIN_FUNCTIONSTest {
                 builtinFunction.getValue(input, null);
                 fail("Expecting KiePMMLException");
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertThat(e).isInstanceOf(KiePMMLException.class);
             }
         });
     }

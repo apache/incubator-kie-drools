@@ -30,9 +30,6 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeMap;
 
@@ -52,20 +49,20 @@ public class KiePMMLTreeModelASTFactoryTest {
     public void setUp() throws Exception {
         golfingPmml = TestUtils.loadFromFile(SOURCE_GOLFING);
         assertThat(golfingPmml).isNotNull();
-        assertEquals(1, golfingPmml.getModels().size());
-        assertTrue(golfingPmml.getModels().get(0) instanceof TreeModel);
+        assertThat(golfingPmml.getModels()).hasSize(1);
+        assertThat(golfingPmml.getModels().get(0)).isInstanceOf(TreeModel.class);
         golfingModel = ((TreeModel) golfingPmml.getModels().get(0));
         //
         irisPmml = TestUtils.loadFromFile(SOURCE_IRIS);
         assertThat(irisPmml).isNotNull();
-        assertEquals(1, irisPmml.getModels().size());
-        assertTrue(irisPmml.getModels().get(0) instanceof TreeModel);
+        assertThat(irisPmml.getModels()).hasSize(1);
+        assertThat(irisPmml.getModels().get(0)).isInstanceOf(TreeModel.class);
         irisModel = ((TreeModel) irisPmml.getModels().get(0));
         //
         simpleSetPmml = TestUtils.loadFromFile(SOURCE_SIMPLESET);
         assertThat(simpleSetPmml).isNotNull();
-        assertEquals(1, simpleSetPmml.getModels().size());
-        assertTrue(simpleSetPmml.getModels().get(0) instanceof TreeModel);
+        assertThat(simpleSetPmml.getModels()).hasSize(1);
+        assertThat(simpleSetPmml.getModels().get(0)).isInstanceOf(TreeModel.class);
         simpleSetModel = ((TreeModel) simpleSetPmml.getModels().get(0));
     }
 
@@ -75,8 +72,8 @@ public class KiePMMLTreeModelASTFactoryTest {
         List<KiePMMLDroolsType> types = Collections.emptyList();
         KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(golfingPmml.getDataDictionary()), golfingModel, fieldTypeMap, types);
         assertThat(retrieved).isNotNull();
-        assertEquals(types, retrieved.getTypes());
-        assertFalse(retrieved.getRules().isEmpty());
+        assertThat(retrieved.getTypes()).isEqualTo(types);
+        assertThat(retrieved.getRules()).isNotEmpty();
     }
 
     @Test
@@ -85,8 +82,8 @@ public class KiePMMLTreeModelASTFactoryTest {
         List<KiePMMLDroolsType> types = Collections.emptyList();
         KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(irisPmml.getDataDictionary()), irisModel, fieldTypeMap, types);
         assertThat(retrieved).isNotNull();
-        assertEquals(types, retrieved.getTypes());
-        assertFalse(retrieved.getRules().isEmpty());
+        assertThat(retrieved.getTypes()).isEqualTo(types);
+        assertThat(retrieved.getRules()).isNotEmpty();
     }
 
     @Test
@@ -95,7 +92,7 @@ public class KiePMMLTreeModelASTFactoryTest {
         List<KiePMMLDroolsType> types = Collections.emptyList();
         KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(simpleSetPmml.getDataDictionary()), simpleSetModel, fieldTypeMap, types);
         assertThat(retrieved).isNotNull();
-        assertEquals(types, retrieved.getTypes());
-        assertFalse(retrieved.getRules().isEmpty());
+        assertThat(retrieved.getTypes()).isEqualTo(types);
+        assertThat(retrieved.getRules()).isNotEmpty();
     }
 }

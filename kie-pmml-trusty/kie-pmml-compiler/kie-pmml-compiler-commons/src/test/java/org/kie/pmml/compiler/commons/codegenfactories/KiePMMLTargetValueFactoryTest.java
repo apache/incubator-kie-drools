@@ -28,7 +28,7 @@ import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTargetValue;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.convertToKieTargetValue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
@@ -48,7 +48,7 @@ public class KiePMMLTargetValueFactoryTest {
                                                                             targetValue.getDisplayValue(),
                                                                             targetValue.getPriorProbability(),
                                                                             targetValue.getDefaultValue()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTargetValue.class, TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

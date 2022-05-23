@@ -28,8 +28,6 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTransformationDictionary;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLDefineFunction;
 import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommon.commonVerifyKiePMMLDerivedField;
@@ -46,23 +44,23 @@ public class KiePMMLTransformationDictionaryInstanceFactoryTest {
 
         List<DerivedField> derivedFields = toConvert.getDerivedFields();
         List<KiePMMLDerivedField> derivedFieldsToVerify = retrieved.getDerivedFields();
-        assertEquals(derivedFields.size(), derivedFieldsToVerify.size());
+        assertThat(derivedFieldsToVerify).hasSameSizeAs(derivedFields);
         derivedFields.forEach(derivedFieldSource -> {
             Optional<KiePMMLDerivedField> derivedFieldToVerify =
                     derivedFieldsToVerify.stream().filter(param -> param.getName().equals(derivedFieldSource.getName().getValue()))
                             .findFirst();
-            assertTrue(derivedFieldToVerify.isPresent());
+            assertThat(derivedFieldToVerify).isPresent();
             commonVerifyKiePMMLDerivedField(derivedFieldToVerify.get(), derivedFieldSource);
         });
 
         List<DefineFunction> defineFunctions = toConvert.getDefineFunctions();
         List<KiePMMLDefineFunction> defineFunctionsToVerify = retrieved.getDefineFunctions();
-        assertEquals(defineFunctions.size(), defineFunctionsToVerify.size());
+        assertThat(defineFunctionsToVerify).hasSameSizeAs(defineFunctions);
         defineFunctions.forEach(defineFunctionSource -> {
             Optional<KiePMMLDefineFunction> defineFunctionToVerify =
                     defineFunctionsToVerify.stream().filter(param -> param.getName().equals(defineFunctionSource.getName()))
                             .findFirst();
-            assertTrue(defineFunctionToVerify.isPresent());
+            assertThat(defineFunctionToVerify).isPresent();
             commonVerifyKiePMMLDefineFunction(defineFunctionToVerify.get(), defineFunctionSource);
         });
     }

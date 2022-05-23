@@ -52,10 +52,6 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.MODELNAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTMODELNAME_TEMPLATE;
@@ -92,14 +88,14 @@ public class KiePMMLUtilTest {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_SAMPLE_NAME);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model toPopulate = pmml.getModels().get(0);
-        assertNull(toPopulate.getModelName());
+        assertThat(toPopulate.getModelName()).isNull();
         KiePMMLUtil.populateMissingModelName(toPopulate, NO_MODELNAME_SAMPLE_NAME, 0);
         assertThat(toPopulate.getModelName()).isNotNull();
         String expected = String.format(MODELNAME_TEMPLATE,
                                         NO_MODELNAME_SAMPLE_NAME,
                                         toPopulate.getClass().getSimpleName(),
                                         0);
-        assertEquals(expected, toPopulate.getModelName());
+        assertThat(toPopulate.getModelName()).isEqualTo(expected);
     }
 
     @Test
@@ -108,17 +104,17 @@ public class KiePMMLUtilTest {
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model toPopulate = pmml.getModels().get(0);
         List<MiningField> miningTargetFields = getMiningTargetFields(toPopulate.getMiningSchema().getMiningFields());
-        assertTrue(miningTargetFields.isEmpty());
-        assertNull(toPopulate.getTargets().getTargets().get(0).getField());
+        assertThat(miningTargetFields).isEmpty();
+        assertThat(toPopulate.getTargets().getTargets().get(0).getField()).isNull();
         KiePMMLUtil.populateMissingMiningTargetField(toPopulate, pmml.getDataDictionary().getDataFields());
         miningTargetFields = getMiningTargetFields(toPopulate.getMiningSchema().getMiningFields());
-        assertEquals(1, miningTargetFields.size());
+        assertThat(miningTargetFields).hasSize(1);
         final MiningField targetField = miningTargetFields.get(0);
-        assertTrue(pmml.getDataDictionary()
+        assertThat(pmml.getDataDictionary()
                            .getDataFields()
                            .stream()
-                           .anyMatch(dataField -> dataField.getName().equals(targetField.getName())));
-        assertEquals(targetField.getName(), toPopulate.getTargets().getTargets().get(0).getField());
+                           .anyMatch(dataField -> dataField.getName().equals(targetField.getName()))).isTrue();
+        assertThat(toPopulate.getTargets().getTargets().get(0).getField()).isEqualTo(targetField.getName());
     }
 
     @Test
@@ -127,12 +123,12 @@ public class KiePMMLUtilTest {
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model toPopulate = pmml.getModels().get(0);
         final OutputField outputField = toPopulate.getOutput().getOutputFields().get(0);
-        assertEquals(ResultFeature.PREDICTED_VALUE, outputField.getResultFeature());
-        assertNull(outputField.getTargetField());
+        assertThat(outputField.getResultFeature()).isEqualTo(ResultFeature.PREDICTED_VALUE);
+        assertThat(outputField.getTargetField()).isNull();
         KiePMMLUtil.populateMissingPredictedOutputFieldTarget(toPopulate);
         final MiningField targetField = getMiningTargetFields(toPopulate.getMiningSchema().getMiningFields()).get(0);
         assertThat(outputField.getTargetField()).isNotNull();
-        assertEquals(targetField.getName(), outputField.getTargetField());
+        assertThat(outputField.getTargetField()).isEqualTo(targetField.getName());
     }
 
     @Test
@@ -141,10 +137,10 @@ public class KiePMMLUtilTest {
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model model = pmml.getModels().get(0);
         Optional<DataField> optionalDataField = KiePMMLUtil.getTargetDataField(model);
-        assertTrue(optionalDataField.isPresent());
+        assertThat(optionalDataField).isPresent();
         DataField retrieved = optionalDataField.get();
         String expected= String.format(TARGETFIELD_TEMPLATE, "golfing");
-        assertEquals(expected, retrieved.getName().getValue());
+        assertThat(retrieved.getName().getValue()).isEqualTo(expected);
     }
 
     @Test
@@ -152,41 +148,41 @@ public class KiePMMLUtilTest {
         MiningFunction miningFunction = MiningFunction.REGRESSION;
         MathContext mathContext = MathContext.DOUBLE;
         DataType retrieved = KiePMMLUtil.getTargetDataType(miningFunction, mathContext);
-        assertEquals(DataType.DOUBLE, retrieved);
+        assertThat(retrieved).isEqualTo(DataType.DOUBLE);
         mathContext = MathContext.FLOAT;
         retrieved = KiePMMLUtil.getTargetDataType(miningFunction, mathContext);
-        assertEquals(DataType.FLOAT, retrieved);
+        assertThat(retrieved).isEqualTo(DataType.FLOAT);
         miningFunction = MiningFunction.CLASSIFICATION;
         retrieved = KiePMMLUtil.getTargetDataType(miningFunction, mathContext);
-        assertEquals(DataType.STRING, retrieved);
+        assertThat(retrieved).isEqualTo(DataType.STRING);
         miningFunction = MiningFunction.CLUSTERING;
         retrieved = KiePMMLUtil.getTargetDataType(miningFunction, mathContext);
-        assertEquals(DataType.STRING, retrieved);
+        assertThat(retrieved).isEqualTo(DataType.STRING);
         List<MiningFunction> notMappedMiningFunctions = Arrays.asList(MiningFunction.ASSOCIATION_RULES,
                                                                       MiningFunction.MIXED,
                                                                       MiningFunction.SEQUENCES,
                                                                       MiningFunction.TIME_SERIES);
 
-        notMappedMiningFunctions.forEach(minFun -> assertNull(KiePMMLUtil.getTargetDataType(minFun, MathContext.DOUBLE)));
+        notMappedMiningFunctions.forEach(minFun -> assertThat(KiePMMLUtil.getTargetDataType(minFun, MathContext.DOUBLE)).isNull());
     }
 
     @Test
     public void getTargetOpType()  {
         MiningFunction miningFunction = MiningFunction.REGRESSION;
         OpType retrieved = KiePMMLUtil.getTargetOpType(miningFunction);
-        assertEquals(OpType.CONTINUOUS, retrieved);
+        assertThat(retrieved).isEqualTo(OpType.CONTINUOUS);
         miningFunction = MiningFunction.CLASSIFICATION;
         retrieved = KiePMMLUtil.getTargetOpType(miningFunction);
-        assertEquals(OpType.CATEGORICAL, retrieved);
+        assertThat(retrieved).isEqualTo(OpType.CATEGORICAL);
         miningFunction = MiningFunction.CLUSTERING;
         retrieved = KiePMMLUtil.getTargetOpType(miningFunction);
-        assertEquals(OpType.CATEGORICAL, retrieved);
+        assertThat(retrieved).isEqualTo(OpType.CATEGORICAL);
         List<MiningFunction> notMappedMiningFunctions = Arrays.asList(MiningFunction.ASSOCIATION_RULES,
                                                                       MiningFunction.MIXED,
                                                                       MiningFunction.SEQUENCES,
                                                                       MiningFunction.TIME_SERIES);
 
-        notMappedMiningFunctions.forEach(minFun -> assertNull(KiePMMLUtil.getTargetOpType(minFun)));
+        notMappedMiningFunctions.forEach(minFun -> assertThat(KiePMMLUtil.getTargetOpType(minFun)).isNull());
     }
 
     @Test
@@ -194,8 +190,8 @@ public class KiePMMLUtilTest {
         final DataField dataField = new DataField();
         dataField.setName(FieldName.create("FIELD_NAME"));
         final MiningField retrieved = KiePMMLUtil.getTargetMiningField(dataField);
-        assertEquals(dataField.getName().getValue(), retrieved.getName().getValue());
-        assertEquals(MiningField.UsageType.TARGET, retrieved.getUsageType());
+        assertThat(retrieved.getName().getValue()).isEqualTo(dataField.getName().getValue());
+        assertThat(retrieved.getUsageType()).isEqualTo(MiningField.UsageType.TARGET);
     }
 
     @Test
@@ -208,8 +204,8 @@ public class KiePMMLUtilTest {
         final Target unnamedTarget = new Target();
         targets.addTargets(namedTarget, unnamedTarget);
         KiePMMLUtil.correctTargetFields(miningField, targets);
-        assertEquals(targetName, namedTarget.getField().getValue());
-        assertEquals(miningField.getName(), unnamedTarget.getField());
+        assertThat(namedTarget.getField().getValue()).isEqualTo(targetName);
+        assertThat(unnamedTarget.getField()).isEqualTo(miningField.getName());
     }
 
     @Test
@@ -217,18 +213,18 @@ public class KiePMMLUtilTest {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENT_ID_NOSEGMENT_TARGET_FIELD_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
-        assertTrue(retrieved instanceof MiningModel);
+        assertThat(retrieved).isInstanceOf(MiningModel.class);
         MiningModel miningModel = (MiningModel) retrieved;
         miningModel.getSegmentation().getSegments().forEach(segment -> {
-            assertNull(segment.getId());
-            assertNull(segment.getModel().getModelName());
-            assertTrue(getMiningTargetFields(segment.getModel().getMiningSchema()).isEmpty());
+            assertThat(segment.getId()).isNull();
+            assertThat(segment.getModel().getModelName()).isNull();
+            assertThat(getMiningTargetFields(segment.getModel().getMiningSchema())).isEmpty();
         });
         KiePMMLUtil.populateCorrectMiningModel(miningModel);
         miningModel.getSegmentation().getSegments().forEach(segment -> {
             assertThat(segment.getId()).isNotNull();
             assertThat(segment.getModel().getModelName()).isNotNull();
-            assertFalse(getMiningTargetFields(segment.getModel().getMiningSchema()).isEmpty());
+            assertThat(getMiningTargetFields(segment.getModel().getMiningSchema())).isNotEmpty();
         });
     }
 
@@ -237,10 +233,10 @@ public class KiePMMLUtilTest {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
-        assertTrue(retrieved instanceof MiningModel);
+        assertThat(retrieved).isInstanceOf(MiningModel.class);
         MiningModel miningModel = (MiningModel) retrieved;
         Segment toPopulate = miningModel.getSegmentation().getSegments().get(0);
-        assertNull(toPopulate.getId());
+        assertThat(toPopulate.getId()).isNull();
         String modelName = "MODEL_NAME";
         int i = 0;
         KiePMMLUtil.populateCorrectSegmentId(toPopulate, modelName, i);
@@ -248,7 +244,7 @@ public class KiePMMLUtilTest {
         String expected = String.format(SEGMENTID_TEMPLATE,
                                         modelName,
                                         i);
-        assertEquals(expected, toPopulate.getId());
+        assertThat(toPopulate.getId()).isEqualTo(expected);
     }
 
     @Test
@@ -256,17 +252,17 @@ public class KiePMMLUtilTest {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
-        assertTrue(retrieved instanceof MiningModel);
+        assertThat(retrieved).isInstanceOf(MiningModel.class);
         MiningModel miningModel = (MiningModel) retrieved;
         Model toPopulate = miningModel.getSegmentation().getSegments().get(0).getModel();
-        assertNull(toPopulate.getModelName());
+        assertThat(toPopulate.getModelName()).isNull();
         String segmentId = "SEG_ID";
         KiePMMLUtil.populateMissingSegmentModelName(toPopulate, segmentId);
         assertThat(toPopulate.getModelName()).isNotNull();
         String expected = String.format(SEGMENTMODELNAME_TEMPLATE,
                                         segmentId,
                                         toPopulate.getClass().getSimpleName());
-        assertEquals(expected, toPopulate.getModelName());
+        assertThat(toPopulate.getModelName()).isEqualTo(expected);
     }
 
     @Test
@@ -274,14 +270,14 @@ public class KiePMMLUtilTest {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENT_ID_NOSEGMENT_TARGET_FIELD_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
-        assertTrue(retrieved instanceof MiningModel);
+        assertThat(retrieved).isInstanceOf(MiningModel.class);
         MiningModel miningModel = (MiningModel) retrieved;
         Model toPopulate = miningModel.getSegmentation().getSegments().get(0).getModel();
-        assertTrue(getMiningTargetFields(toPopulate.getMiningSchema()).isEmpty());
+        assertThat(getMiningTargetFields(toPopulate.getMiningSchema())).isEmpty();
         KiePMMLUtil.populateMissingTargetFieldInSegment(retrieved.getMiningSchema(), toPopulate);
         List<MiningField> childrenTargetFields = getMiningTargetFields(toPopulate.getMiningSchema());
-        assertFalse(childrenTargetFields.isEmpty());
-        getMiningTargetFields(miningModel.getMiningSchema()).forEach(parentTargetField -> assertTrue(childrenTargetFields.contains(parentTargetField)));
+        assertThat(childrenTargetFields).isNotEmpty();
+        getMiningTargetFields(miningModel.getMiningSchema()).forEach(parentTargetField -> assertThat(childrenTargetFields).contains(parentTargetField));
     }
 
 
@@ -333,7 +329,7 @@ public class KiePMMLUtilTest {
         targetingOutputField.setName(FieldName.create(RandomStringUtils.random(6, true, false)));
         targetingOutputField.setTargetField(FieldName.create(targetMiningField.getName().getValue()));
         outputFields.add(targetingOutputField);
-        outputFields.forEach(outputField -> assertNull(outputField.getDataType()));
+        outputFields.forEach(outputField -> assertThat(outputField.getDataType()).isNull());
         IntStream.range(0, 2)
                 .forEach(i -> {
                     OutputField toAdd = new OutputField();
@@ -352,15 +348,15 @@ public class KiePMMLUtilTest {
         String id = "2";
         String expected = String.format(SEGMENTID_TEMPLATE, modelName, id);
         String retrieved = KiePMMLUtil.getSanitizedId(id, modelName);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         id = "34.5";
         expected = String.format(SEGMENTID_TEMPLATE, modelName, id);
         retrieved = KiePMMLUtil.getSanitizedId(id, modelName);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         id = "3,45";
         expected = String.format(SEGMENTID_TEMPLATE, modelName, id);
         retrieved = KiePMMLUtil.getSanitizedId(id, modelName);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -370,10 +366,10 @@ public class KiePMMLUtilTest {
         final Model model = toPopulate.getModels().get(0);
         List<MiningField> retrieved = KiePMMLUtil.getMiningTargetFields(model.getMiningSchema());
         assertThat(retrieved).isNotNull();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved).hasSize(1);
         MiningField targetField = retrieved.get(0);
-        assertEquals("car_location", targetField.getName().getValue());
-        assertEquals("target", targetField.getUsageType().value());
+        assertThat(targetField.getName().getValue()).isEqualTo("car_location");
+        assertThat(targetField.getUsageType().value()).isEqualTo("target");
     }
 
     @Test
@@ -383,10 +379,10 @@ public class KiePMMLUtilTest {
         final Model model = toPopulate.getModels().get(0);
         List<MiningField> retrieved = KiePMMLUtil.getMiningTargetFields(model.getMiningSchema().getMiningFields());
         assertThat(retrieved).isNotNull();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved).hasSize(1);
         MiningField targetField = retrieved.get(0);
-        assertEquals("car_location", targetField.getName().getValue());
-        assertEquals("target", targetField.getUsageType().value());
+        assertThat(targetField.getName().getValue()).isEqualTo("car_location");
+        assertThat(targetField.getUsageType().value()).isEqualTo("target");
     }
 
     private void commonLoadString(String fileName) throws IOException, JAXBException, SAXException {
@@ -433,6 +429,6 @@ public class KiePMMLUtilTest {
                 .stream()
                 .map(segment -> segment.getModel().getModelName())
                 .collect(Collectors.toList());
-        assertEquals(modelNames.size(), modelNames.stream().distinct().count());
+        assertThat(modelNames.stream().distinct()).hasSameSizeAs(modelNames);
     }
 }

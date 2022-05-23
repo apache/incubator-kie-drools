@@ -25,9 +25,7 @@ import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.assertj.core.api.Assertions.assertThat;
 public class KiePMMLModelWithSourcesTest {
 
     private static final String MODEL_NAME = "MODEL_NAME";
@@ -54,7 +52,7 @@ public class KiePMMLModelWithSourcesTest {
 
     @Test
     public void getSourcesMap() {
-        assertEquals(SOURCES_MAP, kiePMMLModelWithSources.getSourcesMap());
+        assertThat(kiePMMLModelWithSources.getSourcesMap()).isEqualTo(SOURCES_MAP);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -66,10 +64,10 @@ public class KiePMMLModelWithSourcesTest {
     @Test
     public void addSourceMap() {
         Map<String, String> retrieved = kiePMMLModelWithSources.getSourcesMap();
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isEmpty();
         kiePMMLModelWithSources.addSourceMap("KEY", "VALUE");
         retrieved = kiePMMLModelWithSources.getSourcesMap();
-        assertTrue(retrieved.containsKey("KEY"));
-        assertEquals("VALUE", retrieved.get("KEY"));
+        assertThat(retrieved).containsKey("KEY");
+        assertThat(retrieved.get("KEY")).isEqualTo("VALUE");
     }
 }

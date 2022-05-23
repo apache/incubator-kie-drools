@@ -18,13 +18,13 @@ package org.kie.pmml.models.mining.model.segmentation;
 
 import java.util.Collections;
 
+import org.assertj.core.data.Offset;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLModel;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLSimplePredicate;
 
@@ -50,19 +50,19 @@ public class KiePMMLSegmentTest {
     @Test
     public void getWeight() {
         final double weight = 33.45;
-        assertEquals(1.0, KIE_PMML_SEGMENT.getWeight(), 0.0);
+        assertThat(KIE_PMML_SEGMENT.getWeight()).isCloseTo(1.0, Offset.offset(0.0));
         KIE_PMML_SEGMENT = BUILDER.withWeight(weight).build();
-        assertEquals(weight, KIE_PMML_SEGMENT.getWeight(), 0.0);
+        assertThat(KIE_PMML_SEGMENT.getWeight()).isCloseTo(weight, Offset.offset(0.0));
     }
 
     @Test
     public void getKiePMMLPredicate() {
-        assertEquals(KIE_PMML_PREDICATE, KIE_PMML_SEGMENT.getKiePMMLPredicate());
+        assertThat(KIE_PMML_SEGMENT.getKiePMMLPredicate()).isEqualTo(KIE_PMML_PREDICATE);
     }
 
     @Test
     public void getModel() {
-        assertEquals(KIE_PMML_MODEL, KIE_PMML_SEGMENT.getModel());
+        assertThat(KIE_PMML_SEGMENT.getModel()).isEqualTo(KIE_PMML_MODEL);
     }
 
 

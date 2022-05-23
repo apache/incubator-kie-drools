@@ -19,107 +19,107 @@ package org.kie.pmml.commons.model.expressions;
 import org.junit.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLIntervalTest {
 
     @Test
     public void isIn() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.OPEN_OPEN);
-        assertTrue(kiePMMLInterval.isIn(30));
-        assertFalse(kiePMMLInterval.isIn(10));
-        assertFalse(kiePMMLInterval.isIn(20));
-        assertFalse(kiePMMLInterval.isIn(40));
-        assertFalse(kiePMMLInterval.isIn(50));
+        assertThat(kiePMMLInterval.isIn(30)).isTrue();
+        assertThat(kiePMMLInterval.isIn(10)).isFalse();
+        assertThat(kiePMMLInterval.isIn(20)).isFalse();
+        assertThat(kiePMMLInterval.isIn(40)).isFalse();
+        assertThat(kiePMMLInterval.isIn(50)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.OPEN_CLOSED);
-        assertTrue(kiePMMLInterval.isIn(30));
-        assertFalse(kiePMMLInterval.isIn(10));
-        assertFalse(kiePMMLInterval.isIn(20));
-        assertTrue(kiePMMLInterval.isIn(40));
-        assertFalse(kiePMMLInterval.isIn(50));
+        assertThat(kiePMMLInterval.isIn(30)).isTrue();
+        assertThat(kiePMMLInterval.isIn(10)).isFalse();
+        assertThat(kiePMMLInterval.isIn(20)).isFalse();
+        assertThat(kiePMMLInterval.isIn(40)).isTrue();
+        assertThat(kiePMMLInterval.isIn(50)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.CLOSED_OPEN);
-        assertTrue(kiePMMLInterval.isInsideClosedOpen(30));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(10));
-        assertTrue(kiePMMLInterval.isInsideClosedOpen(20));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(40));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(50));
+        assertThat(kiePMMLInterval.isInsideClosedOpen(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(10)).isFalse();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(20)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(40)).isFalse();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(50)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.CLOSED_CLOSED);
-        assertTrue(kiePMMLInterval.isIn(30));
-        assertFalse(kiePMMLInterval.isIn(10));
-        assertTrue(kiePMMLInterval.isIn(20));
-        assertTrue(kiePMMLInterval.isIn(40));
-        assertFalse(kiePMMLInterval.isIn(50));
+        assertThat(kiePMMLInterval.isIn(30)).isTrue();
+        assertThat(kiePMMLInterval.isIn(10)).isFalse();
+        assertThat(kiePMMLInterval.isIn(20)).isTrue();
+        assertThat(kiePMMLInterval.isIn(40)).isTrue();
+        assertThat(kiePMMLInterval.isIn(50)).isFalse();
     }
 
     @Test
     public void isInsideOpenOpen() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.OPEN_OPEN);
-        assertTrue(kiePMMLInterval.isInsideOpenOpen(10));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(20));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(30));
+        assertThat(kiePMMLInterval.isInsideOpenOpen(10)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(20)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(30)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, null, CLOSURE.OPEN_OPEN);
-        assertTrue(kiePMMLInterval.isInsideOpenOpen(30));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(20));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(10));
+        assertThat(kiePMMLInterval.isInsideOpenOpen(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(20)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(10)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.OPEN_OPEN);
-        assertTrue(kiePMMLInterval.isInsideOpenOpen(30));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(10));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(20));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(40));
-        assertFalse(kiePMMLInterval.isInsideOpenOpen(50));
+        assertThat(kiePMMLInterval.isInsideOpenOpen(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(10)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(20)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(40)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenOpen(50)).isFalse();
     }
 
     @Test
     public void isInsideOpenClosed() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.OPEN_CLOSED);
-        assertTrue(kiePMMLInterval.isInsideOpenClosed(10));
-        assertTrue(kiePMMLInterval.isInsideOpenClosed(20));
-        assertFalse(kiePMMLInterval.isInsideOpenClosed(30));
+        assertThat(kiePMMLInterval.isInsideOpenClosed(10)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(20)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(30)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, null, CLOSURE.OPEN_CLOSED);
-        assertTrue(kiePMMLInterval.isInsideOpenClosed(30));
-        assertFalse(kiePMMLInterval.isInsideOpenClosed(20));
-        assertFalse(kiePMMLInterval.isInsideOpenClosed(10));
+        assertThat(kiePMMLInterval.isInsideOpenClosed(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(20)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(10)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.OPEN_CLOSED);
-        assertTrue(kiePMMLInterval.isInsideOpenClosed(30));
-        assertFalse(kiePMMLInterval.isInsideOpenClosed(10));
-        assertFalse(kiePMMLInterval.isInsideOpenClosed(20));
-        assertTrue(kiePMMLInterval.isInsideOpenClosed(40));
-        assertFalse(kiePMMLInterval.isInsideOpenClosed(50));
+        assertThat(kiePMMLInterval.isInsideOpenClosed(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(10)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(20)).isFalse();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(40)).isTrue();
+        assertThat(kiePMMLInterval.isInsideOpenClosed(50)).isFalse();
     }
 
     @Test
     public void isInsideClosedOpen() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.CLOSED_OPEN);
-        assertTrue(kiePMMLInterval.isInsideClosedOpen(10));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(20));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(30));
+        assertThat(kiePMMLInterval.isInsideClosedOpen(10)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(20)).isFalse();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(30)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, null, CLOSURE.CLOSED_OPEN);
-        assertTrue(kiePMMLInterval.isInsideClosedOpen(30));
-        assertTrue(kiePMMLInterval.isInsideClosedOpen(20));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(10));
+        assertThat(kiePMMLInterval.isInsideClosedOpen(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(20)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(10)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.CLOSED_OPEN);
-        assertTrue(kiePMMLInterval.isInsideClosedOpen(30));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(10));
-        assertTrue(kiePMMLInterval.isInsideClosedOpen(20));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(40));
-        assertFalse(kiePMMLInterval.isInsideClosedOpen(50));
+        assertThat(kiePMMLInterval.isInsideClosedOpen(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(10)).isFalse();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(20)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(40)).isFalse();
+        assertThat(kiePMMLInterval.isInsideClosedOpen(50)).isFalse();
     }
 
     @Test
     public void isInsideClosedClosed() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.CLOSED_CLOSED);
-        assertTrue(kiePMMLInterval.isInsideClosedClosed(10));
-        assertTrue(kiePMMLInterval.isInsideClosedClosed(20));
-        assertFalse(kiePMMLInterval.isInsideClosedClosed(30));
+        assertThat(kiePMMLInterval.isInsideClosedClosed(10)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(20)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(30)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, null, CLOSURE.CLOSED_CLOSED);
-        assertTrue(kiePMMLInterval.isInsideClosedClosed(30));
-        assertTrue(kiePMMLInterval.isInsideClosedClosed(20));
-        assertFalse(kiePMMLInterval.isInsideClosedClosed(10));
+        assertThat(kiePMMLInterval.isInsideClosedClosed(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(20)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(10)).isFalse();
         kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.CLOSED_CLOSED);
-        assertTrue(kiePMMLInterval.isInsideClosedClosed(30));
-        assertFalse(kiePMMLInterval.isInsideClosedClosed(10));
-        assertTrue(kiePMMLInterval.isInsideClosedClosed(20));
-        assertTrue(kiePMMLInterval.isInsideClosedClosed(40));
-        assertFalse(kiePMMLInterval.isInsideClosedClosed(50));
+        assertThat(kiePMMLInterval.isInsideClosedClosed(30)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(10)).isFalse();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(20)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(40)).isTrue();
+        assertThat(kiePMMLInterval.isInsideClosedClosed(50)).isFalse();
     }
 }

@@ -31,9 +31,7 @@ import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.IN_NOTIN;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLCompoundPredicateTest {
 
@@ -52,9 +50,9 @@ public class KiePMMLCompoundPredicateTest {
         KiePMMLCompoundPredicate kiePMMLCompoundPredicate = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND, Collections.singletonList(kiePMMLSimpleSetPredicateString));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT");
-        assertFalse(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0));
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
 
         arrayType = ARRAY_TYPE.INT;
         List<Object> intValues = getObjects(arrayType, 4);
@@ -65,9 +63,9 @@ public class KiePMMLCompoundPredicateTest {
         kiePMMLCompoundPredicate = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND, Collections.singletonList(kiePMMLSimpleSetPredicateInt));
         inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0));
-        assertFalse(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, "234");
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -89,17 +87,17 @@ public class KiePMMLCompoundPredicateTest {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0));
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0));
-        assertFalse(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
 
         inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT");
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, "234");
-        assertFalse(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
 
         inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0));
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, "234");
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -121,21 +119,21 @@ public class KiePMMLCompoundPredicateTest {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT");
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0));
-        assertFalse(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
 
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0));
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0));
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
 
         inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT");
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, "234");
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
 
         inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0));
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, "234");
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -157,97 +155,97 @@ public class KiePMMLCompoundPredicateTest {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT"); // This predicate verify the "IN" condition
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0)); // This predicate verify the "NOT_IN" condition
-        assertFalse(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
 
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0)); // This predicate verify the "IN" condition
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0)); // This predicate verify the "NOT_IN" condition
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
 
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT"); // This predicate verify the "IN" condition
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, 1); // This predicate verify the "NOT_IN" condition
-        assertFalse(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
 
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0)); // This predicate verify the "IN" condition
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, 1); // This predicate verify the "NOT_IN" condition
-        assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
+        assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
     public void orOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = false;
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = true;
         aBoolean2 = false;
-        assertTrue(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean = false;
         aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean = true;
         aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isTrue();
     }
 
     @Test
     public void andOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = false;
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = true;
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = false;
         aBoolean2 = true;
-        assertFalse(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = true;
         aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isTrue();
     }
 
     @Test
     public void xorOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = false;
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = true;
         aBoolean2 = false;
-        assertTrue(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean = false;
         aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean = true;
         aBoolean2 = true;
-        assertFalse(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isFalse();
 
     }
 
@@ -255,26 +253,26 @@ public class KiePMMLCompoundPredicateTest {
     public void surrogateOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = false;
         aBoolean2 = false;
-        assertFalse(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = true;
         aBoolean2 = false;
-        assertTrue(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean = false;
         aBoolean2 = true;
-        assertFalse(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isFalse();
 
         aBoolean = true;
         aBoolean2 = true;
-        assertTrue(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2));
+        assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isTrue();
     }
 
     private KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(final BOOLEAN_OPERATOR booleanOperator,

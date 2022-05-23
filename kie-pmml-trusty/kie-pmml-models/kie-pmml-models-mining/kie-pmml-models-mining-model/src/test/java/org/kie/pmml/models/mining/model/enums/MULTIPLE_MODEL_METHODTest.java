@@ -29,14 +29,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.AVERAGE;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.MAJORITY_VOTE;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.MAX;
@@ -85,7 +84,7 @@ public class MULTIPLE_MODEL_METHODTest {
 
     @Test
     public void getName() {
-        EXISTING_VALUES.forEach((multipleModelMethod, s) -> assertEquals(s, multipleModelMethod.getName()));
+        EXISTING_VALUES.forEach((multipleModelMethod, s) -> assertThat(multipleModelMethod.getName()).isEqualTo(s));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class MULTIPLE_MODEL_METHODTest {
         inputData.put("ValueD", new KiePMMLNameValue("valuex", EXPECTED));
         inputData.put("ValueE", new KiePMMLNameValue("valueb", 1));
         Object retrieved = MAJORITY_VOTE.applyPrediction(inputData);
-        assertEquals(EXPECTED, retrieved);
+        assertThat(retrieved).isEqualTo(EXPECTED);
         inputData = new LinkedHashMap<>();
         EXPECTED = "EXPECTED";
         inputData.put("ValueA", new KiePMMLNameValue("valuea", "dvsdv"));
@@ -107,7 +106,7 @@ public class MULTIPLE_MODEL_METHODTest {
         inputData.put("ValueD", new KiePMMLNameValue("valuex", EXPECTED));
         inputData.put("ValueE", new KiePMMLNameValue("valueb", "vsd"));
         retrieved = MAJORITY_VOTE.applyPrediction(inputData);
-        assertEquals(EXPECTED, retrieved);
+        assertThat(retrieved).isEqualTo(EXPECTED);
     }
 
     @Test(expected = KieEnumException.class)
@@ -129,13 +128,13 @@ public class MULTIPLE_MODEL_METHODTest {
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) AVERAGE.applyPrediction(inputData);
-        assertEquals(average, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(average, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         average = (Double) expectedKiePMMLValueWeightMap.get("average");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         retrieved = (Double) AVERAGE.applyPrediction(inputData);
-        assertEquals(average, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(average, Offset.offset(0.0000000000001));
     }
 
     @Test(expected = KieEnumException.class)
@@ -157,13 +156,13 @@ public class MULTIPLE_MODEL_METHODTest {
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) WEIGHTED_AVERAGE.applyPrediction(inputData);
-        assertEquals(weightedAverage, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(weightedAverage, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         weightedAverage = (Double) expectedKiePMMLValueWeightMap.get("weightedAverage");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         retrieved = (Double) WEIGHTED_AVERAGE.applyPrediction(inputData);
-        assertEquals(weightedAverage, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(weightedAverage, Offset.offset(0.0000000000001));
     }
 
     @Test(expected = KieEnumException.class)
@@ -185,13 +184,13 @@ public class MULTIPLE_MODEL_METHODTest {
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) MEDIAN.applyPrediction(inputData);
-        assertEquals(median, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(median, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         median = (Double) expectedKiePMMLValueWeightMap.get("median");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         retrieved = (Double) MEDIAN.applyPrediction(inputData);
-        assertEquals(median, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(median, Offset.offset(0.0000000000001));
     }
 
     @Test(expected = KieEnumException.class)
@@ -213,13 +212,13 @@ public class MULTIPLE_MODEL_METHODTest {
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) WEIGHTED_MEDIAN.applyPrediction(inputData);
-        assertEquals(weightedMedian, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(weightedMedian, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         weightedMedian = (Double) expectedKiePMMLValueWeightMap.get("weightedMedian");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         retrieved = (Double)  WEIGHTED_MEDIAN.applyPrediction(inputData);
-        assertEquals(weightedMedian, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(weightedMedian, Offset.offset(0.0000000000001));
     }
 
     @Test(expected = KieEnumException.class)
@@ -241,13 +240,13 @@ public class MULTIPLE_MODEL_METHODTest {
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) MAX.applyPrediction(inputData);
-        assertEquals(max, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(max, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         max = (Double) expectedKiePMMLValueWeightMap.get("max");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         retrieved = (Double)  MAX.applyPrediction(inputData);
-        assertEquals(max, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(max, Offset.offset(0.0000000000001));
     }
 
     @Test(expected = KieEnumException.class)
@@ -269,13 +268,13 @@ public class MULTIPLE_MODEL_METHODTest {
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) SUM.applyPrediction(inputData);
-        assertEquals(sum, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(sum, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         sum = (Double) expectedKiePMMLValueWeightMap.get("sum");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         retrieved = (Double)  SUM.applyPrediction(inputData);
-        assertEquals(sum, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(sum, Offset.offset(0.0000000000001));
     }
 
     @Test(expected = KieEnumException.class)
@@ -297,13 +296,13 @@ public class MULTIPLE_MODEL_METHODTest {
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) WEIGHTED_SUM.applyPrediction(inputData);
-        assertEquals(weightsSum, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(weightsSum, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         weightsSum = (Double) expectedKiePMMLValueWeightMap.get("weightedSum");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         retrieved = (Double)  WEIGHTED_SUM.applyPrediction(inputData);
-        assertEquals(weightsSum, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(weightsSum, Offset.offset(0.0000000000001));
     }
 
     @Test(expected = KieEnumException.class)
@@ -325,13 +324,13 @@ public class MULTIPLE_MODEL_METHODTest {
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double first = ((KiePMMLValueWeight) inputData.entrySet().iterator().next().getValue().getValue()).getValue();
         double retrieved = (Double) SELECT_FIRST.applyPrediction(inputData);
-        assertEquals(first, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(first, Offset.offset(0.0000000000001));
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         first = ((KiePMMLValueWeight) inputData.entrySet().iterator().next().getValue().getValue()).getValue();
         retrieved = (Double)  SELECT_FIRST.applyPrediction(inputData);
-        assertEquals(first, retrieved,0.0000000000001);
+        assertThat(retrieved).isCloseTo(first, Offset.offset(0.0000000000001));
     }
 
     @Test
@@ -344,7 +343,7 @@ public class MULTIPLE_MODEL_METHODTest {
         inputData.put("ValueD", new KiePMMLNameValue("valuex", "vfdsvsdeeee"));
         inputData.put("ValueE", new KiePMMLNameValue("valueb", "vsd"));
         Object retrieved =  SELECT_FIRST.applyPrediction(inputData);
-        assertEquals(EXPECTED, retrieved);
+        assertThat(retrieved).isEqualTo(EXPECTED);
     }
 
     @Test
@@ -357,9 +356,9 @@ public class MULTIPLE_MODEL_METHODTest {
                 .map(kiePMMLNameValue -> ((KiePMMLValueWeight)kiePMMLNameValue.getValue()).getValue())
                 .collect(Collectors.toList());
         List retrieved = (List) SELECT_ALL.applyPrediction(inputData);
-        assertEquals(expected.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(expected);
         for (Double expDouble : expected) {
-            assertTrue(retrieved.contains(expDouble));
+            assertThat(retrieved).contains(expDouble);
         }
         expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(false);
         inputData =
@@ -369,9 +368,9 @@ public class MULTIPLE_MODEL_METHODTest {
                 .map(kiePMMLNameValue -> ((KiePMMLValueWeight)kiePMMLNameValue.getValue()).getValue())
                 .collect(Collectors.toList());
         retrieved = (List) SELECT_ALL.applyPrediction(inputData);
-        assertEquals(expected.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(expected);
         for (Double expDouble : expected) {
-            assertTrue(retrieved.contains(expDouble));
+            assertThat(retrieved).contains(expDouble);
         }
     }
 
@@ -385,8 +384,8 @@ public class MULTIPLE_MODEL_METHODTest {
         inputData.put("ValueE", new KiePMMLNameValue("valueb", "vsd"));
         List expected = inputData.values().stream().map(KiePMMLNameValue::getValue).collect(Collectors.toList());
         List retrieved = (List) SELECT_ALL.applyPrediction(inputData);
-        assertEquals(expected.size(), retrieved.size());
-        expected.forEach(expString -> assertTrue(retrieved.contains(expString)));
+        assertThat(retrieved).hasSameSizeAs(expected);
+        expected.forEach(expString -> assertThat(retrieved).contains(expString));
     }
 
     @Test(expected = KieEnumException.class)

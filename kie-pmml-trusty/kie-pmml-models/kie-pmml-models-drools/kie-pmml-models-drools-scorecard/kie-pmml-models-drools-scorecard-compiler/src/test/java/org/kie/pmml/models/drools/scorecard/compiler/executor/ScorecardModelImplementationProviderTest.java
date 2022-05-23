@@ -34,8 +34,6 @@ import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.test.util.filesystem.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ScorecardModelImplementationProviderTest {
 
@@ -45,7 +43,7 @@ public class ScorecardModelImplementationProviderTest {
 
     @Test
     public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.SCORECARD_MODEL, PROVIDER.getPMMLModelType());
+        assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.SCORECARD_MODEL);
     }
 
     @Test
@@ -80,13 +78,13 @@ public class ScorecardModelImplementationProviderTest {
         final FileInputStream fis = FileUtils.getFileInputStream(source);
         final PMML toReturn = KiePMMLUtil.load(fis, source);
         assertThat(toReturn).isNotNull();
-        assertEquals(1, toReturn.getModels().size());
-        assertTrue(toReturn.getModels().get(0) instanceof Scorecard);
+        assertThat(toReturn.getModels()).hasSize(1);
+        assertThat(toReturn.getModels().get(0)).isInstanceOf(Scorecard.class);
         return toReturn;
     }
 
     private void commonVerifyIsDeepCloneable(AbstractKiePMMLComponent toVerify) {
-        assertTrue(toVerify instanceof Serializable);
+        assertThat(toVerify).isInstanceOf(Serializable.class);
         ExternalizableMock externalizableMock = new ExternalizableMock();
         externalizableMock.setKiePMMLComponent(toVerify);
         ClassUtils.deepClone(externalizableMock);

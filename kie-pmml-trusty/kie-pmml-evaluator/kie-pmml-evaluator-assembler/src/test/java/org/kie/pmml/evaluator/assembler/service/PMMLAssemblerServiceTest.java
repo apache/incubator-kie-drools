@@ -28,7 +28,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PMMLAssemblerServiceTest {
 
@@ -70,10 +70,10 @@ public class PMMLAssemblerServiceTest {
     }
 
     private void commonVerifyStrings(String[] toVerify, String[] comparison) {
-        assertEquals(toVerify.length, comparison.length);
-        assertEquals(2, toVerify.length);
+        assertThat(comparison.length).isEqualTo(toVerify.length);
+        assertThat(toVerify.length).isEqualTo(2);
         for (int i = 0; i < toVerify.length; i ++) {
-            assertEquals(comparison[i], toVerify[i]);
+        	assertThat(toVerify[i]).isEqualTo(comparison[i]);
         }
     }
 

@@ -27,10 +27,9 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
-import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldRefFactory;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
@@ -49,7 +48,7 @@ public class KiePMMLFieldRefFactoryTest {
         BlockStmt retrieved = KiePMMLFieldRefFactory.getFieldRefVariableDeclaration(variableName, fieldRef);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, mapMissingTo));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
