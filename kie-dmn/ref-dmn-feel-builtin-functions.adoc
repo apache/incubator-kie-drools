@@ -2468,7 +2468,7 @@ context([{key:"a", value:1}, {key:"b"}]) = null
 context put( context, key, value )::
 +
 --
-Returns a new context that includes the new entry, or overriding the existing value if an entry for the same key already exists in the supplied context parameter.
+Returns a new context that includes the new entry, or overrides the existing value if an entry for the same key already exists in the supplied context parameter.
 A new entry is added as the last entry of the new context.
 If overriding an existing entry, the order of the keys maintains the same order as in the original context.
 
@@ -2544,7 +2544,7 @@ context put({x:1, y: {a: 0} }, [], 2) = null
 context merge( contexts )::
 +
 --
-Returns a new context that includes all entries from the given contexts; if some of the keys are equal, the entries are overriden.
+Returns a new context that includes all entries from the given contexts; if some of the keys are equal, the entries are overridden.
 The entries are overridden in the same order as specified by the supplied parameter, with new entries added as the last entry in the new context.
 
 .Parameters
@@ -2574,7 +2574,7 @@ For example, when a decision depends on the current date, like deciding the supp
 It is important to note that the functions in this section are intended to be side-effect-free, but they are not deterministic and not idempotent from the perspective of an external observer.
 
 As a user, you are encouraged to isolate the decision logic that uses these functions in specific DRG elements, such as Decisions.
-The encapsulation enables them to be overridden with synthetic values during Scenario Testing, that remain constant across executions of the DMN model's test cases.
+The encapsulation enables them to be overridden with synthetic values during scenario testing, that remain constant across executions of the DMN model's test cases.
 
 now()::
 +
@@ -2604,7 +2604,7 @@ today()
 
 == KIE Extended functions
 
-These functions are provided as extension to the DMN Standard to enable support for several miscellaneous use-cases on top of the Drools DMN Engine.
+These functions are provided as an extension to the DMN Standard to enable support for various use-cases on top of the Drools DMN Engine.
 
 invoke( namespace, modelName, decisionName, parameters )::
 +
