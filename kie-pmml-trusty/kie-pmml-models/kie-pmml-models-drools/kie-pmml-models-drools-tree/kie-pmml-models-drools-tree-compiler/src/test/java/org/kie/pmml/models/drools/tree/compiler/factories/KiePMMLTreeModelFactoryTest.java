@@ -45,8 +45,6 @@ import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
@@ -68,8 +66,8 @@ public class KiePMMLTreeModelFactoryTest {
     public static void setUp() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
         assertThat(pmml).isNotNull();
-        assertEquals(1, pmml.getModels().size());
-        assertTrue(pmml.getModels().get(0) instanceof TreeModel);
+        assertThat(pmml.getModels()).hasSize(1);
+        assertThat(pmml.getModels().get(0)).isInstanceOf(TreeModel.class);
         treeModel = (TreeModel) pmml.getModels().get(0);
         CompilationUnit templateCU = getFromFileName(KIE_PMML_TREE_MODEL_TEMPLATE_JAVA);
         classOrInterfaceDeclaration = templateCU
@@ -92,8 +90,8 @@ public class KiePMMLTreeModelFactoryTest {
                                                         fieldTypeMap);
         KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(droolsCompilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(treeModel.getModelName(), retrieved.getName());
-        assertEquals(TARGET_FIELD, retrieved.getTargetField());
+        assertThat(retrieved.getName()).isEqualTo(treeModel.getModelName());
+        assertThat(retrieved.getTargetField()).isEqualTo(TARGET_FIELD);
     }
 
     @Test
@@ -112,7 +110,7 @@ public class KiePMMLTreeModelFactoryTest {
                                                         fieldTypeMap);
         Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(droolsCompilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved).hasSize(1);
     }
 
     @Test
@@ -126,8 +124,8 @@ public class KiePMMLTreeModelFactoryTest {
                                                             fieldTypeMap, Collections.emptyList());
         assertThat(retrieved).isNotNull();
         List<DataField> dataFields = dataDictionary.getDataFields();
-        assertEquals(dataFields.size(), fieldTypeMap.size());
-        dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));
+        assertThat(fieldTypeMap).hasSameSizeAs(dataFields);
+        dataFields.forEach(dataField -> assertThat(fieldTypeMap).containsKey(dataField.getName().getValue()));
     }
 
     @Test
@@ -155,7 +153,7 @@ public class KiePMMLTreeModelFactoryTest {
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(treeModel.getModelName()),
-                                             superInvocationExpressionsMap, assignExpressionMap));
+        assertThat(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(treeModel.getModelName()),
+                                             superInvocationExpressionsMap, assignExpressionMap)).isTrue();
     }
 }

@@ -25,9 +25,6 @@ import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class JavaParserUtilsTest {
 
@@ -58,10 +55,10 @@ public class JavaParserUtilsTest {
         String packageName = "apackage";
         CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,  TEMPLATE_FILE, TEMPLATE_CLASS);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved.getPackageDeclaration().isPresent());
-        assertEquals(packageName, retrieved.getPackageDeclaration().get().getName().asString());
-        assertFalse(retrieved.getClassByName(TEMPLATE_CLASS).isPresent());
-        assertTrue(retrieved.getClassByName(className).isPresent());
+        assertThat(retrieved.getPackageDeclaration()).isPresent();
+        assertThat(retrieved.getPackageDeclaration().get().getName().asString()).isEqualTo(packageName);
+        assertThat(retrieved.getClassByName(TEMPLATE_CLASS)).isNotPresent();
+        assertThat(retrieved.getClassByName(className)).isPresent();
     }
 
     @Test
@@ -69,9 +66,9 @@ public class JavaParserUtilsTest {
         String className = "ClassName";
         CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, null,  TEMPLATE_FILE, TEMPLATE_CLASS);
         assertThat(retrieved).isNotNull();
-        assertFalse(retrieved.getPackageDeclaration().isPresent());
-        assertFalse(retrieved.getClassByName(TEMPLATE_CLASS).isPresent());
-        assertTrue(retrieved.getClassByName(className).isPresent());
+        assertThat(retrieved.getPackageDeclaration()).isNotPresent();
+        assertThat(retrieved.getClassByName(TEMPLATE_CLASS)).isNotPresent();
+        assertThat(retrieved.getClassByName(className)).isPresent();
     }
 
     @Test
@@ -87,7 +84,7 @@ public class JavaParserUtilsTest {
         compilationUnit.setTypes(NodeList.nodeList(classOrInterfaceDeclaration));
         String retrieved = JavaParserUtils.getFullClassName(compilationUnit);
         String expected = packageName + "." + className;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
 
     }
 }

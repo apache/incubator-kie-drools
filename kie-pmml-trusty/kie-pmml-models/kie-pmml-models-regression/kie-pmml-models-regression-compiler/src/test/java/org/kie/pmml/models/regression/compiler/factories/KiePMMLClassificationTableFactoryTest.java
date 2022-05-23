@@ -50,9 +50,7 @@ import org.kie.pmml.models.regression.model.KiePMMLClassificationTable;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
@@ -122,16 +120,15 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         KiePMMLClassificationTable retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTable(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(regressionModel.getRegressionTables().size(), retrieved.getCategoryTableMap().size());
+        assertThat(retrieved.getCategoryTableMap()).hasSameSizeAs(regressionModel.getRegressionTables());
         regressionModel.getRegressionTables().forEach(regressionTable ->
-                                                              assertTrue(retrieved.getCategoryTableMap().containsKey(regressionTable.getTargetCategory().toString())));
-        assertEquals(regressionModel.getNormalizationMethod().value(),
-                     retrieved.getRegressionNormalizationMethod().getName());
-        assertEquals(OP_TYPE.CATEGORICAL, retrieved.getOpType());
+                                                              assertThat(retrieved.getCategoryTableMap()).containsKey(regressionTable.getTargetCategory().toString()));
+        assertThat(retrieved.getRegressionNormalizationMethod().getName()).isEqualTo(regressionModel.getNormalizationMethod().value());
+        assertThat(retrieved.getOpType()).isEqualTo(OP_TYPE.CATEGORICAL);
         boolean isBinary = regressionModel.getRegressionTables().size() == 2;
-        assertEquals(isBinary, retrieved.isBinary());
-        assertEquals(isBinary, retrieved.isBinary());
-        assertEquals(targetMiningField.getName().getValue(), retrieved.getTargetField());
+        assertThat(retrieved.isBinary()).isEqualTo(isBinary);
+        assertThat(retrieved.isBinary()).isEqualTo(isBinary);
+        assertThat(retrieved.getTargetField()).isEqualTo(targetMiningField.getName().getValue());
     }
 
     @Test
@@ -176,7 +173,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTableBuilders(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(3, retrieved.size());
+        assertThat(retrieved).hasSize(3);
         retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));
 
         Map<String, String> sources = retrieved.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
@@ -244,18 +241,18 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
             try {
                 KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, false);
             } catch (Throwable t) {
-                assertTrue(t instanceof KiePMMLInternalException);
+                assertThat(t).isInstanceOf(KiePMMLInternalException.class);
                 String expected = String.format("Unsupported NormalizationMethod %s",
                                                 normalizationMethod);
-                assertEquals(expected, t.getMessage());
+                assertThat(t.getMessage()).isEqualTo(expected);
             }
             try {
                 KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, true);
             } catch (Throwable t) {
-                assertTrue(t instanceof KiePMMLInternalException);
+                assertThat(t).isInstanceOf(KiePMMLInternalException.class);
                 String expected = String.format("Unsupported NormalizationMethod %s",
                                                 normalizationMethod);
-                assertEquals(expected, t.getMessage());
+                assertThat(t.getMessage()).isEqualTo(expected);
             }
         });
     }
@@ -325,7 +322,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                                                           variableName);
         String text = getFileContent(TEST_02_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, staticGetterMethod));
+        assertThat(JavaParserUtils.equalsNode(expected, staticGetterMethod)).isTrue();
     }
 
     @Test
@@ -338,7 +335,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 String text = getFileContent(TEST_01_SOURCE);
                 Expression expected = JavaParserUtils.parseExpression(String.format(text,
                                                                                     normalizationMethod.name()));
-                assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+                assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
             } catch (IOException e) {
                 fail(e.getMessage());
             }
@@ -353,7 +350,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                                                                                       false);
                 fail("Expecting KiePMMLInternalException with normalizationMethod " + normalizationMethod);
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLInternalException);
+                assertThat(e).isInstanceOf(KiePMMLInternalException.class);
             }
         });
     }
@@ -365,7 +362,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text,
                                                                             RegressionModel.NormalizationMethod.CAUCHIT.name()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     private OutputField getOutputField(String name, ResultFeature resultFeature, String targetField) {

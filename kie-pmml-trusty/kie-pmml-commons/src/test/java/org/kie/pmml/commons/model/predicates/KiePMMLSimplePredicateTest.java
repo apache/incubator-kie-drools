@@ -23,8 +23,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.kie.pmml.api.enums.OPERATOR;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLSimplePredicateTest {
 
@@ -36,13 +35,13 @@ public class KiePMMLSimplePredicateTest {
         KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.EQUAL, value);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
-        assertFalse(kiePMMLSimplePredicate.evaluate(inputData));
+        assertThat(kiePMMLSimplePredicate.evaluate(inputData)).isFalse();
         inputData = new HashMap<>();
         inputData.put(SIMPLE_PREDICATE_NAME, "NOT");
-        assertFalse(kiePMMLSimplePredicate.evaluate(inputData));
+        assertThat(kiePMMLSimplePredicate.evaluate(inputData)).isFalse();
         inputData = new HashMap<>();
         inputData.put(SIMPLE_PREDICATE_NAME, value);
-        assertTrue(kiePMMLSimplePredicate.evaluate(inputData));
+        assertThat(kiePMMLSimplePredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -51,13 +50,13 @@ public class KiePMMLSimplePredicateTest {
         KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.NOT_EQUAL, value);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
-        assertFalse(kiePMMLSimplePredicate.evaluate(inputData));
+        assertThat(kiePMMLSimplePredicate.evaluate(inputData)).isFalse();
         inputData = new HashMap<>();
         inputData.put(SIMPLE_PREDICATE_NAME, value);
-        assertFalse(kiePMMLSimplePredicate.evaluate(inputData));
+        assertThat(kiePMMLSimplePredicate.evaluate(inputData)).isFalse();
         inputData = new HashMap<>();
         inputData.put(SIMPLE_PREDICATE_NAME, "NOT");
-        assertTrue(kiePMMLSimplePredicate.evaluate(inputData));
+        assertThat(kiePMMLSimplePredicate.evaluate(inputData)).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,16 +81,16 @@ public class KiePMMLSimplePredicateTest {
     public void evaluationStringEqual() {
         Object value = "43";
         KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.EQUAL, value);
-        assertFalse(kiePMMLSimplePredicate.evaluation("NOT"));
-        assertTrue(kiePMMLSimplePredicate.evaluation(value));
+        assertThat(kiePMMLSimplePredicate.evaluation("NOT")).isFalse();
+        assertThat(kiePMMLSimplePredicate.evaluation(value)).isTrue();
     }
 
     @Test
     public void evaluationStringNotEqual() {
         Object value = "43";
         KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.NOT_EQUAL, value);
-        assertFalse(kiePMMLSimplePredicate.evaluation(value));
-        assertTrue(kiePMMLSimplePredicate.evaluation("NOT"));
+        assertThat(kiePMMLSimplePredicate.evaluation(value)).isFalse();
+        assertThat(kiePMMLSimplePredicate.evaluation("NOT")).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)

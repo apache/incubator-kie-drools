@@ -60,9 +60,6 @@ import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
 import org.kie.pmml.models.clustering.model.KiePMMLMissingValueWeights;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getArray;
@@ -142,15 +139,15 @@ public class KiePMMLClusteringModelFactoryTest {
         KiePMMLClusteringModel retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
-        assertEquals(clusteringModel.getModelName(), retrieved.getName());
-        assertEquals(clusteringModel.getModelClass().value(), retrieved.getModelClass().getName());
+        assertThat(retrieved.getName()).isEqualTo(clusteringModel.getModelName());
+        assertThat(retrieved.getModelClass().getName()).isEqualTo(clusteringModel.getModelClass().value());
         List<KiePMMLCluster> retrievedClusters = retrieved.getClusters();
-        assertEquals(clusteringModel.getClusters().size(), retrievedClusters.size());
+        assertThat(retrievedClusters).hasSameSizeAs(clusteringModel.getClusters());
         IntStream.range(0, clusteringModel.getClusters().size()).forEach(i -> commonEvaluateKiePMMLCluster(retrievedClusters.get(i), clusteringModel.getClusters().get(i)));
         List<KiePMMLClusteringField> retrievedClusteringFields = retrieved.getClusteringFields();
-        assertEquals(clusteringModel.getClusters().size(), retrievedClusters.size());
+        assertThat(retrievedClusters).hasSameSizeAs(clusteringModel.getClusters());
         IntStream.range(0, clusteringModel.getClusters().size()).forEach(i -> commonEvaluateKiePMMLCluster(retrievedClusters.get(i), clusteringModel.getClusters().get(i)));
-        assertEquals(clusteringModel.getClusteringFields().size(), retrievedClusteringFields.size());
+        assertThat(retrievedClusteringFields).hasSameSizeAs(clusteringModel.getClusteringFields());
         IntStream.range(0, clusteringModel.getClusteringFields().size()).forEach(i -> commonEvaluateKiePMMLClusteringField(retrievedClusteringFields.get(i), clusteringModel.getClusteringFields().get(i)));
         commonEvaluateKiePMMLComparisonMeasure(retrieved.getComparisonMeasure(),
                                                clusteringModel.getComparisonMeasure());
@@ -168,7 +165,7 @@ public class KiePMMLClusteringModelFactoryTest {
         Map<String, String> retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved).hasSize(1);
     }
 
     @Test
@@ -211,18 +208,18 @@ public class KiePMMLClusteringModelFactoryTest {
         comparisonMeasure.setMeasure(new Euclidean());
         KiePMMLComparisonMeasure retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLComparisonMeasure(comparisonMeasure);
-        assertEquals(KiePMMLAggregateFunction.EUCLIDEAN, retrieved.getAggregateFunction());
+        assertThat(retrieved.getAggregateFunction()).isEqualTo(KiePMMLAggregateFunction.EUCLIDEAN);
         commonEvaluateKiePMMLComparisonMeasure(retrieved, comparisonMeasure);
     }
 
     @Test
     public void getKiePMMLMissingValueWeights() {
-        assertNull(KiePMMLClusteringModelFactory.getKiePMMLMissingValueWeights(null));
+        assertThat(KiePMMLClusteringModelFactory.getKiePMMLMissingValueWeights(null)).isNull();
         KiePMMLMissingValueWeights retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLMissingValueWeights(new MissingValueWeights());
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getValues()).isNotNull();
-        assertTrue(retrieved.getValues().isEmpty());
+        assertThat(retrieved.getValues()).isEmpty();
         MissingValueWeights missingValueWeights = new MissingValueWeights();
         final Random random = new Random();
         final List<Double> doubleValues =
@@ -267,15 +264,15 @@ public class KiePMMLClusteringModelFactoryTest {
                                     expectedCompareFunction,
                                     expectedTargetField);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     private void commonEvaluateKiePMMLCluster(KiePMMLCluster retrieved, Cluster cluster) {
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved.getId().isPresent());
-        assertEquals(cluster.getId(), retrieved.getId().get());
-        assertTrue(retrieved.getName().isPresent());
-        assertEquals(cluster.getName(), retrieved.getName().get());
+        assertThat(retrieved.getId()).isPresent();
+        assertThat(retrieved.getId().get()).isEqualTo(cluster.getId());
+        assertThat(retrieved.getName()).isPresent();
+        assertThat(retrieved.getName().get()).isEqualTo(cluster.getName());
         commonEvaluateDoubles(retrieved.getValues(), cluster.getArray());
     }
 
@@ -283,17 +280,17 @@ public class KiePMMLClusteringModelFactoryTest {
                                                       ClusteringField clusteringField) {
         assertThat(retrieved).isNotNull();
         boolean isCenterField = clusteringField.getCenterField() == ClusteringField.CenterField.TRUE;
-        assertEquals(clusteringField.getField().getValue(), retrieved.getField());
-        assertEquals(clusteringField.getFieldWeight(), retrieved.getFieldWeight());
-        assertEquals(isCenterField, retrieved.getCenterField());
-        assertTrue(retrieved.getCompareFunction().isPresent());
-        assertEquals(clusteringField.getCompareFunction().value(), retrieved.getCompareFunction().get().getName());
+        assertThat(retrieved.getField()).isEqualTo(clusteringField.getField().getValue());
+        assertThat(retrieved.getFieldWeight()).isEqualTo(clusteringField.getFieldWeight());
+        assertThat(retrieved.getCenterField()).isEqualTo(isCenterField);
+        assertThat(retrieved.getCompareFunction()).isPresent();
+        assertThat(retrieved.getCompareFunction().get().getName()).isEqualTo(clusteringField.getCompareFunction().value());
     }
 
     private void commonEvaluateKiePMMLComparisonMeasure(KiePMMLComparisonMeasure retrieved,
                                                         ComparisonMeasure comparisonMeasure) {
-        assertEquals(comparisonMeasure.getKind().value(), retrieved.getKind().getName());
-        assertEquals(comparisonMeasure.getCompareFunction().value(), retrieved.getCompareFunction().getName());
+        assertThat(retrieved.getKind().getName()).isEqualTo(comparisonMeasure.getKind().value());
+        assertThat(retrieved.getCompareFunction().getName()).isEqualTo(comparisonMeasure.getCompareFunction().value());
     }
 
     private void commonEvaluateKiePMMLMissingValueWeights(KiePMMLMissingValueWeights retrieved,
@@ -306,9 +303,9 @@ public class KiePMMLClusteringModelFactoryTest {
         if (array != null) {
             final List<Object> doubleValues = getObjectsFromArray(array);
             assertThat(retrievedValues).isNotNull();
-            assertEquals(doubleValues.size(), retrievedValues.size());
+            assertThat(retrievedValues).hasSameSizeAs(doubleValues);
             IntStream.range(0, doubleValues.size()).forEach(i -> {
-                assertEquals(doubleValues.get(i), retrievedValues.get(i));
+                assertThat(retrievedValues.get(i)).isEqualTo(doubleValues.get(i));
             });
         }
     }

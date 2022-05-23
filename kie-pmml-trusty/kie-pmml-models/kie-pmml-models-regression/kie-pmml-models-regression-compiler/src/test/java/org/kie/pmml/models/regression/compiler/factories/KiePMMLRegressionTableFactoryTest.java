@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import org.assertj.core.data.Offset;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.FieldName;
@@ -65,10 +66,7 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static java.util.stream.Collectors.groupingBy;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedVariableName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
@@ -139,9 +137,9 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         Map<String, KiePMMLRegressionTable> retrieved =
                 KiePMMLRegressionTableFactory.getRegressionTables(compilationDTO);
         assertThat(retrieved).isNotNull();
-        assertEquals(regressionModel.getRegressionTables().size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(regressionModel.getRegressionTables());
         regressionModel.getRegressionTables().forEach(regrTabl -> {
-            assertTrue(retrieved.containsKey(regrTabl.getTargetCategory().toString()));
+            assertThat(retrieved).containsKey(regrTabl.getTargetCategory().toString());
             commonEvaluateRegressionTable(retrieved.get(regrTabl.getTargetCategory().toString()), regrTabl);
         });
     }
@@ -269,7 +267,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         }).collect(Collectors.toList());
         Map<String, SerializableFunction<Double, Double>> retrieved =
                 KiePMMLRegressionTableFactory.getNumericPredictorsMap(numericPredictors);
-        assertEquals(numericPredictors.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(numericPredictors);
     }
 
     @Test
@@ -315,8 +313,8 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 KiePMMLRegressionTableFactory.getCategoricalPredictorsMap(categoricalPredictors);
         final Map<String, List<CategoricalPredictor>> groupedCollectors = categoricalPredictors.stream()
                 .collect(groupingBy(categoricalPredictor -> categoricalPredictor.getField().getValue()));
-        assertEquals(groupedCollectors.size(), retrieved.size());
-        groupedCollectors.keySet().forEach(predictName -> assertTrue(retrieved.containsKey(predictName)));
+        assertThat(retrieved).hasSameSizeAs(groupedCollectors);
+        groupedCollectors.keySet().forEach(predictName -> assertThat(retrieved).containsKey(predictName));
     }
 
     @Test
@@ -330,13 +328,12 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         Map<String, Double> retrieved =
                 KiePMMLRegressionTableFactory.getGroupedCategoricalPredictorMap(categoricalPredictors);
         assertThat(retrieved).isNotNull();
-        assertEquals(categoricalPredictors.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(categoricalPredictors);
         categoricalPredictors.forEach(categoricalPredictor ->
                                       {
                                           String key = categoricalPredictor.getValue().toString();
-                                          assertTrue(retrieved.containsKey(key));
-                                          assertEquals(categoricalPredictor.getCoefficient().doubleValue(),
-                                                       retrieved.get(key), 0.0);
+                                          assertThat(retrieved).containsKey(key);
+                                          assertThat(retrieved.get(key)).isCloseTo(categoricalPredictor.getCoefficient().doubleValue(), Offset.offset(0.0));
                                       });
     }
 
@@ -351,10 +348,10 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         }).collect(Collectors.toList());
         Map<String, SerializableFunction<Map<String, Object>, Double>> retrieved =
                 KiePMMLRegressionTableFactory.getPredictorTermsMap(predictorTerms);
-        assertEquals(predictorTerms.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(predictorTerms);
         IntStream.range(0, predictorTerms.size()).forEach(index -> {
             PredictorTerm predictorTerm = predictorTerms.get(index);
-            assertTrue(retrieved.containsKey(predictorTerm.getName().getValue()));
+            assertThat(retrieved).containsKey(predictorTerm.getName().getValue());
         });
     }
 
@@ -373,7 +370,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     @Test
     public void getResultUpdaterUnsupportedFunction() {
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                          assertNull(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)));
+                                                          assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNull());
     }
 
     @Test
@@ -422,8 +419,8 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                                       variableName);
         String text = getFileContent(TEST_06_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertEquals(expected.toString(), staticGetterMethod.toString());
-        assertTrue(JavaParserUtils.equalsNode(expected, staticGetterMethod));
+        assertThat(staticGetterMethod.toString()).isEqualTo(expected.toString());
+        assertThat(JavaParserUtils.equalsNode(expected, staticGetterMethod)).isTrue();
         List<Class<?>> imports = Arrays.asList(AtomicReference.class,
                                                Collections.class,
                                                Arrays.class,
@@ -443,7 +440,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 String text = getFileContent(TEST_03_SOURCE);
                 Expression expected = JavaParserUtils.parseExpression(String.format(text,
                                                                                     normalizationMethod.name()));
-                assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+                assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
             } catch (IOException e) {
                 fail(e.getMessage());
             }
@@ -455,7 +452,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             Expression retrieved =
                     KiePMMLRegressionTableFactory.getResultUpdaterExpression(normalizationMethod);
-            assertTrue(retrieved instanceof NullLiteralExpr);
+            assertThat(retrieved).isInstanceOf(NullLiteralExpr.class);
         });
     }
 
@@ -466,7 +463,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         String text = getFileContent(TEST_03_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text,
                                                                             RegressionModel.NormalizationMethod.CAUCHIT.name()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
@@ -478,7 +475,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         }).collect(Collectors.toList());
         Map<String, Expression> retrieved =
                 KiePMMLRegressionTableFactory.getNumericPredictorsExpressions(numericPredictors);
-        assertEquals(numericPredictors.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(numericPredictors);
     }
 
     @Test
@@ -491,7 +488,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         CastExpr retrieved = KiePMMLRegressionTableFactory.getNumericPredictorExpression(numericPredictor);
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, coefficient, exponent));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -504,7 +501,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         CastExpr retrieved = KiePMMLRegressionTableFactory.getNumericPredictorExpression(numericPredictor);
         String text = getFileContent(TEST_02_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, coefficient));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -527,7 +524,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 KiePMMLRegressionTableFactory.getCategoricalPredictorsExpressions(categoricalPredictors,
                                                                                   body,
                                                                                   "variableName");
-        assertEquals(3, retrieved.size());
+        assertThat(retrieved).hasSize(3);
         final Map<String, List<CategoricalPredictor>> groupedCollectors = categoricalPredictors.stream()
                 .collect(groupingBy(categoricalPredictor -> categoricalPredictor.getField().getValue()));
 
@@ -557,7 +554,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                                                       categoricalPredictors.get(1).getCoefficient(),
                                                                       categoricalPredictors.get(2).getValue(),
                                                                       categoricalPredictors.get(2).getCoefficient()));
-        assertTrue(JavaParserUtils.equalsNode(expected, toPopulate));
+        assertThat(JavaParserUtils.equalsNode(expected, toPopulate)).isTrue();
     }
 
     @Test
@@ -567,7 +564,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 KiePMMLRegressionTableFactory.getCategoricalPredictorExpression(categoricalPredictorMapName);
         String text = getFileContent(TEST_05_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, categoricalPredictorMapName));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -581,10 +578,10 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         }).collect(Collectors.toList());
         Map<String, Expression> retrieved =
                 KiePMMLRegressionTableFactory.getPredictorTermFunctions(predictorTerms);
-        assertEquals(predictorTerms.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(predictorTerms);
         IntStream.range(0, predictorTerms.size()).forEach(index -> {
             PredictorTerm predictorTerm = predictorTerms.get(index);
-            assertTrue(retrieved.containsKey(predictorTerm.getName().getValue()));
+            assertThat(retrieved).containsKey(predictorTerm.getName().getValue());
         });
     }
 
@@ -599,7 +596,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
 
         String text = getFileContent(TEST_07_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, fieldRef, coefficient));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
@@ -613,21 +610,20 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 .collect(Collectors.toList());
         outputFields.addAll(probabilityOutputFields);
     }
-
     private void commonEvaluateRegressionTable(KiePMMLRegressionTable retrieved, RegressionTable source) {
         Map<String, SerializableFunction<Double, Double>> numericFunctionMap = retrieved.getNumericFunctionMap();
-        assertEquals(source.getNumericPredictors().size(), numericFunctionMap.size());
-        source.getNumericPredictors().forEach(numericPredictor -> assertTrue(numericFunctionMap.containsKey(numericPredictor.getName().getValue())));
+        assertThat(numericFunctionMap).hasSameSizeAs(source.getNumericPredictors());
+        source.getNumericPredictors().forEach(numericPredictor -> assertThat(numericFunctionMap).containsKey(numericPredictor.getName().getValue()));
         Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 retrieved.getCategoricalFunctionMap();
         Map<String, List<CategoricalPredictor>> groupedCollectors = categoricalPredictors.stream()
                 .collect(groupingBy(categoricalPredictor -> categoricalPredictor.getField().getValue()));
-        assertEquals(groupedCollectors.size(), categoricalFunctionMap.size());
-        groupedCollectors.keySet().forEach(categorical -> assertTrue(categoricalFunctionMap.containsKey(categorical)));
+        assertThat(categoricalFunctionMap).hasSameSizeAs(groupedCollectors);
+        groupedCollectors.keySet().forEach(categorical -> assertThat(categoricalFunctionMap).containsKey(categorical));
         Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
                 retrieved.getPredictorTermsFunctionMap();
-        assertEquals(source.getPredictorTerms().size(), predictorTermsFunctionMap.size());
-        source.getPredictorTerms().forEach(predictorTerm -> assertTrue(predictorTermsFunctionMap.containsKey(predictorTerm.getName().getValue())));
+        assertThat(predictorTermsFunctionMap).hasSameSizeAs(source.getPredictorTerms());
+        source.getPredictorTerms().forEach(predictorTerm -> assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue()));
     }
 
     private void commonEvaluateCategoryPredictors(final BlockStmt toVerify,
@@ -637,7 +633,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
             CategoricalPredictor categoricalPredictor = categoricalPredictors.get(i);
             String expectedVariableName =
                     getSanitizedVariableName(String.format("%sMap", variableName)) + "_" + i;
-            assertTrue(toVerify.getStatements()
+            assertThat(toVerify.getStatements()
                                .stream()
                                .anyMatch(statement -> {
                                    String expected = String.format(
@@ -648,7 +644,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                                    return statement instanceof ExpressionStmt &&
                                            ((ExpressionStmt) statement).getExpression() instanceof MethodCallExpr &&
                                            statement.toString().equals(expected);
-                               }));
+                               })).isTrue();
         }
     }
 

@@ -21,12 +21,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.kie.pmml.commons.model.tuples.KiePMMLProbabilityConfidence;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.tree.model.KiePMMLTreeTestUtils.getRandomKiePMMLScoreDistributions;
 
 public class KiePMMLNodeTest {
@@ -35,14 +34,14 @@ public class KiePMMLNodeTest {
     public void getProbabilityConfidenceMap() {
         LinkedHashMap<String, KiePMMLProbabilityConfidence> retrieved = KiePMMLNode.getProbabilityConfidenceMap(null, 1.0);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isEmpty();
         retrieved = KiePMMLNode.getProbabilityConfidenceMap(Collections.emptyList(), 1.0);
         assertThat(retrieved).isNotNull();
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isEmpty();
         List<KiePMMLScoreDistribution> kiePMMLScoreDistributions = getRandomKiePMMLScoreDistributions(false);
         retrieved = KiePMMLNode.getProbabilityConfidenceMap(kiePMMLScoreDistributions, 1.0);
         assertThat(retrieved).isNotNull();
-        assertEquals(kiePMMLScoreDistributions.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(kiePMMLScoreDistributions);
     }
 
     @Test
@@ -55,26 +54,26 @@ public class KiePMMLNodeTest {
         LinkedHashMap<String, KiePMMLProbabilityConfidence> retrievedNoProbability = KiePMMLNode.getProbabilityConfidenceMap(kiePMMLScoreDistributions, missingValuePenalty);
         assertThat(retrievedNoProbability).isNotNull();
         kiePMMLScoreDistributions.forEach(kiePMMLScoreDistribution -> {
-            assertTrue(retrievedNoProbability.containsKey(kiePMMLScoreDistribution.getValue()));
+            assertThat(retrievedNoProbability).containsKey(kiePMMLScoreDistribution.getValue());
             KiePMMLProbabilityConfidence kiePMMLProbabilityConfidence = retrievedNoProbability.get(kiePMMLScoreDistribution.getValue());
             assertThat(kiePMMLProbabilityConfidence).isNotNull();
             double probabilityExpected = (double) kiePMMLScoreDistribution.getRecordCount() / (double) totalRecordCount;
             double confidenceExpected = kiePMMLScoreDistribution.getConfidence() * missingValuePenalty;
-            assertEquals(probabilityExpected, kiePMMLProbabilityConfidence.getProbability(), 0.000000001);
-            assertEquals(confidenceExpected, kiePMMLProbabilityConfidence.getConfidence(), 0.000000001);
+            assertThat(kiePMMLProbabilityConfidence.getProbability()).isCloseTo(probabilityExpected, Offset.offset(0.000000001));
+            assertThat(kiePMMLProbabilityConfidence.getConfidence()).isCloseTo(confidenceExpected, Offset.offset(0.000000001));
         });
         //
         kiePMMLScoreDistributions = getRandomKiePMMLScoreDistributions(true);
         LinkedHashMap<String, KiePMMLProbabilityConfidence> retrievedProbability = KiePMMLNode.getProbabilityConfidenceMap(kiePMMLScoreDistributions, missingValuePenalty);
         assertThat(retrievedNoProbability).isNotNull();
         kiePMMLScoreDistributions.forEach(kiePMMLScoreDistribution -> {
-            assertTrue(retrievedProbability.containsKey(kiePMMLScoreDistribution.getValue()));
+        	assertThat(retrievedProbability).containsKey(kiePMMLScoreDistribution.getValue());
             KiePMMLProbabilityConfidence kiePMMLProbabilityConfidence = retrievedProbability.get(kiePMMLScoreDistribution.getValue());
             assertThat(kiePMMLProbabilityConfidence).isNotNull();
             double probabilityExpected = kiePMMLScoreDistribution.getProbability();
             double confidenceExpected = kiePMMLScoreDistribution.getConfidence() * missingValuePenalty;
-            assertEquals(probabilityExpected, kiePMMLProbabilityConfidence.getProbability(), 0.000000001);
-            assertEquals(confidenceExpected, kiePMMLProbabilityConfidence.getConfidence(), 0.000000001);
+            assertThat(kiePMMLProbabilityConfidence.getProbability()).isCloseTo(probabilityExpected, Offset.offset(0.000000001));
+            assertThat(kiePMMLProbabilityConfidence.getConfidence()).isCloseTo(confidenceExpected, Offset.offset(0.000000001));
         });
     }
 }

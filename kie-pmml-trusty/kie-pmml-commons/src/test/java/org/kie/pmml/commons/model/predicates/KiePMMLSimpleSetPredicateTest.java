@@ -29,8 +29,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.IN_NOTIN;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLSimpleSetPredicateTest {
 
@@ -44,11 +43,11 @@ public class KiePMMLSimpleSetPredicateTest {
                                                                                            IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, "NOT");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, values.get(0));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -59,11 +58,11 @@ public class KiePMMLSimpleSetPredicateTest {
                                                                                            IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, values.get(0));
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, "NOT");
-        assertTrue(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -74,11 +73,11 @@ public class KiePMMLSimpleSetPredicateTest {
                                                                                            IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "234");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, "432");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, values.get(0));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -89,11 +88,11 @@ public class KiePMMLSimpleSetPredicateTest {
                                                                                            IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "234");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, values.get(0));
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, "432");
-        assertTrue(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -104,11 +103,11 @@ public class KiePMMLSimpleSetPredicateTest {
                                                                                            IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "23.4");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, "4.32");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, values.get(0));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -119,11 +118,11 @@ public class KiePMMLSimpleSetPredicateTest {
                                                                                            IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "23.4");
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, values.get(0));
-        assertFalse(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
         inputData.put(SIMPLE_SET_PREDICATE_NAME, "4.32");
-        assertTrue(kiePMMLSimpleSetPredicate.evaluate(inputData));
+        assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
@@ -132,8 +131,8 @@ public class KiePMMLSimpleSetPredicateTest {
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
                                                                                            IN_NOTIN.IN);
-        assertFalse(kiePMMLSimpleSetPredicate.evaluation("NOT"));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluation(values.get(0)));
+        assertThat(kiePMMLSimpleSetPredicate.evaluation("NOT")).isFalse();
+        assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
 
     @Test
@@ -142,8 +141,8 @@ public class KiePMMLSimpleSetPredicateTest {
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
                                                                                            IN_NOTIN.NOT_IN);
-        assertFalse(kiePMMLSimpleSetPredicate.evaluation(values.get(0)));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluation("NOT"));
+        assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
+        assertThat(kiePMMLSimpleSetPredicate.evaluation("NOT")).isTrue();
     }
 
     @Test
@@ -152,8 +151,8 @@ public class KiePMMLSimpleSetPredicateTest {
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
                                                                                            IN_NOTIN.IN);
-        assertFalse(kiePMMLSimpleSetPredicate.evaluation("234"));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluation(values.get(0)));
+        assertThat(kiePMMLSimpleSetPredicate.evaluation("234")).isFalse();
+        assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
 
     @Test
@@ -162,8 +161,8 @@ public class KiePMMLSimpleSetPredicateTest {
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
                                                                                            IN_NOTIN.NOT_IN);
-        assertFalse(kiePMMLSimpleSetPredicate.evaluation(values.get(0)));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluation("234"));
+        assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
+        assertThat(kiePMMLSimpleSetPredicate.evaluation("234")).isTrue();
     }
 
     @Test
@@ -172,8 +171,8 @@ public class KiePMMLSimpleSetPredicateTest {
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
                                                                                            IN_NOTIN.IN);
-        assertFalse(kiePMMLSimpleSetPredicate.evaluation("23.4"));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluation(values.get(0)));
+        assertThat(kiePMMLSimpleSetPredicate.evaluation("23.4")).isFalse();
+        assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
 
     @Test
@@ -182,8 +181,8 @@ public class KiePMMLSimpleSetPredicateTest {
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
                                                                                            IN_NOTIN.NOT_IN);
-        assertFalse(kiePMMLSimpleSetPredicate.evaluation(values.get(0)));
-        assertTrue(kiePMMLSimpleSetPredicate.evaluation("23.4"));
+        assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
+        assertThat(kiePMMLSimpleSetPredicate.evaluation("23.4")).isTrue();
     }
 
     private KiePMMLSimpleSetPredicate getKiePMMLSimpleSetPredicate(final List<Object> values,

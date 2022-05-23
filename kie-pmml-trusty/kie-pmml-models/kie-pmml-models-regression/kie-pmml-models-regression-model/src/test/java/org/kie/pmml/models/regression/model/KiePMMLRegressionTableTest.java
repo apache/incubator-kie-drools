@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.api.runtime.PMMLContext;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -78,7 +78,7 @@ public class KiePMMLRegressionTableTest {
         input.put(FIRST_CATEGORICAL_INPUT, "unused");
         input.put(SECOND_CATEGORICAL_INPUT, "unused");
         Object retrieved = regressionTable.evaluateRegression(input, mock(PMMLContext.class));
-        assertEquals(expectedResult, retrieved);
+        assertThat(retrieved).isEqualTo(expectedResult);
     }
 
     private KiePMMLRegressionTable getKiePMMLRegressionTable() {

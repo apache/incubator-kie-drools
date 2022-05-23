@@ -17,10 +17,8 @@
 package org.kie.pmml.api.utils;
 
 import org.junit.Test;
-import org.kie.pmml.api.utils.PrimitiveBoxedUtils;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PrimitiveBoxedUtilsTest {
 
@@ -35,38 +33,38 @@ public class PrimitiveBoxedUtilsTest {
     @Test
     public void areSameWithBoxing() {
         for (int i = 0; i < types; i++) {
-            assertTrue(PrimitiveBoxedUtils.areSameWithBoxing(primitives[i], boxeds[i]));
-            assertTrue(PrimitiveBoxedUtils.areSameWithBoxing(boxeds[i], primitives[i]));
-            assertTrue(PrimitiveBoxedUtils.areSameWithBoxing(primitives[i], primitives[i]));
-            assertTrue(PrimitiveBoxedUtils.areSameWithBoxing(boxeds[i], boxeds[i]));
+            assertThat(PrimitiveBoxedUtils.areSameWithBoxing(primitives[i], boxeds[i])).isTrue();
+            assertThat(PrimitiveBoxedUtils.areSameWithBoxing(boxeds[i], primitives[i])).isTrue();
+            assertThat(PrimitiveBoxedUtils.areSameWithBoxing(primitives[i], primitives[i])).isTrue();
+            assertThat(PrimitiveBoxedUtils.areSameWithBoxing(boxeds[i], boxeds[i])).isTrue();
         }
         for (int i = 0; i < types; i++) {
-            assertFalse(PrimitiveBoxedUtils.areSameWithBoxing(primitives[i], boxeds[types - 1 - i]));
-            assertFalse(PrimitiveBoxedUtils.areSameWithBoxing(boxeds[i], primitives[types - 1 - i]));
+        	assertThat(PrimitiveBoxedUtils.areSameWithBoxing(primitives[i], boxeds[types - 1 - i])).isFalse();
+        	assertThat(PrimitiveBoxedUtils.areSameWithBoxing(boxeds[i], primitives[types - 1 - i])).isFalse();
         }
-        assertFalse(PrimitiveBoxedUtils.areSameWithBoxing(String.class, String.class));
-        assertFalse(PrimitiveBoxedUtils.areSameWithBoxing(double.class, String.class));
-        assertFalse(PrimitiveBoxedUtils.areSameWithBoxing(String.class, Double.class));
+        assertThat(PrimitiveBoxedUtils.areSameWithBoxing(String.class, String.class)).isFalse();
+        assertThat(PrimitiveBoxedUtils.areSameWithBoxing(double.class, String.class)).isFalse();
+        assertThat(PrimitiveBoxedUtils.areSameWithBoxing(String.class, Double.class)).isFalse();
     }
 
     @Test
     public void getKiePMMLPrimitiveBoxed() {
         for (int i = 0; i < types; i++) {
-            assertTrue(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).isPresent());
-            assertTrue(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).isPresent());
+        	assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).isPresent()).isTrue();
+            assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).isPresent()).isTrue();
         }
-        assertFalse(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(String.class).isPresent());
+        assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(String.class)).isNotPresent();
     }
 
     @Test
     public void isSameWithBoxing() {
         for (int i = 0; i < types; i++) {
-            assertTrue(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).get().isSameWithBoxing(boxeds[i]));
-            assertTrue(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).get().isSameWithBoxing(primitives[i]));
-            assertTrue(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).get().isSameWithBoxing(primitives[i]));
-            assertTrue(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).get().isSameWithBoxing(boxeds[i]));
-            assertFalse(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).get().isSameWithBoxing(String.class));
-            assertFalse(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).get().isSameWithBoxing(String.class));
+        	assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).get().isSameWithBoxing(boxeds[i])).isTrue();
+        	assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).get().isSameWithBoxing(primitives[i])).isTrue();
+        	assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).get().isSameWithBoxing(primitives[i])).isTrue();
+        	assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).get().isSameWithBoxing(boxeds[i])).isTrue();
+        	assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(primitives[i]).get().isSameWithBoxing(String.class)).isFalse();
+            assertThat(PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed(boxeds[i]).get().isSameWithBoxing(String.class)).isFalse();
         }
     }
 }

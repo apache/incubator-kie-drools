@@ -24,7 +24,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DATA_TYPETest {
 
@@ -76,20 +76,20 @@ public class DATA_TYPETest {
 
     @Test
     public void getActualValue() {
-        unconvertedValues.forEach((dataType, o) -> assertEquals(o, dataType.getActualValue(o)));
+        unconvertedValues.forEach((dataType, o) -> assertThat(dataType.getActualValue(o)).isEqualTo(o));
         convertedValues.forEach((dataType, o) -> {
             switch (dataType) {
                 case DATE:
-                    assertEquals(((Date) unconvertedValues.get(dataType)).toInstant().atZone(ZONE_ID).toLocalDate(), dataType.getActualValue(o));
+                    assertThat(dataType.getActualValue(o)).isEqualTo(((Date) unconvertedValues.get(dataType)).toInstant().atZone(ZONE_ID).toLocalDate());
                     break;
                 case TIME:
-                    assertEquals(((Date) unconvertedValues.get(dataType)).toInstant().atZone(ZONE_ID).toLocalTime(), dataType.getActualValue(o));
+                    assertThat(dataType.getActualValue(o)).isEqualTo(((Date) unconvertedValues.get(dataType)).toInstant().atZone(ZONE_ID).toLocalTime());
                     break;
                 case DATE_TIME:
-                    assertEquals(((Date) unconvertedValues.get(dataType)).toInstant().atZone(ZONE_ID).toLocalDateTime(), dataType.getActualValue(o));
+                    assertThat(dataType.getActualValue(o)).isEqualTo(((Date) unconvertedValues.get(dataType)).toInstant().atZone(ZONE_ID).toLocalDateTime());
                     break;
                 default:
-                    assertEquals(unconvertedValues.get(dataType), dataType.getActualValue(o));
+                    assertThat(dataType.getActualValue(o)).isEqualTo(unconvertedValues.get(dataType));
             }
         });
     }

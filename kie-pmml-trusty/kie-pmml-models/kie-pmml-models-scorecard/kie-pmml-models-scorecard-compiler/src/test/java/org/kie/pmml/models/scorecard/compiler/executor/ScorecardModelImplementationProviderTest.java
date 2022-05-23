@@ -31,8 +31,6 @@ import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class ScorecardModelImplementationProviderTest {
 
@@ -55,7 +53,7 @@ public class ScorecardModelImplementationProviderTest {
 
     @Test
     public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.SCORECARD_MODEL, PROVIDER.getPMMLModelType());
+        assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.SCORECARD_MODEL);
     }
 
     @Test
@@ -80,6 +78,6 @@ public class ScorecardModelImplementationProviderTest {
         assertThat(retrieved).isNotNull();
         Map<String, String> retrievedSourcesMap = retrieved.getSourcesMap();
         assertThat(retrievedSourcesMap).isNotNull();
-        assertFalse(retrievedSourcesMap.isEmpty());
+        assertThat(retrievedSourcesMap).isNotEmpty();
     }
 }

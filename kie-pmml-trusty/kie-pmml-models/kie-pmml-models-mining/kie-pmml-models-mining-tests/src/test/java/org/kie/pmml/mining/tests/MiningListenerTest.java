@@ -35,8 +35,7 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.core.implementations.PMMLRuntimeStep;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MiningListenerTest extends AbstractPMMLTest {
@@ -107,9 +106,9 @@ public class MiningListenerTest extends AbstractPMMLTest {
 
     private void commonValidateStep(final PMMLStep toValidate) {
         Map<String, Object> retrieved = toValidate.getInfo();
-        assertTrue(retrieved.containsKey("SEGMENT"));
-        assertTrue(retrieved.containsKey("RESULT CODE"));
-        assertTrue(retrieved.containsKey("MODEL"));
-        assertTrue(retrieved.containsKey("RESULT"));
+        assertThat(retrieved.containsKey("SEGMENT")).isTrue();
+        assertThat(retrieved.containsKey("RESULT CODE")).isTrue();
+        assertThat(retrieved.containsKey("MODEL")).isTrue();
+        assertThat(retrieved.containsKey("RESULT")).isTrue();
     }
 }

@@ -28,8 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class KiePMMLDescrTypesFactoryTest {
@@ -46,9 +45,9 @@ public class KiePMMLDescrTypesFactoryTest {
         List<KiePMMLDroolsType> types = new ArrayList<>();
         types.add(KiePMMLDescrTestUtils.getDroolsType());
         types.add(KiePMMLDescrTestUtils.getDottedDroolsType());
-        assertTrue(builder.getDescr().getTypeDeclarations().isEmpty());
+        assertThat(builder.getDescr().getTypeDeclarations()).isEmpty();
         KiePMMLDescrTypesFactory.factory(builder).declareTypes(types);
-        assertEquals(2, builder.getDescr().getTypeDeclarations().size());
+        assertThat(builder.getDescr().getTypeDeclarations()).hasSize(2);
         IntStream.range(0, types.size())
                 .forEach(i -> commonVerifyTypeDeclarationDescr(Objects.requireNonNull(types.get(i)), builder.getDescr().getTypeDeclarations().get(i)));
     }
@@ -57,16 +56,16 @@ public class KiePMMLDescrTypesFactoryTest {
     public void declareType() {
         KiePMMLDroolsType type = KiePMMLDescrTestUtils.getDroolsType();
         KiePMMLDescrTypesFactory.factory(builder).declareType(type);
-        assertEquals(1, builder.getDescr().getTypeDeclarations().size());
+        assertThat(builder.getDescr().getTypeDeclarations()).hasSize(1);
         commonVerifyTypeDeclarationDescr(type, builder.getDescr().getTypeDeclarations().get(0));
     }
 
     private void commonVerifyTypeDeclarationDescr(KiePMMLDroolsType type, final TypeDeclarationDescr typeDeclarationDescr) {
         String expectedGeneratedType = type.getName();
         String expectedMappedOriginalType = type.getType();
-        assertEquals(expectedGeneratedType, typeDeclarationDescr.getTypeName());
-        assertEquals(1, typeDeclarationDescr.getFields().size());
-        assertTrue(typeDeclarationDescr.getFields().containsKey("value"));
-        assertEquals(expectedMappedOriginalType, typeDeclarationDescr.getFields().get("value").getPattern().getObjectType());
+        assertThat(typeDeclarationDescr.getTypeName()).isEqualTo(expectedGeneratedType);
+        assertThat(typeDeclarationDescr.getFields()).hasSize(1);
+        assertThat(typeDeclarationDescr.getFields()).containsKey("value");
+        assertThat(typeDeclarationDescr.getFields().get("value").getPattern().getObjectType()).isEqualTo(expectedMappedOriginalType);
     }
 }
