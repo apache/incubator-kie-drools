@@ -584,7 +584,7 @@ public class RuleContext {
     }
 
     public String getOutOfScopeVar( String x ) {
-        return x == null ? null : x + scopesStack.getLast().id;
+        return x == null || idGenerator.isGenerated( x ) ? x : x + scopesStack.getLast().id;
     }
 
     public Expression getVarExpr(String x) {
