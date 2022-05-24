@@ -29,10 +29,33 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.drl.parser.DroolsParserException;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.DuplicateRule;
-import org.drools.drl.parser.ParserError;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.ActivationGroupNode;
+import org.drools.core.common.ActivationNode;
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleFlowGroup;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.rule.Behavior;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.SlidingTimeWindow;
+import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.rule.accessor.CompiledInvoker;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.Consequence;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
@@ -51,32 +74,8 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.ActivationGroupNode;
-import org.drools.core.common.ActivationNode;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Behavior;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.consequence.Activation;
-import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.rule.constraint.Constraint;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.test.model.DroolsTestCase;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.ParserError;
 import org.drools.ecj.EclipseJavaCompiler;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -469,7 +468,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
            fail( builder1.getErrors().toString() );
         }
         final Pattern pattern1 = (Pattern) ((RuleImpl)builder1.getPackage("package1").getRules().iterator().next()).getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate1 = (PredicateConstraint) pattern1.getConstraints().get( 0 );
+        final Constraint predicate1 = pattern1.getConstraints().get( 0 );
 
         final KnowledgeBuilderImpl builder2 = new KnowledgeBuilderImpl();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
@@ -481,7 +480,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
          }
         
         final Pattern pattern2 = (Pattern) ((RuleImpl)builder2.getPackage("package2").getRules().iterator().next()).getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate2 = (PredicateConstraint) pattern2.getConstraints().get( 0 );
+        final Constraint predicate2 = pattern2.getConstraints().get( 0 );
 
         final KnowledgeBuilderImpl builder3 = new KnowledgeBuilderImpl();
         if ( builder3.hasErrors() ) {
@@ -492,7 +491,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                              "eval(x!=y)" );
         builder3.addPackage( packageDescr3 );
         final Pattern pattern3 = (Pattern) ((RuleImpl)builder3.getPackage("package3").getRules().iterator().next()).getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate3 = (PredicateConstraint) pattern3.getConstraints().get( 0 );
+        final Constraint predicate3 = pattern3.getConstraints().get( 0 );
 
         assertEquals( predicate1,
                       predicate2 );

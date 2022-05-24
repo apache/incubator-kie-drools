@@ -150,7 +150,7 @@ public class DescrDumper extends ReflectiveVisitor implements ExpressionRewriter
 
     private String[] processAtomicExpression( StringBuilder sbuilder, DumperContext context, AtomicExprDescr atomicExpr, ConstraintConnectiveDescr parent, int parentIdx ) {
         String expr = atomicExpr.getExpression().trim();
-        expr = processEval(expr);
+        expr = normalizeEval(expr);
         String[] constrAndExpr = processImplicitConstraints( expr, atomicExpr, parent, parentIdx, context );
         // top-level, implicit constraints will be processed in different nodes.
         // Nested CCDs require all constraints to be evaluated locally, as a complex constraints
@@ -200,7 +200,7 @@ public class DescrDumper extends ReflectiveVisitor implements ExpressionRewriter
 
     private String processRightAtomicExpr( StringBuilder left, AtomicExprDescr atomicExpr, ConstraintConnectiveDescr parent, int parentIdx, DumperContext context ) {
         String expr = atomicExpr.getExpression().trim();
-        expr = processEval( expr );
+        expr = normalizeEval( expr );
         String[] constrAndExpr = processImplicitConstraints(expr, atomicExpr, parent, parentIdx, context);
         left.insert( 0, constrAndExpr[0] );
         return processBackReference( context, atomicExpr, constrAndExpr[1] );
@@ -365,9 +365,11 @@ public class DescrDumper extends ReflectiveVisitor implements ExpressionRewriter
         return field1;
     }
 
-    private String processEval(String expr) {
+    public static String normalizeEval(String expr) {
         // stripping "eval" as it is no longer necessary
-        return evalRegexp.matcher( expr ).find() ? expr.substring( expr.indexOf( '(' ) + 1, expr.lastIndexOf( ')' ) ) : expr;
+        String normalized = evalRegexp.matcher( expr ).find() ? expr.substring( expr.indexOf( '(' ) + 1, expr.lastIndexOf( ')' ) ) : expr;
+        //  we are not able to normalize nested/combined evals
+        return normalized.contains("eval") ? expr : normalized;
     }
 
     private String[] splitInClassAndField(String expr, DumperContext context) {

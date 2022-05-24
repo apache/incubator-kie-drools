@@ -41,40 +41,32 @@ public class ClassTypeResolver
     private static final Map<String, String> internalNamesMap = new HashMap<>();
 
     static {
-        internalNamesMap.put("int",
-                             "I");
-        internalNamesMap.put("boolean",
-                             "Z");
-        internalNamesMap.put("float",
-                             "F");
-        internalNamesMap.put("long",
-                             "J");
-        internalNamesMap.put("short",
-                             "S");
-        internalNamesMap.put("byte",
-                             "B");
-        internalNamesMap.put("double",
-                             "D");
-        internalNamesMap.put("char",
-                             "C");
+        internalNamesMap.put("int", "I");
+        internalNamesMap.put("boolean", "Z");
+        internalNamesMap.put("float", "F");
+        internalNamesMap.put("long", "J");
+        internalNamesMap.put("short", "S");
+        internalNamesMap.put("byte", "B");
+        internalNamesMap.put("double", "D");
+        internalNamesMap.put("char", "C");
     }
 
     /*
      * Copied from drools-core (a lesser evil than making this code shareable).
      */
-    public static Class<?> safeLoadClass(ClassLoader cl,
-                                         String name) {
+    public static Class<?> safeLoadClass(ClassLoader cl, String name) {
         try {
             return cl.loadClass(name);
         } catch (final ClassNotFoundException cnfe) {
-        } // class doesn't exist
+            // class doesn't exist
+        }
         catch (final NoClassDefFoundError ncdfe) {
-        } // potential mis-match induced by Mac/OSX
+            // potential mis-match induced by Mac/OSX
+        }
         return null;
     }
 
-    public ClassTypeResolver(final Set<String> imports,
-                             final ClassLoader classLoader) {
+    public ClassTypeResolver(final Set<String> imports, final ClassLoader classLoader) {
         this.imports = imports;
 
         if (classLoader == null) {
@@ -84,11 +76,8 @@ public class ClassTypeResolver
         this.classLoader = classLoader;
     }
 
-    public ClassTypeResolver(Set<String> imports,
-                             ClassLoader rootClassLoader,
-                             String name) {
-        this(imports,
-             rootClassLoader);
+    public ClassTypeResolver(Set<String> imports, ClassLoader rootClassLoader, String name) {
+        this(imports, rootClassLoader);
         this.defaultPackagName = name;
     }
 
@@ -142,30 +131,17 @@ public class ClassTypeResolver
     }
 
     @Override
-    public void registerClass(String className,
-                              Class<?> clazz) {
-        this.cachedImports.put(className,
-                               clazz);
+    public void registerClass(String className, Class<?> clazz) {
+        this.cachedImports.put(className, clazz);
     }
 
     @Override
     public Class<?> resolveType(String className) throws ClassNotFoundException {
-        return resolveType(className,
-                           ACCEPT_ALL_CLASS_FILTER);
+        return resolveType(className, ACCEPT_ALL_CLASS_FILTER);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.semantics.base.Importer#importClass(java.lang.ClassLoader,
-     *      java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see org.kie.semantics.java.TypeResolver#resolveVarType(java.lang.String)
-     */
     @Override
-    public Class<?> resolveType(String className,
-                                ClassFilter classFilter) throws ClassNotFoundException {
+    public Class<?> resolveType(String className, ClassFilter classFilter) throws ClassNotFoundException {
         Class<?> clazz = lookupFromCache(className);
 
         if (clazz != null && !classFilter.accept(clazz)) {
@@ -180,11 +156,9 @@ public class ClassTypeResolver
             // is an array?
             isArray = true;
             int bracketIndex = className.indexOf('[');
-            final String componentName = className.substring(0,
-                                                             bracketIndex);
+            final String componentName = className.substring(0, bracketIndex);
             arrayClassName.append('[');
-            while ((bracketIndex = className.indexOf('[',
-                                                     bracketIndex + 1)) > 0) {
+            while ((bracketIndex = className.indexOf('[', bracketIndex + 1)) > 0) {
                 arrayClassName.append('[');
             }
             className = componentName;
@@ -194,16 +168,13 @@ public class ClassTypeResolver
 
         //is the class a primitive type ?
         if (clazz == null && internalNamesMap.containsKey(className)) {
-            clazz = Class.forName("[" + internalNamesMap.get(className),
-                                  true,
-                                  this.classLoader).getComponentType();
+            clazz = Class.forName("[" + internalNamesMap.get(className), true, this.classLoader).getComponentType();
             isPrimitive = true;
         }
 
         // try loading className
         if (clazz == null) {
-            clazz = safeLoadClass(this.classLoader,
-                                  className);
+            clazz = safeLoadClass(this.classLoader, className);
             if (clazz != null && !classFilter.accept(clazz)) {
                 clazz = null;
             }
@@ -211,8 +182,7 @@ public class ClassTypeResolver
 
         // try as a nested class
         if (clazz == null) {
-            clazz = importClass(className,
-                                className);
+            clazz = importClass(className, className);
             if (clazz != null && !classFilter.accept(clazz)) {
                 clazz = null;
             }
@@ -220,16 +190,12 @@ public class ClassTypeResolver
 
         // Now try the className with each of the given explicit imports
         if (clazz == null) {
-            clazz = getClassFromImports(className,
-                                        classFilter,
-                                        imports);
+            clazz = getClassFromImports(className, classFilter, imports);
         }
 
         // Now try the className with each of the given implicit imports
         if (clazz == null) {
-            clazz = getClassFromImports(className,
-                                        classFilter,
-                                        implicitImports);
+            clazz = getClassFromImports(className, classFilter, implicitImports);
         }
 
         // Now try the java.lang package
@@ -253,9 +219,7 @@ public class ClassTypeResolver
                 }
             }
             try {
-                clazz = Class.forName(arrayClassName.toString(),
-                                      true,
-                                      this.classLoader);
+                clazz = Class.forName(arrayClassName.toString(), true, this.classLoader);
             } catch (final ClassNotFoundException e) {
                 clazz = null;
             }
@@ -263,20 +227,16 @@ public class ClassTypeResolver
 
         // We still can't find the class so throw an exception
         if (clazz == null) {
-            this.cachedImports.put(className,
-                                   Void.class);
+            this.cachedImports.put(className, Void.class);
             throw new ClassNotFoundException("Unable to find class '" + className + "'");
         }
 
-        this.cachedImports.put(clazz.getSimpleName(),
-                               clazz);
+        this.cachedImports.put(clazz.getSimpleName(), clazz);
 
         return clazz;
     }
 
-    private Class<?> getClassFromImports(String className,
-                                         ClassFilter classFilter,
-                                         Collection<String> usedImports) {
+    private Class<?> getClassFromImports(String className, ClassFilter classFilter, Collection<String> usedImports) {
         final Set<Class<?>> validClazzCandidates = new HashSet<>();
 
         for (String i : usedImports) {
@@ -312,14 +272,12 @@ public class ClassTypeResolver
         return validClazzCandidates.size() == 1 ? validClazzCandidates.iterator().next() : null;
     }
 
-    private Class<?> importClass(String importText,
-                                 String className) {
+    private Class<?> importClass(String importText, String className) {
         String qualifiedClass = null;
         Class<?> clazz = null;
 
         if (importText.endsWith("*")) {
-            qualifiedClass = importText.substring(0,
-                                                  importText.indexOf('*')) + className;
+            qualifiedClass = importText.substring(0, importText.indexOf('*')) + className;
         } else if (importText.endsWith("." + className)) {
             qualifiedClass = importText;
         } else if ((className.indexOf('.') > 0) && (importText.endsWith(className.split("\\.")[0]))) {
@@ -335,10 +293,8 @@ public class ClassTypeResolver
             // maybe its a nested class?
             int lastIndex;
             while (clazz == null && (lastIndex = qualifiedClass.lastIndexOf('.')) != -1) {
-                qualifiedClass = qualifiedClass.substring(0,
-                                                          lastIndex) + "$" + qualifiedClass.substring(lastIndex + 1);
-                clazz = safeLoadClass(this.classLoader,
-                                      qualifiedClass);
+                qualifiedClass = qualifiedClass.substring(0, lastIndex) + "$" + qualifiedClass.substring(lastIndex + 1);
+                clazz = safeLoadClass(this.classLoader, qualifiedClass);
             }
         }
 
@@ -347,8 +303,7 @@ public class ClassTypeResolver
                 this.cachedImports = new HashMap<>();
             }
 
-            this.cachedImports.put(clazz.getSimpleName(),
-                                   clazz);
+            this.cachedImports.put(clazz.getSimpleName(), clazz);
         }
 
         return clazz;
@@ -366,8 +321,7 @@ public class ClassTypeResolver
             if (this.cachedImports == Collections.EMPTY_MAP) {
                 this.cachedImports = new HashMap<>();
             }
-            this.cachedImports.put(className,
-                                   clazz);
+            this.cachedImports.put(className, clazz);
         }
         return clazz;
     }

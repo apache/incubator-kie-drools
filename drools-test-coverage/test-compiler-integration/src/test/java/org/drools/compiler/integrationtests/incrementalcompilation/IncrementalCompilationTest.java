@@ -5032,4 +5032,42 @@ public class IncrementalCompilationTest {
         }
         return rules.toString();
     }
+
+    @Test
+    public void testRemoveSharedConstraintWithEval() throws Exception {
+        // DROOLS-6960
+        final String drl1 =
+                "rule R1 when\n" +
+                "  String( eval(length == 4) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  String( eval(length == 4) )\n" +
+                "then\n" +
+                "end\n";
+
+        final String drl2 =
+                "rule R2 when\n" +
+                "  String( eval(length == 4) )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession ksession = kc.newKieSession();
+
+        assertEquals(0, ksession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl2);
+
+        kc.updateToVersion(releaseId2);
+
+        ksession.insert("test");
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

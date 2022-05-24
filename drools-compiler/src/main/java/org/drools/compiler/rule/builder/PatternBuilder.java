@@ -35,22 +35,21 @@ import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
-import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.drl.parser.DrlExprParser;
 import org.drools.compiler.compiler.DroolsErrorWrapper;
-import org.drools.drl.parser.DroolsParserException;
 import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.DescrDumper;
 import org.drools.compiler.lang.DumperContext;
+import org.drools.compiler.rule.builder.EvaluatorDefinition.Target;
 import org.drools.compiler.rule.builder.XpathAnalysis.XpathPart;
 import org.drools.compiler.rule.builder.util.ConstraintUtil;
-import org.drools.util.TypeResolver;
+import org.drools.core.base.AcceptsClassObjectType;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldNameSupplier;
+import org.drools.core.base.ObjectType;
 import org.drools.core.base.ValueType;
-import org.drools.compiler.rule.builder.EvaluatorDefinition.Target;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
@@ -64,24 +63,20 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PatternSource;
 import org.drools.core.rule.PredicateConstraint;
-import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.XpathBackReference;
-import org.drools.core.rule.constraint.NegConstraint;
-import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.base.AcceptsClassObjectType;
 import org.drools.core.rule.accessor.AcceptsReadAccessor;
-import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
 import org.drools.core.rule.accessor.Evaluator;
 import org.drools.core.rule.accessor.FieldValue;
-import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.constraint.Constraint;
+import org.drools.core.rule.constraint.NegConstraint;
+import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.time.TimeUtils;
-import org.drools.util.ClassUtils;
-import org.drools.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AtomicExprDescr;
@@ -102,11 +97,17 @@ import org.drools.drl.ast.descr.PredicateDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
 import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.parser.DrlExprParser;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.util.ClassUtils;
+import org.drools.util.StringUtils;
+import org.drools.util.TypeResolver;
 import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 
+import static org.drools.compiler.lang.DescrDumper.normalizeEval;
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
@@ -390,7 +391,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             return new SlidingTimeWindow(TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0)));
         }
         if (Behavior.BehaviorType.LENGTH_WINDOW.matches(behaviorDescr.getSubType())) {
-            return new SlidingLengthWindow(Integer.valueOf(behaviorDescr.getParameters().get(0)));
+            return new SlidingLengthWindow(Integer.parseInt(behaviorDescr.getParameters().get(0)));
         }
         return null;
     }
@@ -586,10 +587,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                 expression = b.getText();
             }
 
-            ConstraintConnectiveDescr result = parseExpression(context,
-                                                               patternDescr,
-                                                               b,
-                                                               expression);
+            ConstraintConnectiveDescr result = parseExpression(context, patternDescr, b, expression);
             if (result == null) {
                 return;
             }
@@ -654,9 +652,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         if (pattern.getSource() instanceof FromDescr) {
             FromDescr from = (FromDescr)pattern.getSource();
             String expr = from.getExpression().trim();
-            if (identifier.equals(expr)) {
-                return true;
-            }
+            return identifier.equals(expr);
         }
         return false;
     }
@@ -1334,9 +1330,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                         return new LiteralRestrictionDescr(exprDescr.getOperator(), exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
                     }
                 }
-            } catch (ClassNotFoundException e) {
-                // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
-            } catch (NoClassDefFoundError e) {
+            } catch (ClassNotFoundException | NoClassDefFoundError e) {
                 // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
             }
         }
@@ -1819,7 +1813,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         final BaseDescr original,
                                                         final String expression) {
         DrlExprParser parser = new DrlExprParser(context.getConfiguration().getLanguageLevel());
-        ConstraintConnectiveDescr result = parser.parse(expression);
+        ConstraintConnectiveDescr result = parser.parse(normalizeEval(expression));
         result.setResource(patternDescr.getResource());
         result.copyLocation(original);
         if (parser.hasErrors()) {

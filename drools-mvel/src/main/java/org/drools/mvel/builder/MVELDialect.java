@@ -550,8 +550,8 @@ public class MVELDialect
                                                              Class kcontextClass,
                                                              boolean readLocalsFromTuple,
                                                              MVELCompilationUnit.Scope scope) {
-        Map<String, Class> resolvedInputs = new LinkedHashMap<String, Class>();
-        List<String> ids = new ArrayList<String>();
+        Map<String, Class> resolvedInputs = new LinkedHashMap<>();
+        List<String> ids = new ArrayList<>();
 
         if (analysis.getBoundIdentifiers().getThisClass() != null || (localDeclarations != null && localDeclarations.length > 0)) {
             Class cls = analysis.getBoundIdentifiers().getThisClass();
@@ -560,19 +560,16 @@ public class MVELDialect
                                (cls != null) ? cls : Object.class); // the only time cls is null is in accumumulate's acc/reverse
         }
         ids.add(contextIndeifier);
-        resolvedInputs.put(contextIndeifier,
-                           kcontextClass);
+        resolvedInputs.put(contextIndeifier, kcontextClass);
         ids.add("kcontext");
-        resolvedInputs.put("kcontext",
-                           kcontextClass);
+        resolvedInputs.put("kcontext", kcontextClass);
 
         if (scope.hasRule()) {
             ids.add("rule");
-            resolvedInputs.put("rule",
-                               Rule.class);
+            resolvedInputs.put("rule", Rule.class);
         }
 
-        List<String> strList = new ArrayList<String>();
+        List<String> strList = new ArrayList<>();
         for (String identifier : analysis.getIdentifiers()) {
             Class<?> type = identifier.equals( WM_ARGUMENT ) ? InternalWorkingMemory.class : analysis.getBoundIdentifiers().resolveVarType(identifier);
             if (type != null) {
@@ -598,8 +595,7 @@ public class MVELDialect
             for (Declaration decl : previousDeclarations) {
                 if (analysis.getBoundIdentifiers().getDeclrClasses().containsKey(decl.getIdentifier())) {
                     ids.add(decl.getIdentifier());
-                    resolvedInputs.put(decl.getIdentifier(),
-                                       decl.getDeclarationClass());
+                    resolvedInputs.put(decl.getIdentifier(), decl.getDeclarationClass());
                 }
             }
         }
@@ -608,8 +604,7 @@ public class MVELDialect
             for (Declaration decl : localDeclarations) {
                 if (analysis.getBoundIdentifiers().getDeclrClasses().containsKey(decl.getIdentifier())) {
                     ids.add(decl.getIdentifier());
-                    resolvedInputs.put(decl.getIdentifier(),
-                                       decl.getDeclarationClass());
+                    resolvedInputs.put(decl.getIdentifier(), decl.getDeclarationClass());
                 }
             }
         }
@@ -660,7 +655,7 @@ public class MVELDialect
                                        otherIdentifiers,
                                        inputIdentifiers,
                                        inputTypes,
-                                       ((MVELAnalysisResult) analysis).isTypesafe(),
+                                       analysis.isTypesafe(),
                                        readLocalsFromTuple);
     }
 
