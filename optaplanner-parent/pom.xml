@@ -124,7 +124,6 @@
     <module>optaplanner-spring-integration</module>
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-examples</module>
-    <module>optaplanner-operator</module>
   </modules>
 
   <profiles>
@@ -139,6 +138,19 @@
         <module>optaplanner-docs</module>
         <module>build/optaplanner-javadoc</module>
         <module>build/optaplanner-distribution-internal</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- TODO: This profile excludes the optaplanner-operator module from the default build. Remove the profile when
+           the io.javaoperatorsdk:operator-framework-core:3.0.0.Final is released. -->
+      <id>operator</id>
+      <activation>
+        <property>
+          <name>operator</name>
+        </property>
+      </activation>
+      <modules>
+        <module>optaplanner-operator</module>
       </modules>
     </profile>
   </profiles>
