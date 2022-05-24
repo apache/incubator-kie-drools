@@ -30,8 +30,13 @@ Login as a user with the `cluster-admin` role.
 === Install Strimzi
 
 . In the OpenShift console, navigate to the menu _Operators -> Operator Hub_. Find the _Strimzi_ operator and install it.
+. Make sure you are in the project that should contain the Solver resource.
 . Open the _Strimzi_ operator, select the _Kafka_ tab and create a new Kafka cluster. You will need the Kafka cluster name
 to create the `Solver` custom resource later.
+
+NOTE: The Strimzi topic operator watches the namespace/project the Kafka cluster resides in. The rule of thumb is to create
+a separate project that contains the Solver resource together with its dependent resources, like Kafka cluster and topics.
+For more options, please refer to https://strimzi.io/documentation/[Strimzi documentation].
 
 [#deployOperator]
 === Deploy the OptaPlanner Operator
