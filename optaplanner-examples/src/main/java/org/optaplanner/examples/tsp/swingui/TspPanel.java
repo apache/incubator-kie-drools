@@ -17,6 +17,7 @@
 package org.optaplanner.examples.tsp.swingui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -102,10 +103,17 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemChange((tspSolution, problemChangeDirector) -> {
+            // A SolutionCloner does not clone problem fact lists (such as locationList)
+            // Shallow clone the locationList so only workingSolution is affected, not bestSolution or guiSolution
+            tspSolution.setLocationList(new ArrayList<>(tspSolution.getLocationList()));
+            // Add the problem fact itself
             problemChangeDirector.addProblemFact(newLocation, tspSolution.getLocationList()::add);
+
             Visit newVisit = new Visit();
             newVisit.setId(newLocation.getId());
             newVisit.setLocation(newLocation);
+            // A SolutionCloner clones planning entity lists (such as visitList), so no need to clone the visitList here
+            // Add the planning entity itself
             problemChangeDirector.addEntity(newVisit, tspSolution.getVisitList()::add);
         });
     }

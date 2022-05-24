@@ -18,7 +18,6 @@ package org.optaplanner.examples.vehiclerouting.swingui;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.swing.JTabbedPane;
@@ -98,12 +97,15 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemChange((vehicleRoutingSolution, problemChangeDirector) -> {
-            // Clone the fact collection before adding a new fact.
-            List<Location> locationList = new ArrayList<>(vehicleRoutingSolution.getLocationList());
-            vehicleRoutingSolution.setLocationList(locationList);
-
+            // A SolutionCloner does not clone problem fact lists (such as locationList)
+            // Shallow clone the locationList so only workingSolution is affected, not bestSolution or guiSolution
+            vehicleRoutingSolution.setLocationList(new ArrayList<>(vehicleRoutingSolution.getLocationList()));
+            // Add the problem fact itself
             problemChangeDirector.addProblemFact(newLocation, vehicleRoutingSolution.getLocationList()::add);
+
             Customer newCustomer = createCustomer(vehicleRoutingSolution, newLocation);
+            // A SolutionCloner clones planning entity lists (such as customerList), so no need to clone the customerList here
+            // Add the planning entity itself
             problemChangeDirector.addEntity(newCustomer, vehicleRoutingSolution.getCustomerList()::add);
         });
     }
