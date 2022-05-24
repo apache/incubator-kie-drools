@@ -101,9 +101,9 @@ pipeline {
             steps {
                 script {
                     getMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
-                    if (isRelease()) {
-                        updateAntoraYaml(droolsRepository)
-                    }
+                    // if (isRelease()) {
+                    //     updateAntoraYaml(droolsRepository)
+                    // }
                 }
             }
             post {
@@ -313,6 +313,6 @@ String getLocalDeploymentFolder() {
 void updateAntoraYaml(String directory) {
     echo "updateAntoraYaml for ${directory}"
     dir(directory) {
-        sh 'update_antora_yml.sh'
+        sh '.ci/jenkins/update_antora_yml.sh'
     }
 }
