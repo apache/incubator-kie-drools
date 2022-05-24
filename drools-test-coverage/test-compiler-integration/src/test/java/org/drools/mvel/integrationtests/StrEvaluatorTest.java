@@ -17,7 +17,9 @@ package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.RoutingMessage;
@@ -251,4 +253,39 @@ public class StrEvaluatorTest {
         return kbase;
     }
 
+    @Test
+    public void testUrlInStringComparison() {
+        // DROOLS-6983
+        String drl = "package org.drools.mvel.integrationtests " +
+                "import " + FactMap.class.getCanonicalName() + "; " +
+                "rule R1 " +
+                " when " +
+                " FactMap( String.valueOf(this.getElement(\"classHistory[0].class.where(system='http://domain/url/Code').exists()\")) == \"1\" ) " +
+                " then " +
+                "end ";
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+
+        KieSession ksession = kbase.newKieSession();
+        try {
+            Map<String, Integer> map = new HashMap<>();
+            map.put( "classHistory[0].class.where(system='http://domain/url/Code').exists()", 1 );
+            ksession.insert( new FactMap( map ) );
+
+            assertEquals( "Wrong number of rules fired", 1, ksession.fireAllRules() );
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    public static class FactMap<K,V> {
+        private final Map<K,V> map;
+
+        public FactMap(Map<K,V> map) {
+            this.map = map;
+        }
+
+        public V getElement(K key) {
+            return map.get(key);
+        }
+    }
 }
