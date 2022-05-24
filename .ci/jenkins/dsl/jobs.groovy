@@ -54,6 +54,7 @@ setupDeployJob(Folder.NIGHTLY)
 setupNativeJob()
 setupQuarkusJob(Folder.NIGHTLY_QUARKUS_MAIN)
 setupQuarkusJob(Folder.NIGHTLY_QUARKUS_BRANCH)
+setupQuarkusJob(Folder.NIGHTLY_QUARKUS_LTS)
 setupMandrelJob()
 
 // Release jobs
