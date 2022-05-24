@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package org.optaplanner.constraint.drl;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.io.File;
 import java.util.function.Supplier;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -26,23 +28,9 @@ import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-class DrlScoreDirectorFactoryServiceTest extends AbstractDrlScoreDirectorFactoryServiceTest {
+class DrlScoreDirectorFactoryServiceTest {
 
-    @Override
-    @Test
-    protected void testGenSwitched() {
-        System.setProperty(AbstractDrlScoreDirectorFactoryService.GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "true");
-        try {
-            ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
-                    .withScoreDrls("org/optaplanner/constraint/drl/invalidDroolsConstraints.drl");
-            Assertions.assertThat(buildScoreDirectoryFactory(config)).isNull();
-        } finally {
-            System.clearProperty(AbstractDrlScoreDirectorFactoryService.GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME);
-        }
-    }
-
-    @Override
-    protected ScoreDirectorFactory<TestdataSolution> buildScoreDirectoryFactory(ScoreDirectorFactoryConfig config) {
+    private ScoreDirectorFactory<TestdataSolution> buildScoreDirectoryFactory(ScoreDirectorFactoryConfig config) {
         Supplier<AbstractScoreDirectorFactory<TestdataSolution, SimpleScore>> supplier =
                 new DrlScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
                         .buildScoreDirectorFactory(getClass().getClassLoader(),
@@ -52,4 +40,33 @@ class DrlScoreDirectorFactoryServiceTest extends AbstractDrlScoreDirectorFactory
         }
         return supplier.get();
     }
+
+    @Test
+    void invalidDrlResource_throwsException() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("org/optaplanner/constraint/drl/invalidDroolsConstraints.drl");
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> buildScoreDirectoryFactory(config))
+                .withMessageContaining("scoreDrl")
+                .withRootCauseInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void nonExistingDrlResource_throwsException() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("nonExisting.drl");
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> buildScoreDirectoryFactory(config))
+                .withMessageContaining("scoreDrl");
+    }
+
+    @Test
+    void nonExistingDrlFile_throwsException() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
+                .withScoreDrlFiles(new File("nonExisting.drl"));
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> buildScoreDirectoryFactory(config))
+                .withMessageContaining("scoreDrl");
+    }
+
 }
