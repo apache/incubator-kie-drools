@@ -111,7 +111,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     }
 
     // HACK: use public getters/setters of fields so test domain can remain private
-    // TODO: should this another DomainAccessType? DomainAcessType.GIZMO_RELAXED_ACCESS?
+    // TODO: should this be another DomainAccessType? DomainAccessType.GIZMO_RELAXED_ACCESS?
     private GizmoSolutionOrEntityDescriptor generateGizmoSolutionOrEntityDescriptor(SolutionDescriptor solutionDescriptor,
             Class<?> entityClass) {
         Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
@@ -141,7 +141,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
                             member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass,
                                     setterDescriptor);
                         } else {
-                            throw new IllegalStateException("Fail to generate GizmoMemberDescriptor for (" + name + "): " +
+                            throw new IllegalStateException("Failed to generate GizmoMemberDescriptor for (" + name + "): " +
                                     "Field is not public and does not have both a getter and a setter.");
                         }
                     }
@@ -167,7 +167,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     private interface RobotZebra extends Zebra, Robot {
     }
 
-    // This test verify the instanceof comparator works correctly
+    // This test verifies the instanceof comparator works correctly
     @Test
     void instanceOfComparatorTest() {
         Set<Class<?>> classSet = new HashSet<>(Arrays.asList(
@@ -201,7 +201,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
         assertThat(comparator.compare(Zebra.class, RobotZebra.class)).isGreaterThan(0);
     }
 
-    // This test verify a proper error message is thrown if an extended solution is passed.
+    // This test verifies a proper error message is thrown if an extended solution is passed.
     @Override
     @Test
     void cloneExtendedSolution() {

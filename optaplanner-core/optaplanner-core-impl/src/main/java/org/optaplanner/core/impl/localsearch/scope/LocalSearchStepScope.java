@@ -65,7 +65,7 @@ public class LocalSearchStepScope<Solution_> extends AbstractStepScope<Solution_
     }
 
     /**
-     * @return null if logging level is to high
+     * @return null if logging level is too high
      */
     public String getStepString() {
         return stepString;

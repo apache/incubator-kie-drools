@@ -63,7 +63,7 @@ public class ConstructionHeuristicStepScope<Solution_> extends AbstractStepScope
     }
 
     /**
-     * @return null if logging level is to high
+     * @return null if logging level is too high
      */
     public String getStepString() {
         return stepString;

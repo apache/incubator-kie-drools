@@ -49,7 +49,7 @@ public interface ProblemChangeDirector {
      * Remove an existing {@link PlanningEntity} instance from the {@link PlanningSolution working solution}.
      * Translates the entity to a working planning entity by performing a lookup as defined by
      * {@link #lookUpWorkingObjectOrFail(Object)}.
-     * 
+     *
      * @param entity never null; the {@link PlanningEntity} instance
      * @param entityConsumer never null; removes the working entity from the {@link PlanningSolution working solution}
      * @param <Entity> the planning entity object type
@@ -62,8 +62,7 @@ public interface ProblemChangeDirector {
      *
      * @param entity never null; the {@link PlanningEntity} instance
      * @param variableName never null; name of the {@link PlanningVariable}
-     * @param entityConsumer never null; updates the value of the the {@link PlanningVariable} inside
-     *        the {@link PlanningEntity}
+     * @param entityConsumer never null; updates the value of the {@link PlanningVariable} inside the {@link PlanningEntity}
      * @param <Entity> the planning entity object type
      */
     <Entity> void changeVariable(Entity entity, String variableName, Consumer<Entity> entityConsumer);

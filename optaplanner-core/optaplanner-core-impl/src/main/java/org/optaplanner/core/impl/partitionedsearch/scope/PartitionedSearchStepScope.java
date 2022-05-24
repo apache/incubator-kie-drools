@@ -52,7 +52,7 @@ public class PartitionedSearchStepScope<Solution_> extends AbstractStepScope<Sol
     }
 
     /**
-     * @return null if logging level is to high
+     * @return null if logging level is too high
      */
     public String getStepString() {
         return stepString;

@@ -244,7 +244,7 @@ class OptaPlannerProcessor {
             reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem.Builder()
                     .type(jandexType)
                     // Ignore only the packages from optaplanner-core
-                    // (Can cause a hard to diagnoise issue when creating a test/example
+                    // (Can cause a hard to diagnose issue when creating a test/example
                     // in the package "org.optaplanner").
                     .ignoreTypePredicate(
                             dotName -> ReflectiveHierarchyBuildItem.DefaultIgnoreTypePredicate.INSTANCE.test(dotName)

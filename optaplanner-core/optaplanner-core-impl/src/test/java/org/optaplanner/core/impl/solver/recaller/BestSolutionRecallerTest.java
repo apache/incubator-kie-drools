@@ -42,7 +42,7 @@ class BestSolutionRecallerTest {
         return solverScope;
     }
 
-    private static <Solution_> ConstructionHeuristicStepScope<Solution_> setupConstrunctionHeuristics(
+    private static <Solution_> ConstructionHeuristicStepScope<Solution_> setupConstructionHeuristics(
             SolverScope<Solution_> solverScope) {
         ConstructionHeuristicPhaseScope<Solution_> phaseScope = mock(ConstructionHeuristicPhaseScope.class);
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
@@ -94,7 +94,7 @@ class BestSolutionRecallerTest {
         solverScope.setBestSolution(originalBestSolution);
         solverScope.setBestScore(originalBestScore);
 
-        ConstructionHeuristicStepScope<TestdataSolution> stepScope = setupConstrunctionHeuristics(solverScope);
+        ConstructionHeuristicStepScope<TestdataSolution> stepScope = setupConstructionHeuristics(solverScope);
         TestdataSolution stepSolution = mock(TestdataSolution.class);
         when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(stepSolution)).thenReturn(stepScore);
         when(stepScope.getScore()).thenReturn(stepScore);
@@ -148,7 +148,7 @@ class BestSolutionRecallerTest {
         solverScope.setBestSolution(originalBestSolution);
         solverScope.setBestScore(originalBestScore);
 
-        ConstructionHeuristicStepScope<TestdataSolution> stepScope = setupConstrunctionHeuristics(solverScope);
+        ConstructionHeuristicStepScope<TestdataSolution> stepScope = setupConstructionHeuristics(solverScope);
 
         TestdataSolution moveSolution = mock(TestdataSolution.class);
         when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(moveSolution))

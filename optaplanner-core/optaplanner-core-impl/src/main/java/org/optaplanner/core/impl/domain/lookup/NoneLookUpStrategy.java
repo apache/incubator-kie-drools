@@ -38,7 +38,7 @@ public class NoneLookUpStrategy implements LookUpStrategy {
     public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         throw new IllegalArgumentException("The externalObject (" + externalObject
                 + ") cannot be looked up. Some functionality, such as multithreaded solving, requires this ability.\n"
-                + "Maybe add an @" + PlanningId.class.getSimpleName()
+                + "Maybe add a @" + PlanningId.class.getSimpleName()
                 + " annotation on an identifier property of the class (" + externalObject.getClass() + ").\n"
                 + "Or otherwise, maybe change the @" + PlanningSolution.class.getSimpleName() + " annotation's "
                 + LookUpStrategyType.class.getSimpleName() + " (not recommended).");
@@ -48,7 +48,7 @@ public class NoneLookUpStrategy implements LookUpStrategy {
     public <E> E lookUpWorkingObjectIfExists(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         throw new IllegalArgumentException("The externalObject (" + externalObject
                 + ") cannot be looked up. Some functionality, such as multithreaded solving, requires this ability.\n"
-                + "Maybe add an @" + PlanningId.class.getSimpleName()
+                + "Maybe add a @" + PlanningId.class.getSimpleName()
                 + " annotation on an identifier property of the class (" + externalObject.getClass() + ").\n"
                 + "Or otherwise, maybe change the @" + PlanningSolution.class.getSimpleName() + " annotation's "
                 + LookUpStrategyType.class.getSimpleName() + " (not recommended).");

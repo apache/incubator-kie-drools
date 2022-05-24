@@ -213,7 +213,7 @@ public class SolutionDescriptor<Solution_> {
             List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
             for (Member member : memberList) {
                 if (member instanceof Method && potentiallyOverwritingMethodList.stream().anyMatch(
-                        m -> member.getName().equals(m.getName()) // Short cut to discard negatives faster
+                        m -> member.getName().equals(m.getName()) // Shortcut to discard negatives faster
                                 && ReflectionHelper.isMethodOverwritten((Method) member, m.getDeclaringClass()))) {
                     // Ignore member because it is an overwritten method
                     continue;
