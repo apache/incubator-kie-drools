@@ -20,7 +20,8 @@ public final class SolverSpec {
     private String solverImage;
     private String kafkaBootstrapServers;
     private String kafkaCluster;
-    private int replicas = 1;
+
+    private Scaling scaling;
 
     public SolverSpec() {
         // required by Jackson
@@ -56,11 +57,11 @@ public final class SolverSpec {
         this.kafkaCluster = kafkaCluster;
     }
 
-    public int getReplicas() {
-        return replicas;
+    public Scaling getScaling() {
+        return scaling;
     }
 
-    public void setReplicas(int replicas) {
-        this.replicas = replicas;
+    public void setScaling(Scaling scaling) {
+        this.scaling = scaling;
     }
 }

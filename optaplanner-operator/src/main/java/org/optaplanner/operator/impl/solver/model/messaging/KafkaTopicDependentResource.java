@@ -28,6 +28,7 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID;
 import io.javaoperatorsdk.operator.processing.event.source.PrimaryToSecondaryMapper;
 import io.strimzi.api.kafka.model.KafkaTopic;
 import io.strimzi.api.kafka.model.KafkaTopicBuilder;
+import io.strimzi.api.kafka.model.KafkaTopicSpecBuilder;
 
 @KubernetesDependent
 public final class KafkaTopicDependentResource extends CRUKubernetesDependentResource<KafkaTopic, Solver>
@@ -46,17 +47,18 @@ public final class KafkaTopicDependentResource extends CRUKubernetesDependentRes
     @Override
     protected KafkaTopic desired(Solver solver, Context<Solver> context) {
         final String topicName = solver.getMessageAddressName(messageAddress);
+        KafkaTopicSpecBuilder kafkaTopicSpecBuilder = new KafkaTopicSpecBuilder()
+                .withTopicName(topicName);
+        if (messageAddress == MessageAddress.INPUT) {
+            kafkaTopicSpecBuilder.withPartitions(solver.getSpec().getScaling().getReplicas());
+        }
         return new KafkaTopicBuilder()
                 .withNewMetadata()
                 .withName(topicName)
                 .withNamespace(solver.getNamespace())
                 .withLabels(Map.of(STRIMZI_LABEL, solver.getSpec().getKafkaCluster()))
                 .endMetadata()
-                .withNewSpec()
-                .withTopicName(topicName)
-                .withReplicas(1)
-                .withPartitions(solver.getSpec().getReplicas())
-                .endSpec()
+                .withSpec(kafkaTopicSpecBuilder.build())
                 .build();
     }
 

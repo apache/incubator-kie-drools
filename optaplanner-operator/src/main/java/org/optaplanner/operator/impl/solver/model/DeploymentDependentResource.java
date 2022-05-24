@@ -25,6 +25,7 @@ import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
+import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
@@ -51,22 +52,27 @@ public final class DeploymentDependentResource extends CRUKubernetesDependentRes
                 .withImage(solver.getSpec().getSolverImage())
                 .withEnv(buildEnvironmentVariablesMapping(solver.getConfigMapName()))
                 .build();
+
+        DeploymentSpecBuilder deploymentSpecBuilder = new DeploymentSpecBuilder()
+                .withNewSelector().withMatchLabels(Map.of("app", deploymentName))
+                .endSelector();
+        if (!solver.getSpec().getScaling().isDynamic()) {
+            // Set deployment replicas only for static scaling, otherwise the operator would interfere with KEDA.
+            deploymentSpecBuilder.withReplicas(solver.getSpec().getScaling().getReplicas());
+        }
+        deploymentSpecBuilder.withNewTemplate()
+                .withNewMetadata().withLabels(Map.of("app", deploymentName)).endMetadata()
+                .withNewSpec()
+                .withContainers(container)
+                .endSpec()
+                .endTemplate();
+
         return new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(deploymentName)
                 .withNamespace(solver.getNamespace())
                 .endMetadata()
-                .withNewSpec()
-                .withNewSelector().withMatchLabels(Map.of("app", deploymentName))
-                .endSelector()
-                .withReplicas(solver.getSpec().getReplicas())
-                .withNewTemplate()
-                .withNewMetadata().withLabels(Map.of("app", deploymentName)).endMetadata()
-                .withNewSpec()
-                .withContainers(container)
-                .endSpec()
-                .endTemplate()
-                .endSpec()
+                .withSpec(deploymentSpecBuilder.build())
                 .build();
     }
 

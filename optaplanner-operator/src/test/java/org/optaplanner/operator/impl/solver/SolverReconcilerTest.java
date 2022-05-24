@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
+import org.optaplanner.operator.impl.solver.model.Scaling;
 import org.optaplanner.operator.impl.solver.model.Solver;
 import org.optaplanner.operator.impl.solver.model.SolverSpec;
 import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
@@ -52,6 +53,7 @@ public class SolverReconcilerTest {
         solver.getSpec().setSolverImage("solver-project-image");
         solver.getSpec().setKafkaBootstrapServers("kafkaServers");
         solver.getSpec().setKafkaCluster("my-kafka-cluster");
+        solver.getSpec().setScaling(new Scaling());
         mockServer.getClient().resources(Solver.class).create(solver);
 
         final String expectedMessageAddressIn = solverName + "-" + MessageAddress.INPUT.getName();
