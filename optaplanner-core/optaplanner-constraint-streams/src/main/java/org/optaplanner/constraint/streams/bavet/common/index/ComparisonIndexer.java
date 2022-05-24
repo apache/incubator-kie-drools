@@ -47,7 +47,6 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Objects.requireNonNull(value);
         Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer =
                 comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> downstreamIndexerSupplier.get());

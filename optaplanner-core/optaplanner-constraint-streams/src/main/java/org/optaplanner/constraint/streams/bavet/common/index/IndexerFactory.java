@@ -64,7 +64,7 @@ public class IndexerFactory {
         } else if (joinerTypes.length == 1) { // Single joiner maps directly to EqualsIndexer or ComparisonIndexer.
             JoinerType joinerType = joinerTypes[0];
             if (joinerType == JoinerType.EQUAL) {
-                return new EqualsIndexer<>(s -> s.getIndexerKey(0, 1), NoneIndexer::new);
+                return new EqualsIndexer<>(s -> s.getProperty(0), NoneIndexer::new);
             } else {
                 return new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), s -> s.getProperty(0),
                         NoneIndexer::new);

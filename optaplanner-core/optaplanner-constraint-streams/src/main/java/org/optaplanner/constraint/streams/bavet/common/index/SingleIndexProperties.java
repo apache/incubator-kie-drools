@@ -33,11 +33,8 @@ final class SingleIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
-        if (toExclusive != 1) {
-            throw new IllegalArgumentException("Impossible state: final index (" + toExclusive + ") != 1");
-        }
-        return getProperty(fromInclusive);
+    public int maxLength() {
+        return 1;
     }
 
     @Override

@@ -16,28 +16,40 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.Arrays;
+final class ThreeIndexProperties implements IndexProperties {
 
-final class ManyIndexProperties implements IndexProperties {
+    private final Object propertyA;
+    private final Object propertyB;
+    private final Object propertyC;
 
-    private final Object[] properties;
-
-    ManyIndexProperties(Object... properties) {
-        this.properties = properties;
+    ThreeIndexProperties(Object propertyA, Object propertyB, Object propertyC) {
+        this.propertyA = propertyA;
+        this.propertyB = propertyB;
+        this.propertyC = propertyC;
     }
 
     @Override
     public <Type_> Type_ getProperty(int index) {
-        return (Type_) properties[index];
+        switch (index) {
+            case 0:
+                return (Type_) propertyA;
+            case 1:
+                return (Type_) propertyB;
+            case 2:
+                return (Type_) propertyC;
+            default:
+                throw new IllegalArgumentException("Impossible state: index (" + index + ") != 0");
+        }
     }
 
     @Override
     public int maxLength() {
-        return properties.length;
+        return 3;
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(properties);
+        return "[" + propertyA + ", " + propertyB + ", " + propertyC + "]";
     }
+
 }

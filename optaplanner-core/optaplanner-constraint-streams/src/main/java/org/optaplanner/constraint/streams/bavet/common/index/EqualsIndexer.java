@@ -39,7 +39,6 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_> implements Indexer
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Objects.requireNonNull(value);
         Indexer<Tuple_, Value_> downstreamIndexer =
                 downstreamIndexerMap.computeIfAbsent(indexerKeyFunction.apply(indexProperties),
                         k -> downstreamIndexerSupplier.get());

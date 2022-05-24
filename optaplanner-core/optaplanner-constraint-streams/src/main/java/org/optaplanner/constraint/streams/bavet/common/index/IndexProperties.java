@@ -16,6 +16,10 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Quadruple;
+import org.optaplanner.core.impl.util.Triple;
+
 /**
  * No instance of implementing classes is expected to equal any instance other than itself.
  * Index properties are cached in tuples and each tuple carries its unique instance.
@@ -31,6 +35,8 @@ public interface IndexProperties {
      */
     <Type_> Type_ getProperty(int index);
 
+    int maxLength();
+
     /**
      *
      * @param fromInclusive position of the first index property to be part of the key, inclusive
@@ -38,6 +44,28 @@ public interface IndexProperties {
      * @return never null;
      * @param <Type_> any type understanding that two keys may point to different tuples unless their instances are equal
      */
-    <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive);
+    default <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
+        int length = toExclusive - fromInclusive;
+        if (length < 1 || length > maxLength()) {
+            throw new IllegalArgumentException("Impossible state: key length (" + length + ").");
+        } else if (fromInclusive >= toExclusive) {
+            throw new IllegalArgumentException("Impossible state: key from (" + fromInclusive + ") >= key to (" +
+                    toExclusive + ").");
+        }
+        switch (length) {
+            case 1:
+                return getProperty(fromInclusive);
+            case 2:
+                return (Type_) Pair.of(getProperty(fromInclusive), getProperty(fromInclusive + 1));
+            case 3:
+                return (Type_) Triple.of(getProperty(fromInclusive), getProperty(fromInclusive + 1),
+                        getProperty(fromInclusive + 2));
+            case 4:
+                return (Type_) Quadruple.of(getProperty(fromInclusive), getProperty(fromInclusive + 1),
+                        getProperty(fromInclusive + 2), getProperty(fromInclusive + 3));
+            default:
+                return (Type_) new IndexerKey(this, fromInclusive, toExclusive);
+        }
+    }
 
 }
