@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,12 @@ import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.com
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.constraint.streams.drools.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -38,7 +36,6 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
@@ -46,24 +43,33 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 @ExtendWith(ConstraintStreamTestExtension.class)
 public abstract class AbstractConstraintStreamTest {
 
+    public interface ConstraintStreamImplSupport {
+
+        void assumeBavet();
+
+        void assumeDrools();
+
+        boolean isConstreamMatchEnabled();
+
+        <Score_ extends Score<Score_>, Solution_> InnerScoreDirector<Solution_, Score_> buildScoreDirector(
+                SolutionDescriptor<Solution_> solutionDescriptorSupplier, ConstraintProvider constraintProvider);
+
+    }
+
     protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";
 
-    protected final boolean constraintMatchEnabled;
-    protected final ConstraintStreamImplType constraintStreamImplType;
+    private final ConstraintStreamImplSupport implSupport;
 
-    protected void assumeBavet() {
-        Assumptions.assumeTrue(constraintStreamImplType == ConstraintStreamImplType.BAVET,
-                "This functionality is not yet supported in Drools-based constraint streams.");
+    protected final void assumeBavet() {
+        implSupport.assumeBavet();
     }
 
     protected void assumeDrools() {
-        Assumptions.assumeTrue(constraintStreamImplType == ConstraintStreamImplType.DROOLS,
-                "This functionality is not yet supported in Bavet constraint streams.");
+        implSupport.assumeDrools();
     }
 
-    public AbstractConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
-        this.constraintMatchEnabled = constraintMatchEnabled;
-        this.constraintStreamImplType = constraintStreamImplType;
+    protected AbstractConstraintStreamTest(ConstraintStreamImplSupport implSupport) {
+        this.implSupport = Objects.requireNonNull(implSupport);
     }
 
     // ************************************************************************
@@ -79,19 +85,7 @@ public abstract class AbstractConstraintStreamTest {
 
     protected <Score_ extends Score<Score_>, Solution_> InnerScoreDirector<Solution_, Score_> buildScoreDirector(
             SolutionDescriptor<Solution_> solutionDescriptorSupplier, ConstraintProvider constraintProvider) {
-        switch (constraintStreamImplType) {
-            case BAVET:
-                return (InnerScoreDirector<Solution_, Score_>) new BavetConstraintStreamScoreDirectorFactory<>(
-                        solutionDescriptorSupplier, constraintProvider)
-                                .buildScoreDirector(false, constraintMatchEnabled);
-            case DROOLS:
-                return (InnerScoreDirector<Solution_, Score_>) new DroolsConstraintStreamScoreDirectorFactory<>(
-                        solutionDescriptorSupplier, constraintProvider, true)
-                                .buildScoreDirector(false, constraintMatchEnabled);
-            default:
-                throw new UnsupportedOperationException(
-                        "Unknown Constraint Stream implementation: " + constraintStreamImplType);
-        }
+        return implSupport.buildScoreDirector(solutionDescriptorSupplier, constraintProvider);
     }
 
     protected <Solution_> void assertScore(InnerScoreDirector<Solution_, SimpleScore> scoreDirector,
@@ -101,7 +95,7 @@ public abstract class AbstractConstraintStreamTest {
         int scoreTotal = Arrays.stream(assertableMatches)
                 .mapToInt(assertableMatch -> assertableMatch.score)
                 .sum();
-        if (constraintMatchEnabled) {
+        if (implSupport.isConstreamMatchEnabled()) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             for (AssertableMatch assertableMatch : assertableMatches) {
                 Map<String, ConstraintMatchTotal<SimpleScore>> constraintMatchTotals =

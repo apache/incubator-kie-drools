@@ -29,6 +29,7 @@
     <module>optaplanner-core-impl</module>
     <module>optaplanner-constraint-streams</module>
     <module>optaplanner-constraint-drl</module>
+    <module>optaplanner-constraint-streams-bavet</module>
   </modules>
 
 </project>
