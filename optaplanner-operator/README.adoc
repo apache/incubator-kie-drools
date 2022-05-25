@@ -59,6 +59,6 @@ Below are the mandatory spec properties:
 - `kafkaBootstrapServers` - the address of the Kafka bootstrap servers
 - `solverImage` - the container image available in a registry of your choice
 
-There is an example you can use by running either `kubectl apply -f src/k8s/example-resource.yml -n <namespace>` (Minikube) or `oc apply -f src/k8s/example-resource.yml` (OpenShift).
+There is an example you can use by running either `kubectl apply -f src/k8s/school-timetabling-solver.yml -n <namespace>` (Minikube) or `oc apply -f src/k8s/school-timetabling-solver.yml` (OpenShift).
 
 To check the created resource, run `kubectl get solver -n <namespace>` (Minikube) or `oc get solver` (OpenShift).
