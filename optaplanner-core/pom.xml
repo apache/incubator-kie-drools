@@ -30,6 +30,7 @@
     <module>optaplanner-constraint-streams</module>
     <module>optaplanner-constraint-drl</module>
     <module>optaplanner-constraint-streams-bavet</module>
+      <module>optaplanner-constraint-streams-drools</module>
   </modules>
 
 </project>

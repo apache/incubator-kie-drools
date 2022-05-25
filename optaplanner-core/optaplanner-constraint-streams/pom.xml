@@ -31,16 +31,6 @@
       <artifactId>optaplanner-core-impl</artifactId>
     </dependency>
 
-    <!-- Internal dependencies -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-engine</artifactId> <!-- Brings in everything that Drools needs. -->
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-alphanetwork-compiler</artifactId>
-    </dependency>
-
     <!-- External dependencies -->
     <!-- Common utils -->
     <dependency>
@@ -93,22 +83,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration> <!-- Drools will bring whatever it needs. -->
-          <ignoredUsedUndeclaredDependencies>
-            <dependency>org.kie:*</dependency>
-            <dependency>org.drools:*</dependency>
-          </ignoredUsedUndeclaredDependencies>
-          <ignoredUnusedDeclaredDependencies>
-            <dependency>org.drools:drools-engine</dependency>
-          </ignoredUnusedDeclaredDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

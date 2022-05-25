@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.constraint.streams.AbstractConstraintStreamTest;
 import org.optaplanner.constraint.streams.ConstraintStreamFunctionalTest;
+import org.optaplanner.constraint.streams.ConstraintStreamImplSupport;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;

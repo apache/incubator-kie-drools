@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet;
+package org.optaplanner.constraint.streams.drools;
 
 import org.junit.jupiter.api.Assumptions;
 import org.optaplanner.constraint.streams.ConstraintStreamImplSupport;
@@ -23,23 +23,23 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public final class BavetConstraintStreamImplSupport
+public final class DroolsConstraintStreamImplSupport
         implements ConstraintStreamImplSupport {
 
     private final boolean constraintMatchEnabled;
 
-    public BavetConstraintStreamImplSupport(boolean constraintMatchEnabled) {
+    public DroolsConstraintStreamImplSupport(boolean constraintMatchEnabled) {
         this.constraintMatchEnabled = constraintMatchEnabled;
     }
 
     @Override
     public void assumeBavet() {
-        // This is Bavet.
+        Assumptions.assumeTrue(false, "This functionality is not yet supported in Drools constraint streams.");
     }
 
     @Override
     public void assumeDrools() {
-        Assumptions.assumeTrue(false, "This functionality is not yet supported in Bavet constraint streams.");
+        // This is Drools
     }
 
     @Override
@@ -50,8 +50,7 @@ public final class BavetConstraintStreamImplSupport
     @Override
     public <Score_ extends Score<Score_>, Solution_> InnerScoreDirector<Solution_, Score_> buildScoreDirector(
             SolutionDescriptor<Solution_> solutionDescriptorSupplier, ConstraintProvider constraintProvider) {
-        return (InnerScoreDirector<Solution_, Score_>) new BavetConstraintStreamScoreDirectorFactory<>(
-                solutionDescriptorSupplier, constraintProvider)
-                        .buildScoreDirector(false, constraintMatchEnabled);
-    }
+        return (InnerScoreDirector<Solution_, Score_>) new DroolsConstraintStreamScoreDirectorFactory<>(
+                solutionDescriptorSupplier, constraintProvider, true)
+                .buildScoreDirector(false, constraintMatchEnabled);    }
 }
