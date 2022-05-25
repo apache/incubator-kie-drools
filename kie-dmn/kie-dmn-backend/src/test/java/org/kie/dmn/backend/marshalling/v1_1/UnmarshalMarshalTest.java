@@ -52,9 +52,8 @@ import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
 import org.xmlunit.validation.Validator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class UnmarshalMarshalTest {
 
@@ -181,7 +180,7 @@ public class UnmarshalMarshalTest {
                 LOG.error("{}", p);
             }
         }
-        assertTrue(validateInputResult.isValid());
+        assertThat(validateInputResult.isValid()).isTrue();
 
         final File subdirFile = new File(baseOutputDir, subdir);
         if (!subdirFile.mkdirs()) {
@@ -208,7 +207,7 @@ public class UnmarshalMarshalTest {
                 LOG.error("{}", p);
             }
         }
-        assertTrue(validateOutputResult.isValid());
+        assertThat(validateOutputResult.isValid()).isTrue();
 
         LOG.debug("\n---\nDefault XMLUnit comparison:");
         Source control = Input.fromFile(inputXMLFile).build();
@@ -282,7 +281,7 @@ public class UnmarshalMarshalTest {
         if (!checkSimilar.getDifferences().iterator().hasNext()) {
             LOG.info("[ EMPTY - no diffs using customized similarity ]");
         }
-        assertFalse("XML are NOT similar: " + checkSimilar.toString(), checkSimilar.hasDifferences());
+        assertThat(checkSimilar.hasDifferences()).as("XML are NOT similar: " + checkSimilar.toString()).isFalse();
     }
 
     private String safeStripDMNPRefix(Node target) {

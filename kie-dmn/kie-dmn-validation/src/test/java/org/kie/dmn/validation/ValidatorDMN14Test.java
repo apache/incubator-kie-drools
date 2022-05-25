@@ -16,11 +16,6 @@
 
 package org.kie.dmn.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
@@ -29,6 +24,12 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
+
 
 public class ValidatorDMN14Test extends AbstractValidatorTest {
 	
@@ -40,7 +41,7 @@ public class ValidatorDMN14Test extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertEquals(0, validate.size());
+            assertThat(validate).hasSize(0);
         }
     }
 
@@ -49,7 +50,7 @@ public class ValidatorDMN14Test extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("dmn14simple.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertEquals(0, validate.size());
+        assertThat(validate).hasSize(0);
     }
 
     @Test
@@ -59,7 +60,7 @@ public class ValidatorDMN14Test extends AbstractValidatorTest {
                                "http://www.trisotech.com/definitions/_d9232146-7aaa-49a9-8668-261a01844ace",
                                "Drawing 1"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertEquals(0, validate.size());
+        assertThat(validate).hasSize(0);
     }
 
     @Test
@@ -67,7 +68,7 @@ public class ValidatorDMN14Test extends AbstractValidatorTest {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .theseModels(getReader("dmn14boxed/conditional.dmn"));
         LOG.debug("{}", validate);
-        assertEquals(0, validate.size());
+        assertThat(validate).hasSize(0);
     }
 
     @Test
@@ -75,26 +76,26 @@ public class ValidatorDMN14Test extends AbstractValidatorTest {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .theseModels(getReader("dmn14boxed/iterator.dmn"));
         LOG.debug("{}", validate);
-        assertEquals(0, validate.size());
+        assertThat(validate).hasSize(0);
     }
     @Test
     public void testBoxedExtension_IteratorDataType14() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .theseModels(getReader("dmn14boxed/iterator-datatype.dmn"));
-        assertEquals(0, validate.size());
+        assertThat(validate).hasSize(0);
     }
 
     @Test
     public void testBoxedExtension_Filter14() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .theseModels(getReader("dmn14boxed/filter.dmn"));
-        assertEquals(0, validate.size());
+        assertThat(validate).hasSize(0);
     }
 
     @Test
     public void testBoxedExtension_FilterDataType14() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .theseModels(getReader("dmn14boxed/filter-datatype.dmn"));
-        assertEquals(0, validate.size());
+        assertThat(validate).hasSize(0);
     }
 }

@@ -38,8 +38,6 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.compiler.AlphaNetworkOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.classloader.DMNClassloaderTest.getPom;
 
 @RunWith(Parameterized.class)
@@ -76,7 +74,7 @@ public class AlphaNetworkSupportInLargeDecisionTableTest {
         kfs.writePomXML(getPom(releaseId));
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer container = ks.newKieContainer(releaseId);
         DMNRuntime dmnRuntime = KieRuntimeFactory.of(container.getKieBase()).get(DMNRuntime.class);
@@ -89,7 +87,7 @@ public class AlphaNetworkSupportInLargeDecisionTableTest {
         dmnContext.set("isAffordable", true);
 
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
-        assertFalse(dmnResult.hasErrors());
+        assertThat(dmnResult.hasErrors()).isFalse();
         assertThat(dmnResult.getDecisionResultById("decision-table").getResult()).isEqualTo("Declined");
     }
 

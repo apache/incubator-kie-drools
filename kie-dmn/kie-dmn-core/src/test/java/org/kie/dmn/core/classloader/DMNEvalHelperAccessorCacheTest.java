@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNEvalHelperAccessorCacheTest.class);
@@ -167,7 +166,7 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
         kfs2.generateAndWritePomXML(kjarReleaseId2);
 
         final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2).buildAll();
-        assertTrue(kieBuilder2.getResults().getMessages().toString(), kieBuilder2.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder2.getResults().getMessages()).as(kieBuilder2.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer container2 = ks.newKieContainer(kjarReleaseId2);
         return container2;

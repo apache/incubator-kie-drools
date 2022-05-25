@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
 
 public class DMNDecisionServicesTest extends BaseDMN1_1VariantTest {
 
@@ -425,7 +424,7 @@ public class DMNDecisionServicesTest extends BaseDMN1_1VariantTest {
             throw e;
         } finally {
             System.clearProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME);
-            assertNull(System.getProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
+            assertThat(System.getProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME)).isNull();
         }
     }
 

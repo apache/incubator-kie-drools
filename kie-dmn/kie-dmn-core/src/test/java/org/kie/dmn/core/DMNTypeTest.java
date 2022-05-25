@@ -31,8 +31,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -58,32 +57,32 @@ public class DMNTypeTest {
 
         final Map<String, Object> instanceNOTaPerson = prototype(entry("name", "NOTAPERSON"));
 
-        assertTrue(dmnPerson.isAssignableValue(instanceBob));
-        assertTrue(dmnPerson.isAssignableValue(instanceJohn));
+        assertThat(dmnPerson.isAssignableValue(instanceBob)).isTrue();
+        assertThat(dmnPerson.isAssignableValue(instanceJohn)).isTrue();
 
-        assertFalse(dmnPerson.isAssignableValue(instanceNOTaPerson));
+        assertThat(dmnPerson.isAssignableValue(instanceNOTaPerson)).isFalse();
 
         final List<Map<String, Object>> onlyBob = Collections.singletonList(instanceBob);
         final List<Map<String, Object>> bobANDjohn = Arrays.asList(instanceBob, instanceJohn);
         final List<Map<String, Object>> johnANDnotAPerson = Arrays.asList(instanceJohn, instanceNOTaPerson);
 
-        assertTrue(dmnPersonList.isAssignableValue(onlyBob));
-        assertTrue(dmnPersonList.isAssignableValue(bobANDjohn));
-        assertFalse(dmnPersonList.isAssignableValue(johnANDnotAPerson));
-        assertTrue(dmnPersonList.isAssignableValue(instanceBob)); // because accordingly to FEEL spec, bob=[bob]
+        assertThat(dmnPersonList.isAssignableValue(onlyBob)).isTrue();
+        assertThat(dmnPersonList.isAssignableValue(bobANDjohn)).isTrue();
+        assertThat(dmnPersonList.isAssignableValue(johnANDnotAPerson)).isFalse();
+        assertThat(dmnPersonList.isAssignableValue(instanceBob)).isTrue(); // because accordingly to FEEL spec, bob=[bob]
         
         final List<List<Map<String, Object>>> the2ListsThatContainBob = Arrays.asList(onlyBob, bobANDjohn);
-        assertTrue(dmnListOfPersonsGrouped.isAssignableValue(the2ListsThatContainBob));
+        assertThat(dmnListOfPersonsGrouped.isAssignableValue(the2ListsThatContainBob)).isTrue();
 
         final List<List<Map<String, Object>>> the3Lists = Arrays.asList(onlyBob, bobANDjohn, johnANDnotAPerson);
-        assertFalse(dmnListOfPersonsGrouped.isAssignableValue(the3Lists));
+        assertThat(dmnListOfPersonsGrouped.isAssignableValue(the3Lists)).isFalse();
 
         final List<Object> groupsOfBobAndBobHimself = Arrays.asList(instanceBob, onlyBob, bobANDjohn);
-        assertTrue(dmnListOfPersonsGrouped.isAssignableValue(groupsOfBobAndBobHimself)); // [bob, [bob], [bob, john]] because for the property of FEEL spec a=[a] is equivalent to [[bob], [bob], [bob, john]]
+        assertThat(dmnListOfPersonsGrouped.isAssignableValue(groupsOfBobAndBobHimself)).isTrue(); // [bob, [bob], [bob, john]] because for the property of FEEL spec a=[a] is equivalent to [[bob], [bob], [bob, john]]
 
         final DMNType listOfGroups = typeRegistry.registerType(new CompositeTypeImpl(testNS, "listOfGroups", null, true, null, dmnListOfPersonsGrouped, null));
         final List<Object> groupsContainingBobPartitionedBySize = Arrays.asList(the2ListsThatContainBob, Collections.singletonList(bobANDjohn));
-        assertTrue(listOfGroups.isAssignableValue(groupsContainingBobPartitionedBySize)); // [ [[B], [B, J]], [[B, J]] ]
+        assertThat(listOfGroups.isAssignableValue(groupsContainingBobPartitionedBySize)).isTrue(); // [ [[B], [B, J]], [[B, J]] ]
     }
 
     @Test
@@ -94,14 +93,14 @@ public class DMNTypeTest {
         final FEEL feel = FEEL.newInstance();
         final DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfVowels", null, true, feel.evaluateUnaryTests("\"a\",\"e\",\"i\",\"o\",\"u\""), FEEL_STRING, BuiltInType.STRING));
 
-        assertTrue(tDecision1.isAssignableValue("a"));
-        assertTrue(tDecision1.isAssignableValue(Collections.singletonList("a")));
+        assertThat(tDecision1.isAssignableValue("a")).isTrue();
+        assertThat(tDecision1.isAssignableValue(Collections.singletonList("a"))).isTrue();
 
-        assertFalse(tDecision1.isAssignableValue("z"));
+        assertThat(tDecision1.isAssignableValue("z")).isFalse();
 
-        assertTrue(tDecision1.isAssignableValue(Arrays.asList("a", "e")));
+        assertThat(tDecision1.isAssignableValue(Arrays.asList("a", "e"))).isTrue();
 
-        assertFalse(tDecision1.isAssignableValue(Arrays.asList("a", "e", "zzz")));
+        assertThat(tDecision1.isAssignableValue(Arrays.asList("a", "e", "zzz"))).isFalse();
     }
 
 }

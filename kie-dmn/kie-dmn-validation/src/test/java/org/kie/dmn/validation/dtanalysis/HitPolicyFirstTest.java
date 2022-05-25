@@ -24,7 +24,6 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class HitPolicyFirstTest extends AbstractDTAnalysisTest {
@@ -36,7 +35,6 @@ public class HitPolicyFirstTest extends AbstractDTAnalysisTest {
 
         assertThat(analysis.getGaps()).hasSize(0);
         assertThat(analysis.getOverlaps()).hasSize(0);
-        assertTrue("It should contain at least 1 DMNMessage for the type " + DMNMessageType.DECISION_TABLE_1STNFVIOLATION,
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_1STNFVIOLATION)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_1STNFVIOLATION))).as("It should contain at least 1 DMNMessage for the type " + DMNMessageType.DECISION_TABLE_1STNFVIOLATION).isTrue();
     }
 }
