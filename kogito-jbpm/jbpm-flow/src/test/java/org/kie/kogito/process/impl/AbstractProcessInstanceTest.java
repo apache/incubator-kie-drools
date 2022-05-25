@@ -65,7 +65,9 @@ public class AbstractProcessInstanceTest {
         MockitoAnnotations.initMocks(this);
 
         AbstractProcess<TestModel> process = mock(AbstractProcess.class);
-        when(process.process()).thenReturn(mock(Process.class));
+        Process piProcess = mock(Process.class);
+        when(process.process()).thenReturn(piProcess);
+        when(process.get()).thenReturn(piProcess);
         InternalProcessRuntime pr = mock(InternalProcessRuntime.class);
         when(pr.createProcessInstance(any(), any(), any())).thenReturn(wpi);
         when(pr.getProcessInstanceManager()).thenReturn(pim);

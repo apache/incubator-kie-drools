@@ -17,7 +17,9 @@ package org.jbpm.process.core.datatype.impl.coverter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.kie.kogito.jackson.utils.JsonNodeConverter;
 import org.kie.kogito.jackson.utils.StringConverter;
@@ -30,6 +32,7 @@ public class TypeConverterRegistry {
 
     private Map<String, Function<String, ? extends Object>> converters = new HashMap<>();
     private Map<String, Function<? extends Object, String>> unconverters = new HashMap<>();
+    private Map<String, UnaryOperator<Object>> cloners = new HashMap<>();
 
     private Function<String, String> defaultConverter = new NoOpTypeConverter();
 
@@ -37,6 +40,7 @@ public class TypeConverterRegistry {
         converters.put("java.util.Date", new DateTypeConverter());
         converters.put(JsonNode.class.getName(), new JsonNodeConverter());
         unconverters.put(JsonNode.class.getName(), new StringConverter());
+        cloners.put(JsonNode.class.getName(), o -> ((JsonNode) o).deepCopy());
     }
 
     public boolean isRegistered(String type) {
@@ -57,13 +61,22 @@ public class TypeConverterRegistry {
         return result == null ? Object::toString : result;
     }
 
+    public UnaryOperator<Object> forTypeCloner(String type) {
+        return cloners.getOrDefault(type, CloneHelper::clone);
+    }
+
     public void register(String type, Function<String, ? extends Object> converter) {
-        register(type, converter, Object::toString);
+        register(type, converter, Optional.empty(), Optional.empty());
     }
 
     public <T> void register(String type, Function<String, T> converter, Function<T, String> unconverter) {
+        register(type, converter, Optional.of(unconverter), Optional.empty());
+    }
+
+    public <T> void register(String type, Function<String, T> converter, Optional<Function<T, String>> unconverter, Optional<UnaryOperator<Object>> cloner) {
         this.converters.put(type, converter);
-        this.unconverters.put(type, unconverter);
+        unconverter.ifPresent(u -> this.unconverters.put(type, u));
+        cloner.ifPresent(c -> this.cloners.put(type, c));
     }
 
     public static TypeConverterRegistry get() {

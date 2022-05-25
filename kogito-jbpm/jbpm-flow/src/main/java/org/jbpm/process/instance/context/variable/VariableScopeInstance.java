@@ -136,7 +136,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
         super.setContextInstanceContainer(contextInstanceContainer);
         for (Variable variable : getVariableScope().getVariables()) {
             if (variable.getValue() != null) {
-                setVariable(variable.getName(), variable.getValue());
+                setVariable(variable.getName(), variable.cloneValue());
             }
         }
         if (contextInstanceContainer instanceof CompositeContextNodeInstance) {

@@ -105,10 +105,12 @@ public class Variable implements TypeObject, ValueObject, Serializable {
         this.id = id;
     }
 
+    @Override
     public DataType getType() {
         return this.type;
     }
 
+    @Override
     public void setType(final DataType type) {
         if (type == null) {
             throw new IllegalArgumentException("type is null");
@@ -116,10 +118,12 @@ public class Variable implements TypeObject, ValueObject, Serializable {
         this.type = type;
     }
 
+    @Override
     public Object getValue() {
         return this.value;
     }
 
+    @Override
     public void setValue(final Object value) {
         if (this.type.verifyDataType(value)) {
             this.value = value;
@@ -149,6 +153,7 @@ public class Variable implements TypeObject, ValueObject, Serializable {
         return this.metaData;
     }
 
+    @Override
     public String toString() {
         return this.name;
     }
@@ -159,6 +164,10 @@ public class Variable implements TypeObject, ValueObject, Serializable {
 
         }
         return tags;
+    }
+
+    public Object cloneValue() {
+        return type.clone(getValue());
     }
 
     public boolean hasTag(String tagName) {

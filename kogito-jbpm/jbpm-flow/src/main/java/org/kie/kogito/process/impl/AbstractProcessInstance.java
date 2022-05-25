@@ -99,7 +99,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         setCorrelationKey(businessKey);
 
         Map<String, Object> map = bind(variables);
-        String processId = process.process().getId();
+        String processId = process.get().getId();
         syncProcessInstance((WorkflowProcessInstance) ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map));
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
     }

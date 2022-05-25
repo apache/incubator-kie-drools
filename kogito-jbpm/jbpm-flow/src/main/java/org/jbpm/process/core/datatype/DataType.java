@@ -43,4 +43,8 @@ public interface DataType extends Externalizable {
     default boolean isAssignableFrom(DataType dataType) {
         return DataTypeUtils.isAssignableFrom(this, dataType);
     }
+
+    default Object clone(Object value) {
+        return value;
+    }
 }

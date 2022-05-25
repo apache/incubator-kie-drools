@@ -37,13 +37,17 @@ class HelloWorldIT {
 
     @Test
     void testHelloWorld() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(Collections.emptyMap())
-                .post("/helloworld")
-                .then()
-                .statusCode(201)
-                .body("workflowdata.result", is("Hello World!"));
+
+        byte counter = 2;
+        do {
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .body(Collections.emptyMap())
+                    .post("/helloworld")
+                    .then()
+                    .statusCode(201)
+                    .body("workflowdata.result", is("Hello World!"));
+        } while (counter-- > 0);
     }
 }
