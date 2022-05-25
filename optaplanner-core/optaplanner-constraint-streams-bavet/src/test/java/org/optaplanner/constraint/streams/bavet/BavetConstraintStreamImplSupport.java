@@ -17,7 +17,7 @@
 package org.optaplanner.constraint.streams.bavet;
 
 import org.junit.jupiter.api.Assumptions;
-import org.optaplanner.constraint.streams.ConstraintStreamImplSupport;
+import org.optaplanner.constraint.streams.common.ConstraintStreamImplSupport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;

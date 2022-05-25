@@ -32,7 +32,11 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-constraint-streams</artifactId>
+      <artifactId>optaplanner-constraint-streams-bavet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-constraint-streams-drools</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>

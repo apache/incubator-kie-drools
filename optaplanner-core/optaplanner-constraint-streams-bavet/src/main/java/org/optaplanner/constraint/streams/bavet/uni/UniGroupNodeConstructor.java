@@ -24,6 +24,6 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 interface UniGroupNodeConstructor<A, Tuple_ extends Tuple> {
 
     AbstractGroupUniNode<A, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert, Consumer<Tuple_> retract,
-                                                   int outputStoreSize);
+            int outputStoreSize);
 
 }

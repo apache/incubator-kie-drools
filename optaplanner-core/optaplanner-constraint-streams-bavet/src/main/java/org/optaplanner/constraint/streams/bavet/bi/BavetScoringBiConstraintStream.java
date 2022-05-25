@@ -47,13 +47,13 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     private BavetConstraint<Solution_> constraint;
 
     public BavetScoringBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                          BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
         this(constraintFactory, parent, true, null, null, null);
     }
 
     public BavetScoringBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                          BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-                                          ToIntBiFunction<A, B> intMatchWeigher) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
+            ToIntBiFunction<A, B> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -61,8 +61,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     }
 
     public BavetScoringBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                          BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-                                          ToLongBiFunction<A, B> longMatchWeigher) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
+            ToLongBiFunction<A, B> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -70,8 +70,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     }
 
     public BavetScoringBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                          BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-                                          BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
+            BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -79,10 +79,10 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     }
 
     private BavetScoringBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-                                           boolean noMatchWeigher,
-                                           ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher,
-                                           BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
+            boolean noMatchWeigher,
+            ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher,
+            BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;

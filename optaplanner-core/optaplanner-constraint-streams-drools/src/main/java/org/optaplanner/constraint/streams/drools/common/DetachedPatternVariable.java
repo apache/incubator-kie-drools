@@ -26,9 +26,9 @@ import java.util.function.Predicate;
 
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
-import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
+import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
+import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;

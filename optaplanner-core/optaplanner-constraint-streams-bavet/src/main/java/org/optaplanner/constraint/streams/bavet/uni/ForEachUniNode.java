@@ -42,8 +42,8 @@ public final class ForEachUniNode<A> extends AbstractNode {
     private final Queue<UniTuple<A>> dirtyTupleQueue;
 
     public ForEachUniNode(Class<A> forEachClass,
-                          Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-                          int outputStoreSize) {
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            int outputStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;

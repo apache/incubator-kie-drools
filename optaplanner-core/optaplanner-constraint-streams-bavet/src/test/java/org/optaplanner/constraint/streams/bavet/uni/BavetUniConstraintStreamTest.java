@@ -17,7 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamImplSupport;
-import org.optaplanner.constraint.streams.uni.AbstractUniConstraintStreamTest;
+import org.optaplanner.constraint.streams.common.uni.AbstractUniConstraintStreamTest;
 
 final class BavetUniConstraintStreamTest extends AbstractUniConstraintStreamTest {
 

@@ -31,7 +31,7 @@ public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAb
     private final Class<A> forEachClass;
 
     public BavetForEachUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, Class<A> forEachClass,
-                                           RetrievalSemantics retrievalSemantics) {
+            RetrievalSemantics retrievalSemantics) {
         super(constraintFactory, retrievalSemantics);
         this.forEachClass = forEachClass;
         if (forEachClass == null) {

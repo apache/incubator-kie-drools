@@ -26,7 +26,7 @@ final class TriScorer<A, B, C> extends AbstractScorer<TriTuple<A, B, C>> {
     private final TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
 
     public TriScorer(String constraintPackage, String constraintName, Score<?> constraintWeight,
-                     TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
+            TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
         super(constraintPackage, constraintName, constraintWeight, inputStoreIndex);
         this.scoreImpacter = scoreImpacter;
     }

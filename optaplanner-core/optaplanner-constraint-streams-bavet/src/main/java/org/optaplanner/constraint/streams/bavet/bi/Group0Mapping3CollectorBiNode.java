@@ -32,11 +32,11 @@ final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_
     private final int outputStoreSize;
 
     public Group0Mapping3CollectorBiNode(int groupStoreIndex,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
-                                         Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-                                         int outputStoreSize) {
+            BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
+            BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
+            BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }

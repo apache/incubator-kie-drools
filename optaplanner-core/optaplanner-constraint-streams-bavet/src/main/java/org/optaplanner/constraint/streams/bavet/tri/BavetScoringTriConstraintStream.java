@@ -47,13 +47,13 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     private BavetConstraint<Solution_> constraint;
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractTriConstraintStream<Solution_, A, B, C> parent) {
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent) {
         this(constraintFactory, parent, true, null, null, null);
     }
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-                                           ToIntTriFunction<A, B, C> intMatchWeigher) {
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            ToIntTriFunction<A, B, C> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -61,8 +61,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-                                           ToLongTriFunction<A, B, C> longMatchWeigher) {
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            ToLongTriFunction<A, B, C> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -70,8 +70,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     public BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-                                           TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -79,10 +79,10 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     private BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-                                            boolean noMatchWeigher,
-                                            ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher,
-                                            TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            boolean noMatchWeigher,
+            ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher,
+            TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;

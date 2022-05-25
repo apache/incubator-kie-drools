@@ -34,11 +34,11 @@ final class Group2Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
     private final int outputStoreSize;
 
     public Group2Mapping2CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
-                                          TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
-                                          Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                          int outputStoreSize) {
+            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorC, collectorD), nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;

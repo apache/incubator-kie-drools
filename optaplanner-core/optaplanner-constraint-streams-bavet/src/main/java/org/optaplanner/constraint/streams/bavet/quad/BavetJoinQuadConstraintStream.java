@@ -32,7 +32,7 @@ import org.optaplanner.constraint.streams.bavet.tri.BavetJoinBridgeTriConstraint
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
+import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -46,9 +46,9 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
     private final DefaultQuadJoiner<A, B, C, D> joiner;
 
     public BavetJoinQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                         BavetJoinBridgeTriConstraintStream<Solution_, A, B, C> leftParent,
-                                         BavetJoinBridgeUniConstraintStream<Solution_, D> rightParent,
-                                         DefaultQuadJoiner<A, B, C, D> joiner) {
+            BavetJoinBridgeTriConstraintStream<Solution_, A, B, C> leftParent,
+            BavetJoinBridgeUniConstraintStream<Solution_, D> rightParent,
+            DefaultQuadJoiner<A, B, C, D> joiner) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;

@@ -24,6 +24,6 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 interface BiGroupNodeConstructor<A, B, Tuple_ extends Tuple> {
 
     AbstractGroupBiNode<A, B, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert,
-                                                     Consumer<Tuple_> retract, int outputStoreSize);
+            Consumer<Tuple_> retract, int outputStoreSize);
 
 }

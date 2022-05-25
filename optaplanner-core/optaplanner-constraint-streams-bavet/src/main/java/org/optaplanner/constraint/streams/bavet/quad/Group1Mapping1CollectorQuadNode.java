@@ -30,9 +30,9 @@ final class Group1Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
     private final int outputStoreSize;
 
     public Group1Mapping1CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
-                                           QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, B> collector,
-                                           Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-                                           int outputStoreSize) {
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, B> collector,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;

@@ -27,10 +27,10 @@
   <modules>
     <module>optaplanner-core</module>
     <module>optaplanner-core-impl</module>
-    <module>optaplanner-constraint-streams</module>
-    <module>optaplanner-constraint-drl</module>
+    <module>optaplanner-constraint-streams-common</module>
     <module>optaplanner-constraint-streams-bavet</module>
-      <module>optaplanner-constraint-streams-drools</module>
+    <module>optaplanner-constraint-streams-drools</module>
+    <module>optaplanner-constraint-drl</module>
   </modules>
 
 </project>

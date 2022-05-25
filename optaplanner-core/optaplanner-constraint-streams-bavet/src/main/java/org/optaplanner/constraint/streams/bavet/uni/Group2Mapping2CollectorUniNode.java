@@ -34,11 +34,11 @@ final class Group2Mapping2CollectorUniNode<OldA, A, B, C, D, ResultContainerC_, 
     private final int outputStoreSize;
 
     public Group2Mapping2CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
-                                          int groupStoreIndex,
-                                          UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
-                                          UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
-                                          Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                          int outputStoreSize) {
+            int groupStoreIndex,
+            UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
+            UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorC, collectorD), nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;

@@ -31,11 +31,11 @@ final class IfExistsUniWithUniNode<A, B> extends AbstractIfExistsNode<UniTuple<A
     private final BiPredicate<A, B> filtering;
 
     public IfExistsUniWithUniNode(boolean shouldExist,
-                                  Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
-                                  int inputStoreIndexA, int inputStoreIndexB,
-                                  Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-                                  Indexer<UniTuple<A>, Counter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>, Set<Counter<UniTuple<A>>>> indexerB,
-                                  BiPredicate<A, B> filtering) {
+            Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
+            int inputStoreIndexA, int inputStoreIndexB,
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            Indexer<UniTuple<A>, Counter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>, Set<Counter<UniTuple<A>>>> indexerB,
+            BiPredicate<A, B> filtering) {
         super(shouldExist, mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesInsert, nextNodesRetract, indexerA, indexerB);
         this.mappingA = mappingA;
         this.filtering = filtering;

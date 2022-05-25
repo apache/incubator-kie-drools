@@ -37,8 +37,8 @@ public final class BavetConstraintSession<Score_ extends Score<Score_>> {
     private final Map<Class<?>, List<ForEachUniNode<Object>>> effectiveClassToNodeListMap;
 
     public BavetConstraintSession(AbstractScoreInliner<Score_> scoreInliner,
-                                  Map<Class<?>, ForEachUniNode<Object>> declaredClassToNodeMap,
-                                  AbstractNode[] nodes) {
+            Map<Class<?>, ForEachUniNode<Object>> declaredClassToNodeMap,
+            AbstractNode[] nodes) {
         this.scoreInliner = scoreInliner;
         this.declaredClassToNodeMap = declaredClassToNodeMap;
         this.nodes = nodes;

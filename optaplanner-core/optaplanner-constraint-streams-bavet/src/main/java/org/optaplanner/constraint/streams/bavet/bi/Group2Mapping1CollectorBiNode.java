@@ -32,10 +32,10 @@ final class Group2Mapping1CollectorBiNode<OldA, OldB, A, B, C, ResultContainer_>
     private final int outputStoreSize;
 
     public Group2Mapping1CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA, BiFunction<OldA, OldB, B> groupKeyMappingB,
-                                         int groupStoreIndex,
-                                         BiConstraintCollector<OldA, OldB, ResultContainer_, C> collector,
-                                         Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-                                         int outputStoreSize) {
+            int groupStoreIndex,
+            BiConstraintCollector<OldA, OldB, ResultContainer_, C> collector,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;

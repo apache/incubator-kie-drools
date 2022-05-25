@@ -31,11 +31,11 @@ final class Group0Mapping3CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
     private final int outputStoreSize;
 
     public Group0Mapping3CollectorTriNode(int groupStoreIndex,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerA_, A> collectorA,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
-                                          Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-                                          int outputStoreSize) {
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerA_, A> collectorA,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }

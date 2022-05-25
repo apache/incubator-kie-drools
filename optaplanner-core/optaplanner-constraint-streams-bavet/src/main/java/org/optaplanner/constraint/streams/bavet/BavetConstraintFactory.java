@@ -70,7 +70,7 @@ public final class BavetConstraintFactory<Solution_>
      * @return never null
      */
     public <Stream_ extends BavetAbstractConstraintStream<Solution_>> Stream_ share(Stream_ stream,
-                                                                                    Consumer<Stream_> consumer) {
+            Consumer<Stream_> consumer) {
         return (Stream_) sharingStreamMap.computeIfAbsent(stream, k -> {
             consumer.accept(stream);
             return stream;

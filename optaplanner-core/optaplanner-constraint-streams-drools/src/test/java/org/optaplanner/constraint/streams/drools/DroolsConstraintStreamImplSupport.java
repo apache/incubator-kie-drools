@@ -17,7 +17,7 @@
 package org.optaplanner.constraint.streams.drools;
 
 import org.junit.jupiter.api.Assumptions;
-import org.optaplanner.constraint.streams.ConstraintStreamImplSupport;
+import org.optaplanner.constraint.streams.common.ConstraintStreamImplSupport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -52,5 +52,6 @@ public final class DroolsConstraintStreamImplSupport
             SolutionDescriptor<Solution_> solutionDescriptorSupplier, ConstraintProvider constraintProvider) {
         return (InnerScoreDirector<Solution_, Score_>) new DroolsConstraintStreamScoreDirectorFactory<>(
                 solutionDescriptorSupplier, constraintProvider, true)
-                .buildScoreDirector(false, constraintMatchEnabled);    }
+                        .buildScoreDirector(false, constraintMatchEnabled);
+    }
 }

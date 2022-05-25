@@ -31,8 +31,8 @@ final class Group2Mapping0CollectorUniNode<OldA, A, B>
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
-                                          int groupStoreIndex, Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-                                          int outputStoreSize) {
+            int groupStoreIndex, Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;

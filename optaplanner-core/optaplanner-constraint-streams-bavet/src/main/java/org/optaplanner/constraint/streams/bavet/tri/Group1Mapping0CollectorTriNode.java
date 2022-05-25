@@ -19,9 +19,8 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.core.api.function.TriFunction;
-
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.function.TriFunction;
 
 final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
         extends AbstractGroupTriNode<OldA, OldB, OldC, UniTuple<A>, A, Void, Void> {
@@ -30,8 +29,8 @@ final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
-                                          Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-                                          int outputStoreSize) {
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;

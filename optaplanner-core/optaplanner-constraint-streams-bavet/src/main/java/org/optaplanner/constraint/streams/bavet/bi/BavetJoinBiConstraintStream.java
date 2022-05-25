@@ -30,7 +30,7 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -42,9 +42,9 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     private final DefaultBiJoiner<A, B> joiner;
 
     public BavetJoinBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                       BavetJoinBridgeUniConstraintStream<Solution_, A> leftParent,
-                                       BavetJoinBridgeUniConstraintStream<Solution_, B> rightParent,
-                                       DefaultBiJoiner<A, B> joiner) {
+            BavetJoinBridgeUniConstraintStream<Solution_, A> leftParent,
+            BavetJoinBridgeUniConstraintStream<Solution_, B> rightParent,
+            DefaultBiJoiner<A, B> joiner) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;

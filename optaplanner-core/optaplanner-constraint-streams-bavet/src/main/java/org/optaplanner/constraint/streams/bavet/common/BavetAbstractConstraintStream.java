@@ -35,7 +35,7 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     protected final BavetConstraintFactory<Solution_> constraintFactory;
 
     public BavetAbstractConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                         RetrievalSemantics retrievalSemantics) {
+            RetrievalSemantics retrievalSemantics) {
         super(retrievalSemantics);
         this.constraintFactory = constraintFactory;
     }
@@ -45,8 +45,8 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // ************************************************************************
 
     protected BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-                                                         Score<?> constraintWeight, ScoreImpactType impactType,
-                                                         BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
+            Score<?> constraintWeight, ScoreImpactType impactType,
+            BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
         BavetConstraint<Solution_> constraint =
@@ -57,8 +57,8 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     }
 
     protected BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
-                                                                     ScoreImpactType impactType,
-                                                                     BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
+            ScoreImpactType impactType,
+            BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
         BavetConstraint<Solution_> constraint =

@@ -23,7 +23,7 @@ import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.TestTemplate;
-import org.optaplanner.constraint.streams.AbstractScoringConstraintStreamTest;
+import org.optaplanner.constraint.streams.common.AbstractScoringConstraintStreamTest;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;

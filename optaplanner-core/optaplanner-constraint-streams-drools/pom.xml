@@ -22,7 +22,7 @@
     <url>https://www.optaplanner.org</url>
 
     <properties>
-        <java.module.name>org.optaplanner.constraint.streams</java.module.name>
+        <java.module.name>org.optaplanner.constraint.streams.drools</java.module.name>
     </properties>
 
     <dependencies>
@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>org.optaplanner</groupId>
-            <artifactId>optaplanner-constraint-streams</artifactId>
+            <artifactId>optaplanner-constraint-streams-common</artifactId>
         </dependency>
 
         <!-- Internal dependencies -->
@@ -73,7 +73,7 @@
         </dependency>
         <dependency>
             <groupId>org.optaplanner</groupId>
-            <artifactId>optaplanner-constraint-streams</artifactId>
+            <artifactId>optaplanner-constraint-streams-common</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

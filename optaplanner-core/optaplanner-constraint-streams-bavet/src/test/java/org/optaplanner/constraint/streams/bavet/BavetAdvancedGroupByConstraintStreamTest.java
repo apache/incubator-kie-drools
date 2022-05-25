@@ -34,7 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.TestTemplate;
-import org.optaplanner.constraint.streams.AbstractAdvancedGroupByConstraintStreamTest;
+import org.optaplanner.constraint.streams.common.AbstractAdvancedGroupByConstraintStreamTest;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;

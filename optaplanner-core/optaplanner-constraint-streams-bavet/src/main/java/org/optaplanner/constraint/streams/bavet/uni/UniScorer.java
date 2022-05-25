@@ -27,7 +27,7 @@ final class UniScorer<A> extends AbstractScorer<UniTuple<A>> {
     private final Function<A, UndoScoreImpacter> scoreImpacter;
 
     public UniScorer(String constraintPackage, String constraintName, Score<?> constraintWeight,
-                     Function<A, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
+            Function<A, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
         super(constraintPackage, constraintName, constraintWeight, inputStoreIndex);
         this.scoreImpacter = scoreImpacter;
     }

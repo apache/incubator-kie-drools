@@ -36,8 +36,8 @@ final class BavetBiGroupBridgeUniConstraintStream<Solution_, A, NewA, NewB>
     private final UniGroupNodeConstructor<A, BiTuple<NewA, NewB>> nodeConstructor;
 
     public BavetBiGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                                 BavetAbstractUniConstraintStream<Solution_, A> parent,
-                                                 UniGroupNodeConstructor<A, BiTuple<NewA, NewB>> nodeConstructor) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            UniGroupNodeConstructor<A, BiTuple<NewA, NewB>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;

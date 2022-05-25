@@ -33,11 +33,11 @@ final class Group1Mapping3CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
     private final int outputStoreSize;
 
     public Group1Mapping3CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
-                                          Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                          int outputStoreSize) {
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorB, collectorC, collectorD),
                 nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;

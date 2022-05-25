@@ -34,8 +34,8 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstr
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.penta.PentaJoinerComber;
-import org.optaplanner.constraint.streams.quad.InnerQuadConstraintStream;
+import org.optaplanner.constraint.streams.common.penta.PentaJoinerComber;
+import org.optaplanner.constraint.streams.common.quad.InnerQuadConstraintStream;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -56,7 +56,7 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     protected final List<BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                             RetrievalSemantics retrievalSemantics) {
+            RetrievalSemantics retrievalSemantics) {
         super(constraintFactory, retrievalSemantics);
     }
 
@@ -164,7 +164,7 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         QuadGroupNodeConstructor<A, B, C, D, UniTuple<Result_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<Result_>> insert, Consumer<UniTuple<Result_>> retract,
-                 int outputStoreSize) -> new Group0Mapping1CollectorQuadNode<>(inputStoreIndex, collector, insert,
+                        int outputStoreSize) -> new Group0Mapping1CollectorQuadNode<>(inputStoreIndex, collector, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
@@ -250,7 +250,7 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping) {
         QuadGroupNodeConstructor<A, B, C, D, UniTuple<GroupKey_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<GroupKey_>> insert, Consumer<UniTuple<GroupKey_>> retract,
-                 int outputStoreSize) -> new Group1Mapping0CollectorQuadNode<>(groupKeyMapping, inputStoreIndex, insert,
+                        int outputStoreSize) -> new Group1Mapping0CollectorQuadNode<>(groupKeyMapping, inputStoreIndex, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }

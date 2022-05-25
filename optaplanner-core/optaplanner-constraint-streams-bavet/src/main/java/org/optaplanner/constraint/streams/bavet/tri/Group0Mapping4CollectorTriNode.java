@@ -32,12 +32,12 @@ final class Group0Mapping4CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
     private final int outputStoreSize;
 
     public Group0Mapping4CollectorTriNode(int groupStoreIndex,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerA_, A> collectorA,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
-                                          Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                          int outputStoreSize) {
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerA_, A> collectorA,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesInsert,
                 nextNodesRetract);
         this.outputStoreSize = outputStoreSize;

@@ -30,10 +30,10 @@ final class Group1Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
     private final int outputStoreSize;
 
     public Group1Mapping2CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
-                                          TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
-                                          Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-                                          int outputStoreSize) {
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, Group0Mapping2CollectorTriNode.mergeCollectors(collectorB, collectorC), nextNodesInsert,
                 nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;

@@ -30,7 +30,7 @@ public final class BavetIfExistsBridgeUniConstraintStream<Solution_, A>
     private final BavetAbstractUniConstraintStream<Solution_, A> parent;
 
     public BavetIfExistsBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                                  BavetAbstractUniConstraintStream<Solution_, A> parent) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }

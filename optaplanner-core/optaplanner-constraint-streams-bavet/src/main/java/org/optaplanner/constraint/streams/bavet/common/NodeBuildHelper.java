@@ -70,7 +70,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
     }
 
     public <Tuple_ extends Tuple> void putInsertRetract(ConstraintStream stream,
-                                                        Consumer<Tuple_> insert, Consumer<Tuple_> retract) {
+            Consumer<Tuple_> insert, Consumer<Tuple_> retract) {
         insertMap.put(stream, insert);
         retractMap.put(stream, retract);
     }

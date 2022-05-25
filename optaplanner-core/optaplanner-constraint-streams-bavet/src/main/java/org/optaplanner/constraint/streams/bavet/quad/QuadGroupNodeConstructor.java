@@ -24,6 +24,6 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 interface QuadGroupNodeConstructor<A, B, C, D, Tuple_ extends Tuple> {
 
     AbstractGroupQuadNode<A, B, C, D, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert,
-                                                             Consumer<Tuple_> retract, int outputStoreSize);
+            Consumer<Tuple_> retract, int outputStoreSize);
 
 }

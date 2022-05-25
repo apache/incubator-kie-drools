@@ -27,7 +27,7 @@ final class BiScorer<A, B> extends AbstractScorer<BiTuple<A, B>> {
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
 
     public BiScorer(String constraintPackage, String constraintName, Score<?> constraintWeight,
-                    BiFunction<A, B, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
+            BiFunction<A, B, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
         super(constraintPackage, constraintName, constraintWeight, inputStoreIndex);
         this.scoreImpacter = scoreImpacter;
     }

@@ -35,7 +35,17 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-constraint-streams</artifactId>
+      <artifactId>optaplanner-constraint-streams-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-constraint-streams-bavet</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-constraint-streams-drools</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>

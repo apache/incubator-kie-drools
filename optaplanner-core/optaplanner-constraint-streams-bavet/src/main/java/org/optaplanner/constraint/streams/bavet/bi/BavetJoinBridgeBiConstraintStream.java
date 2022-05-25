@@ -18,13 +18,12 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.Set;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
-
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {
@@ -35,7 +34,7 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
     private BavetJoinConstraintStream<Solution_> joinStream;
 
     public BavetJoinBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                             BavetAbstractBiConstraintStream<Solution_, A, B> parent, boolean isLeftBridge) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent, boolean isLeftBridge) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.isLeftBridge = isLeftBridge;

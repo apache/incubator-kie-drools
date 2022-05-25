@@ -32,10 +32,10 @@ final class Group0Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
     private final int outputStoreSize;
 
     public Group0Mapping2CollectorQuadNode(int groupStoreIndex,
-                                           QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerA_, A> collectorA,
-                                           QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
-                                           Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-                                           int outputStoreSize) {
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerA_, A> collectorA,
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }

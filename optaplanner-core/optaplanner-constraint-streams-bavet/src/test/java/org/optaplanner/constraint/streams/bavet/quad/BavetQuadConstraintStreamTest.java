@@ -17,7 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamImplSupport;
-import org.optaplanner.constraint.streams.quad.AbstractQuadConstraintStreamTest;
+import org.optaplanner.constraint.streams.common.quad.AbstractQuadConstraintStreamTest;
 
 final class BavetQuadConstraintStreamTest extends AbstractQuadConstraintStreamTest {
 

@@ -19,11 +19,11 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.AbstractJoiner;
-import org.optaplanner.constraint.streams.penta.DefaultPentaJoiner;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
-import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
+import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.common.penta.DefaultPentaJoiner;
+import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
+import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 

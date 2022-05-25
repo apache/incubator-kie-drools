@@ -30,9 +30,9 @@ final class Group1Mapping1CollectorUniNode<OldA, A, B, ResultContainer_>
     private final int outputStoreSize;
 
     public Group1Mapping1CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
-                                          UniConstraintCollector<OldA, ResultContainer_, B> collector,
-                                          Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-                                          int outputStoreSize) {
+            UniConstraintCollector<OldA, ResultContainer_, B> collector,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;

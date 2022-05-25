@@ -20,10 +20,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
-
-import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 
 final class Group3Mapping1CollectorUniNode<OldA, A, B, C, D, ResultContainer_>
         extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, Triple<A, B, C>, ResultContainer_, D> {
@@ -34,10 +33,10 @@ final class Group3Mapping1CollectorUniNode<OldA, A, B, C, D, ResultContainer_>
     private final int outputStoreSize;
 
     public Group3Mapping1CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
-                                          Function<OldA, C> groupKeyMappingC,
-                                          int groupStoreIndex, UniConstraintCollector<OldA, ResultContainer_, D> collector,
-                                          Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                          int outputStoreSize) {
+            Function<OldA, C> groupKeyMappingC,
+            int groupStoreIndex, UniConstraintCollector<OldA, ResultContainer_, D> collector,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;

@@ -27,7 +27,7 @@ import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
-import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -41,10 +41,10 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
     private final BiPredicate<A, B> filtering;
 
     public BavetIfExistsUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractUniConstraintStream<Solution_, A> parentA,
-                                            BavetIfExistsBridgeUniConstraintStream<Solution_, B> parentBridgeB,
-                                            boolean shouldExist,
-                                            DefaultBiJoiner<A, B> joiner, BiPredicate<A, B> filtering) {
+            BavetAbstractUniConstraintStream<Solution_, A> parentA,
+            BavetIfExistsBridgeUniConstraintStream<Solution_, B> parentBridgeB,
+            boolean shouldExist,
+            DefaultBiJoiner<A, B> joiner, BiPredicate<A, B> filtering) {
         super(constraintFactory, parentA.getRetrievalSemantics());
         this.parentA = parentA;
         this.parentBridgeB = parentBridgeB;

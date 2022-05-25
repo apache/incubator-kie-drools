@@ -18,15 +18,14 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.Set;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
-
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 final class BavetUniGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA>
         extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
@@ -36,8 +35,8 @@ final class BavetUniGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA>
     private final TriGroupNodeConstructor<A, B, C, UniTuple<NewA>> nodeConstructor;
 
     public BavetUniGroupBridgeTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                                  BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-                                                  TriGroupNodeConstructor<A, B, C, UniTuple<NewA>> nodeConstructor) {
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriGroupNodeConstructor<A, B, C, UniTuple<NewA>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;

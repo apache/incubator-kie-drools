@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>org.optaplanner</groupId>
-            <artifactId>optaplanner-constraint-streams</artifactId>
+            <artifactId>optaplanner-constraint-streams-common</artifactId>
         </dependency>
 
         <!-- External dependencies -->
@@ -63,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>org.optaplanner</groupId>
-            <artifactId>optaplanner-constraint-streams</artifactId>
+            <artifactId>optaplanner-constraint-streams-common</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

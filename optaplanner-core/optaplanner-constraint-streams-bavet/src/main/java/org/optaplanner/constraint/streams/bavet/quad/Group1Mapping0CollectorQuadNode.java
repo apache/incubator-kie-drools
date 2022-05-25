@@ -19,9 +19,8 @@ package org.optaplanner.constraint.streams.bavet.quad;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.core.api.function.QuadFunction;
-
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.function.QuadFunction;
 
 final class Group1Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A>
         extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, UniTuple<A>, A, Void, Void> {
@@ -30,8 +29,8 @@ final class Group1Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
-                                           Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-                                           int outputStoreSize) {
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;

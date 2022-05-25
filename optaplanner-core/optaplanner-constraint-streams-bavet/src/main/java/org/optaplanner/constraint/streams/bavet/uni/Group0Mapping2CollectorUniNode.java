@@ -32,10 +32,10 @@ final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, Result
     private final int outputStoreSize;
 
     public Group0Mapping2CollectorUniNode(int groupStoreIndex,
-                                          UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
-                                          UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
-                                          Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-                                          int outputStoreSize) {
+            UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
+            UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }

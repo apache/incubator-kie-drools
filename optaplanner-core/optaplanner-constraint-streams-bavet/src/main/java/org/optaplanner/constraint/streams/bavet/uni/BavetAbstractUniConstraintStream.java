@@ -34,10 +34,10 @@ import org.optaplanner.constraint.streams.bavet.quad.BavetGroupQuadConstraintStr
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
-import org.optaplanner.constraint.streams.bi.BiJoinerComber;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.uni.InnerUniConstraintStream;
+import org.optaplanner.constraint.streams.common.bi.BiJoinerComber;
+import org.optaplanner.constraint.streams.common.uni.InnerUniConstraintStream;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -53,7 +53,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     protected final List<BavetAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            RetrievalSemantics retrievalSemantics) {
+            RetrievalSemantics retrievalSemantics) {
         super(constraintFactory, retrievalSemantics);
     }
 
@@ -195,7 +195,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         UniGroupNodeConstructor<A, UniTuple<Result_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<Result_>> insert, Consumer<UniTuple<Result_>> retract,
-                 int outputStoreSize) -> new Group0Mapping1CollectorUniNode<>(inputStoreIndex, collector, insert,
+                        int outputStoreSize) -> new Group0Mapping1CollectorUniNode<>(inputStoreIndex, collector, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
@@ -280,7 +280,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
         UniGroupNodeConstructor<A, UniTuple<GroupKey_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<GroupKey_>> insert, Consumer<UniTuple<GroupKey_>> retract,
-                 int outputStoreSize) -> new Group1Mapping0CollectorUniNode<>(groupKeyMapping, inputStoreIndex, insert,
+                        int outputStoreSize) -> new Group1Mapping0CollectorUniNode<>(groupKeyMapping, inputStoreIndex, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }

@@ -26,7 +26,7 @@ final class QuadScorer<A, B, C, D> extends AbstractScorer<QuadTuple<A, B, C, D>>
     private final QuadFunction<A, B, C, D, UndoScoreImpacter> scoreImpacter;
 
     public QuadScorer(String constraintPackage, String constraintName, Score<?> constraintWeight,
-                      QuadFunction<A, B, C, D, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
+            QuadFunction<A, B, C, D, UndoScoreImpacter> scoreImpacter, int inputStoreIndex) {
         super(constraintPackage, constraintName, constraintWeight, inputStoreIndex);
         this.scoreImpacter = scoreImpacter;
     }

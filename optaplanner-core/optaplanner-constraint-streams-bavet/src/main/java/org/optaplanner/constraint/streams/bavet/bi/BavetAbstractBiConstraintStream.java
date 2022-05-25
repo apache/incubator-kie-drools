@@ -38,10 +38,10 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStrea
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bi.InnerBiConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.tri.TriJoinerComber;
+import org.optaplanner.constraint.streams.common.bi.InnerBiConstraintStream;
+import org.optaplanner.constraint.streams.common.tri.TriJoinerComber;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -57,7 +57,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     protected final List<BavetAbstractBiConstraintStream<Solution_, A, B>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           RetrievalSemantics retrievalSemantics) {
+            RetrievalSemantics retrievalSemantics) {
         super(constraintFactory, retrievalSemantics);
     }
 
@@ -194,7 +194,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         BiGroupNodeConstructor<A, B, UniTuple<Result_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<Result_>> insert, Consumer<UniTuple<Result_>> retract,
-                 int outputStoreSize) -> new Group0Mapping1CollectorBiNode<>(inputStoreIndex, collector, insert,
+                        int outputStoreSize) -> new Group0Mapping1CollectorBiNode<>(inputStoreIndex, collector, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
@@ -279,7 +279,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
         BiGroupNodeConstructor<A, B, UniTuple<GroupKey_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<GroupKey_>> insert, Consumer<UniTuple<GroupKey_>> retract,
-                 int outputStoreSize) -> new Group1Mapping0CollectorBiNode<>(groupKeyMapping, inputStoreIndex, insert,
+                        int outputStoreSize) -> new Group1Mapping0CollectorBiNode<>(groupKeyMapping, inputStoreIndex, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }

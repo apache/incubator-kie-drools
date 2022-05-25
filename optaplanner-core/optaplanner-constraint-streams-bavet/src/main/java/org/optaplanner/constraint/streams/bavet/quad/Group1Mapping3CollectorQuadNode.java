@@ -20,11 +20,10 @@ import static org.optaplanner.constraint.streams.bavet.quad.Group0Mapping3Collec
 
 import java.util.function.Consumer;
 
+import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
-
-import org.optaplanner.constraint.streams.bavet.common.Group;
 
 final class Group1Mapping3CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, ResultContainerB_, ResultContainerC_, ResultContainerD_>
         extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, QuadTuple<A, B, C, D>, A, Object, Triple<B, C, D>> {
@@ -33,11 +32,11 @@ final class Group1Mapping3CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
     private final int outputStoreSize;
 
     public Group1Mapping3CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
-                                           QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
-                                           QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerC_, C> collectorC,
-                                           QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerD_, D> collectorD,
-                                           Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                           int outputStoreSize) {
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerC_, C> collectorC,
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorB, collectorC, collectorD),
                 nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;

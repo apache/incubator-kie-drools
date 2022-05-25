@@ -31,9 +31,9 @@ final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
-                                          TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
-                                          Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-                                          int outputStoreSize) {
+            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;

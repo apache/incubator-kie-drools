@@ -36,8 +36,8 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraint
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.quad.QuadJoinerComber;
-import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
+import org.optaplanner.constraint.streams.common.quad.QuadJoinerComber;
+import org.optaplanner.constraint.streams.common.tri.InnerTriConstraintStream;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -57,7 +57,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     protected final List<BavetAbstractTriConstraintStream<Solution_, A, B, C>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            RetrievalSemantics retrievalSemantics) {
+            RetrievalSemantics retrievalSemantics) {
         super(constraintFactory, retrievalSemantics);
     }
 
@@ -198,7 +198,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         TriGroupNodeConstructor<A, B, C, UniTuple<Result_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<Result_>> insert, Consumer<UniTuple<Result_>> retract,
-                 int outputStoreSize) -> new Group0Mapping1CollectorTriNode<>(inputStoreIndex, collector, insert,
+                        int outputStoreSize) -> new Group0Mapping1CollectorTriNode<>(inputStoreIndex, collector, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
@@ -283,7 +283,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping) {
         TriGroupNodeConstructor<A, B, C, UniTuple<GroupKey_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<GroupKey_>> insert, Consumer<UniTuple<GroupKey_>> retract,
-                 int outputStoreSize) -> new Group1Mapping0CollectorTriNode<>(groupKeyMapping, inputStoreIndex, insert,
+                        int outputStoreSize) -> new Group1Mapping0CollectorTriNode<>(groupKeyMapping, inputStoreIndex, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }

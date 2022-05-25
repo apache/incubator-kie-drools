@@ -33,7 +33,7 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     private final Predicate<A> predicate;
 
     public BavetFilterUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                          BavetAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.predicate = predicate;

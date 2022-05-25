@@ -32,12 +32,12 @@ final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
     private final int outputStoreSize;
 
     public Group0Mapping4CollectorBiNode(int groupStoreIndex,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD,
-                                         Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                         int outputStoreSize) {
+            BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
+            BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
+            BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
+            BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesInsert,
                 nextNodesRetract);
         this.outputStoreSize = outputStoreSize;

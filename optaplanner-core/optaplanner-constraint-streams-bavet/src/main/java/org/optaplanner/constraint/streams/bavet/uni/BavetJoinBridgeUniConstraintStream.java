@@ -34,7 +34,7 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
     private BavetJoinConstraintStream<Solution_> joinStream;
 
     public BavetJoinBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                              BavetAbstractUniConstraintStream<Solution_, A> parent, boolean isLeftBridge) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent, boolean isLeftBridge) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.isLeftBridge = isLeftBridge;

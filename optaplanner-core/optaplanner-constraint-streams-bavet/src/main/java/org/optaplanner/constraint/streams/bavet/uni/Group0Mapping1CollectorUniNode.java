@@ -29,9 +29,9 @@ final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
     private final int outputStoreSize;
 
     public Group0Mapping1CollectorUniNode(int groupStoreIndex,
-                                          UniConstraintCollector<OldA, ResultContainer_, A> collector,
-                                          Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
-                                          int outputStoreSize) {
+            UniConstraintCollector<OldA, ResultContainer_, A> collector,
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }

@@ -19,15 +19,14 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
-
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.quad.BavetGroupQuadConstraintStream;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 final class BavetQuadGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB, NewC, NewD>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {
@@ -37,8 +36,8 @@ final class BavetQuadGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB, 
     private final BiGroupNodeConstructor<A, B, QuadTuple<NewA, NewB, NewC, NewD>> nodeConstructor;
 
     public BavetQuadGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                                  BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-                                                  BiGroupNodeConstructor<A, B, QuadTuple<NewA, NewB, NewC, NewD>> nodeConstructor) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent,
+            BiGroupNodeConstructor<A, B, QuadTuple<NewA, NewB, NewC, NewD>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;

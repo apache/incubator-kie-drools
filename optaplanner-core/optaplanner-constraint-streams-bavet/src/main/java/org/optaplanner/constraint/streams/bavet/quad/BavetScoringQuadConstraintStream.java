@@ -47,13 +47,13 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
     private BavetConstraint<Solution_> constraint;
 
     public BavetScoringQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent) {
+            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent) {
         this(constraintFactory, parent, true, null, null, null);
     }
 
     public BavetScoringQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-                                            ToIntQuadFunction<A, B, C, D> intMatchWeigher) {
+            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            ToIntQuadFunction<A, B, C, D> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -61,8 +61,8 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     public BavetScoringQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-                                            ToLongQuadFunction<A, B, C, D> longMatchWeigher) {
+            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            ToLongQuadFunction<A, B, C, D> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -70,8 +70,8 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     public BavetScoringQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-                                            QuadFunction<A, B, C, D, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            QuadFunction<A, B, C, D, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -79,10 +79,10 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     private BavetScoringQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                             BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-                                             boolean noMatchWeigher,
-                                             ToIntQuadFunction<A, B, C, D> intMatchWeigher, ToLongQuadFunction<A, B, C, D> longMatchWeigher,
-                                             QuadFunction<A, B, C, D, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            boolean noMatchWeigher,
+            ToIntQuadFunction<A, B, C, D> intMatchWeigher, ToLongQuadFunction<A, B, C, D> longMatchWeigher,
+            QuadFunction<A, B, C, D, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;

@@ -28,7 +28,7 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
+import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
@@ -44,10 +44,10 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
     private final QuadPredicate<A, B, C, D> filtering;
 
     public BavetIfExistsTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractTriConstraintStream<Solution_, A, B, C> parentABC,
-                                            BavetIfExistsBridgeUniConstraintStream<Solution_, D> parentBridgeD,
-                                            boolean shouldExist,
-                                            DefaultQuadJoiner<A, B, C, D> joiner, QuadPredicate<A, B, C, D> filtering) {
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parentABC,
+            BavetIfExistsBridgeUniConstraintStream<Solution_, D> parentBridgeD,
+            boolean shouldExist,
+            DefaultQuadJoiner<A, B, C, D> joiner, QuadPredicate<A, B, C, D> filtering) {
         super(constraintFactory, parentABC.getRetrievalSemantics());
         this.parentABC = parentABC;
         this.parentBridgeD = parentBridgeD;

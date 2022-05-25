@@ -43,24 +43,9 @@ class ScoreDirectorFactoryFactoryTest {
         assertThatCode(() -> factoryFactory.buildScoreDirectorFactory(getClass().getClassLoader(),
                 EnvironmentMode.FAST_ASSERT,
                 TestdataSolution.buildSolutionDescriptor()))
-                .hasMessage("If there is no scoreDrl (null), scoreDrlFile (null) or constraintProviderClass "
-                        + "(class org.optaplanner.constraint.streams.bavet.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
-                        + " with DROOLS impl type (BAVET), there can be no droolsAlphaNetworkCompilationEnabled (true) either.");
-    }
-
-    @Test
-    void constraintStreamsKieBaseSupplierNoDrools_throws() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
-                .withConstraintProviderClass(TestdataConstraintProvider.class)
-                .withConstraintStreamImplType(ConstraintStreamImplType.BAVET)
-                .withGizmoKieBaseSupplier(() -> null);
-        ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
-        assertThatCode(() -> factoryFactory.buildScoreDirectorFactory(getClass().getClassLoader(),
-                EnvironmentMode.FAST_ASSERT,
-                TestdataSolution.buildSolutionDescriptor()))
-                .hasMessageContaining("If there is no constraintProviderClass "
-                        + "(class org.optaplanner.constraint.streams.bavet.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
-                        + " with DROOLS impl type (BAVET), there can be no gizmoKieBaseSupplier ");
+                        .hasMessage("If there is no scoreDrl (null), scoreDrlFile (null) or constraintProviderClass "
+                                + "(class org.optaplanner.constraint.streams.bavet.ScoreDirectorFactoryFactoryTest$TestdataConstraintProvider)"
+                                + " with DROOLS impl type (BAVET), there can be no droolsAlphaNetworkCompilationEnabled (true) either.");
     }
 
     @Test

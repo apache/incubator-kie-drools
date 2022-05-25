@@ -118,17 +118,19 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             return incrementalScoreDirectorFactorySupplier.get();
         }
 
+        boolean isBavet = config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET;
         if (constraintStreamScoreDirectorFactorySupplier != null) {
-            if (config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
+            if (isBavet) {
                 validateNoDroolsAlphaNetworkCompilation();
                 validateNoGizmoKieBaseSupplier();
             }
             return constraintStreamScoreDirectorFactorySupplier.get();
         } else {
+            String expectedModule = isBavet ? "optaplanner-constraint-streams-bavet" : "optaplanner-constraint-streams-drools";
             if (config.getConstraintProviderClass() != null) {
                 throw new IllegalStateException("Constraint Streams requested via constraintProviderClass (" +
                         config.getConstraintProviderClass() + ") but the supporting classes were not found on the classpath.\n"
-                        + "Maybe include org.optaplanner:optaplanner-constraint-streams dependency in your project?\n"
+                        + "Maybe include org.optaplanner:" + expectedModule + " dependency in your project?\n"
                         + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
             }
         }

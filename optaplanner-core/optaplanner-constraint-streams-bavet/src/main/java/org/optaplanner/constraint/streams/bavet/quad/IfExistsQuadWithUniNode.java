@@ -22,11 +22,10 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
+import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
-
-import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 
 final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<QuadTuple<A, B, C, D>, E> {
 
@@ -34,12 +33,12 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
     private final PentaPredicate<A, B, C, D, E> filtering;
 
     public IfExistsQuadWithUniNode(boolean shouldExist,
-                                   QuadFunction<A, B, C, D, IndexProperties> mappingABCD, Function<E, IndexProperties> mappingD,
-                                   int inputStoreIndexABC, int inputStoreIndexD,
-                                   Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                   Indexer<QuadTuple<A, B, C, D>, Counter<QuadTuple<A, B, C, D>>> indexerABCD,
-                                   Indexer<UniTuple<E>, Set<Counter<QuadTuple<A, B, C, D>>>> indexerE,
-                                   PentaPredicate<A, B, C, D, E> filtering) {
+            QuadFunction<A, B, C, D, IndexProperties> mappingABCD, Function<E, IndexProperties> mappingD,
+            int inputStoreIndexABC, int inputStoreIndexD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            Indexer<QuadTuple<A, B, C, D>, Counter<QuadTuple<A, B, C, D>>> indexerABCD,
+            Indexer<UniTuple<E>, Set<Counter<QuadTuple<A, B, C, D>>>> indexerE,
+            PentaPredicate<A, B, C, D, E> filtering) {
         super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesInsert, nextNodesRetract, indexerABCD,
                 indexerE);
         this.mappingABCD = mappingABCD;

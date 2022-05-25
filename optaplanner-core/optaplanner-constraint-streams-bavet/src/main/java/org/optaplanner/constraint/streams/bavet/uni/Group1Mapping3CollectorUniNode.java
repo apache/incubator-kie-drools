@@ -31,11 +31,11 @@ final class Group1Mapping3CollectorUniNode<OldA, A, B, C, D, ResultContainerB_, 
     private final int outputStoreSize;
 
     public Group1Mapping3CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
-                                          UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
-                                          UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
-                                          UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
-                                          Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-                                          int outputStoreSize) {
+            UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
+            UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
+            UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, Group0Mapping3CollectorUniNode.mergeCollectors(collectorB, collectorC, collectorD),
                 nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;

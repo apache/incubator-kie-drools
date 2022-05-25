@@ -33,11 +33,11 @@ final class JoinTriNode<A, B, C> extends AbstractJoinNode<BiTuple<A, B>, C, TriT
     private final int outputStoreSize;
 
     public JoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
-                       int inputStoreIndexAB, int inputStoreIndexC,
-                       Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-                       int outputStoreSize,
-                       Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB,
-                       Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC) {
+            int inputStoreIndexAB, int inputStoreIndexC,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            int outputStoreSize,
+            Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB,
+            Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC) {
         super(mappingC, inputStoreIndexAB, inputStoreIndexC, nextNodesInsert, nextNodesRetract, indexerAB, indexerC);
         this.mappingAB = mappingAB;
         this.outputStoreSize = outputStoreSize;

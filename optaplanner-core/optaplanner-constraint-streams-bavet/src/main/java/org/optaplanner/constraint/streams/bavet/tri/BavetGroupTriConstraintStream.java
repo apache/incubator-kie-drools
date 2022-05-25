@@ -18,12 +18,11 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.Set;
 
+import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
-
-import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 
 public final class BavetGroupTriConstraintStream<Solution_, A, B, C>
         extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
@@ -31,7 +30,7 @@ public final class BavetGroupTriConstraintStream<Solution_, A, B, C>
     private final BavetAbstractConstraintStream<Solution_> parent;
 
     public BavetGroupTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                         BavetAbstractConstraintStream<Solution_> parent) {
+            BavetAbstractConstraintStream<Solution_> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }

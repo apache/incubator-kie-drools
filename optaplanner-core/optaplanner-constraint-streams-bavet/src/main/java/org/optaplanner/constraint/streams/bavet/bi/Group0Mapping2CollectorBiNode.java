@@ -31,10 +31,10 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
     private final int outputStoreSize;
 
     public Group0Mapping2CollectorBiNode(int groupStoreIndex,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
-                                         BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-                                         Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-                                         int outputStoreSize) {
+            BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
+            BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }

@@ -20,13 +20,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.optaplanner.core.api.function.QuadPredicate;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
-
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.core.api.function.QuadPredicate;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> {
@@ -35,8 +34,8 @@ public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
     private final QuadPredicate<A, B, C, D> predicate;
 
     public BavetFilterQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-                                           QuadPredicate<A, B, C, D> predicate) {
+            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            QuadPredicate<A, B, C, D> predicate) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.predicate = predicate;

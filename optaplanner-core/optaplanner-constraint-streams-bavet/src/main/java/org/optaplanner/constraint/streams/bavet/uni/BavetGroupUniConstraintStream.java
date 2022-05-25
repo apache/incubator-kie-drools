@@ -30,7 +30,7 @@ public final class BavetGroupUniConstraintStream<Solution_, A>
     private final BavetAbstractConstraintStream<Solution_> parent;
 
     public BavetGroupUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                         BavetAbstractConstraintStream<Solution_> parent) {
+            BavetAbstractConstraintStream<Solution_> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }

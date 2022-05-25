@@ -30,7 +30,7 @@ public final class BavetGroupQuadConstraintStream<Solution_, A, B, C, D>
     private final BavetAbstractConstraintStream<Solution_> parent;
 
     public BavetGroupQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                          BavetAbstractConstraintStream<Solution_> parent) {
+            BavetAbstractConstraintStream<Solution_> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }

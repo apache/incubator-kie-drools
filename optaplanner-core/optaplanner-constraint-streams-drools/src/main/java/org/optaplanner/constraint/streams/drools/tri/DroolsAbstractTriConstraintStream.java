@@ -24,6 +24,8 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.constraint.streams.common.quad.QuadJoinerComber;
+import org.optaplanner.constraint.streams.common.tri.InnerTriConstraintStream;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.constraint.streams.drools.common.DroolsAbstractConstraintStream;
@@ -35,8 +37,6 @@ import org.optaplanner.constraint.streams.drools.quad.DroolsJoinQuadConstraintSt
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
-import org.optaplanner.constraint.streams.quad.QuadJoinerComber;
-import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;

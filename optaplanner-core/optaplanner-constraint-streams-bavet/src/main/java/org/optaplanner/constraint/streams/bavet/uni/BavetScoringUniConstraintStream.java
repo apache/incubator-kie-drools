@@ -47,13 +47,13 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
     private BavetConstraint<Solution_> constraint;
 
     public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractUniConstraintStream<Solution_, A> parent) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent) {
         this(constraintFactory, parent, true, null, null, null);
     }
 
     public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractUniConstraintStream<Solution_, A> parent,
-                                           ToIntFunction<A> intMatchWeigher) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            ToIntFunction<A> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
         if (intMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -61,8 +61,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
     }
 
     public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractUniConstraintStream<Solution_, A> parent,
-                                           ToLongFunction<A> longMatchWeigher) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            ToLongFunction<A> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
         if (longMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -70,8 +70,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
     }
 
     public BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                           BavetAbstractUniConstraintStream<Solution_, A> parent,
-                                           Function<A, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            Function<A, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
         if (bigDecimalMatchWeigher == null) {
             throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
@@ -79,9 +79,9 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
     }
 
     private BavetScoringUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                            BavetAbstractUniConstraintStream<Solution_, A> parent,
-                                            boolean noMatchWeigher, ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
-                                            Function<A, BigDecimal> bigDecimalMatchWeigher) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent,
+            boolean noMatchWeigher, ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
+            Function<A, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;
