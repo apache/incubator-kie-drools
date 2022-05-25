@@ -102,6 +102,23 @@ class LimeConfigTest {
     }
 
     @Test
+    void testFeatureSelection() {
+        LimeConfig config = new LimeConfig().withFeatureSelection(false);
+        assertThat(config.isFeatureSelection()).isFalse();
+
+        config = new LimeConfig().withFeatureSelection(true);
+        assertThat(config.isFeatureSelection()).isTrue();
+        assertThat(new LimeConfig().withFeatureSelection(false)).isNotEqualTo(new LimeConfig().withFeatureSelection(true));
+    }
+
+    @Test
+    void testFeatures() {
+        LimeConfig config = new LimeConfig().withNoOfFeatures(5);
+        assertThat(config.getNoOfFeatures()).isEqualTo(5);
+        assertThat(new LimeConfig().withNoOfFeatures(5)).isNotEqualTo(new LimeConfig().withNoOfFeatures(4));
+    }
+
+    @Test
     void testEquals() {
         LimeConfig c1 = new LimeConfig();
         LimeConfig c1Copy = c1.copy();

@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.model;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The inputs to a {@link PredictionProvider}.
@@ -32,6 +33,12 @@ public class PredictionInput {
 
     public List<Feature> getFeatures() {
         return features;
+    }
+
+    public Optional<Feature> getFeatureByName(String name) {
+        return features.stream()
+                .filter(feature -> name.equalsIgnoreCase(feature.getName()))
+                .findFirst();
     }
 
     @Override

@@ -43,6 +43,8 @@ public class LimeConfig {
     private static final boolean DEFAULT_NORMALIZE_WEIGHTS = false;
     private static final boolean DEFAULT_HIGH_SCORE_ZONES = true;
     private static final int DEFAULT_BOOSTRAP_INPUTS = 50;
+    private static final boolean DEFAULT_FEATURE_SELECTION = true;
+    private static final int DEFAULT_NO_OF_FEATURES = 6;
 
     private double separableDatasetRatio = DEFAULT_SEPARABLE_DATASET_RATIO;
 
@@ -72,6 +74,34 @@ public class LimeConfig {
      * Whether to use high score feature zones for more accurate numeric features sampling
      */
     private boolean highScoreFeatureZones = DEFAULT_HIGH_SCORE_ZONES;
+
+    /**
+     * Whether to operate feature selection
+     */
+    private boolean featureSelection = DEFAULT_FEATURE_SELECTION;
+
+    public LimeConfig withFeatureSelection(boolean featureSelection) {
+        this.featureSelection = featureSelection;
+        return this;
+    }
+
+    public boolean isFeatureSelection() {
+        return featureSelection;
+    }
+
+    /**
+     * Number of features to use
+     */
+    private int noOfFeatures = DEFAULT_NO_OF_FEATURES;
+
+    public LimeConfig withNoOfFeatures(int noOfFeatures) {
+        this.noOfFeatures = noOfFeatures;
+        return this;
+    }
+
+    public int getNoOfFeatures() {
+        return noOfFeatures;
+    }
 
     public LimeConfig withDataDistribution(DataDistribution dataDistribution) {
         this.dataDistribution = dataDistribution;
@@ -266,7 +296,9 @@ public class LimeConfig {
                 .withProximityFilteredDatasetMinimum(proximityFilteredDatasetMinimum)
                 .withProximityKernelWidth(proximityKernelWidth)
                 .withEncodingParams(encodingParams)
-                .withNormalizeWeights(normalizeWeights);
+                .withNormalizeWeights(normalizeWeights)
+                .withFeatureSelection(featureSelection)
+                .withNoOfFeatures(noOfFeatures);
     }
 
     @Override
@@ -286,6 +318,8 @@ public class LimeConfig {
                 ", encodingParams=" + encodingParams +
                 ", normalizeWeights=" + normalizeWeights +
                 ", highScoreFeatureZones=" + highScoreFeatureZones +
+                ", featureSelection=" + featureSelection +
+                ", noOfFeatures=" + noOfFeatures +
                 '}';
     }
 
@@ -303,12 +337,12 @@ public class LimeConfig {
                 && proximityFilter == that.proximityFilter && Double.compare(that.proximityThreshold, proximityThreshold) == 0 && Double.compare(that.proximityKernelWidth, proximityKernelWidth) == 0
                 && normalizeWeights == that.normalizeWeights && boostrapInputs == that.boostrapInputs && Objects.equals(perturbationContext, that.perturbationContext)
                 && Objects.equals(dataDistribution, that.dataDistribution) && Objects.equals(proximityFilteredDatasetMinimum, that.proximityFilteredDatasetMinimum)
-                && Objects.equals(encodingParams, that.encodingParams);
+                && Objects.equals(encodingParams, that.encodingParams) && featureSelection == that.featureSelection && noOfFeatures == that.noOfFeatures;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(separableDatasetRatio, noOfSamples, noOfRetries, perturbationContext, adaptDatasetVariance, dataDistribution, highScoreFeatureZones, penalizeBalanceSparse, proximityFilter,
-                proximityThreshold, proximityFilteredDatasetMinimum, proximityKernelWidth, encodingParams, normalizeWeights, boostrapInputs);
+                proximityThreshold, proximityFilteredDatasetMinimum, proximityKernelWidth, encodingParams, normalizeWeights, boostrapInputs, featureSelection, noOfFeatures);
     }
 }

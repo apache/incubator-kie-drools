@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.local.lime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,6 +204,11 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
             LimeInputs limeInputs, Output originalOutput, LimeConfig executionConfig) {
         List<FeatureImportance> featureImportanceList = new ArrayList<>();
 
+        if (executionConfig.isFeatureSelection() && linearizedTargetInputFeatures.size() > executionConfig.getNoOfFeatures()) {
+            linearizedTargetInputFeatures = selectFeatures(executionConfig, limeInputs, linearizedTargetInputFeatures,
+                    originalOutput, executionConfig.getPerturbationContext());
+        }
+
         // encode the training data so that it can be fed into the linear model
         DatasetEncoder datasetEncoder = new DatasetEncoder(limeInputs.getPerturbedInputs(), limeInputs.getPerturbedOutputs(),
                 linearizedTargetInputFeatures, originalOutput, executionConfig.getEncodingParams());
@@ -233,7 +239,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         if (!Double.isNaN(loss)) {
             // create the output saliency
             double[] weights = linearModel.getWeights();
-            if (limeConfig.isNormalizeWeights() && weights.length > 0) {
+            if (executionConfig.isNormalizeWeights() && weights.length > 0) {
                 normalizeWeights(weights);
             }
             int i = 0;
@@ -246,6 +252,84 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         }
         Saliency saliency = new Saliency(originalOutput, featureImportanceList);
         result.put(originalOutput.getName(), saliency);
+    }
+
+    private List<Feature> selectFeatures(LimeConfig executionConfig, LimeInputs limeInputs, List<Feature> linearizedTargetInputFeatures,
+            Output originalOutput, PerturbationContext perturbationContext) {
+        // encode the training data so that it can be fed into the linear model
+        DatasetEncoder datasetEncoder = new DatasetEncoder(limeInputs.getPerturbedInputs(), limeInputs.getPerturbedOutputs(),
+                linearizedTargetInputFeatures, originalOutput, executionConfig.getEncodingParams());
+        List<Pair<double[], Double>> trainingSet = datasetEncoder.getEncodedTrainingSet();
+
+        // weight the training samples based on the proximity to the target input to explain
+        double kernelWidth = executionConfig.getProximityKernelWidth() * Math.sqrt(linearizedTargetInputFeatures.size());
+        double[] sampleWeights = SampleWeighter.getSampleWeights(linearizedTargetInputFeatures, trainingSet, kernelWidth);
+
+        List<Feature> selectedFeatures;
+        if (executionConfig.isProximityFilter()) {
+            ProximityFilter proximityFilter = new ProximityFilter(executionConfig.getProximityThreshold(),
+                    executionConfig.getProximityFilteredDatasetMinimum().doubleValue());
+            proximityFilter.apply(trainingSet, sampleWeights);
+        }
+        if (linearizedTargetInputFeatures.size() > 6) {
+            // highest weights
+            LinearModel linearModel = new LinearModel(linearizedTargetInputFeatures.size(), limeInputs.isClassification(), perturbationContext.getRandom());
+            double loss = linearModel.fit(trainingSet, sampleWeights);
+            LOGGER.trace("Feature selection loss: {}", loss);
+            double[] weights = linearModel.getWeights();
+            List<FeatureImportance> fis = new ArrayList<>();
+            for (int i = 0; i < weights.length; i++) {
+                fis.add(new FeatureImportance(linearizedTargetInputFeatures.get(i), weights[i]));
+            }
+            List<FeatureImportance> topFeatures = new Saliency(originalOutput, fis).getTopFeatures(limeConfig.getNoOfFeatures());
+            selectedFeatures = topFeatures.stream().map(FeatureImportance::getFeature).collect(Collectors.toList());
+        } else {
+            // forward selection
+            int s = 0;
+            List<Feature> candidates = new ArrayList<>(linearizedTargetInputFeatures);
+            List<Feature> selected = new ArrayList<>();
+            while (s < executionConfig.getNoOfFeatures()) {
+                // for each feature:
+                Map<Feature, Double> scores = new HashMap<>();
+                for (Feature candidateFeature : candidates) {
+                    // 1. add one feature at a time from the candidates
+                    List<Feature> currentFeatures = new ArrayList<>(selected);
+                    currentFeatures.add(candidateFeature);
+                    DatasetEncoder currentDatasetEncoder = new DatasetEncoder(limeInputs.getPerturbedInputs(), limeInputs.getPerturbedOutputs(),
+                            currentFeatures, originalOutput, executionConfig.getEncodingParams());
+                    List<Pair<double[], Double>> currentTrainingSet = currentDatasetEncoder.getEncodedTrainingSet();
+
+                    // weight the training samples based on the proximity to the target input to explain
+                    double currentKernelWidth = executionConfig.getProximityKernelWidth() * Math.sqrt(currentFeatures.size());
+                    double[] currentSampleWeights = SampleWeighter.getSampleWeights(currentFeatures, currentTrainingSet, currentKernelWidth);
+
+                    if (executionConfig.isProximityFilter()) {
+                        ProximityFilter proximityFilter = new ProximityFilter(executionConfig.getProximityThreshold(),
+                                executionConfig.getProximityFilteredDatasetMinimum().doubleValue());
+                        proximityFilter.apply(currentTrainingSet, sampleWeights);
+                    }
+
+                    // 2. train the model
+                    LinearModel currentLinearModel = new LinearModel(currentFeatures.size(), limeInputs.isClassification(), perturbationContext.getRandom());
+                    double candidateLoss = currentLinearModel.fit(currentTrainingSet, currentSampleWeights);
+
+                    // 3. record its score
+                    scores.put(candidateFeature, candidateLoss);
+                }
+                // 4. finally select the top scoring feature
+                List<Map.Entry<Feature, Double>> sortedEntries = scores.entrySet().stream().sorted(Comparator.comparingDouble(Map.Entry::getValue)).collect(Collectors.toList());
+                Feature selectedFeature = sortedEntries.get(0).getKey();
+
+                // 5. remove it from the candidates
+                candidates.removeIf(f -> f.equals(selectedFeature));
+
+                // 6. add it to the selected
+                selected.add(selectedFeature);
+                s++;
+            }
+            selectedFeatures = selected;
+        }
+        return selectedFeatures;
     }
 
     private void normalizeWeights(double[] weights) {

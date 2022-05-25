@@ -63,4 +63,26 @@ class PredictionInputTest {
         PredictionInput input2 = new PredictionInput(List.of(feature));
         assertThat(input1).isNotEqualTo(input2).isNotEqualTo(null);
     }
+
+    @Test
+    void testGetByNameEmpty() {
+        PredictionInput input1 = new PredictionInput(Collections.emptyList());
+        assertThat(input1.getFeatureByName("foo")).isEmpty();
+    }
+
+    @Test
+    void testGetByNameMissing() {
+        List<Feature> features = new ArrayList<>();
+        features.add(TestUtils.getMockedNumericFeature(10));
+        PredictionInput input1 = new PredictionInput(features);
+        assertThat(input1.getFeatureByName("foo")).isNotPresent();
+    }
+
+    @Test
+    void testGetByNameFound() {
+        List<Feature> features = new ArrayList<>();
+        features.add(TestUtils.getMockedNumericFeature(10));
+        PredictionInput input1 = new PredictionInput(features);
+        assertThat(input1.getFeatureByName("f-num")).isPresent();
+    }
 }

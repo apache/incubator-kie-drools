@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.local.lime;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -91,7 +92,7 @@ class DatasetEncoderTest {
             double[] doubles = new double[2];
             doubles[0] = i;
             doubles[1] = i;
-            features.add(TestUtils.getMockedFeature(Type.BINARY, new Value(doubles)));
+            features.add(TestUtils.getMockedFeature(Type.VECTOR, new Value(doubles)));
         }
         PredictionInput originalInput = new PredictionInput(features);
         assertEncode(perturbedInputs, originalInput);
@@ -191,5 +192,38 @@ class DatasetEncoderTest {
             assertNotNull(pair.getValue());
             assertThat(pair.getValue()).isBetween(0d, 1d);
         }
+    }
+
+    @Test
+    void testGetColumnDataFiltering() {
+        List<PredictionInput> perturbedInputs = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            List<Feature> inputFeatures = new LinkedList<>();
+            for (int j = 0; j < 3; j++) {
+                inputFeatures.add(TestUtils.getMockedNumericFeature(i + j));
+            }
+            perturbedInputs.add(new PredictionInput(inputFeatures));
+        }
+
+        List<Feature> features = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            features.add(TestUtils.getMockedNumericFeature(i));
+        }
+
+        List<Output> outputs = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            outputs.add(new Output("o", Type.NUMBER, new Value(i % 2 == 0 ? 1d : 0d), 1d));
+        }
+        Output targetOutput = new Output("o", Type.BOOLEAN, new Value(1d), 1d);
+        EncodingParams encodingParams = new EncodingParams(1, 0.1);
+        DatasetEncoder encoder = new DatasetEncoder(perturbedInputs, outputs, features, targetOutput, encodingParams);
+        List<List<double[]>> columnData = encoder.getColumnData(perturbedInputs);
+        assertThat(columnData).isNotNull().hasSize(3);
+
+        // filter out one of the columns
+        features.remove(2);
+        encoder = new DatasetEncoder(perturbedInputs, outputs, features, targetOutput, encodingParams);
+        columnData = encoder.getColumnData(perturbedInputs);
+        assertThat(columnData).isNotNull().hasSize(2);
     }
 }

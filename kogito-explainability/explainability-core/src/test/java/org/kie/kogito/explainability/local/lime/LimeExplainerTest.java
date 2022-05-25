@@ -277,4 +277,70 @@ class LimeExplainerTest {
         Prediction prediction = mock(Prediction.class);
         assertThatCode(() -> recordingLimeExplainer.explainAsync(prediction, model)).hasMessage("cannot explain a prediction whose input is empty");
     }
+
+    @Test
+    void testFeatureSelectionHighestWeights() throws ExecutionException, InterruptedException, TimeoutException {
+        List<Feature> features = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            features.add(TestUtils.getMockedNumericFeature(i));
+        }
+        PredictionInput input = new PredictionInput(features);
+        PredictionProvider model = TestUtils.getSumSkipModel(0);
+        PredictionOutput output = model.predictAsync(List.of(input))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                .get(0);
+        Prediction prediction = new SimplePrediction(input, output);
+
+        Random random = new Random();
+        LimeConfig limeConfig = new LimeConfig()
+                .withPerturbationContext(new PerturbationContext(0L, random, DEFAULT_NO_OF_PERTURBATIONS))
+                .withSamples(10)
+                .withFeatureSelection(false);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        assertNotNull(saliencyMap);
+        List<FeatureImportance> perFeatureImportance = saliencyMap.get("sum-but0").getPerFeatureImportance();
+        assertThat(perFeatureImportance.size()).isEqualTo(10);
+
+        limeExplainer = new LimeExplainer(limeConfig.withFeatureSelection(true));
+        saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        assertNotNull(saliencyMap);
+        List<FeatureImportance> filteredFeatureImportance = saliencyMap.get("sum-but0").getPerFeatureImportance();
+        assertThat(filteredFeatureImportance.size()).isEqualTo(6);
+    }
+
+    @Test
+    void testFeatureSelectionForwardSelection() throws ExecutionException, InterruptedException, TimeoutException {
+        List<Feature> features = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            features.add(TestUtils.getMockedNumericFeature(i));
+        }
+        PredictionInput input = new PredictionInput(features);
+        PredictionProvider model = TestUtils.getSumSkipModel(0);
+        PredictionOutput output = model.predictAsync(List.of(input))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                .get(0);
+        Prediction prediction = new SimplePrediction(input, output);
+
+        Random random = new Random();
+        LimeConfig limeConfig = new LimeConfig()
+                .withPerturbationContext(new PerturbationContext(0L, random, DEFAULT_NO_OF_PERTURBATIONS))
+                .withSamples(10)
+                .withFeatureSelection(false);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        assertNotNull(saliencyMap);
+        List<FeatureImportance> perFeatureImportance = saliencyMap.get("sum-but0").getPerFeatureImportance();
+        assertThat(perFeatureImportance.size()).isEqualTo(5);
+
+        limeExplainer = new LimeExplainer(limeConfig.withFeatureSelection(true).withNoOfFeatures(3));
+        saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(111111, Config.INSTANCE.getAsyncTimeUnit());
+        assertNotNull(saliencyMap);
+        List<FeatureImportance> filteredFeatureImportance = saliencyMap.get("sum-but0").getPerFeatureImportance();
+        assertThat(filteredFeatureImportance.size()).isEqualTo(3);
+    }
 }

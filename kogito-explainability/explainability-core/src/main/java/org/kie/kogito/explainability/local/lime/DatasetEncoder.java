@@ -66,7 +66,7 @@ class DatasetEncoder {
         if (flatInputs.isEmpty() || predictedOutputs.isEmpty() || targetInputFeatures.isEmpty() || originalOutput == null) {
             return trainingSet;
         }
-        columnData = getColumnData(flatInputs, encodingParams);
+        columnData = getColumnData(flatInputs);
 
         int pi = 0;
         for (Output output : predictedOutputs) {
@@ -101,15 +101,13 @@ class DatasetEncoder {
         return trainingSet;
     }
 
-    private List<List<double[]>> getColumnData(List<PredictionInput> perturbedInputs, EncodingParams params) {
+    List<List<double[]>> getColumnData(List<PredictionInput> perturbedInputs) {
         List<List<double[]>> columnData = new LinkedList<>();
 
-        for (int t = 0; t < targetInputFeatures.size(); t++) {
-            Feature targetFeature = targetInputFeatures.get(t);
-            int finalT = t;
+        for (Feature targetFeature : targetInputFeatures) {
             // encode all inputs with respect to the target, based on their type
-            List<double[]> encode = targetFeature.getType().encode(params, targetFeature.getValue(), perturbedInputs
-                    .stream().map(predictionInput -> predictionInput.getFeatures().get(finalT).getValue()).toArray(Value[]::new));
+            List<double[]> encode = targetFeature.getType().encode(encodingParams, targetFeature.getValue(), perturbedInputs
+                    .stream().map(pi -> pi.getFeatureByName(targetFeature.getName()).orElse(new Feature("", Type.UNDEFINED, new Value(null))).getValue()).toArray(Value[]::new));
             columnData.add(encode);
         }
         return columnData;
