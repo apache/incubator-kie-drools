@@ -41,9 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class SignavioTest {
     public static final Logger LOG = LoggerFactory.getLogger(SignavioTest.class);
@@ -96,7 +93,7 @@ public class SignavioTest {
         LOG.info("{}", evaluateAll.getContext());
         evaluateAll.getMessages().forEach(System.out::println);
 
-        assertEquals(true, evaluateAll.getContext().get("myContext"));
+        assertThat(evaluateAll.getContext().get("myContext")).isEqualTo(true);
     }
 
     /**
@@ -118,9 +115,9 @@ public class SignavioTest {
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         evaluateAll.getMessages().forEach(System.out::println);
 
-        assertFalse(evaluateAll.getMessages().toString(), evaluateAll.hasErrors());
+        assertThat(evaluateAll.hasErrors()).as(evaluateAll.getMessages().toString()).isFalse();
 
-        assertEquals(startsWithAnA, evaluateAll.getContext().get("startsWithAnA"));
+        assertThat(evaluateAll.getContext().get("startsWithAnA")).isEqualTo(startsWithAnA);
     }
 
     @Test
@@ -156,7 +153,7 @@ public class SignavioTest {
         Results results = kieBuilder.getResults();
         LOG.info("buildAll() completed.");
         results.getMessages(Level.WARNING).forEach(e -> LOG.warn("{}", e));
-        assertTrue(results.getMessages(Level.WARNING).size() == 0);
+        assertThat(results.getMessages(Level.WARNING)).isEmpty();
 
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
@@ -247,8 +244,8 @@ public class SignavioTest {
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-    
-        assertEquals("JohnJaneDoe", evaluateAll.getDecisionResultByName("concatNames").getResult());
+
+        assertThat(evaluateAll.getDecisionResultByName("concatNames").getResult()).isEqualTo("JohnJaneDoe");
     }
     
     
@@ -285,8 +282,8 @@ public class SignavioTest {
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-    
-        assertEquals(Arrays.asList("John Doe", "Alice"), evaluateAll.getDecisionResultByName("extractNames").getResult());
+
+        assertThat(evaluateAll.getDecisionResultByName("extractNames").getResult()).isEqualTo(Arrays.asList("John Doe", "Alice"));
     }
     
     @Test

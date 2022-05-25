@@ -16,8 +16,6 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import static org.junit.Assert.assertEquals;
-
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -31,6 +29,8 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
 import org.junit.Before;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -72,15 +72,15 @@ public class TimeFunctionTest {
     @Test
     public void parseWithZone() {
         final TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Etc/UTC").getOrElse(null);
-        assertEquals(LocalTime.of(0, 1, 0), parsedResult.query(TemporalQueries.localTime()));
-        assertEquals(ZoneId.of("Etc/UTC"), parsedResult.query(TemporalQueries.zone()));
+        assertThat(parsedResult.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(0, 1, 0));
+        assertThat(parsedResult.query(TemporalQueries.zone())).isEqualTo(ZoneId.of("Etc/UTC"));
     }
 
     @Test
     public void parseWithZoneIANA() {
         final TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Europe/Paris").getOrElse(null);
-        assertEquals(LocalTime.of(0, 1, 0), parsedResult.query(TemporalQueries.localTime()));
-        assertEquals(ZoneId.of("Europe/Paris"), parsedResult.query(TemporalQueries.zone()));
+        assertThat(parsedResult.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(0, 1, 0));
+        assertThat(parsedResult.query(TemporalQueries.zone())).isEqualTo(ZoneId.of("Europe/Paris"));
     }
 
     @Test

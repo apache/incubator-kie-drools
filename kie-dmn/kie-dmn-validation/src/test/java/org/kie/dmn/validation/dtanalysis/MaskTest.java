@@ -32,7 +32,6 @@ import org.kie.dmn.validation.dtanalysis.model.MaskedRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -64,10 +63,8 @@ public class MaskTest extends AbstractDTAnalysisTest {
         List<MaskedRule> maskedRules = Arrays.asList(new MaskedRule(1, 2));
         assertThat(maskedRules).hasSize(1);
         assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
-        assertTrue("It should contain at least 1 DMNMessage for the MaskedRule",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
-        assertTrue("It should not contain DMNMessage for the MisleadingRule",
-                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("It should contain at least 1 DMNMessage for the MaskedRule").isTrue();
+        assertThat(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE))).as("It should not contain DMNMessage for the MisleadingRule").isTrue();
     }
 
     @Test
@@ -108,10 +105,8 @@ public class MaskTest extends AbstractDTAnalysisTest {
         List<MaskedRule> maskedRules = Arrays.asList(new MaskedRule(1, 2));
         assertThat(maskedRules).hasSize(1);
         assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
-        assertTrue("It should contain at least 1 DMNMessage for the MaskedRule",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
-        assertTrue("It should not contain DMNMessage for the MisleadingRule",
-                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("It should contain at least 1 DMNMessage for the MaskedRule").isTrue();
+        assertThat(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE))).as("It should not contain DMNMessage for the MisleadingRule").isTrue();
     }
 
 }

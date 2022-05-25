@@ -31,7 +31,6 @@ import org.kie.dmn.trisotech.core.compiler.TrisotechDMNEvaluatorCompilerFactory;
 import org.kie.dmn.trisotech.validation.TrisotechValidationTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -63,7 +62,7 @@ public class DMN14GenericSynthTest {
         DMNContext context = runtime.newContext();
         context.set("Input", Arrays.asList(tc1, tc2, tc3));
         DMNResult results = runtime.evaluateAll(model, context);
-        assertEquals(Arrays.asList(tc1, tc3), results.getDecisionResultByName("Decision").getResult());
+        assertThat(results.getDecisionResultByName("Decision").getResult()).isEqualTo(Arrays.asList(tc1, tc3));
     }
 
     @Test
@@ -93,7 +92,7 @@ public class DMN14GenericSynthTest {
         DMNContext context = runtime.newContext();
         context.set("Input", Arrays.asList(tc1, tc2, tc3));
         DMNResult results = runtime.evaluateAll(model, context);
-        assertEquals(Arrays.asList("x", "y", "z"), results.getDecisionResultByName("Decision").getResult());
+        assertThat(results.getDecisionResultByName("Decision").getResult()).isEqualTo(Arrays.asList("x", "y", "z"));
     }
 
     @Test
