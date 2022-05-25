@@ -1257,7 +1257,7 @@ public class StringUtils {
                     if (!inMultiLineComment && i+1 < pos) {
                         if (str.charAt( i+1 ) == '*') {
                             inMultiLineComment = true;
-                        } else if (str.charAt( i+1 ) == '/') {
+                        } else if (str.charAt( i+1 ) == '/' && !isInQuotes( str, i )) {
                             inSingleLineComment = true;
                         }
                         i++;
