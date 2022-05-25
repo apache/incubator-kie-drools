@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.decision.DecisionModel;
@@ -109,6 +110,7 @@ class ComplexEligibilityDmnCounterfactualExplainerTest {
     }
 
     @Test
+    @Disabled("see https://issues.redhat.com/browse/KOGITO-7221")
     void testDMNScoringFunction() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
 

@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -81,6 +82,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Disabled("see https://issues.redhat.com/browse/KOGITO-7221")
 class CounterfactualExplainerTest {
 
     private static final Logger logger =

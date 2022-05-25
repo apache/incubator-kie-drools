@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.explainability.Config;
@@ -104,6 +105,7 @@ class PmmlCompoundScorecardLimeExplainerTest {
     }
 
     @Test
+    @Disabled("see https://issues.redhat.com/browse/KOGITO-7221")
     void testExplanationStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
 
