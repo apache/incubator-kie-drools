@@ -54,7 +54,7 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
 
         debugValidatorMsg(validate);
         assertThat(analysis.getGaps()).hasSize(1);
-        assertTrue(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+        assertThat(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
     }
 
     @Test
