@@ -91,7 +91,7 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
             List<String> scoreDrlList) {
         KieBase kieBase;
         if (config.getGizmoKieBaseSupplier() != null) {
-            kieBase = config.getGizmoKieBaseSupplier().get();
+            kieBase = ((Supplier<KieBase>) config.getGizmoKieBaseSupplier()).get();
         } else {
             KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
                     .setClassLoader(classLoader);

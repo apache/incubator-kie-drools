@@ -30,6 +30,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
+      <optional>true</optional> <!-- Drools is only necessary together with DRL or CS-D. -->
     </dependency>
 
     <!-- Gizmo dependencies -->

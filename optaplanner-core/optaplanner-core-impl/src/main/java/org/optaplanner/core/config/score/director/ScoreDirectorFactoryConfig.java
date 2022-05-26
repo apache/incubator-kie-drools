@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.kie.api.KieBase;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -77,7 +76,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
     @XmlTransient
-    protected Supplier<KieBase> gizmoKieBaseSupplier = null;
+    protected Supplier gizmoKieBaseSupplier = null;
 
     protected Boolean droolsAlphaNetworkCompilationEnabled = null;
     @Deprecated(forRemoval = true)
@@ -198,14 +197,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     /**
      * For internal use only, get the generated Gizmo KieBaseSupplier.
      */
-    public Supplier<KieBase> getGizmoKieBaseSupplier() {
+    public Supplier getGizmoKieBaseSupplier() {
         return gizmoKieBaseSupplier;
     }
 
     /**
      * For internal use only, set the generated Gizmo KieBaseSupplier.
      */
-    public void setGizmoKieBaseSupplier(Supplier<KieBase> gizmoKieBaseSupplier) {
+    public void setGizmoKieBaseSupplier(Supplier gizmoKieBaseSupplier) {
         this.gizmoKieBaseSupplier = gizmoKieBaseSupplier;
     }
 
@@ -340,7 +339,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     /**
      * For internal use only, set the generated Gizmo KieBaseSupplier.
      */
-    public ScoreDirectorFactoryConfig withGizmoKieBaseSupplier(Supplier<KieBase> kieBaseSupplier) {
+    public ScoreDirectorFactoryConfig withGizmoKieBaseSupplier(Supplier kieBaseSupplier) {
         setGizmoKieBaseSupplier(kieBaseSupplier);
         return this;
     }
