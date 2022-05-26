@@ -42,7 +42,6 @@
             <java-version>${maven.compiler.release}</java-version>
             <maven-version>${maven.min.version}</maven-version>
             <quarkus-version>${version.io.quarkus}</quarkus-version>
-            <spring-boot-version>${version.org.springframework.boot}</spring-boot-version>
           </attributes>
         </configuration>
         <executions>
