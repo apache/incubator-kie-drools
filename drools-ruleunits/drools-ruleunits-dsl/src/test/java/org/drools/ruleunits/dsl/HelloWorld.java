@@ -55,7 +55,7 @@ public class HelloWorld implements RuleUnitDefinition {
     @Override
     public void defineRules(RulesContext rulesContext) {
         rulesContext.addRule()
-                .from(strings, String.class) // it is mandatory to also pass the datasource class only when the datasource is null (which should also be avoided)
+                .from(strings)
                 .filter(EQUAL, "Hello World") // when no extractor is provided "this" is implicit
                 .execute(results, r -> r.add("it worked!")); // the consequence can ignore the matched facts
 

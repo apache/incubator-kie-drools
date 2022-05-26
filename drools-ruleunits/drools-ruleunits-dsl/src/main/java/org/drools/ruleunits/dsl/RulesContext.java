@@ -100,21 +100,13 @@ public class RulesContext {
         }
 
         public <A> Pattern1<A> from(DataSource<A> dataSource) {
-            return from(dataSource, findDataSourceClass(dataSource));
-        }
-
-        public <A> Pattern1<A> from(DataSource<A> dataSource, Class<A> dataClass) {
-            Pattern1<A> pattern1 = new Pattern1<>(this, context.dsIds.computeIfAbsent(dataSource, o -> declarationOf(dataClass, entryPoint(asGlobal(dataSource).getName()))));
+            Pattern1<A> pattern1 = new Pattern1<>(this, context.dsIds.computeIfAbsent(dataSource, o -> declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName()))));
             patterns.add(pattern1);
             return pattern1;
         }
 
         <A, B> Pattern2<A, B> join(Pattern1<A> pattern1, DataSource<B> dataSource) {
-            return join(pattern1, dataSource, findDataSourceClass(dataSource));
-        }
-
-        <A, B> Pattern2<A, B> join(Pattern1<A> pattern1, DataSource<B> dataSource, Class<B> dataClass) {
-            Pattern2<A, B> pattern2 = new Pattern2<>(pattern1, this, context.dsIds.computeIfAbsent(dataSource, o -> declarationOf(dataClass, entryPoint(asGlobal(dataSource).getName()))));
+            Pattern2<A, B> pattern2 = new Pattern2<>(pattern1, this, context.dsIds.computeIfAbsent(dataSource, o -> declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName()))));
             patterns.add(pattern2);
             return pattern2;
         }
@@ -228,10 +220,6 @@ public class RulesContext {
 
         public <B> Pattern2<A, B> join(DataSource<B> dataSource) {
             return rule.join(this, dataSource);
-        }
-
-        public <B> Pattern2<A, B> join(DataSource<B> dataSource, Class<B> dataClass) {
-            return rule.join(this, dataSource, dataClass);
         }
     }
 

@@ -15,8 +15,13 @@
  */
 package org.drools.ruleunits.dsl;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,5 +42,39 @@ public class DSLRuleUnitTest {
         unit.getInts().add(11);
         assertEquals(1, unitInstance.fire());
         assertEquals("String 'Hello World' is 11 characters long", unit.getResults().get(0));
+    }
+
+    @Test
+    public void testInference() {
+        InferenceUnit unit = new InferenceUnit();
+        unit.getStrings().add("test");
+
+        RuleUnitInstance<InferenceUnit> unitInstance = DSLRuleUnit.instance(unit);
+        assertEquals(0, unitInstance.fire());
+
+        AtomicBoolean success = new AtomicBoolean(false);
+        unit.getStrings().subscribe(new DataProcessor<String>() {
+            @Override
+            public FactHandle insert(DataHandle handle, String object) {
+                if (object.equals("ok")) {
+                    success.set(true);
+                }
+                return null;
+            }
+
+            @Override
+            public void update(DataHandle handle, String object) {
+
+            }
+
+            @Override
+            public void delete(DataHandle handle) {
+
+            }
+        });
+
+        unit.getStrings().add("this is just a test");
+        assertEquals(2, unitInstance.fire());
+        assertTrue(success.get());
     }
 }
