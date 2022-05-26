@@ -51,7 +51,7 @@ public class ExpressionHandlerUtils {
     }
 
     public static String getSecret(String key) {
-        return ConfigResolverHolder.getConfigResolver().getConfigProperty(key, String.class, null);
+        return ConfigResolverHolder.getConfigResolver().getConfigProperty(key, String.class).orElse(null);
     }
 
     public static Function<String, Object> getContextFunction(KogitoProcessContext context) {

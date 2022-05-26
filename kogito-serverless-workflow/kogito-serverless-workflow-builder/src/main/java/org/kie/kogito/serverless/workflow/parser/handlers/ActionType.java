@@ -28,6 +28,7 @@ enum ActionType {
     EXPRESSION,
     SCRIPT("script"),
     SYSOUT("sysout"),
+    RPC,
     EMPTY;
 
     private String[] prefixes;
@@ -55,6 +56,8 @@ enum ActionType {
         switch (actionFunction.getType()) {
             case REST:
                 return isEmpty(actionFunction.getOperation()) ? fromMetadata(actionFunction.getMetadata()) : ActionType.OPENAPI;
+            case RPC:
+                return ActionType.RPC;
             case EXPRESSION:
                 return ActionType.EXPRESSION;
             case CUSTOM:

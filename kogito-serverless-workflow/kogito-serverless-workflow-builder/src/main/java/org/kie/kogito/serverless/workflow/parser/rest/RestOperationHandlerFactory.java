@@ -17,14 +17,14 @@ package org.kie.kogito.serverless.workflow.parser.rest;
 
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
-import org.kie.kogito.serverless.workflow.utils.OpenAPIOperationId;
+import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
 
 public class RestOperationHandlerFactory {
 
     private RestOperationHandlerFactory() {
     }
 
-    public static RestOperationHandler get(ParserContext parserContext, OpenAPIOperationId id) {
+    public static RestOperationHandler get(ParserContext parserContext, WorkflowOperationId id) {
         KogitoBuildContext context = parserContext.getContext();
         return context.getGeneratedHandlers().contains(id.geClassName()) ? new GeneratedRestOperationHandler(id) : new DescriptorRestOperationHandler(parserContext, id);
     }

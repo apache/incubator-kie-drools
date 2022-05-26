@@ -20,4 +20,6 @@ import java.io.InputStream;
 
 public interface URIContentLoader {
     InputStream getInputStream() throws IOException;
+
+    URIContentLoaderType type();
 }

@@ -1,1 +1,1 @@
-org.kie.kogito.quarkus.serverless.openapi.WorkflowOpenApiSpecInputProvider
+org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiSpecInputProvider

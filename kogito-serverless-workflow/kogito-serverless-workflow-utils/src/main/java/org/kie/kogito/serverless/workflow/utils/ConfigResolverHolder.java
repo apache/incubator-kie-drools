@@ -15,12 +15,14 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.util.Optional;
+
 public class ConfigResolverHolder {
 
     private static ConfigResolver configResolver = new ConfigResolver() {
         @Override
-        public <T> T getConfigProperty(String name, Class<T> clazz, T defaultValue) {
-            return defaultValue;
+        public <T> Optional<T> getConfigProperty(String name, Class<T> clazz) {
+            return Optional.empty();
         }
     };
 

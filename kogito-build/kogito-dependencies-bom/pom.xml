@@ -61,6 +61,7 @@
     <version.io.smallrye.reactive.mutiny-vertx-web-client>2.21.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
     <version.io.vertx>4.2.7</version.io.vertx>
+    <version.io.grpc>1.45.1</version.io.grpc>
 
     <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
 
@@ -166,6 +167,18 @@
         <artifactId>rhino-engine</artifactId>
         <version>${version.org.mozilla.rhino}</version>
       </dependency>
+      
+       <!-- gRPC dependencies -->
+     <dependency>
+       <groupId>io.grpc</groupId>
+       <artifactId>grpc-protobuf</artifactId>
+       <version>${version.io.grpc}</version>
+     </dependency>
+     <dependency>
+       <groupId>io.grpc</groupId>
+       <artifactId>grpc-stub</artifactId>
+       <version>${version.io.grpc}</version>
+     </dependency>
 
       <!-- code generation -->
       <dependency>

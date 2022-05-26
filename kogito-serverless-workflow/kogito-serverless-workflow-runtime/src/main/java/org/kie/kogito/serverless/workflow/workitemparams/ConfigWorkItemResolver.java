@@ -33,7 +33,7 @@ public class ConfigWorkItemResolver<T> implements WorkItemParamResolver {
 
     @Override
     public Object apply(KogitoWorkItem workitem) {
-        return ConfigResolverHolder.getConfigResolver().getConfigProperty(key, clazz, defaultValue);
+        return ConfigResolverHolder.getConfigResolver().getConfigProperty(key, clazz).orElse(defaultValue);
     }
 
 }

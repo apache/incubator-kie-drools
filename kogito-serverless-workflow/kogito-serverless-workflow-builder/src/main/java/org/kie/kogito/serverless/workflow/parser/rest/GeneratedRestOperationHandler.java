@@ -17,16 +17,16 @@ package org.kie.kogito.serverless.workflow.parser.rest;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.kie.kogito.serverless.workflow.utils.OpenAPIOperationId;
+import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
 public class GeneratedRestOperationHandler implements RestOperationHandler {
 
-    private final OpenAPIOperationId id;
+    private final WorkflowOperationId id;
 
-    public GeneratedRestOperationHandler(OpenAPIOperationId id) {
+    public GeneratedRestOperationHandler(WorkflowOperationId id) {
         this.id = id;
     }
 

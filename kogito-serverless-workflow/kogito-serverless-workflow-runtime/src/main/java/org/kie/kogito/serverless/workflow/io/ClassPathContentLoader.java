@@ -18,17 +18,18 @@ package org.kie.kogito.serverless.workflow.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
 public class ClassPathContentLoader implements URIContentLoader {
 
-    private String path;
-    private Optional<ClassLoader> cl;
+    private final Optional<URL> resource;
+    private final String path;
 
     public ClassPathContentLoader(URI uri, Optional<ClassLoader> cl) {
         this.path = getPath(uri);
-        this.cl = cl;
+        this.resource = Optional.ofNullable(cl.orElse(Thread.currentThread().getContextClassLoader()).getResource(path));
     }
 
     private static String getPath(URI uri) {
@@ -40,14 +41,27 @@ public class ClassPathContentLoader implements URIContentLoader {
         return path;
     }
 
-    @Override
-    public InputStream getInputStream() throws IOException {
-        InputStream is = cl.orElse(Thread.currentThread().getContextClassLoader()).getResourceAsStream(path);
-        if (is == null) {
-            throw new IOException("Cannot find resource " + path + " in classpath");
-        }
-        return is;
-
+    public Optional<URL> getResource() {
+        return resource;
     }
 
+    @Override
+    public InputStream getInputStream() throws IOException {
+        if (resource.isPresent()) {
+            // openStream throws IOException, hence not using Optional.map method
+            return resource.get().openStream();
+        } else {
+            throw new IOException("cannot find classpath resource " + path);
+        }
+    }
+
+    @Override
+    public URIContentLoaderType type() {
+        return URIContentLoaderType.CLASSPATH;
+    }
+
+    @Override
+    public String toString() {
+        return "ClassPathContentLoader [path=" + path + "]";
+    }
 }

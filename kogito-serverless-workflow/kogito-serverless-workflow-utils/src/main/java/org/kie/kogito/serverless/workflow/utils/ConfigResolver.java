@@ -15,7 +15,9 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
+import java.util.Optional;
+
 public interface ConfigResolver {
 
-    <T> T getConfigProperty(String name, Class<T> clazz, T defaultValue);
+    <T> Optional<T> getConfigProperty(String name, Class<T> clazz);
 }

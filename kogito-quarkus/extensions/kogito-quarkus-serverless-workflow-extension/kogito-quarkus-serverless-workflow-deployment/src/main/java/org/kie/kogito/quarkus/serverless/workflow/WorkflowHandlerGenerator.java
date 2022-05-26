@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.quarkus.serverless.workflow.deployment;
+package org.kie.kogito.quarkus.serverless.workflow;
 
-import java.util.Set;
+import java.util.Collection;
 
-import org.kie.kogito.codegen.process.ProcessCodegen;
-import org.kie.kogito.quarkus.common.deployment.KogitoCompilationProvider;
+import org.drools.codegen.common.GeneratedFile;
+import org.jboss.jandex.IndexView;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
-public class ServerlessWorkflowCompilationProvider extends KogitoCompilationProvider {
+public interface WorkflowHandlerGenerator {
 
-    @Override
-    public Set<String> handledExtensions() {
-        return ProcessCodegen.SUPPORTED_SW_EXTENSIONS.keySet();
-    }
+    Collection<GeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index);
 }

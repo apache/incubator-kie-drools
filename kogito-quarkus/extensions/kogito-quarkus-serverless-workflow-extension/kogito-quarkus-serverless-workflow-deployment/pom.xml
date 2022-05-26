@@ -22,17 +22,14 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-common-deployment</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-processes-deployment</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-messaging-deployment</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkiverse.jackson-jq</groupId>
@@ -64,6 +61,11 @@
       <groupId>io.quarkiverse.openapi.generator</groupId>
       <artifactId>quarkus-openapi-generator-deployment</artifactId>
      </dependency>
+     
+     <dependency>
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-grpc-deployment</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

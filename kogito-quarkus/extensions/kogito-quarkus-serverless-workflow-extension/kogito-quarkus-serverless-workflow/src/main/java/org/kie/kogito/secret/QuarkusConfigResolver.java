@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.secret;
 
+import java.util.Optional;
+
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.serverless.workflow.utils.ConfigResolver;
@@ -25,23 +27,19 @@ import io.smallrye.config.SecretKeys;
 @Startup
 public class QuarkusConfigResolver implements ConfigResolver {
 
-    private Config provider;
+    private Config config;
 
     public QuarkusConfigResolver() {
-        provider = ConfigProvider.getConfig();
-    }
-
-    private <T> T getValue(String key, Class<T> clazz, T defaultValue) {
-        return provider.getOptionalValue(key, clazz).orElse(defaultValue);
+        config = ConfigProvider.getConfig();
     }
 
     @Override
-    public <T> T getConfigProperty(String key, Class<T> clazz, T defaultValue) {
+    public <T> Optional<T> getConfigProperty(String key, Class<T> clazz) {
         try {
-            return getValue(key, clazz, defaultValue);
+            return config.getOptionalValue(key, clazz);
         } catch (SecurityException ex) {
             // see https://smallrye.io/docs/smallrye-config/config/secret-keys.html
-            return SecretKeys.doUnlocked(() -> getValue(key, clazz, defaultValue));
+            return SecretKeys.doUnlocked(() -> config.getOptionalValue(key, clazz));
         }
     }
 }

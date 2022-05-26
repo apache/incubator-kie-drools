@@ -30,8 +30,22 @@ public class FileContentLoader extends FallbackContentLoader {
         this.path = path;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
     @Override
     protected InputStream internalInputStream() throws IOException {
         return Files.newInputStream(path);
+    }
+
+    @Override
+    public URIContentLoaderType type() {
+        return URIContentLoaderType.FILE;
+    }
+
+    @Override
+    public String toString() {
+        return "FileContentLoader [path=" + path + "]";
     }
 }

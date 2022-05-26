@@ -34,7 +34,7 @@ import org.kie.kogito.serverless.workflow.suppliers.ClientOAuth2AuthDecoratorSup
 import org.kie.kogito.serverless.workflow.suppliers.CollectionParamsDecoratorSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigSuppliedWorkItemSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.PasswordOAuth2AuthDecoratorSupplier;
-import org.kie.kogito.serverless.workflow.utils.OpenAPIOperationId;
+import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator.Location;
@@ -75,9 +75,9 @@ public class DescriptorRestOperationHandler implements RestOperationHandler {
     private static final Logger logger = LoggerFactory.getLogger(DescriptorRestOperationHandler.class);
 
     private final ParserContext parserContext;
-    private final OpenAPIOperationId operationId;
+    private final WorkflowOperationId operationId;
 
-    public DescriptorRestOperationHandler(ParserContext parserContext, OpenAPIOperationId operationId) {
+    public DescriptorRestOperationHandler(ParserContext parserContext, WorkflowOperationId operationId) {
         this.parserContext = parserContext;
         this.operationId = operationId;
     }
@@ -93,7 +93,7 @@ public class DescriptorRestOperationHandler implements RestOperationHandler {
             Workflow workflow,
             FunctionDefinition function) {
         URI uri = operationId.getUri();
-        String serviceName = operationId.getServiceName();
+        String serviceName = operationId.getPackageName();
         try {
             // although OpenAPIParser has built in support to load uri, it messes up when using contextclassloader, so using our retrieval apis to get the content
             SwaggerParseResult result =
@@ -103,7 +103,7 @@ public class DescriptorRestOperationHandler implements RestOperationHandler {
                 throw new IllegalArgumentException("Problem parsing uri " + uri);
             }
             logger.debug("OpenAPI parser messages {}", result.getMessages());
-            OpenAPIDescriptor openAPIDescriptor = OpenAPIDescriptorFactory.of(openAPI, operationId.getOperationId());
+            OpenAPIDescriptor openAPIDescriptor = OpenAPIDescriptorFactory.of(openAPI, operationId.getOperation());
             addSecurity(node, openAPIDescriptor, serviceName);
             return node.workParameter(RestWorkItemHandler.URL,
                     runtimeOpenApi(serviceName, "base_path", String.class, OpenAPIDescriptorFactory.getDefaultURL(openAPI, "http://localhost:8080"),
