@@ -26,4 +26,9 @@ class ProjectJobSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTe
     protected CommonApp<Schedule> createCommonApp() {
         return new ProjectJobSchedulingApp();
     }
+
+    @Override
+    protected boolean supportsBavet() {
+        return false;
+    }
 }

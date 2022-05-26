@@ -32,4 +32,9 @@ class CheapTimeSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CheapTim
     protected Class<CheapTimeEasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return CheapTimeEasyScoreCalculator.class;
     }
+
+    @Override
+    protected boolean supportsBavet() {
+        return false;
+    }
 }

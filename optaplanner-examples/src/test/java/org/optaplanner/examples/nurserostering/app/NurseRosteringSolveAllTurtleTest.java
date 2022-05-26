@@ -26,4 +26,9 @@ class NurseRosteringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<Nur
     protected CommonApp<NurseRoster> createCommonApp() {
         return new NurseRosteringApp();
     }
+
+    @Override
+    protected boolean supportsBavet() {
+        return false;
+    }
 }

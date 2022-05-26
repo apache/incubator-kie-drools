@@ -73,7 +73,8 @@ setupPromoteJob(Folder.RELEASE)
 setupPostReleaseJob()
 
 if (Utils.isMainBranch(this)) {
-    setupOptaPlannerTurtleTestsJob()
+    setupOptaPlannerTurtleTestsJob('drools')
+    setupOptaPlannerTurtleTestsJob('bavet')
 }
 
 // Tools folder
@@ -253,9 +254,10 @@ void setupPostReleaseJob() {
     }
 }
 
-void setupOptaPlannerTurtleTestsJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-turtle-tests', Folder.OTHER, "${jenkins_path}/Jenkinsfile.turtle",
-            'Run OptaPlanner turtle tests on a weekly basis.')
+void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, "optaplanner-turtle-tests-${constraintStreamImplType}", Folder.OTHER, "${jenkins_path}/Jenkinsfile.turtle",
+            "Run OptaPlanner turtle tests with CS-${constraintStreamImplType} on a weekly basis.")
+    jobParams.env.put('CONSTRAINT_STREAM_IMPL_TYPE', "${constraintStreamImplType}")
     jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {

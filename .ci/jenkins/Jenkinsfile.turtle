@@ -42,6 +42,7 @@ pipeline {
                             .withProperty('full')
                             .withProperty('runTurtleTests', true)
                             .withProperty('maven.test.failure.ignore', true)
+                            .withProperty('constraintStreamImplType', getConstraintStreamImplType())
                             .run('clean install')
                 }
             }
@@ -73,6 +74,10 @@ String getBuildBranch() {
 
 String getGitAuthor() {
     return params.GIT_AUTHOR
+}
+
+String getConstraintStreamImplType() {
+    return env.CONSTRAINT_STREAM_IMPL_TYPE
 }
 
 void sendEmail() {

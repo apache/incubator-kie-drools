@@ -23,10 +23,12 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -68,6 +70,8 @@ public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {
     }
 
     public void runFastAndFullAssert(SolverConfig solverConfig, Solution_ problem) {
+        checkIfSupportsBavet(solverConfig);
+
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
         // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
         problem = buildAndSolve(solverConfig, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 2L);
@@ -77,14 +81,37 @@ public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {
         problem = buildAndSolve(solverConfig, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 3L);
     }
 
+    protected boolean supportsBavet() {
+        return true;
+    }
+
+    protected void checkIfSupportsBavet(SolverConfig solverConfig) {
+        ConstraintStreamImplType constraintStreamImplType =
+                solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType();
+        boolean isBavet = solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null &&
+                constraintStreamImplType == ConstraintStreamImplType.BAVET;
+        Assumptions.assumeTrue(!isBavet || supportsBavet(),
+                "The test (" + getClass().getSimpleName() + ") does not support the CS-B.");
+    }
+
     private static SolverConfig buildSolverConfig(String solverConfigResource) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null) {
+            solverConfig.getScoreDirectorFactoryConfig().setConstraintStreamImplType(resolveConstraintStreamType());
+        }
         // buildAndSolve() fills in minutesSpentLimit
         solverConfig.setTerminationConfig(new TerminationConfig());
         if (MOVE_THREAD_COUNT_OVERRIDE != null) {
             solverConfig.setMoveThreadCount(MOVE_THREAD_COUNT_OVERRIDE);
         }
         return solverConfig;
+    }
+
+    private static ConstraintStreamImplType resolveConstraintStreamType() {
+        String csImplProperty = System.getProperty(TestSystemProperties.CONSTRAINT_STREAM_IMPL_TYPE,
+                ConstraintStreamImplType.DROOLS.name()).trim().toUpperCase();
+        return csImplProperty.equals(ConstraintStreamImplType.DROOLS.name()) ? ConstraintStreamImplType.DROOLS
+                : ConstraintStreamImplType.BAVET;
     }
 
     private Solution_ buildAndSolve(SolverConfig solverConfig, EnvironmentMode environmentMode,
