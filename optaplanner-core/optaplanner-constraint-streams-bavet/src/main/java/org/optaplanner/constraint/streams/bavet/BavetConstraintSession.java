@@ -17,20 +17,18 @@
 package org.optaplanner.constraint.streams.bavet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.uni.ForEachUniNode;
-import org.optaplanner.constraint.streams.common.ConstraintStreamSession;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 
-public final class BavetConstraintSession<Score_ extends Score<Score_>> implements ConstraintStreamSession<Score_> {
+public final class BavetConstraintSession<Score_ extends Score<Score_>> {
 
     private final AbstractScoreInliner<Score_> scoreInliner;
     private final Map<Class<?>, ForEachUniNode<Object>> declaredClassToNodeMap;
@@ -100,13 +98,6 @@ public final class BavetConstraintSession<Score_ extends Score<Score_>> implemen
 
     public Map<Object, Indictment<Score_>> getIndictmentMap() {
         return scoreInliner.getIndictmentMap();
-    }
-
-    @Override
-    public AbstractScoreInliner<Score_> runAndClose(Object... facts) {
-        Arrays.stream(facts).forEach(this::insert);
-        calculateScore(0);
-        return scoreInliner;
     }
 
 }
