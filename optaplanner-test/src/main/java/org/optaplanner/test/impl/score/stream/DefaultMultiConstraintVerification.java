@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,21 +31,20 @@ public final class DefaultMultiConstraintVerification<Solution_, Score_ extends 
     private final ConstraintProvider constraintProvider;
     private final SessionBasedAssertionBuilder<Solution_, Score_> sessionBasedAssertionBuilder;
 
-    protected DefaultMultiConstraintVerification(
-            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+    DefaultMultiConstraintVerification(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             ConstraintProvider constraintProvider) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintProvider = constraintProvider;
-        this.sessionBasedAssertionBuilder = SessionBasedAssertionBuilder.create(scoreDirectorFactory);
+        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder(scoreDirectorFactory);
     }
 
     @Override
-    public final DefaultMultiConstraintAssertion<Solution_, Score_> given(Object... facts) {
+    public final DefaultMultiConstraintAssertion<Score_> given(Object... facts) {
         return sessionBasedAssertionBuilder.multiConstraintGiven(constraintProvider, facts);
     }
 
     @Override
-    public final DefaultMultiConstraintAssertion<Solution_, Score_> givenSolution(Solution_ solution) {
+    public final DefaultMultiConstraintAssertion<Score_> givenSolution(Solution_ solution) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
                 scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));

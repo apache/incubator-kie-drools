@@ -19,6 +19,7 @@ package org.optaplanner.constraint.streams.drools;
 import static java.util.stream.Collectors.toMap;
 import static org.drools.model.DSL.globalOf;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -114,8 +115,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         return kieBase;
     }
 
-    public SessionDescriptor<Score_> newConstraintStreamingSession(boolean constraintMatchEnabled,
-            Solution_ workingSolution) {
+    public SessionDescriptor<Score_> newSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         // Extract constraint weights.
         Map<DroolsConstraint<Solution_>, Score_> constraintToWeightMap = kieBaseDescriptor.getConstraintToGlobalMap()
                 .keySet()
@@ -145,11 +145,26 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         return new SessionDescriptor<>(kieSession, scoreInliner, agendaFilter);
     }
 
+    @Override
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
+        return solutionDescriptor;
+    }
+
     private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
         KieSessionConfiguration config = KieServices.get().newKieSessionConfiguration();
         config.setOption(DirectFiringOption.YES); // For performance; not applicable to DRL due to insertLogical etc.
         Environment environment = KieServices.get().newEnvironment();
         return kieBase.newKieSession(config, environment);
+    }
+
+    @Override
+    public AbstractScoreInliner<Score_> fireAndForget(Object... facts) {
+        SessionDescriptor<Score_> sessionDescriptor = newSession(true, null);
+        KieSession session = sessionDescriptor.getSession();
+        Arrays.stream(facts).forEach(session::insert);
+        session.fireAllRules();
+        session.dispose();
+        return sessionDescriptor.getScoreInliner();
     }
 
     @Override

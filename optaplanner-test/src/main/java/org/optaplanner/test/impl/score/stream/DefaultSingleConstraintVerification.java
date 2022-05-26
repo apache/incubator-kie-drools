@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,9 @@ public final class DefaultSingleConstraintVerification<Solution_, Score_ extends
     private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
     private final SessionBasedAssertionBuilder<Solution_, Score_> sessionBasedAssertionBuilder;
 
-    protected DefaultSingleConstraintVerification(
-            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
+    DefaultSingleConstraintVerification(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
-        this.sessionBasedAssertionBuilder = SessionBasedAssertionBuilder.create(scoreDirectorFactory);
+        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder(scoreDirectorFactory);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,34 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
+import java.util.Objects;
+
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.constraint.streams.drools.DroolsConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 
-/**
- * Drools and Bavet sessions have vastly different interfaces and therefore the assertion generation is generalized
- * using this interface.
- * 
- * @param <Solution_>
- * @param <Score_>
- */
-interface SessionBasedAssertionBuilder<Solution_, Score_ extends Score<Score_>> {
+final class SessionBasedAssertionBuilder<Solution_, Score_ extends Score<Score_>> {
 
-    static <Solution_, Score_ extends Score<Score_>> SessionBasedAssertionBuilder<Solution_, Score_> create(
-            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
-        if (scoreDirectorFactory instanceof DroolsConstraintStreamScoreDirectorFactory) {
-            return new DroolsSessionBasedAssertionBuilder<>(
-                    (DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_>) scoreDirectorFactory);
-        } else if (scoreDirectorFactory instanceof BavetConstraintStreamScoreDirectorFactory) {
-            return new BavetSessionBasedAssertionBuilder<>(
-                    (BavetConstraintStreamScoreDirectorFactory<Solution_, Score_>) scoreDirectorFactory);
-        } else {
-            throw new IllegalStateException("Impossible state: unknown score director factory (" +
-                    scoreDirectorFactory + ").");
-        }
+    private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory;
+
+    public SessionBasedAssertionBuilder(
+            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory) {
+        this.constraintStreamScoreDirectorFactory = Objects.requireNonNull(constraintStreamScoreDirectorFactory);
     }
 
-    DefaultMultiConstraintAssertion<Solution_, Score_> multiConstraintGiven(ConstraintProvider constraintProvider,
-            Object... facts);
+    public DefaultMultiConstraintAssertion<Score_> multiConstraintGiven(ConstraintProvider constraintProvider,
+            Object... facts) {
+        AbstractScoreInliner<Score_> scoreInliner = constraintStreamScoreDirectorFactory.fireAndForget(facts);
+        return new DefaultMultiConstraintAssertion<>(constraintProvider, scoreInliner.extractScore(0),
+                scoreInliner.getConstraintMatchTotalMap(), scoreInliner.getIndictmentMap());
+    }
 
-    DefaultSingleConstraintAssertion<Solution_, Score_> singleConstraintGiven(Object... facts);
+    public DefaultSingleConstraintAssertion<Solution_, Score_> singleConstraintGiven(Object... facts) {
+        AbstractScoreInliner<Score_> scoreInliner = constraintStreamScoreDirectorFactory.fireAndForget(facts);
+        return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory,
+                scoreInliner.extractScore(0), scoreInliner.getConstraintMatchTotalMap(),
+                scoreInliner.getIndictmentMap());
+    }
 
 }

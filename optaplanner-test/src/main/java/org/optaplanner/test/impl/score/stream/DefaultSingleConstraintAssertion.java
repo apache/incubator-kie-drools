@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,7 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     private final Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection;
     private final Collection<Indictment<Score_>> indictmentCollection;
 
-    protected DefaultSingleConstraintAssertion(
-            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+    DefaultSingleConstraintAssertion(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             Score_ score, Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
             Map<Object, Indictment<Score_>> indictmentMap) {
         this.scoreDirectorFactory = requireNonNull(scoreDirectorFactory);

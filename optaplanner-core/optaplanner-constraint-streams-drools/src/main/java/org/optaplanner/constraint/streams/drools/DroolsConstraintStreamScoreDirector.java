@@ -73,7 +73,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
             session.dispose();
         }
         SessionDescriptor<Score_> sessionDescriptor =
-                scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
+                scoreDirectorFactory.newSession(constraintMatchEnabledPreference, workingSolution);
         session = sessionDescriptor.getSession();
         agendaFilter = sessionDescriptor.getAgendaFilter();
         scoreInliner = sessionDescriptor.getScoreInliner();

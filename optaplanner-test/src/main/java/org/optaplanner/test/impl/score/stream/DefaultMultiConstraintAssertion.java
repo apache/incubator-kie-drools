@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.score.DefaultScoreExplanation;
 import org.optaplanner.test.api.score.stream.MultiConstraintAssertion;
 
-public final class DefaultMultiConstraintAssertion<Solution_, Score_ extends Score<Score_>>
+public final class DefaultMultiConstraintAssertion<Score_ extends Score<Score_>>
         implements MultiConstraintAssertion {
 
     private final ConstraintProvider constraintProvider;
@@ -36,7 +36,7 @@ public final class DefaultMultiConstraintAssertion<Solution_, Score_ extends Sco
     private final Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection;
     private final Collection<Indictment<Score_>> indictmentCollection;
 
-    protected DefaultMultiConstraintAssertion(ConstraintProvider constraintProvider, Score_ actualScore,
+    DefaultMultiConstraintAssertion(ConstraintProvider constraintProvider, Score_ actualScore,
             Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
             Map<Object, Indictment<Score_>> indictmentMap) {
         this.constraintProvider = requireNonNull(constraintProvider);

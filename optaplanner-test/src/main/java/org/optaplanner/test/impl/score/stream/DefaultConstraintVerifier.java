@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package org.optaplanner.test.impl.score.stream;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.function.BiFunction;
 
-import org.optaplanner.constraint.streams.bavet.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.constraint.streams.drools.DroolsConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactoryService;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -31,17 +31,21 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
+import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public final class DefaultConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_, Score_ extends Score<Score_>>
         implements ConstraintVerifier<ConstraintProvider_, Solution_> {
 
+    private final ServiceLoader<ScoreDirectorFactoryService> serviceLoader;
     private final ConstraintProvider_ constraintProvider;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private ConstraintStreamImplType constraintStreamImplType;
     private Boolean droolsAlphaNetworkCompilationEnabled;
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
+        this.serviceLoader = ServiceLoader.load(ScoreDirectorFactoryService.class);
         this.constraintProvider = constraintProvider;
         this.solutionDescriptor = solutionDescriptor;
     }
@@ -92,22 +96,27 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
 
     private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
             ConstraintProvider constraintProvider) {
-        ConstraintStreamImplType constraintStreamImplType_ = getConstraintStreamImplType();
-        switch (constraintStreamImplType_) {
-            case DROOLS:
-                return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                        isDroolsAlphaNetworkCompilationEnabled());
-            case BAVET:
-                if (droolsAlphaNetworkCompilationEnabled != null && droolsAlphaNetworkCompilationEnabled) {
-                    throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType_ +
-                            ") does not support droolsAlphaNetworkCompilationEnabled ("
-                            + droolsAlphaNetworkCompilationEnabled + ").");
-                }
-                return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
-            default:
-                throw new UnsupportedOperationException("Unsupported constraintStreamImplType ("
-                        + this.constraintStreamImplType + ").");
-        }
+        boolean isDroolsAlphaNetworkCompilationEnabled =
+                droolsAlphaNetworkCompilationEnabled == null ? getConstraintStreamImplType() != ConstraintStreamImplType.BAVET
+                        : droolsAlphaNetworkCompilationEnabled;
+        return serviceLoader.stream()
+                .map(ServiceLoader.Provider::get)
+                .filter(s -> s.getSupportedScoreDirectorType() == ScoreDirectorType.CONSTRAINT_STREAMS)
+                .map(s -> (AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_>) s)
+                .filter(s -> s.supportsImplType(getConstraintStreamImplType()))
+                .map(s -> s.buildScoreDirectorFactory(solutionDescriptor, constraintProvider,
+                        isDroolsAlphaNetworkCompilationEnabled))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElseThrow(() -> {
+                    String expectedModule = getConstraintStreamImplType() == ConstraintStreamImplType.BAVET
+                            ? "optaplanner-constraint-streams-bavet"
+                            : "optaplanner-constraint-streams-drools";
+                    throw new IllegalStateException(
+                            "Constraint Streams implementation was not found on the classpath.\n"
+                                    + "Maybe include org.optaplanner:" + expectedModule + " dependency in your project?\n"
+                                    + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
+                });
     }
 
     @Override

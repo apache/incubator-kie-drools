@@ -16,6 +16,7 @@
 
 package org.optaplanner.constraint.streams.common;
 
+import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -36,6 +37,8 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
     protected AbstractConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         super(solutionDescriptor);
     }
+
+    public abstract AbstractScoreInliner<Score_> fireAndForget(Object... facts);
 
     public abstract Constraint[] getConstraints();
 

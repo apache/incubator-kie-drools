@@ -16,14 +16,16 @@
 
 package org.optaplanner.constraint.streams.drools;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.optaplanner.constraint.streams.common.ConstraintStreamSession;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
 
-public final class SessionDescriptor<Score_ extends Score<Score_>> {
+public final class SessionDescriptor<Score_ extends Score<Score_>> implements ConstraintStreamSession<Score_> {
 
     private final KieSession session;
     private final AgendaFilter agendaFilter;
@@ -61,6 +63,13 @@ public final class SessionDescriptor<Score_ extends Score<Score_>> {
      */
     public AgendaFilter getAgendaFilter() {
         return agendaFilter;
+    }
+
+    @Override
+    public AbstractScoreInliner<Score_> runAndClose(Object... facts) {
+        Arrays.stream(facts).forEach(session::insert);
+        session.fireAllRules();
+        return scoreInliner;
     }
 
 }

@@ -16,9 +16,11 @@
 
 package org.optaplanner.constraint.streams.bavet;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -44,9 +46,21 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
         return new BavetConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
-    public BavetConstraintSession<Score_> newSession(boolean constraintMatchEnabled,
-            Solution_ workingSolution) {
+    public BavetConstraintSession<Score_> newSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
+    }
+
+    @Override
+    public AbstractScoreInliner<Score_> fireAndForget(Object... facts) {
+        BavetConstraintSession<Score_> session = newSession(true, null);
+        Arrays.stream(facts).forEach(session::insert);
+        session.calculateScore(0);
+        return session.getScoreInliner();
+    }
+
+    @Override
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
+        return solutionDescriptor;
     }
 
     @Override

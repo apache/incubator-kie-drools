@@ -151,6 +151,10 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 + "easyScoreCalculatorClass or an incrementalScoreCalculatorClass.");
     }
 
+    public static void failForMissingConstraintStreams(ConstraintStreamImplType constraintStreamImplType) {
+
+    }
+
     private void assertOnlyOneScoreDirectorFactory(
             Supplier<? extends ScoreDirectorFactory<Solution_>> easyScoreDirectorFactorySupplier,
             Supplier<? extends ScoreDirectorFactory<Solution_>> constraintStreamScoreDirectorFactorySupplier,

@@ -39,23 +39,9 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-constraint-streams-bavet</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-constraint-streams-drools</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core-impl</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
     </dependency>
     <!-- External dependencies -->
     <!-- Logging -->
