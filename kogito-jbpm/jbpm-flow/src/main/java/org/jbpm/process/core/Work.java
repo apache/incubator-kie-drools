@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.jbpm.process.instance.impl.humantask.DeadlineInfo;
 import org.jbpm.process.instance.impl.humantask.Reassignment;
+import org.kie.kogito.process.workitems.WorkParametersFactory;
 
 public interface Work {
 
@@ -73,5 +74,9 @@ public interface Work {
     Collection<DeadlineInfo<Reassignment>> getNotStartedReassignments();
 
     Collection<DeadlineInfo<Reassignment>> getNotCompletedReassigments();
+
+    void setWorkParametersFactory(WorkParametersFactory factory);
+
+    WorkParametersFactory getWorkParametersFactory();
 
 }

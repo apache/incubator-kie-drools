@@ -15,19 +15,17 @@
  */
 package org.kie.kogito.serverless.workflow.workitemparams;
 
-import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-public class ObjectResolver extends JsonNodeResolver {
+public class ObjectResolver extends ExpressionWorkItemResolver<Object> {
 
     public ObjectResolver(String exprLang, Object expr, String paramName) {
         super(exprLang, expr, paramName);
     }
 
     @Override
-    protected Object evalExpression(Object inputModel, KogitoProcessContext context) {
-        return JsonObjectUtils.simpleToJavaValue((JsonNode) super.evalExpression(inputModel, context));
+    public Object apply(KogitoWorkItem workItem) {
+        return JsonObjectUtils.simpleToJavaValue(evalExpression(workItem));
     }
 }

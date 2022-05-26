@@ -41,6 +41,8 @@ import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_PAR
 
 public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVisitor<T> {
 
+    private static final String METHOD_WORK_PARAMETER_FACTORY = "workParameterFactory";
+
     private enum ParamType {
         BOOLEAN(Boolean.class.getSimpleName()),
         INTEGER(Integer.class.getSimpleName()),
@@ -81,6 +83,7 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
     public void visitNode(String factoryField, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         Work work = node.getWork();
         String workName = node.getWork().getName();
+        final String nodeId = getNodeId(node);
 
         if (TaskDescriptorBuilder.isBuilderSupported(workName)) {
             final TaskDescriptor taskDescriptor = new TaskDescriptorBuilder(workName)
@@ -94,14 +97,18 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
 
         body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, work.getName()))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_WORK_NAME, new StringLiteralExpr(workName)));
+                .addStatement(getFactoryMethod(nodeId, METHOD_WORK_NAME, new StringLiteralExpr(workName)));
 
-        addWorkItemParameters(work, body, getNodeId(node));
-        addNodeMappings(node, body, getNodeId(node));
+        if (work.getWorkParametersFactory() != null) {
+            body.addStatement(getFactoryMethod(nodeId, METHOD_WORK_PARAMETER_FACTORY, ExpressionUtils.getLiteralExpr(work.getWorkParametersFactory())));
+        }
 
-        body.addStatement(getDoneMethod(getNodeId(node)));
+        addWorkItemParameters(work, body, nodeId);
+        addNodeMappings(node, body, nodeId);
 
-        visitMetaData(node.getMetaData(), body, getNodeId(node));
+        body.addStatement(getDoneMethod(nodeId));
+
+        visitMetaData(node.getMetaData(), body, nodeId);
 
         metadata.getWorkItems().add(workName);
     }

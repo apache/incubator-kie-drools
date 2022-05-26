@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.serverless.workflow.workitemparams;
 
+import java.util.Map;
+
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
-import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.process.workitems.WorkParametersFactory;
+import org.kogito.workitem.rest.RestWorkItemHandler;
 
-public class ConfigWorkItemResolver<T> implements WorkItemParamResolver<T> {
+import static java.util.Collections.singletonMap;
 
-    private final String key;
-    private final Class<T> clazz;
-    private final T defaultValue;
+public class ExpressionParametersFactory extends ExpressionWorkItemResolver<Map<String, Object>> implements WorkParametersFactory {
 
-    public ConfigWorkItemResolver(String key, Class<T> clazz, T defaultValue) {
-        this.key = key;
-        this.clazz = clazz;
-        this.defaultValue = defaultValue;
+    public ExpressionParametersFactory(String exprLang, Object expr, String paramName) {
+        super(exprLang, expr, paramName);
     }
 
     @Override
-    public T apply(KogitoWorkItem workitem) {
-        return ConfigResolverHolder.getConfigResolver().getConfigProperty(key, clazz).orElse(defaultValue);
+    public Map<String, Object> apply(KogitoWorkItem workItem) {
+        Object obj = JsonObjectUtils.toJavaValue(super.evalExpression(workItem));
+        return obj instanceof Map ? (Map<String, Object>) obj : singletonMap(RestWorkItemHandler.CONTENT_DATA, obj);
     }
-
 }

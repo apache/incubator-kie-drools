@@ -39,6 +39,7 @@ import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.rest.RestOperationHandlerFactory;
 import org.kie.kogito.serverless.workflow.rpc.RPCWorkItemHandler;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.ExpressionParametersFactorySupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ObjectResolverSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ParamsRestBodyBuilderSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.SysoutActionSupplier;
@@ -350,17 +351,26 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         if (functionArgs.isObject()) {
             functionsToMap(functionArgs).entrySet().forEach(entry -> processArg(entry.getKey(), entry.getValue(), workItemFactory, paramName));
         } else {
-            processArg(RestWorkItemHandler.CONTENT_DATA, functionReference(JsonObjectUtils.simpleToJavaValue(functionArgs)), workItemFactory, paramName);
+            Object object = functionReference(JsonObjectUtils.simpleToJavaValue(functionArgs));
+            if (isExpression(object)) {
+                workItemFactory.workParameterFactory(new ExpressionParametersFactorySupplier(workflow.getExpressionLang(), object, paramName));
+            } else {
+                workItemFactory.workParameter(RestWorkItemHandler.CONTENT_DATA, object);
+            }
         }
     }
 
     private void processArg(String key, Object value, WorkItemNodeFactory<?> workItemFactory, String paramName) {
-        boolean isExpr = value instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), value.toString()).isValid() || value instanceof JsonNode;
+        boolean isExpr = isExpression(value);
         workItemFactory
                 .workParameter(key,
                         isExpr ? new ObjectResolverSupplier(workflow.getExpressionLang(), value, paramName) : value)
                 .workParameterDefinition(key,
                         DataTypeResolver.fromObject(value, isExpr));
+    }
+
+    private boolean isExpression(Object value) {
+        return value instanceof CharSequence && ExpressionHandlerFactory.get(workflow.getExpressionLang(), value.toString()).isValid() || value instanceof JsonNode;
     }
 
     private NodeFactory<?, ?> emptyNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionName) {

@@ -25,11 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class KogitoWorkItemImplTest {
 
-    private static class MyWorkItemHandlerParamResolver implements WorkItemParamResolver {
+    private static class MyWorkItemHandlerParamResolver implements WorkItemParamResolver<Object> {
         @Override
         public Object apply(KogitoWorkItem t) {
             return t.getParameter("name").toString().concat(" is the best");
         }
+
     }
 
     @Test

@@ -29,8 +29,8 @@ public class ConfigSuppliedWorkItemResolver<T> extends ConfigWorkItemResolver<T>
     }
 
     @Override
-    public Object apply(KogitoWorkItem workitem) {
-        return transformer.apply((T) super.apply(workitem));
+    public T apply(KogitoWorkItem workitem) {
+        return transformer.apply(super.apply(workitem));
     }
 
 }

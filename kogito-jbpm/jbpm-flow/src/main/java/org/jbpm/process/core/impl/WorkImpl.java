@@ -30,6 +30,7 @@ import org.jbpm.process.core.Work;
 import org.jbpm.process.instance.impl.humantask.DeadlineHelper;
 import org.jbpm.process.instance.impl.humantask.DeadlineInfo;
 import org.jbpm.process.instance.impl.humantask.Reassignment;
+import org.kie.kogito.process.workitems.WorkParametersFactory;
 
 public class WorkImpl implements Work, Serializable {
 
@@ -43,6 +44,8 @@ public class WorkImpl implements Work, Serializable {
     private Collection<DeadlineInfo<Map<String, Object>>> endDeadlines;
     private Collection<DeadlineInfo<Reassignment>> startReassigments;
     private Collection<DeadlineInfo<Reassignment>> endReassigments;
+
+    private WorkParametersFactory factory;
 
     private static final String NOT_STARTED = "NotStartedNotify";
     private static final String NOT_COMPLETED = "NotCompletedNotify";
@@ -168,5 +171,16 @@ public class WorkImpl implements Work, Serializable {
             endReassigments = DeadlineHelper.parseReassignments(getParameter(NOT_COMPLETED_ASSIGN));
         }
         return endReassigments;
+    }
+
+    @Override
+    public void setWorkParametersFactory(WorkParametersFactory factory) {
+        this.factory = factory;
+
+    }
+
+    @Override
+    public WorkParametersFactory getWorkParametersFactory() {
+        return factory;
     }
 }

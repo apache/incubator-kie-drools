@@ -26,6 +26,7 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.kogito.process.workitems.WorkParametersFactory;
 
 public class AbstractWorkItemNodeFactory<T extends AbstractWorkItemNodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends StateBasedNodeFactory<T, P> {
 
@@ -62,6 +63,16 @@ public class AbstractWorkItemNodeFactory<T extends AbstractWorkItemNodeFactory<T
             getWorkItemNode().setWork(work);
         }
         work.setParameter(name, value);
+        return (T) this;
+    }
+
+    public T workParameterFactory(WorkParametersFactory factory) {
+        Work work = getWorkItemNode().getWork();
+        if (work == null) {
+            work = new WorkImpl();
+            getWorkItemNode().setWork(work);
+        }
+        work.setWorkParametersFactory(factory);
         return (T) this;
     }
 

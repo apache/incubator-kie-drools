@@ -99,6 +99,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         return (WorkItemNode) getNode();
     }
 
+    @Override
     public InternalKogitoWorkItem getWorkItem() {
         if (workItem == null && workItemId != null) {
             workItem = ((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
@@ -152,6 +153,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         workItem.setNodeId(getNodeId());
         workItem.setNodeInstance(this);
         workItem.setProcessInstance(getProcessInstance());
+
+        if (workItemNode.getWork().getWorkParametersFactory() != null) {
+            workItem.getParameters().putAll(workItemNode.getWork().getWorkParametersFactory().apply(workItem));
+        }
+
         processWorkItemHandler(() -> ((InternalKogitoWorkItemManager) InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime()).getKogitoWorkItemManager())
                 .internalExecuteWorkItem(workItem));
         if (!workItemNode.isWaitForCompletion()) {
@@ -215,6 +221,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         Map<String, Object> resolvedParameters = new HashMap<>();
 
         Collection<String> metaParameters = work.getMetaParameters();
+
         for (Entry<String, Object> e : work.getParameters().entrySet()) {
             if (!metaParameters.contains(e.getKey()) && e.getValue() != null) {
                 resolvedParameters.put(e.getKey(), e.getValue());

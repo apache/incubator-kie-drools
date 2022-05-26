@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.workitemparams;
+package org.kie.kogito.process.workitems;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
 
-public class JsonNodeResolver extends ExpressionWorkItemResolver<JsonNode> {
-
-    public JsonNodeResolver(String exprLang, Object expr, String paramName) {
-        super(exprLang, expr, paramName);
-    }
-
-    @Override
-    public JsonNode apply(KogitoWorkItem workItem) {
-        return evalExpression(workItem);
-    }
+public interface WorkParametersFactory extends WorkItemParamResolver<Map<String, Object>> {
 }
