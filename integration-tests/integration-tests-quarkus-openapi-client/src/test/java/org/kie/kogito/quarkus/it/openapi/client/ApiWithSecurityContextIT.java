@@ -48,7 +48,7 @@ class ApiWithSecurityContextIT {
     }
 
     @Test
-    void verifyAuthHeaders() {
+    void verifyAuthHeadersOpenApi2_0() {
         given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -66,7 +66,10 @@ class ApiWithSecurityContextIT {
                 .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.SEC_20.getPath()))
                         .withHeader("X-Client-Id", matching("12345"))
                         .withHeader("Authorization", matching("Basic amF2aWVyaXRvOmZ1bGFuaXRv")));
+    }
 
+    @Test
+    void verifyAuthHeadersOpenApi3_0() {
         given()
                 .contentType(ContentType.JSON)
                 .when()

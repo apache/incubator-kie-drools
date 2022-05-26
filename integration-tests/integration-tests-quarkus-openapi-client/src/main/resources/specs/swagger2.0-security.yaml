@@ -13,10 +13,10 @@ paths:
       parameters:
         - name: data
           in: body
-          description: Model instance data
+          #description: Model instance data
           required: false
           schema:
-            description: Model instance data
+            #description: Model instance data
             $ref: '#/definitions/myapp'
       responses:
         '201':
@@ -26,7 +26,7 @@ paths:
       deprecated: false
 definitions:
   myapp:
-    description: ''
+    #description: ''
     properties:
       userid:
         type: string
@@ -47,18 +47,8 @@ securityDefinitions:
     x-key-type: clientId
   basicAuth:
     type: basic
-  oauth:
-    type: oauth2
-    flow: accessCode
-    authorizationUrl: https://example.com/oauth/authorize
-    tokenUrl: https://example.com/oauth/token
-    scopes:
-      read: Grants read access
-      write: Grants write access
-      admin: Grants read and write access to administrative information
 security:
   - client_id: [ ]
-  - oauth: [ read, write ]
   - basicAuth: []
 tags:
   - name: myapp

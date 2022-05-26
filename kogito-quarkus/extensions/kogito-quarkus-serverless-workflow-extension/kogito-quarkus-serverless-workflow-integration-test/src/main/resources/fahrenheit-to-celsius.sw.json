@@ -18,34 +18,40 @@
       "name": "SetConstants",
       "type": "inject",
       "data": {
-        "subtractValue": "32.0",
-        "multiplyValue": "0.5556"
+        "subtractValue": 32.0,
+        "multiplyValue": 0.5556
       },
-      "transition": {
-        "nextState": "Computation"
-      }
+      "transition": "Computation"
     },
     {
       "name": "Computation",
       "actionMode": "sequential",
       "type": "operation",
+      "stateDataFilter": {
+        "output": "${  .[\"celsius\"] = .product | del(.subtractValue, .product, .multiplyValue, .difference) }"
+      },
       "actions": [
         {
           "name": "subtract",
           "functionRef": {
             "refName": "subtraction",
-            "arguments": "{leftElement: .fahrenheit, rightElement : .subtractValue}"
+            "arguments": {
+              "leftElement": ".fahrenheit",
+              "rightElement": ".subtractValue"
+            }
           }
         },
         {
           "name": "multiply",
           "functionRef": {
             "refName": "multiplication",
-            "arguments": { "pepe":"pepa", "leftElement": ".subtraction.difference", "rightElement": ".multiplyValue" }
+            "arguments":  { "pepe":"pepa", "leftElement": ".difference", "rightElement": ".multiplyValue" }
           }
         }
       ],
-      "end": "true"
+      "end": {
+        "terminate": "true"
+      }
     }
   ]
 }

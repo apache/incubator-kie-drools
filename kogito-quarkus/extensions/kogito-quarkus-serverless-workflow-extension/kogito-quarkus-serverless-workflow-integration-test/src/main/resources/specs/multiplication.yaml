@@ -10,7 +10,7 @@ paths:
       parameters:
         - in: header
           name: pepe
-          schema: 
+          schema:
             type: string
           required: true
       requestBody:
@@ -21,15 +21,20 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    format: float
+                    type: number
 components:
   schemas:
     MultiplicationOperation:
       type: object
       properties:
         leftElement:
-          format: float
-          type: number
-        product:
           format: float
           type: number
         rightElement:
