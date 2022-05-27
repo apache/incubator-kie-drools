@@ -3031,7 +3031,6 @@
     "@kogito-apps/patternfly-base" "^1.0.0"
     gql-query-builder "3.1.3"
     moment "2.29.2"
-    react-json-view "1.19.1"
     react-moment "0.9.7"
 
 "@kogito-tooling/backend@0.10.0":
@@ -9053,11 +9052,6 @@ core-js@3.6.5:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.5.tgz#7395dc273af37fb2e50e9bd3d9fe841285231d1a"
   integrity sha512-vZVEEwZoIsI+vPEuoF9Iqf5H7/M3eeQqWlQnYa8FSKKePuYTf5MWnxb5SDAzCa60b3JBRS5g9b+Dq7b1y/RCrA==
 
-core-js@^1.0.0:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
-  integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
-
 core-js@^2.5.0:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
@@ -9207,7 +9201,7 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-fetch@^3.0.4, cross-fetch@^3.0.6:
+cross-fetch@^3.0.4, cross-fetch@^3.0.6, cross-fetch@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
@@ -10276,7 +10270,7 @@ encodeurl@~1.0.2:
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.2.tgz#ad3ff4c86ec2d029322f5a02c3a9a606c95b3f59"
   integrity sha1-rT/0yG7C0CkyL1oCw6mmBslbP1k=
 
-encoding@^0.1.11, encoding@^0.1.12:
+encoding@^0.1.12:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.13.tgz#56574afdd791f54a8e9b2785c0582a2d26210fa9"
   integrity sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==
@@ -11166,30 +11160,17 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fbemitter@^2.0.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/fbemitter/-/fbemitter-2.1.1.tgz#523e14fdaf5248805bb02f62efc33be703f51865"
-  integrity sha1-Uj4U/a9SSIBbsC9i78M75wP1GGU=
+fbemitter@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/fbemitter/-/fbemitter-3.0.0.tgz#00b2a1af5411254aab416cd75f9e6289bee4bff3"
+  integrity sha512-KWKaceCwKQU0+HPoop6gn4eOHk50bBv/VxjJtGMfwmJt3D29JpN4H4eisCtIPA+a8GVBam+ldMMpMjJUvpDyHw==
   dependencies:
-    fbjs "^0.8.4"
+    fbjs "^3.0.0"
 
 fbjs-css-vars@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/fbjs-css-vars/-/fbjs-css-vars-1.0.2.tgz#216551136ae02fe255932c3ec8775f18e2c078b8"
   integrity sha512-b2XGFAFdWZWg0phtAWLHCk836A1Xann+I+Dgd3Gk64MHKZO44FfoD1KxyvbSh0qZsIoXQGGlVztIY+oitJPpRQ==
-
-fbjs@^0.8.0, fbjs@^0.8.4:
-  version "0.8.18"
-  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.18.tgz#9835e0addb9aca2eff53295cd79ca1cfc7c9662a"
-  integrity sha512-EQaWFK+fEPSoibjNy8IxUtaFOMXcWsY0JaVrQoZR9zC8N2Ygf9iDITPWjUTVIax95b6I742JFLqASHfsag/vKA==
-  dependencies:
-    core-js "^1.0.0"
-    isomorphic-fetch "^2.1.1"
-    loose-envify "^1.0.0"
-    object-assign "^4.1.0"
-    promise "^7.1.1"
-    setimmediate "^1.0.5"
-    ua-parser-js "^0.7.30"
 
 fbjs@^3.0.0:
   version "3.0.1"
@@ -11197,6 +11178,19 @@ fbjs@^3.0.0:
   integrity sha512-8+vkGyT4lNDRKHQNPp0yh/6E7FfkLg89XqQbOYnvntRh+8RiSD43yrh9E5ejp1muCizTL4nDVG+y8W4e+LROHg==
   dependencies:
     cross-fetch "^3.0.4"
+    fbjs-css-vars "^1.0.0"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.30"
+
+fbjs@^3.0.1:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-3.0.4.tgz#e1871c6bd3083bac71ff2da868ad5067d37716c6"
+  integrity sha512-ucV0tDODnGV3JCnnkmoszb5lf4bNpzjv80K41wd4k798Etq+UYD0y0TIfalLjZoKgjive6/adkRnszwapiDgBQ==
+  dependencies:
+    cross-fetch "^3.1.5"
     fbjs-css-vars "^1.0.0"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
@@ -11442,13 +11436,13 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-flux@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/flux/-/flux-3.1.3.tgz#d23bed515a79a22d933ab53ab4ada19d05b2f08a"
-  integrity sha1-0jvtUVp5oi2TOrU6tK2hnQWy8Io=
+flux@^4.0.1:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/flux/-/flux-4.0.3.tgz#573b504a24982c4768fdfb59d8d2ea5637d72ee7"
+  integrity sha512-yKAbrp7JhZhj6uiT1FTuVMlIAT1J4jqEyBpFApi1kxpGZCvacMVc/t1pMQyotqHhAgvoE3bNvAykhCo2CLjnYw==
   dependencies:
-    fbemitter "^2.0.0"
-    fbjs "^0.8.0"
+    fbemitter "^3.0.0"
+    fbjs "^3.0.1"
 
 focus-trap@6.2.2:
   version "6.2.2"
@@ -13384,7 +13378,7 @@ is-ssh@^1.3.0:
   dependencies:
     protocols "^1.1.0"
 
-is-stream@^1.0.1, is-stream@^1.1.0:
+is-stream@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/is-stream/-/is-stream-1.1.0.tgz#12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44"
   integrity sha1-EtSj3U5o4Lec6428hBc66A2RykQ=
@@ -13524,14 +13518,6 @@ isobject@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-4.0.0.tgz#3f1c9155e73b192022a80819bacd0343711697b0"
   integrity sha512-S/2fF5wH8SJA/kmwr6HYhK/RI/OkhD84k8ntalo0iJjZikgq1XFvR5M8NPT1x5F7fBwCG3qHfnzeP/Vh/ZxCUA==
-
-isomorphic-fetch@^2.1.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
-  integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
-  dependencies:
-    node-fetch "^1.0.1"
-    whatwg-fetch ">=0.10.0"
 
 isomorphic-fetch@^3.0.0:
   version "3.0.0"
@@ -14221,6 +14207,11 @@ json-schema-traverse@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
   integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
+
+json-schema@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.2.3.tgz#b480c892e59a2f05954ce727bd3f2a4e882f9e13"
+  integrity sha1-tIDIkuWaLwWVTOcnvT8qTogvnhM=
 
 json-schema@0.4.0:
   version "0.4.0"
@@ -15806,14 +15797,6 @@ node-fetch@2.6.7, node-fetch@^2.6.1, node-fetch@^2.6.5:
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
   dependencies:
     whatwg-url "^5.0.0"
-
-node-fetch@^1.0.1:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
-  integrity sha512-NhZ4CsKx7cYm2vSrBAr2PvFOe6sWDf0UYLRqA6svUYg7+/TSfVAu49jYC4BvQ4Sms9SZgdqGBgroqfDhJdTyKQ==
-  dependencies:
-    encoding "^0.1.11"
-    is-stream "^1.0.1"
 
 node-forge@^1:
   version "1.3.1"
@@ -18063,15 +18046,15 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.3.2, react-is@^16.6.0, react-
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-json-view@1.19.1:
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/react-json-view/-/react-json-view-1.19.1.tgz#95d8e59e024f08a25e5dc8f076ae304eed97cf5c"
-  integrity sha512-u5e0XDLIs9Rj43vWkKvwL8G3JzvXSl6etuS5G42a8klMohZuYFQzSN6ri+/GiBptDqlrXPTdExJVU7x9rrlXhg==
+react-json-view@^1.21.3:
+  version "1.21.3"
+  resolved "https://registry.yarnpkg.com/react-json-view/-/react-json-view-1.21.3.tgz#f184209ee8f1bf374fb0c41b0813cff54549c475"
+  integrity sha512-13p8IREj9/x/Ye4WI/JpjhoIwuzEgUAtgJZNBJckfzJt1qyh24BdTm6UQNGnyTq9dapQdrqvquZTo3dz1X6Cjw==
   dependencies:
-    flux "^3.1.3"
+    flux "^4.0.1"
     react-base16-styling "^0.6.0"
     react-lifecycles-compat "^3.0.4"
-    react-textarea-autosize "^6.1.0"
+    react-textarea-autosize "^8.3.2"
 
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
@@ -18243,13 +18226,6 @@ react-test-renderer@^16.0.0-0, react-test-renderer@^16.10.2:
     react-is "^16.8.6"
     scheduler "^0.19.1"
 
-react-textarea-autosize@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-6.1.0.tgz#df91387f8a8f22020b77e3833c09829d706a09a5"
-  integrity sha512-F6bI1dgib6fSvG8so1HuArPUv+iVEfPliuLWusLF+gAKz0FbB4jLrWUrTAeq1afnPT2c9toEZYUdz/y1uKMy4A==
-  dependencies:
-    prop-types "^15.6.0"
-
 react-textarea-autosize@^8.3.0:
   version "8.3.3"
   resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-8.3.3.tgz#f70913945369da453fd554c168f6baacd1fa04d8"
@@ -18258,6 +18234,15 @@ react-textarea-autosize@^8.3.0:
     "@babel/runtime" "^7.10.2"
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
+
+react-textarea-autosize@^8.3.2:
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-8.3.4.tgz#270a343de7ad350534141b02c9cb78903e553524"
+  integrity sha512-CdtmP8Dc19xL8/R6sWvtknD/eCXkQr30dtvC4VmGInhRsfF8X/ihXCq6+9l9qbxmKRiq407/7z5fxE7cVWQNgQ==
+  dependencies:
+    "@babel/runtime" "^7.10.2"
+    use-composed-ref "^1.3.0"
+    use-latest "^1.2.1"
 
 react-time-picker@^4.4.2:
   version "4.4.4"
@@ -21336,7 +21321,7 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-use-composed-ref@^1.0.0:
+use-composed-ref@^1.0.0, use-composed-ref@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/use-composed-ref/-/use-composed-ref-1.3.0.tgz#3d8104db34b7b264030a9d916c5e94fbe280dbda"
   integrity sha512-GLMG0Jc/jiKov/3Ulid1wbv3r54K9HlMW29IWcDFPEqFkSO2nS0MuefWgMJpeHQ9YJeXDL3ZUF+P3jdXlZX/cQ==
@@ -21346,7 +21331,7 @@ use-isomorphic-layout-effect@^1.1.1:
   resolved "https://registry.yarnpkg.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.2.tgz#497cefb13d863d687b08477d9e5a164ad8c1a6fb"
   integrity sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==
 
-use-latest@^1.0.0:
+use-latest@^1.0.0, use-latest@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/use-latest/-/use-latest-1.2.1.tgz#d13dfb4b08c28e3e33991546a2cee53e14038cf2"
   integrity sha512-xA+AVm/Wlg3e2P/JiItTziwS7FK92LWrDB0p+hgXloIMuVCeJJ8v6f0eeHyPZaJrM+usM1FkFfbNCrJGs8A/zw==
@@ -22047,7 +22032,7 @@ whatwg-encoding@^1.0.5:
   dependencies:
     iconv-lite "0.4.24"
 
-whatwg-fetch@>=0.10.0, whatwg-fetch@^3.4.1:
+whatwg-fetch@^3.4.1:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
   integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
