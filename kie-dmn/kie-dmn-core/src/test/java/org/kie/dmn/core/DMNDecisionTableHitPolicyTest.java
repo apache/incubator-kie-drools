@@ -68,7 +68,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(result.get("Approval Status")).isNull();
         assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
         DMNMessage message = dmnResult.getMessages().iterator().next();
-        assertThat("DMN: RiskCategory='ASD' does not match any of the valid values \"High\", \"Low\", \"Medium\" for decision table '_0004-simpletable-U'. (DMN id: _0004-simpletable-U, FEEL expression evaluation error) ").isEqualTo(message.getText());
+        assertThat(message.getText()).isEqualTo("DMN: RiskCategory='ASD' does not match any of the valid values \"High\", \"Low\", \"Medium\" for decision table '_0004-simpletable-U'. (DMN id: _0004-simpletable-U, FEEL expression evaluation error) ");
     }
 
     @Test
