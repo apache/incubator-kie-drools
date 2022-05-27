@@ -35,9 +35,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
     <version.common-text>1.9</version.common-text>
-    <version.com.fasterxml.jackson>2.13.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.13.2.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.13.2</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.13.3</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.13.3</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.13.3</version.com.fasterxml.jackson.annotations>
     <!-- DROOLS-6678: only used in one drools-examples -->
     <version.com.google.code.gson>2.9.0</version.com.google.code.gson>
     <version.org.jresearch.gwt.time>2.0.3</version.org.jresearch.gwt.time>
@@ -57,8 +57,8 @@
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
-    <version.io.micrometer>1.8.5</version.io.micrometer>
-    <version.io.quarkus>2.9.0.Final</version.io.quarkus>
+    <version.io.micrometer>1.8.6</version.io.micrometer>
+    <version.io.quarkus>2.9.2.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>2.1.22</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
