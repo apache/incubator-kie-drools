@@ -26,7 +26,7 @@
     "use-react-router-breadcrumbs": "^1.0.4"
   },
   "scripts": {
-    "start": "webpack-dev-server --hot --color --progress --info=true --config ./dev-webapp/webpack.dev.js",
+    "start": "webpack-dev-server --hot --color --progress --stats verbose --config ./dev-webapp/webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "build:prod": "yarn lint && rimraf dist && rimraf dist-standalone && yarn build && yarn build:standalone",
     "build:standalone": "webpack --config ./dev-webapp/webpack.prod.js && locktt",

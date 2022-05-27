@@ -17,15 +17,21 @@ module.exports = merge(common, {
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.join(__dirname),
+    static: {
+      directory: path.join(__dirname)
+    },
     host: HOST,
     port: PORT,
     compress: true,
-    inline: true,
     historyApiFallback: true,
     hot: true,
-    overlay: true,
-    open: true
+    open: true,
+    client: {
+      overlay: {
+        warnings: false,
+        errors: true
+      }
+    }
   },
   module: {
     rules: [
