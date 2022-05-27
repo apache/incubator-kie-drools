@@ -54,10 +54,9 @@
         <module>explainability</module>
         <module>task-assigning</module>
         <module>trusty</module>
-        <module>apps-integration-tests/integration-tests-task-assigning-service</module>
+        <module>apps-integration-tests</module>
         <!-- Used by task assigning integration tests -->
         <module>persistence-commons</module>
-        <module>apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common</module>
         <module>data-index</module>
         <!-- Used by task assigning integration tests -->
       </modules>

@@ -13,11 +13,30 @@
   <name>Kogito Apps :: Integration Tests :: Data Index</name>
   <packaging>pom</packaging>
 
-  <modules>
-    <module>integration-tests-data-index-service-common</module>
-    <module>integration-tests-data-index-service-quarkus</module>
-    <module>integration-tests-data-index-service-springboot</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>integration-tests-data-index-service-common</module>
+        <module>integration-tests-data-index-service-quarkus</module>
+        <module>integration-tests-data-index-service-springboot</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>optaplanner-downstream</id>
+      <activation>
+        <property>
+          <name>optaplanner</name>
+        </property>
+      </activation>
+      <modules>
+        <module>integration-tests-data-index-service-common</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>
