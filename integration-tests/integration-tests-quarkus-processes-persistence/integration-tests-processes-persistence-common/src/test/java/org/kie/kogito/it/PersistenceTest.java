@@ -76,6 +76,8 @@ public abstract class PersistenceTest {
                 .body("person.addresses.size()", equalTo(person.getAddresses().size()))
                 .body("person.addresses[0].city", equalTo(person.getAddresses().get(0).getCity()))
                 .body("person.addresses[1].city", equalTo(person.getAddresses().get(1).getCity()))
+                .body("person.addresses[1].type", equalTo(person.getAddresses().get(1).getType().name()))
+                .body("person.addresses[1].status", equalTo(person.getAddresses().get(1).getStatus().name()))
                 .extract()
                 .path("id");
 
@@ -98,6 +100,8 @@ public abstract class PersistenceTest {
                 .body("person.addresses.size()", equalTo(person.getAddresses().size()))
                 .body("person.addresses[0].city", equalTo(person.getAddresses().get(0).getCity()))
                 .body("person.addresses[1].city", equalTo(person.getAddresses().get(1).getCity()))
+                .body("person.addresses[1].type", equalTo(person.getAddresses().get(1).getType().name()))
+                .body("person.addresses[1].status", equalTo(person.getAddresses().get(1).getStatus().name()))
                 .extract()
                 .path("id");
 

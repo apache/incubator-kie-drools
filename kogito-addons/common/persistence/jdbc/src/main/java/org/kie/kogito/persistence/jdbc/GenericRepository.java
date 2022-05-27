@@ -39,6 +39,12 @@ public class GenericRepository extends Repository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericRepository.class);
 
+    private final DataSource dataSource;
+
+    public GenericRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     private enum DatabaseType {
         ANSI("ansi", "process_instances"),
         ORACLE("Oracle", "PROCESS_INSTANCES"),
@@ -76,7 +82,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    boolean tableExists(DataSource dataSource) {
+    boolean tableExists() {
         try (Connection connection = dataSource.getConnection()) {
             DatabaseType databaseType = getDataBaseType(connection);
             final DatabaseMetaData metaData = connection.getMetaData();
@@ -94,7 +100,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    void createTable(DataSource dataSource) {
+    void createTable() {
         try (Connection connection = dataSource.getConnection()) {
             DatabaseType databaseType = getDataBaseType(connection);
             final List<String> statements = FileLoader.getQueryFromFile(databaseType.dbIdentifier, "create_tables");
@@ -112,7 +118,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    void insertInternal(DataSource dataSource, String processId, UUID id, byte[] payload) {
+    void insertInternal(String processId, UUID id, byte[] payload) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(INSERT)) {
             statement.setString(1, id.toString());
@@ -126,7 +132,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    void updateInternal(DataSource dataSource, String processId, UUID id, byte[] payload) {
+    void updateInternal(String processId, UUID id, byte[] payload) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setBytes(1, payload);
@@ -139,7 +145,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    boolean updateWithLock(DataSource dataSource, String processId, UUID id, byte[] payload, long version) {
+    boolean updateWithLock(String processId, UUID id, byte[] payload, long version) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(UPDATE_WITH_LOCK)) {
             statement.setBytes(1, payload);
@@ -155,7 +161,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    boolean deleteInternal(DataSource dataSource, String processId, UUID id) {
+    boolean deleteInternal(String processId, UUID id) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(DELETE)) {
             statement.setString(1, processId);
@@ -168,7 +174,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    Map<String, Object> findByIdInternal(DataSource dataSource, String processId, UUID id) {
+    Map<String, Object> findByIdInternal(String processId, UUID id) {
         Map<String, Object> result = new HashMap<>();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
@@ -191,7 +197,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    List<byte[]> findAllInternal(DataSource dataSource, String processId) {
+    List<byte[]> findAllInternal(String processId) {
         List<byte[]> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(FIND_ALL)) {
@@ -208,7 +214,7 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    Long countInternal(DataSource dataSource, String processId) {
+    Long countInternal(String processId) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(COUNT)) {
             statement.setString(1, processId);

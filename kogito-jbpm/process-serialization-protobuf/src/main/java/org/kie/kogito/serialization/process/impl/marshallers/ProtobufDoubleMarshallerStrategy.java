@@ -31,19 +31,18 @@ public class ProtobufDoubleMarshallerStrategy implements ObjectMarshallerStrateg
     }
 
     @Override
-    public boolean acceptForUnmarshalling(Object value) {
-        return ((Any) value).is(DoubleValue.class);
+    public boolean acceptForUnmarshalling(Any value) {
+        return value.is(DoubleValue.class);
     }
 
     @Override
-    public Object marshall(Object unmarshalled) {
+    public Any marshall(Object unmarshalled) {
         return Any.pack(DoubleValue.of((Double) unmarshalled));
     }
 
     @Override
-    public Object unmarshall(Object marshalled) {
+    public Object unmarshall(Any data) {
         try {
-            Any data = (Any) marshalled;
             DoubleValue storedValue = data.unpack(DoubleValue.class);
             return storedValue.getValue();
         } catch (InvalidProtocolBufferException e1) {

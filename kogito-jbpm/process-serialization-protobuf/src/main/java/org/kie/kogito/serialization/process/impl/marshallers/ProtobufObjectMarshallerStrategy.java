@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 
 import org.kie.kogito.serialization.process.ObjectMarshallerStrategy;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerException;
@@ -44,12 +45,12 @@ public class ProtobufObjectMarshallerStrategy implements ObjectMarshallerStrateg
     }
 
     @Override
-    public boolean acceptForUnmarshalling(Object value) {
-        return ((Any) value).is(BytesValue.class);
+    public boolean acceptForUnmarshalling(Any value) {
+        return value.is(BytesValue.class);
     }
 
     @Override
-    public Object marshall(Object unmarshalled) {
+    public Any marshall(Object unmarshalled) {
         try (ByteArrayOutputStream stream = new ByteArrayOutputStream(); ObjectOutputStream out = new ObjectOutputStream(stream)) {
             out.writeObject(unmarshalled);
             return Any.pack(BytesValue.of(ByteString.copyFrom(stream.toByteArray())));
@@ -59,9 +60,8 @@ public class ProtobufObjectMarshallerStrategy implements ObjectMarshallerStrateg
     }
 
     @Override
-    public Object unmarshall(Object marshalled) {
+    public Object unmarshall(Any data) {
         try {
-            Any data = (Any) marshalled;
             BytesValue storedValue = data.unpack(BytesValue.class);
             if (ByteString.EMPTY.equals(storedValue.getValue())) {
                 return null;
@@ -73,7 +73,16 @@ public class ProtobufObjectMarshallerStrategy implements ObjectMarshallerStrateg
     }
 
     private Object readObject(byte[] data) {
-        try (InputStream is = new ByteArrayInputStream(data); ObjectInputStream ois = new ObjectInputStream(is)) {
+        try (InputStream is = new ByteArrayInputStream(data); ObjectInputStream ois = new ObjectInputStream(is) {
+            @Override
+            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+                try {
+                    return Class.forName(desc.getName(), false, Thread.currentThread().getContextClassLoader());
+                } catch (ClassNotFoundException ex) {
+                    return super.resolveClass(desc);
+                }
+            }
+        }) {
             return ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new ProcessInstanceMarshallerException("Unexpected error while trying to read object", e);

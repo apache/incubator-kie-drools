@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.sql.DataSource;
-
 abstract class Repository {
 
     static final String INSERT = "INSERT INTO process_instances (id, payload, process_id, version) VALUES (?, ?, ?, ?)";
@@ -31,23 +29,23 @@ abstract class Repository {
     static final String DELETE = "DELETE FROM process_instances WHERE process_id = ? and id = ?";
     static final String COUNT = "SELECT COUNT(id) as count FROM process_instances WHERE process_id = ?";
 
-    abstract boolean tableExists(DataSource dataSource);
+    abstract boolean tableExists();
 
-    abstract void createTable(DataSource dataSource);
+    abstract void createTable();
 
-    abstract void insertInternal(DataSource dataSource, String processId, UUID id, byte[] payload);
+    abstract void insertInternal(String processId, UUID id, byte[] payload);
 
-    abstract void updateInternal(DataSource dataSource, String processId, UUID id, byte[] payload);
+    abstract void updateInternal(String processId, UUID id, byte[] payload);
 
-    abstract boolean updateWithLock(DataSource dataSource, String processId, UUID id, byte[] payload, long version);
+    abstract boolean updateWithLock(String processId, UUID id, byte[] payload, long version);
 
-    abstract boolean deleteInternal(DataSource dataSource, String processId, UUID id);
+    abstract boolean deleteInternal(String processId, UUID id);
 
-    abstract Map<String, Object> findByIdInternal(DataSource dataSource, String processId, UUID id);
+    abstract Map<String, Object> findByIdInternal(String processId, UUID id);
 
-    abstract List<byte[]> findAllInternal(DataSource dataSource, String processId);
+    abstract List<byte[]> findAllInternal(String processId);
 
-    abstract Long countInternal(DataSource dataSource, String processId);
+    abstract Long countInternal(String processId);
 
     protected RuntimeException uncheckedException(Exception ex, String message, Object... param) {
         return new RuntimeException(String.format(message, param), ex);

@@ -31,19 +31,18 @@ public class ProtobufLongMarshallerStrategy implements ObjectMarshallerStrategy 
     }
 
     @Override
-    public boolean acceptForUnmarshalling(Object value) {
-        return ((Any) value).is(Int64Value.class);
+    public boolean acceptForUnmarshalling(Any value) {
+        return value.is(Int64Value.class);
     }
 
     @Override
-    public Object marshall(Object unmarshalled) {
+    public Any marshall(Object unmarshalled) {
         return Any.pack(Int64Value.of((Long) unmarshalled));
     }
 
     @Override
-    public Object unmarshall(Object marshalled) {
+    public Object unmarshall(Any data) {
         try {
-            Any data = (Any) marshalled;
             Int64Value storedValue = data.unpack(Int64Value.class);
             return storedValue.getValue();
         } catch (InvalidProtocolBufferException e1) {

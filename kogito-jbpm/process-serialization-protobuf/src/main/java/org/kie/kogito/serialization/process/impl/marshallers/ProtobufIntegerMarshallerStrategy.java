@@ -31,19 +31,18 @@ public class ProtobufIntegerMarshallerStrategy implements ObjectMarshallerStrate
     }
 
     @Override
-    public boolean acceptForUnmarshalling(Object value) {
-        return ((Any) value).is(Int32Value.class);
+    public boolean acceptForUnmarshalling(Any value) {
+        return value.is(Int32Value.class);
     }
 
     @Override
-    public Object marshall(Object unmarshalled) {
+    public Any marshall(Object unmarshalled) {
         return Any.pack(Int32Value.of((Integer) unmarshalled));
     }
 
     @Override
-    public Object unmarshall(Object marshalled) {
+    public Object unmarshall(Any data) {
         try {
-            Any data = (Any) marshalled;
             Int32Value storedValue = data.unpack(Int32Value.class);
             return storedValue.getValue();
         } catch (InvalidProtocolBufferException e1) {

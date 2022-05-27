@@ -24,21 +24,25 @@ public class Address implements Serializable {
     private String city;
     private String zipCode;
     private String country;
+    private AddressType type;
+    private Status status;
 
     public Address() {
 
     }
 
     public Address(String city) {
-        this(null, city, null, null);
+        this(null, city, null, null, AddressType.HOME, Status.ACTIVE);
     }
 
-    public Address(String street, String city, String zipCode, String country) {
+    public Address(String street, String city, String zipCode, String country, AddressType type, Status status) {
         super();
         this.street = street;
         this.city = city;
         this.zipCode = zipCode;
         this.country = country;
+        this.type = type;
+        this.status = status;
     }
 
     public String getStreet() {
@@ -73,6 +77,22 @@ public class Address implements Serializable {
         this.country = country;
     }
 
+    public AddressType getType() {
+        return type;
+    }
+
+    public void setType(AddressType type) {
+        this.type = type;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -81,16 +101,27 @@ public class Address implements Serializable {
             return false;
         Address address = (Address) o;
         return Objects.equals(street, address.street) && Objects.equals(city, address.city) && Objects.equals(zipCode, address.zipCode) && Objects.equals(country,
-                address.country);
+                address.country)
+                && Objects.equals(type,
+                        address.type)
+                && Objects.equals(status,
+                        address.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(street, city, zipCode, country);
+        return Objects.hash(street, city, zipCode, country, type, status);
     }
 
     @Override
     public String toString() {
-        return "Address [street=" + street + ", city=" + city + ", zipCode=" + zipCode + ", country=" + country + "]";
+        return "Address{" +
+                "street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", country='" + country + '\'' +
+                ", type=" + type +
+                ", status=" + status +
+                '}';
     }
 }

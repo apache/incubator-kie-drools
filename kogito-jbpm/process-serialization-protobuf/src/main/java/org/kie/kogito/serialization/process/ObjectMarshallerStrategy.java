@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.serialization.process;
 
+import com.google.protobuf.Any;
+
 public interface ObjectMarshallerStrategy extends Comparable<ObjectMarshallerStrategy> {
 
     Integer DEFAULT_ORDER = 10;
@@ -30,10 +32,10 @@ public interface ObjectMarshallerStrategy extends Comparable<ObjectMarshallerStr
 
     boolean acceptForMarshalling(Object value);
 
-    Object marshall(Object unmarshalled);
+    Any marshall(Object unmarshalled);
 
-    boolean acceptForUnmarshalling(Object value);
+    boolean acceptForUnmarshalling(Any value);
 
-    Object unmarshall(Object marshalled);
+    Object unmarshall(Any marshalled);
 
 }

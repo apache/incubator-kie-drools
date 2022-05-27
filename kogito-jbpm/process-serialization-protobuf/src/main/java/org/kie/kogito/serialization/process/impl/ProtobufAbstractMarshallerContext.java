@@ -24,6 +24,8 @@ import org.kie.kogito.serialization.process.MarshallerContextName;
 import org.kie.kogito.serialization.process.ObjectMarshallerStrategy;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerException;
 
+import com.google.protobuf.Any;
+
 public abstract class ProtobufAbstractMarshallerContext implements MarshallerContext {
 
     private Map<MarshallerContextName, Object> env;
@@ -49,8 +51,8 @@ public abstract class ProtobufAbstractMarshallerContext implements MarshallerCon
     }
 
     @Override
-    public ObjectMarshallerStrategy findObjectUnmarshallerStrategyFor(Object value) {
-        return findMarshaller(value, (s, v) -> s.acceptForUnmarshalling(v));
+    public ObjectMarshallerStrategy findObjectUnmarshallerStrategyFor(Any value) {
+        return findMarshaller(value, (s, v) -> s.acceptForUnmarshalling((Any) v));
     }
 
     private ObjectMarshallerStrategy findMarshaller(Object value, BiPredicate<ObjectMarshallerStrategy, Object> type) {

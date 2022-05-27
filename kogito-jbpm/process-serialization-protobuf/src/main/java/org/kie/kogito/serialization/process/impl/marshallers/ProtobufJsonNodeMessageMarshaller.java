@@ -33,12 +33,12 @@ public class ProtobufJsonNodeMessageMarshaller implements ObjectMarshallerStrate
     }
 
     @Override
-    public boolean acceptForUnmarshalling(Object value) {
-        return ((Any) value).is(KogitoTypesProtobuf.JsonNode.class);
+    public boolean acceptForUnmarshalling(Any value) {
+        return value.is(KogitoTypesProtobuf.JsonNode.class);
     }
 
     @Override
-    public Object marshall(Object unmarshalled) {
+    public Any marshall(Object unmarshalled) {
         KogitoTypesProtobuf.JsonNode.Builder builder = KogitoTypesProtobuf.JsonNode.newBuilder();
         JsonNode node = (JsonNode) unmarshalled;
         builder.setContent(node.toPrettyString());
@@ -46,12 +46,10 @@ public class ProtobufJsonNodeMessageMarshaller implements ObjectMarshallerStrate
     }
 
     @Override
-    public Object unmarshall(Object marshalled) {
+    public Object unmarshall(Any data) {
         try {
-            Any data = (Any) marshalled;
             KogitoTypesProtobuf.JsonNode storedValue = data.unpack(KogitoTypesProtobuf.JsonNode.class);
-            JsonNode node = ObjectMapperFactory.get().readTree(storedValue.getContent());
-            return node;
+            return ObjectMapperFactory.get().readTree(storedValue.getContent());
         } catch (InvalidProtocolBufferException | JsonProcessingException e1) {
             throw new ProcessInstanceMarshallerException("Error trying to unmarshalling a Json Node value", e1);
         }

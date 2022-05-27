@@ -35,20 +35,19 @@ public class ProtobufDateMarshallerStrategy implements ObjectMarshallerStrategy 
     }
 
     @Override
-    public boolean acceptForUnmarshalling(Object value) {
-        return ((Any) value).is(Timestamp.class);
+    public boolean acceptForUnmarshalling(Any value) {
+        return value.is(Timestamp.class);
     }
 
     @Override
-    public Object marshall(Object unmarshalled) {
+    public Any marshall(Object unmarshalled) {
         Timestamp timestamp = Timestamps.fromMillis(((Date) unmarshalled).getTime());
         return Any.pack(timestamp);
     }
 
     @Override
-    public Object unmarshall(Object marshalled) {
+    public Object unmarshall(Any data) {
         try {
-            Any data = (Any) marshalled;
             Timestamp storedValue = data.unpack(Timestamp.class);
             return new Date(Instant.ofEpochSecond(storedValue.getSeconds(), storedValue.getNanos()).toEpochMilli());
         } catch (InvalidProtocolBufferException e1) {
