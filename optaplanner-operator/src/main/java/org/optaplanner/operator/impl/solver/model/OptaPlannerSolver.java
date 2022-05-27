@@ -23,11 +23,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.fabric8.kubernetes.api.model.Namespaced;
 import io.fabric8.kubernetes.client.CustomResource;
 import io.fabric8.kubernetes.model.annotation.Group;
+import io.fabric8.kubernetes.model.annotation.Kind;
 import io.fabric8.kubernetes.model.annotation.Version;
 
 @Group("org.optaplanner.solver")
+@Kind("solver")
 @Version("v1")
-public final class Solver extends CustomResource<SolverSpec, SolverStatus> implements Namespaced {
+public final class OptaPlannerSolver extends CustomResource<OptaPlannerSolverSpec, OptaPlannerSolverStatus>
+        implements Namespaced {
 
     // TODO: Move all the following methods away if this class ever becomes an API.
     @JsonIgnore

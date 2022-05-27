@@ -23,8 +23,8 @@ import javax.inject.Inject;
 
 import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
 import org.optaplanner.operator.impl.solver.model.DeploymentDependentResource;
-import org.optaplanner.operator.impl.solver.model.Solver;
-import org.optaplanner.operator.impl.solver.model.SolverStatus;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverStatus;
 import org.optaplanner.operator.impl.solver.model.messaging.KafkaTopicDependentResource;
 import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
 
@@ -41,7 +41,8 @@ import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 import io.strimzi.api.kafka.model.KafkaTopic;
 
 @ControllerConfiguration
-public final class SolverReconciler implements Reconciler<Solver>, ErrorStatusHandler<Solver>, EventSourceInitializer<Solver> {
+public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlannerSolver>, ErrorStatusHandler<OptaPlannerSolver>,
+        EventSourceInitializer<OptaPlannerSolver> {
 
     private KubernetesClient kubernetesClient;
 
@@ -51,7 +52,7 @@ public final class SolverReconciler implements Reconciler<Solver>, ErrorStatusHa
     private final ConfigMapDependentResource configMapDependentResource;
 
     @Inject
-    public SolverReconciler(KubernetesClient kubernetesClient) {
+    public OptaPlannerSolverReconciler(KubernetesClient kubernetesClient) {
         deploymentDependentResource = new DeploymentDependentResource(kubernetesClient);
         inputKafkaTopicDependentResource = new KafkaTopicDependentResource(MessageAddress.INPUT, kubernetesClient);
         outputKafkaTopicDependentResource = new KafkaTopicDependentResource(MessageAddress.OUTPUT, kubernetesClient);
@@ -59,7 +60,7 @@ public final class SolverReconciler implements Reconciler<Solver>, ErrorStatusHa
     }
 
     @Override
-    public Map<String, EventSource> prepareEventSources(EventSourceContext<Solver> context) {
+    public Map<String, EventSource> prepareEventSources(EventSourceContext<OptaPlannerSolver> context) {
         return EventSourceInitializer.nameEventSources(deploymentDependentResource.initEventSource(context),
                 inputKafkaTopicDependentResource.initEventSource(context),
                 outputKafkaTopicDependentResource.initEventSource(context),
@@ -67,7 +68,7 @@ public final class SolverReconciler implements Reconciler<Solver>, ErrorStatusHa
     }
 
     @Override
-    public UpdateControl<Solver> reconcile(Solver solver, Context<Solver> context) {
+    public UpdateControl<OptaPlannerSolver> reconcile(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         deploymentDependentResource.reconcile(solver, context);
         inputKafkaTopicDependentResource.reconcile(solver, context);
         outputKafkaTopicDependentResource.reconcile(solver, context);
@@ -75,7 +76,7 @@ public final class SolverReconciler implements Reconciler<Solver>, ErrorStatusHa
         Optional<KafkaTopic> inputKafkaTopic = inputKafkaTopicDependentResource.getSecondaryResource(solver);
         Optional<KafkaTopic> outputKafkaTopic = outputKafkaTopicDependentResource.getSecondaryResource(solver);
 
-        SolverStatus solverStatus = SolverStatus.success();
+        OptaPlannerSolverStatus solverStatus = OptaPlannerSolverStatus.success();
         solver.setStatus(solverStatus);
         if (inputKafkaTopic.isPresent()) {
             solverStatus.setInputMessageAddress(inputKafkaTopic.get().getSpec().getTopicName());
@@ -91,8 +92,9 @@ public final class SolverReconciler implements Reconciler<Solver>, ErrorStatusHa
     }
 
     @Override
-    public ErrorStatusUpdateControl<Solver> updateErrorStatus(Solver solver, Context<Solver> context, Exception e) {
-        solver.setStatus(SolverStatus.error(e));
+    public ErrorStatusUpdateControl<OptaPlannerSolver> updateErrorStatus(OptaPlannerSolver solver,
+            Context<OptaPlannerSolver> context, Exception e) {
+        solver.setStatus(OptaPlannerSolverStatus.error(e));
         return ErrorStatusUpdateControl.updateStatus(solver);
     }
 }

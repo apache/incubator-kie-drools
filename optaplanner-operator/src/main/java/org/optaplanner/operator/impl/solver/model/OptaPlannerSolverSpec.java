@@ -16,18 +16,18 @@
 
 package org.optaplanner.operator.impl.solver.model;
 
-public final class SolverSpec {
+public final class OptaPlannerSolverSpec {
     private String solverImage;
     private String kafkaBootstrapServers;
     private String kafkaCluster;
 
     private Scaling scaling;
 
-    public SolverSpec() {
+    public OptaPlannerSolverSpec() {
         // required by Jackson
     }
 
-    public SolverSpec(String solverImage, String kafkaBootstrapServers, String kafkaCluster) {
+    public OptaPlannerSolverSpec(String solverImage, String kafkaBootstrapServers, String kafkaCluster) {
         this.solverImage = solverImage;
         this.kafkaBootstrapServers = kafkaBootstrapServers;
         this.kafkaCluster = kafkaCluster;

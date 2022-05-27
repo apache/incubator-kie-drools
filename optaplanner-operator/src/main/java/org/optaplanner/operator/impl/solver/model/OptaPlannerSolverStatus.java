@@ -16,25 +16,25 @@
 
 package org.optaplanner.operator.impl.solver.model;
 
-public final class SolverStatus {
+public final class OptaPlannerSolverStatus {
     private String errorMessage;
     private String inputMessageAddress;
     private String outputMessageAddress;
 
-    public SolverStatus() {
+    public OptaPlannerSolverStatus() {
         // required by Jackson
     }
 
-    private SolverStatus(String errorMessage) {
+    private OptaPlannerSolverStatus(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-    public static SolverStatus success() {
-        return new SolverStatus(null);
+    public static OptaPlannerSolverStatus success() {
+        return new OptaPlannerSolverStatus(null);
     }
 
-    public static SolverStatus error(Exception exception) {
-        return new SolverStatus(exception.getMessage());
+    public static OptaPlannerSolverStatus error(Exception exception) {
+        return new OptaPlannerSolverStatus(exception.getMessage());
     }
 
     public String getErrorMessage() {

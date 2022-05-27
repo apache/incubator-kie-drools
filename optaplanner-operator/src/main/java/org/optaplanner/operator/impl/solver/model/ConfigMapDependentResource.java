@@ -27,7 +27,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetes
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 @KubernetesDependent
-public final class ConfigMapDependentResource extends CRUKubernetesDependentResource<ConfigMap, Solver> {
+public final class ConfigMapDependentResource extends CRUKubernetesDependentResource<ConfigMap, OptaPlannerSolver> {
 
     public static final String SOLVER_MESSAGE_INPUT_KEY = "solver.message.input";
     public static final String SOLVER_MESSAGE_OUTPUT_KEY = "solver.message.output";
@@ -39,7 +39,7 @@ public final class ConfigMapDependentResource extends CRUKubernetesDependentReso
     }
 
     @Override
-    protected ConfigMap desired(Solver solver, Context<Solver> context) {
+    protected ConfigMap desired(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         Map<String, String> data = new HashMap<>();
         if (solver.getStatus() != null) {
             data.put(SOLVER_MESSAGE_INPUT_KEY, solver.getStatus().getInputMessageAddress());
@@ -57,7 +57,7 @@ public final class ConfigMapDependentResource extends CRUKubernetesDependentReso
     }
 
     @Override
-    public ConfigMap update(ConfigMap actual, ConfigMap target, Solver solver, Context<Solver> context) {
+    public ConfigMap update(ConfigMap actual, ConfigMap target, OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         ConfigMap resultingConfigMap = super.update(actual, target, solver, context);
         String namespace = actual.getMetadata().getNamespace();
         getKubernetesClient()

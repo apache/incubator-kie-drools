@@ -18,7 +18,7 @@ package org.optaplanner.operator.impl.solver.model.messaging;
 
 import java.util.Map;
 
-import org.optaplanner.operator.impl.solver.model.Solver;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
@@ -31,8 +31,8 @@ import io.strimzi.api.kafka.model.KafkaTopicBuilder;
 import io.strimzi.api.kafka.model.KafkaTopicSpecBuilder;
 
 @KubernetesDependent
-public final class KafkaTopicDependentResource extends CRUKubernetesDependentResource<KafkaTopic, Solver>
-        implements PrimaryToSecondaryMapper<Solver> {
+public final class KafkaTopicDependentResource extends CRUKubernetesDependentResource<KafkaTopic, OptaPlannerSolver>
+        implements PrimaryToSecondaryMapper<OptaPlannerSolver> {
 
     private static final String STRIMZI_LABEL = "strimzi.io/cluster";
 
@@ -45,7 +45,7 @@ public final class KafkaTopicDependentResource extends CRUKubernetesDependentRes
     }
 
     @Override
-    protected KafkaTopic desired(Solver solver, Context<Solver> context) {
+    protected KafkaTopic desired(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         final String topicName = solver.getMessageAddressName(messageAddress);
         KafkaTopicSpecBuilder kafkaTopicSpecBuilder = new KafkaTopicSpecBuilder()
                 .withTopicName(topicName);
@@ -63,7 +63,7 @@ public final class KafkaTopicDependentResource extends CRUKubernetesDependentRes
     }
 
     @Override
-    public ResourceID toSecondaryResourceID(Solver solver) {
+    public ResourceID toSecondaryResourceID(OptaPlannerSolver solver) {
         return new ResourceID(solver.getMessageAddressName(messageAddress), solver.getNamespace());
     }
 }

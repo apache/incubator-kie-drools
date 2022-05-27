@@ -32,7 +32,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetes
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 @KubernetesDependent
-public final class DeploymentDependentResource extends CRUKubernetesDependentResource<Deployment, Solver> {
+public final class DeploymentDependentResource extends CRUKubernetesDependentResource<Deployment, OptaPlannerSolver> {
 
     private static final String ENV_SOLVER_MESSAGE_IN = "SOLVER_MESSAGE_INPUT";
     private static final String ENV_SOLVER_MESSAGE_OUT = "SOLVER_MESSAGE_OUTPUT";
@@ -44,7 +44,7 @@ public final class DeploymentDependentResource extends CRUKubernetesDependentRes
     }
 
     @Override
-    protected Deployment desired(Solver solver, Context<Solver> context) {
+    protected Deployment desired(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         String deploymentName = solver.getDeploymentName();
 
         Container container = new ContainerBuilder()

@@ -25,9 +25,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverSpec;
 import org.optaplanner.operator.impl.solver.model.Scaling;
-import org.optaplanner.operator.impl.solver.model.Solver;
-import org.optaplanner.operator.impl.solver.model.SolverSpec;
 import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
@@ -39,29 +39,29 @@ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 @WithKubernetesTestServer
 @QuarkusTest
-public class SolverReconcilerTest {
+public class OptaPlannerSolverReconcilerTest {
 
     @KubernetesTestServer
     KubernetesServer mockServer;
 
     @Test
     void canReconcile() {
-        final Solver solver = new Solver();
+        final OptaPlannerSolver solver = new OptaPlannerSolver();
         final String solverName = "test-solver";
         solver.getMetadata().setName(solverName);
-        solver.setSpec(new SolverSpec());
+        solver.setSpec(new OptaPlannerSolverSpec());
         solver.getSpec().setSolverImage("solver-project-image");
         solver.getSpec().setKafkaBootstrapServers("kafkaServers");
         solver.getSpec().setKafkaCluster("my-kafka-cluster");
         solver.getSpec().setScaling(new Scaling());
-        mockServer.getClient().resources(Solver.class).create(solver);
+        mockServer.getClient().resources(OptaPlannerSolver.class).create(solver);
 
         final String expectedMessageAddressIn = solverName + "-" + MessageAddress.INPUT.getName();
         final String expectedMessageAddressOut = solverName + "-" + MessageAddress.OUTPUT.getName();
 
         await().ignoreException(NullPointerException.class).atMost(1, MINUTES).untilAsserted(() -> {
-            Solver updatedSolver = mockServer.getClient()
-                    .resources(Solver.class)
+            OptaPlannerSolver updatedSolver = mockServer.getClient()
+                    .resources(OptaPlannerSolver.class)
                     .inNamespace(solver.getMetadata().getNamespace())
                     .withName(solver.getMetadata().getName())
                     .get();
