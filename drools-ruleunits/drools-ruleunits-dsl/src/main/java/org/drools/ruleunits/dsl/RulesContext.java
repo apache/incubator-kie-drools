@@ -59,7 +59,6 @@ public class RulesContext {
 
     private final List<UnitRule> rules = new ArrayList<>();
     private final Map<Object, Global> globals = new IdentityHashMap<>();
-    private final Map<Object, Variable> dsIds = new IdentityHashMap<>();
 
     public RulesContext(RuleUnitDefinition unit) {
         this.unit = unit;
@@ -100,13 +99,13 @@ public class RulesContext {
         }
 
         public <A> Pattern1<A> from(DataSource<A> dataSource) {
-            Pattern1<A> pattern1 = new Pattern1<>(this, context.dsIds.computeIfAbsent(dataSource, o -> declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName()))));
+            Pattern1<A> pattern1 = new Pattern1<>(this, declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName())));
             patterns.add(pattern1);
             return pattern1;
         }
 
         <A, B> Pattern2<A, B> join(Pattern1<A> pattern1, DataSource<B> dataSource) {
-            Pattern2<A, B> pattern2 = new Pattern2<>(pattern1, this, context.dsIds.computeIfAbsent(dataSource, o -> declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName()))));
+            Pattern2<A, B> pattern2 = new Pattern2<>(pattern1, this, declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName())));
             patterns.add(pattern2);
             return pattern2;
         }
@@ -232,16 +231,15 @@ public class RulesContext {
             this.pattern1 = pattern1;
         }
 
-        public <V> Pattern2<A, B> filter(Index.ConstraintType constraintType, Function1<A, B> rightExtractor) {
-            constraints.add(new BetaConstraint<B, A, B>(variable, "this", a -> a, constraintType, pattern1.variable, rightExtractor));
-            return this;
+        public <V> Pattern2<A, B> filterJoin(Index.ConstraintType constraintType, Function1<A, B> rightExtractor) {
+            return filterJoin("this", a -> a, constraintType, rightExtractor);
         }
 
-        public <V> Pattern2<A, B> filter(Function1<B, V> leftExtractor, Index.ConstraintType constraintType, Function1<A, V> rightExtractor) {
-            return filter(null, leftExtractor, constraintType, rightExtractor);
+        public <V> Pattern2<A, B> filterJoin(Function1<B, V> leftExtractor, Index.ConstraintType constraintType, Function1<A, V> rightExtractor) {
+            return filterJoin(null, leftExtractor, constraintType, rightExtractor);
         }
 
-        public <V> Pattern2<A, B> filter(String fieldName, Function1<B, V> leftExtractor, Index.ConstraintType constraintType, Function1<A, V> rightExtractor) {
+        public <V> Pattern2<A, B> filterJoin(String fieldName, Function1<B, V> leftExtractor, Index.ConstraintType constraintType, Function1<A, V> rightExtractor) {
             constraints.add(new BetaConstraint<>(variable, fieldName, leftExtractor, constraintType, pattern1.variable, rightExtractor));
             return this;
         }

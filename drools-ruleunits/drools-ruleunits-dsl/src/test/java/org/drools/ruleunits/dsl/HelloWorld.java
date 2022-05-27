@@ -74,7 +74,7 @@ public class HelloWorld implements RuleUnitDefinition {
                 .filter("length", s -> s.length() > 5) // it is also possible to use a plain lambda predicate, but in this case no index can be generated
                 .join(ints)
                 .filter(GREATER_THAN, 5) // a filter with a fixed right value is a alpha constraint
-                .filter(EQUAL, String::length) // a filter with a right extractor is a beta constraint
+                .filterJoin(EQUAL, String::length) // a filter with a right extractor is a beta constraint
                 .execute(results, (r, s, i) -> r.add("String '" + s + "' is " + i + " characters long")); // the consequence captures all the joined variables positionally
     }
 }

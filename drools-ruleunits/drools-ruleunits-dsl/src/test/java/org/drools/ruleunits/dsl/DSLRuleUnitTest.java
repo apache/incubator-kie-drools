@@ -77,4 +77,16 @@ public class DSLRuleUnitTest {
         assertEquals(2, unitInstance.fire());
         assertTrue(success.get());
     }
+
+    @Test
+    public void testSelfJoin() {
+        SelfJoin unit = new SelfJoin();
+        unit.getStrings().add("abc");
+        unit.getStrings().add("bcd");
+        unit.getStrings().add("xyz");
+
+        RuleUnitInstance<SelfJoin> unitInstance = DSLRuleUnit.instance(unit);
+        assertEquals(1, unitInstance.fire());
+        assertEquals("Found 'abc' and 'bcd'", unit.getResults().get(0));
+    }
 }
