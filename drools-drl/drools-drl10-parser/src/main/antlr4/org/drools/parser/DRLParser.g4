@@ -19,8 +19,8 @@ ruledef : RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? WHEN
 
 lhs : lhsExpression ;
 lhsExpression : lhsOr* ;
-lhsOr : LPAREN OR lhsAnd+ RPAREN | lhsAnd (OR lhsAnd)* ;
-lhsAnd : LPAREN AND lhsUnary+ RPAREN | lhsUnary (AND lhsUnary)* ;
+lhsOr : LPAREN KWD_OR lhsAnd+ RPAREN | lhsAnd (KWD_OR lhsAnd)* ;
+lhsAnd : LPAREN KWD_AND lhsUnary+ RPAREN | lhsUnary (KWD_AND lhsUnary)* ;
 
 /*
 lhsUnary : ( lhsExists namedConsequence?
@@ -38,7 +38,7 @@ lhsUnary : (
            | lhsNot
            | lhsPatternBind
            ) ;
-lhsPatternBind : label? ( LPAREN lhsPattern (OR lhsPattern)* RPAREN | lhsPattern ) ;
+lhsPatternBind : label? ( LPAREN lhsPattern (KWD_OR lhsPattern)* RPAREN | lhsPattern ) ;
 
 /*
 lhsPattern : xpathPrimary (OVER patternFilter)? |
@@ -58,7 +58,27 @@ andExpression : left=equalityExpression (BITAND right=equalityExpression)* ;
 equalityExpression : left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) right=instanceOfExpression )* ;
 instanceOfExpression : left=inExpression ( 'instanceof' right=type )? ;
 inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COMMA drlExpression)* RPAREN )? ;
-relationalExpression : expression? ; // TODO
+relationalExpression : expression? ; // TODO : shiftExpression, additiveExpression, multiplicativeExpression, unaryExpression, unaryExpressionNotPlusMinus, ..., primary
+
+/* extending JavaParser */
+primary
+    : LPAREN expression RPAREN
+    | THIS
+    | SUPER
+    | literal
+    | identifier
+    | typeTypeOrVoid DOT CLASS
+    | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
+    | inlineListExpression
+    ;
+
+inlineListExpression
+    :   LBRACK expressionList? RBRACK
+    ;
+
+expressionList
+    :   expression (COMMA expression)*
+    ;
 
 drlExpression : conditionalExpression ( op=assignmentOperator right=drlExpression )? ;
 conditionalExpression : left=conditionalOrExpression ternaryExpression? ;
