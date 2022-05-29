@@ -9,10 +9,9 @@ title: Drools User Guide ${project.version}
 version: latest
 asciidoc:
   attributes:
-    optaplanner-version: ${project.version}
+    drools-version: ${project.version}
     java-version: ${maven.compiler.release}
     maven-version: ${maven.min.version}
     quarkus-version: ${version.io.quarkus}
-    spring-boot-version: ${version.org.springframework.boot}
 nav:
   - modules/ROOT/nav.adoc

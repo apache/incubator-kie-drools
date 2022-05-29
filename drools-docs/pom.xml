@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>drools-build-parent</artifactId>
-    <version>8.21.0-SNAPSHOT</version>
+    <version>8.23.0-SNAPSHOT</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -42,7 +42,6 @@
             <java-version>${maven.compiler.release}</java-version>
             <maven-version>${maven.min.version}</maven-version>
             <quarkus-version>${version.io.quarkus}</quarkus-version>
-            <spring-boot-version>${version.org.springframework.boot}</spring-boot-version>
           </attributes>
         </configuration>
         <executions>
