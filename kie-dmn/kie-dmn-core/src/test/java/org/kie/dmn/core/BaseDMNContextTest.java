@@ -26,9 +26,6 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMetadata;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public abstract class BaseDMNContextTest {
 
@@ -142,14 +139,14 @@ public abstract class BaseDMNContextTest {
         Map<String, Object> currentEntries = container.getAll();
 
         assertThat(currentEntries).isNotNull();
-        assertEquals(expectedEntries.size(), currentEntries.size());
+        assertThat(currentEntries).hasSameSizeAs(expectedEntries);
 
         for (Map.Entry<String, Object> entry : expectedEntries.entrySet()) {
-            assertTrue(currentEntries.containsKey(entry.getKey()));
-            assertEquals(entry.getValue(), currentEntries.get(entry.getKey()));
+            assertThat(currentEntries).containsKey(entry.getKey());
+            assertThat(currentEntries.get(entry.getKey())).isEqualTo(entry.getValue());
 
-            assertTrue(container.isDefined(entry.getKey()));
-            assertEquals(entry.getValue(), container.get(entry.getKey()));
+            assertThat(container.isDefined(entry.getKey())).isTrue();
+            assertThat(container.get(entry.getKey())).isEqualTo(entry.getValue());
         }
     }
 
@@ -165,14 +162,14 @@ public abstract class BaseDMNContextTest {
     public static void assertNamespaceIsAbsent(DMNContext ctx) {
         Optional<String> optNamespace = ctx.scopeNamespace();
         assertThat(optNamespace).isNotNull();
-        assertFalse(optNamespace.isPresent());
+        assertThat(optNamespace).isNotPresent();
     }
 
     public static void assertNamespaceEquals(String expectedName, DMNContext ctx) {
         Optional<String> optNamespace = ctx.scopeNamespace();
         assertThat(optNamespace).isNotNull();
-        assertTrue(optNamespace.isPresent());
-        assertEquals(expectedName, optNamespace.get());
+        assertThat(optNamespace).isPresent();
+        assertThat(optNamespace.get()).isEqualTo(expectedName);
     }
 
     public static void assertNamespaceEquals(DMNContext expectedCtx, DMNContext testCtx) {
@@ -182,10 +179,10 @@ public abstract class BaseDMNContextTest {
         assertThat(optTestNamespace).isNotNull();
 
         if (optExpectedNamespace.isPresent()) {
-            assertTrue(optTestNamespace.isPresent());
-            assertEquals(optExpectedNamespace.get(), optTestNamespace.get());
+            assertThat(optTestNamespace).isPresent();
+            assertThat(optTestNamespace.get()).isEqualTo(optExpectedNamespace.get());
         } else {
-            assertFalse(optTestNamespace.isPresent());
+            assertThat(optTestNamespace).isNotPresent();
         }
     }
 

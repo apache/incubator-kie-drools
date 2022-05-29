@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNClassloaderTest.class);
@@ -80,7 +79,7 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
         kfs.writePomXML(getPom(kjarReleaseId, commonsMathGAV));
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer container = ks.newKieContainer(kjarReleaseId);
         final DMNRuntime runtime = container.newKieSession().getKieRuntime(DMNRuntime.class);
@@ -152,7 +151,7 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
         kfs.writePomXML(getPom(kjarReleaseId));
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer container = ks.newKieContainer(kjarReleaseId);
         final DMNRuntime runtime = container.newKieSession().getKieRuntime(DMNRuntime.class);

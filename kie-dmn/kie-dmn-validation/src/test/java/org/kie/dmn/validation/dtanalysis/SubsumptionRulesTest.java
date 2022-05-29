@@ -32,7 +32,6 @@ import org.kie.dmn.validation.dtanalysis.model.Overlap;
 import org.kie.dmn.validation.dtanalysis.model.Subsumption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class SubsumptionRulesTest extends AbstractDTAnalysisTest {
@@ -84,7 +83,6 @@ public class SubsumptionRulesTest extends AbstractDTAnalysisTest {
         List<Subsumption> results = Arrays.asList(new Subsumption(2, 4));
         assertThat(results).hasSize(1);
         assertThat(analysis.getSubsumptions()).containsAll(results);
-        assertTrue("It should contain at least 1 DMNMessage for the Subsumtption",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_SUBSUMPTION_RULE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_SUBSUMPTION_RULE))).as("It should contain at least 1 DMNMessage for the Subsumtption").isTrue();
     }
 }

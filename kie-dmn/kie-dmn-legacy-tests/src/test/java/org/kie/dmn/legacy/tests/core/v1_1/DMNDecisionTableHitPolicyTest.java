@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
 
@@ -66,7 +65,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
         final DMNContext result = dmnResult.getContext();
 
         assertThat(result.get("Approval Status")).isNull();
-        assertTrue(dmnResult.getMessages().size() > 0);
+        assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
     }
 
     @Test
@@ -84,8 +83,8 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
         final DMNContext result = dmnResult.getContext();
 
         assertThat(result.get("Approval Status")).isNull();
-        assertTrue(dmnResult.getMessages().size() > 0);
-        assertTrue(dmnResult.getMessages().stream().anyMatch(dm -> dm.getSeverity().equals(DMNMessage.Severity.WARN) && dm.getFeelEvent() instanceof HitPolicyViolationEvent && dm.getFeelEvent().getSeverity().equals(FEELEvent.Severity.WARN)));
+        assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
+        assertThat(dmnResult.getMessages().stream().anyMatch(dm -> dm.getSeverity().equals(DMNMessage.Severity.WARN) && dm.getFeelEvent() instanceof HitPolicyViolationEvent && dm.getFeelEvent().getSeverity().equals(FEELEvent.Severity.WARN))).isTrue();
     }
 
     @Test
