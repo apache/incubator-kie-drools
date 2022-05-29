@@ -48,9 +48,9 @@ public class Package extends AttributedDRLElement
 
     public Package(final String name) {
         this.name = name;
-        this.imports = new LinkedList<Import>();
-        this.variables = new LinkedList<Global>();
-        this.rules = new LinkedList<Rule>();
+        this.imports = new LinkedList<>();
+        this.variables = new LinkedList<>();
+        this.rules = new LinkedList<>();
         this.functions = new Functions();
         this.queries = new Queries();
         this.declaredTypes = new DeclaredType();

@@ -353,7 +353,7 @@ public class MavenEmbedder {
         try {
             Thread.currentThread().setContextClassLoader( componentProvider.getSystemClassLoader() );
             List<ProjectBuildingResult> results = buildProjects( mavenProject, recursive );
-            List<MavenProject> projects = new ArrayList<MavenProject>( results.size() );
+            List<MavenProject> projects = new ArrayList<>( results.size() );
             for ( ProjectBuildingResult result : results ) {
                 projects.add( result.getProject() );
             }

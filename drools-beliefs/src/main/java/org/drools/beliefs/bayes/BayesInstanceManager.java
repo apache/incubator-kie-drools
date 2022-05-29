@@ -27,7 +27,7 @@ public class BayesInstanceManager {
     private ConcurrentHashMap<String, BayesInstance> instances;
 
     public BayesInstanceManager() {
-        instances  = new ConcurrentHashMap<String, BayesInstance>();
+        instances  = new ConcurrentHashMap<>();
     }
 
     public Map<String, BayesInstance> getInstances() {

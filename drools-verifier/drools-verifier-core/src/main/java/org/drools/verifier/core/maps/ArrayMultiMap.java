@@ -28,14 +28,14 @@ public class ArrayMultiMap<Key extends Comparable, Value>
         implements MultiMap<Key, Value, ArrayList<Value>> {
 
     public ArrayMultiMap() {
-        super(new ArrayListSubMapProvider<Value>());
+        super(new ArrayListSubMapProvider<>());
     }
 
     protected ArrayMultiMap(
 //            @MapsTo("map")
             final SortedMap<Key, ArrayList<Value>> map) {
         super(map,
-              new ArrayListSubMapProvider<Value>());
+              new ArrayListSubMapProvider<>());
     }
 
     @Override

@@ -98,7 +98,7 @@ public class StringKeyObjectValueMapXmlAdapter extends XmlAdapter<StringKeyObjec
         if( xmlMap == null ) {
             return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for( StringKeyObjectValueEntry xmlEntry : xmlMap.entries ) {
             String key = xmlEntry.getKey();
             Object value = deserializeObject(xmlEntry.getBytes(), xmlEntry.getClassName(), key);

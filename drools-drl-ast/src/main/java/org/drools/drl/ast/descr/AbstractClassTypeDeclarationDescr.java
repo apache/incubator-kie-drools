@@ -117,7 +117,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
     }
 
     public List<QualifiedName> getSuperTypes() {
-        List<QualifiedName> l = new ArrayList<QualifiedName>( 1 );
+        List<QualifiedName> l = new ArrayList<>( 1 );
         l.add( new QualifiedName( "Object", "java.lang" ) );
         return l;
     }

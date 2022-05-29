@@ -208,7 +208,7 @@ public class Interval {
         List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
         Collections.sort(bounds);
         LOG.debug("bounds (sorted) {}", bounds);
-        Deque<Bound> stack = new ArrayDeque<Bound>();
+        Deque<Bound> stack = new ArrayDeque<>();
         Interval candidate = null;
         for (Bound cur : bounds) {
             if (stack.isEmpty() && !cur.isLowerBound()) {

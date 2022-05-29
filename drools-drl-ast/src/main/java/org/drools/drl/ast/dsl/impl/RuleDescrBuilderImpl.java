@@ -38,14 +38,14 @@ public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuild
     }
 
     public AnnotationDescrBuilder<RuleDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<RuleDescrBuilder> annotation = new AnnotationDescrBuilderImpl<RuleDescrBuilder>( this,
+        AnnotationDescrBuilder<RuleDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this,
                                                                                                                 name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }
 
     public AttributeDescrBuilder<RuleDescrBuilder> attribute( String name ) {
-        AttributeDescrBuilder<RuleDescrBuilder> attribute = new AttributeDescrBuilderImpl<RuleDescrBuilder>( this,
+        AttributeDescrBuilder<RuleDescrBuilder> attribute = new AttributeDescrBuilderImpl<>( this,
                                                                                                              name );
         descr.addAttribute( attribute.getDescr() );
         return attribute;
@@ -72,7 +72,7 @@ public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuild
     }
 
     public CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs() {
-        CEDescrBuilder<RuleDescrBuilder, AndDescr> ce = new CEDescrBuilderImpl<RuleDescrBuilder, AndDescr>( this,
+        CEDescrBuilder<RuleDescrBuilder, AndDescr> ce = new CEDescrBuilderImpl<>( this,
                                                                                                             new AndDescr() );
         descr.setLhs( ce.getDescr() );
         return ce;

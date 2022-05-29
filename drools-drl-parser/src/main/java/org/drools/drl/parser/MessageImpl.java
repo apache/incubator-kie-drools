@@ -129,7 +129,7 @@ public class MessageImpl implements InternalMessage {
 
     public static List<Message> filterMessages( List<Message> messages,
                                                 Level... levels ) {
-        List<Message> filteredMsgs = new ArrayList<Message>();
+        List<Message> filteredMsgs = new ArrayList<>();
         if ( levels != null && levels.length > 0 ) {
             for ( Level level : levels ) {
                 for ( Message msg : messages ) {

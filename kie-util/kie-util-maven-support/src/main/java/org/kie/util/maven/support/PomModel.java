@@ -41,7 +41,7 @@ public interface PomModel {
     class InternalModel implements PomModel {
         private ReleaseId releaseId;
         private ReleaseId parentReleaseId;
-        private final Map<String, Set<ReleaseId>> dependencies = new HashMap<String, Set<ReleaseId>>();
+        private final Map<String, Set<ReleaseId>> dependencies = new HashMap<>();
 
         @Override
         public ReleaseId getReleaseId() {

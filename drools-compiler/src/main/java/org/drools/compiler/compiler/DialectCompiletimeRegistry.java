@@ -31,7 +31,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
  */
 public class DialectCompiletimeRegistry {
 
-    private final Map<String, Dialect> map = new HashMap<String, Dialect>();
+    private final Map<String, Dialect> map = new HashMap<>();
 
     /**
      * Add a DialectConfiguration to the registry
@@ -77,7 +77,7 @@ public class DialectCompiletimeRegistry {
      */
     public List<KnowledgeBuilderResult> addResults(List<KnowledgeBuilderResult> list) {
         if ( list == null ) {
-            list = new ArrayList<KnowledgeBuilderResult>();
+            list = new ArrayList<>();
         }
         for (Dialect dialect : map.values()) {
             List<KnowledgeBuilderResult> results = dialect.getResults();
