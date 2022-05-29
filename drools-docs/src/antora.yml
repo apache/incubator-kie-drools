@@ -5,14 +5,13 @@
 # The goal is to have the antora.yml containing correct attributes available in the release branch before
 # the drools-website is refreshed.
 name: drools
-title: Drools User Guide 8.21.0-SNAPSHOT
+title: Drools User Guide 8.23.0-SNAPSHOT
 version: latest
 asciidoc:
   attributes:
-    drools-version: 8.21.0-SNAPSHOT
-    java-version: 11
+    drools-version: 8.23.0-SNAPSHOT
+    java-version: 8
     maven-version: 3.8.1
-    quarkus-version: 2.7.3.Final
-    spring-boot-version: 2.4.5
+    quarkus-version: 2.9.0.Final
 nav:
   - modules/ROOT/nav.adoc

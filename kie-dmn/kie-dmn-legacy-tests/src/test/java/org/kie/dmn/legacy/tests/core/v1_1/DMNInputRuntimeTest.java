@@ -293,7 +293,7 @@ public class DMNInputRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(idnMembershipLevels.getType().getBaseType().getName()).isEqualTo("tMembershipLevel");
         assertThat(idnMembershipLevels.getType().isCollection()).isTrue();
         assertThat(idnMembershipLevels.getType().isComposite()).isFalse();
-        assertThat(idnMembershipLevels.getType().getAllowedValues().isEmpty()).isTrue();
+        assertThat(idnMembershipLevels.getType().getAllowedValues()).isEmpty();
 
         final InputDataNode idnPercent = dmnModel.getInputs().stream().filter(idn -> idn.getName().equals("Percent")).findFirst().get();
         assertThat(idnPercent.getType().getBaseType().getNamespace()).isEqualTo(FEEL_NAMESPACE);

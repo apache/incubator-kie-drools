@@ -47,7 +47,7 @@ public final class FunctionTestUtil {
     public static <T> void assertResultList(final FEELFnResult<List<T>> result, final List<Object> expectedResult) {
         assertResultNotError(result);
         final List<T> resultList = result.cata(left -> null, right -> right);
-        assertThat(resultList).hasSize(expectedResult.size());
+        assertThat(resultList).hasSameSizeAs(expectedResult);
         if (expectedResult.isEmpty()) {
             assertThat(resultList).isEmpty();
         } else {
