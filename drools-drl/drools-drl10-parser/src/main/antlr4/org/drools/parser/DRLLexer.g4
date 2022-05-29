@@ -32,6 +32,9 @@ WHEN : 'when';
 THEN : 'then';
 END : 'end';
 
+KWD_AND : 'and';
+KWD_OR : 'or';
+
 EXISTS : 'exists';
 NOT : 'not';
 IN : 'in';

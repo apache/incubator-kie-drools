@@ -2,6 +2,7 @@ package org.drools.parser;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     private RuleDescr currentRule;
     private PatternDescr currentPattern;
-    private Deque<ConditionalElementDescr> currentConstructStack = new ArrayDeque<>(); // e.g. whole LHS, not, exist
+
+    private final Deque<ConditionalElementDescr> currentConstructStack = new ArrayDeque<>(); // e.g. whole LHS (= AndDescr), NotDescr, ExistsDescr
 
     @Override
     public Object visitCompilationUnit(DRLParser.CompilationUnitContext ctx) {
@@ -86,23 +88,47 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public Object visitLhsPatternBind(DRLParser.LhsPatternBindContext ctx) {
-        // TODO: this logic will likely be split to visitLhsPattern
         if (ctx.lhsPattern().size() == 1) {
-            DRLParser.LhsPatternContext lhsPatternCtx = ctx.lhsPattern(0);
-            currentPattern = new PatternDescr(lhsPatternCtx.objectType.getText());
+            Object result = super.visitLhsPatternBind(ctx);
+            PatternDescr patternDescr = (PatternDescr) currentConstructStack.peek().getDescrs().get(0);
             if (ctx.label() != null) {
-                currentPattern.setIdentifier(ctx.label().IDENTIFIER().getText());
+                patternDescr.setIdentifier(ctx.label().IDENTIFIER().getText());
             }
-            if (lhsPatternCtx.patternSource() != null) {
-                String expression = lhsPatternCtx.patternSource().getText();
-                FromDescr from = new FromDescr();
-                from.setDataSource(new MVELExprDescr(expression));
-                from.setResource(currentPattern.getResource());
-                currentPattern.setSource(from);
+            return result;
+        } else if (ctx.lhsPattern().size() > 1) {
+            OrDescr orDescr = new OrDescr();
+            currentConstructStack.peek().addDescr(orDescr);
+            currentConstructStack.push(orDescr);
+            try {
+                Object result = super.visitLhsPatternBind(ctx);
+                List<? extends BaseDescr> descrs = orDescr.getDescrs();
+                for (BaseDescr descr : descrs) {
+                    PatternDescr patternDescr = (PatternDescr) descr;
+                    if (ctx.label() != null) {
+                        patternDescr.setIdentifier(ctx.label().IDENTIFIER().getText());
+                    }
+                }
+                return result;
+            } finally {
+                currentConstructStack.pop();
             }
-            currentConstructStack.peek().addDescr(currentPattern);
+        } else {
+            throw new IllegalStateException("ctx.lhsPattern().size() == 0 : " + ctx.getText());
         }
-        Object result = super.visitLhsPatternBind(ctx);
+    }
+
+    @Override
+    public Object visitLhsPattern(DRLParser.LhsPatternContext ctx) {
+        currentPattern = new PatternDescr(ctx.objectType.getText());
+        if (ctx.patternSource() != null) {
+            String expression = ctx.patternSource().getText();
+            FromDescr from = new FromDescr();
+            from.setDataSource(new MVELExprDescr(expression));
+            from.setResource(currentPattern.getResource());
+            currentPattern.setSource(from);
+        }
+        Object result = super.visitLhsPattern(ctx);
+            currentConstructStack.peek().addDescr(currentPattern);
         currentPattern = null;
         return result;
     }
