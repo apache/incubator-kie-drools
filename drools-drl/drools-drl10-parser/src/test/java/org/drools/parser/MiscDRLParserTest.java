@@ -10,17 +10,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import junit.framework.TestCase;
+import org.assertj.core.api.Assertions;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /*
  * This test class is being ported from org.drools.mvel.compiler.lang.RuleParserTest
@@ -276,5 +282,119 @@ public class MiscDRLParserTest extends TestCase {
                      customer.getObjectType());
         assertEquals("customerService.getCustomer(o.getCustomerId())",
                      ((FromDescr) customer.getSource()).getDataSource().getText());
+    }
+
+    @Test
+    public void testFromWithInlineList() throws Exception {
+        String source = "rule XYZ \n" +
+                " when \n" +
+                " o: Order( ) \n" +
+                " not( Number( ) from [1, 2, 3] ) \n" +
+                " then \n" +
+                " System.err.println(\"Invalid customer id found!\"); \n" +
+                " o.addError(\"Invalid customer id\"); \n" +
+                "end \n";
+        PackageDescr pkg = parser.parse(source);
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertEquals("XYZ",
+                     rule.getName());
+
+        PatternDescr number = (PatternDescr) ((NotDescr) rule.getLhs().getDescrs().get(1)).getDescrs().get(0);
+        assertThat(((FromDescr) number.getSource()).getDataSource().toString()).isEqualToIgnoringWhitespace("[1, 2, 3]");
+    }
+
+    @Test
+    public void testFromWithInlineListMethod() throws Exception {
+        String source = "rule XYZ \n" +
+                " when \n" +
+                " o: Order( ) \n" +
+                " Number( ) from [1, 2, 3].sublist(1, 2) \n" +
+                " then \n" +
+                " System.err.println(\"Invalid customer id found!\"); \n" +
+                " o.addError(\"Invalid customer id\"); \n" +
+                "end \n";
+        PackageDescr pkg = parser.parse(source);
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertEquals("XYZ",
+                     rule.getName());
+
+        assertFalse(parser.hasErrors());
+        PatternDescr number = (PatternDescr) rule.getLhs().getDescrs().get(1);
+
+        assertThat(((FromDescr) number.getSource()).getDataSource().toString()).isEqualToIgnoringWhitespace("[1, 2, 3].sublist(1, 2)");
+    }
+
+    @Test
+    public void testFromWithInlineListIndex() throws Exception {
+        String source = "rule XYZ \n" +
+                " when \n" +
+                " o: Order( ) \n" +
+                " Number( ) from [1, 2, 3][1] \n" +
+                " then \n" +
+                " System.err.println(\"Invalid customer id found!\"); \n" +
+                " o.addError(\"Invalid customer id\"); \n" +
+                "end \n";
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertEquals("XYZ",
+                     rule.getName());
+
+        assertFalse(parser.hasErrors());
+        PatternDescr number = (PatternDescr) rule.getLhs().getDescrs().get(1);
+        assertThat(((FromDescr) number.getSource()).getDataSource().toString()).isEqualToIgnoringWhitespace("[1, 2, 3][1]");
+    }
+
+    @Test
+    public void testRuleWithoutEnd() throws Exception {
+        String source = "rule \"Invalid customer id\" \n" +
+                " when \n" +
+                " o: Order( ) \n" +
+                " then \n" +
+                " System.err.println(\"Invalid customer id found!\"); \n";
+        parser.parse(source);
+        assertTrue(parser.hasErrors());
+    }
+
+    @Test
+    public void testOrWithSpecialBind() throws Exception {
+        String source = "rule \"A and (B or C or D)\" \n" +
+                "    when \n" +
+                "        pdo1 : ParametricDataObject( paramID == 101, stringValue == \"1000\" ) and \n" +
+                "        pdo2 :(ParametricDataObject( paramID == 101, stringValue == \"1001\" ) or \n" +
+                "               ParametricDataObject( paramID == 101, stringValue == \"1002\" ) or \n" +
+                "               ParametricDataObject( paramID == 101, stringValue == \"1003\" )) \n" +
+                "    then \n" +
+                "        System.out.println( \"Rule: A and (B or C or D) Fired. pdo1: \" + pdo1 +  \" pdo2: \"+ pdo2); \n" +
+                "end\n";
+        PackageDescr pkg = parser.parse(source);
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        RuleDescr rule = pkg.getRules().get(0);
+        AndDescr lhs = rule.getLhs();
+        assertEquals(2,
+                     lhs.getDescrs().size());
+
+        PatternDescr pdo1 = (PatternDescr) lhs.getDescrs().get(0);
+        assertEquals("pdo1",
+                     pdo1.getIdentifier());
+
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(1);
+        assertEquals(3,
+                     or.getDescrs().size());
+        for (BaseDescr pdo2 : or.getDescrs()) {
+            assertEquals("pdo2",
+                         ((PatternDescr) pdo2).getIdentifier());
+        }
     }
 }
