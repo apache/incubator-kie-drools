@@ -27,6 +27,11 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 
 public interface ComponentsSupplier extends KieService {
+
+    // If both static and dynamic are found, pick the preferred one based on whether we are building a native image.
+    int STATIC_PRIORITY = System.getProperty("org.graalvm.nativeimage.imagecode") != null ? 1 : 0;
+    int DYNAMIC_PRIORITY = STATIC_PRIORITY == 0 ? 1 : 0;
+
     ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider );
 
     ByteArrayClassLoader createByteArrayClassLoader(ClassLoader parent );

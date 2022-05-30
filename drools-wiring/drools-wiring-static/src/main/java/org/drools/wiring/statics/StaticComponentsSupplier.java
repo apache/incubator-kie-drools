@@ -31,6 +31,11 @@ import org.kie.api.runtime.rule.RuleRuntime;
 
 public class StaticComponentsSupplier implements ComponentsSupplier {
 
+    @Override
+    public int servicePriority() {
+        return STATIC_PRIORITY;
+    }
+
     public ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         return org.drools.wiring.statics.StaticProjectClassLoader.create(parent, resourceProvider);
     }

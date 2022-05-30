@@ -35,7 +35,7 @@ public class DynamicComponentsSupplier implements ComponentsSupplier {
 
     @Override
     public int servicePriority() {
-        return 1;
+        return DYNAMIC_PRIORITY;
     }
 
     @Override
