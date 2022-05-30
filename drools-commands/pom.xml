@@ -35,6 +35,13 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-wiring-static</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -45,6 +52,5 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-        
     </dependencies>
 </project>

@@ -60,9 +60,12 @@ public class ComponentsFactory {
 
     private static ComponentsSupplier getComponentsSupplier() {
         if (supplier == null) {
-            ComponentsFactory.supplier = Holder.supplier;
+            supplier = Holder.supplier;
+            if (supplier == null) {
+                throw new IllegalStateException( "Cannot find a drools wiring implementation, please add either drools-wiring-static or drools-wiring-dynamic to your classpath" );
+            }
         }
-        return ComponentsFactory.supplier;
+        return supplier;
     }
 
     private static class Holder {

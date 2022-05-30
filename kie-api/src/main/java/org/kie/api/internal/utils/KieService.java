@@ -22,10 +22,14 @@ public interface KieService extends Comparable<KieService> {
         return 0;
     }
 
+    default String getErrorMessageOnServicesClash(KieService other) {
+        return "Found 2 services with same priority (" + servicePriority() + "): " + this.getClass().getCanonicalName() + " and " + other.getClass().getCanonicalName();
+    }
+
     @Override
     default int compareTo(KieService other) {
         if (servicePriority() == other.servicePriority()) {
-            throw new IllegalStateException("Found 2 services with same priority (" + servicePriority() + "): " + this.getClass().getCanonicalName() + " and " + other.getClass().getCanonicalName());
+            throw new IllegalStateException( getErrorMessageOnServicesClash(other) );
         }
         return servicePriority() - other.servicePriority();
     }

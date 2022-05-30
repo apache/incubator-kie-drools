@@ -35,6 +35,11 @@ public interface ComponentsSupplier extends KieService {
         return rootClassLoader;
     }
 
+    @Override
+    default String getErrorMessageOnServicesClash(KieService other) {
+        return "Found 2 incompatible drools wiring mechanisms: the modules drools-wiring-static and drools-wiring-dynamic cannot coexist in the same classpath, please remove one of the 2";
+    }
+
     Object createConsequenceExceptionHandler(String className, ClassLoader classLoader);
 
     Object createTimerService( String className );
