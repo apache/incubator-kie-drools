@@ -4,25 +4,13 @@
 "name": "Hello World Workflow",
 "description": "Inject Hello World",
 "start": "Hello State",
-"functions": [
-    {
-      "name": "concat",
-      "type": "expression",
-      "operation": ".result|=.+\"Hello World!\""
-    }
-  ],
 "states":[  
   {  
      "name":"Hello State",
-     "type":"operation",
-     "actions": [
-        {
-          "name": "concat",
-          "functionRef": {
-            "refName": "concat"
-            }
-        }
-     ],
+     "type":"inject",
+     "data": {
+        "result": "Hello World!"
+     },
      "end": true
   }
 ]

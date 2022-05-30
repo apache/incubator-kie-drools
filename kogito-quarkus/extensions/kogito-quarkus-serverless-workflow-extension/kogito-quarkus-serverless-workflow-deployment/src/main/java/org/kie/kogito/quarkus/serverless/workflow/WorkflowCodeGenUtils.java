@@ -95,6 +95,9 @@ public class WorkflowCodeGenUtils {
     }
 
     private static Stream<WorkflowOperationResource> processFunction(Workflow workflow, Predicate<FunctionDefinition> predicate) {
+        if (workflow.getFunctions() == null || workflow.getFunctions().getFunctionDefs() == null) {
+            return Stream.empty();
+        }
         return workflow.getFunctions().getFunctionDefs().stream().filter(predicate).map(f -> getResource(workflow, f));
     }
 
