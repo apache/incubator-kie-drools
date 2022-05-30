@@ -721,10 +721,6 @@ public class SolutionDescriptor<Solution_> {
         return genuineEntityDescriptorList;
     }
 
-    public boolean hasEntityDescriptorStrict(Class<?> entityClass) {
-        return entityDescriptorMap.containsKey(entityClass);
-    }
-
     public EntityDescriptor<Solution_> getEntityDescriptorStrict(Class<?> entityClass) {
         return entityDescriptorMap.get(entityClass);
     }
@@ -784,25 +780,6 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         return null;
-    }
-
-    public GenuineVariableDescriptor<Solution_> findGenuineVariableDescriptor(Object entity, String variableName) {
-        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-        return entityDescriptor.getGenuineVariableDescriptor(variableName);
-    }
-
-    public GenuineVariableDescriptor<Solution_> findGenuineVariableDescriptorOrFail(Object entity, String variableName) {
-        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-        GenuineVariableDescriptor<Solution_> variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
-        if (variableDescriptor == null) {
-            throw new IllegalArgumentException(entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
-        }
-        return variableDescriptor;
-    }
-
-    public VariableDescriptor<Solution_> findVariableDescriptor(Object entity, String variableName) {
-        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-        return entityDescriptor.getVariableDescriptor(variableName);
     }
 
     public VariableDescriptor<Solution_> findVariableDescriptorOrFail(Object entity, String variableName) {

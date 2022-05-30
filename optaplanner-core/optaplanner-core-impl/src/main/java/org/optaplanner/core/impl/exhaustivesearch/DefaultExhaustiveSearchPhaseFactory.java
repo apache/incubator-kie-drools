@@ -188,7 +188,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             // which includes all genuineVariableDescriptors
             List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                     entityDescriptor.getGenuineVariableDescriptorList();
-            if (entityDescriptor.hasAnyListGenuineVariables()) {
+            if (entityDescriptor.hasAnyGenuineListVariables()) {
                 throw new IllegalArgumentException(
                         "Exhaustive Search does not support list variables (" + variableDescriptorList + ").");
             }

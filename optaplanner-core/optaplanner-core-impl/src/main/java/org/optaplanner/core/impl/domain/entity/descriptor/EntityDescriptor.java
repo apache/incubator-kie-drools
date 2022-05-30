@@ -354,8 +354,8 @@ public class EntityDescriptor<Solution_> {
         effectiveGenuineVariableDescriptorMap = new LinkedHashMap<>(declaredGenuineVariableDescriptorMap.size());
         effectiveShadowVariableDescriptorMap = new LinkedHashMap<>(declaredShadowVariableDescriptorMap.size());
         for (EntityDescriptor<Solution_> inheritedEntityDescriptor : inheritedEntityDescriptorList) {
-            effectiveGenuineVariableDescriptorMap.putAll(inheritedEntityDescriptor.getGenuineVariableDescriptorMap());
-            effectiveShadowVariableDescriptorMap.putAll(inheritedEntityDescriptor.getShadowVariableDescriptorMap());
+            effectiveGenuineVariableDescriptorMap.putAll(inheritedEntityDescriptor.effectiveGenuineVariableDescriptorMap);
+            effectiveShadowVariableDescriptorMap.putAll(inheritedEntityDescriptor.effectiveShadowVariableDescriptorMap);
         }
         effectiveGenuineVariableDescriptorMap.putAll(declaredGenuineVariableDescriptorMap);
         effectiveShadowVariableDescriptorMap.putAll(declaredShadowVariableDescriptorMap);
@@ -430,40 +430,32 @@ public class EntityDescriptor<Solution_> {
         return decreasingDifficultySorter;
     }
 
-    public boolean hasAnyDeclaredGenuineVariableDescriptor() {
-        return !declaredGenuineVariableDescriptorMap.isEmpty();
-    }
-
     public Collection<String> getGenuineVariableNameSet() {
         return effectiveGenuineVariableDescriptorMap.keySet();
-    }
-
-    public Map<String, GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptorMap() {
-        return effectiveGenuineVariableDescriptorMap;
-    }
-
-    public List<GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptorList() {
-        return effectiveGenuineVariableDescriptorList;
-    }
-
-    public boolean hasGenuineVariableDescriptor(String variableName) {
-        return effectiveGenuineVariableDescriptorMap.containsKey(variableName);
     }
 
     public GenuineVariableDescriptor<Solution_> getGenuineVariableDescriptor(String variableName) {
         return effectiveGenuineVariableDescriptorMap.get(variableName);
     }
 
-    public Map<String, ShadowVariableDescriptor<Solution_>> getShadowVariableDescriptorMap() {
-        return effectiveShadowVariableDescriptorMap;
+    public boolean hasAnyGenuineVariables() {
+        return !effectiveGenuineVariableDescriptorMap.isEmpty();
+    }
+
+    public boolean hasAnyGenuineListVariables() {
+        return effectiveGenuineVariableDescriptorList.stream().anyMatch(GenuineVariableDescriptor::isListVariable);
+    }
+
+    public List<GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptorList() {
+        return effectiveGenuineVariableDescriptorList;
+    }
+
+    public long getGenuineVariableCount() {
+        return effectiveGenuineVariableDescriptorList.size();
     }
 
     public Collection<ShadowVariableDescriptor<Solution_>> getShadowVariableDescriptors() {
         return effectiveShadowVariableDescriptorMap.values();
-    }
-
-    public boolean hasShadowVariableDescriptor(String variableName) {
-        return effectiveShadowVariableDescriptorMap.containsKey(variableName);
     }
 
     public ShadowVariableDescriptor<Solution_> getShadowVariableDescriptor(String variableName) {
@@ -474,16 +466,16 @@ public class EntityDescriptor<Solution_> {
         return effectiveVariableDescriptorMap;
     }
 
-    public Collection<VariableDescriptor<Solution_>> getVariableDescriptors() {
-        return effectiveVariableDescriptorMap.values();
-    }
-
     public boolean hasVariableDescriptor(String variableName) {
         return effectiveVariableDescriptorMap.containsKey(variableName);
     }
 
     public VariableDescriptor<Solution_> getVariableDescriptor(String variableName) {
         return effectiveVariableDescriptorMap.get(variableName);
+    }
+
+    public boolean hasAnyDeclaredGenuineVariableDescriptor() {
+        return !declaredGenuineVariableDescriptorMap.isEmpty();
     }
 
     public Collection<GenuineVariableDescriptor<Solution_>> getDeclaredGenuineVariableDescriptors() {
@@ -530,33 +522,12 @@ public class EntityDescriptor<Solution_> {
                 + " annotation or a shadow variable annotation.";
     }
 
-    public boolean hasAnyGenuineVariables() {
-        return !effectiveGenuineVariableDescriptorMap.isEmpty();
-    }
-
-    public boolean hasAnyChainedGenuineVariables() {
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
-            if (!variableDescriptor.isChained()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasAnyListGenuineVariables() {
-        return effectiveGenuineVariableDescriptorList.stream().anyMatch(GenuineVariableDescriptor::isListVariable);
-    }
-
     // ************************************************************************
     // Extraction methods
     // ************************************************************************
 
     public List<Object> extractEntities(Solution_ solution) {
         return solutionDescriptor.getEntityListByEntityClass(solution, entityClass);
-    }
-
-    public long getGenuineVariableCount() {
-        return effectiveGenuineVariableDescriptorList.size();
     }
 
     public long getMaximumValueCount(Solution_ solution, Object entity) {
