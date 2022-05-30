@@ -42,6 +42,7 @@
             </resource>
           </resources>
           <attributes>
+            <drools-repo-dir>${basedir}/..</drools-repo-dir>
             <drools-version>${project.version}</drools-version>
             <java-version>${maven.compiler.release}</java-version>
             <maven-version>${maven.min.version}</maven-version>

@@ -2,7 +2,7 @@
 site:
   title: Drools Documentation
   url: https://www.drools.org/docs
-  start_page: drools::rule-engine/index.adoc
+  start_page: drools::getting-started/index.adoc
   robots: allow
 content:
   edit_url: '{web_url}/edit/main/{path}'

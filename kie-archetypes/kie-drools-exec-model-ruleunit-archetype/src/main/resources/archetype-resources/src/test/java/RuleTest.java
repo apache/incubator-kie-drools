@@ -40,18 +40,21 @@ public class RuleTest {
         MeasurementUnit measurementUnit = new MeasurementUnit();
 
         RuleUnitInstance<MeasurementUnit> instance = RuleUnitInstanceFactory.instance(measurementUnit);
+        try {
+            LOG.info("Insert data");
+            measurementUnit.getMeasurements().add(new Measurement("color", "red"));
+            measurementUnit.getMeasurements().add(new Measurement("color", "green"));
+            measurementUnit.getMeasurements().add(new Measurement("color", "blue"));
 
-        LOG.info("Insert data");
-        measurementUnit.getMeasurements().add(new Measurement("color", "red"));
-        measurementUnit.getMeasurements().add(new Measurement("color", "green"));
-        measurementUnit.getMeasurements().add(new Measurement("color", "blue"));
+            LOG.info("Run query. Rules are also fired");
+            List<Measurement> queryResult = instance.executeQuery("FindColor").stream().map(tuple -> (Measurement) tuple.get("$m")).collect(toList());
 
-        LOG.info("Run query. Rules are also fired");
-        List<Measurement> queryResult = instance.executeQuery("FindColor").stream().map(tuple -> (Measurement) tuple.get("$m")).collect(toList());
-
-        assertEquals(3, queryResult.size());
-        assertTrue("contains red", measurementUnit.getControlSet().contains("red"));
-        assertTrue("contains green", measurementUnit.getControlSet().contains("green"));
-        assertTrue("contains blue", measurementUnit.getControlSet().contains("blue"));
+            assertEquals(3, queryResult.size());
+            assertTrue("contains red", measurementUnit.getControlSet().contains("red"));
+            assertTrue("contains green", measurementUnit.getControlSet().contains("green"));
+            assertTrue("contains blue", measurementUnit.getControlSet().contains("blue"));
+        } finally {
+            instance.dispose();
+        }
     }
 }
