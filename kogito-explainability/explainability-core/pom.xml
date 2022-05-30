@@ -35,6 +35,24 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-quarkus</artifactId>
+      <exclusions>
+        <!--
+          Removes all dependencies on OptaPlanner Drools, as Trusty does not use it.
+          This prevents diamond dependency on Drools between OptaPlanner and Kogito.
+        -->
+        <exclusion>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-constraint-streams-drools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-constraint-drl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId> org.drools</groupId>
+          <artifactId>drools-wiring-static</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
