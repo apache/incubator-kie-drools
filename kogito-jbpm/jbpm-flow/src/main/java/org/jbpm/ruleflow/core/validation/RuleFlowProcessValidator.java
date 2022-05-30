@@ -41,6 +41,7 @@ import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
@@ -318,7 +319,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
                 if (join.getType() == Join.TYPE_N_OF_M) {
                     String n = join.getN();
-                    if (!n.startsWith("#{") || !n.endsWith("}")) {
+                    if (!join.getMetaData().containsKey(Metadata.ACTION) && (!n.startsWith("#{") || !n.endsWith("}"))) {
                         try {
                             Integer.parseInt(n);
                         } catch (NumberFormatException e) {

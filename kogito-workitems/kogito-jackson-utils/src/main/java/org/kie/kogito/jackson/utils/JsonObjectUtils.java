@@ -88,6 +88,34 @@ public class JsonObjectUtils {
         });
     }
 
+    public static <T> T convertValue(Object obj, Class<T> returnType) {
+        if (returnType.isInstance(obj)) {
+            return returnType.cast(obj);
+        } else if (obj instanceof JsonNode) {
+            return convertValue((JsonNode) obj, returnType);
+        } else {
+            return ObjectMapperFactory.get().convertValue(obj, returnType);
+        }
+    }
+
+    public static <T> T convertValue(JsonNode jsonNode, Class<T> returnType) {
+        Object obj;
+        if (Boolean.class.isAssignableFrom(returnType)) {
+            obj = jsonNode.asBoolean();
+        } else if (Integer.class.isAssignableFrom(returnType)) {
+            obj = jsonNode.asInt();
+        } else if (Double.class.isAssignableFrom(returnType)) {
+            obj = jsonNode.asDouble();
+        } else if (Long.class.isAssignableFrom(returnType)) {
+            obj = jsonNode.asLong();
+        } else if (String.class.isAssignableFrom(returnType)) {
+            obj = jsonNode.asText();
+        } else {
+            obj = ObjectMapperFactory.get().convertValue(jsonNode, returnType);
+        }
+        return returnType.cast(obj);
+    }
+
     public static Object simpleToJavaValue(JsonNode jsonNode) {
         return internalToJavaValue(jsonNode, node -> node);
     }

@@ -67,7 +67,7 @@ public class JsonPathExpression implements Expression {
         } else {
             Object result = parsedContext.read(expr);
             return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
-                    : jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig);
+                    : JsonObjectUtils.convertValue(jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig), returnClass);
         }
     }
 

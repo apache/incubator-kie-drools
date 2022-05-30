@@ -28,6 +28,9 @@ import java.util.Set;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
+import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.Join;
@@ -52,6 +55,7 @@ public class JoinInstance extends NodeInstanceImpl {
         return (Join) getNode();
     }
 
+    @Override
     public void internalTrigger(final KogitoNodeInstance from, String type) {
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
@@ -64,7 +68,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 triggerCompleted();
                 break;
             case Join.TYPE_AND:
-                Integer count = (Integer) this.triggers.get(from.getNodeId());
+                Integer count = this.triggers.get(from.getNodeId());
                 if (count == null) {
                     this.triggers.put(from.getNodeId(),
                             1);
@@ -89,7 +93,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 }
                 break;
             case Join.TYPE_N_OF_M:
-                count = (Integer) this.triggers.get(from.getNodeId());
+                count = this.triggers.get(from.getNodeId());
                 if (count == null) {
                     this.triggers.put(from.getNodeId(),
                             1);
@@ -105,7 +109,15 @@ public class JoinInstance extends NodeInstanceImpl {
                 }
                 String n = join.getN();
                 Integer number = null;
-                if (n.startsWith("#{") && n.endsWith("}")) {
+
+                ReturnValueEvaluator action = (ReturnValueEvaluator) getNode().getMetaData().get(Metadata.ACTION);
+                if (action != null) {
+                    try {
+                        number = (Integer) action.evaluate(ContextFactory.fromNode(this));
+                    } catch (Exception e) {
+                        throw new IllegalStateException("Error evaluating number of operations", e);
+                    }
+                } else if (n.startsWith("#{") && n.endsWith("}")) {
                     n = n.substring(2, n.length() - 1);
                     VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, n);
                     if (variableScopeInstance == null) {
@@ -128,7 +140,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 }
                 break;
             case Join.TYPE_OR:
-                NodeInstanceContainer nodeInstanceContainer = (NodeInstanceContainer) getNodeInstanceContainer();
+                NodeInstanceContainer nodeInstanceContainer = getNodeInstanceContainer();
                 boolean activePathExists = existsActiveDirectFlow(nodeInstanceContainer, getJoin());
                 if (!activePathExists) {
                     triggerCompleted();
@@ -152,7 +164,7 @@ public class JoinInstance extends NodeInstanceImpl {
     private void decreaseAllTriggers() {
         // decrease trigger count for all incoming connections
         for (final Connection connection : getJoin().getDefaultIncomingConnections()) {
-            final Integer count = (Integer) this.triggers.get(connection.getFrom().getId());
+            final Integer count = this.triggers.get(connection.getFrom().getId());
             if (count.intValue() == 1) {
                 this.triggers.remove(connection.getFrom().getId());
             } else {

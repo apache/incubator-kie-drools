@@ -1,0 +1,34 @@
+{  
+"id": "parallel",
+"version": "1.0",
+"name": "Welcome to the Parallel dimension",
+"description": "Testing parallelism",
+"start": "Parallel",
+"functions": [
+    {
+      "name": "concatA",
+      "type": "expression",
+      "operation": ".result|=.+\"A\""
+    },
+    {
+      "name": "concatB",
+      "type": "expression",
+      "operation": ".result|=.+\"B\""
+    },
+    {
+      "name": "concatC",
+      "type": "expression",
+      "operation": ".result|=.+\"C\""
+    }
+  ],
+"states":[  
+  {  
+     "name":"Parallel",
+     "type":"parallel",
+     "branches": [ {"actions": [{"functionRef":"concatA"}] }, {"actions": [{"functionRef":"concatB"}] },{"actions": [{"functionRef":"concatC"}] }],
+     "numCompleted" : ".numCompleted",
+     "completionType" : "atLeast",
+     "end": true
+  }
+]
+}

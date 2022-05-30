@@ -45,41 +45,23 @@ public class JqExpression implements Expression {
         this.scope = scope;
     }
 
-    private interface TypedOutput<T> extends Output {
-        T getResult();
+    private interface TypedOutput extends Output {
+        Object getResult();
     }
 
-    private <T> TypedOutput<T> output(Class<T> returnClass) {
-        TypedOutput<?> out;
-        if (Boolean.class.isAssignableFrom(returnClass)) {
-            out = new BooleanOutput();
-        } else if (String.class.isAssignableFrom(returnClass)) {
+    private TypedOutput output(Class<?> returnClass) {
+        TypedOutput out;
+        if (String.class.isAssignableFrom(returnClass)) {
             out = new StringOutput();
         } else if (Collection.class.isAssignableFrom(returnClass)) {
             out = new CollectionOutput();
         } else {
             out = new JsonNodeOutput();
         }
-        return (TypedOutput<T>) out;
+        return out;
     }
 
-    private static class BooleanOutput implements TypedOutput<Boolean> {
-
-        boolean result;
-
-        @Override
-        public void emit(JsonNode out) throws JsonQueryException {
-            result = out.asBoolean();
-        }
-
-        @Override
-        public Boolean getResult() {
-            return result;
-        }
-
-    }
-
-    private static class StringOutput implements TypedOutput<String> {
+    private static class StringOutput implements TypedOutput {
         StringBuilder sb = new StringBuilder();
 
         @Override
@@ -91,14 +73,14 @@ public class JqExpression implements Expression {
         }
 
         @Override
-        public String getResult() {
+        public Object getResult() {
             return sb.toString();
         }
 
     }
 
-    private static class CollectionOutput implements TypedOutput<Collection> {
-        Collection result = new ArrayList<>();
+    private static class CollectionOutput implements TypedOutput {
+        Collection<Object> result = new ArrayList<>();
 
         @Override
         public void emit(JsonNode out) throws JsonQueryException {
@@ -111,13 +93,13 @@ public class JqExpression implements Expression {
         }
 
         @Override
-        public Collection<?> getResult() {
+        public Object getResult() {
             return result;
         }
 
     }
 
-    private static class JsonNodeOutput implements TypedOutput<JsonNode> {
+    private static class JsonNodeOutput implements TypedOutput {
 
         private JsonNode result;
         private boolean arrayCreated;
@@ -163,10 +145,10 @@ public class JqExpression implements Expression {
 
     private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
         try {
-            TypedOutput<T> output = output(returnClass);
+            TypedOutput output = output(returnClass);
             compile();
             query.apply(getScope(processInfo), context, output);
-            return output.getResult();
+            return JsonObjectUtils.convertValue(output.getResult(), returnClass);
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);
         }
