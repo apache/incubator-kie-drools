@@ -32,19 +32,20 @@ public class FunctionWriterTest {
                                                    new AllFunction());
         writer.makeFunctionTemplate();
 
-        assertEquals("if (obj instanceof org.kie.dmn.feel.runtime.functions.AllFunction) {\n" +
-                             "   if (args.length == 1 && args[0] instanceof java.lang.Boolean) {\n" +
-                             "       return ((org.kie.dmn.feel.runtime.functions.AllFunction) obj).invoke((java.lang.Boolean) args[0] );\n" +
-                             "   }\n" +
-                             "   if (args.length == 1 && args[0].getClass().isArray()) {\n" +
-                             "       Object[] var = (Object[]) args[0];\n" +
-                             "       if (var[0] instanceof java.util.List) {\n" +
-                             "           return ((org.kie.dmn.feel.runtime.functions.AllFunction) obj).invoke((java.util.List) var[0]);\n" +
-                             "       } else {\n" +
-                             "           return ((org.kie.dmn.feel.runtime.functions.AllFunction) obj).invoke(var);\n" +
-                             "       }\n" +
-                             "   }\n" +
-                             "}\n", builder.toString());
+        String code = "if (obj instanceof org.kie.dmn.feel.runtime.functions.AllFunction) {\n" +
+                "   if (args.length == 1 && args[0] instanceof java.lang.Boolean) {\n" +
+                "       return ((org.kie.dmn.feel.runtime.functions.AllFunction) obj).invoke((java.lang.Boolean) args[0] );\n" +
+                "   }\n" +
+                "   if (args.length == 1 && args[0].getClass().isArray()) {\n" +
+                "       Object[] var = (Object[]) args[0];\n" +
+                "       if (var[0] instanceof java.util.List) {\n" +
+                "           return ((org.kie.dmn.feel.runtime.functions.AllFunction) obj).invoke((java.util.List) var[0]);\n" +
+                "       } else {\n" +
+                "           return ((org.kie.dmn.feel.runtime.functions.AllFunction) obj).invoke(var);\n" +
+                "       }\n" +
+                "   }\n" +
+                "}\n";
+        assertStrings(code, builder.toString());
     }
 
     @Test
@@ -55,18 +56,24 @@ public class FunctionWriterTest {
                                                    new SumFunction());
         writer.makeFunctionTemplate();
 
-        assertEquals("if (obj instanceof org.kie.dmn.feel.runtime.functions.SumFunction) {\n" +
-                             "   if (args.length == 1 && args[0] instanceof java.lang.Number) {\n" +
-                             "       return ((org.kie.dmn.feel.runtime.functions.SumFunction) obj).invoke((java.lang.Number) args[0] );\n" +
-                             "   }\n" +
-                             "   if (args.length == 1 && args[0].getClass().isArray()) {\n" +
-                             "       Object[] var = (Object[]) args[0];\n" +
-                             "       if (var[0] instanceof java.util.List) {\n" +
-                             "           return ((org.kie.dmn.feel.runtime.functions.SumFunction) obj).invoke((java.util.List) var[0]);\n" +
-                             "       } else {\n" +
-                             "           return ((org.kie.dmn.feel.runtime.functions.SumFunction) obj).invoke(var);\n" +
-                             "       }\n" +
-                             "   }\n" +
-                             "}\n", builder.toString());
+        String code = "if (obj instanceof org.kie.dmn.feel.runtime.functions.SumFunction) {\n" +
+                "   if (args.length == 1 && args[0] instanceof java.lang.Number) {\n" +
+                "       return ((org.kie.dmn.feel.runtime.functions.SumFunction) obj).invoke((java.lang.Number) args[0] );\n" +
+                "   }\n" +
+                "   if (args.length == 1 && args[0].getClass().isArray()) {\n" +
+                "       Object[] var = (Object[]) args[0];\n" +
+                "       if (var[0] instanceof java.util.List) {\n" +
+                "           return ((org.kie.dmn.feel.runtime.functions.SumFunction) obj).invoke((java.util.List) var[0]);\n" +
+                "       } else {\n" +
+                "           return ((org.kie.dmn.feel.runtime.functions.SumFunction) obj).invoke(var);\n" +
+                "       }\n" +
+                "   }\n" +
+                "}\n";
+        assertStrings(code, builder.toString());
+    }
+
+    private void assertStrings(final String builder,
+                               final String code) {
+        assertEquals(code.replaceAll("\\s", ""), builder.replaceAll("\\s", ""));
     }
 }
