@@ -29,7 +29,7 @@ import org.kie.internal.jci.CompilationProblem;
 public class ResultsImpl
     implements
     Results {
-    private List<Message> messages    = new ArrayList<Message>();
+    private List<Message> messages    = new ArrayList<>();
 
     private long          idGenerator = 1L;
 

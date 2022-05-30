@@ -36,7 +36,7 @@ public class ForallDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Base
      * {@inheritDoc}
      */
     public PatternDescrBuilder<ForallDescrBuilder<P>> pattern( String type ) {
-        PatternDescrBuilder<ForallDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<ForallDescrBuilder<P>>( this,
+        PatternDescrBuilder<ForallDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<>( this,
                                                                                                                  type );
         descr.addDescr( pattern.getDescr() );
         return pattern;
@@ -46,7 +46,7 @@ public class ForallDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Base
      * {@inheritDoc}
      */
     public PatternDescrBuilder<ForallDescrBuilder<P>> pattern() {
-        PatternDescrBuilder<ForallDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<ForallDescrBuilder<P>>( this );
+        PatternDescrBuilder<ForallDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<>( this );
         descr.addDescr( pattern.getDescr() );
         return pattern;
     }

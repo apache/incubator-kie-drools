@@ -38,7 +38,7 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
                 return new JaxbStringObjectPair[0];
             }
 
-            List<JaxbStringObjectPair> ret = new ArrayList<JaxbStringObjectPair>(map.size());
+            List<JaxbStringObjectPair> ret = new ArrayList<>(map.size());
             for (Map.Entry<String, ? extends Object> entry : map.entrySet()) {
                 Object obj = entry.getValue();
                 // There's already a @XmlJavaTypeAdapter(JaxbUnknownAdapter.class) anno on the JaxbStringObjectPair.value field
@@ -56,7 +56,7 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
     @Override
     public Map<String, Object> unmarshal(JaxbStringObjectPair[] value) throws Exception {
         try {
-            Map<String, Object> r = new LinkedHashMap<String, Object>();
+            Map<String, Object> r = new LinkedHashMap<>();
             for( JaxbStringObjectPair p : value ) {
                 r.put(p.getKey(), p.getValue());
             }

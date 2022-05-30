@@ -226,7 +226,7 @@ public class PatternDescr extends AnnotatedBaseDescr
 
     public void addBehavior( BehaviorDescr behavior ) {
         if ( this.behaviors == null ) {
-            this.behaviors = new ArrayList<BehaviorDescr>();
+            this.behaviors = new ArrayList<>();
         }
         this.behaviors.add( behavior );
     }

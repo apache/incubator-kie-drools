@@ -34,7 +34,7 @@ import org.drools.core.rule.accessor.Evaluator;
 public class EvaluatorCache implements Externalizable {
 
     private static final long serialVersionUID = 510l;
-    private Map<ValueType, Map<Operator, Evaluator>> evaluators = new HashMap<ValueType, Map<Operator, Evaluator>>();
+    private Map<ValueType, Map<Operator, Evaluator>> evaluators = new HashMap<>();
 
     public EvaluatorCache() {
     }
@@ -55,7 +55,7 @@ public class EvaluatorCache implements Externalizable {
     public void addEvaluator( final ValueType type, final Operator operator, final Evaluator evaluator ) {
         Map<Operator, Evaluator> opEvalMap = this.evaluators.get( type );
         if( opEvalMap == null ) {
-            opEvalMap = new HashMap<Operator, Evaluator>();
+            opEvalMap = new HashMap<>();
             this.evaluators.put( type, opEvalMap );
         }
         opEvalMap.put( operator, evaluator );

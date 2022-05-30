@@ -121,7 +121,7 @@ public class InJarArtifactResolver extends ArtifactResolver {
 
                 @Override
                 public List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter) {
-                    List<DependencyDescriptor> deps = new ArrayList<DependencyDescriptor>();
+                    List<DependencyDescriptor> deps = new ArrayList<>();
                     for (Dependency dep : model.getDependencies()) {
                         DependencyDescriptor depDescr = new DependencyDescriptor(dep);
                         if (depDescr.isValid() && filter.accept(depDescr.getReleaseId(), depDescr.getScope())) {
