@@ -1450,7 +1450,7 @@ Returns to single boolean value (true or false), if any element in the list sati
 .Examples
 [source,FEEL]
 ----
-some i in [1, 2, 3] satisfies i > 3 = true
+some i in [1, 2, 3] satisfies i > 2 = true
 some i in [1, 2, 3] satisfies i > 4 = false
 ----
 --
