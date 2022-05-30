@@ -1,5 +1,5 @@
 # Example solver resource; override as you see fit.
-apiVersion: org.optaplanner.solver/v1
+apiVersion: org.optaplanner.solver/v1beta1
 kind: Solver
 metadata:
   name: school-timetabling
