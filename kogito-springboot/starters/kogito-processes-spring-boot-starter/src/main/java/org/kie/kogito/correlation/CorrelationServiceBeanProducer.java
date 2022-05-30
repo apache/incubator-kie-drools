@@ -15,15 +15,15 @@
  */
 package org.kie.kogito.correlation;
 
-import java.util.Optional;
+import org.kie.kogito.services.event.correlation.DefaultCorrelationService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-public interface Correlation<V> {
+@Configuration
+public class CorrelationServiceBeanProducer {
 
-    String getKey();
-
-    V getValue();
-
-    default String asString() {
-        return Optional.ofNullable(getValue()).map(Object::toString).orElse(null);
+    @Bean
+    CorrelationService correlationService() {
+        return new DefaultCorrelationService();
     }
 }

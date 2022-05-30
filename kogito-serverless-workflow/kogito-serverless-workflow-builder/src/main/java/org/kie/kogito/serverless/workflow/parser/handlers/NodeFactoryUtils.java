@@ -17,6 +17,7 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -32,6 +33,8 @@ import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.kogito.correlation.CompositeCorrelation;
+import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.serverless.workflow.suppliers.ParamsRestBodyBuilderSupplier;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 
@@ -83,7 +86,14 @@ public class NodeFactoryUtils {
                 .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
                 .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage")
-                .metaData(Metadata.DATA_ONLY, eventDefinition.isDataOnly());
+                .metaData(Metadata.DATA_ONLY, eventDefinition.isDataOnly())
+                .metaData(Metadata.CORRELATION_ATTRIBUTES, getCorrelationAttributes(eventDefinition));
+    }
+
+    private static CompositeCorrelation getCorrelationAttributes(EventDefinition eventDefinition) {
+        return new CompositeCorrelation(eventDefinition.getCorrelation().stream()
+                .map(c -> new SimpleCorrelation<>(c.getContextAttributeName(), c.getContextAttributeValue()))
+                .collect(Collectors.toSet()));
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> eventBasedExclusiveSplitNode(SplitFactory<T> nodeFactory) {

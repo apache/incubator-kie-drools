@@ -26,6 +26,7 @@ import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.process.workitem.Comment;
@@ -45,7 +46,8 @@ public interface ProcessService {
     <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, String businessKey, T model,
             String startFromNodeId,
             String trigger,
-            String kogitoReferenceId);
+            String kogitoReferenceId,
+            CompositeCorrelation correlation);
 
     <T extends MappableToModel<R>, R> List<R> getProcessInstanceOutput(Process<T> process);
 

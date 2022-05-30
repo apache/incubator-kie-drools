@@ -28,7 +28,6 @@ import org.kie.kogito.codegen.core.AbstractApplicationSection;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -50,7 +49,6 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
     public static final String SECTION_CLASS_NAME = "Processes";
 
     private final List<ProcessGenerator> processes;
-    private final List<BodyDeclaration<?>> factoryMethods;
 
     private BlockStmt byProcessIdBody = new BlockStmt();
     private BlockStmt processesBody = new BlockStmt();
@@ -59,8 +57,6 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
     public ProcessContainerGenerator(KogitoBuildContext context) {
         super(context, SECTION_CLASS_NAME);
         this.processes = new ArrayList<>();
-        this.factoryMethods = new ArrayList<>();
-
         this.templatedGenerator = TemplatedGenerator.builder()
                 .withTargetTypeName(SECTION_CLASS_NAME)
                 .build(context, "ProcessContainer");
@@ -78,7 +74,8 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
     public void addProcessToApplication(ProcessGenerator r) {
         ObjectCreationExpr newProcess = new ObjectCreationExpr()
                 .setType(r.targetCanonicalName())
-                .addArgument("application");
+                .addArgument("application")
+                .addArgument(new NullLiteralExpr());
         MethodCallExpr expr = new MethodCallExpr(newProcess, "configure");
         MethodCallExpr method = new MethodCallExpr(new NameExpr("mappedProcesses"), "computeIfAbsent",
                 nodeList(new StringLiteralExpr(r.processId()),

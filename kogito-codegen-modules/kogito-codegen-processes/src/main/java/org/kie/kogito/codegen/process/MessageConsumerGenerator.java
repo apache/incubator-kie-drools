@@ -15,8 +15,11 @@
  */
 package org.kie.kogito.codegen.process;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
@@ -27,6 +30,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +41,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -129,8 +134,15 @@ public class MessageConsumerGenerator {
             template.findAll(FieldDeclaration.class,
                     fd -> isObjectMapperField(fd)).forEach(fd -> initializeObjectMapperField(fd));
         }
+
+        template.findAll(FieldDeclaration.class, f -> isCorrelationField(f)).stream().findFirst().ifPresent(f -> initializeCorrelationField(f));
+
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
+    }
+
+    public static boolean isCorrelationField(FieldDeclaration fd) {
+        return fd.getVariable(0).getNameAsString().equals("correlation");//todo
     }
 
     private void generateModelMethods(ClassOrInterfaceDeclaration template) {
@@ -152,6 +164,20 @@ public class MessageConsumerGenerator {
                     .setBody(new BlockStmt().addStatement(new ReturnStmt(
                             new MethodReferenceExpr(new NameExpr(AbstractMessageConsumer.class.getSimpleName()), NodeList.nodeList(), "eventResolver"))));
         }
+    }
+
+    private void initializeCorrelationField(FieldDeclaration fd) {
+        if (Objects.isNull(trigger.getCorrelation())) {
+            return;
+        }
+        NodeList<Expression> arguments = new NodeList<>(trigger.getCorrelation().getValue().stream()
+                .map(Correlation::getKey)
+                .map(f -> new StringLiteralExpr(f))
+                .collect(Collectors.toSet()));
+        MethodCallExpr streamOf =
+                new MethodCallExpr(new NameExpr(Stream.class.getCanonicalName()), "of").setArguments(arguments).setTypeArguments(new ClassOrInterfaceType().setName(String.class.getCanonicalName()));
+        MethodCallExpr collect = new MethodCallExpr(streamOf, "collect").addArgument(new MethodCallExpr(new NameExpr(Collectors.class.getCanonicalName()), "toSet"));
+        fd.getVariable(0).setInitializer(collect);
     }
 
     private void initializeProcessField(FieldDeclaration fd) {

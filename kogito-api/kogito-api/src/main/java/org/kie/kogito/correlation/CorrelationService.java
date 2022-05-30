@@ -17,13 +17,14 @@ package org.kie.kogito.correlation;
 
 import java.util.Optional;
 
-public interface Correlation<V> {
+public interface CorrelationService {
 
-    String getKey();
+    CorrelationInstance create(Correlation correlation, String correlatedId);
 
-    V getValue();
+    Optional<CorrelationInstance> find(Correlation correlation);
 
-    default String asString() {
-        return Optional.ofNullable(getValue()).map(Object::toString).orElse(null);
-    }
+    Optional<CorrelationInstance> findByCorrelatedId(String correlatedId);
+
+    void delete(Correlation correlation);
+
 }

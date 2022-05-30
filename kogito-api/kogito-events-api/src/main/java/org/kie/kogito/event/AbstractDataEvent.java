@@ -18,7 +18,8 @@ package org.kie.kogito.event;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +29,8 @@ import org.kie.kogito.event.cloudevents.SpecVersionDeserializer;
 import org.kie.kogito.event.cloudevents.SpecVersionSerializer;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -103,6 +106,8 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty(CloudEventExtensionConstants.ADDONS)
     private String kogitoAddons;
+
+    private Map<String, Object> extensionAttributes = new HashMap<>();
 
     public AbstractDataEvent() {
     }
@@ -227,10 +232,9 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         return CloudEventUtils.getAttribute(name, this);
     }
 
-    //TODO: missing additional attributes as extensions for CloudEvent API.
     @Override
-    public Object getExtension(String s) {
-        return null;
+    public Object getExtension(String name) {
+        return extensionAttributes.get(name);
     }
 
     @JsonIgnore
@@ -242,6 +246,17 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @JsonIgnore
     @Override
     public Set<String> getExtensionNames() {
-        return Collections.emptySet();
+        return extensionAttributes.keySet();
+    }
+
+    @JsonAnySetter
+    public void addExtensionAttribute(String name, Object value) {
+        extensionAttributes.put(name, value);
+    }
+
+    @JsonAnyGetter
+    @JsonIgnore
+    public Map<String, Object> getExtensionAttributes() {
+        return extensionAttributes;
     }
 }

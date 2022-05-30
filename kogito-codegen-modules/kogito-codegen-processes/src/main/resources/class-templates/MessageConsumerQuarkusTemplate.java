@@ -16,15 +16,19 @@
 package $Package$;
 
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.KogitoEventExecutor;
@@ -62,6 +66,8 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     @Inject
     ObjectMapper objectMapper;
 
+    Set<String> correlation;
+
     @javax.annotation.PostConstruct
     void init() {
         init(application,
@@ -72,7 +78,8 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
              configBean.useCloudEvents(),
              processService,
              executorService,
-             eventUnmarshaller);
+             eventUnmarshaller,
+             correlation);
     }
 
     private $Type$ eventToModel(Object event) {

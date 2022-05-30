@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
@@ -38,6 +39,7 @@ import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -55,6 +57,7 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Signal;
+import org.kie.kogito.services.event.correlation.DefaultCorrelationService;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractProcess<T extends Model> implements Process<T>, ProcessSupplier {
@@ -72,6 +75,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
 
     private org.kie.api.definition.process.Process process;
     private Lock processInitLock = new ReentrantLock();
+    private CorrelationService correlations;
 
     protected AbstractProcess() {
         this(new LightProcessRuntimeServiceProvider());
@@ -83,22 +87,23 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     }
 
     protected AbstractProcess(ProcessRuntimeServiceProvider services) {
-        this(services, Collections.emptyList(), null);
+        this(services, Collections.emptyList(), null, null);
     }
 
-    protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers) {
-        this(app, handlers, null);
+    protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers, CorrelationService correlations) {
+        this(app, handlers, correlations, null);
     }
 
-    protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers, ProcessInstancesFactory factory) {
-        this(new ConfiguredProcessServices(app.config().get(ProcessConfig.class)), handlers, factory);
+    protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers, CorrelationService correlations, ProcessInstancesFactory factory) {
+        this(new ConfiguredProcessServices(app.config().get(ProcessConfig.class)), handlers, correlations, factory);
         this.app = app;
     }
 
-    protected AbstractProcess(ProcessRuntimeServiceProvider services, Collection<KogitoWorkItemHandler> handlers, ProcessInstancesFactory factory) {
+    protected AbstractProcess(ProcessRuntimeServiceProvider services, Collection<KogitoWorkItemHandler> handlers, CorrelationService correlations, ProcessInstancesFactory factory) {
         this.services = services;
         this.instances = new MapProcessInstances<>();
         this.processInstancesFactory = factory;
+        this.correlations = Optional.ofNullable(correlations).orElseGet(() -> new DefaultCorrelationService());
         KogitoWorkItemManager workItemManager = services.getKogitoWorkItemManager();
         for (KogitoWorkItemHandler handler : handlers) {
             workItemManager.registerWorkItemHandler(handler.getName(), handler);
@@ -138,6 +143,11 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     @Override
     public ProcessInstances<T> instances() {
         return instances;
+    }
+
+    @Override
+    public CorrelationService correlations() {
+        return correlations;
     }
 
     @Override

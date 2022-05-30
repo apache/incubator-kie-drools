@@ -26,6 +26,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcess;
@@ -56,6 +57,11 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
     public Application getApplication() {
         return application;
+    }
+
+    @Override
+    public ProcessInstance<BpmnVariables> createInstance(String businessKey, CompositeCorrelation correlation, BpmnVariables workingMemory) {
+        return createInstance(businessKey, workingMemory);
     }
 
     @Override

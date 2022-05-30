@@ -38,31 +38,31 @@ class SimpleAttributeCorrelationResolverTest {
 
     @Test
     void testResolveStringAttribute() {
-        Correlation source = sourceResolver.resolve(event);
+        Correlation<?> source = sourceResolver.resolve(event);
         assertThat(source.getKey()).isEqualTo(SOURCE_KEY);
         assertThat(source.getValue()).isEqualTo("source");
 
-        Correlation type = typeResolver.resolve(event);
+        Correlation<?> type = typeResolver.resolve(event);
         assertThat(type.getKey()).isEqualTo(TYPE_KEY);
         assertThat(type.getValue()).isEqualTo("type");
 
-        Correlation referenceId = kogitoReferenceResolver.resolve(event);
+        Correlation<?> referenceId = kogitoReferenceResolver.resolve(event);
         assertThat(referenceId.getKey()).isEqualTo(REFERENCE_ID_KEY);
         assertThat(referenceId.getValue()).isEqualTo("referenceId");
     }
 
     @Test
     void testResolveObjectAttribute() {
-        Correlation data = dataResolver.resolve(event);
+        Correlation<?> data = dataResolver.resolve(event);
         assertThat(data.getKey()).isEqualTo(DATA_KEY);
         assertThat(data.getValue()).isEqualTo(payload);
     }
 
     @Test
     void testResolveNullAttribute() {
-        Correlation source = sourceResolver.resolve(null);
+        Correlation<?> source = sourceResolver.resolve(null);
         assertThat(source.getValue()).isNull();
-        Correlation data = dataResolver.resolve(null);
+        Correlation<?> data = dataResolver.resolve(null);
         assertThat(data.getValue()).isNull();
     }
 }

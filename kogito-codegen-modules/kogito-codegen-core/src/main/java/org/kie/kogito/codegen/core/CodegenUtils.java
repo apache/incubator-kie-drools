@@ -80,10 +80,6 @@ public class CodegenUtils {
         return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, type), NodeList.nodeList(arguments));
     }
 
-    public static void interpolateArguments(MethodDeclaration md, String dataType) {
-        md.getParameters().forEach(p -> p.setType(dataType));
-    }
-
     public static void interpolateArguments(NodeWithArguments<? extends Node> node, Map<String, Expression> expressions) {
         List<Expression> argumentList = node.getArguments();
         Map<String, Integer> argumentIds = new HashMap<>();

@@ -23,6 +23,7 @@ import org.jbpm.compiler.canonical.ModelMetaData;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -47,6 +48,7 @@ public class ProcessInstanceGenerator {
     private static final String VALUE = "value";
     private static final String PROCESS_RUNTIME = "processRuntime";
     private static final String BUSINESS_KEY = "businessKey";
+    private static final String CORRELATION = "correlation";
     private static final String WPI = "wpi";
 
     private final String packageName;
@@ -99,6 +101,7 @@ public class ProcessInstanceGenerator {
                 .addMember(constructorWithBusinessKeyDecl())
                 .addMember(constructorWithWorkflowInstanceAndRuntimeDecl())
                 .addMember(constructorWorkflowInstanceDecl())
+                .addMember(constructorWithCorrelationDecl())
                 .addMember(bind())
                 .addMember(unbind());
         classDecl.getMembers().sort(new BodyDeclarationComparator());
@@ -170,6 +173,24 @@ public class ProcessInstanceGenerator {
                         new NameExpr(VALUE),
                         new NameExpr(BUSINESS_KEY),
                         new NameExpr(PROCESS_RUNTIME))));
+    }
+
+    private ConstructorDeclaration constructorWithCorrelationDecl() {
+        return new ConstructorDeclaration()
+                .setName(targetTypeName)
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(ProcessGenerator.processType(canonicalName), PROCESS)
+                .addParameter(model.getModelClassSimpleName(), VALUE)
+                .addParameter(String.class.getCanonicalName(), BUSINESS_KEY)
+                .addParameter(ProcessRuntime.class.getCanonicalName(), PROCESS_RUNTIME)
+                .addParameter(CompositeCorrelation.class.getCanonicalName(), CORRELATION)
+                .setBody(new BlockStmt().addStatement(new MethodCallExpr(
+                        "super",
+                        new NameExpr(PROCESS),
+                        new NameExpr(VALUE),
+                        new NameExpr(BUSINESS_KEY),
+                        new NameExpr(PROCESS_RUNTIME),
+                        new NameExpr(CORRELATION))));
     }
 
     private ConstructorDeclaration constructorWithWorkflowInstanceAndRuntimeDecl() {

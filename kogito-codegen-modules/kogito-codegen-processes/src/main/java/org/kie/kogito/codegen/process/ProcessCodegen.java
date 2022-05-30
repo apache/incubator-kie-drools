@@ -425,17 +425,18 @@ public class ProcessCodegen extends AbstractGenerator {
             }
         }
 
+        //Generating the Producer classes for Dependency Injection
+        StaticDependencyInjectionProducerGenerator.of(context())
+                .generate()
+                .entrySet()
+                .forEach(entry -> storeFile(PRODUCER_TYPE, entry.getKey(), entry.getValue()));
+
         if (context().hasRESTForGenerator(this)) {
             for (ProcessResourceGenerator resourceGenerator : rgs) {
                 storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
                         resourceGenerator.generate());
                 storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(resourceGenerator.getTaskModelFactoryClassName()), resourceGenerator.getTaskModelFactory());
             }
-            //Generating the Producer classes for Dependency Injection
-            StaticDependencyInjectionProducerGenerator.of(context())
-                    .generate()
-                    .entrySet()
-                    .forEach(entry -> storeFile(PRODUCER_TYPE, entry.getKey(), entry.getValue()));
         }
 
         for (MessageConsumerGenerator messageConsumerGenerator : megs) {

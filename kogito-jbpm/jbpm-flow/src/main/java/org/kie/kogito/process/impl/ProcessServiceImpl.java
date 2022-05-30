@@ -33,6 +33,7 @@ import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
@@ -75,10 +76,11 @@ public class ProcessServiceImpl implements ProcessService {
             T model,
             String startFromNodeId,
             String trigger,
-            String kogitoReferenceId) {
+            String kogitoReferenceId,
+            CompositeCorrelation correlation) {
 
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<T> pi = process.createInstance(businessKey, model);
+            ProcessInstance<T> pi = process.createInstance(businessKey, correlation, model);
             if (startFromNodeId != null) {
                 pi.startFrom(startFromNodeId, kogitoReferenceId);
             } else {
@@ -86,7 +88,6 @@ public class ProcessServiceImpl implements ProcessService {
             }
             return pi;
         });
-
     }
 
     @Override

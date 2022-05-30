@@ -32,6 +32,7 @@ import org.kie.api.runtime.process.ProcessWorkItemHandlerException.HandlingStrat
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -78,9 +79,13 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         }
 
         @Override
+        public ProcessInstance<Model> createInstance(String businessKey, CompositeCorrelation correlation, Model workingMemory) {
+            return createInstance(businessKey, workingMemory);
+        }
+
+        @Override
         public ProcessInstance<Model> createInstance(Model parameters) {
             return new DummyProcessInstance(this, parameters, (ProcessRuntime) kruntime.getProcessEventManager());
-
         }
 
         @Override

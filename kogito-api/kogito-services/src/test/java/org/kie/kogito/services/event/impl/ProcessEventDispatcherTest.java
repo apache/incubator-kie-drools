@@ -16,14 +16,21 @@
 package org.kie.kogito.services.event.impl;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
+import org.kie.kogito.correlation.CompositeCorrelation;
+import org.kie.kogito.correlation.Correlation;
+import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -33,11 +40,13 @@ import org.kie.kogito.services.event.DummyCloudEvent;
 import org.kie.kogito.services.event.DummyEvent;
 import org.kie.kogito.services.event.DummyModel;
 import org.kie.kogito.services.event.StringCloudEvent;
+import org.kie.kogito.services.event.correlation.DefaultCorrelationService;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,6 +54,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,6 +68,7 @@ class ProcessEventDispatcherTest {
     private ExecutorService executor;
     private ProcessInstance<DummyModel> processInstance;
     private ProcessInstances<DummyModel> processInstances;
+    private DefaultCorrelationService correlationService;
 
     @BeforeEach
     void setup() {
@@ -70,10 +81,12 @@ class ProcessEventDispatcherTest {
         processInstance = mock(ProcessInstance.class);
         when(processInstance.id()).thenReturn("1");
         when(process.instances()).thenReturn(processInstances);
+        correlationService = spy(new DefaultCorrelationService());
+        when(process.correlations()).thenReturn(correlationService);
         when(processInstances.findById(Mockito.anyString())).thenReturn(Optional.empty());
         when(processInstances.findById("1")).thenReturn(Optional.of(processInstance));
         processService = mock(ProcessService.class);
-        when(processService.createProcessInstance(eq(process), any(), any(), any(), any(), any())).thenReturn(processInstance);
+        when(processService.createProcessInstance(eq(process), any(), any(), any(), any(), any(), any())).thenReturn(processInstance);
         when(processService.signalProcessInstance(eq(process), any(), any(), any())).thenReturn(Optional.of(mock(DummyModel.class)));
         executor = Executors.newSingleThreadExecutor();
     }
@@ -81,6 +94,7 @@ class ProcessEventDispatcherTest {
     @AfterEach
     void close() {
         executor.shutdown();
+        correlationService.clear();
     }
 
     private <T> Optional<Function<T, DummyModel>> modelConverter() {
@@ -89,7 +103,7 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testSigCloudEvent() throws Exception {
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, null, processService, executor, AbstractMessageConsumer::cloudEventResolver);
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, null, processService, executor, null, AbstractMessageConsumer::cloudEventResolver);
         ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new DummyCloudEvent(new DummyEvent("pepe"), DUMMY_TOPIC, "source", "1")).toCompletableFuture().get();
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -104,7 +118,7 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testCloudEventNewInstanceWithoutReference() throws Exception {
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, AbstractMessageConsumer::cloudEventResolver);
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, null, AbstractMessageConsumer::cloudEventResolver);
         ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new DummyCloudEvent(new DummyEvent("pepe"), DUMMY_TOPIC)).toCompletableFuture().get();
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -112,7 +126,7 @@ class ProcessEventDispatcherTest {
 
         verify(processInstances, never()).findById(any());
         verify(processService, never()).signalProcessInstance(eq(process), any(), any(), signal.capture());
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture());
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), isNull());
 
         assertEquals(DUMMY_TOPIC, signal.getValue());
         assertEquals("1", referenceId.getValue());
@@ -121,7 +135,7 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testCloudEventNewInstanceWithReference() throws Exception {
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, AbstractMessageConsumer::cloudEventResolver);
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, null, AbstractMessageConsumer::cloudEventResolver);
         ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new DummyCloudEvent(new DummyEvent("pepe"), DUMMY_TOPIC, "source", "invalidReference")).toCompletableFuture().get();
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -129,7 +143,7 @@ class ProcessEventDispatcherTest {
 
         verify(processInstances, times(1)).findById("invalidReference");
         verify(processService, never()).signalProcessInstance(eq(process), any(), any(), signal.capture());
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture());
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), isNull());
 
         assertEquals(DUMMY_TOPIC, signal.getValue());
         assertEquals("1", referenceId.getValue());
@@ -138,18 +152,18 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testDataEvent() throws Exception {
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, AbstractMessageConsumer::eventResolver);
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, null, AbstractMessageConsumer::eventResolver);
         ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new DummyEvent("pepe")).toCompletableFuture().get();
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), isNull());
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), isNull(), isNull());
         assertEquals(DUMMY_TOPIC, signal.getValue());
         assertEquals(instance, processInstance);
     }
 
     @Test
     void testIgnoredDataEvent() throws Exception {
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, null, processService, executor, AbstractMessageConsumer::eventResolver);
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, null, processService, executor, null, AbstractMessageConsumer::eventResolver);
         final String payload = "{ a = b }";
         ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, payload).toCompletableFuture().get();
         assertNull(result);
@@ -157,7 +171,7 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testStringSigCloudEvent() throws Exception {
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, null, processService, executor, AbstractMessageConsumer::cloudEventResolver);
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, null, processService, executor, null, AbstractMessageConsumer::cloudEventResolver);
         ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new StringCloudEvent("pepe", DUMMY_TOPIC, "source", "1")).toCompletableFuture().get();
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
@@ -174,9 +188,71 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testIgnoredCloudEvent() throws Exception {
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, AbstractMessageConsumer::cloudEventResolver);
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, null, AbstractMessageConsumer::cloudEventResolver);
         final DummyCloudEvent payload = new DummyCloudEvent(new DummyEvent("test"), "differentTopic", "differentSource");
         ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, payload).toCompletableFuture().get();
         assertNull(result);
+    }
+
+    @Test
+    void testCloudEventNewInstanceWithCorrelation() throws Exception {
+        String userId = "userId";
+        String name = "name";
+        String userValue = UUID.randomUUID().toString();
+        String nameValue = UUID.randomUUID().toString();
+
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, Stream.of(userId, name).collect(Collectors.toSet()),
+                AbstractMessageConsumer::cloudEventResolver);
+        DummyCloudEvent event = new DummyCloudEvent(new DummyEvent("pepe"), DUMMY_TOPIC, "source");
+        event.addExtensionAttribute(userId, userValue);
+        event.addExtensionAttribute(name, nameValue);
+
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, event).toCompletableFuture().get();
+
+        ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> referenceId = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<CompositeCorrelation> correlationCaptor = ArgumentCaptor.forClass(CompositeCorrelation.class);
+
+        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), correlationCaptor.capture());
+
+        assertEquals(DUMMY_TOPIC, signal.getValue());
+        assertEquals("1", referenceId.getValue());
+        assertEquals(instance, processInstance);
+
+        CompositeCorrelation correlation = correlationCaptor.getValue();
+        Set<? extends Correlation<?>> correlations = correlation.getValue();
+        assertThat(correlations.contains(new SimpleCorrelation<>(userId, userValue))).isTrue();
+        assertThat(correlations.contains(new SimpleCorrelation<>(name, nameValue))).isTrue();
+        assertThat(correlation.getKey()).isNotEmpty();
+        assertThat(correlationService.findByCorrelatedId(processInstance.id())).isEmpty();
+    }
+
+    @Test
+    void testSigCloudEventWithCorrelation() throws Exception {
+        String userId = "userId";
+        String name = "name";
+        String userValue = UUID.randomUUID().toString();
+        String nameValue = UUID.randomUUID().toString();
+        SimpleCorrelation<String> userCorrelation = new SimpleCorrelation<>(userId, userValue);
+        SimpleCorrelation<String> nameCorrelation = new SimpleCorrelation<>(name, nameValue);
+        CompositeCorrelation compositeCorrelation = new CompositeCorrelation(Stream.of(userCorrelation, nameCorrelation).collect(Collectors.toSet()));
+        correlationService.create(compositeCorrelation, "1");
+
+        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, Stream.of(userId, name).collect(Collectors.toSet()),
+                AbstractMessageConsumer::cloudEventResolver);
+        DummyCloudEvent event = new DummyCloudEvent(new DummyEvent("pepe"), DUMMY_TOPIC, "source");
+        event.addExtensionAttribute(userId, userValue);
+        event.addExtensionAttribute(name, nameValue);
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, event).toCompletableFuture().get();
+
+        ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
+
+        verify(correlationService).find(compositeCorrelation);
+        verify(processService, times(1)).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), Mockito.any(Object.class), signal.capture());
+
+        assertEquals("Message-" + DUMMY_TOPIC, signal.getValue());
+        assertEquals("1", processInstanceId.getValue());
+        assertEquals(instance, processInstance);
     }
 }

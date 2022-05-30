@@ -15,8 +15,11 @@
  */
 package org.kie.kogito.services.event.impl;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.process.ProcessDataEvent;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -54,7 +57,7 @@ public abstract class AbstractMessageProducer<D> {
     }
 
     public ProcessDataEvent<D> dataEventTypeConstructor(D eventPayload, KogitoProcessInstance pi, String trigger) {
-        return new ProcessDataEvent<>(trigger,
+        ProcessDataEvent<D> event = new ProcessDataEvent<>(trigger,
                 "",
                 eventPayload,
                 pi.getStringId(),
@@ -65,5 +68,12 @@ public abstract class AbstractMessageProducer<D> {
                 String.valueOf(pi.getState()),
                 null,
                 pi.getReferenceId());
+        //setting correlation as extension attributes
+        pi.unwrap().correlation()
+                .stream()
+                .map(c -> CompositeCorrelation.class.isInstance(c) ? CompositeCorrelation.class.cast(c).getValue() : Collections.singleton(c))
+                .flatMap(Set::stream)
+                .forEach(c -> event.addExtensionAttribute(c.getKey(), c.getValue()));
+        return event;
     }
 }

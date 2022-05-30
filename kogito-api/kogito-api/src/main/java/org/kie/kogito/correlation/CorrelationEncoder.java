@@ -15,15 +15,7 @@
  */
 package org.kie.kogito.correlation;
 
-import java.util.Optional;
+public interface CorrelationEncoder {
 
-public interface Correlation<V> {
-
-    String getKey();
-
-    V getValue();
-
-    default String asString() {
-        return Optional.ofNullable(getValue()).map(Object::toString).orElse(null);
-    }
+    String encode(Correlation correlation);
 }

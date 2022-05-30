@@ -15,15 +15,27 @@
  */
 package org.kie.kogito.correlation;
 
-import java.util.Optional;
+public class CorrelationInstance {
 
-public interface Correlation<V> {
+    private String correlationId;// encoded based on correlations
+    private String correlatedId;// == processInstanceId
+    private Correlation<?> correlation;
 
-    String getKey();
+    public CorrelationInstance(String correlationId, String correlatedId, Correlation<?> correlation) {
+        this.correlationId = correlationId;
+        this.correlatedId = correlatedId;
+        this.correlation = correlation;
+    }
 
-    V getValue();
+    public String getCorrelationId() {
+        return correlationId;
+    }
 
-    default String asString() {
-        return Optional.ofNullable(getValue()).map(Object::toString).orElse(null);
+    public String getCorrelatedId() {
+        return correlatedId;
+    }
+
+    public Correlation<?> getCorrelation() {
+        return correlation;
     }
 }

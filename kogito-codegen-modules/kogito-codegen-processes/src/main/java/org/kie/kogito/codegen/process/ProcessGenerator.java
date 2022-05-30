@@ -34,6 +34,8 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.correlation.CompositeCorrelation;
+import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Processes;
@@ -80,6 +82,7 @@ public class ProcessGenerator {
     private static final String APPLICATION = "app";
     private static final String WPI = "wpi";
     private static final String FACTORY = "factory";
+    private static final String CORRELATIONS = "correlations";
 
     private final String packageName;
     private final KogitoWorkflowProcess process;
@@ -187,6 +190,28 @@ public class ProcessGenerator {
                 .addParameter(modelTypeName, "value")
                 .setType(processInstanceFQCN)
                 .setBody(new BlockStmt().addStatement(returnStmt));
+        return methodDeclaration;
+    }
+
+    private MethodDeclaration createInstanceWithCorrelationMethod(String processInstanceFQCN) {
+        ReturnStmt returnStmt = new ReturnStmt(
+                new ObjectCreationExpr()
+                        .setType(processInstanceFQCN)
+                        .setArguments(NodeList.nodeList(
+                                new ThisExpr(),
+                                new NameExpr("value"),
+                                new NameExpr(BUSINESS_KEY),
+                                createProcessRuntime(),
+                                new NameExpr("correlation"))));
+        MethodDeclaration methodDeclaration = new MethodDeclaration();
+        methodDeclaration.setName("createInstance")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(String.class.getCanonicalName(), BUSINESS_KEY)
+                .addParameter(CompositeCorrelation.class.getCanonicalName(), "correlation")
+                .addParameter(modelTypeName, "value")
+                .setType(processInstanceFQCN)
+                .setBody(new BlockStmt().addStatement(returnStmt));
+
         return methodDeclaration;
     }
 
@@ -343,12 +368,15 @@ public class ProcessGenerator {
                 .setModifiers(Modifier.Keyword.PUBLIC);
         ProcessMetaData processMetaData = processExecutable.generate();
 
-        ConstructorDeclaration constructor = getConstructorDeclaration().addParameter(appCanonicalName, APPLICATION);
+        ConstructorDeclaration constructor = getConstructorDeclaration()
+                .addParameter(appCanonicalName, APPLICATION)
+                .addParameter(CorrelationService.class.getCanonicalName(), CORRELATIONS);
 
         MethodCallExpr handlersCollection = new MethodCallExpr(new NameExpr("java.util.Arrays"), "asList");
         MethodCallExpr superMethod = new MethodCallExpr(null, "super")
                 .addArgument(new NameExpr(APPLICATION))
-                .addArgument(handlersCollection);
+                .addArgument(handlersCollection)
+                .addArgument(new NameExpr(CORRELATIONS));
 
         if (context.getAddonsConfig().usePersistence()) {
             constructor.addParameter(ProcessInstancesFactory.class.getCanonicalName(), FACTORY);
@@ -367,10 +395,15 @@ public class ProcessGenerator {
 
         Map<String, CompilationUnit> handlers = processMetaData.getGeneratedHandlers();
         if (!handlers.isEmpty()) {
-            MethodCallExpr initMethodCall = new MethodCallExpr(null, "this").addArgument(new NameExpr(APPLICATION));
+            MethodCallExpr initMethodCall = new MethodCallExpr(null, "this")
+                    .addArgument(new NameExpr(APPLICATION))
+                    .addArgument(new NameExpr(CORRELATIONS));
+
             ConstructorDeclaration decl = getConstructorDeclaration()
                     .addParameter(appCanonicalName, APPLICATION)
+                    .addParameter(CorrelationService.class.getCanonicalName(), CORRELATIONS)
                     .setBody(new BlockStmt().addStatement(initMethodCall));
+
             if (context.getAddonsConfig().usePersistence()) {
                 initMethodCall.addArgument(new NameExpr(FACTORY));
                 decl.addParameter(ProcessInstancesFactory.class.getCanonicalName(), FACTORY);
@@ -421,6 +454,7 @@ public class ProcessGenerator {
                 constructor.addParameter(parameter);
                 handlersCollection.addArgument(new NameExpr(varName));
                 additionalClasses.add(handler.getValue());
+
             }
         }
         String processInstanceFQCN = ProcessInstanceGenerator.qualifiedName(packageName, typeName);
@@ -429,6 +463,7 @@ public class ProcessGenerator {
                 .addMember(getConstructorDeclaration())
                 .addMember(createInstanceMethod(processInstanceFQCN))
                 .addMember(createInstanceWithBusinessKeyMethod(processInstanceFQCN))
+                .addMember(createInstanceWithCorrelationMethod(processInstanceFQCN))
                 .addMember(new MethodDeclaration()
                         .addModifier(Keyword.PUBLIC)
                         .setName(CREATE_MODEL)

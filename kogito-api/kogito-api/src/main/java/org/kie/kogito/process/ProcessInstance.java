@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.flexible.AdHocFragment;
@@ -257,4 +258,5 @@ public interface ProcessInstance<T> {
 
     long version();
 
+    Optional<? extends Correlation<?>> correlation();
 }

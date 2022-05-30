@@ -22,8 +22,10 @@ import org.drools.util.StringUtils;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
+import static org.jbpm.ruleflow.core.Metadata.CORRELATION_ATTRIBUTES;
 import static org.jbpm.ruleflow.core.Metadata.DATA_ONLY;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
@@ -52,6 +54,8 @@ public class TriggerMetaData {
     private final boolean dataOnly;
     // the owner node
     private final Node node;
+    // indicates if the whole event should be consumed or just the data
+    private final CompositeCorrelation correlation;
 
     public static TriggerMetaData of(Node node) {
         return of(node, (String) node.getMetaData().get(MAPPING_VARIABLE));
@@ -66,10 +70,11 @@ public class TriggerMetaData {
                 (String) nodeMetaData.get(MESSAGE_TYPE),
                 mappingVariable,
                 getOwnerId(node),
-                (Boolean) nodeMetaData.get(DATA_ONLY)).validate();
+                (Boolean) nodeMetaData.get(DATA_ONLY),
+                (CompositeCorrelation) nodeMetaData.get(CORRELATION_ATTRIBUTES)).validate();
     }
 
-    private TriggerMetaData(Node node, String name, TriggerType type, String dataType, String modelRef, String ownerId, Boolean dataOnly) {
+    private TriggerMetaData(Node node, String name, TriggerType type, String dataType, String modelRef, String ownerId, Boolean dataOnly, CompositeCorrelation correlation) {
         this.node = node;
         this.name = name;
         this.type = type;
@@ -77,6 +82,7 @@ public class TriggerMetaData {
         this.modelRef = modelRef;
         this.ownerId = ownerId;
         this.dataOnly = dataOnly == null || dataOnly.booleanValue();
+        this.correlation = correlation;
     }
 
     public String getName() {
@@ -105,6 +111,10 @@ public class TriggerMetaData {
 
     public boolean dataOnly() {
         return dataOnly;
+    }
+
+    public CompositeCorrelation getCorrelation() {
+        return correlation;
     }
 
     private TriggerMetaData validate() {

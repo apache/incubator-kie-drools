@@ -80,6 +80,18 @@ public class WorkflowTestUtils {
                 .statusCode(200);
     }
 
+    public static String getProcessInstance(String processUrl) {
+        return given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .get(processUrl)
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("[0].id");
+    }
+
     /**
      * Asserts that a process instance not exists by executing the getProcessByIdQuery.
      * 

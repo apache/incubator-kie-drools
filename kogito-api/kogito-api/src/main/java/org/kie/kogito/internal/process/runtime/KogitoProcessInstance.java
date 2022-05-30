@@ -86,4 +86,8 @@ public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListe
      * @return map with headers
      */
     Map<String, List<String>> getHeaders();
+
+    void wrap(org.kie.kogito.process.ProcessInstance<?> kogitoProcessInstance);
+
+    org.kie.kogito.process.ProcessInstance<?> unwrap();
 }

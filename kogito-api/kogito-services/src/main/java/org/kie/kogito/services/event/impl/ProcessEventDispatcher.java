@@ -17,6 +17,7 @@ package org.kie.kogito.services.event.impl;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -24,11 +25,14 @@ import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kie.kogito.Model;
+import org.kie.kogito.correlation.CompositeCorrelation;
+import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.CorrelationResolver;
 import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessService;
+import org.kie.kogito.services.event.correlation.CompositeAttributeCorrelationResolver;
 import org.kie.kogito.services.event.correlation.SimpleAttributeCorrelationResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +45,14 @@ import static org.kie.kogito.event.cloudevents.CloudEventExtensionConstants.PROC
 
 public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<M> {
 
-    private CorrelationResolver kogitoReferenceCorrelationResolver = new SimpleAttributeCorrelationResolver(PROCESS_REFERENCE_ID);
-    private CorrelationResolver eventTypeResolver = new SimpleAttributeCorrelationResolver("type");
-    private CorrelationResolver eventSourceResolver = new SimpleAttributeCorrelationResolver("source");
-    private CorrelationResolver businessKeyResolver = new SimpleAttributeCorrelationResolver(BUSINESS_KEY);
-    private CorrelationResolver nodeIdResolver = new SimpleAttributeCorrelationResolver(PROCESS_START_FROM_NODE);
-    private CorrelationResolver referenceIdResolver = new SimpleAttributeCorrelationResolver(PROCESS_INSTANCE_ID);
+    private final CorrelationResolver kogitoReferenceCorrelationResolver = new SimpleAttributeCorrelationResolver(PROCESS_REFERENCE_ID);
+    private final CorrelationResolver eventTypeResolver = new SimpleAttributeCorrelationResolver("type");
+    private final CorrelationResolver eventSourceResolver = new SimpleAttributeCorrelationResolver("source");
+    private final CorrelationResolver businessKeyResolver = new SimpleAttributeCorrelationResolver(BUSINESS_KEY);
+    private final CorrelationResolver nodeIdResolver = new SimpleAttributeCorrelationResolver(PROCESS_START_FROM_NODE);
+    private final CorrelationResolver referenceIdResolver = new SimpleAttributeCorrelationResolver(PROCESS_INSTANCE_ID);
     private UnaryOperator<Object> dataResolver;
+    private final Optional<CompositeAttributeCorrelationResolver> instanceCorrelationResolver;
 
     private ProcessService processService;
     private Function<Object, M> modelConverter;
@@ -55,13 +60,22 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessEventDispatcher.class);
     private ExecutorService executor;
 
-    public ProcessEventDispatcher(Process<M> process, Function<Object, M> modelConverter, ProcessService processService, ExecutorService executor,
+    public ProcessEventDispatcher(Process<M> process, Function<Object, M> modelConverter, ProcessService processService, ExecutorService executor) {
+        this(process, modelConverter, processService, executor, null, null);
+    }
+
+    public ProcessEventDispatcher(Process<M> process, Function<Object, M> modelConverter, ProcessService processService, ExecutorService executor, Set<String> correlations,
             UnaryOperator<Object> dataResolver) {
         this.process = process;
         this.modelConverter = modelConverter;
         this.processService = processService;
         this.executor = executor;
+
         this.dataResolver = dataResolver;
+
+        this.instanceCorrelationResolver = Optional.ofNullable(correlations)
+                .filter(c -> !c.isEmpty())
+                .map(CompositeAttributeCorrelationResolver::new);
     }
 
     @Override
@@ -71,7 +85,7 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
             return CompletableFuture.completedFuture(null);
         }
 
-        final String kogitoReferenceId = kogitoReferenceCorrelationResolver.resolve(event).asString();
+        final String kogitoReferenceId = resolveCorrelationId(event);
         if (StringUtils.isNotEmpty(kogitoReferenceId)) {
             return CompletableFuture.supplyAsync(() -> handleMessageWithReference(trigger, event, kogitoReferenceId), executor);
         }
@@ -85,19 +99,32 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
         return CompletableFuture.completedFuture(null);
     }
 
-    private ProcessInstance<M> handleMessageWithReference(String trigger, Object event, String kogitoReferenceId) {
+    private String resolveCorrelationId(Object event) {
+        //extract if any, instance correlation
+        final Optional<CompositeCorrelation> correlation = instanceCorrelationResolver.map(r -> r.resolve(event));
+
+        //if exists call service to find the workflow instance id aka referenceId
+        final Optional<CorrelationInstance> correlationInstance = correlation.flatMap(process.correlations()::find);
+
+        //if not found the default is kogitoReferenceId
+        return correlationInstance
+                .map(CorrelationInstance::getCorrelatedId)
+                .orElseGet(() -> kogitoReferenceCorrelationResolver.resolve(event).asString());
+    }
+
+    private ProcessInstance<M> handleMessageWithReference(String trigger, Object event, String instanceId) {
         LOGGER.debug("Received message with reference id '{}' going to use it to send signal '{}'",
-                kogitoReferenceId,
+                instanceId,
                 trigger);
         return process.instances()
-                .findById(kogitoReferenceId)
+                .findById(instanceId)
                 .map(instance -> {
                     signalProcessInstance(trigger, instance.id(), event);
                     return instance;
                 })
                 .orElseGet(() -> {
-                    LOGGER.info("Process instance with id '{}' not found for triggering signal '{}'", kogitoReferenceId, trigger);
-                    return modelConverter != null ? startNewInstance(trigger, event) : null;
+                    LOGGER.info("Process instance with id '{}' not found for triggering signal '{}'", instanceId, trigger);
+                    return startNewInstance(trigger, event);
                 });
     }
 
@@ -106,19 +133,26 @@ public class ProcessEventDispatcher<M extends Model> implements EventDispatcher<
     }
 
     private ProcessInstance<M> startNewInstance(String trigger, Object event) {
+        if (modelConverter == null) {
+            return null;
+        }
+        final String businessKey = businessKeyResolver.resolve(event).asString();
+        final String fromNode = nodeIdResolver.resolve(event).asString();
+        final String referenceId = referenceIdResolver.resolve(event).asString();//keep reference with the caller starting the instance (usually the caller process instance)
+
+        final Object data = dataResolver.apply(event);
+
+        //event correlation, extract if any, the workflow instance correlation
+        final CompositeCorrelation correlation = instanceCorrelationResolver.map(r -> r.resolve(event)).orElse(null);
         LOGGER.info("Starting new process instance with signal '{}'", trigger);
-        String businessKey = businessKeyResolver.resolve(event).asString();
-        String fromNode = nodeIdResolver.resolve(event).asString();
-        String referenceId = referenceIdResolver.resolve(event).asString();//keep reference with the caller starting the instance (usually the caller process instance)
-        Object data = dataResolver.apply(event);
-        return processService.createProcessInstance(process, businessKey, modelConverter.apply(data), fromNode, trigger, referenceId);
+        return processService.createProcessInstance(process, businessKey, modelConverter.apply(data), fromNode, trigger, referenceId, correlation);
     }
 
     private boolean shouldSkipMessage(String trigger, Object event) {
-        String eventType = eventTypeResolver.resolve(event).asString();
-        String source = eventSourceResolver.resolve(event).asString();
-        boolean isEventTypeNotMatched = nonNull(eventType) && !Objects.equals(trigger, eventType);
-        boolean isSourceNotMatched = nonNull(source) && !Objects.equals(event.getClass().getSimpleName(), source) && !Objects.equals(trigger, source);
+        final String eventType = eventTypeResolver.resolve(event).asString();
+        final String source = eventSourceResolver.resolve(event).asString();
+        final boolean isEventTypeNotMatched = nonNull(eventType) && !Objects.equals(trigger, eventType);
+        final boolean isSourceNotMatched = nonNull(source) && !Objects.equals(event.getClass().getSimpleName(), source) && !Objects.equals(trigger, source);
         return isEventTypeNotMatched && isSourceNotMatched;
     }
 }

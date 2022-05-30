@@ -15,10 +15,12 @@
  */
 package org.kie.kogito.services.event.correlation;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.correlation.CorrelationResolver;
+import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
@@ -27,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SimpleAttributeCorrelationResolver implements CorrelationResolver {
 
-    private String referenceKey = CloudEventExtensionConstants.PROCESS_REFERENCE_ID;
+    private String referenceKey;
     private ObjectMapper objectMapper = ObjectMapperFactory.get();
     private Optional<Class<?>> type;
 
@@ -36,24 +38,29 @@ public class SimpleAttributeCorrelationResolver implements CorrelationResolver {
     }
 
     public SimpleAttributeCorrelationResolver(String referenceKey, Class<?> type) {
-        this.referenceKey = referenceKey;
+        this.referenceKey = Objects.requireNonNull(referenceKey, "referenceKey should not be null");
         this.type = Optional.ofNullable(type);
     }
 
     @Override
-    public Correlation resolve(Object data) {
-        final JsonNode correlationValue = objectMapper.valueToTree(data).get(referenceKey);
+    public Correlation<?> resolve(Object data) {
+        final JsonNode jsonNode = objectMapper.valueToTree(data);
+        final JsonNode correlationValue = Optional.ofNullable(jsonNode.get(referenceKey))
+                .orElseGet(() -> Optional.ofNullable(jsonNode.get(CloudEventExtensionConstants.EXTENSION_ATTRIBUTES))
+                        .map(node -> node.get(referenceKey))
+                        .orElse(null));
+
         if (correlationValue == null) {
-            return new Correlation(referenceKey, null);
+            return new SimpleCorrelation(referenceKey, null);
         }
 
         if (correlationValue.isTextual()) {
-            return new Correlation(referenceKey, correlationValue.textValue());
+            return new SimpleCorrelation(referenceKey, correlationValue.textValue());
         }
 
         return type.map(t -> objectMapper.convertValue(correlationValue, t))
-                .map(v -> new Correlation(referenceKey, v))
-                .orElse(new Correlation(referenceKey, correlationValue));
+                .map(v -> new SimpleCorrelation(referenceKey, v))
+                .orElse(new SimpleCorrelation(referenceKey, correlationValue));
     }
 
     public static SimpleAttributeCorrelationResolver forAttribute(String attributeName) {

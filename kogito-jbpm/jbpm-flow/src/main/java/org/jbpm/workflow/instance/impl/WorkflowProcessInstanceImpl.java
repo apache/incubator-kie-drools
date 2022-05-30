@@ -84,6 +84,7 @@ import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
+import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.ItemDescription;
 import org.kie.kogito.process.flexible.Milestone;
@@ -144,6 +145,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     private String referenceId;
 
     private AgendaFilter agendaFilter;
+
+    private ProcessInstance<?> kogitoProcessInstance;
 
     @Override
     public NodeContainer getNodeContainer() {
@@ -1156,5 +1159,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     @Override
     public void setAgendaFilter(AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
+    }
+
+    public final void wrap(ProcessInstance<?> kogitoProcessInstance) {
+        this.kogitoProcessInstance = kogitoProcessInstance;
+    }
+
+    public final ProcessInstance<?> unwrap() {
+        return this.kogitoProcessInstance;
     }
 }

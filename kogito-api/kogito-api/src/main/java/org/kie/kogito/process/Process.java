@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import org.kie.kogito.Model;
+import org.kie.kogito.correlation.CompositeCorrelation;
+import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
 public interface Process<T> {
@@ -27,9 +29,13 @@ public interface Process<T> {
 
     ProcessInstance<T> createInstance(String businessKey, T workingMemory);
 
+    ProcessInstance<T> createInstance(String businessKey, CompositeCorrelation correlation, T workingMemory);
+
     ProcessInstances<T> instances();
 
     Collection<KogitoNode> findNodes(Predicate<KogitoNode> filter);
+
+    CorrelationService correlations();
 
     <S> void send(Signal<S> sig);
 

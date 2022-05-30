@@ -50,6 +50,7 @@ import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusHumanTaskSe
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusProcessIdFactory;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStatefulProcessService;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStraightThroughProcessService;
+import org.kie.kogito.correlation.CorrelationServiceProducer;
 import org.kie.kogito.event.process.AttachmentEventBody;
 import org.kie.kogito.event.process.CommentEventBody;
 import org.kie.kogito.event.process.MilestoneEventBody;
@@ -192,7 +193,8 @@ public class ProcessesAssetsProcessor {
                         QuarkusStraightThroughProcessService.class,
                         QuarkusStatefulProcessService.class,
                         QuarkusHumanTaskService.class,
-                        QuarkusProcessIdFactory.class)
+                        QuarkusProcessIdFactory.class,
+                        CorrelationServiceProducer.class)
                 .build();
     }
 

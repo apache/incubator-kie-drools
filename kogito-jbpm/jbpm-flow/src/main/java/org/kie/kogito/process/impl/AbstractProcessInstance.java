@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -44,6 +45,9 @@ import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 import org.kie.kogito.Model;
+import org.kie.kogito.correlation.CompositeCorrelation;
+import org.kie.kogito.correlation.Correlation;
+import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -87,11 +91,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected long version;
 
+    private Optional<CorrelationInstance> correlationInstance = Optional.empty();
+
+    private CompositeCorrelation correlation;
+
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this(process, variables, null, rt);
     }
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, String businessKey, ProcessRuntime rt) {
+        this(process, variables, businessKey, rt, null);
+    }
+
+    public AbstractProcessInstance(AbstractProcess<T> process, T variables, String businessKey, ProcessRuntime rt, CompositeCorrelation correlation) {
         this.process = process;
         this.rt = (InternalProcessRuntime) rt;
         this.variables = variables;
@@ -102,6 +114,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         String processId = process.get().getId();
         syncProcessInstance((WorkflowProcessInstance) ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map));
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
+
+        if (Objects.nonNull(correlation)) {
+            this.correlation = correlation;
+            this.correlationInstance = Optional.of(process.correlations().create(correlation, id()));
+        }
     }
 
     /**
@@ -127,6 +144,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     protected void reconnect() {
+        //set correlation
+        if (Objects.nonNull(correlation) && correlationInstance.isEmpty()) {
+            correlationInstance = process().correlations().findByCorrelatedId(id());
+        }
+
         if (processInstance.getKnowledgeRuntime() == null) {
             processInstance.setKnowledgeRuntime(getProcessRuntime().getInternalKieRuntime());
         }
@@ -174,7 +196,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     private void syncProcessInstance(WorkflowProcessInstance wpi) {
-        processInstance = wpi;
+        internalSetProcessInstance(wpi);
         status = wpi.getState();
         id = wpi.getStringId();
         description = wpi.getDescription();
@@ -187,12 +209,18 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         }
     }
 
+    @Override
+    public Optional<Correlation<?>> correlation() {
+        return correlationInstance.map(CorrelationInstance::getCorrelation);
+    }
+
     public WorkflowProcessInstance internalGetProcessInstance() {
         return processInstance;
     }
 
     public void internalSetProcessInstance(WorkflowProcessInstance processInstance) {
         this.processInstance = processInstance;
+        processInstance.wrap(this);
     }
 
     public void internalRemoveProcessInstance(Consumer<AbstractProcessInstance<?>> reloadSupplier) {
@@ -263,7 +291,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         unbind(variables, processInstance().getVariables());
         getProcessRuntime().getKogitoProcessRuntime().abortProcessInstance(pid);
         this.status = processInstance.getState();
-        addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));
+        remove();
     }
 
     private InternalProcessRuntime getProcessRuntime() {
@@ -532,12 +560,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         if (processInstance.getState() != KogitoProcessInstance.STATE_ACTIVE && processInstance.getState() != KogitoProcessInstance.STATE_ERROR) {
             removeCompletionListener();
             syncProcessInstance(processInstance);
-            addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));
+            remove();
         } else {
             addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         }
         unbind(this.variables, processInstance().getVariables());
         this.status = processInstance.getState();
+    }
+
+    private void remove() {
+        correlationInstance.map(CorrelationInstance::getCorrelation)
+                .ifPresent(c -> addToUnitOfWork(r -> process().correlations().delete(c)));
+
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));
     }
 
     // this must be overridden at compile time
