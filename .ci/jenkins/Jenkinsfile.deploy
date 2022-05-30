@@ -13,7 +13,7 @@ employeeRosteringRepository = 'optaweb-employee-rostering'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel7 && kie-mem16g && !master'
     }
 
     tools {
@@ -24,6 +24,7 @@ pipeline {
     options {
         timestamps()
         timeout(time: 120, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
     }
 
     // parameters {

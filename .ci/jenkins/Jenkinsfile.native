@@ -8,7 +8,7 @@ droolsRepo = 'drools'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel7 && kie-mem16g && !master'
     }
     tools {
         maven 'kie-maven-3.8.1'
@@ -17,6 +17,7 @@ pipeline {
     options {
         timestamps()
         timeout(time: 360, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
     }
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")

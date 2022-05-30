@@ -10,7 +10,7 @@ String stableBranchName = 'stable'
 
 pipeline {
     agent {
-        label 'kie-rhel7'
+        label 'kie-rhel7 && !master'
     }
 
     tools {
@@ -21,6 +21,7 @@ pipeline {
     options {
         timestamps()
         timeout(time: 120, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
     }
 
     // parameters {

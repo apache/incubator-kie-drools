@@ -6,7 +6,7 @@ optaplannerRepo = 'optaplanner'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel7 && kie-mem16g && !master'
     }
     tools {
         maven 'kie-maven-3.8.1'
@@ -15,6 +15,7 @@ pipeline {
     options {
         timestamps()
         timeout(time: 3, unit: 'DAYS') // Turtle tests take ~2 days to complete.
+        disableConcurrentBuilds(abortPrevious: true)
     }
     // parameters {
     // For parameters, check the .jenkins/dsl/jobs.groovy file.
