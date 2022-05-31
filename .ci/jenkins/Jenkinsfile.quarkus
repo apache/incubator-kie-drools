@@ -255,6 +255,9 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
         mvnCmd.withProperty('quarkus-plugin.version', '999-SNAPSHOT')
         mvnCmd.withProperty('quarkus.platform.version', '999-SNAPSHOT')
     }
+    if (env.BUILD_MVN_OPTS) {
+        mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
+    }
     return mvnCmd
 }
 
