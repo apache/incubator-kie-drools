@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>8.22.1-SNAPSHOT</version>
+    <version>8.22.1.Beta</version>
   </parent>
 
   <name>Drools :: MVEL Parser</name>
