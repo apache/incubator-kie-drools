@@ -114,6 +114,37 @@ public class FactTemplateTest {
     }
 
     @Test
+    public void testNotNull() {
+        Prototype personFact = prototype( "org.drools.Person" );
+        PrototypeVariable markV = variable(personFact);
+
+        Rule rule = rule("alpha")
+                .build(
+                        protoPattern(markV)
+                                .expr("name", Index.ConstraintType.NOT_EQUAL, null),
+                        on(markV).execute((drools, p) ->
+                                drools.insert(new Result("Found a " + p.get("age") + " years old Mark"))
+                        )
+                );
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact unknown = createMapBasedFact(personFact);
+        unknown.set( "age", 40 );
+        ksession.insert( unknown );
+        assertEquals( 0, ksession.fireAllRules() );
+
+        Fact mark = createMapBasedFact(personFact);
+        mark.set( "name", "Mark" );
+        mark.set( "age", 40 );
+        ksession.insert( mark );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
     public void testBeta() {
         Result result = new Result();
 
