@@ -16,6 +16,8 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+import java.util.Objects;
+
 final class TwoIndexProperties implements IndexProperties {
 
     private final Object propertyA;
@@ -41,6 +43,24 @@ final class TwoIndexProperties implements IndexProperties {
     @Override
     public int maxLength() {
         return 2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TwoIndexProperties)) {
+            return false;
+        }
+        TwoIndexProperties other = (TwoIndexProperties) o;
+        return Objects.equals(propertyA, other.propertyA)
+                && Objects.equals(propertyB, other.propertyB);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(propertyA, propertyB);
     }
 
     @Override

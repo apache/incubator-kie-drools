@@ -73,7 +73,7 @@ final class BavetBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
         AbstractGroupNode<BiTuple<A, B>, BiTuple<NewA, NewB>, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, insert, retract, outputStoreSize);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insert, node::retract);
+        buildHelper.putInsertRetract(this, node::insert, node::update, node::retract);
     }
 
     @Override

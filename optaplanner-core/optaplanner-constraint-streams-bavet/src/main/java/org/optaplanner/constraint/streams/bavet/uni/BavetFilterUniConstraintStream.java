@@ -65,25 +65,50 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<UniTuple<A>> update = buildHelper.getAggregatedUpdate(childStreamList);
         Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
         buildHelper.putInsertRetract(this,
-                new ConditionalUniConsumer<>(predicate, insert),
+                new ConditionalUniInserter<>(predicate, insert),
+                new ConditionalUniUpdater<>(predicate, update, retract),
                 retract);
     }
 
-    private static final class ConditionalUniConsumer<A> implements Consumer<UniTuple<A>> {
+    private static final class ConditionalUniInserter<A> implements Consumer<UniTuple<A>> {
         private final Predicate<A> predicate;
-        private final Consumer<UniTuple<A>> consumer;
+        private final Consumer<UniTuple<A>> insert;
 
-        public ConditionalUniConsumer(Predicate<A> predicate, Consumer<UniTuple<A>> consumer) {
+        public ConditionalUniInserter(Predicate<A> predicate, Consumer<UniTuple<A>> insert) {
             this.predicate = predicate;
-            this.consumer = consumer;
+            this.insert = insert;
         }
 
         @Override
         public void accept(UniTuple<A> tuple) {
             if (predicate.test(tuple.factA)) {
-                consumer.accept(tuple);
+                insert.accept(tuple);
+            }
+        }
+
+    }
+
+    private static final class ConditionalUniUpdater<A> implements Consumer<UniTuple<A>> {
+        private final Predicate<A> predicate;
+        private final Consumer<UniTuple<A>> update;
+        private final Consumer<UniTuple<A>> retract;
+
+        public ConditionalUniUpdater(Predicate<A> predicate,
+                Consumer<UniTuple<A>> update, Consumer<UniTuple<A>> retract) {
+            this.predicate = predicate;
+            this.update = update;
+            this.retract = retract;
+        }
+
+        @Override
+        public void accept(UniTuple<A> tuple) {
+            if (predicate.test(tuple.factA)) {
+                update.accept(tuple);
+            } else {
+                retract.accept(tuple);
             }
         }
 

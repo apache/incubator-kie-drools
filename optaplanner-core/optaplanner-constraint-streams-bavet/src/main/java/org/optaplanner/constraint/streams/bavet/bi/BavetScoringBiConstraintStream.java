@@ -147,7 +147,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
         }
         BiScorer<A, B> scorer = new BiScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
                 constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
-        buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
+        buildHelper.putInsertRetract(this, scorer::insert, scorer::update, scorer::retract);
     }
 
     // ************************************************************************

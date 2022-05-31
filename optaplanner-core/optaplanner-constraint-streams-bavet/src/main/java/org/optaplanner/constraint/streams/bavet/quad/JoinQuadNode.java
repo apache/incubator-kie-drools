@@ -34,11 +34,15 @@ final class JoinQuadNode<A, B, C, D> extends AbstractJoinNode<TriTuple<A, B, C>,
 
     public JoinQuadNode(TriFunction<A, B, C, IndexProperties> mappingABC, Function<D, IndexProperties> mappingD,
             int inputStoreIndexAB, int inputStoreIndexC,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesUpdate,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize,
             Indexer<TriTuple<A, B, C>, Map<UniTuple<D>, QuadTuple<A, B, C, D>>> indexerABC,
             Indexer<UniTuple<D>, Map<TriTuple<A, B, C>, QuadTuple<A, B, C, D>>> indexerD) {
-        super(mappingD, inputStoreIndexAB, inputStoreIndexC, nextNodesInsert, nextNodesRetract, indexerABC, indexerD);
+        super(mappingD, inputStoreIndexAB, inputStoreIndexC,
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract,
+                indexerABC, indexerD);
         this.mappingABC = mappingABC;
         this.outputStoreSize = outputStoreSize;
     }

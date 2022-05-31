@@ -81,6 +81,7 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
         int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         Consumer<QuadTuple<A, B, C, D>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<QuadTuple<A, B, C, D>> update = buildHelper.getAggregatedUpdate(childStreamList);
         Consumer<QuadTuple<A, B, C, D>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
@@ -88,11 +89,12 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
         Indexer<UniTuple<D>, Map<TriTuple<A, B, C>, QuadTuple<A, B, C, D>>> indexerD = indexerFactory.buildIndexer(false);
         JoinQuadNode<A, B, C, D> node = new JoinQuadNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexAB, inputStoreIndexC, insert, retract,
+                inputStoreIndexAB, inputStoreIndexC,
+                insert, update, retract,
                 outputStoreSize, indexerABC, indexerD);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::retractLeft);
-        buildHelper.putInsertRetract(rightParent, node::insertRight, node::retractRight);
+        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::updateLeft, node::retractLeft);
+        buildHelper.putInsertRetract(rightParent, node::insertRight, node::updateRight, node::retractRight);
     }
 
     // ************************************************************************

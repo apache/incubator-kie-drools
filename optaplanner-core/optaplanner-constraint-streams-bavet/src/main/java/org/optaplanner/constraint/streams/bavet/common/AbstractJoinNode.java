@@ -38,6 +38,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
      */
     private final Consumer<OutTuple_> nextNodesInsert;
     /**
+     * Calls for example {@link AbstractScorer#update(Tuple)} and/or ...
+     */
+    private final Consumer<OutTuple_> nextNodesUpdate;
+    /**
      * Calls for example {@link AbstractScorer#retract(Tuple)} and/or ...
      */
     private final Consumer<OutTuple_> nextNodesRetract;
@@ -47,13 +51,16 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     protected AbstractJoinNode(Function<Right_, IndexProperties> mappingRight,
             int inputStoreIndexLeft, int inputStoreIndexRight,
-            Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract,
+            Consumer<OutTuple_> nextNodesInsert,
+            Consumer<OutTuple_> nextNodesUpdate,
+            Consumer<OutTuple_> nextNodesRetract,
             Indexer<LeftTuple_, Map<UniTuple<Right_>, OutTuple_>> indexerLeft,
             Indexer<UniTuple<Right_>, Map<LeftTuple_, OutTuple_>> indexerRight) {
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeft = inputStoreIndexLeft;
         this.inputStoreIndexRight = inputStoreIndexRight;
         this.nextNodesInsert = nextNodesInsert;
+        this.nextNodesUpdate = nextNodesUpdate;
         this.nextNodesRetract = nextNodesRetract;
         this.indexerLeft = indexerLeft;
         this.indexerRight = indexerRight;
@@ -79,9 +86,40 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
-    protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
+    public void updateLeft(LeftTuple_ leftTuple) {
+        Object[] tupleStore = leftTuple.getStore();
+        IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
+        if (oldIndexProperties == null) {
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            insertLeft(leftTuple);
+            return;
+        }
+        IndexProperties newIndexProperties = createIndexProperties(leftTuple);
 
-    protected abstract OutTuple_ createOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+        if (oldIndexProperties.equals(newIndexProperties)) {
+            // No need for re-indexing because the index properties didn't change
+            // Still needed to propagate the update for downstream filters, matchWeighters, ...
+            Map<UniTuple<Right_>, OutTuple_> outTupleMapLeft = indexerLeft.get(oldIndexProperties, leftTuple);
+            for (OutTuple_ outTuple : outTupleMapLeft.values()) {
+                updateTuple(outTuple);
+            }
+        } else {
+            Map<UniTuple<Right_>, OutTuple_> outTupleMapLeft = indexerLeft.remove(oldIndexProperties, leftTuple);
+            for (OutTuple_ outTuple : outTupleMapLeft.values()) {
+                retractTuple(outTuple);
+            }
+            outTupleMapLeft.clear();
+
+            tupleStore[inputStoreIndexLeft] = newIndexProperties;
+            indexerLeft.put(newIndexProperties, leftTuple, outTupleMapLeft);
+            indexerRight.visit(newIndexProperties, (rightTuple, emptyMap) -> {
+                OutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
+                outTuple.setState(BavetTupleState.CREATING);
+                outTupleMapLeft.put(rightTuple, outTuple);
+                dirtyTupleQueue.add(outTuple);
+            });
+        }
+    }
 
     public final void retractLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
@@ -94,7 +132,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
         Map<UniTuple<Right_>, OutTuple_> outTupleMapLeft = indexerLeft.remove(indexProperties, leftTuple);
         for (OutTuple_ outTuple : outTupleMapLeft.values()) {
-            killTuple(outTuple);
+            retractTuple(outTuple);
         }
     }
 
@@ -115,6 +153,51 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
+    public void updateRight(UniTuple<Right_> rightTuple) {
+        IndexProperties oldIndexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
+        if (oldIndexProperties == null) {
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            insertRight(rightTuple);
+            return;
+        }
+        IndexProperties newIndexProperties = mappingRight.apply(rightTuple.factA);
+
+        if (oldIndexProperties.equals(newIndexProperties)) {
+            // No need for re-indexing because the index properties didn't change
+            // Still needed to propagate the update for downstream filters, matchWeighters, ...
+            indexerLeft.visit(oldIndexProperties, (leftTuple, outTupleMapLeft) -> {
+                OutTuple_ outTuple = outTupleMapLeft.get(rightTuple);
+                if (outTuple == null) {
+                    throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
+                            + ") with indexProperties (" + oldIndexProperties
+                            + ") has tuples on the right side that didn't exist on the left side.");
+                }
+                updateTuple(outTuple);
+            });
+        } else {
+            indexerRight.remove(oldIndexProperties, rightTuple);
+            // Remove out tuples from the other side
+            indexerLeft.visit(oldIndexProperties, (leftTuple, outTupleMapLeft) -> {
+                OutTuple_ outTuple = outTupleMapLeft.remove(rightTuple);
+                if (outTuple == null) {
+                    throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
+                            + ") with indexProperties (" + oldIndexProperties
+                            + ") has tuples on the right side that didn't exist on the left side.");
+                }
+                retractTuple(outTuple);
+            });
+
+            rightTuple.store[inputStoreIndexRight] = newIndexProperties;
+            indexerRight.put(newIndexProperties, rightTuple, Collections.emptyMap());
+            indexerLeft.visit(newIndexProperties, (leftTuple, outTupleMapLeft) -> {
+                OutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
+                outTuple.setState(BavetTupleState.CREATING);
+                outTupleMapLeft.put(rightTuple, outTuple);
+                dirtyTupleQueue.add(outTuple);
+            });
+        }
+    }
+
     public final void retractRight(UniTuple<Right_> rightTuple) {
         IndexProperties indexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
         if (indexProperties == null) {
@@ -132,62 +215,80 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                         + ") with indexProperties (" + indexProperties
                         + ") has tuples on the right side that didn't exist on the left side.");
             }
-            killTuple(outTuple);
+            retractTuple(outTuple);
         });
     }
 
-    private void killTuple(OutTuple_ outTuple) {
-        // Don't add the tuple to the dirtyTupleQueue twice
-        BavetTupleState state = outTuple.getState();
-        if (state.isDirty()) {
-            switch (state) {
-                case CREATING:
-                    // Kill it before it propagates
-                    outTuple.setState(BavetTupleState.ABORTING);
-                    break;
-                case UPDATING:
-                    // Kill the original propagation
-                    outTuple.setState(BavetTupleState.DYING);
-                    break;
-                case DYING:
-                    break;
-                default:
-                    throw new IllegalStateException("Impossible state: The tuple (" + outTuple
-                            + ") has the dirty state (" + state + ").");
-            }
-        } else {
-            outTuple.setState(BavetTupleState.DYING);
-            dirtyTupleQueue.add(outTuple);
+    protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
+
+    protected abstract OutTuple_ createOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+
+    private void updateTuple(OutTuple_ outTuple) {
+        switch (outTuple.getState()) {
+            case CREATING:
+                // Don't add the tuple to the dirtyTupleQueue twice
+                break;
+            case UPDATING:
+                // Don't add the tuple to the dirtyTupleQueue twice
+                break;
+            case OK:
+                outTuple.setState(BavetTupleState.UPDATING);
+                dirtyTupleQueue.add(outTuple);
+                break;
+            default:
+                throw new IllegalStateException("Impossible state: The tuple (" + outTuple.getState() + ") in node (" +
+                        this + ") is in an unexpected state (" + outTuple.getState() + ").");
+        }
+    }
+
+    private void retractTuple(OutTuple_ outTuple) {
+        switch (outTuple.getState()) {
+            case CREATING:
+                // Don't add the tuple to the dirtyTupleQueue twice
+                // Kill it before it propagates
+                outTuple.setState(BavetTupleState.ABORTING);
+                break;
+            case UPDATING:
+                // Don't add the tuple to the dirtyTupleQueue twice
+                // Kill the original propagation
+                outTuple.setState(BavetTupleState.DYING);
+                break;
+            // DYING and ABORTING are impossible because they shouldn't linger in the indexes.
+            case OK:
+                outTuple.setState(BavetTupleState.DYING);
+                dirtyTupleQueue.add(outTuple);
+                break;
+            default:
+                throw new IllegalStateException("Impossible state: The tuple (" + outTuple.getState() + ") in node (" +
+                        this + ") is in an unexpected state (" + outTuple.getState() + ").");
         }
     }
 
     @Override
     public void calculateScore() {
         dirtyTupleQueue.forEach(tuple -> {
-            BavetTupleState state = tuple.getState();
-            // Retract
-            if (state == BavetTupleState.UPDATING || state == BavetTupleState.DYING) {
-                nextNodesRetract.accept(tuple);
-            }
-            // Insert
-            if (state == BavetTupleState.CREATING || state == BavetTupleState.UPDATING) {
-                nextNodesInsert.accept(tuple);
-            }
-            switch (state) {
+            switch (tuple.getState()) {
                 case CREATING:
+                    nextNodesInsert.accept(tuple);
+                    tuple.setState(BavetTupleState.OK);
+                    return;
                 case UPDATING:
+                    nextNodesUpdate.accept(tuple);
                     tuple.setState(BavetTupleState.OK);
                     return;
                 case DYING:
+                    nextNodesRetract.accept(tuple);
+                    tuple.setState(BavetTupleState.DEAD);
+                    return;
                 case ABORTING:
                     tuple.setState(BavetTupleState.DEAD);
                     return;
                 case DEAD:
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                            this + ") is already in the dead state (" + state + ").");
+                            this + ") is already in the dead state (" + tuple.getState() + ").");
                 default:
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                            this + ") is in an unexpected state (" + state + ").");
+                            this + ") is in an unexpected state (" + tuple.getState() + ").");
             }
         });
         dirtyTupleQueue.clear();

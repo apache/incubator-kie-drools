@@ -32,11 +32,15 @@ final class JoinBiNode<A, B> extends AbstractJoinNode<UniTuple<A>, B, BiTuple<A,
 
     public JoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            Consumer<BiTuple<A, B>> nextNodesInsert,
+            Consumer<BiTuple<A, B>> nextNodesUpdate,
+            Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize,
             Indexer<UniTuple<A>, Map<UniTuple<B>, BiTuple<A, B>>> indexerA,
             Indexer<UniTuple<B>, Map<UniTuple<A>, BiTuple<A, B>>> indexerB) {
-        super(mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesInsert, nextNodesRetract, indexerA, indexerB);
+        super(mappingB, inputStoreIndexA, inputStoreIndexB,
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract,
+                indexerA, indexerB);
         this.mappingA = mappingA;
         this.outputStoreSize = outputStoreSize;
     }

@@ -16,6 +16,8 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+import java.util.Objects;
+
 final class ThreeIndexProperties implements IndexProperties {
 
     private final Object propertyA;
@@ -45,6 +47,25 @@ final class ThreeIndexProperties implements IndexProperties {
     @Override
     public int maxLength() {
         return 3;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ThreeIndexProperties)) {
+            return false;
+        }
+        ThreeIndexProperties other = (ThreeIndexProperties) o;
+        return Objects.equals(propertyA, other.propertyA)
+                && Objects.equals(propertyB, other.propertyB)
+                && Objects.equals(propertyC, other.propertyC);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(propertyA, propertyB, propertyC);
     }
 
     @Override

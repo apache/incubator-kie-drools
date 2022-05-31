@@ -20,6 +20,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Triple;
+
+/**
+ * Often replaced by a specialization such as {@link Pair}, {@link Triple}, ...
+ */
 final class IndexerKey {
 
     private final IndexProperties indexProperties;

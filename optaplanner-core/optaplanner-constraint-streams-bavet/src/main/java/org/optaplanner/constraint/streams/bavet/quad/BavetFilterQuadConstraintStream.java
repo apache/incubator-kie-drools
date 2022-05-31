@@ -67,25 +67,50 @@ public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<QuadTuple<A, B, C, D>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<QuadTuple<A, B, C, D>> update = buildHelper.getAggregatedUpdate(childStreamList);
         Consumer<QuadTuple<A, B, C, D>> retract = buildHelper.getAggregatedRetract(childStreamList);
         buildHelper.putInsertRetract(this,
-                new ConditionalQuadConsumer<>(predicate, insert),
+                new ConditionalQuadInserter<>(predicate, insert),
+                new ConditionalQuadUpdater<>(predicate, update, retract),
                 retract);
     }
 
-    private static final class ConditionalQuadConsumer<A, B, C, D> implements Consumer<QuadTuple<A, B, C, D>> {
+    private static final class ConditionalQuadInserter<A, B, C, D> implements Consumer<QuadTuple<A, B, C, D>> {
         private final QuadPredicate<A, B, C, D> predicate;
-        private final Consumer<QuadTuple<A, B, C, D>> consumer;
+        private final Consumer<QuadTuple<A, B, C, D>> insert;
 
-        public ConditionalQuadConsumer(QuadPredicate<A, B, C, D> predicate, Consumer<QuadTuple<A, B, C, D>> consumer) {
+        public ConditionalQuadInserter(QuadPredicate<A, B, C, D> predicate, Consumer<QuadTuple<A, B, C, D>> insert) {
             this.predicate = predicate;
-            this.consumer = consumer;
+            this.insert = insert;
         }
 
         @Override
         public void accept(QuadTuple<A, B, C, D> tuple) {
             if (predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD)) {
-                consumer.accept(tuple);
+                insert.accept(tuple);
+            }
+        }
+
+    }
+
+    private static final class ConditionalQuadUpdater<A, B, C, D> implements Consumer<QuadTuple<A, B, C, D>> {
+        private final QuadPredicate<A, B, C, D> predicate;
+        private final Consumer<QuadTuple<A, B, C, D>> update;
+        private final Consumer<QuadTuple<A, B, C, D>> retract;
+
+        public ConditionalQuadUpdater(QuadPredicate<A, B, C, D> predicate,
+                Consumer<QuadTuple<A, B, C, D>> update, Consumer<QuadTuple<A, B, C, D>> retract) {
+            this.predicate = predicate;
+            this.update = update;
+            this.retract = retract;
+        }
+
+        @Override
+        public void accept(QuadTuple<A, B, C, D> tuple) {
+            if (predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD)) {
+                update.accept(tuple);
+            } else {
+                retract.accept(tuple);
             }
         }
 

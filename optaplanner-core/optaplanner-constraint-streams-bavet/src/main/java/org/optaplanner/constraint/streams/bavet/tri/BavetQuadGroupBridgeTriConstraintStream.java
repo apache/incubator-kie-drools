@@ -76,7 +76,7 @@ final class BavetQuadGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, Ne
         AbstractGroupNode<TriTuple<A, B, C>, QuadTuple<NewA, NewB, NewC, NewD>, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, insert, retract, outputStoreSize);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insert, node::retract);
+        buildHelper.putInsertRetract(this, node::insert, node::update, node::retract);
     }
 
     @Override

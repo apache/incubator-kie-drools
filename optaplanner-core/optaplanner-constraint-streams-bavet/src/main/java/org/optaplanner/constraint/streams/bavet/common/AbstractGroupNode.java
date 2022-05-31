@@ -76,11 +76,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
-    protected abstract GroupKey_ createGroupKey(InTuple_ tuple);
-
-    protected abstract Runnable accumulate(ResultContainer_ resultContainer, InTuple_ tuple);
-
-    protected abstract OutTuple_ createOutTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
+    public void update(InTuple_ tuple) {
+        // TODO Implement actual update
+        retract(tuple);
+        insert(tuple);
+    }
 
     public void retract(InTuple_ tuple) {
         Object[] tupleStore = tuple.getStore();
@@ -111,6 +111,10 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
+    protected abstract GroupKey_ createGroupKey(InTuple_ tuple);
+
+    protected abstract Runnable accumulate(ResultContainer_ resultContainer, InTuple_ tuple);
+
     @Override
     public void calculateScore() {
         dirtyGroupQueue.forEach(group -> {
@@ -136,5 +140,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         });
         dirtyGroupQueue.clear();
     }
+
+    protected abstract OutTuple_ createOutTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
 
 }

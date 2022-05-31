@@ -77,6 +77,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<BiTuple<A, B>> update = buildHelper.getAggregatedUpdate(childStreamList);
         Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
@@ -84,11 +85,12 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         Indexer<UniTuple<B>, Map<UniTuple<A>, BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
         JoinBiNode<A, B> node = new JoinBiNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexA, inputStoreIndexB, insert, retract,
+                inputStoreIndexA, inputStoreIndexB,
+                insert, update, retract,
                 outputStoreSize, indexerA, indexerB);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::retractLeft);
-        buildHelper.putInsertRetract(rightParent, node::insertRight, node::retractRight);
+        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::updateLeft, node::retractLeft);
+        buildHelper.putInsertRetract(rightParent, node::insertRight, node::updateRight, node::retractRight);
     }
 
     // ************************************************************************

@@ -21,7 +21,6 @@ final class NoneIndexProperties implements IndexProperties {
     static final NoneIndexProperties INSTANCE = new NoneIndexProperties();
 
     private NoneIndexProperties() {
-
     }
 
     @Override
@@ -37,6 +36,16 @@ final class NoneIndexProperties implements IndexProperties {
     @Override
     public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
         throw new IllegalArgumentException("Impossible state: none indexer key requested");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof NoneIndexProperties;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override

@@ -37,7 +37,25 @@ final class ManyIndexProperties implements IndexProperties {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ManyIndexProperties)) {
+            return false;
+        }
+        ManyIndexProperties other = (ManyIndexProperties) o;
+        return Arrays.equals(properties, other.properties);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(properties);
+    }
+
+    @Override
     public String toString() {
         return Arrays.toString(properties);
     }
+
 }

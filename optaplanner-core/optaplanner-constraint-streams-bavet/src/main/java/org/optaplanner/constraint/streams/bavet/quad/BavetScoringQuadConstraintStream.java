@@ -147,7 +147,7 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
         }
         QuadScorer<A, B, C, D> scorer = new QuadScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
                 constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
-        buildHelper.putInsertRetract(this, scorer::insert, scorer::retract);
+        buildHelper.putInsertRetract(this, scorer::insert, scorer::update, scorer::retract);
     }
 
     // ************************************************************************

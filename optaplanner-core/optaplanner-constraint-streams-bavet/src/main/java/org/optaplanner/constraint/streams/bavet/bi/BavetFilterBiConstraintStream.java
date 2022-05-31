@@ -66,25 +66,50 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<BiTuple<A, B>> update = buildHelper.getAggregatedUpdate(childStreamList);
         Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         buildHelper.putInsertRetract(this,
-                new ConditionalBiConsumer<>(predicate, insert),
+                new ConditionalBiInserter<>(predicate, insert),
+                new ConditionalBiUpdater<>(predicate, update, retract),
                 retract);
     }
 
-    private static final class ConditionalBiConsumer<A, B> implements Consumer<BiTuple<A, B>> {
+    private static final class ConditionalBiInserter<A, B> implements Consumer<BiTuple<A, B>> {
         private final BiPredicate<A, B> predicate;
-        private final Consumer<BiTuple<A, B>> consumer;
+        private final Consumer<BiTuple<A, B>> insert;
 
-        public ConditionalBiConsumer(BiPredicate<A, B> predicate, Consumer<BiTuple<A, B>> consumer) {
+        public ConditionalBiInserter(BiPredicate<A, B> predicate, Consumer<BiTuple<A, B>> insert) {
             this.predicate = predicate;
-            this.consumer = consumer;
+            this.insert = insert;
         }
 
         @Override
         public void accept(BiTuple<A, B> tuple) {
             if (predicate.test(tuple.factA, tuple.factB)) {
-                consumer.accept(tuple);
+                insert.accept(tuple);
+            }
+        }
+
+    }
+
+    private static final class ConditionalBiUpdater<A, B> implements Consumer<BiTuple<A, B>> {
+        private final BiPredicate<A, B> predicate;
+        private final Consumer<BiTuple<A, B>> update;
+        private final Consumer<BiTuple<A, B>> retract;
+
+        public ConditionalBiUpdater(BiPredicate<A, B> predicate,
+                Consumer<BiTuple<A, B>> update, Consumer<BiTuple<A, B>> retract) {
+            this.predicate = predicate;
+            this.update = update;
+            this.retract = retract;
+        }
+
+        @Override
+        public void accept(BiTuple<A, B> tuple) {
+            if (predicate.test(tuple.factA, tuple.factB)) {
+                update.accept(tuple);
+            } else {
+                retract.accept(tuple);
             }
         }
 

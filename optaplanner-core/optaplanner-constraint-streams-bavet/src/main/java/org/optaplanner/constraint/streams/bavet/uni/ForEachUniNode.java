@@ -33,6 +33,10 @@ public final class ForEachUniNode<A> extends AbstractNode {
      */
     private final Consumer<UniTuple<A>> nextNodesInsert;
     /**
+     * Calls for example {@link UniScorer#update(UniTuple)}, and/or ...
+     */
+    private final Consumer<UniTuple<A>> nextNodesUpdate;
+    /**
      * Calls for example {@link UniScorer#retract(UniTuple)}, and/or ...
      */
     private final Consumer<UniTuple<A>> nextNodesRetract;
@@ -42,10 +46,13 @@ public final class ForEachUniNode<A> extends AbstractNode {
     private final Queue<UniTuple<A>> dirtyTupleQueue;
 
     public ForEachUniNode(Class<A> forEachClass,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            Consumer<UniTuple<A>> nextNodesInsert,
+            Consumer<UniTuple<A>> nextNodesUpdate,
+            Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesInsert = nextNodesInsert;
+        this.nextNodesUpdate = nextNodesUpdate;
         this.nextNodesRetract = nextNodesRetract;
         this.outputStoreSize = outputStoreSize;
         dirtyTupleQueue = new ArrayDeque<>(1000);
@@ -95,20 +102,19 @@ public final class ForEachUniNode<A> extends AbstractNode {
     @Override
     public void calculateScore() {
         dirtyTupleQueue.forEach(tuple -> {
-            // Retract
-            if (tuple.state == BavetTupleState.UPDATING || tuple.state == BavetTupleState.DYING) {
-                nextNodesRetract.accept(tuple);
-            }
-            // Insert
-            if (tuple.state == BavetTupleState.CREATING || tuple.state == BavetTupleState.UPDATING) {
-                nextNodesInsert.accept(tuple);
-            }
             switch (tuple.state) {
                 case CREATING:
+                    nextNodesInsert.accept(tuple);
+                    tuple.state = BavetTupleState.OK;
+                    return;
                 case UPDATING:
+                    nextNodesUpdate.accept(tuple);
                     tuple.state = BavetTupleState.OK;
                     return;
                 case DYING:
+                    nextNodesRetract.accept(tuple);
+                    tuple.state = BavetTupleState.DEAD;
+                    return;
                 case ABORTING:
                     tuple.state = BavetTupleState.DEAD;
                     return;

@@ -94,8 +94,8 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
                 insert, retract,
                 indexerAB, indexerC, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertLeft, node::retractLeft);
-        buildHelper.putInsertRetract(parentBridgeD, node::insertRight, node::retractRight);
+        buildHelper.putInsertRetract(this, node::insertLeft, node::updateLeft, node::retractLeft);
+        buildHelper.putInsertRetract(parentBridgeD, node::insertRight, node::updateRight, node::retractRight);
     }
 
     // ************************************************************************

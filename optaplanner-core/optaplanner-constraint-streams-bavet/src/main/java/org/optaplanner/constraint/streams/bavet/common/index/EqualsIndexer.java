@@ -62,6 +62,18 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_> implements Indexer
     }
 
     @Override
+    public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
+        Key_ oldIndexKey = indexerKeyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(oldIndexKey);
+        if (downstreamIndexer == null) {
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer" + this + ".");
+        }
+        return downstreamIndexer.get(indexProperties, tuple);
+    }
+
+    @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
         Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexerKeyFunction.apply(indexProperties));
         if (downstreamIndexer == null || downstreamIndexer.isEmpty()) {

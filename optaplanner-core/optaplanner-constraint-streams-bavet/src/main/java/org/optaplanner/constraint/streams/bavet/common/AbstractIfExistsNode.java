@@ -89,11 +89,11 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
         }
     }
 
-    protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
-
-    protected abstract boolean isFiltering();
-
-    protected abstract boolean isFiltered(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+    public void updateLeft(LeftTuple_ leftTuple) {
+        // TODO Implement actual update
+        retractLeft(leftTuple);
+        insertLeft(leftTuple);
+    }
 
     public final void retractLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
@@ -117,6 +117,12 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
         if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
             retractCounter(counter);
         }
+    }
+
+    public void updateRight(UniTuple<Right_> rightTuple) {
+        // TODO Implement actual update
+        retractRight(rightTuple);
+        insertRight(rightTuple);
     }
 
     public final void insertRight(UniTuple<Right_> rightTuple) {
@@ -165,6 +171,12 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
             }
         }
     }
+
+    protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
+
+    protected abstract boolean isFiltering();
+
+    protected abstract boolean isFiltered(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     public static final class Counter<Tuple_ extends Tuple> {
         public final Tuple_ leftTuple;

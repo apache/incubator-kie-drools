@@ -50,6 +50,17 @@ final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_,
     }
 
     @Override
+    public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
+        Value_ value = tupleMap.get(tuple);
+        if (value == null) {
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer.");
+        }
+        return value;
+    }
+
+    @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
         if (!isEmpty()) {
             tupleMap.forEach(tupleValueVisitor);

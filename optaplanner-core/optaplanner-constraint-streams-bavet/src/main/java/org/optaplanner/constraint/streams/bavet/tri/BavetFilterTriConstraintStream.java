@@ -67,25 +67,50 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<TriTuple<A, B, C>> update = buildHelper.getAggregatedUpdate(childStreamList);
         Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         buildHelper.putInsertRetract(this,
-                new ConditionalTriConsumer<>(predicate, insert),
+                new ConditionalTriInserter<>(predicate, insert),
+                new ConditionalTriUpdater<>(predicate, update, retract),
                 retract);
     }
 
-    private static final class ConditionalTriConsumer<A, B, C> implements Consumer<TriTuple<A, B, C>> {
+    private static final class ConditionalTriInserter<A, B, C> implements Consumer<TriTuple<A, B, C>> {
         private final TriPredicate<A, B, C> predicate;
-        private final Consumer<TriTuple<A, B, C>> consumer;
+        private final Consumer<TriTuple<A, B, C>> insert;
 
-        public ConditionalTriConsumer(TriPredicate<A, B, C> predicate, Consumer<TriTuple<A, B, C>> consumer) {
+        public ConditionalTriInserter(TriPredicate<A, B, C> predicate, Consumer<TriTuple<A, B, C>> insert) {
             this.predicate = predicate;
-            this.consumer = consumer;
+            this.insert = insert;
         }
 
         @Override
         public void accept(TriTuple<A, B, C> tuple) {
             if (predicate.test(tuple.factA, tuple.factB, tuple.factC)) {
-                consumer.accept(tuple);
+                insert.accept(tuple);
+            }
+        }
+
+    }
+
+    private static final class ConditionalTriUpdater<A, B, C> implements Consumer<TriTuple<A, B, C>> {
+        private final TriPredicate<A, B, C> predicate;
+        private final Consumer<TriTuple<A, B, C>> update;
+        private final Consumer<TriTuple<A, B, C>> retract;
+
+        public ConditionalTriUpdater(TriPredicate<A, B, C> predicate,
+                Consumer<TriTuple<A, B, C>> update, Consumer<TriTuple<A, B, C>> retract) {
+            this.predicate = predicate;
+            this.update = update;
+            this.retract = retract;
+        }
+
+        @Override
+        public void accept(TriTuple<A, B, C> tuple) {
+            if (predicate.test(tuple.factA, tuple.factB, tuple.factC)) {
+                update.accept(tuple);
+            } else {
+                retract.accept(tuple);
             }
         }
 

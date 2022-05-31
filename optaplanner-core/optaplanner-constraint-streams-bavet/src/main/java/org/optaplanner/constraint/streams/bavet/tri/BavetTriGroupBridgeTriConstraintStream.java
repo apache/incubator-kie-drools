@@ -73,7 +73,7 @@ final class BavetTriGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, New
         AbstractGroupNode<TriTuple<A, B, C>, TriTuple<NewA, NewB, NewC>, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, insert, retract, outputStoreSize);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insert, node::retract);
+        buildHelper.putInsertRetract(this, node::insert, node::update, node::retract);
     }
 
     @Override

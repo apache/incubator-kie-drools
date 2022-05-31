@@ -39,8 +39,17 @@ public abstract class AbstractScorer<Tuple_ extends Tuple> {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + tuple
                     + ") was already added in the tupleStore.");
         }
-        UndoScoreImpacter undoScoreImpacter = impact(tuple);
-        tupleStore[inputStoreIndex] = undoScoreImpacter;
+        tupleStore[inputStoreIndex] = impact(tuple);
+    }
+
+    public final void update(Tuple_ tuple) {
+        Object[] tupleStore = tuple.getStore();
+        UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleStore[inputStoreIndex];
+        // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+        if (undoScoreImpacter != null) {
+            undoScoreImpacter.run();
+        }
+        tupleStore[inputStoreIndex] = impact(tuple);
     }
 
     protected abstract UndoScoreImpacter impact(Tuple_ tuple);

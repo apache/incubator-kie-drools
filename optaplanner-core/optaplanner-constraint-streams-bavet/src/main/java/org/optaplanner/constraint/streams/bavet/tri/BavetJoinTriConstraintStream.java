@@ -81,6 +81,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
+        Consumer<TriTuple<A, B, C>> update = buildHelper.getAggregatedUpdate(childStreamList);
         Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
@@ -88,11 +89,12 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
         JoinTriNode<A, B, C> node = new JoinTriNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexAB, inputStoreIndexC, insert, retract,
+                inputStoreIndexAB, inputStoreIndexC,
+                insert, update, retract,
                 outputStoreSize, indexerAB, indexerC);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::retractLeft);
-        buildHelper.putInsertRetract(rightParent, node::insertRight, node::retractRight);
+        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::updateLeft, node::retractLeft);
+        buildHelper.putInsertRetract(rightParent, node::insertRight, node::updateRight, node::retractRight);
     }
 
     // ************************************************************************

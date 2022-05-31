@@ -45,6 +45,22 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
     }
 
+    private SubmapBiFunction<Tuple_, Value_, Key_> getSubmapExtractor(JoinerType comparisonJoinerType) {
+        switch (comparisonJoinerType) {
+            case LESS_THAN:
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, false);
+            case LESS_THAN_OR_EQUAL:
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, true);
+            case GREATER_THAN:
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.tailMap(comparisonIndexProperty, false);
+            case GREATER_THAN_OR_EQUAL:
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.tailMap(comparisonIndexProperty, true);
+            default:
+                throw new IllegalStateException("Impossible state: the comparisonJoinerType (" + comparisonJoinerType
+                        + ") is not one of the 4 comparison types.");
+        }
+    }
+
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
@@ -69,20 +85,16 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         return value;
     }
 
-    private SubmapBiFunction<Tuple_, Value_, Key_> getSubmapExtractor(JoinerType comparisonJoinerType) {
-        switch (comparisonJoinerType) {
-            case LESS_THAN:
-                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, false);
-            case LESS_THAN_OR_EQUAL:
-                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, true);
-            case GREATER_THAN:
-                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.tailMap(comparisonIndexProperty, false);
-            case GREATER_THAN_OR_EQUAL:
-                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.tailMap(comparisonIndexProperty, true);
-            default:
-                throw new IllegalStateException("Impossible state: the comparisonJoinerType (" + comparisonJoinerType
-                        + ") is not one of the 4 comparison types.");
+    @Override
+    public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
+        Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(comparisonIndexProperty);
+        if (downstreamIndexer == null) {
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer.");
         }
+        return downstreamIndexer.get(indexProperties, tuple);
     }
 
     @Override
