@@ -22,6 +22,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -254,26 +255,45 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
-                if (utln.getElements().size() != 1) {
-                    verifyUnaryTestsAllEQ(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
+                List<BaseNode> utlnElements = new ArrayList<>(utln.getElements());
+                boolean allowNull = removeEQNullUnaryTest(utlnElements);
+                if (utlnElements.size() != 1) {
+                    verifyUnaryTestsAllEQ(utlnElements, dt);
+                    List<Comparable<?>> discreteValues = getDiscreteValues(utlnElements);
+                    List<Comparable<?>> inputOrder = Collections.unmodifiableList(new ArrayList<>(discreteValues));
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
-                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues, getDiscreteValues(utln));
+                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, allowNull, discreteValues, inputOrder);
                     ddtaTable.getInputs().add(ic);
-                } else if (utln.getElements().size() == 1) {
-                    UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
+                } else if (utlnElements.size() == 1) {
+                    UnaryTestNode utn0 = (UnaryTestNode) utlnElements.get(0);
                     Interval interval = utnToInterval(utn0, infDomain, null, 0, jColIdx + 1);
-                    DDTAInputClause ic = new DDTAInputClause(interval);
+                    DDTAInputClause ic = new DDTAInputClause(interval, allowNull);
                     ddtaTable.getInputs().add(ic);
                 } else {
                     throw new IllegalStateException("inputValues not null but utln: " + utln);
                 }
             } else {
-                DDTAInputClause ic = new DDTAInputClause(infDomain);
+                DDTAInputClause ic = new DDTAInputClause(infDomain, false);
                 ddtaTable.getInputs().add(ic);
             }
         }
+    }
+
+    private boolean removeEQNullUnaryTest(List<BaseNode> utlnElements) {
+        boolean found = false;
+        ListIterator<BaseNode> it = utlnElements.listIterator();
+        while (it.hasNext()) {
+            BaseNode cur = it.next();
+            if (cur instanceof UnaryTestNode) {
+                UnaryTestNode utn = (UnaryTestNode) cur;
+                if (utn.getOperator() == UnaryOperator.EQ && utn.getValue() instanceof NullNode) {
+                    it.remove();
+                    found = true;
+                }
+            }
+        }
+        return found;
     }
 
     private void compileTableOutputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
@@ -294,16 +314,18 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
-                if (utln.getElements().size() != 1) {
-                    verifyUnaryTestsAllEQ(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
-                    List<Comparable<?>> outputOrder = new ArrayList<>(discreteValues);
+                List<BaseNode> utlnElements = new ArrayList<>(utln.getElements());
+                boolean allowNull = removeEQNullUnaryTest(utlnElements);
+                if (utlnElements.size() != 1) {
+                    verifyUnaryTestsAllEQ(utlnElements, dt);
+                    List<Comparable<?>> discreteValues = getDiscreteValues(utlnElements);
+                    List<Comparable<?>> outputOrder = Collections.unmodifiableList(new ArrayList<>(discreteValues));
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
                     DDTAOutputClause ic = new DDTAOutputClause(discreteDomainMinMax, discreteValues, outputOrder);
                     ddtaTable.getOutputs().add(ic);
-                } else if (utln.getElements().size() == 1) {
-                    UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
+                } else if (utlnElements.size() == 1) {
+                    UnaryTestNode utn0 = (UnaryTestNode) utlnElements.get(0);
                     Interval interval = utnToInterval(utn0, infDomain, null, 0, jColIdx + 1);
                     DDTAOutputClause ic = new DDTAOutputClause(interval);
                     ddtaTable.getOutputs().add(ic);
@@ -317,18 +339,18 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
 
-    private void verifyUnaryTestsAllEQ(UnaryTestListNode utln, DecisionTable dt) {
-        if (!utln.getElements().stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
-            throw new DMNDTAnalysisException("Multiple constraint on column: " + utln, dt);
+    private void verifyUnaryTestsAllEQ(List<BaseNode> utlnElements, DecisionTable dt) {
+        if (!utlnElements.stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
+            throw new DMNDTAnalysisException("Multiple constraint on column: " + utlnElements, dt);
         }
     }
 
     /**
-     * Transform a UnaryTestListNode into a List of discrete values for input/output clause enumeration
+     * Transform a UnaryTestListNode's elements into a List of discrete values for input/output clause enumeration
      */
-    private List<Comparable<?>> getDiscreteValues(UnaryTestListNode utln) {
+    private List<Comparable<?>> getDiscreteValues(List<BaseNode> utlnElements) {
         List<Comparable<?>> discreteValues = new ArrayList<>();
-        for (BaseNode e : utln.getElements()) {
+        for (BaseNode e : utlnElements) {
             BaseNode value = ((UnaryTestNode) e).getValue();
             if (!(value instanceof NullNode)) { // to retrieve value from input/output clause enumeration, null is ignored.
                 Comparable<?> v = valueFromNode(value);

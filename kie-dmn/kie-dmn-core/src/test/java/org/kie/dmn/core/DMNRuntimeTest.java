@@ -30,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -3122,5 +3121,37 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
          * input[Value>0].Primary-Key is filtering, then projecting
          */
         assertThat((Map<String, Object>)dmnResult.getDecisionResultByName("decision").getResult()).containsExactly(entry("correct", Arrays.asList("k1", "k2", "k3")),entry("incorrect", Arrays.asList("k1", "k3")));
+    }
+    
+    @Test
+    public void testSoundLevelAllowNull() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("RecommenderHitPolicy1_allowNull.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6", "Drawing 1");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext contextWithNullValueForKey = DMNFactory.newContext();
+        contextWithNullValueForKey.set("Level", null);
+        
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, contextWithNullValueForKey);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Evaluation").getResult()).isEqualTo("Unknown");
+    }
+    
+    @Test
+    public void testSoundLevelAllowNullItemDef() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("RecommenderHitPolicy1_allowNull_itemDef.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6", "Drawing 1");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext contextWithNullValueForKey = DMNFactory.newContext();
+        contextWithNullValueForKey.set("Level", null);
+        
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, contextWithNullValueForKey);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("Evaluation").getResult()).isEqualTo("Unknown");
     }
 }

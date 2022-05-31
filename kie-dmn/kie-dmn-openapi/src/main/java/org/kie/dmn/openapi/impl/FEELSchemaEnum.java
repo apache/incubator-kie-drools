@@ -36,7 +36,10 @@ public class FEELSchemaEnum {
 
     public static void parseAllowedValuesIntoSchema(Schema schema, List<DMNUnaryTest> list) {
         List<Object> expectLiterals = evaluateUnaryTests(list);
-        boolean allLiterals = expectLiterals.stream().allMatch(o -> o instanceof String || o instanceof Number || o instanceof Boolean);
+        if (expectLiterals.contains(null)) {
+            schema.setNullable(true);
+        }
+        boolean allLiterals = expectLiterals.stream().allMatch(o -> o == null || o instanceof String || o instanceof Number || o instanceof Boolean);
         if (allLiterals) {
             schema.enumeration(expectLiterals);
         } else {
@@ -46,6 +49,10 @@ public class FEELSchemaEnum {
     
     public static void parseNumberAllowedValuesIntoSchema(Schema schema, List<DMNUnaryTest> list) {
         List<Object> uts = evaluateUnaryTests(list); // we leverage the property of the *base* FEEL grammar(non visited by ASTVisitor, only the ParseTree->AST Visitor) that `>x` is a Range
+        boolean allowNull = uts.remove(null);
+        if (allowNull) {
+            schema.setNullable(true);
+        }
         if (uts.size() <= 2 && uts.stream().allMatch(o -> o instanceof Range)) {
             Range range = consolidateRanges((List) uts); // cast intentional.
             if (range != null) {
@@ -59,6 +66,9 @@ public class FEELSchemaEnum {
                 }
             }
         } else if (uts.stream().allMatch(o -> o instanceof Number)) {
+            if (allowNull) {
+                uts.add(null);
+            }
             schema.enumeration(uts);
         } else {
             LOG.warn("Unable to parse generic allowed value into the JSON Schema for enumeration");

@@ -44,6 +44,17 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getGaps()).hasSize(1);
         assertThat(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
     }
+    
+    @Test
+    public void testGapsAllowNull() {
+        Definitions definitions = getDefinitions("RecommenderHitPolicy1_allowNull.dmn", "http://www.trisotech.com/definitions/_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6", "Drawing 1");
+        List<DMNMessage> validate = validator.validate(definitions, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_3aa68aee-6314-482f-a0be-84c2411d65d7");
+
+        debugValidatorMsg(validate);
+        assertThat(analysis.getGaps()).hasSize(1);
+        assertThat(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
+    }
 
     @Test
     public void testNoGapsNoOverlaps() {
