@@ -196,12 +196,12 @@ public class TestUtils {
             for (PredictionInput predictionInput : inputs) {
                 List<Feature> features = predictionInput.getFeatures();
                 double result = 0;
-                for (int i = 0; i < features.size(); i++) {
-                    result += features.get(i).getValue().asNumber();
+                for (Feature feature : features) {
+                    result += feature.getValue().asNumber();
                 }
                 final boolean inside = (result >= center - epsilon && result <= center + epsilon);
                 PredictionOutput predictionOutput = new PredictionOutput(
-                        List.of(new Output("inside", Type.BOOLEAN, new Value(inside), 1.0 - Math.abs(result - center))));
+                        List.of(new Output("inside", Type.BOOLEAN, new Value(inside), epsilon - Math.abs((result - center)))));
                 predictionOutputs.add(predictionOutput);
             }
             return predictionOutputs;

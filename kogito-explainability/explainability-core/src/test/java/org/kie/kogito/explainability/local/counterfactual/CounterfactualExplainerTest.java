@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -82,15 +81,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled("see https://issues.redhat.com/browse/KOGITO-7221")
 class CounterfactualExplainerTest {
 
     private static final Logger logger =
             LoggerFactory.getLogger(CounterfactualExplainerTest.class);
     private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
-    final long predictionTimeOut = 10L;
+    final long predictionTimeOut = 20L;
     final TimeUnit predictionTimeUnit = TimeUnit.MINUTES;
-    final Long steps = 30_000L;
+    final Long DEFAULT_STEPS = 30_000L;
     final double DEFAULT_GOAL_THRESHOLD = 0.01;
     private Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory;
     private SolverManager<CounterfactualSolution, UUID> solverManager;
@@ -106,6 +104,14 @@ class CounterfactualExplainerTest {
             List<Feature> features,
             PredictionProvider model,
             double goalThresold) throws InterruptedException, ExecutionException, TimeoutException {
+        return runCounterfactualSearch(randomSeed, goal, features, model, goalThresold, DEFAULT_STEPS);
+    }
+
+    private CounterfactualResult runCounterfactualSearch(Long randomSeed, List<Output> goal,
+            List<Feature> features,
+            PredictionProvider model,
+            double goalThresold,
+            long steps) throws InterruptedException, ExecutionException, TimeoutException {
         final TerminationConfig terminationConfig = new TerminationConfig().withScoreCalculationCountLimit(steps);
         final SolverConfig solverConfig = SolverConfigBuilder
                 .builder().withTerminationConfig(terminationConfig).build();
@@ -310,7 +316,7 @@ class CounterfactualExplainerTest {
         final CounterfactualResult result =
                 runCounterfactualSearch((long) seed, goal, features,
                         TestUtils.getSumThresholdModel(center, epsilon),
-                        DEFAULT_GOAL_THRESHOLD);
+                        DEFAULT_GOAL_THRESHOLD, 100_000);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
@@ -484,7 +490,7 @@ class CounterfactualExplainerTest {
         final CounterfactualResult result =
                 runCounterfactualSearch((long) seed, goal, features,
                         model,
-                        DEFAULT_GOAL_THRESHOLD);
+                        DEFAULT_GOAL_THRESHOLD, 100_000);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
@@ -531,7 +537,7 @@ class CounterfactualExplainerTest {
         final CounterfactualResult result =
                 runCounterfactualSearch((long) seed, goal, features,
                         model,
-                        DEFAULT_GOAL_THRESHOLD);
+                        DEFAULT_GOAL_THRESHOLD, 100_000);
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
         double totalSum = 0;
