@@ -20,7 +20,7 @@
     </dependency>
      <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-grpc-api</artifactId>
+      <artifactId>quarkus-grpc</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
