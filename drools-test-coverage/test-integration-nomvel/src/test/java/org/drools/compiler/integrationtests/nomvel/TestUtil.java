@@ -79,7 +79,7 @@ public class TestUtil {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll( ExecutableModelProject.class);
 
         if ( failIfBuildError ) {
-            List<Message> messages = kieBuilder.getResults().getMessages();
+            List<Message> messages = kieBuilder.getResults().getMessages(Message.Level.ERROR);
             if ( !messages.isEmpty() ) {
                 fail( messages.toString() );
             }

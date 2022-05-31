@@ -27,7 +27,7 @@
     <logger name="org.drools" level="warn"/>
 
 <!--     <logger name="org.drools.core.management" level="debug"/> -->
-<!--    <logger name="org.drools.modelcompiler.builder" level="debug"/>-->
+<!--    <logger name="org.drools.model.codegen" level="debug"/> -->
 <!--    <logger name="org.drools.ancompiler" level="debug"/>-->
 
     <root level="warn">

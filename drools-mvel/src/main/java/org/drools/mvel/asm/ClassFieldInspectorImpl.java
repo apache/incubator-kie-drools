@@ -507,47 +507,6 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
     }
 
-    public static class GetterOverloadWarning implements KnowledgeBuilderResult {
-
-        private final Class klass;
-        private final String oldName;
-        private final Class oldType;
-        private final String newName;
-        private final Class newType;
-
-        public GetterOverloadWarning( Class klass, String oldName, Class oldType, String newName, Class newType ) {
-            this.klass = klass;
-            this.oldName = oldName;
-            this.oldType = oldType;
-            this.newName = newName;
-            this.newType = newType;
-        }
-
-        public ResultSeverity getSeverity() {
-            return ResultSeverity.WARNING;
-        }
-
-
-        public String getMessage() {
-            return " Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ";
-        }
-
-
-        public int[] getLines() {
-            return new int[ 0 ];
-        }
-
-        public Resource getResource() {
-            return null;
-        }
-
-        @Override
-        public InternalMessage asMessage(long id) {
-            return new MessageImpl(id, this);
-        }
-
-    }
-
     public static class IncompatibleGetterOverloadError implements KnowledgeBuilderResult {
 
         private final Class klass;

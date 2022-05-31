@@ -81,7 +81,7 @@ public abstract class AbstractKieProject implements KieProject {
         }
     }
 
-    private void verify(String[] kBaseNames, BuildContext buildContext) {
+    public void verify(String[] kBaseNames, BuildContext buildContext) {
         for ( String modelName : kBaseNames ) {
             KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kBaseModels.get( modelName );
             if ( kieBaseModel == null ) {

@@ -23,9 +23,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.management.ObjectName;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
@@ -42,11 +44,11 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.util.ClassUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatefulSessionPool;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
+import org.drools.util.ClassUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -81,8 +83,8 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
-import static org.drools.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.Drools.isJndiAvailable;
+import static org.drools.util.ClassUtils.convertResourceToClassName;
 
 public class KieContainerImpl
         implements
@@ -421,11 +423,33 @@ public class KieContainerImpl
     }
 
     public Results verify() {
-        return this.kProject.verify();
+        Optional<Results> optResults = recreateKieProjectAndVerifyIfNeeded();
+        return optResults.orElseGet(() -> this.kProject.verify());
     }
 
     public Results verify(String... kModelNames) {
-        return this.kProject.verify( kModelNames );
+        Optional<Results> optResults = recreateKieProjectAndVerifyIfNeeded(kModelNames);
+        return optResults.orElseGet(() -> this.kProject.verify(kModelNames));
+    }
+
+    private Optional<Results> recreateKieProjectAndVerifyIfNeeded(String... kModelNames) {
+        if (kProject instanceof KieModuleKieProject) {
+            InternalKieModule internalKieModule = ((KieModuleKieProject)kProject).getInternalKieModule();
+            if (internalKieModule.needsToRecreateKieProjectForVerify()) {
+                Optional<KieModuleKieProject> optKieProjectForVerify = internalKieModule.recreateKieProjectForVerify(kProject.getClassLoader());
+                if (optKieProjectForVerify.isPresent()) {
+                    KieModuleKieProject kieProjectForVerify = optKieProjectForVerify.get();
+                    BuildContext buildContext = kieProjectForVerify.createBuildContext(new ResultsImpl());
+                    if (kModelNames == null || kModelNames.length == 0) {
+                        kieProjectForVerify.verify(buildContext);
+                    } else {
+                        kieProjectForVerify.verify(kModelNames, buildContext);
+                    }
+                    return Optional.of(buildContext.getMessages());
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     public KieBase getKieBase(String kBaseName) {

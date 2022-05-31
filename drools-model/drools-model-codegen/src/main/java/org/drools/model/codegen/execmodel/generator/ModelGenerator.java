@@ -43,6 +43,8 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
+import org.drools.compiler.compiler.DroolsWarning;
+import org.drools.compiler.compiler.RuleBuildWarning;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -350,7 +352,18 @@ public class ModelGenerator {
             }
             ruleAttributes.add(attributeCall);
         }
+        checkDuplicateGroup(excludingDialect, context, ruleDescr);
         return ruleAttributes;
+    }
+
+    private static void checkDuplicateGroup(Set<Entry<String, AttributeDescr>> excludingDialect, RuleContext context, RuleDescr ruleDescr) {
+        boolean hasAgendaGroup = excludingDialect.stream().anyMatch(entry -> entry.getKey().equals("agenda-group"));
+        boolean hasRuleFlowGroup = excludingDialect.stream().anyMatch(entry -> entry.getKey().equals("ruleflow-group"));
+        if (hasAgendaGroup && hasRuleFlowGroup) {
+            context.addCompilationWarning(new RuleBuildWarning(null, ruleDescr, null,
+                                                               "Both an agenda-group and a ruleflow-group are defined for rule " + ruleDescr.getName() + ". " +
+                                                               "Since version 6.x the two concepts have been unified, the ruleflow-group name will override the agenda-group."));
+        }
     }
 
     private static void addDynamicAttributeArgument( RuleContext context, MethodCallExpr attributeCall, String value, Class<?> requiredAttributeType ) {

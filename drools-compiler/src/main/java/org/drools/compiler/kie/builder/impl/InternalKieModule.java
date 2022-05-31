@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -36,6 +37,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.io.InternalResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.util.PortablePath;
 import org.drools.wiring.api.ResourceProvider;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
@@ -53,7 +55,6 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
-import org.drools.util.PortablePath;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
 import org.slf4j.Logger;
@@ -241,5 +242,13 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     final class LocalLogger {
         private static final Logger logger = LoggerFactory.getLogger(InternalKieModule.class);
+    }
+
+    default boolean needsToRecreateKieProjectForVerify() {
+        return false;
+    }
+
+    default Optional<KieModuleKieProject> recreateKieProjectForVerify(ClassLoader classLoader) {
+        throw new UnsupportedOperationException();
     }
 }

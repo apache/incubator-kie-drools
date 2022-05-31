@@ -31,9 +31,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,6 +53,7 @@ import org.drools.compiler.kie.builder.impl.KieBaseUpdaterOptions;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaters;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
@@ -63,17 +66,19 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.util.Drools;
+import org.drools.io.InternalResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
 import org.drools.util.IoUtils;
 import org.drools.util.PortablePath;
 import org.drools.util.StringUtils;
-import org.drools.io.InternalResource;
 import org.drools.wiring.api.ResourceProvider;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieBuilder.ProjectType;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -95,6 +100,8 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -102,9 +109,22 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
+import static org.kie.api.io.ResourceType.DMN;
+import static org.kie.api.io.ResourceType.DRL;
+import static org.kie.api.io.ResourceType.DRLX;
+import static org.kie.api.io.ResourceType.DSLR;
+import static org.kie.api.io.ResourceType.DTABLE;
+import static org.kie.api.io.ResourceType.FEEL;
+import static org.kie.api.io.ResourceType.GDRL;
+import static org.kie.api.io.ResourceType.GDST;
+import static org.kie.api.io.ResourceType.RDRL;
+import static org.kie.api.io.ResourceType.RDSLR;
+import static org.kie.api.io.ResourceType.TDRL;
 import static org.kie.api.io.ResourceType.determineResourceType;
 
 public class CanonicalKieModule implements InternalKieModule {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CanonicalKieModule.class);
 
     public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
     public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
@@ -896,5 +916,48 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public ReleaseId getReleaseId() {
         return internalKieModule.getReleaseId();
+    }
+
+    @Override
+    public boolean needsToRecreateKieProjectForVerify() {
+        return true;
+    }
+
+    @Override
+    public Optional<KieModuleKieProject> recreateKieProjectForVerify(ClassLoader classLoader) {
+        try {
+            if (!containsRuleAsset()) {
+                LOG.info("This module doesn't contain rule assets." +
+                        " It means this module would correctly work with generated classes, but the verify method produces an empty result." +
+                        " You may assume that verify is successful because the executable model was successfully built beforehand." +
+                        " This may happen when you build a kjar with generateModel=YES option");
+            }
+            Class<? extends ProjectType> projectClass = (Class<? extends KieBuilder.ProjectType>) Class.forName("org.drools.model.codegen.ExecutableModelProject");
+            BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier = (BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject>) projectClass.getField("SUPPLIER").get(null);
+            KieModuleKieProject kieProject = kprojectSupplier.apply(internalKieModule, classLoader);
+            kieProject.init();
+            return Optional.of(kieProject);
+        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {
+            LOG.warn("Failed to recreate KieProject. Falls back to default verify", e);
+        }
+        return Optional.empty();
+    }
+
+    private static final Set<String> RULE_ASSET_EXTENSIONS = initRuleAssetExtensions();
+
+    private static Set<String> initRuleAssetExtensions() {
+        Set<String> extensions = new HashSet<>();
+        List<ResourceType> resourceTypeList = Arrays.asList(DRL, DRLX, GDRL, RDRL, DSLR, RDSLR, DTABLE, TDRL, GDST, DMN, FEEL);
+        resourceTypeList.forEach(type -> extensions.addAll(type.getAllExtensions()));
+        return extensions;
+    }
+
+    private boolean containsRuleAsset() {
+        return internalKieModule.getFileNames()
+                                .stream()
+                                .map(fullPath -> fullPath.substring(fullPath.lastIndexOf("/") + 1))
+                                .map(fileName -> fileName.substring(fileName.indexOf(".") + 1)) // e.g. my-decision-table.drl.xls => drl.xls
+                                .distinct()
+                                .anyMatch(RULE_ASSET_EXTENSIONS::contains);
     }
 }
