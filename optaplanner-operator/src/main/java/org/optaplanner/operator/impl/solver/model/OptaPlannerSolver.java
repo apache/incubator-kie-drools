@@ -27,7 +27,7 @@ import io.fabric8.kubernetes.model.annotation.Kind;
 import io.fabric8.kubernetes.model.annotation.Version;
 
 @Group("org.optaplanner.solver")
-@Kind("solver")
+@Kind("Solver")
 @Version("v1beta1")
 public final class OptaPlannerSolver extends CustomResource<OptaPlannerSolverSpec, OptaPlannerSolverStatus>
         implements Namespaced {
