@@ -15,34 +15,40 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.definition.process.Process;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.serverless.workflow.test.MockBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 public class KogitoProcessContextResolverTest {
 
-    KogitoProcessContext context;
+    KogitoProcessContext context = MockBuilder.kogitoProcessContext()
+            .withProcessInstanceMock(it -> {
+                when(it.getId()).thenReturn("value-id");
+                when(it.getProcessId()).thenReturn("value-process-id");
+                when(it.getProcessName()).thenReturn("value-name");
+            }).build();
 
-    @BeforeEach
-    void setup() {
-        context = mock(KogitoProcessContext.class);
-        KogitoProcessInstance pi = mock(KogitoProcessInstance.class);
-        when(context.getProcessInstance()).thenReturn(pi);
-        when(pi.getId()).thenReturn("pepe");
-        Process process = mock(Process.class);
-        when(pi.getProcess()).thenReturn(process);
-
+    @Test
+    void testGetInstanceId() {
+        assertEquals("value-id", KogitoProcessContextResolver.get().readKey(context, "instanceId"));
     }
 
     @Test
-    void testGetSimpleKey() {
-        assertEquals("pepe", KogitoProcessContextResolver.get().readKey(context, "instanceId"));
+    void testGetId() {
+        assertEquals("value-process-id", KogitoProcessContextResolver.get().readKey(context, "id"));
     }
 
+    @Test
+    void testGetName() {
+        assertEquals("value-name", KogitoProcessContextResolver.get().readKey(context, "name"));
+    }
+
+    @Test
+    void testGetNonExistentKey() {
+        assertThrows(IllegalArgumentException.class, () -> KogitoProcessContextResolver.get().readKey(context, "nonexistent"));
+    }
 }

@@ -14,7 +14,7 @@
 
   <description>Kogito serverless workflow utils</description>
   <dependencies>
-  <dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow</artifactId>
     </dependency>
@@ -35,14 +35,20 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
      </dependency>
-     <dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-test-utils</artifactId>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

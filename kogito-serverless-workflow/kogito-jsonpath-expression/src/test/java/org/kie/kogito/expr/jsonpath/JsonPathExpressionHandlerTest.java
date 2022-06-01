@@ -18,24 +18,31 @@ package org.kie.kogito.expr.jsonpath;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-import org.jbpm.ruleflow.core.Metadata;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+import org.kie.kogito.serverless.workflow.test.MockBuilder;
+import org.kie.kogito.serverless.workflow.utils.ConfigResolver;
+import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.PathNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,83 +52,74 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonPathExpressionHandlerTest {
 
-    private KogitoProcessContext context;
+    @BeforeAll
+    public static void setConfigResolver() {
+        Map<String, Object> configMap = new HashMap<>();
+        configMap.put("lettersonly", "secretlettersonly");
+        configMap.put("dot.secret", "secretdotsecret");
+        configMap.put("dash-secret", "secretdashsecret");
 
-    @BeforeEach
-    void setup() {
-        context = Mockito.mock(KogitoProcessContext.class);
-        KogitoWorkflowProcessInstance processInstance = Mockito.mock(KogitoWorkflowProcessInstance.class);
-        Mockito.when(context.getProcessInstance()).thenReturn(processInstance);
-        KogitoWorkflowProcess process = Mockito.mock(KogitoWorkflowProcess.class);
-        Mockito.when(processInstance.getProcess()).thenReturn(process);
-        Mockito.when(processInstance.getId()).thenReturn("1111-2222-3333");
-        Mockito.when(process.getMetaData()).thenReturn(Collections.singletonMap(Metadata.CONSTANTS, NullNode.instance));
+        ConfigResolverHolder.setConfigResolver(new ConfigResolver() {
+            @Override
+            public <T> Optional<T> getConfigProperty(String name, Class<T> clazz) {
+                return Optional.ofNullable((T) configMap.get(name));
+            }
+        });
     }
 
     @Test
     void testStringExpression() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.propertyString");
         assertTrue(parsedExpression.isValid());
-        JsonNode node = new ObjectMapper().createObjectNode().put("foo", "javierito");
-        assertEquals("javierito", parsedExpression.eval(node, String.class, context));
+        assertEquals("string", parsedExpression.eval(getObjectNode(), String.class, getContext()));
     }
 
     @Test
     void testBooleanExpression() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.propertyBoolean");
         assertTrue(parsedExpression.isValid());
-        JsonNode node = new ObjectMapper().createObjectNode().put("foo", true);
-        assertTrue(parsedExpression.eval(node, Boolean.class, context));
+        assertTrue(parsedExpression.eval(getObjectNode(), Boolean.class, getContext()));
     }
 
     @Test
     void testJsonNodeExpression() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.nested");
         assertTrue(parsedExpression.isValid());
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode compositeNode = mapper.createObjectNode().put("name", "Javierito");
-        JsonNode node = mapper.createObjectNode().set("foo", compositeNode);
-        assertEquals("Javierito", parsedExpression.eval(node, ObjectNode.class, context).get("name").asText());
+        assertEquals("value1", parsedExpression.eval(getObjectNode(), ObjectNode.class, getContext()).get("property1").asText());
     }
 
     @Test
     void testCollection() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.arrayMixed");
         assertTrue(parsedExpression.isValid());
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode node = objectMapper.createObjectNode().set("foo", objectMapper.createArrayNode().add("pepe").add(false).add(3).add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3)));
-        assertEquals(Arrays.asList("pepe", false, 3, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(node, Collection.class, context));
+        assertEquals(Arrays.asList("string1", 12, false, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(getObjectNode(), Collection.class, getContext()));
     }
 
     @Test
     void testCollectFromArrayJsonNode() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo[*].bar");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.arrayOfObjects[*].property1");
         assertTrue(parsedExpression.isValid());
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode objectNode = objectMapper.createObjectNode();
-        ArrayNode node = objectNode.putArray("foo");
-        node.add(objectMapper.createObjectNode().put("bar", "value1"));
-        node.add(objectMapper.createObjectNode().put("bar", "value2"));
-        node.add(objectMapper.createObjectNode().put("bar", "value3"));
-        JsonNode eval = parsedExpression.eval(objectNode, JsonNode.class, context);
+        JsonNode eval = parsedExpression.eval(getObjectNode(), JsonNode.class, getContext());
         assertTrue(eval.isArray(), "Expected array as a result.");
         assertEquals(3, eval.size(), "Unexpected size of the array.");
-        assertEquals("value1", eval.get(0).asText(), "Unexpected value in array at index 0.");
-        assertEquals("value2", eval.get(1).asText(), "Unexpected value in array at index 0.");
-        assertEquals("value3", eval.get(2).asText(), "Unexpected value in array at index 0.");
+        assertEquals("p1-value1", eval.get(0).asText(), "Unexpected value in array at index 0.");
+        assertEquals("p1-value2", eval.get(1).asText(), "Unexpected value in array at index 1.");
+        assertEquals("p1-value3", eval.get(2).asText(), "Unexpected value in array at index 2.");
+    }
+
+    @Test
+    @Disabled("KOGITO-7318")
+    void testCollectFromArrayCollectionRecursive() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$..property1");
+        assertTrue(parsedExpression.isValid());
+        assertEquals(Arrays.asList("value1", "p1-value1", "p1-value2", "p1-value3"), parsedExpression.eval(getObjectNode(), Collection.class, getContext()));
     }
 
     @Test
     void testCollectFromArrayCollection() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo[*].bar");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.arrayOfObjects[*].property1");
         assertTrue(parsedExpression.isValid());
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode objectNode = objectMapper.createObjectNode();
-        ArrayNode node = objectNode.putArray("foo");
-        node.add(objectMapper.createObjectNode().put("bar", "value1"));
-        node.add(objectMapper.createObjectNode().put("bar", "value2"));
-        node.add(objectMapper.createObjectNode().put("bar", "value3"));
-        assertEquals(Arrays.asList("value1", "value2", "value3"), parsedExpression.eval(objectNode, Collection.class, context), "Unexpected contents of the collected values.");
+        assertEquals(Arrays.asList("p1-value1", "p1-value2", "p1-value3"), parsedExpression.eval(getObjectNode(), Collection.class, getContext()), "Unexpected contents of the collected values.");
 
     }
 
@@ -138,88 +136,180 @@ class JsonPathExpressionHandlerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.putArray("foo").add(objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("bar", "1")).add(objectMapper.createObjectNode().put("bar", "2")));
-        assertThrows(PathNotFoundException.class, () -> parsedExpression.eval(objectNode, String.class, context), "Exception expected for non-matched expression.");
+        assertThrows(PathNotFoundException.class, () -> parsedExpression.eval(objectNode, String.class, getContext()), "Exception expected for non-matched expression.");
     }
 
     @Test
     void testAssignSimpleObjectUnderGivenProperty() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.bar2");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.propertyString");
         assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.put("bar", "value1");
-        ObjectNode targetNode = objectMapper.createObjectNode();
-        targetNode.put("bar2", "value2");
-        parsedExpression.assign(targetNode, toBeInserted, context);
+        ObjectNode targetNode = getObjectNode();
+        parsedExpression.assign(targetNode, toBeInserted, getContext());
         assertFalse(targetNode.has("bar"), "Property 'bar' should not be in root.");
-        assertTrue(targetNode.has("bar2"), "Property 'bar2' is missing in root.");
-        assertTrue(targetNode.get("bar2").has("bar"), "Property 'bar2' should contain 'bar'.");
-        assertEquals("value1", targetNode.get("bar2").get("bar").asText(), "Unexpected value under 'bar2'->'bar' property.");
+        assertTrue(targetNode.has("propertyString"), "Property 'propertyString' is missing in root.");
+        assertTrue(targetNode.get("propertyString").has("bar"), "Property 'propertyString' should contain 'bar'.");
+        assertEquals("value1", targetNode.get("propertyString").get("bar").asText(), "Unexpected value under 'propertyString'->'bar' property.");
     }
 
     @Test
     void testAssignArrayUnderGivenProperty() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.bar2");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.propertyString");
         assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.putArray("bar").add("value1").add("value2");
-        ObjectNode targetNode = objectMapper.createObjectNode();
-        targetNode.put("bar2", "value2");
-        parsedExpression.assign(targetNode, toBeInserted, context);
+        ObjectNode targetNode = getObjectNode();
+        parsedExpression.assign(targetNode, toBeInserted, getContext());
         assertFalse(targetNode.has("bar"), "Property 'bar' should not be in root.");
-        assertTrue(targetNode.has("bar2"), "Property 'bar2' was removed.");
-        assertTrue(targetNode.get("bar2").has("bar"), "Property 'bar' is not under 'bar2'.");
-        assertTrue(targetNode.get("bar2").get("bar").isArray(), "Property 'bar' is not an array.");
-        assertEquals(2, targetNode.get("bar2").get("bar").size(), "'bar' array has unexpected size");
-        assertEquals("value1", targetNode.get("bar2").get("bar").get(0).asText(), "Unexpected value in 'bar' array at index 0.");
-        assertEquals("value2", targetNode.get("bar2").get("bar").get(1).asText(), "Unexpected value in 'bar' array at index 1.");
+        assertTrue(targetNode.has("propertyString"), "Property 'propertyString' was removed.");
+        assertTrue(targetNode.get("propertyString").has("bar"), "Property 'bar' is not under 'propertyString'.");
+        assertTrue(targetNode.get("propertyString").get("bar").isArray(), "Property 'bar' is not an array.");
+        assertEquals(2, targetNode.get("propertyString").get("bar").size(), "'bar' array has unexpected size");
+        assertEquals("value1", targetNode.get("propertyString").get("bar").get(0).asText(), "Unexpected value in 'bar' array at index 0.");
+        assertEquals("value2", targetNode.get("propertyString").get("bar").get(1).asText(), "Unexpected value in 'bar' array at index 1.");
     }
 
     @Test
     void testAssignCollectedFromArrayUnderRootAsFallback() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.foo[*].bar");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.arrayOfNestedObjects[*].nested");
         assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode targetNode = objectMapper.createObjectNode();
-        ArrayNode node = targetNode.putArray("foo");
-        node.add(objectMapper.createObjectNode().set("bar", objectMapper.createObjectNode().put("property", 1)));
-        node.add(objectMapper.createObjectNode().set("bar", objectMapper.createObjectNode().put("property", 2)));
-        node.add(objectMapper.createObjectNode().set("bar", objectMapper.createObjectNode().put("property", 3)));
-        ObjectNode toBeInserted = objectMapper.createObjectNode().put("property", 4);
+        ObjectNode targetNode = getObjectNode();
+        ObjectNode toBeInserted = objectMapper.createObjectNode().put("propertyNum", 4);
 
-        parsedExpression.assign(targetNode, toBeInserted, context);
+        parsedExpression.assign(targetNode, toBeInserted, getContext());
 
-        assertTrue(targetNode.has("bar"), "A new property 'bar' should have been added at root as a fallback.");
-        assertTrue(targetNode.get("bar").isArray(), "Property 'bar' should contain array");
-        assertEquals(4, targetNode.get("bar").size(), "'bar' array length mismatch.");
-        assertEquals(1, targetNode.get("bar").get(0).get("property").asInt(), "Unexpected value in 'bar' array at index 0.");
-        assertEquals(2, targetNode.get("bar").get(1).get("property").asInt(), "Unexpected value in 'bar' array at index 1.");
-        assertEquals(3, targetNode.get("bar").get(2).get("property").asInt(), "Unexpected value in 'bar' array at index 2.");
-        assertEquals(4, targetNode.get("bar").get(3).get("property").asInt(), "Unexpected value in 'bar' array at index 3.");
+        assertTrue(targetNode.has("nested"), "A new property 'nested' should have been added at root as a fallback.");
+        assertTrue(targetNode.get("nested").isArray(), "Property 'nested' should contain array");
+        assertEquals(4, targetNode.get("nested").size(), "'nested' array length mismatch.");
+        assertEquals(1, targetNode.get("nested").get(0).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 0.");
+        assertEquals(2, targetNode.get("nested").get(1).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 1.");
+        assertEquals(3, targetNode.get("nested").get(2).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 2.");
+        assertEquals(4, targetNode.get("nested").get(3).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 3.");
     }
 
     @Test
     void testAssignWithNonExistentNodePathExpression() {
-        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.bar3");
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.property3");
         assertTrue(parsedExpression.isValid());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
-        toBeInserted.put("bar", "value1");
+        toBeInserted.put("property1", "value1");
         ObjectNode targetNode = objectMapper.createObjectNode();
-        targetNode.put("bar2", "value2");
-        parsedExpression.assign(targetNode, toBeInserted, context);
-        assertFalse(targetNode.has("bar"), "Property 'bar' should not be in root.");
-        assertTrue(targetNode.has("bar2"), "Property 'bar2' is missing in root.");
-        assertTrue(targetNode.has("bar3"), "Property 'bar3' is missing in root.");
-        assertTrue(targetNode.get("bar3").has("bar"), "Property 'bar3' should contain 'bar'.");
-        assertEquals("value1", targetNode.get("bar3").get("bar").asText(), "Unexpected value under 'bar3'->'bar' property.");
+        targetNode.put("property2", "value2");
+        parsedExpression.assign(targetNode, toBeInserted, getContext());
+        assertFalse(targetNode.has("property1"), "Property 'property1' should not be in root.");
+        assertTrue(targetNode.has("property2"), "Property 'property2' is missing in root.");
+        assertTrue(targetNode.has("property3"), "Property 'property3' is missing in root.");
+        assertTrue(targetNode.get("property3").has("property1"), "Property 'property3' should contain 'property1'.");
+        assertEquals("value1", targetNode.get("property3").get("property1").asText(), "Unexpected value under 'property3'->'property1' property.");
     }
 
     @Test
     void testMagicWord() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$WORKFLOW.instanceId");
         assertTrue(parsedExpression.isValid());
-        assertEquals(new TextNode("1111-2222-3333"), parsedExpression.eval(ObjectMapperFactory.get().createObjectNode(), JsonNode.class, context));
+        assertEquals(new TextNode("1111-2222-3333"), parsedExpression.eval(ObjectMapperFactory.get().createObjectNode(), JsonNode.class, getContext()));
+    }
+
+    @Test
+    void testConstPropertyFromJsonAccessible() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.CONST.property1");
+        assertTrue(parsedExpression.isValid());
+        // it's not considering the JsonNode property 'CONST', but '$CONST' variable
+        assertThrows(JsonPathException.class, () -> parsedExpression.eval(getObjectNode(), String.class, getContext()));
+    }
+
+    @Test
+    void testSecretPropertyFromJsonAccessible() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.SECRET.property1");
+        assertTrue(parsedExpression.isValid());
+        // it's not considering the JsonNode property 'SECRET', but '$SECRET' variable
+        assertEquals("null", parsedExpression.eval(getObjectNode(), String.class, getContext()));
+    }
+
+    @Test
+    void testWorkflowPropertyFromJsonAccessible() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.WORKFLOW.property1");
+        assertTrue(parsedExpression.isValid());
+        // it's not considering the JsonNode property 'WORKFLOW', but '$WORKFLOW' variable
+        assertThrows(IllegalArgumentException.class, () -> parsedExpression.eval(getObjectNode(), String.class, getContext()));
+    }
+
+    @ParameterizedTest(name = "{index} \"{0}\" is resolved to \"{1}\"")
+    @MethodSource("provideMagicWordExpressionsToTest")
+    void testMagicWordsExpressions(String expression, String expectedResult, KogitoProcessContext context) {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", expression);
+        assertTrue(parsedExpression.isValid());
+        assertEquals(expectedResult, parsedExpression.eval(getObjectNode(), String.class, context));
+    }
+
+    private static Stream<Arguments> provideMagicWordExpressionsToTest() {
+        return Stream.of(
+                Arguments.of("$WORKFLOW.instanceId", "1111-2222-3333", getContext()),
+                Arguments.of("WORKFLOW.instanceId", "1111-2222-3333", getContext()), // a side effect of jsonpath and prior variable resolution
+                Arguments.of("$SECRET.lettersonly", "secretlettersonly", getContext()),
+                Arguments.of("SECRET.lettersonly", "secretlettersonly", getContext()), // a side effect of jsonpath and prior variable resolution
+                Arguments.of("$SECRET.none", "null", getContext()),
+                //                Arguments.of("$SECRET.dot.secret", "null", getContext()), // exception due to missing object at path .dot
+                Arguments.of("$SECRET[\"dot.secret\"]", "secretdotsecret", getContext()),
+                Arguments.of("$SECRET[\"dash-secret\"]", "secretdashsecret", getContext()),
+                Arguments.of("$CONST.someconstant", "value", getContext()),
+                Arguments.of("$CONST[\"someconstant\"]", "value", getContext()),
+                //                Arguments.of("$CONST.some.constant", "null", getContext()), // exception due to missing object at path .some
+                Arguments.of("$CONST[\"some.constant\"]", "value", getContext()),
+                Arguments.of("$CONST[\"some-constant\"]", "value", getContext()),
+                Arguments.of("$CONST.injectedexpression", "$WORKFLOW.instanceId", getContext()),
+                Arguments.of("$.arrayOfObjects[?(@.property1 == \"p1-value1\")].property1", "[ \"p1-value1\" ]", getContext()) // different from JQ behavior where joined by space
+        );
+    }
+
+    private static KogitoProcessContext getContext() {
+        return MockBuilder.kogitoProcessContext()
+                .withProcessInstanceMock(p -> Mockito.when(p.getId()).thenReturn("1111-2222-3333"))
+                .withConstants(Collections.singletonMap("someconstant", "value"))
+                .withConstants(Collections.singletonMap("some.constant", "value"))
+                .withConstants(Collections.singletonMap("some-constant", "value"))
+                .withConstants(Collections.singletonMap("injectedexpression", "$WORKFLOW.instanceId")) // should not be resolved
+                .build();
+    }
+
+    private static ObjectNode getObjectNode() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode
+                .put("propertyString", "string")
+                .put("propertyNum", 12)
+                .put("propertyBoolean", true);
+        objectNode.putObject("nested").put("property1", "value1");
+        objectNode.putArray("arrayOfObjects")
+                .add(objectMapper.createObjectNode().put("property1", "p1-value1"))
+                .add(objectMapper.createObjectNode().put("property1", "p1-value2"))
+                .add(objectMapper.createObjectNode().put("property1", "p1-value3"));
+        objectNode.putArray("arrayOfNestedObjects")
+                .add(objectMapper.createObjectNode().set("nested", objectMapper.createObjectNode().put("propertyNum", 1)))
+                .add(objectMapper.createObjectNode().set("nested", objectMapper.createObjectNode().put("propertyNum", 2)))
+                .add(objectMapper.createObjectNode().set("nested", objectMapper.createObjectNode().put("propertyNum", 3)));
+        objectNode.putArray("arrayOfStrings")
+                .add("string1")
+                .add("string2")
+                .add("string3");
+        objectNode.putArray("arrayOfNums")
+                .add(1)
+                .add(2)
+                .add(3);
+        objectNode.putArray("arrayMixed")
+                .add("string1")
+                .add(12)
+                .add(false)
+                .add(objectMapper.createArrayNode().add(1.1).add(1.2).add(1.3));
+        objectNode.putObject("CONST").put("property1", "accessible_value");
+        objectNode.putObject("SECRET").put("property1", "accessible_value");
+        objectNode.putObject("WORKFLOW").put("property1", "accessible_value");
+
+        return objectNode;
     }
 }
