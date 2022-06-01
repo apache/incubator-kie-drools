@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-drools-scorecard</artifactId>
-    <version>8.22.1.Beta</version>
+    <version>8.22.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
