@@ -1,7 +1,7 @@
 **Thank you for submitting this pull request**
 
 **NOTE!:** Double check the target branch for this PR.
-The default is `main` so it will target Drools 8 / Kogito / Optaplanner 8.
+The default is `main` so it will target Drools 8 / Kogito.
 If this PR is not strictly related to drools and kogito project in `drools.git`, it should probably target `7.x`as a branch
 
 **Ports** If a forward-port or a backport is needed, paste the forward port PR here
@@ -37,7 +37,7 @@ How to retest this PR or trigger a specific build:
   Please add comment: <b>Jenkins retest this</b>
 
 - for a <b>specific pull request check</b>  
-  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] tests</b>
 
 - for a <b>full downstream build</b> 
   - for <b>jenkins</b> job: please add comment: <b>Jenkins run fdb</b>
@@ -55,7 +55,7 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>quarkus branch specific check</b>  
   Run checks against Quarkus current used branch  
-  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] quarkus-branch</b>
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] quarkus-branch</b>
 
 - for <b>quarkus main checks</b>  
   Run checks against Quarkus main branch  
@@ -63,7 +63,7 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>specific quarkus main check</b>  
   Run checks against Quarkus main branch  
-  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] quarkus-branch</b>
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] quarkus-branch</b>
 
 - for <b>native checks</b>  
   Run native checks  
@@ -71,7 +71,7 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>specific native check</b>  
   Run native checks 
-  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] native</b>
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] native</b>
 
 - for <b>mandrel checks</b>  
   Run native checks against Mandrel image
@@ -79,5 +79,5 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>specific mandrel check</b>  
   Run native checks against Mandrel image  
-  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] mandrel</b>
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] mandrel</b>
 </details>

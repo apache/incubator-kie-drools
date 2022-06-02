@@ -33,36 +33,16 @@ Map getMultijobPRConfig(Folder jobFolder) {
                 dependsOn: 'drools',
                 repository: 'kogito-runtimes'
             ], [
-                id: 'optaplanner',
-                dependsOn: 'kogito-runtimes',
-                repository: 'optaplanner'
-            ], [
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
-                dependsOn: 'optaplanner',
+                dependsOn: 'kogito-runtimes',
                 env : [
                     ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
-                dependsOn: 'optaplanner',
-            ], [
-                id: 'optaweb-employee-rostering',
-                repository: 'optaweb-employee-rostering',
-                dependsOn: 'optaplanner',
-            ], [
-                id: 'optaweb-vehicle-routing',
-                repository: 'optaweb-vehicle-routing',
-                dependsOn: 'optaplanner',
-            ], [
-                id: 'optaplanner-quickstarts',
-                repository: 'optaplanner-quickstarts',
-                dependsOn: 'optaplanner',
-                env : [
-                    BUILD_MVN_OPTS_CURRENT: '-Dfull',
-                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull'
-                ]
+                dependsOn: 'kogito-apps',
             ]
         ]
     ]
