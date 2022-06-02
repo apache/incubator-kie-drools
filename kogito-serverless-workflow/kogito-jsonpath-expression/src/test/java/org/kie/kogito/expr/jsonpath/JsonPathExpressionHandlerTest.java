@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -42,7 +41,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.PathNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -108,11 +106,11 @@ class JsonPathExpressionHandlerTest {
     }
 
     @Test
-    @Disabled("KOGITO-7318")
     void testCollectFromArrayCollectionRecursive() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$..property1");
         assertTrue(parsedExpression.isValid());
-        assertEquals(Arrays.asList("value1", "p1-value1", "p1-value2", "p1-value3"), parsedExpression.eval(getObjectNode(), Collection.class, getContext()));
+        assertEquals(Arrays.asList("value1", "p1-value1", "p1-value2", "p1-value3", "accessible_value", "accessible_value", "accessible_value"),
+                parsedExpression.eval(getObjectNode(), Collection.class, getContext()));
     }
 
     @Test
@@ -219,24 +217,21 @@ class JsonPathExpressionHandlerTest {
     void testConstPropertyFromJsonAccessible() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.CONST.property1");
         assertTrue(parsedExpression.isValid());
-        // it's not considering the JsonNode property 'CONST', but '$CONST' variable
-        assertThrows(JsonPathException.class, () -> parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertEquals("accessible_value", parsedExpression.eval(getObjectNode(), String.class, getContext()));
     }
 
     @Test
     void testSecretPropertyFromJsonAccessible() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.SECRET.property1");
         assertTrue(parsedExpression.isValid());
-        // it's not considering the JsonNode property 'SECRET', but '$SECRET' variable
-        assertEquals("null", parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertEquals("accessible_value", parsedExpression.eval(getObjectNode(), String.class, getContext()));
     }
 
     @Test
     void testWorkflowPropertyFromJsonAccessible() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", "$.WORKFLOW.property1");
         assertTrue(parsedExpression.isValid());
-        // it's not considering the JsonNode property 'WORKFLOW', but '$WORKFLOW' variable
-        assertThrows(IllegalArgumentException.class, () -> parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertEquals("accessible_value", parsedExpression.eval(getObjectNode(), String.class, getContext()));
     }
 
     @ParameterizedTest(name = "{index} \"{0}\" is resolved to \"{1}\"")
@@ -250,9 +245,7 @@ class JsonPathExpressionHandlerTest {
     private static Stream<Arguments> provideMagicWordExpressionsToTest() {
         return Stream.of(
                 Arguments.of("$WORKFLOW.instanceId", "1111-2222-3333", getContext()),
-                Arguments.of("WORKFLOW.instanceId", "1111-2222-3333", getContext()), // a side effect of jsonpath and prior variable resolution
                 Arguments.of("$SECRET.lettersonly", "secretlettersonly", getContext()),
-                Arguments.of("SECRET.lettersonly", "secretlettersonly", getContext()), // a side effect of jsonpath and prior variable resolution
                 Arguments.of("$SECRET.none", "null", getContext()),
                 //                Arguments.of("$SECRET.dot.secret", "null", getContext()), // exception due to missing object at path .dot
                 Arguments.of("$SECRET[\"dot.secret\"]", "secretdotsecret", getContext()),

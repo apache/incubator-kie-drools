@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.expr.jq;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.kogito.process.expr.Expression;
@@ -58,14 +57,5 @@ public class JqExpressionHandler extends CachedExpressionHandler {
     @Override
     public String lang() {
         return "jq";
-    }
-
-    @Override
-    public Function<Object, String> getValueInjector() {
-        return JqExpressionHandler::inject;
-    }
-
-    static String inject(Object value) {
-        return value instanceof String ? "\"" + value + "\"" : value.toString();
     }
 }

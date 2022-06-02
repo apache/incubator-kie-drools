@@ -43,7 +43,8 @@ public class JsonPathExpression implements Expression {
     }
 
     private static final String replaceMagic(String expr, String magic) {
-        return expr.replace("$" + magic, "@." + magic);
+        magic = "$" + magic;
+        return expr.replace(magic, "@." + magic);
     }
 
     private Configuration getConfiguration(KogitoProcessContext context) {
@@ -59,7 +60,8 @@ public class JsonPathExpression implements Expression {
         DocumentContext parsedContext = JsonPath.using(jsonPathConfig).parse(context);
         if (String.class.isAssignableFrom(returnClass)) {
             StringBuilder sb = new StringBuilder();
-            for (String part : expr.split("((?=\\$))")) {
+            // valid json path is $. or $[
+            for (String part : expr.split("((?=\\$\\.|\\$\\[))")) {
                 JsonNode partResult = parsedContext.read(part, JsonNode.class);
                 sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
             }

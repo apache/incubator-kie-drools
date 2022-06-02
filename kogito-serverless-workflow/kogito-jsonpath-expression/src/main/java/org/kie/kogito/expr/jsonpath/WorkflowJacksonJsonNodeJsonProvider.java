@@ -36,11 +36,11 @@ public class WorkflowJacksonJsonNodeJsonProvider extends JacksonJsonNodeJsonProv
             return ((Function<String, Object>) obj).apply(key);
         } else {
             switch (key) {
-                case ExpressionHandlerUtils.SECRET_MAGIC:
+                case "$" + ExpressionHandlerUtils.SECRET_MAGIC:
                     return (Function<String, Object>) ExpressionHandlerUtils::getSecret;
-                case ExpressionHandlerUtils.CONTEXT_MAGIC:
+                case "$" + ExpressionHandlerUtils.CONTEXT_MAGIC:
                     return ExpressionHandlerUtils.getContextFunction(context);
-                case ExpressionHandlerUtils.CONST_MAGIC:
+                case "$" + ExpressionHandlerUtils.CONST_MAGIC:
                     return ExpressionHandlerUtils.getConstants(context);
                 default:
                     return super.getMapValue(obj, key);

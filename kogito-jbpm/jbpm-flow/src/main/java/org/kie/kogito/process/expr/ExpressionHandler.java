@@ -15,15 +15,9 @@
  */
 package org.kie.kogito.process.expr;
 
-import java.util.function.Function;
-
 public interface ExpressionHandler {
 
     Expression get(String expr);
 
     String lang();
-
-    default Function<Object, String> getValueInjector() {
-        return Object::toString;
-    }
 }
