@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -33,6 +34,7 @@ class ScoreDirectorFactoryFactoryTest {
     void constraintStreamsDroolsWithAlphaNetworkCompilationEnabled() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
+                .withConstraintStreamImplType(ConstraintStreamImplType.DROOLS)
                 .withDroolsAlphaNetworkCompilationEnabled(true);
         InnerScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
                 new DroolsConstraintStreamScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
@@ -48,6 +50,7 @@ class ScoreDirectorFactoryFactoryTest {
     void constraintStreamsDroolsWithAlphaNetworkCompilationDisabled() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig()
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
+                .withConstraintStreamImplType(ConstraintStreamImplType.DROOLS)
                 .withDroolsAlphaNetworkCompilationEnabled(false);
         InnerScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
                 new DroolsConstraintStreamScoreDirectorFactoryService<TestdataSolution, SimpleScore>()
