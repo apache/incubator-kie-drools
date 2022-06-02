@@ -143,4 +143,49 @@ public class KeyStoreHelperTest {
         }
         return mySecretKey;
     }
+
+    @Test
+    public void testSignDataWithPrivateKeyWithFallback() throws UnsupportedEncodingException, UnrecoverableKeyException, InvalidKeyException, KeyStoreException, NoSuchAlgorithmException, SignatureException {
+        // The server signs the data with the private key
+
+        try {
+            // Set properties to simulate the server
+            final URL serverKeyStoreURL = getClass().getResource(KEYSTORE_SERVER_RESOURCE_NAME);
+            System.setProperty(KeyStoreConstants.PROP_SIGN, Boolean.TRUE.toString());
+            System.setProperty(KeyStoreConstants.PROP_VERIFY_OLD_SIGN, Boolean.TRUE.toString()); // allow fallback
+            System.setProperty(KeyStoreConstants.PROP_PVT_KS_URL, serverKeyStoreURL.toExternalForm());
+            System.setProperty(KeyStoreConstants.PROP_PVT_KS_PWD, KEYSTORE_SERVER_PASSWORD);
+            System.setProperty(KeyStoreConstants.PROP_PVT_ALIAS, KEY_ALIAS);
+            System.setProperty(KeyStoreConstants.PROP_PVT_PWD, KEY_PASSWORD);
+            final KeyStoreHelper serverHelper = new KeyStoreHelper();
+
+            // get some data to sign
+            final byte[] data = "Hello World".getBytes("UTF8");
+
+            // sign the data with MD5withRSA
+            final byte[] signature = serverHelper.signDataWithPrivateKeyWithAlgorithm(data, "MD5withRSA");
+
+            // now, initialise the client helper
+
+            // Set properties to simulate the client
+            final URL clientKeyStoreURL = getClass().getResource(KEYSTORE_CLIENT_RESOURCE_NAME);
+            System.setProperty(KeyStoreConstants.PROP_SIGN, Boolean.TRUE.toString());
+            System.setProperty(KeyStoreConstants.PROP_PUB_KS_URL, clientKeyStoreURL.toExternalForm());
+            System.setProperty(KeyStoreConstants.PROP_PUB_KS_PWD, KEYSTORE_CLIENT_PASSWORD);
+            // client needs no password to access the certificate and public key
+            final KeyStoreHelper clientHelper = new KeyStoreHelper();
+
+            // check the signature against the data
+            assertTrue(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+                                                           data,
+                                                           signature));
+
+            // check some fake data
+            assertFalse(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+                                                            "fake".getBytes("UTF8"),
+                                                            signature));
+        } finally {
+            System.clearProperty(KeyStoreConstants.PROP_VERIFY_OLD_SIGN);
+        }
+    }
 }
