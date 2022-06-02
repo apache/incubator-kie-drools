@@ -76,7 +76,7 @@ final class BavetQuadGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB, 
         AbstractGroupNode<BiTuple<A, B>, QuadTuple<NewA, NewB, NewC, NewD>, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, insert, retract, outputStoreSize);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insert, node::update, node::retract);
+        buildHelper.putInsertUpdateRetract(this, node::insert, node::update, node::retract);
     }
 
     @Override

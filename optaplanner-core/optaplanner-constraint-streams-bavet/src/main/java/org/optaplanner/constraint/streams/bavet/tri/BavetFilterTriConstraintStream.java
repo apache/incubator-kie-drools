@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractInserter;
+import org.optaplanner.constraint.streams.bavet.common.AbstractUpdater;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.function.TriPredicate;
@@ -66,52 +68,38 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<TriTuple<A, B, C>> update = buildHelper.getAggregatedUpdate(childStreamList);
-        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        buildHelper.putInsertRetract(this,
-                new ConditionalTriInserter<>(predicate, insert),
-                new ConditionalTriUpdater<>(predicate, update, retract),
-                retract);
+        buildHelper.<TriTuple<A, B, C>> putInsertUpdateRetract(this, childStreamList,
+                insert -> new ConditionalTriInserter<>(predicate, insert),
+                (update, retract) -> new ConditionalTriUpdater<>(predicate, update, retract));
     }
 
-    private static final class ConditionalTriInserter<A, B, C> implements Consumer<TriTuple<A, B, C>> {
+    private static final class ConditionalTriInserter<A, B, C> extends AbstractInserter<TriTuple<A, B, C>> {
         private final TriPredicate<A, B, C> predicate;
-        private final Consumer<TriTuple<A, B, C>> insert;
 
         public ConditionalTriInserter(TriPredicate<A, B, C> predicate, Consumer<TriTuple<A, B, C>> insert) {
+            super(insert);
             this.predicate = predicate;
-            this.insert = insert;
         }
 
         @Override
-        public void accept(TriTuple<A, B, C> tuple) {
-            if (predicate.test(tuple.factA, tuple.factB, tuple.factC)) {
-                insert.accept(tuple);
-            }
+        protected boolean test(TriTuple<A, B, C> tuple) {
+            return predicate.test(tuple.factA, tuple.factB, tuple.factC);
         }
 
     }
 
-    private static final class ConditionalTriUpdater<A, B, C> implements Consumer<TriTuple<A, B, C>> {
+    private static final class ConditionalTriUpdater<A, B, C> extends AbstractUpdater<TriTuple<A, B, C>> {
         private final TriPredicate<A, B, C> predicate;
-        private final Consumer<TriTuple<A, B, C>> update;
-        private final Consumer<TriTuple<A, B, C>> retract;
 
-        public ConditionalTriUpdater(TriPredicate<A, B, C> predicate,
-                Consumer<TriTuple<A, B, C>> update, Consumer<TriTuple<A, B, C>> retract) {
+        public ConditionalTriUpdater(TriPredicate<A, B, C> predicate, Consumer<TriTuple<A, B, C>> update,
+                Consumer<TriTuple<A, B, C>> retract) {
+            super(update, retract);
             this.predicate = predicate;
-            this.update = update;
-            this.retract = retract;
         }
 
         @Override
-        public void accept(TriTuple<A, B, C> tuple) {
-            if (predicate.test(tuple.factA, tuple.factB, tuple.factC)) {
-                update.accept(tuple);
-            } else {
-                retract.accept(tuple);
-            }
+        protected boolean test(TriTuple<A, B, C> tuple) {
+            return predicate.test(tuple.factA, tuple.factB, tuple.factC);
         }
 
     }

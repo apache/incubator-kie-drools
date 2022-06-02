@@ -147,7 +147,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         }
         TriScorer<A, B, C> scorer = new TriScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
                 constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
-        buildHelper.putInsertRetract(this, scorer::insert, scorer::update, scorer::retract);
+        buildHelper.putInsertUpdateRetract(this, scorer::insert, scorer::update, scorer::retract);
     }
 
     // ************************************************************************

@@ -91,8 +91,8 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
                 insert, retract,
                 indexerA, indexerB, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertLeft, node::updateLeft, node::retractLeft);
-        buildHelper.putInsertRetract(parentBridgeB, node::insertRight, node::updateRight, node::retractRight);
+        buildHelper.putInsertUpdateRetract(this, node::insertLeft, node::updateLeft, node::retractLeft);
+        buildHelper.putInsertUpdateRetract(parentBridgeB, node::insertRight, node::updateRight, node::retractRight);
     }
 
     // ************************************************************************

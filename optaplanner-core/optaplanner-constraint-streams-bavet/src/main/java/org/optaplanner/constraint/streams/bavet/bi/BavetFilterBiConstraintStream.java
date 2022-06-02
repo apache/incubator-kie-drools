@@ -22,6 +22,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractInserter;
+import org.optaplanner.constraint.streams.bavet.common.AbstractUpdater;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
@@ -65,52 +67,38 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<BiTuple<A, B>> update = buildHelper.getAggregatedUpdate(childStreamList);
-        Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        buildHelper.putInsertRetract(this,
-                new ConditionalBiInserter<>(predicate, insert),
-                new ConditionalBiUpdater<>(predicate, update, retract),
-                retract);
+        buildHelper.<BiTuple<A, B>> putInsertUpdateRetract(this, childStreamList,
+                insert -> new ConditionalBiInserter<>(predicate, insert),
+                (update, retract) -> new ConditionalBiUpdater<>(predicate, update, retract));
     }
 
-    private static final class ConditionalBiInserter<A, B> implements Consumer<BiTuple<A, B>> {
+    private static final class ConditionalBiInserter<A, B> extends AbstractInserter<BiTuple<A, B>> {
         private final BiPredicate<A, B> predicate;
-        private final Consumer<BiTuple<A, B>> insert;
 
         public ConditionalBiInserter(BiPredicate<A, B> predicate, Consumer<BiTuple<A, B>> insert) {
+            super(insert);
             this.predicate = predicate;
-            this.insert = insert;
         }
 
         @Override
-        public void accept(BiTuple<A, B> tuple) {
-            if (predicate.test(tuple.factA, tuple.factB)) {
-                insert.accept(tuple);
-            }
+        protected boolean test(BiTuple<A, B> tuple) {
+            return predicate.test(tuple.factA, tuple.factB);
         }
 
     }
 
-    private static final class ConditionalBiUpdater<A, B> implements Consumer<BiTuple<A, B>> {
+    private static final class ConditionalBiUpdater<A, B> extends AbstractUpdater<BiTuple<A, B>> {
         private final BiPredicate<A, B> predicate;
-        private final Consumer<BiTuple<A, B>> update;
-        private final Consumer<BiTuple<A, B>> retract;
 
-        public ConditionalBiUpdater(BiPredicate<A, B> predicate,
-                Consumer<BiTuple<A, B>> update, Consumer<BiTuple<A, B>> retract) {
+        public ConditionalBiUpdater(BiPredicate<A, B> predicate, Consumer<BiTuple<A, B>> update,
+                Consumer<BiTuple<A, B>> retract) {
+            super(update, retract);
             this.predicate = predicate;
-            this.update = update;
-            this.retract = retract;
         }
 
         @Override
-        public void accept(BiTuple<A, B> tuple) {
-            if (predicate.test(tuple.factA, tuple.factB)) {
-                update.accept(tuple);
-            } else {
-                retract.accept(tuple);
-            }
+        protected boolean test(BiTuple<A, B> tuple) {
+            return predicate.test(tuple.factA, tuple.factB);
         }
 
     }

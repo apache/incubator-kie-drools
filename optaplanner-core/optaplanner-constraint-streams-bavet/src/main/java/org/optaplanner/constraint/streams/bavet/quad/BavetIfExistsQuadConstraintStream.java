@@ -94,8 +94,8 @@ final class BavetIfExistsQuadConstraintStream<Solution_, A, B, C, D, E>
                 insert, retract,
                 indexerABCD, indexerE, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertLeft, node::updateLeft, node::retractLeft);
-        buildHelper.putInsertRetract(parentBridgeE, node::insertRight, node::updateRight, node::retractRight);
+        buildHelper.putInsertUpdateRetract(this, node::insertLeft, node::updateLeft, node::retractLeft);
+        buildHelper.putInsertUpdateRetract(parentBridgeE, node::insertRight, node::updateRight, node::retractRight);
     }
 
     // ************************************************************************

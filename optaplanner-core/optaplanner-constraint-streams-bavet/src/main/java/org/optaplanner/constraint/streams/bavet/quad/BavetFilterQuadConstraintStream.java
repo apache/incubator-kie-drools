@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractInserter;
+import org.optaplanner.constraint.streams.bavet.common.AbstractUpdater;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -66,54 +68,38 @@ public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        Consumer<QuadTuple<A, B, C, D>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<QuadTuple<A, B, C, D>> update = buildHelper.getAggregatedUpdate(childStreamList);
-        Consumer<QuadTuple<A, B, C, D>> retract = buildHelper.getAggregatedRetract(childStreamList);
-        buildHelper.putInsertRetract(this,
-                new ConditionalQuadInserter<>(predicate, insert),
-                new ConditionalQuadUpdater<>(predicate, update, retract),
-                retract);
+        buildHelper.<QuadTuple<A, B, C, D>> putInsertUpdateRetract(this, childStreamList,
+                insert -> new ConditionalQuadInserter<>(predicate, insert),
+                (update, retract) -> new ConditionalQuadUpdater<>(predicate, update, retract));
     }
 
-    private static final class ConditionalQuadInserter<A, B, C, D> implements Consumer<QuadTuple<A, B, C, D>> {
+    private static final class ConditionalQuadInserter<A, B, C, D> extends AbstractInserter<QuadTuple<A, B, C, D>> {
         private final QuadPredicate<A, B, C, D> predicate;
-        private final Consumer<QuadTuple<A, B, C, D>> insert;
 
         public ConditionalQuadInserter(QuadPredicate<A, B, C, D> predicate, Consumer<QuadTuple<A, B, C, D>> insert) {
+            super(insert);
             this.predicate = predicate;
-            this.insert = insert;
         }
 
         @Override
-        public void accept(QuadTuple<A, B, C, D> tuple) {
-            if (predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD)) {
-                insert.accept(tuple);
-            }
+        protected boolean test(QuadTuple<A, B, C, D> tuple) {
+            return predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
         }
-
     }
 
-    private static final class ConditionalQuadUpdater<A, B, C, D> implements Consumer<QuadTuple<A, B, C, D>> {
+    private static final class ConditionalQuadUpdater<A, B, C, D> extends AbstractUpdater<QuadTuple<A, B, C, D>> {
         private final QuadPredicate<A, B, C, D> predicate;
-        private final Consumer<QuadTuple<A, B, C, D>> update;
-        private final Consumer<QuadTuple<A, B, C, D>> retract;
 
-        public ConditionalQuadUpdater(QuadPredicate<A, B, C, D> predicate,
-                Consumer<QuadTuple<A, B, C, D>> update, Consumer<QuadTuple<A, B, C, D>> retract) {
+        public ConditionalQuadUpdater(QuadPredicate<A, B, C, D> predicate, Consumer<QuadTuple<A, B, C, D>> update,
+                Consumer<QuadTuple<A, B, C, D>> retract) {
+            super(update, retract);
             this.predicate = predicate;
-            this.update = update;
-            this.retract = retract;
         }
 
         @Override
-        public void accept(QuadTuple<A, B, C, D> tuple) {
-            if (predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD)) {
-                update.accept(tuple);
-            } else {
-                retract.accept(tuple);
-            }
+        protected boolean test(QuadTuple<A, B, C, D> tuple) {
+            return predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
         }
-
     }
 
     // ************************************************************************

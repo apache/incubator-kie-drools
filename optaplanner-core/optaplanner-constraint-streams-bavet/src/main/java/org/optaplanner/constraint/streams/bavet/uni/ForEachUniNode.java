@@ -101,23 +101,23 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     @Override
     public void calculateScore() {
-        dirtyTupleQueue.forEach(tuple -> {
+        for (UniTuple<A> tuple : dirtyTupleQueue) {
             switch (tuple.state) {
                 case CREATING:
                     nextNodesInsert.accept(tuple);
                     tuple.state = BavetTupleState.OK;
-                    return;
+                    break;
                 case UPDATING:
                     nextNodesUpdate.accept(tuple);
                     tuple.state = BavetTupleState.OK;
-                    return;
+                    break;
                 case DYING:
                     nextNodesRetract.accept(tuple);
                     tuple.state = BavetTupleState.DEAD;
-                    return;
+                    break;
                 case ABORTING:
                     tuple.state = BavetTupleState.DEAD;
-                    return;
+                    break;
                 case DEAD:
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.state + ").");
@@ -125,7 +125,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in an unexpected state (" + tuple.state + ").");
             }
-        });
+        }
         dirtyTupleQueue.clear();
     }
 

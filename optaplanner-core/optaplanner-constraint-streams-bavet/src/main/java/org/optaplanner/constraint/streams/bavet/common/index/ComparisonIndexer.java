@@ -102,9 +102,6 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
         Map<Key_, Indexer<Tuple_, Value_>> selectedComparisonMap =
                 submapExtractor.apply(comparisonMap, comparisonIndexProperty);
-        if (selectedComparisonMap.isEmpty()) {
-            return;
-        }
         for (Indexer<Tuple_, Value_> indexer : selectedComparisonMap.values()) {
             indexer.visit(indexProperties, tupleValueVisitor);
         }

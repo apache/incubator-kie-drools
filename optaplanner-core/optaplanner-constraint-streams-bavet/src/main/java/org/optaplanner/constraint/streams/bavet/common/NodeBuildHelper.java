@@ -22,24 +22,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
-public class NodeBuildHelper<Score_ extends Score<Score_>> {
+public final class NodeBuildHelper<Score_ extends Score<Score_>> {
 
     private final Set<? extends ConstraintStream> activeStreamSet;
     private final Map<Constraint, Score_> constraintWeightMap;
     private final AbstractScoreInliner<Score_> scoreInliner;
-
     private final Map<ConstraintStream, Consumer<? extends Tuple>> insertMap;
     private final Map<ConstraintStream, Consumer<? extends Tuple>> updateMap;
     private final Map<ConstraintStream, Consumer<? extends Tuple>> retractMap;
-
     private final Map<ConstraintStream, Integer> storeIndexMap;
 
     private List<AbstractNode> reversedNodeList;
@@ -47,13 +47,15 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
     public NodeBuildHelper(Set<? extends ConstraintStream> activeStreamSet, Map<Constraint, Score_> constraintWeightMap,
             AbstractScoreInliner<Score_> scoreInliner) {
         this.activeStreamSet = activeStreamSet;
-        insertMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
-        updateMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
-        retractMap = new HashMap<>(Math.max(16, activeStreamSet.size()));
-        storeIndexMap = new HashMap<>(Math.max(16, activeStreamSet.size() / 2));
-        reversedNodeList = new ArrayList<>(activeStreamSet.size());
         this.constraintWeightMap = constraintWeightMap;
         this.scoreInliner = scoreInliner;
+        int activeStreamSetSize = activeStreamSet.size();
+        int consumerMapSize = Math.max(16, activeStreamSetSize);
+        this.insertMap = new HashMap<>(consumerMapSize);
+        this.updateMap = new HashMap<>(consumerMapSize);
+        this.retractMap = new HashMap<>(consumerMapSize);
+        this.storeIndexMap = new HashMap<>(Math.max(16, activeStreamSetSize / 2));
+        this.reversedNodeList = new ArrayList<>(activeStreamSetSize);
     }
 
     public boolean isStreamActive(ConstraintStream stream) {
@@ -72,63 +74,53 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
         reversedNodeList.add(node);
     }
 
-    public <Tuple_ extends Tuple> void putInsertRetract(ConstraintStream stream,
-            Consumer<Tuple_> insert, Consumer<Tuple_> update, Consumer<Tuple_> retract) {
+    public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream, Consumer<Tuple_> insert,
+            Consumer<Tuple_> update, Consumer<Tuple_> retract) {
         insertMap.put(stream, insert);
         updateMap.put(stream, update);
         retractMap.put(stream, retract);
     }
 
-    public <Tuple_ extends Tuple> Consumer<Tuple_> getInsert(ConstraintStream stream) {
-        Consumer<Tuple_> insert = (Consumer<Tuple_>) insertMap.get(stream);
-        if (insert == null) {
-            throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't build a node yet.");
-        }
-        return insert;
-    }
-
-    public <Tuple_ extends Tuple> Consumer<Tuple_> getUpdate(ConstraintStream stream) {
-        Consumer<Tuple_> update = (Consumer<Tuple_>) updateMap.get(stream);
-        if (update == null) {
-            throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't build a node yet.");
-        }
-        return update;
-    }
-
-    public <Tuple_ extends Tuple> Consumer<Tuple_> getRetract(ConstraintStream stream) {
-        Consumer<Tuple_> retract = (Consumer<Tuple_>) retractMap.get(stream);
-        if (retract == null) {
-            throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't build a node yet.");
-        }
-        return retract;
+    public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream,
+            List<? extends AbstractConstraintStream> childStreamList,
+            Function<Consumer<Tuple_>, AbstractInserter<Tuple_>> inserterConstructor,
+            BiFunction<Consumer<Tuple_>, Consumer<Tuple_>, AbstractUpdater<Tuple_>> updaterConstructor) {
+        Consumer<Tuple_> insert = getAggregatedInsert(childStreamList);
+        Consumer<Tuple_> update = getAggregatedUpdate(childStreamList);
+        Consumer<Tuple_> retract = getAggregatedRetract(childStreamList);
+        putInsertUpdateRetract(stream,
+                inserterConstructor.apply(insert),
+                updaterConstructor.apply(update, retract),
+                retract);
     }
 
     public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedInsert(List<? extends ConstraintStream> streamList) {
-        return getAggregatedConsumer(streamList, this::getInsert);
+        return getAggregatedConsumer(streamList, insertMap);
     }
 
     public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedUpdate(List<? extends ConstraintStream> streamList) {
-        return getAggregatedConsumer(streamList, this::getUpdate);
+        return getAggregatedConsumer(streamList, updateMap);
     }
 
     public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedRetract(List<? extends ConstraintStream> streamList) {
-        return getAggregatedConsumer(streamList, this::getRetract);
+        return getAggregatedConsumer(streamList, retractMap);
     }
 
     private <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedConsumer(List<? extends ConstraintStream> streamList,
-            Function<ConstraintStream, Consumer<Tuple>> mapFunction) {
+            Map<ConstraintStream, Consumer<? extends Tuple>> consumerMap) {
         Consumer<Tuple_>[] consumers = streamList.stream()
                 .filter(this::isStreamActive)
-                .map(mapFunction)
+                .map(s -> getConsumer(s, consumerMap))
                 .toArray(Consumer[]::new);
-        if (consumers.length == 0) {
-            throw new IllegalStateException("Impossible state: None of the streamList (" + streamList
-                    + ") are active.");
+        switch (consumers.length) {
+            case 0:
+                throw new IllegalStateException("Impossible state: None of the streamList (" + streamList
+                        + ") are active.");
+            case 1:
+                return consumers[0];
+            default:
+                return new AggregatedConsumer<>(consumers);
         }
-        if (consumers.length == 1) {
-            return consumers[0];
-        }
-        return new AggregatedConsumer<>(consumers);
     }
 
     private static final class AggregatedConsumer<Tuple_ extends Tuple> implements Consumer<Tuple_> {
@@ -140,11 +132,20 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
 
         @Override
         public void accept(Tuple_ tuple) {
-            for (int i = 0; i < consumers.length; i++) {
-                consumers[i].accept(tuple);
+            for (Consumer<Tuple_> consumer : consumers) {
+                consumer.accept(tuple);
             }
         }
 
+    }
+
+    private static <Tuple_ extends Tuple> Consumer<Tuple_> getConsumer(ConstraintStream stream,
+            Map<ConstraintStream, Consumer<? extends Tuple>> consumerMap) {
+        Consumer<Tuple_> consumer = (Consumer<Tuple_>) consumerMap.get(stream);
+        if (consumer == null) {
+            throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't built a node yet.");
+        }
+        return consumer;
     }
 
     public int reserveTupleStoreIndex(ConstraintStream tupleSourceStream) {
@@ -152,7 +153,7 @@ public class NodeBuildHelper<Score_ extends Score<Score_>> {
             if (index == null) {
                 return 0;
             } else if (index < 0) {
-                throw new IllegalStateException("Impossible state: the tupleSourceStream (" + tupleSourceStream
+                throw new IllegalStateException("Impossible state: the tupleSourceStream (" + k
                         + ") is reserving a store after it has been extracted.");
             } else {
                 return index + 1;

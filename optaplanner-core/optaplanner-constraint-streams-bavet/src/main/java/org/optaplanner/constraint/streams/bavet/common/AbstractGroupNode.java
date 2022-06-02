@@ -117,7 +117,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void calculateScore() {
-        dirtyGroupQueue.forEach(group -> {
+        for (Group<OutTuple_, GroupKey_, ResultContainer_> group : dirtyGroupQueue) {
             group.dirty = false;
             if (group.tuple != null) {
                 OutTuple_ tuple = group.tuple;
@@ -137,7 +137,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                 nextNodesInsert.accept(tuple);
                 tuple.setState(BavetTupleState.OK);
             }
-        });
+        }
         dirtyGroupQueue.clear();
     }
 

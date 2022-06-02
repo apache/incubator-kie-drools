@@ -71,7 +71,7 @@ final class BavetUniGroupBridgeUniConstraintStream<Solution_, A, NewA>
                 buildHelper.getAggregatedInsert(groupStream.getChildStreamList()),
                 buildHelper.getAggregatedRetract(groupStream.getChildStreamList()), outputStoreSize);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insert, node::update, node::retract);
+        buildHelper.putInsertUpdateRetract(this, node::insert, node::update, node::retract);
     }
 
     @Override
