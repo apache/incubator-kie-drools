@@ -66,6 +66,8 @@ import org.kie.pmml.pmml_4_2.model.mining.SimpleSetSegmentPredicate;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -76,6 +78,9 @@ import org.mvel2.templates.TemplateRuntime;
  */
 @Deprecated
 public class PMML4Helper {
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(PMML4Helper.class);
 
 
     private static final String innerFieldPrefix = "__$Inner";
@@ -293,10 +298,10 @@ public class PMML4Helper {
             obj = in.readObject();
         }
         catch(IOException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         catch(ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
+            LOG.error("Exception", cnfe);
         }
         return obj;
     }

@@ -54,6 +54,8 @@ import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMML4Exception;
 import org.kie.pmml.pmml_4_2.PMMLResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
 import static org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
@@ -66,6 +68,8 @@ import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
  */
 @Deprecated
 public class PMMLAssemblerService implements KieAssemblerService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PMMLAssemblerService.class);
 
     private ClassLoader rootClassLoader;
     private KnowledgeBuilderConfigurationImpl configuration;
@@ -278,7 +282,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOG.error("Exception", e);
                 }
 
             }

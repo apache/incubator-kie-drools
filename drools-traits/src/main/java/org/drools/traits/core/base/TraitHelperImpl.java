@@ -62,12 +62,17 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
 public class TraitHelperImpl implements Externalizable,
                                         TraitHelper {
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(TraitHelperImpl.class);
 
 
     private InternalWorkingMemoryActions              workingMemory;
@@ -93,7 +98,7 @@ public class TraitHelperImpl implements Externalizable,
             T thing = applyManyTraits( activation, core, traits, null, logical, modes );
             return thing;
         } catch ( LogicalTypeInconsistencyException ltie ) {
-            ltie.printStackTrace();
+            LOG.error("Exception", ltie);
             return null;
         }
     }
@@ -110,7 +115,7 @@ public class TraitHelperImpl implements Externalizable,
             T thing = applyTrait( activation, core, trait, initArgs, logical, modes );
             return thing;
         } catch ( LogicalTypeInconsistencyException ltie ) {
-            ltie.printStackTrace();
+            LOG.error("Exception", ltie);
             return null;
         }
     }

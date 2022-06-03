@@ -45,6 +45,8 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
@@ -52,6 +54,7 @@ import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
  * A builder to dynamically build simple Javabean(TM) classes
  */
 public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Serializable {
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultBeanClassBuilder.class);
     protected boolean     debug  = false;
 
     public DefaultBeanClassBuilder() {
@@ -450,7 +453,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             this.buildDefaultConstructor( cw,
                                           classDef );
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         // Building constructor with all fields

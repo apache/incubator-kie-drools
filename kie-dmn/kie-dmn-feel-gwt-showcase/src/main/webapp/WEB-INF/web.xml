@@ -10,4 +10,16 @@
   <url-pattern>/App/junithost/*</url-pattern>
 </servlet-mapping>
 
+<error-page>
+  <error-code>403</error-code>
+  <location>/403.html</location>
+</error-page>
+<error-page>
+  <exception-type>java.lang.Exception</exception-type>
+  <location>/error.html</location>
+</error-page>
+<error-page>
+  <location>/error.html</location>
+</error-page>
+
 </web-app>

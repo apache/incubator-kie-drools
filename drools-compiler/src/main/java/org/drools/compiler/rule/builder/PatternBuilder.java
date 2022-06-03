@@ -104,6 +104,8 @@ import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
@@ -116,6 +118,8 @@ import static org.drools.core.util.StringUtils.isIdentifier;
 public class PatternBuilder
         implements
         RuleConditionBuilder<PatternDescr> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PatternBuilder.class);
 
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile("^eval\\s*\\(",
                                                                                               java.util.regex.Pattern.MULTILINE);
@@ -480,7 +484,7 @@ public class PatternBuilder
                                               annotationDescr.getValueMap(),
                                               resolver);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             AnnotationDefinition annotationDefinition = new AnnotationDefinition(annotationDescr.getFullyQualifiedName());
             for (String propKey : annotationDescr.getValues().keySet()) {
                 Object value = annotationDescr.getValue(propKey);

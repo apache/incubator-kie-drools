@@ -29,9 +29,13 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.junit.runners.model.TestTimedOutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestStatusListener extends RunListener {
-    
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestStatusListener.class);
+
     private final BufferedWriter writer;
 
     public TestStatusListener() {
@@ -141,7 +145,7 @@ public class TestStatusListener extends RunListener {
             write("testAssumptionFailure", failure);
         } catch (final IOException e) {
             // can't do anything at this point to report it to log file
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
     }
 

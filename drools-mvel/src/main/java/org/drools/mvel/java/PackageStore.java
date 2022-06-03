@@ -17,12 +17,15 @@ package org.drools.mvel.java;
 import java.util.List;
 
 import org.kie.memorycompiler.resources.ResourceStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public class PackageStore
     implements
     ResourceStore {
+    private static final Logger LOG = LoggerFactory.getLogger(PackageStore.class);
     private JavaDialectRuntimeData       javaDialectRuntimeData;
 
     private List<KnowledgeBuilderResult> errors;
@@ -46,7 +49,7 @@ public class PackageStore
             this.javaDialectRuntimeData.write( resourceName,
                                                clazzData );
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             this.errors.add( new JavaDialectError( "PackageStore was unable to write resourceName='" + resourceName + "'" ) );
         }
     }
