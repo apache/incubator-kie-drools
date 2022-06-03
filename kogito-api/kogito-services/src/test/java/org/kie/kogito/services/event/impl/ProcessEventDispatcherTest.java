@@ -235,11 +235,14 @@ class ProcessEventDispatcherTest {
         String nameValue = UUID.randomUUID().toString();
         SimpleCorrelation<String> userCorrelation = new SimpleCorrelation<>(userId, userValue);
         SimpleCorrelation<String> nameCorrelation = new SimpleCorrelation<>(name, nameValue);
-        CompositeCorrelation compositeCorrelation = new CompositeCorrelation(Stream.of(userCorrelation, nameCorrelation).collect(Collectors.toSet()));
+        Set<Correlation<?>> correlations = Set.of(userCorrelation, nameCorrelation);
+        CompositeCorrelation compositeCorrelation = new CompositeCorrelation(correlations);
         correlationService.create(compositeCorrelation, "1");
 
-        EventDispatcher<DummyModel> dispatcher = new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor, Stream.of(userId, name).collect(Collectors.toSet()),
-                AbstractMessageConsumer::cloudEventResolver);
+        EventDispatcher<DummyModel> dispatcher =
+                new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor,
+                        correlations.stream().map(Correlation::getKey).collect(Collectors.toSet()),
+                        AbstractMessageConsumer::cloudEventResolver);
         DummyCloudEvent event = new DummyCloudEvent(new DummyEvent("pepe"), DUMMY_TOPIC, "source");
         event.addExtensionAttribute(userId, userValue);
         event.addExtensionAttribute(name, nameValue);
@@ -249,7 +252,7 @@ class ProcessEventDispatcherTest {
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
 
         verify(correlationService).find(compositeCorrelation);
-        verify(processService, times(1)).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), Mockito.any(Object.class), signal.capture());
+        verify(processService).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), Mockito.any(Object.class), signal.capture());
 
         assertEquals("Message-" + DUMMY_TOPIC, signal.getValue());
         assertEquals("1", processInstanceId.getValue());

@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class CompositeCorrelation implements Correlation<Set<? extends Correlation<?>>> {
@@ -27,8 +28,8 @@ public class CompositeCorrelation implements Correlation<Set<? extends Correlati
     private Set<? extends Correlation<?>> correlations;
 
     public CompositeCorrelation(Set<? extends Correlation<?>> correlations) {
-        this.key = buildKey(correlations);
-        this.correlations = Collections.unmodifiableSet(correlations);
+        this.correlations = Collections.unmodifiableSet(new TreeSet<>(correlations));
+        this.key = buildKey(this.correlations);
     }
 
     private static String buildKey(Set<? extends Correlation<?>> correlations) {
