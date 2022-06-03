@@ -109,14 +109,14 @@ public class RangeImplTest {
         assertThat(rangeImpl2.hashCode()).isEqualTo(rangeImpl.hashCode());
 
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
-        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
     }
 }
