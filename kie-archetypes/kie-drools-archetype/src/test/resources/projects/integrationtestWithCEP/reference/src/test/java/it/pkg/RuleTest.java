@@ -67,35 +67,39 @@ public class RuleTest {
         KieSessionConfiguration config = kieServices.newKieSessionConfiguration();
         config.setOption( ClockTypeOption.get("pseudo") );
         KieSession session = kieBase.newKieSession(config, null);
-        SessionPseudoClock clock = session.getSessionClock();
 
-        LOG.info("Populating globals");
-        Set<String> check = new HashSet<String>();
-        session.setGlobal("controlSet", check);
+        try {
+            SessionPseudoClock clock = session.getSessionClock();
 
-        LOG.info("Now running data");
+            LOG.info("Populating globals");
+            Set<String> check = new HashSet<String>();
+            session.setGlobal("controlSet", check);
 
-        clock.advanceTime(1, TimeUnit.MINUTES);
-        Measurement mRed= new Measurement("color", "red");
-        session.insert(mRed);
-        session.fireAllRules();
+            LOG.info("Now running data");
 
-        clock.advanceTime(1, TimeUnit.MINUTES);
-        Measurement mGreen= new Measurement("color", "green");
-        session.insert(mGreen);
-        session.fireAllRules();
+            clock.advanceTime(1, TimeUnit.MINUTES);
+            Measurement mRed = new Measurement("color", "red");
+            session.insert(mRed);
+            session.fireAllRules();
 
-        clock.advanceTime(1, TimeUnit.MINUTES);
-        Measurement mBlue= new Measurement("color", "blue");
-        session.insert(mBlue);
-        session.fireAllRules();
+            clock.advanceTime(1, TimeUnit.MINUTES);
+            Measurement mGreen = new Measurement("color", "green");
+            session.insert(mGreen);
+            session.fireAllRules();
 
-        LOG.info("Final checks");
+            clock.advanceTime(1, TimeUnit.MINUTES);
+            Measurement mBlue = new Measurement("color", "blue");
+            session.insert(mBlue);
+            session.fireAllRules();
 
-        assertEquals("Size of object in Working Memory is 2 for the last 2", 2, session.getObjects().size());
-        assertFalse("contains red", check.contains("red"));
-        assertTrue("contains green", check.contains("green"));
-        assertTrue("contains blue", check.contains("blue"));
+            LOG.info("Final checks");
 
+            assertEquals("Size of object in Working Memory is 2 for the last 2", 2, session.getObjects().size());
+            assertFalse("contains red", check.contains("red"));
+            assertTrue("contains green", check.contains("green"));
+            assertTrue("contains blue", check.contains("blue"));
+        } finally {
+            session.dispose();
+        }
     }
 }
