@@ -34,13 +34,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-test-utils</artifactId>
-      <scope>test</scope>
+      <artifactId>quarkus-oidc-client-filter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -68,6 +62,17 @@
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
 
+    <!-- Testing dependencies -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-internal</artifactId>
@@ -119,23 +124,6 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>${shared.test.resources.dir}/exec</directory>
-        <includes>
-          <include>callback-state.sw.json</include>
-          <include>callback-state-timeouts.sw.json</include>
-          <include>switch-state-data-condition-transition.sw.json</include>
-          <include>switch-state-data-condition-end.sw.json</include>
-          <include>switch-state-event-condition-timeouts-transition.sw.json</include>
-          <include>switch-state-event-condition-timeouts-transition2.sw.json</include>
-          <include>switch-state-event-condition-timeouts-end.sw.json</include>
-        </includes>
-      </resource>
-    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -198,6 +186,46 @@
             <container.image.kafka>${container.image.kafka}</container.image.kafka>
             <kogito.version>${project.version}</kogito.version>
           </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <!-- Note, these resources must be copied in the generate-resources phase otherwise they won't be picked-up
+      by the quarkus-openapi-generator -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/main/resources/shared</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${shared.test.resources.dir}/exec</directory>
+                  <includes>
+                    <include>callback-state.sw.json</include>
+                    <include>callback-state-timeouts.sw.json</include>
+                    <include>switch-state-data-condition-transition.sw.json</include>
+                    <include>switch-state-data-condition-end.sw.json</include>
+                    <include>switch-state-event-condition-timeouts-transition.sw.json</include>
+                    <include>switch-state-event-condition-timeouts-transition2.sw.json</include>
+                    <include>switch-state-event-condition-timeouts-end.sw.json</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.basedir}/src/main/resources/shared</directory>
+            </fileset>
+          </filesets>
         </configuration>
       </plugin>
     </plugins>

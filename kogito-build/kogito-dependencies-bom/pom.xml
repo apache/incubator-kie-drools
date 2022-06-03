@@ -26,7 +26,7 @@
     <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20210928</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>1.0.1</version.io.quarkiverse.jackson-jq>
-    <version.io.quarkiverse.openapi.generator>0.6.1</version.io.quarkiverse.openapi.generator>
+    <version.io.quarkiverse.openapi.generator>0.7.0</version.io.quarkiverse.openapi.generator>
     <version.io.quarkiverse.reactivemessaging.http>1.0.3</version.io.quarkiverse.reactivemessaging.http>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.23.1</version.com.github.javaparser>
@@ -38,7 +38,6 @@
     <version.com.google.protobuf>3.19.3</version.com.google.protobuf>
     <!-- currently required for integration test only -->
     <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
-
     <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
     <version.com.sun.xml.bind.impl>2.3.5</version.com.sun.xml.bind.impl>
     <version.com.sun.activation>1.2.0</version.com.sun.activation>
@@ -639,7 +638,6 @@
         <artifactId>serverlessworkflow-diagram</artifactId>
         <version>${version.io.serverlessworkflow}</version>
       </dependency>
-
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-client</artifactId>

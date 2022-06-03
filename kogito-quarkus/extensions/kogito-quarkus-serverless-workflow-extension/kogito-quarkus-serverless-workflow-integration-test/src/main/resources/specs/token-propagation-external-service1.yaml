@@ -1,0 +1,32 @@
+---
+openapi: 3.0.3
+info:
+  title: token-propagation-external-service1 API
+  version: 2.0.0-SNAPSHOT
+paths:
+  /token-propagation-external-service1/executeQuery1:
+    post:
+      operationId: executeQuery1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        "200":
+          description: OK
+      security:
+        - service1-http-bearer: []
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      properties:
+        processInstanceId:
+          type: string
+        query:
+          type: string
+  securitySchemes:
+    service1-http-bearer:
+      type: http
+      scheme: bearer

@@ -30,6 +30,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -38,11 +39,13 @@ public class ExternalServiceMock implements QuarkusTestResourceLifecycleManager 
     public static final String SUCCESSFUL_QUERY = "SUCCESSFUL_QUERY";
     public static final String GENERATE_ERROR_QUERY = "GENERATE_ERROR_QUERY";
 
+    public static final String EXTERNAL_SERVICE_MOCK_URL = "external-service-mock.url";
+
     private WireMockServer wireMockServer;
 
     @Override
     public Map<String, String> start() {
-        wireMockServer = new WireMockServer(9292);
+        wireMockServer = new WireMockServer(options().dynamicPort());
         wireMockServer.start();
         configureFor(wireMockServer.port());
 
@@ -62,7 +65,7 @@ public class ExternalServiceMock implements QuarkusTestResourceLifecycleManager 
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON)
                         .withFault(Fault.CONNECTION_RESET_BY_PEER)));
 
-        return Collections.emptyMap();
+        return Collections.singletonMap(EXTERNAL_SERVICE_MOCK_URL, wireMockServer.baseUrl());
     }
 
     @Override

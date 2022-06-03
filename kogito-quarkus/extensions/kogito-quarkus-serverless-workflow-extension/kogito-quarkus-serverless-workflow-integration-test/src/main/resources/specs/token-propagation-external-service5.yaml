@@ -1,0 +1,36 @@
+---
+openapi: 3.0.3
+info:
+  title: external-service5 API
+  version: 2.0.0-SNAPSHOT
+paths:
+  /token-propagation-external-service5/executeQuery5:
+    post:
+      operationId: executeQuery5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        "200":
+          description: OK
+      security:
+        - service5-oauth2: []
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      properties:
+        processInstanceId:
+          type: string
+        query:
+          type: string
+  securitySchemes:
+    service5-oauth2:
+        type: oauth2
+        flows:
+          clientCredentials:
+            authorizationUrl: https://example.com/oauth
+            tokenUrl: https://example.com/oauth/token
+            scopes: {}

@@ -16,69 +16,26 @@
 package org.kie.kogito.quarkus.workflows;
 
 import java.util.Collections;
-import java.util.function.UnaryOperator;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.matching.EqualToPattern;
-
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
+@QuarkusTestResource(OperationsMockService.class)
 @QuarkusIntegrationTest
 class ConversationFlowIT {
-
-    private static WireMockServer subtractionService;
-    private static WireMockServer multiplicationService;
 
     @BeforeAll
     static void init() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @BeforeAll
-    public static void startSink() {
-        multiplicationService =
-                startServer(9090,
-                        "{  \"product\": 37.808 }", p -> p.withHeader("pepe", new EqualToPattern("pepa")));
-        subtractionService =
-                startServer(9191,
-                        "{ \"difference\": 68.0 }", p -> p);
-    }
-
-    private static WireMockServer startServer(final int port, final String response, UnaryOperator<MappingBuilder> function) {
-        final WireMockServer server = new WireMockServer(port);
-        server.start();
-        server.stubFor(function.apply(post(urlEqualTo("/")))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-        return server;
-    }
-
-    @AfterAll
-    public static void stopSink() {
-        if (subtractionService != null) {
-            subtractionService.stop();
-        }
-        if (multiplicationService != null) {
-            multiplicationService.stop();
-        }
     }
 
     @Test
@@ -97,15 +54,5 @@ class ConversationFlowIT {
                 .body("id", notNullValue())
                 .body("workflowdata.fahrenheit", is("100"))
                 .body("workflowdata.celsius", is(37.808f)); //values from mock server
-
-        await()
-                .atMost(10, SECONDS)
-                .with().pollInterval(1, SECONDS)
-                .untilAsserted(() -> subtractionService.verify(1, postRequestedFor(urlEqualTo("/"))));
-
-        await()
-                .atMost(10, SECONDS)
-                .with().pollInterval(1, SECONDS)
-                .untilAsserted(() -> multiplicationService.verify(1, postRequestedFor(urlEqualTo("/"))));
     }
 }

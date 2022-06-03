@@ -16,6 +16,8 @@
 
 package org.kie.kogito.quarkus.workflows;
 
+import java.util.Map;
+
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 
@@ -53,6 +55,31 @@ public class WorkflowTestUtils {
         JsonPath result = given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
+                .body(processInput)
+                .post(processUrl)
+                .then()
+                .statusCode(201)
+                .extract()
+                .jsonPath();
+        String processInstanceId = result.get("id");
+        assertThat(processInstanceId).isNotBlank();
+        return result;
+    }
+
+    /**
+     * Start a new process instance by sending a post request to the processUrl and passing the processInput as
+     * the post body. Assertions are made to ensure the process was properly created.
+     *
+     * @param processUrl the url to send the post request.
+     * @param processInput a String containing a json value that will be the process parameter.
+     * @param headers a Map containing the http heades to send along with the invocation.
+     * @return a JsonPath with the result.
+     */
+    public static JsonPath newProcessInstance(String processUrl, String processInput, Map<String, ?> headers) {
+        JsonPath result = given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .headers(headers)
                 .body(processInput)
                 .post(processUrl)
                 .then()
