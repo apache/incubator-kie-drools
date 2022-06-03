@@ -24,15 +24,14 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
-import io.javaoperatorsdk.operator.processing.event.ResourceID;
-import io.javaoperatorsdk.operator.processing.event.source.PrimaryToSecondaryMapper;
 import io.strimzi.api.kafka.model.KafkaTopic;
 import io.strimzi.api.kafka.model.KafkaTopicBuilder;
 import io.strimzi.api.kafka.model.KafkaTopicSpecBuilder;
 
 @KubernetesDependent
-public final class KafkaTopicDependentResource extends CRUKubernetesDependentResource<KafkaTopic, OptaPlannerSolver>
-        implements PrimaryToSecondaryMapper<OptaPlannerSolver> {
+public final class KafkaTopicDependentResource extends CRUKubernetesDependentResource<KafkaTopic, OptaPlannerSolver> {
+
+    public static final String MESSAGE_ADDRESS_LABEL = "message-address";
 
     private static final String STRIMZI_LABEL = "strimzi.io/cluster";
 
@@ -52,18 +51,16 @@ public final class KafkaTopicDependentResource extends CRUKubernetesDependentRes
         if (messageAddress == MessageAddress.INPUT) {
             kafkaTopicSpecBuilder.withPartitions(solver.getSpec().getScaling().getReplicas());
         }
+        // The two dependent resource of the same type need to be differentiated by a label.
+        Map<String, String> labels = Map.of(MESSAGE_ADDRESS_LABEL, messageAddress.getName());
         return new KafkaTopicBuilder()
                 .withNewMetadata()
+                .withLabels(labels)
                 .withName(topicName)
                 .withNamespace(solver.getNamespace())
                 .withLabels(Map.of(STRIMZI_LABEL, solver.getSpec().getKafkaCluster()))
                 .endMetadata()
                 .withSpec(kafkaTopicSpecBuilder.build())
                 .build();
-    }
-
-    @Override
-    public ResourceID toSecondaryResourceID(OptaPlannerSolver solver) {
-        return new ResourceID(solver.getMessageAddressName(messageAddress), solver.getNamespace());
     }
 }

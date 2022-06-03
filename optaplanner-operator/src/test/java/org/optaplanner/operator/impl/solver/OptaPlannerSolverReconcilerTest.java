@@ -23,6 +23,10 @@ import static org.awaitility.Awaitility.await;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
 import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
@@ -33,6 +37,7 @@ import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.javaoperatorsdk.operator.Operator;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
@@ -44,8 +49,22 @@ public class OptaPlannerSolverReconcilerTest {
     @KubernetesTestServer
     KubernetesServer mockServer;
 
+    @Inject
+    Operator operator;
+
+    @BeforeEach
+    void startOperator() {
+        operator.start();
+    }
+
+    @AfterEach
+    void stopOperator() {
+        operator.stop();
+    }
+
     @Test
     void canReconcile() {
+
         final OptaPlannerSolver solver = new OptaPlannerSolver();
         final String solverName = "test-solver";
         solver.getMetadata().setName(solverName);

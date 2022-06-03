@@ -37,6 +37,7 @@ import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext;
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer;
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler;
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependentResourceConfig;
 import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 import io.strimzi.api.kafka.model.KafkaTopic;
 
@@ -57,6 +58,16 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
         inputKafkaTopicDependentResource = new KafkaTopicDependentResource(MessageAddress.INPUT, kubernetesClient);
         outputKafkaTopicDependentResource = new KafkaTopicDependentResource(MessageAddress.OUTPUT, kubernetesClient);
         configMapDependentResource = new ConfigMapDependentResource(kubernetesClient);
+
+        // The two dependent resource of the same type need to be differentiated by a label.
+        inputKafkaTopicDependentResource.configureWith(
+                new KubernetesDependentResourceConfig().setLabelSelector(getTopicSelector(MessageAddress.INPUT)));
+        outputKafkaTopicDependentResource.configureWith(
+                new KubernetesDependentResourceConfig().setLabelSelector(getTopicSelector(MessageAddress.OUTPUT)));
+    }
+
+    private String getTopicSelector(MessageAddress messageAddress) {
+        return KafkaTopicDependentResource.MESSAGE_ADDRESS_LABEL + "=" + messageAddress.getName();
     }
 
     @Override

@@ -142,7 +142,7 @@
     </profile>
     <profile>
       <!-- TODO: This profile excludes the optaplanner-operator module from the default build. Remove the profile when
-           the io.javaoperatorsdk:operator-framework-core:3.0.0.Final is released. -->
+           the io.quarkiverse.operatorsdk:quarkus-operator-sdk:4.0.0.Final is released. -->
       <id>operator</id>
       <activation>
         <property>
