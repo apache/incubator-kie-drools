@@ -1,0 +1,35 @@
+{
+  "id": "rpcgreet",
+  "version": "1.0",
+  "name": "Greeting workflow",
+  "description": "JSON based greeting workflow using grpc",
+  "start": "GreetPerson",
+  "functions": [
+    {
+      "name": "sayHello",
+      "type": "rpc",
+      "operation": "greeting.proto#Greeter#SayHello"
+    }
+  ],
+  "states": [
+    {
+      "name": "GreetPerson",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "sayHello",
+          "functionRef" : {
+            "refName": "sayHello",
+            "arguments": {
+              "name": ".name",
+              "language": ".language"
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": "true"
+      }
+    }
+  ]
+}
