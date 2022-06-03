@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -39,6 +40,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
+import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -51,7 +53,11 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.HitPolicy;
@@ -120,7 +126,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);
-        compileTableRules(dt, ddtaTable);
+        compileTableRules(model, dt, ddtaTable);
         compileTableComputeColStringMissingEnum(model, dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
@@ -203,15 +209,18 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
 
-    private void compileTableRules(DecisionTable dt, DDTATable ddtaTable) {
+    private void compileTableRules(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int jRowIdx = 0; jRowIdx < dt.getRule().size(); jRowIdx++) {
             DecisionRule r = dt.getRule().get(jRowIdx);
 
             DDTARule ddtaRule = new DDTARule();
             int jColIdx = 0;
             for (UnaryTests ie : r.getInputEntry()) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), feelCtx(model, dt));
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
+                if (interpreted == UnaryTestInterpretedExecutableExpression.EMPTY) {
+                    throw new DMNDTAnalysisException("Gaps/Overlaps analysis cannot be performed for InputEntry with unary test containing: " + ie.getText(), dt);
+                }
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
 
                 DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
@@ -228,7 +237,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 jColIdx++;
             }
             for (LiteralExpression oe : r.getOutputEntry()) {
-                ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
+                ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), feelCtx(model, dt));
                 InterpretedExecutableExpression interpreted = compile.getInterpreted();
                 BaseNode outputEntryNode = (BaseNode) interpreted.getASTNode();
                 Comparable<?> value = valueFromNode(outputEntryNode, outputClauseVisitor);
@@ -238,7 +247,27 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             ddtaTable.addRule(ddtaRule);
         }
     }
-
+    
+    /**
+     * Builds a feel context containing the named keys for the DRG node dependencies.
+     * This helps to detect when a Unary test contains symbols (named reference) and therefore static analysis is not supported (ref DROOLS-4607)
+     */
+    private CompilerContext feelCtx(DMNModel model, DecisionTable dt) {
+        CompilerContext feelCtx = FEEL.newCompilerContext();
+        DMNModelInstrumentedBase parentDRGelement = dt.getParentDRDElement();
+        DMNBaseNode parentNode = null;
+        if (parentDRGelement instanceof Decision) {
+            Decision decision = (Decision) parentDRGelement;
+            parentNode = (DMNBaseNode) model.getDecisionByName(decision.getName());
+        } else if (parentDRGelement instanceof BusinessKnowledgeModel) {
+            BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) parentDRGelement;
+            parentNode = (DMNBaseNode) model.getBusinessKnowledgeModelByName(bkm.getName());
+        }
+        if (parentNode != null) {
+            parentNode.getDependencies().keySet().forEach(k -> feelCtx.addInputVariableType(k, BuiltInType.UNKNOWN));
+        }
+        return feelCtx;
+    }
 
     private void compileTableInputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int jColIdx = 0; jColIdx < dt.getInput().size(); jColIdx++) {
