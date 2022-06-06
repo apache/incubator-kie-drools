@@ -23,6 +23,10 @@
     duplicating the other content.
     -->
     <source.document.name>.index.adoc</source.document.name>
+    <antora.playbook>antora-playbook.yml</antora.playbook>
+    <antora.binary>node_modules/.bin/antora</antora.binary>
+    <version.node>v16.2.0</version.node>
+    <version.npm>7.15.1</version.npm>
   </properties>
 
   <build>
@@ -52,7 +56,6 @@
               <goal>process-asciidoc</goal>
             </goals>
             <configuration>
-              <!-- Needs to be duplicated to avoid rendering each adoc separately -->
               <sourceDocumentName>${source.document.name}</sourceDocumentName>
               <backend>html5</backend>
               <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
@@ -70,14 +73,13 @@
               <goal>process-asciidoc</goal>
             </goals>
             <configuration>
-              <!-- Needs to be duplicated to avoid rendering each adoc separately -->
               <sourceDocumentName>${source.document.name}</sourceDocumentName>
               <backend>pdf</backend>
               <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
               <outputFile>index.pdf</outputFile>
               <attributes>
                 <imagesdir>${basedir}/src/modules/ROOT/images</imagesdir>
-                <source-highlighter>coderay</source-highlighter><!-- highlightjs does not work in PDF -->
+                <source-highlighter>coderay</source-highlighter>
               </attributes>
             </configuration>
           </execution>
@@ -91,7 +93,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
-          <!-- Substitutes properties in antora-template.yml that is copied to src/antora.yml during a release. -->
           <execution>
             <id>generate-antora-yml</id>
             <goals>
@@ -113,6 +114,71 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rename-antora-yml</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <target>
+                <copy file="${project.build.directory}/antora-template.yml" tofile="${project.basedir}/src/antora.yml" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <nodeVersion>${version.node}</nodeVersion>
+              <npmVersion>${version.npm}</npmVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm install antora</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>initialize</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <executable>node/node</executable>
+              <arguments>
+                <argument>${antora.binary}</argument>
+                <argument>--generator</argument>
+                <argument>@antora/site-generator</argument>
+                <argument>${antora.playbook}</argument>
+                <argument>--to-dir=target/website/docs</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
 
     <pluginManagement>
@@ -143,4 +209,27 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <!-- Enables the Antora author mode https://docs.antora.org/antora/2.3/playbook/author-mode/. -->
+      <id>author</id>
+      <properties>
+        <antora.playbook>antora-playbook-author.yml</antora.playbook>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>antora-windows</id>
+      <activation>
+        <os>
+          <family>Windows</family>
+        </os>
+      </activation>
+      <properties>
+        <!-- The wrapper script node_modules/.bin/antora does not resolve the path to this file correctly. -->
+        <antora.binary>node_modules/@antora/cli/bin/antora</antora.binary>
+      </properties>
+    </profile>
+  </profiles>
 </project>
