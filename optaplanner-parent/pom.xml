@@ -114,7 +114,7 @@
   </mailingLists>
 
   <modules>
-    <module>optaplanner-bom</module>
+    <module>build/optaplanner-bom</module>
     <module>build/optaplanner-ide-config</module>
     <module>build/optaplanner-build-parent</module>
     <module>core</module>
