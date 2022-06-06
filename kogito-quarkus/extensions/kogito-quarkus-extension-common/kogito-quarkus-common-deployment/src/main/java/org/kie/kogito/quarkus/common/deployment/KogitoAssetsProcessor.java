@@ -91,7 +91,7 @@ public class KogitoAssetsProcessor {
         // configure the application generator
         KogitoBuildContext context =
                 kogitoBuildContext(outputTargetBuildItem.getOutputDirectory(),
-                        root.getPaths(),
+                        root.getResolvedPaths(),
                         combinedIndexBuildItem.getIndex(),
                         curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
         return new KogitoBuildContextBuildItem(context);

@@ -35,6 +35,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
      * This allows other applications to discover the running service and use it instead of starting a new instance.
      */
     public static final String DEV_SERVICE_LABEL = "kogito-dev-service-data-index";
+    public static final String LATEST = "latest";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexInMemoryContainer.class);
 
     private final int fixedExposedPort;
@@ -51,7 +52,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         }
         withPrivilegedMode(true);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
-        withImagePullPolicy("latest".equalsIgnoreCase(dockerImageName.getVersionPart()) ? PullPolicy.alwaysPull() : PullPolicy.defaultPolicy());
+        withImagePullPolicy(LATEST.equalsIgnoreCase(dockerImageName.getVersionPart()) ? PullPolicy.alwaysPull() : PullPolicy.defaultPolicy());
     }
 
     @Override

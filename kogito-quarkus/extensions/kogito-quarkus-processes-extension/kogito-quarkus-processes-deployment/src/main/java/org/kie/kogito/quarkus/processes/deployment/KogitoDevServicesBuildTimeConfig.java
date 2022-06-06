@@ -42,8 +42,8 @@ public class KogitoDevServicesBuildTimeConfig {
     /**
      * The Data Index image to use.
      */
-    @ConfigItem(defaultValue = "quay.io/kiegroup/kogito-data-index-ephemeral")
-    public String imageName;
+    @ConfigItem
+    public Optional<String> imageName;
 
     /**
      * Indicates if the Data Index instance managed by Quarkus Dev Services is shared.

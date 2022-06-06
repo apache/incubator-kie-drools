@@ -22,6 +22,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexEventPublisher;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexInMemoryContainer;
@@ -49,6 +51,7 @@ import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.LaunchMode;
 
 import static org.kie.kogito.quarkus.processes.devservices.DataIndexEventPublisher.KOGITO_DATA_INDEX;
+import static org.kie.kogito.quarkus.processes.devservices.DataIndexInMemoryContainer.LATEST;
 
 /**
  * Starts a Data Index as dev service if needed.
@@ -57,6 +60,8 @@ public class KogitoDevServicesProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoDevServicesProcessor.class);
     private static final ContainerLocator LOCATOR = new ContainerLocator(DataIndexInMemoryContainer.DEV_SERVICE_LABEL, DataIndexInMemoryContainer.PORT);
+
+    private static final String IMAGE_NAME = "quay.io/kiegroup/kogito-data-index-ephemeral";
 
     static volatile Closeable closeable;
     static volatile DataIndexDevServiceConfig cfg;
@@ -73,6 +78,28 @@ public class KogitoDevServicesProcessor {
 
     private static boolean shouldInclude(LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config) {
         return launchMode.getLaunchMode().isDevOrTest() || config.alwaysInclude;
+    }
+
+    private static String getDataIndexImageVersion() {
+        Package aPackage = KogitoDevServicesProcessor.class.getPackage();
+        String version = null;
+        if (aPackage != null) {
+            version = aPackage.getImplementationVersion();
+            if (version == null) {
+                version = aPackage.getSpecificationVersion();
+            }
+        }
+
+        if (version == null) {
+            return LATEST;
+        }
+
+        ArtifactVersion av = new DefaultArtifactVersion(version);
+        if ("SNAPSHOT".equals(av.getQualifier())) {
+            return LATEST;
+        } else {
+            return av.getMajorVersion() + "." + av.getMinorVersion();
+        }
     }
 
     @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })
@@ -93,6 +120,7 @@ public class KogitoDevServicesProcessor {
             additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DataIndexEventPublisher.class).build());
         }
 
+        LOGGER.info("Dev Services for Kogito Data Index using image {}", configuration.imageName);
         if (closeable != null) {
             boolean shouldShutdown = !configuration.equals(cfg);
             if (!shouldShutdown) {
@@ -233,7 +261,7 @@ public class KogitoDevServicesProcessor {
 
         public DataIndexDevServiceConfig(KogitoDevServicesBuildTimeConfig config) {
             this.devServicesEnabled = config.enabled.orElse(true);
-            this.imageName = config.imageName;
+            this.imageName = config.imageName.orElse(IMAGE_NAME + ":" + getDataIndexImageVersion());
             this.fixedExposedPort = config.port.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;
