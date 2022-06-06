@@ -23,7 +23,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.decision.DecisionModel;
@@ -110,7 +109,6 @@ class ComplexEligibilityDmnCounterfactualExplainerTest {
     }
 
     @Test
-    @Disabled("see https://issues.redhat.com/browse/KOGITO-7221")
     void testDMNScoringFunction() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
 
@@ -162,11 +160,11 @@ class ComplexEligibilityDmnCounterfactualExplainerTest {
         assertTrue((Boolean) entities.get(1).asFeature().getValue().getUnderlyingObject());
         assertEquals("monthlySalary", entities.get(2).asFeature().getName());
         final double monthlySalary = entities.get(2).asFeature().getValue().asNumber();
-        assertEquals(7900, monthlySalary, 10);
+        assertEquals(7900, monthlySalary, 100);
 
         // since the scoring function is ((0.6 * ((42 - age + 18)/42)) + (0.4 * (monthlySalary/8000)))
         // for a result of 1.0 the relation must be age = (7*monthlySalary)/2000 - 10
-        assertEquals(18, (7 * monthlySalary) / 2000.0 - 10.0, 0.5);
+        assertEquals(18, (7 * monthlySalary) / 2000.0 - 10.0, 1.0);
     }
 
     @Test
