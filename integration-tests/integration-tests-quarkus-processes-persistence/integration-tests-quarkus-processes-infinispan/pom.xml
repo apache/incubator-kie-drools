@@ -62,6 +62,11 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -105,7 +110,7 @@
         <configuration>
           <filesets>
             <fileset>
-              <directory>${project.basedir}/src/main/</directory>
+              <directory>src/main/resources</directory>
               <includes>
                 <include>**/*.bpmn</include>
               </includes>

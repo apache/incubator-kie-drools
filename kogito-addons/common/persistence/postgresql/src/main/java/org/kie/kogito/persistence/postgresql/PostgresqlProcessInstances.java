@@ -33,6 +33,7 @@ import java.util.stream.StreamSupport;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
@@ -108,10 +109,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
 
     @Override
     public void remove(String id) {
-        boolean isDeleted = deleteInternal(UUID.fromString(id));
-        if (lock && !isDeleted) {
-            throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
-        }
+        deleteInternal(UUID.fromString(id));
     }
 
     @Override
@@ -330,11 +328,13 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
                     .execute(Tuple.of(Buffer.buffer(payload), version + 1, process.id(), id, version), getAsyncResultHandler(future));
             boolean result = getExecutedResult(future);
             if (!result) {
-                throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+                throw new ProcessInstanceOptimisticLockingException(id.toString());
             }
             return result;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } catch (ProcessInstanceOptimisticLockingException e) {
+            throw e;
         } catch (Exception e) {
             throw uncheckedException(e, "Error updating process instance %s", id);
         }

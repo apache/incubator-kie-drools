@@ -27,6 +27,7 @@ import javax.sql.DataSource;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
@@ -97,7 +98,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
             if (lock) {
                 boolean isUpdated = repository.updateWithLock(process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
                 if (!isUpdated) {
-                    throw uncheckedException(null, "The process instance with id: %s was updated or deleted by other request.", id);
+                    throw new ProcessInstanceOptimisticLockingException(id);
                 }
             } else {
                 repository.updateInternal(process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance));
@@ -113,9 +114,6 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         LOGGER.debug("Removing process instance id: {}, processId: {}", id, process.id());
         boolean isDeleted = repository.deleteInternal(process.id(), UUID.fromString(id));
         LOGGER.debug("Deleted: {}", isDeleted);
-        if (lock && !isDeleted) {
-            throw uncheckedException(null, "Process instance with id: %s was deleted by other request.", id);
-        }
     }
 
     @Override
@@ -159,7 +157,4 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
 
-    private RuntimeException uncheckedException(Exception ex, String message, Object... param) {
-        return new RuntimeException(String.format(message, param), ex);
-    }
 }

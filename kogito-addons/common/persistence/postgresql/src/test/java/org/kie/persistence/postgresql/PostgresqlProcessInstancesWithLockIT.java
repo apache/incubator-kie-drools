@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -128,8 +129,9 @@ class PostgresqlProcessInstancesWithLockIT {
         try {
             BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
             instanceTwo.updateVariables(testvar);
+            fail("Updating process should have failed");
         } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("Error updating process instance " + instanceOne.id());
+            assertThat(e.getMessage()).isEqualTo("Process instance with id '" + instanceOne.id() + "' updated or deleted by other request");
         }
         foundOne = processInstances.findById(processInstance.id());
         instanceOne = (BpmnProcessInstance) foundOne.get();

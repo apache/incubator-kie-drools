@@ -28,6 +28,7 @@ import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
+import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
@@ -100,15 +101,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     @Override
     public void remove(String id) {
-        if (this.lock) {
-            MetadataValue<byte[]> versionedCache = cache.getWithMetadata(id);
-            boolean success = cache.removeWithVersion(id, versionedCache.getVersion());
-            if (!success) {
-                throw uncheckedException(null, "The document with ID: %s was deleted by other request.", id);
-            }
-        } else {
-            cache.remove(id);
-        }
+        cache.remove(id);
     }
 
     @Override
@@ -120,17 +113,18 @@ public class CacheProcessInstances implements MutableProcessInstances {
     protected void updateStorage(String id, ProcessInstance instance, boolean checkDuplicates) {
         if (isActive(instance)) {
             byte[] data = marshaller.marshallProcessInstance(instance);
-
             if (checkDuplicates) {
                 byte[] existing = cache.putIfAbsent(id, data);
                 if (existing != null) {
                     throw new ProcessInstanceDuplicatedException(id);
+                } else if (this.lock) {
+                    ((AbstractProcessInstance) instance).setVersion(1);
                 }
             } else {
                 if (this.lock) {
                     boolean success = cache.replaceWithVersion(id, data, instance.version());
                     if (!success) {
-                        throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+                        throw new ProcessInstanceOptimisticLockingException(id);
                     }
                 } else {
                     cache.put(id, data);
@@ -171,7 +165,4 @@ public class CacheProcessInstances implements MutableProcessInstances {
         return this.lock;
     }
 
-    private RuntimeException uncheckedException(Exception ex, String message, Object... param) {
-        return new RuntimeException(String.format(message, param), ex);
-    }
 }

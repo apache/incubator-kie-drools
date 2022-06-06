@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.it;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 class FilesystemPersistenceIT extends PersistenceTest {
 }

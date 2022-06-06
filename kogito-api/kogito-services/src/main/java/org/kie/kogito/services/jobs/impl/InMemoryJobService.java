@@ -29,6 +29,7 @@ import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -150,6 +151,10 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
                     cancelJob(id, false);
                 }
                 LOGGER.debug("Job {} completed", id);
+            } catch (ProcessInstanceOptimisticLockingException ex) {
+                LOGGER.info("Retrying Job {} due to: {}", id, ex.getMessage());
+                limit++;
+                run();
             } finally {
                 if (removeAtExecution) {
                     cancelJob(id, true);

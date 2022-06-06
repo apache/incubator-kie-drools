@@ -18,9 +18,9 @@ package org.kie.kogito.it;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 @QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class MongoDBPersistenceIT extends PersistenceTest {
 }

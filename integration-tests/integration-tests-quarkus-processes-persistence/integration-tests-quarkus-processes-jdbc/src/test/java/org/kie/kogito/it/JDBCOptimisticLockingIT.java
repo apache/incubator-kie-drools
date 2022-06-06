@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,13 @@
  */
 package org.kie.kogito.it;
 
-import io.quarkus.test.junit.NativeImageTest;
+import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
-@NativeImageTest
-class NativeInfinispanPersistenceIT extends InfinispanPersistenceIT {
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
+
+@QuarkusIntegrationTest
+@QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
+class JDBCOptimisticLockingIT extends OptimisticLockingTest {
 
 }

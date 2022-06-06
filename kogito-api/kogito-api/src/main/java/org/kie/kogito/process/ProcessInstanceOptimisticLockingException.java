@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.it;
+package org.kie.kogito.process;
 
-import io.quarkus.test.junit.NativeImageTest;
+public class ProcessInstanceOptimisticLockingException extends RuntimeException {
 
-@NativeImageTest
-class NativeFilesystemPersistenceIT extends FilesystemPersistenceIT {
+    private static final long serialVersionUID = 8031225233775014572L;
+
+    private final String processInstanceId;
+
+    public ProcessInstanceOptimisticLockingException(String processInstanceId) {
+        super("Process instance with id '" + processInstanceId + "' updated or deleted by other request");
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
 }

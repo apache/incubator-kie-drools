@@ -68,12 +68,6 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration combine.self="override">
               <useModulePath>false</useModulePath>
-              <includes>
-                <include>**/Native*IT.java</include>
-              </includes>
-              <excludes>
-                <exclude></exclude>
-              </excludes>
               <systemPropertyVariables>
                 <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
                 <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>

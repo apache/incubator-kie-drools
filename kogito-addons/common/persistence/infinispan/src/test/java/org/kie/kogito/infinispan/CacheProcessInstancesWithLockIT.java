@@ -37,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -105,8 +106,9 @@ class CacheProcessInstancesWithLockIT {
 
         try {
             pi.update(TEST_ID, mockUpdatePi);
+            fail("Updating process should have failed");
         } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("The document with ID: " + TEST_ID + " was updated or deleted by other request.");
+            assertThat(e.getMessage()).isEqualTo("Process instance with id '" + TEST_ID + "' updated or deleted by other request");
         }
         pi.remove(TEST_ID);
         assertFalse(pi.exists(TEST_ID));

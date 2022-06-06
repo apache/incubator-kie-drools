@@ -29,6 +29,7 @@ import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
+import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.MarshallerContextName;
@@ -44,7 +45,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
 import static java.util.Collections.singletonMap;
@@ -115,10 +115,6 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
         reloadProcessInstance(instance, id);
     }
 
-    private RuntimeException uncheckedException(Exception ex, String message, Object... param) {
-        return new RuntimeException(String.format(message, param), ex);
-    }
-
     protected void updateStorage(String id, ProcessInstance<T> instance, boolean checkDuplicates) {
         ClientSession clientSession = transactionManager.getClientSession();
         Document doc = Document.parse(new String(marshaller.marshallProcessInstance(instance)));
@@ -144,7 +140,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     private void updateInternal(String id, ProcessInstance<T> instance, ClientSession clientSession, Document doc) {
         Bson filters = Filters.eq(PROCESS_INSTANCE_ID, id);
-        UpdateResult result = null;
+        UpdateResult result;
         if (lock) {
             doc.put(VERSION, instance.version() + 1);
             filters = Filters.and(Filters.eq(PROCESS_INSTANCE_ID, id), Filters.eq(VERSION, instance.version()));
@@ -155,7 +151,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
             result = collection.replaceOne(filters, doc);
         }
         if (lock && result.getModifiedCount() != 1) {
-            throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+            throw new ProcessInstanceOptimisticLockingException(id);
         }
     }
 
@@ -177,14 +173,10 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     @Override
     public void remove(String id) {
         ClientSession clientSession = transactionManager.getClientSession();
-        DeleteResult result = null;
         if (clientSession != null) {
-            result = collection.deleteOne(clientSession, Filters.eq(PROCESS_INSTANCE_ID, id));
+            collection.deleteOne(clientSession, Filters.eq(PROCESS_INSTANCE_ID, id));
         } else {
-            result = collection.deleteOne(Filters.eq(PROCESS_INSTANCE_ID, id));
-        }
-        if (lock && result.getDeletedCount() != 1) {
-            throw uncheckedException(null, "The document with ID: %s was deleted by other request.", id);
+            collection.deleteOne(Filters.eq(PROCESS_INSTANCE_ID, id));
         }
     }
 

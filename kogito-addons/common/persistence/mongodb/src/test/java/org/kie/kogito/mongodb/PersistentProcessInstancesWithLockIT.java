@@ -27,6 +27,7 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class PersistentProcessInstancesWithLockIT extends TestHelper {
 
@@ -56,8 +57,9 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         try {
             BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
             instanceTwo.updateVariables(testvar);
+            fail("Updating process should have failed");
         } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("The document with ID: " + instanceOne.id() + " was updated or deleted by other request.");
+            assertThat(e.getMessage()).isEqualTo("Process instance with id '" + instanceOne.id() + "' updated or deleted by other request");
         }
         foundOne = processInstances.findById(processInstance.id());
         instanceOne = (BpmnProcessInstance) foundOne.get();
