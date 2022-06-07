@@ -115,7 +115,7 @@
     "mini-css-extract-plugin": "^0.9.0",
     "mockdate": "^3.0.5",
     "nodemon": "^2.0.2",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "optimize-css-assets-webpack-plugin": "^6.0.1",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^1.18.2",
     "raw-loader": "^4.0.0",
