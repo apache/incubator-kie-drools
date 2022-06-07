@@ -62,8 +62,7 @@ public class RuleCodegen {
     protected Collection<GeneratedFile> internalGenerate() {
 
         DroolsModelBuilder droolsModelBuilder =
-                new DroolsModelBuilder(
-                        context(), resources, decisionTableSupported, hotReloadMode);
+                new DroolsModelBuilder(resources, decisionTableSupported);
 
         droolsModelBuilder.build();
         Collection<GeneratedFile> generatedFiles = droolsModelBuilder.generateCanonicalModelSources();
