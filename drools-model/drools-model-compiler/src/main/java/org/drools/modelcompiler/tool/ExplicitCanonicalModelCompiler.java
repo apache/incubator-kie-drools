@@ -38,6 +38,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ *
+ * @param <T>
+ */
 public class ExplicitCanonicalModelCompiler<T> {
 
     private final Collection<CompositePackageDescr> packages;
