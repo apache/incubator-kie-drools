@@ -56,11 +56,6 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
     }
 
     @Override
-    public Resource getCurrentResource() {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    @Override
     public boolean filterAccepts(ResourceChange.Type declaration, String namespace, String typeName) {
         return false;
     }
