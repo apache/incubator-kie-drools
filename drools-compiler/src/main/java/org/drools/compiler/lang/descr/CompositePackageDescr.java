@@ -42,6 +42,10 @@ public class CompositePackageDescr extends PackageDescr {
 
     public CompositePackageDescr() { }
 
+    public CompositePackageDescr(String namespace) {
+        this.setNamespace(namespace);
+    }
+
     public CompositePackageDescr(Resource resource, PackageDescr packageDescr) {
         super(packageDescr.getNamespace(), packageDescr.getDocumentation());
         internalAdd(resource, packageDescr);

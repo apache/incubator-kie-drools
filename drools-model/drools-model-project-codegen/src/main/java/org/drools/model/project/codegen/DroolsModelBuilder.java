@@ -18,7 +18,9 @@ package org.drools.model.project.codegen;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
@@ -61,9 +63,8 @@ public class DroolsModelBuilder {
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
         this.hotReloadMode = hotReloadMode;
-//        this.modelBuilder = makeModelBuilder();
         this.knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl();
-
+        checkDependencyTableSupport();
     }
 
     void build() {
@@ -71,15 +72,15 @@ public class DroolsModelBuilder {
 //        resources.forEach(f -> addResource(batch, f));
         DrlResourceHandler drlResourceHandler = new DrlResourceHandler(knowledgeBuilderConfiguration);
 
-        Collection<CompositePackageDescr> packages = new ArrayList<>();
+        Map<String, CompositePackageDescr> packages = new HashMap<>();
 
         for (Resource resource : resources) {
             if (resource.getResourceType() == ResourceType.DRL) {
-                PackageDescr process = null;
                 try {
-                    process = drlResourceHandler.process(resource);
-                    CompositePackageDescr compositePackageDescr = new CompositePackageDescr(resource, process);
-                    packages.add(compositePackageDescr);
+                    PackageDescr packageDescr = drlResourceHandler.process(resource);
+                    CompositePackageDescr compositePackageDescr =
+                            packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
+                    compositePackageDescr.addPackageDescr(resource, packageDescr);
 
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -87,7 +88,7 @@ public class DroolsModelBuilder {
             }
         }
 
-        this.modelBuilder = new Fraffo(packages, knowledgeBuilderConfiguration);
+        this.modelBuilder = new Fraffo(packages.values(), knowledgeBuilderConfiguration);
 
         modelBuilder.build();
         BuildResultCollector buildResults = modelBuilder.getBuildResults();
@@ -118,13 +119,17 @@ public class DroolsModelBuilder {
     }
 
     private Fraffo makeModelBuilder() {
+        checkDependencyTableSupport();
+
+//        return new Fraffo(packages, config);
+        throw new UnsupportedOperationException("nyi");
+    }
+
+    private void checkDependencyTableSupport() {
         if (!decisionTableSupported &&
                 resources.stream().anyMatch(r -> r.getResourceType() == ResourceType.DTABLE)) {
             throw new MissingDecisionTableDependencyError();
         }
-
-//        return new Fraffo(packages, config);
-        throw new UnsupportedOperationException("nyi");
     }
 
     private List<GeneratedFile> generateInternalResource(KogitoPackageSources pkgSources) {

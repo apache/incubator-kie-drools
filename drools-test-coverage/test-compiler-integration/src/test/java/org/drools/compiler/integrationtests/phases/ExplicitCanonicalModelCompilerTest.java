@@ -15,51 +15,18 @@
 
 package org.drools.compiler.integrationtests.phases;
 
-import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
-import org.drools.compiler.builder.impl.GlobalVariableContext;
-import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
-import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
-import org.drools.compiler.builder.impl.RootClassLoaderProvider;
-import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
-import org.drools.compiler.builder.impl.TypeDeclarationContext;
-import org.drools.compiler.builder.impl.TypeDeclarationContextImpl;
-import org.drools.compiler.builder.impl.TypeDeclarationManagerImpl;
-import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilationPhase;
-import org.drools.compiler.builder.impl.processors.CompilationPhase;
-import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
-import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
-import org.drools.compiler.builder.impl.processors.IteratingPhase;
-import org.drools.compiler.builder.impl.processors.RuleValidator;
-import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
-import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.modelcompiler.builder.CanonicalModelBuildContext;
 import org.drools.modelcompiler.builder.GeneratedFile;
-import org.drools.modelcompiler.builder.PackageModelManager;
-import org.drools.modelcompiler.builder.PackageSourceManager;
 import org.drools.modelcompiler.builder.PackageSources;
-import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
-import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
-import org.drools.modelcompiler.builder.processors.DeclaredTypeDeregistrationPhase;
-import org.drools.modelcompiler.builder.processors.DeclaredTypeRegistrationPhase;
-import org.drools.modelcompiler.builder.processors.GeneratedPojoCompilationPhase;
-import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
-import org.drools.modelcompiler.builder.processors.PojoStoragePhase;
-import org.drools.modelcompiler.builder.processors.SourceCodeGenerationPhase;
 import org.drools.modelcompiler.tool.ExplicitCanonicalModelCompiler;
 import org.drools.util.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
-import org.kie.util.maven.support.ReleaseIdImpl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,7 +35,6 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class ExplicitCanonicalModelCompilerTest {
 
@@ -85,7 +51,9 @@ public class ExplicitCanonicalModelCompilerTest {
         CompositePackageDescr compositePackageDescr = new CompositePackageDescr(resource, packageDescr);
         Collection<CompositePackageDescr> compositePackageDescrs = asList(compositePackageDescr);
 
-        ExplicitCanonicalModelCompiler compiler = ExplicitCanonicalModelCompiler.of(compositePackageDescrs, configuration);
+        ExplicitCanonicalModelCompiler<PackageSources> compiler =
+                ExplicitCanonicalModelCompiler.of(
+                        compositePackageDescrs, configuration, PackageSources::dumpSources);
 
         compiler.process();
 
