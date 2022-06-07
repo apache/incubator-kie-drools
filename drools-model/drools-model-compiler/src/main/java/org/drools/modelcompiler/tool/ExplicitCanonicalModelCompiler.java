@@ -23,6 +23,7 @@ import org.drools.modelcompiler.builder.CanonicalModelBuildContext;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.PackageModelManager;
 import org.drools.modelcompiler.builder.PackageSourceManager;
+import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.drools.modelcompiler.builder.processors.DeclaredTypeDeregistrationPhase;
@@ -39,10 +40,16 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
+ * An alternative compilation flow that generates code starting
+ * from a collection of {@link CompositePackageDescr}s,
+ * skipping the {@link org.kie.internal.builder.KnowledgeBuilder} entirely.
  *
- * @param <T>
+ * It explicitly invokes the necessary {@link CompilationPhase}s
+ * one after the other and collects the error.
+ *
+ * @param <T> a subclass of PackageSources to retrieve the generated results
  */
-public class ExplicitCanonicalModelCompiler<T> {
+public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
 
     private final Collection<CompositePackageDescr> packages;
     private final PackageRegistryManager pkgRegistryManager;
@@ -54,11 +61,11 @@ public class ExplicitCanonicalModelCompiler<T> {
     private final InternalKnowledgeBase kBase = null;
     private final GlobalVariableContext globalVariableContext;
     private final PackageSourceManager<T> packageSourceManager;
-    private Function<PackageModel, T> sourceDumpFunction;
-    final boolean hasMvel = false;
-    final boolean oneClassPerRule = true;
+    private final Function<PackageModel, T> sourceDumpFunction;
+    private final boolean hasMvel = false;
+    private final boolean oneClassPerRule = true;
 
-    public static <T> ExplicitCanonicalModelCompiler<T> of(
+    public static <T extends PackageSources> ExplicitCanonicalModelCompiler<T> of(
             Collection<CompositePackageDescr> packages,
             KnowledgeBuilderConfigurationImpl configuration,
             Function<PackageModel, T> sourceDumpFunction) {
@@ -137,6 +144,10 @@ public class ExplicitCanonicalModelCompiler<T> {
 
     private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
         return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
+    }
+
+    public BuildResultCollector getBuildResults() {
+        return results;
     }
 
     public Collection<T> getPackageSources() {
