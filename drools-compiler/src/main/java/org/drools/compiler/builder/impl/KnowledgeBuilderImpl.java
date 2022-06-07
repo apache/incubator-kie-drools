@@ -602,7 +602,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         addPackageWithResource(packageDescr, null);
     }
 
-    private void addPackageWithResource(PackageDescr packageDescr, Resource resource) {
+    // this is only overridden by org.drools.verifier.builder.VerifierPackageBuilder.InnerBuilder
+    protected void addPackageWithResource(PackageDescr packageDescr, Resource resource) {
         PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
         if (pkgRegistry == null) {
             return;
