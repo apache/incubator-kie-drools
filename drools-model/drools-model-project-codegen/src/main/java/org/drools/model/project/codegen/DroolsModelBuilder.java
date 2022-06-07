@@ -44,7 +44,7 @@ import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourc
 public class DroolsModelBuilder {
     public static final ReleaseIdImpl DUMMY_RELEASE_ID = new ReleaseIdImpl("dummy:dummy:0.0.0");
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsModelBuilder.class);
-    private final ModelBuilderImpl<KogitoPackageSources> modelBuilder;
+    private final Fraffo modelBuilder;
 
     private final DroolsModelBuildContext context;
     private final Collection<Resource> resources;
@@ -98,17 +98,13 @@ public class DroolsModelBuilder {
         return modelBuilder.getPackageSources();
     }
 
-    private ModelBuilderImpl<KogitoPackageSources> makeModelBuilder() {
+    private Fraffo makeModelBuilder() {
         if (!decisionTableSupported &&
                 resources.stream().anyMatch(r -> r.getResourceType() == ResourceType.DTABLE)) {
             throw new MissingDecisionTableDependencyError();
         }
 
-        return new ModelBuilderImpl<>(
-                KogitoPackageSources::dumpSources,
-                KogitoKnowledgeBuilderConfigurationImpl.fromContext(context),
-                DUMMY_RELEASE_ID,
-                hotReloadMode);
+        return new Fraffo();
     }
 
     private List<GeneratedFile> generateInternalResource(KogitoPackageSources pkgSources) {
