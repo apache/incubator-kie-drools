@@ -49,6 +49,7 @@ import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedS
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringSolution;
 import org.optaplanner.spring.boot.autoconfigure.config.OptaPlannerProperties;
 import org.optaplanner.spring.boot.autoconfigure.gizmo.GizmoSpringTestConfiguration;
+import org.optaplanner.spring.boot.autoconfigure.multimodule.MultiModuleSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.NoConstraintsSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.NormalSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.constraints.TestdataSpringConstraintProvider;
@@ -71,6 +72,7 @@ class OptaPlannerAutoConfigurationTest {
     private final ApplicationContextRunner noConstraintsContextRunner;
     private final ApplicationContextRunner chainedContextRunner;
     private final ApplicationContextRunner gizmoContextRunner;
+    private final ApplicationContextRunner multimoduleRunner;
     private final FilteredClassLoader allDefaultsFilteredClassLoader;
     private final FilteredClassLoader testFilteredClassLoader;
     private final FilteredClassLoader noGizmoFilteredClassLoader;
@@ -93,6 +95,9 @@ class OptaPlannerAutoConfigurationTest {
         chainedContextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
                 .withUserConfiguration(ChainedSpringTestConfiguration.class);
+        multimoduleRunner = new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
+                .withUserConfiguration(MultiModuleSpringTestConfiguration.class);
         allDefaultsFilteredClassLoader =
                 new FilteredClassLoader(FilteredClassLoader.PackageFilter.of("org.optaplanner.test"),
                         FilteredClassLoader.ClassPathResourceFilter
@@ -258,6 +263,27 @@ class OptaPlannerAutoConfigurationTest {
     @Test
     void solve() {
         contextRunner
+                .withClassLoader(allDefaultsFilteredClassLoader)
+                .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
+                .run(context -> {
+                    SolverManager<TestdataSpringSolution, Long> solverManager = context.getBean(SolverManager.class);
+                    TestdataSpringSolution problem = new TestdataSpringSolution();
+                    problem.setValueList(IntStream.range(1, 3)
+                            .mapToObj(i -> "v" + i)
+                            .collect(Collectors.toList()));
+                    problem.setEntityList(IntStream.range(1, 3)
+                            .mapToObj(i -> new TestdataSpringEntity())
+                            .collect(Collectors.toList()));
+                    SolverJob<TestdataSpringSolution, Long> solverJob = solverManager.solve(1L, problem);
+                    TestdataSpringSolution solution = solverJob.getFinalBestSolution();
+                    assertThat(solution).isNotNull();
+                    assertThat(solution.getScore().getScore()).isGreaterThanOrEqualTo(0);
+                });
+    }
+
+    @Test
+    void multimoduleSolve() {
+        multimoduleRunner
                 .withClassLoader(allDefaultsFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
                 .run(context -> {

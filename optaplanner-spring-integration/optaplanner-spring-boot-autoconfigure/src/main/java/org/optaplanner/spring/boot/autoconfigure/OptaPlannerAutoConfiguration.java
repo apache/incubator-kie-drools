@@ -18,6 +18,8 @@ package org.optaplanner.spring.boot.autoconfigure;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -49,11 +51,13 @@ import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
 import org.optaplanner.test.api.score.stream.SingleConstraintVerification;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.domain.EntityScanPackages;
 import org.springframework.boot.autoconfigure.domain.EntityScanner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -313,13 +317,14 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                     + "Maybe your " + ConstraintProvider.class.getSimpleName() + " class "
                     + " is not in a subpackage of your @" + SpringBootApplication.class.getSimpleName()
                     + " annotated class's package.\n"
-                    + "Maybe move your constraint provider class to your application class's (sub)package.");
+                    + "Maybe move your " + ConstraintProvider.class.getSimpleName()
+                    + " class to your application class's (sub)package"
+                    + " (or use @" + EntityScan.class.getSimpleName() + ").");
         }
         return scoreDirectorFactoryConfig;
     }
 
     private <T> Class<? extends T> findImplementingClass(Class<T> targetClass) {
-        // Does not use EntityScanner because these classes shouldn't be found through @EntityScan
         if (!AutoConfigurationPackages.has(context)) {
             return null;
         }
@@ -328,9 +333,16 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         scanner.setResourceLoader(context);
         scanner.addIncludeFilter(new AssignableTypeFilter(targetClass));
 
-        List<String> packages = AutoConfigurationPackages.get(context);
+        EntityScanPackages entityScanPackages = EntityScanPackages.get(context);
+
+        Set<String> packages = new HashSet<>();
+        packages.addAll(AutoConfigurationPackages.get(context));
+        packages.addAll(entityScanPackages.getPackageNames());
         List<Class<? extends T>> classList = packages.stream()
                 .flatMap(basePackage -> scanner.findCandidateComponents(basePackage).stream())
+                // findCandidateComponents can return the same package for different base packages
+                .distinct()
+                .sorted(Comparator.comparing(BeanDefinition::getBeanClassName))
                 .map(candidate -> {
                     try {
                         Class<? extends T> clazz = ClassUtils.forName(candidate.getBeanClassName(), context.getClassLoader())
