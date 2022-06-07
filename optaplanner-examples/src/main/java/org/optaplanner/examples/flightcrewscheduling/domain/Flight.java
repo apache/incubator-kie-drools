@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class Flight extends AbstractPersistable implements Comparable<Flight> {
 
-    private static final Comparator<Flight> COMPARATOR = Comparator.comparing(Flight::getDepartureUTCDate)
+    private static final Comparator<Flight> COMPARATOR = Comparator.comparing(Flight::getDepartureUTCDateTime)
             .thenComparing(Flight::getDepartureAirport)
-            .thenComparing(Flight::getDepartureUTCDateTime)
+            .thenComparing(Flight::getArrivalUTCDateTime)
             .thenComparing(Flight::getArrivalAirport)
-            .thenComparing(Flight::getArrivalUTCDateTime);
+            .thenComparing(Flight::getFlightNumber);
 
     private String flightNumber;
     private Airport departureAirport;

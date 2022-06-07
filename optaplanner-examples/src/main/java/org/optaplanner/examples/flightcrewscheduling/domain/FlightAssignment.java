@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @PlanningEntity
 public class FlightAssignment extends AbstractPersistable implements Comparable<FlightAssignment> {
 
-    private static final Comparator<FlightAssignment> PILLAR_SEQUENCE_COMPARATOR = Comparator
-            .comparing((FlightAssignment a) -> a.getFlight().getDepartureUTCDateTime())
-            .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
+    // Needs to be kept consistent with equals on account of Employee's flightAssignmentSet, which is a SortedSet.
+    private static final Comparator<FlightAssignment> COMPARATOR = Comparator.comparing(FlightAssignment::getFlight)
             .thenComparing(FlightAssignment::getIndexInFlight);
 
     private Flight flight;
@@ -87,6 +86,6 @@ public class FlightAssignment extends AbstractPersistable implements Comparable<
 
     @Override
     public int compareTo(FlightAssignment o) {
-        return PILLAR_SEQUENCE_COMPARATOR.compare(this, o);
+        return COMPARATOR.compare(this, o);
     }
 }
