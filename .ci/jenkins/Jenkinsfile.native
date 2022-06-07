@@ -6,7 +6,7 @@ droolsRepo = 'drools'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel7 && kie-mem16g && !master'
     }
     tools {
         maven 'kie-maven-3.8.1'
