@@ -4,7 +4,7 @@ import org.kie.jenkins.MavenCommand
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel7 && kie-mem16g && !master'
     }
     environment {
         // QUARKUS_BRANCH should be defined directly into the job environment
