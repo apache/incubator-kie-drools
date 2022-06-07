@@ -55,6 +55,7 @@ import org.drools.modelcompiler.builder.processors.GeneratedPojoCompilationPhase
 import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
 import org.drools.modelcompiler.builder.processors.PojoStoragePhase;
 import org.drools.modelcompiler.builder.processors.SourceCodeGenerationPhase;
+import org.drools.modelcompiler.tool.ExplicitCanonicalModelCompiler;
 import org.drools.util.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
@@ -74,58 +75,22 @@ public class ExplicitCanonicalModelCompilerTest {
     @Test
     public void testCompile() throws DroolsParserException, IOException {
         Resource resource = new ClassPathResource("org/drools/compiler/integrationtests/phases/ExplicitCompilerTest.drl");
-
-
-
-        InternalKnowledgeBase kBase = null;
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
-        ClassLoader rootClassLoader = configuration.getClassLoader();
-
         BuildResultCollectorImpl results = new BuildResultCollectorImpl();
-
-        RootClassLoaderProvider rootClassLoaderProvider = () -> rootClassLoader;
-        InternalKnowledgeBaseProvider internalKnowledgeBaseProvider = () -> kBase;
-
-        PackageRegistryManagerImpl packageRegistryManager =
-                new PackageRegistryManagerImpl(
-                        configuration, rootClassLoaderProvider, internalKnowledgeBaseProvider);
-
-        GlobalVariableContext globalVariableContext = new GlobalVariableContextImpl();
-
-        TypeDeclarationContextImpl typeDeclarationContext =
-                new TypeDeclarationContextImpl(configuration, packageRegistryManager, globalVariableContext);
-        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
-        typeDeclarationContext.setTypeDeclarationManager(new TypeDeclarationManagerImpl(typeBuilder, kBase));
-
 
         DrlResourceHandler handler = new DrlResourceHandler(configuration);
         final PackageDescr packageDescr = handler.process(resource);
         handler.getResults().forEach(results::addBuilderResult);
 
-
         CompositePackageDescr compositePackageDescr = new CompositePackageDescr(resource, packageDescr);
         Collection<CompositePackageDescr> compositePackageDescrs = asList(compositePackageDescr);
-        PackageModelManager packageModelManager =
-                new PackageModelManager(configuration, new ReleaseIdImpl("org.drools:dummy:1.0-SNAPSHOT"), new DRLIdGenerator());
-        CanonicalModelBuildContext buildContext = new CanonicalModelBuildContext();
 
-        PackageSourceManager<PackageSources> packageSourceManager = new PackageSourceManager<>();
-        ExplicitCanonicalModelCompiler compiler =
-                new ExplicitCanonicalModelCompiler(
-                        compositePackageDescrs,
-                        packageRegistryManager,
-                        packageModelManager,
-                        buildContext,
-                        configuration,
-                        results,
-                        typeDeclarationContext,
-                        globalVariableContext,
-                        packageSourceManager);
+        ExplicitCanonicalModelCompiler compiler = ExplicitCanonicalModelCompiler.of(compositePackageDescrs, configuration);
 
         compiler.process();
 
         List<GeneratedFile> generatedSources = new ArrayList<>();
-        for (PackageSources src : packageSourceManager.getPackageSources()) {
+        for (PackageSources src : compiler.getPackageSources()) {
             src.collectGeneratedFiles(generatedSources);
         }
 
@@ -133,79 +98,4 @@ public class ExplicitCanonicalModelCompilerTest {
 
     }
 
-}
-
-class ExplicitCanonicalModelCompiler {
-
-    private final Collection<CompositePackageDescr> packages;
-    private final PackageRegistryManager pkgRegistryManager;
-    private final PackageModelManager packageModelManager;
-    private final CanonicalModelBuildContext buildContext;
-    private final KnowledgeBuilderConfigurationImpl configuration;
-    private final BuildResultCollector results;
-    private final TypeDeclarationContext typeDeclarationContext;
-    private final InternalKnowledgeBase kBase = null;
-    private final GlobalVariableContext globalVariableContext;
-    private final PackageSourceManager<PackageSources> packageSourceManager;
-    final boolean hasMvel = false;
-    final boolean oneClassPerRule = true;
-
-    ExplicitCanonicalModelCompiler(Collection<CompositePackageDescr> packages,
-                                   PackageRegistryManager pkgRegistryManager,
-                                   PackageModelManager packageModelManager,
-                                   CanonicalModelBuildContext buildContext,
-                                   KnowledgeBuilderConfigurationImpl configuration,
-                                   BuildResultCollector results,
-                                   TypeDeclarationContext typeDeclarationContext,
-                                   GlobalVariableContext globalVariableContext,
-                                   PackageSourceManager<PackageSources> packageSourceManager) {
-        this.packages = packages;
-        this.pkgRegistryManager = pkgRegistryManager;
-        this.packageModelManager = packageModelManager;
-        this.buildContext = buildContext;
-        this.configuration = configuration;
-        this.results = results;
-        this.typeDeclarationContext = typeDeclarationContext;
-        this.globalVariableContext = globalVariableContext;
-        this.packageSourceManager = packageSourceManager;
-    }
-
-    public void process() {
-        List<CompilationPhase> phases = new ArrayList<>();
-
-        phases.add(iteratingPhase((reg, acc) -> new DeclaredTypeRegistrationPhase(reg, acc, pkgRegistryManager)));
-        phases.add(iteratingPhase((reg, acc) ->
-                new POJOGenerator(reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()))));
-        phases.add(new GeneratedPojoCompilationPhase(
-                packageModelManager, buildContext, configuration.getClassLoader()));
-        phases.add(new PojoStoragePhase(buildContext, pkgRegistryManager, packages));
-        phases.add(iteratingPhase(AccumulateFunctionCompilationPhase::new));
-        if (hasMvel) {
-            phases.add(iteratingPhase((reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, typeDeclarationContext)));
-        }
-        phases.add(iteratingPhase((reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
-        phases.add(iteratingPhase((reg, acc) -> new GlobalCompilationPhase(reg, acc, kBase, globalVariableContext, acc.getFilter())));
-        phases.add(new DeclaredTypeDeregistrationPhase(packages, pkgRegistryManager));
-
-        // ---
-
-        phases.add(iteratingPhase((reg, acc) -> new RuleValidator(reg, acc, configuration))); // validateUniqueRuleNames
-        phases.add(iteratingPhase((reg, acc) -> new ModelGeneratorPhase(reg, acc, packageModelManager.getPackageModel(acc, reg, acc.getName()), typeDeclarationContext))); // validateUniqueRuleNames
-        phases.add(iteratingPhase((reg, acc) -> new SourceCodeGenerationPhase<>(
-                packageModelManager.getPackageModel(acc, reg, acc.getName()), packageSourceManager, PackageSources::dumpSources, oneClassPerRule))); // validateUniqueRuleNames
-
-
-        for (CompilationPhase phase : phases) {
-            phase.process();
-            this.results.addAll(phase.getResults());
-            if (results.hasErrors()) {
-                break;
-            }
-        }
-
-    }
-
-    private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
-        return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
-    }
 }
