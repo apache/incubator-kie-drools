@@ -22,14 +22,18 @@ import java.util.List;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.drools.drl.parser.DroolsError;
+import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.codegen.common.DroolsModelBuildContext;
-import org.drools.modelcompiler.builder.ModelBuilderImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,40 +48,55 @@ import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourc
 public class DroolsModelBuilder {
     public static final ReleaseIdImpl DUMMY_RELEASE_ID = new ReleaseIdImpl("dummy:dummy:0.0.0");
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsModelBuilder.class);
-    private final Fraffo modelBuilder;
+    private Fraffo modelBuilder;
 
     private final DroolsModelBuildContext context;
     private final Collection<Resource> resources;
     private final boolean decisionTableSupported;
     private final boolean hotReloadMode;
+    private final KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration;
 
     public DroolsModelBuilder(DroolsModelBuildContext context, Collection<Resource> resources, boolean decisionTableSupported, boolean hotReloadMode) {
         this.context = context;
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
         this.hotReloadMode = hotReloadMode;
-        this.modelBuilder = makeModelBuilder();
+//        this.modelBuilder = makeModelBuilder();
+        this.knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl();
+
     }
 
     void build() {
-        CompositeKnowledgeBuilder batch = modelBuilder.batch();
-        resources.forEach(f -> addResource(batch, f));
+//        CompositeKnowledgeBuilder batch = modelBuilder.batch();
+//        resources.forEach(f -> addResource(batch, f));
+        DrlResourceHandler drlResourceHandler = new DrlResourceHandler(knowledgeBuilderConfiguration);
 
-        try {
-            batch.build();
-        } catch (RuntimeException e) {
-            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
-                LOGGER.error(error.toString());
+        Collection<CompositePackageDescr> packages = new ArrayList<>();
+
+        for (Resource resource : resources) {
+            if (resource.getResourceType() == ResourceType.DRL) {
+                PackageDescr process = null;
+                try {
+                    process = drlResourceHandler.process(resource);
+                    CompositePackageDescr compositePackageDescr = new CompositePackageDescr(resource, process);
+                    packages.add(compositePackageDescr);
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-            LOGGER.error(e.getMessage());
-            throw new RuleCodegenError(e, modelBuilder.getErrors().getErrors());
         }
 
-        if (modelBuilder.hasErrors()) {
-            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
+        this.modelBuilder = new Fraffo(packages, knowledgeBuilderConfiguration);
+
+        modelBuilder.build();
+        BuildResultCollector buildResults = modelBuilder.getBuildResults();
+
+        if (buildResults.hasErrors()) {
+            for (KnowledgeBuilderResult error : buildResults.getResults()) {
                 LOGGER.error(error.toString());
             }
-            throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
+            throw new RuleCodegenError(buildResults.getAllResults());
         }
     }
 
@@ -104,7 +123,8 @@ public class DroolsModelBuilder {
             throw new MissingDecisionTableDependencyError();
         }
 
-        return new Fraffo();
+//        return new Fraffo(packages, config);
+        throw new UnsupportedOperationException("nyi");
     }
 
     private List<GeneratedFile> generateInternalResource(KogitoPackageSources pkgSources) {

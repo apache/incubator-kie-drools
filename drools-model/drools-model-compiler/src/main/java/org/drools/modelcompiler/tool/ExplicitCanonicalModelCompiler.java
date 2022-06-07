@@ -20,9 +20,9 @@ import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationP
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.CanonicalModelBuildContext;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.PackageModelManager;
 import org.drools.modelcompiler.builder.PackageSourceManager;
-import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.drools.modelcompiler.builder.processors.DeclaredTypeDeregistrationPhase;
@@ -36,8 +36,9 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
-public class ExplicitCanonicalModelCompiler {
+public class ExplicitCanonicalModelCompiler<T> {
 
     private final Collection<CompositePackageDescr> packages;
     private final PackageRegistryManager pkgRegistryManager;
@@ -48,17 +49,19 @@ public class ExplicitCanonicalModelCompiler {
     private final TypeDeclarationContext typeDeclarationContext;
     private final InternalKnowledgeBase kBase = null;
     private final GlobalVariableContext globalVariableContext;
-    private final PackageSourceManager<PackageSources> packageSourceManager;
+    private final PackageSourceManager<T> packageSourceManager;
+    private Function<PackageModel, T> sourceDumpFunction;
     final boolean hasMvel = false;
     final boolean oneClassPerRule = true;
 
-    public static ExplicitCanonicalModelCompiler of(
+    public static <T> ExplicitCanonicalModelCompiler<T> of(
             Collection<CompositePackageDescr> packages,
-            KnowledgeBuilderConfigurationImpl configuration) {
+            KnowledgeBuilderConfigurationImpl configuration,
+            Function<PackageModel, T> sourceDumpFunction) {
         PackageRegistryManagerImpl pkgRegistryManager =
                 new PackageRegistryManagerImpl(configuration, configuration::getClassLoader, () -> null);
         GlobalVariableContextImpl globalVariableContext = new GlobalVariableContextImpl();
-        return new ExplicitCanonicalModelCompiler(
+        return new ExplicitCanonicalModelCompiler<>(
                 packages,
                 pkgRegistryManager,
                 new PackageModelManager(configuration, new ReleaseIdImpl("org.drools:dummy:1.0-SNAPSHOT"), new DRLIdGenerator()),
@@ -67,18 +70,20 @@ public class ExplicitCanonicalModelCompiler {
                 new BuildResultCollectorImpl(),
                 new TypeDeclarationContextImpl(configuration, pkgRegistryManager, globalVariableContext),
                 globalVariableContext,
-                new PackageSourceManager<>());
+                new PackageSourceManager<>(),
+                sourceDumpFunction);
     }
 
     public ExplicitCanonicalModelCompiler(Collection<CompositePackageDescr> packages,
-                                   PackageRegistryManager pkgRegistryManager,
-                                   PackageModelManager packageModelManager,
-                                   CanonicalModelBuildContext buildContext,
-                                   KnowledgeBuilderConfigurationImpl configuration,
-                                   BuildResultCollector results,
-                                   TypeDeclarationContext typeDeclarationContext,
-                                   GlobalVariableContext globalVariableContext,
-                                   PackageSourceManager<PackageSources> packageSourceManager) {
+                                          PackageRegistryManager pkgRegistryManager,
+                                          PackageModelManager packageModelManager,
+                                          CanonicalModelBuildContext buildContext,
+                                          KnowledgeBuilderConfigurationImpl configuration,
+                                          BuildResultCollector results,
+                                          TypeDeclarationContext typeDeclarationContext,
+                                          GlobalVariableContext globalVariableContext,
+                                          PackageSourceManager<T> packageSourceManager,
+                                          Function<PackageModel, T> sourceDumpFunction) {
         this.packages = packages;
         this.pkgRegistryManager = pkgRegistryManager;
         this.packageModelManager = packageModelManager;
@@ -88,6 +93,7 @@ public class ExplicitCanonicalModelCompiler {
         this.typeDeclarationContext = typeDeclarationContext;
         this.globalVariableContext = globalVariableContext;
         this.packageSourceManager = packageSourceManager;
+        this.sourceDumpFunction = sourceDumpFunction;
     }
 
     public void process() {
@@ -112,7 +118,7 @@ public class ExplicitCanonicalModelCompiler {
         phases.add(iteratingPhase((reg, acc) -> new RuleValidator(reg, acc, configuration))); // validateUniqueRuleNames
         phases.add(iteratingPhase((reg, acc) -> new ModelGeneratorPhase(reg, acc, packageModelManager.getPackageModel(acc, reg, acc.getName()), typeDeclarationContext))); // validateUniqueRuleNames
         phases.add(iteratingPhase((reg, acc) -> new SourceCodeGenerationPhase<>(
-                packageModelManager.getPackageModel(acc, reg, acc.getName()), packageSourceManager, PackageSources::dumpSources, oneClassPerRule))); // validateUniqueRuleNames
+                packageModelManager.getPackageModel(acc, reg, acc.getName()), packageSourceManager, sourceDumpFunction, oneClassPerRule))); // validateUniqueRuleNames
 
 
         for (CompilationPhase phase : phases) {
@@ -129,7 +135,7 @@ public class ExplicitCanonicalModelCompiler {
         return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
     }
 
-    public Collection<PackageSources> getPackageSources() {
+    public Collection<T> getPackageSources() {
         return packageSourceManager.getPackageSources();
     }
 }
