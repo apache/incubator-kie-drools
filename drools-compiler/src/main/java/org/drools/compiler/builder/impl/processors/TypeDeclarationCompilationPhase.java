@@ -23,6 +23,8 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,10 +33,12 @@ import java.util.Map;
 
 public class TypeDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
     private final TypeDeclarationBuilder typeBuilder;
+    private final Resource currentResource;
 
-    public TypeDeclarationCompilationPhase(PackageDescr packageDescr, TypeDeclarationBuilder typeBuilder, PackageRegistry pkgRegistry) {
+    public TypeDeclarationCompilationPhase(PackageDescr packageDescr, TypeDeclarationBuilder typeBuilder, PackageRegistry pkgRegistry, Resource resource) {
         super(pkgRegistry, packageDescr);
         this.typeBuilder = typeBuilder;
+        this.currentResource = resource;
     }
 
     public void process() {
@@ -43,7 +47,7 @@ public class TypeDeclarationCompilationPhase extends AbstractPackageCompilationP
         List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<>();
         unsortedDescrs.addAll(packageDescr.getTypeDeclarations());
         unsortedDescrs.addAll(packageDescr.getEnumDeclarations());
-        typeBuilder.processTypeDeclarations(packageDescr, pkgRegistry, unsortedDescrs, unresolvedTypes, unprocesseableDescrs);
+        typeBuilder.processTypeDeclarations(packageDescr, pkgRegistry, currentResource, unsortedDescrs, unresolvedTypes, unprocesseableDescrs);
         for (AbstractClassTypeDeclarationDescr descr : unprocesseableDescrs.values()) {
             this.results.add(new TypeDeclarationError(descr, "Unable to process type " + descr.getTypeName()));
         }
