@@ -83,5 +83,7 @@ String getConstraintStreamImplType() {
 
 void sendEmail() {
     echo 'Sending a summary email.'
-    mailer.sendMarkdownTestSummaryNotification('OptaPlanner turtle tests', 'OptaPlanner turtle tests', [env.OPTAPLANNER_CI_EMAIL], "cc @*optaplanner-team*")
+    String body = "${getConstraintStreamImplType()}\n"
+     + "cc @*optaplanner-team*"
+    mailer.sendMarkdownTestSummaryNotification('OptaPlanner turtle tests', 'OptaPlanner turtle tests', [env.OPTAPLANNER_CI_EMAIL], body)
 }
