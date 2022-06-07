@@ -402,11 +402,7 @@ public class AccumulateNode extends BetaNode {
             }
 
             // add list to head
-            if (toPropagateList != null) {
-                toPropagateList.setPrevious(list);
-            }
             list.setNext(toPropagateList);
-            list.setPrevious(null);
             toPropagateList = list;
 
             list.getContext().setToPropagate(true);
@@ -416,10 +412,6 @@ public class AccumulateNode extends BetaNode {
             TupleList<AccumulateContextEntry> list = toPropagateList;
             toPropagateList = null;
             return list;
-        }
-
-        public TupleList<AccumulateContextEntry> getLastTupleList() {
-            return lastTupleList;
         }
 
         public void addMatchOnLastTupleList(LeftTuple match) {

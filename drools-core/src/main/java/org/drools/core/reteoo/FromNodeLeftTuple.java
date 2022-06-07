@@ -60,18 +60,6 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
 
     public FromNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final Sink sink,
-                             final boolean leftTupleMemoryEnabled) {
-        this( leftTuple,
-              rightTuple,
-              null,
-              null,
-              sink,
-              leftTupleMemoryEnabled );
-    }
-    
-    public FromNodeLeftTuple(final LeftTuple leftTuple,
-                             final RightTuple rightTuple,
                              final LeftTuple currentLeftChild,
                              final LeftTuple currentRightChild,
                              final Sink sink,
