@@ -1752,8 +1752,7 @@ public class GroupByTest {
     }
 
     @Test
-    @Ignore // <- FIXME, see comment inside (@mario)
-    public void testNestedGroupBy3() throws Exception {
+    public void testNestedGroupBy3() {
         // DROOLS-6045
         final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
 
@@ -1773,7 +1772,7 @@ public class GroupByTest {
                                         D.accFunction(CountAccumulateFunction::new).as(var_$accresult)),
                                 // Bindings
                                 D.pattern(var_$accresult)
-                                        .expr(c -> ((Integer)c) > 0) // FIXME var_$accresult is collection of Long, how did this pass before(mdp) ?
+                                        .expr(c -> ((Long)c) > 0)
                         ),
                         var_$key, var_$accresult, var_$keyOuter, Pair::create
                 ),
@@ -1968,6 +1967,5 @@ public class GroupByTest {
         ksession.fireAllRules();
         assertTrue(results.contains(84));
     }
-
 }
 
