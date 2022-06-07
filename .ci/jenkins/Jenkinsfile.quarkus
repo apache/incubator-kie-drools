@@ -144,6 +144,9 @@ pipeline {
             }
         }
         stage('Build kogito-examples with persistence') {
+            when {
+                expression { return !isPersistenceDisabled() }
+            }
             steps {
                 script {
                     getMavenCommand('kogito-examples-persistence')
@@ -163,6 +166,9 @@ pipeline {
             }
         }
         stage('Build kogito-examples with events') {
+            when {
+                expression { return !isEventsDisabled() }
+            }
             steps {
                 script {
                     getMavenCommand('kogito-examples-events')
@@ -267,4 +273,12 @@ String getQuarkusBranch() {
 
 void cleanContainers() {
     cloud.cleanContainersAndImages('docker')
+}
+
+boolean isPersistenceDisabled() {
+    return env.DISABLE_PERSISTENCE ? env.DISABLE_PERSISTENCE.toBoolean() : false
+}
+
+boolean isEventsDisabled() {
+    return env.DISABLE_EVENTS ? env.DISABLE_EVENTS.toBoolean() : false
 }
