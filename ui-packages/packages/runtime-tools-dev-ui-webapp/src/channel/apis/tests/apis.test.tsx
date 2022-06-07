@@ -820,7 +820,9 @@ describe('handle node instance cancel', () => {
       });
     expect(result).toEqual('error');
   });
+});
 
+describe('custom forms section', () => {
   it('get forms query test - success', async () => {
     mockedAxios.get.mockResolvedValue({
       data: [
@@ -889,7 +891,9 @@ describe('handle node instance cancel', () => {
       });
     }
   });
+});
 
+describe('process definitions section', () => {
   it('swager parser success', async () => {
     SwaggerParser.parse['mockImplementation'](() =>
       Promise.resolve({
@@ -933,6 +937,11 @@ describe('handle node instance cancel', () => {
       formData,
       'AAA',
       processDefinitioData
+    );
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'http://localhost:8080/hiring?businessKey=AAA',
+      formData,
+      expect.anything()
     );
     expect(result).toEqual('1234');
   });

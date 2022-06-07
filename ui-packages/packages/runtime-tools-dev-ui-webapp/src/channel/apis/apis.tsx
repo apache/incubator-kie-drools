@@ -395,7 +395,7 @@ export const startProcessInstance = (
       businessKey.length > 0 ? `?businessKey=${businessKey}` : ''
     }`;
     axios
-      .post(requestURL, JSON.stringify(formData), {
+      .post(requestURL, formData, {
         headers: {
           'Content-Type': 'application/json'
         }
