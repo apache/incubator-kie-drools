@@ -39,6 +39,7 @@ import org.drools.impact.analysis.parser.impl.PackageParser;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
 
 import static java.util.Collections.emptyList;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
@@ -68,7 +69,7 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
     }
 
     @Override
-    public void addPackage(final PackageDescr packageDescr) {
+    protected void addPackageWithResource(final PackageDescr packageDescr, final Resource resource) {
         if (compositePackagesMap == null) {
             compositePackagesMap = new HashMap<>();
             if(compositePackages != null) {

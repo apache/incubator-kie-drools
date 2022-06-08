@@ -598,7 +598,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      * and the generation of the corresponding rete/phreak network
      */
     @Override
-    public void addPackage(final PackageDescr packageDescr) {
+    public final void addPackage(final PackageDescr packageDescr) {
         addPackageWithResource(packageDescr, null);
     }
 
