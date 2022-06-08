@@ -17,14 +17,16 @@ package org.kie.kogito.quarkus.workflows;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 
+@QuarkusTestResource(GrpcServerPortResource.class)
 @QuarkusIntegrationTest
-class RPCGreetRestIT {
+class RPCGreetIT {
     @Test
     void testEnglish() {
         given()
