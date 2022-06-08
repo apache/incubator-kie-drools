@@ -100,7 +100,7 @@ public class PersistenceUtil {
                     EntityManagerFactory emf = (EntityManagerFactory) emfObject;
                     emf.close();
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    logger.error("Exception", t);
                 }
             }
 
@@ -110,7 +110,7 @@ public class PersistenceUtil {
                     PoolingDataSourceWrapper ds1 = (PoolingDataSourceWrapper) ds1Object;
                     ds1.close();
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    logger.error("Exception", t);
                 }
             }
 
@@ -206,7 +206,7 @@ public class PersistenceUtil {
         } catch (IOException ioe) {
             propertiesNotFound = true;
             logger.warn("Unable to find properties, using default H2 properties: " + ioe.getMessage());
-            ioe.printStackTrace();
+            logger.error("Exception", ioe);
         }
 
         String password = props.getProperty("password");

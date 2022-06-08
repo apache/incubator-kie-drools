@@ -193,7 +193,7 @@ public class XStreamMarshaller
             OutputStreamWriter ows = new OutputStreamWriter(out, "UTF-8");
             xStream.toXML(o, ows);
         } catch ( Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
     }
     

@@ -24,8 +24,12 @@ import java.util.Map;
 
 import org.drools.util.IoUtils;
 import org.mvel2.templates.TemplateRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class ReportVisitor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ReportVisitor.class);
 
     protected static String processHeader(String folder) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -50,10 +54,10 @@ abstract class ReportVisitor {
                 str.append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         } catch (NullPointerException e) {
             System.err.println("File " + fileName + " was not found.");
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return str.toString();
     }

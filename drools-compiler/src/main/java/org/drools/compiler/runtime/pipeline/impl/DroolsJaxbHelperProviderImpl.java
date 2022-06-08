@@ -56,6 +56,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
@@ -300,23 +302,24 @@ public class DroolsJaxbHelperProviderImpl
     }
 
     public static class JaxbErrorReceiver4Drools extends ErrorReceiver {
+        private static final Logger LOG = LoggerFactory.getLogger(JaxbErrorReceiver4Drools.class);
 
         public String stage = "processing";
 
         public void warning(SAXParseException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         public void error(SAXParseException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         public void fatalError(SAXParseException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         public void info(SAXParseException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
     }
 
@@ -374,6 +377,8 @@ public class DroolsJaxbHelperProviderImpl
     }
 
     public static class RewindableStringReader extends StringReader {
+        private static final Logger LOG = LoggerFactory.getLogger(RewindableStringReader.class);
+
         public RewindableStringReader(String s) {
             super( s );
         }
@@ -382,7 +387,7 @@ public class DroolsJaxbHelperProviderImpl
             try {
                 reset();
             } catch ( IOException e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         }
     }

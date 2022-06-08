@@ -22,6 +22,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.mvel2.MVEL;
 import org.mvel2.util.ParseTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GameEngine {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GameEngine.class);
 
     KieSession ksession;
 
@@ -106,7 +110,7 @@ public class GameEngine {
             ksession.insert( cmd );
             ksession.fireAllRules();
         } catch ( Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             session.getChannels().get( "output" ).send( "Unable to Execute Command: " + cmdList );
         }
 

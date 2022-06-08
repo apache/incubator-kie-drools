@@ -92,7 +92,7 @@ public class GenerateModel {
                 Files.createDirectories(newFile.getParent()); //NOSONAR
                 Files.copy(f.getContents(), newFile, StandardCopyOption.REPLACE_EXISTING); //NOSONAR
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
                 throw new RuntimeException("Unable to write file", e);
             }
         }
@@ -127,7 +127,7 @@ public class GenerateModel {
             Files.copy(new ByteArrayInputStream(vbMain.getBytes()), validationEntryPointFile, StandardCopyOption.REPLACE_EXISTING); //NOSONAR
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException("Unable to write file", e);
         }
     }

@@ -36,6 +36,8 @@ import org.drools.mvel.asm.ClassFieldInspectorImpl;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 
@@ -45,6 +47,8 @@ import static org.mvel2.asm.Opcodes.GETFIELD;
 import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
 
 public class TraitBuilderUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TraitBuilderUtil.class);
 
     static MixinInfo findMixinInfo(Class<?> traitClass) {
         if ( traitClass == null ) {
@@ -83,7 +87,7 @@ public class TraitBuilderUtil {
 
             }
         } catch ( Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return mixinInfo;
     }

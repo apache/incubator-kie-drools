@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An event class to report an evaluation error occured due to invalid parameters.
@@ -34,6 +36,8 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 public class InvalidParametersEvent
         extends FEELEventBase
         implements FEELEvent {
+
+    private static final Logger LOG = LoggerFactory.getLogger(InvalidParametersEvent.class);
 
     private String genericProblem;
     private String paramNameInError;
@@ -116,7 +120,7 @@ public class InvalidParametersEvent
             sb.append("}");
             return sb.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             return "<unable to inspect actualParameters map>";
         }
     }

@@ -48,11 +48,15 @@ import org.drools.util.StringUtils;
 import org.drools.wiring.api.ComponentsFactory;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.util.ClassUtils.convertResourceToClassName;
 
 public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JavaDialectRuntimeData.class);
 
     private static final long              serialVersionUID = 510l;
 
@@ -414,7 +418,7 @@ public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizabl
                 }
                 this.wireList.add( resourceName );
             } catch (final Exception e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
                 throw new RuntimeException( e );
             }
         }

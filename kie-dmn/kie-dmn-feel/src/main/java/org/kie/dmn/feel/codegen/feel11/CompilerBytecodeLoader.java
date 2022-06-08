@@ -125,7 +125,7 @@ public class CompilerBytecodeLoader {
 
             return loaded.newInstance();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return null;
     }

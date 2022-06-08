@@ -16,9 +16,13 @@
 package org.drools.verifier.core.index.keys;
 
 import org.drools.verifier.core.maps.KeyDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Key
         implements Comparable<Key> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Key.class);
 
     private final KeyDefinition keyDefinition;
 
@@ -40,7 +44,7 @@ public class Key
 
                 this.values.add(new Value((Comparable) value));
             } catch (ClassCastException cce) {
-                cce.printStackTrace();
+                LOG.error("Exception", cce);
             }
         }
     }

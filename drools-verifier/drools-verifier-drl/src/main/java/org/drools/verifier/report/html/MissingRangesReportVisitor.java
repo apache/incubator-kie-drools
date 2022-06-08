@@ -31,11 +31,14 @@ import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.mvel2.templates.TemplateRuntime;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 
 class MissingRangesReportVisitor extends ReportVisitor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MissingRangesReportVisitor.class);
 
     public static Collection<String> visitRestrictionsCollection(String sourceFolder,
                                                                  Collection<Restriction> restrictions,
@@ -63,7 +66,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                                          restriction.getOperator(),
                                          restriction.getValueAsString() ) );
                 } catch ( Exception e ) {
-                    e.printStackTrace();
+                    LOG.error("Exception", e);
                 }
             }
         }

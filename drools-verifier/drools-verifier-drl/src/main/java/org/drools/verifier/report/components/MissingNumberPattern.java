@@ -23,10 +23,14 @@ import java.util.Locale;
 
 import org.drools.drl.parser.impl.Operator;
 import org.drools.verifier.components.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MissingNumberPattern extends MissingRange
     implements
     Comparable<MissingRange> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MissingNumberPattern.class);
 
     private final String valueType;
 
@@ -71,7 +75,7 @@ public class MissingNumberPattern extends MissingRange
                 return new SimpleDateFormat( fmt,
                                              Locale.ENGLISH ).parse( value );
             } catch ( ParseException e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         } else if ( valueType.equals(Field.DOUBLE) ) {
             return Double.valueOf( value );

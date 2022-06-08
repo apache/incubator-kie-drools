@@ -31,9 +31,13 @@ import java.util.function.Supplier;
 import org.drools.util.TypeResolver;
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AnnotationDefinition implements Externalizable,
                                              Annotation {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AnnotationDefinition.class);
 
     private String name;
 
@@ -176,7 +180,7 @@ public class AnnotationDefinition implements Externalizable,
                 }
                 return returnType.getMethod("valueOf", String.class).invoke(null, value);
             } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                LOG.error("Exception", e);
             }
         } else if (String.class.equals(returnType)) {
             return unquote(value.toString().trim());
@@ -202,14 +206,14 @@ public class AnnotationDefinition implements Externalizable,
                 String cName = value.toString().trim().replace(".class", "");
                 return resolver.resolveType(cName);
             } catch (ClassNotFoundException cnfe) {
-                cnfe.printStackTrace();
+                LOG.error("Exception", cnfe);
                 return Object.class;
             }
         } else if (returnType.isAnnotation()) {
             try {
                 return build(returnType, ((Supplier<Map<String, Object>>) value).get(), resolver);
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
                 return null;
             }
         }

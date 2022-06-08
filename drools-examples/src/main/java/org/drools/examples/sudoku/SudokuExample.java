@@ -20,6 +20,8 @@ import org.drools.examples.sudoku.swing.SudokuGridSamples;
 import org.drools.examples.sudoku.swing.SudokuGridView;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,6 +56,7 @@ import java.io.Reader;
  * &lt;/pre&gt;
  */
 public class SudokuExample implements ActionListener {
+    private static final Logger LOG = LoggerFactory.getLogger(SudokuExample.class);
     private JFrame mainFrame;
     private SudokuGridView sudokuGridView;
     private Sudoku sudoku;
@@ -141,7 +144,7 @@ public class SudokuExample implements ActionListener {
             sudoku.setCellValues( values );
             sudoku.validate();
         } catch ( IOException e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
     }
 
@@ -178,7 +181,7 @@ public class SudokuExample implements ActionListener {
                     buttonsActive(true);
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOG.error("Exception", ex);
             }
 
         } else if (ev.getSource().equals(exitMenuItem)) {

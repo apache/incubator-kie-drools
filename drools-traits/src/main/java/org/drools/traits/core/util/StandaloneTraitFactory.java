@@ -39,8 +39,12 @@ import org.drools.traits.core.factmodel.TripleFactoryImpl;
 import org.drools.traits.core.factmodel.TripleStore;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(StandaloneTraitFactory.class);
 
     private ProjectClassLoader classLoader;
     private TraitRuntimeComponentFactoryImpl kieComponentFactory = new TraitRuntimeComponentFactoryImpl();
@@ -132,7 +136,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
             try {
                 getTraitRegistry().addTrait( trait.getName(), buildClassDefinition( trait, trait ) );
             } catch ( IOException e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         }
         return super.getProxy(core, trait, logical );
@@ -159,7 +163,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
             wrapper.init( o );
             return wrapper;
         } catch ( Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return null;
     }
@@ -191,13 +195,13 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
                 tDef.setDefinedClass( klass );
                 getTraitRegistry().addTrait( tDef );
             } catch ( Exception e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         }
         try {
             return (Class<T>) Class.forName( extName, false, classLoader );
         } catch ( ClassNotFoundException e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return null;
     }
