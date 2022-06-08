@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -25,19 +24,20 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
 abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractGroupNode<TriTuple<OldA, OldB, OldC>, OutTuple_, GroupKey_, ResultContainer_> {
+        extends AbstractGroupNode<TriTuple<OldA, OldB, OldC>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
 
     private final QuadFunction<ResultContainer_, OldA, OldB, OldC, Runnable> accumulator;
-    protected final Function<ResultContainer_, Result_> finisher;
 
     protected AbstractGroupTriNode(int groupStoreIndex,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, Result_> collector,
-            Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
+            Consumer<OutTuple_> nextNodesInsert,
+            Consumer<OutTuple_> nextNodesUpdate,
+            Consumer<OutTuple_> nextNodesRetract) {
         super(groupStoreIndex,
                 collector == null ? null : collector.supplier(),
-                nextNodesInsert, nextNodesRetract);
+                collector == null ? null : collector.finisher(),
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         accumulator = collector == null ? null : collector.accumulator();
-        finisher = collector == null ? null : collector.finisher();
     }
 
     @Override

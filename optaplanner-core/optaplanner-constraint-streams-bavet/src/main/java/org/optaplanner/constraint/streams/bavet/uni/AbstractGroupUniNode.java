@@ -19,26 +19,26 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractGroupNode<UniTuple<OldA>, OutTuple_, GroupKey_, ResultContainer_> {
+        extends AbstractGroupNode<UniTuple<OldA>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
 
     private final BiFunction<ResultContainer_, OldA, Runnable> accumulator;
-    protected final Function<ResultContainer_, Result_> finisher;
 
     protected AbstractGroupUniNode(int groupStoreIndex,
             UniConstraintCollector<OldA, ResultContainer_, Result_> collector,
-            Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
+            Consumer<OutTuple_> nextNodesInsert,
+            Consumer<OutTuple_> nextNodesUpdate,
+            Consumer<OutTuple_> nextNodesRetract) {
         super(groupStoreIndex,
                 collector == null ? null : collector.supplier(),
-                nextNodesInsert, nextNodesRetract);
+                collector == null ? null : collector.finisher(),
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         accumulator = collector == null ? null : collector.accumulator();
-        finisher = collector == null ? null : collector.finisher();
     }
 
     @Override

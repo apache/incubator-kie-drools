@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.util.Pair;
 
@@ -32,9 +31,10 @@ final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
 
     public Group2Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
             TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesUpdate,
+            Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.outputStoreSize = outputStoreSize;
@@ -51,9 +51,13 @@ final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
     }
 
     @Override
-    protected BiTuple<A, B> createOutTuple(Group<BiTuple<A, B>, Pair<A, B>, Void> group) {
-        Pair<A, B> key = group.groupKey;
-        return new BiTuple<>(key.getKey(), key.getValue(), outputStoreSize);
+    protected BiTuple<A, B> createOutTuple(Pair<A, B> groupKey) {
+        return new BiTuple<>(groupKey.getKey(), groupKey.getValue(), outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, Void unused) {
+        throw new IllegalStateException("Impossible state: collector is null.");
     }
 
     @Override

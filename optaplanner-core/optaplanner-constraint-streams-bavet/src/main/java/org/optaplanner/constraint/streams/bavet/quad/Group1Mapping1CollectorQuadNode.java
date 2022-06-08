@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.quad;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
@@ -31,9 +30,10 @@ final class Group1Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
 
     public Group1Mapping1CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, B> collector,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesUpdate,
+            Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, collector, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
@@ -44,10 +44,13 @@ final class Group1Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
     }
 
     @Override
-    protected BiTuple<A, B> createOutTuple(Group<BiTuple<A, B>, A, ResultContainer_> group) {
-        A a = group.groupKey;
-        B b = finisher.apply(group.resultContainer);
-        return new BiTuple<>(a, b, outputStoreSize);
+    protected BiTuple<A, B> createOutTuple(A a) {
+        return new BiTuple<>(a, null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, B b) {
+        outTuple.factB = b;
     }
 
     @Override

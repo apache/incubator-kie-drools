@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
@@ -29,16 +28,12 @@ final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesUpdate,
+            Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
-    }
-
-    @Override
-    public String toString() {
-        return "GroupBiNode 1+0";
     }
 
     @Override
@@ -47,8 +42,18 @@ final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
     }
 
     @Override
-    protected UniTuple<A> createOutTuple(Group<UniTuple<A>, A, Void> group) {
-        A a = group.groupKey;
+    protected UniTuple<A> createOutTuple(A a) {
         return new UniTuple<>(a, outputStoreSize);
     }
+
+    @Override
+    protected void updateOutTupleToResult(UniTuple<A> aUniTuple, Void unused) {
+        throw new IllegalStateException("Impossible state: collector is null.");
+    }
+
+    @Override
+    public String toString() {
+        return "GroupBiNode 1+0";
+    }
+
 }

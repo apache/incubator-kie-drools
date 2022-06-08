@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -25,19 +24,20 @@ import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
 abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractGroupNode<QuadTuple<OldA, OldB, OldC, OldD>, OutTuple_, GroupKey_, ResultContainer_> {
+        extends AbstractGroupNode<QuadTuple<OldA, OldB, OldC, OldD>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
 
     private final PentaFunction<ResultContainer_, OldA, OldB, OldC, OldD, Runnable> accumulator;
-    protected final Function<ResultContainer_, Result_> finisher;
 
     protected AbstractGroupQuadNode(int groupStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, Result_> collector,
-            Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
+            Consumer<OutTuple_> nextNodesInsert,
+            Consumer<OutTuple_> nextNodesUpdate,
+            Consumer<OutTuple_> nextNodesRetract) {
         super(groupStoreIndex,
                 collector == null ? null : collector.supplier(),
-                nextNodesInsert, nextNodesRetract);
+                collector == null ? null : collector.finisher(),
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         accumulator = collector == null ? null : collector.accumulator();
-        finisher = collector == null ? null : collector.finisher();
     }
 
     @Override

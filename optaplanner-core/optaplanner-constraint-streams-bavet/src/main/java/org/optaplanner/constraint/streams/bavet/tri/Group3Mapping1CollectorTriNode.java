@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
@@ -35,9 +34,10 @@ final class Group3Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
     public Group3Mapping1CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
             TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriFunction<OldA, OldB, OldC, C> groupKeyMappingC,
             int groupStoreIndex, TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, D> collector,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesUpdate,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, collector, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.groupKeyMappingC = groupKeyMappingC;
@@ -56,10 +56,13 @@ final class Group3Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
     }
 
     @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, Triple<A, B, C>, ResultContainer_> group) {
-        Triple<A, B, C> groupKey = group.groupKey;
-        D d = finisher.apply(group.resultContainer);
-        return new QuadTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), d, outputStoreSize);
+    protected QuadTuple<A, B, C, D> createOutTuple(Triple<A, B, C> groupKey) {
+        return new QuadTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, D d) {
+        outTuple.factD = d;
     }
 
     @Override

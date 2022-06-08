@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
@@ -35,9 +34,10 @@ final class Group3Mapping1CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
     public Group3Mapping1CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
             BiFunction<OldA, OldB, B> groupKeyMappingB, BiFunction<OldA, OldB, C> groupKeyMappingC,
             int groupStoreIndex, BiConstraintCollector<OldA, OldB, ResultContainer_, D> collector,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesUpdate,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, collector, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.groupKeyMappingC = groupKeyMappingC;
@@ -55,10 +55,13 @@ final class Group3Mapping1CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
     }
 
     @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, Triple<A, B, C>, ResultContainer_> group) {
-        Triple<A, B, C> groupKey = group.groupKey;
-        D d = finisher.apply(group.resultContainer);
-        return new QuadTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), d, outputStoreSize);
+    protected QuadTuple<A, B, C, D> createOutTuple(Triple<A, B, C> groupKey) {
+        return new QuadTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, D d) {
+        outTuple.factD = d;
     }
 
     @Override

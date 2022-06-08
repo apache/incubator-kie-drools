@@ -19,8 +19,6 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
-
 final class Group1Mapping0CollectorUniNode<OldA, A>
         extends AbstractGroupUniNode<OldA, UniTuple<A>, A, Void, Void> {
 
@@ -28,9 +26,10 @@ final class Group1Mapping0CollectorUniNode<OldA, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesUpdate,
+            Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
@@ -41,9 +40,13 @@ final class Group1Mapping0CollectorUniNode<OldA, A>
     }
 
     @Override
-    protected UniTuple<A> createOutTuple(Group<UniTuple<A>, A, Void> group) {
-        A a = group.groupKey;
+    protected UniTuple<A> createOutTuple(A a) {
         return new UniTuple<>(a, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(UniTuple<A> aUniTuple, Void unused) {
+        throw new IllegalStateException("Impossible state: collector is null.");
     }
 
     @Override

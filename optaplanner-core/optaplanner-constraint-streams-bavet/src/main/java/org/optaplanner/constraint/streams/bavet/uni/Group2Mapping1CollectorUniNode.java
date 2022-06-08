@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
@@ -33,9 +32,10 @@ final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
 
     public Group2Mapping1CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             int groupStoreIndex, UniConstraintCollector<OldA, ResultContainer_, C> collector,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesUpdate,
+            Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, collector, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.outputStoreSize = outputStoreSize;
@@ -50,10 +50,13 @@ final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, Pair<A, B>, ResultContainer_> group) {
-        Pair<A, B> groupKey = group.groupKey;
-        C c = finisher.apply(group.resultContainer);
-        return new TriTuple<>(groupKey.getKey(), groupKey.getValue(), c, outputStoreSize);
+    protected TriTuple<A, B, C> createOutTuple(Pair<A, B> groupKey) {
+        return new TriTuple<>(groupKey.getKey(), groupKey.getValue(), null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, C c) {
+        outTuple.factC = c;
     }
 
     @Override

@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.impl.util.Quadruple;
 
@@ -34,9 +33,10 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
 
     public Group4Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             Function<OldA, C> groupKeyMappingC, Function<OldA, D> groupKeyMappingD, int groupStoreIndex,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesUpdate,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.groupKeyMappingC = groupKeyMappingC;
@@ -55,9 +55,13 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
     }
 
     @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, Quadruple<A, B, C, D>, Void> group) {
-        Quadruple<A, B, C, D> key = group.groupKey;
-        return new QuadTuple<>(key.getA(), key.getB(), key.getC(), key.getD(), outputStoreSize);
+    protected QuadTuple<A, B, C, D> createOutTuple(Quadruple<A, B, C, D> groupKey) {
+        return new QuadTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), groupKey.getD(), outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Void unused) {
+        throw new IllegalStateException("Impossible state: collector is null.");
     }
 
     @Override

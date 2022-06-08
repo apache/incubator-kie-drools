@@ -251,6 +251,8 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
                 case ABORTING:
                     counter.state = BavetTupleState.DEAD;
                     break;
+                case OK:
+                case DEAD:
                 default:
                     throw new IllegalStateException("Impossible state: The dirty counter (" + counter
                             + ") has an non-dirty state (" + counter.state + ").");

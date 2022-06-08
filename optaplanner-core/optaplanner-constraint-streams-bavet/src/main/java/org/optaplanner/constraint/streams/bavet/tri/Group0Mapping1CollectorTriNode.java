@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
@@ -31,9 +30,10 @@ final class Group0Mapping1CollectorTriNode<OldA, OldB, OldC, A, ResultContainer_
 
     public Group0Mapping1CollectorTriNode(int groupStoreIndex,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, A> collector,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesUpdate,
+            Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, collector, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -43,10 +43,13 @@ final class Group0Mapping1CollectorTriNode<OldA, OldB, OldC, A, ResultContainer_
     }
 
     @Override
-    protected UniTuple<A> createOutTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
-        ResultContainer_ resultContainer = group.resultContainer;
-        A a = finisher.apply(resultContainer);
-        return new UniTuple<>(a, outputStoreSize);
+    protected UniTuple<A> createOutTuple(String groupKey) {
+        return new UniTuple<>(null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(UniTuple<A> outTuple, A a) {
+        outTuple.factA = a;
     }
 
     @Override

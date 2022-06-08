@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
@@ -33,9 +32,12 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
     public Group0Mapping2CollectorBiNode(int groupStoreIndex,
             BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
             BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            Consumer<BiTuple<A, B>> nextNodesInsert,
+            Consumer<BiTuple<A, B>> nextNodesUpdate,
+            Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorA, collectorB),
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -53,10 +55,14 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
     }
 
     @Override
-    protected BiTuple<A, B> createOutTuple(Group<BiTuple<A, B>, String, Object> group) {
-        Object resultContainer = group.resultContainer;
-        Pair<A, B> result = finisher.apply(resultContainer);
-        return new BiTuple<>(result.getKey(), result.getValue(), outputStoreSize);
+    protected BiTuple<A, B> createOutTuple(String groupKey) {
+        return new BiTuple<>(null, null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, Pair<A, B> result) {
+        outTuple.factA = result.getKey();
+        outTuple.factB = result.getValue();
     }
 
     @Override

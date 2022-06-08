@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
@@ -35,9 +34,11 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
             UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
             UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
             UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesUpdate,
+            Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC),
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -56,10 +57,15 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, String, Object> group) {
-        Object resultContainer = group.resultContainer;
-        Triple<A, B, C> result = finisher.apply(resultContainer);
-        return new TriTuple<>(result.getA(), result.getB(), result.getC(), outputStoreSize);
+    protected TriTuple<A, B, C> createOutTuple(String groupKey) {
+        return new TriTuple<>(null, null, null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Triple<A, B, C> result) {
+        outTuple.factA = result.getA();
+        outTuple.factB = result.getB();
+        outTuple.factC = result.getC();
     }
 
     @Override

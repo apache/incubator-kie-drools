@@ -21,8 +21,9 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 public final class BiTuple<A, B> implements Tuple {
 
-    public final A factA;
-    public final B factB;
+    // Only a tuple's origin node may modify a fact.
+    public A factA;
+    public B factB;
 
     public final Object[] store;
 

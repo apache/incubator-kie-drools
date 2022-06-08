@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.impl.util.Triple;
@@ -34,8 +33,9 @@ final class Group3Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C>
     public Group3Mapping0CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
             QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB, QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
             int groupStoreIndex,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesUpdate,
+            Consumer<TriTuple<A, B, C>> nextNodesRetract, int outputStoreSize) {
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.groupKeyMappingC = groupKeyMappingC;
@@ -55,9 +55,13 @@ final class Group3Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C>
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, Triple<A, B, C>, Void> group) {
-        Triple<A, B, C> key = group.groupKey;
-        return new TriTuple<>(key.getA(), key.getB(), key.getC(), outputStoreSize);
+    protected TriTuple<A, B, C> createOutTuple(Triple<A, B, C> groupKey) {
+        return new TriTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Void unused) {
+        throw new IllegalStateException("Impossible state: collector is null.");
     }
 
     @Override

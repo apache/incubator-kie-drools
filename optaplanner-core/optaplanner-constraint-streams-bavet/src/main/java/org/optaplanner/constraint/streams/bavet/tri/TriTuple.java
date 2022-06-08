@@ -21,9 +21,10 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 public final class TriTuple<A, B, C> implements Tuple {
 
-    public final A factA;
-    public final B factB;
-    public final C factC;
+    // Only a tuple's origin node may modify a fact.
+    public A factA;
+    public B factB;
+    public C factC;
 
     public final Object[] store;
 

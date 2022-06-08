@@ -21,7 +21,8 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 public final class UniTuple<A> implements Tuple {
 
-    public final A factA;
+    // Only a tuple's origin node may modify a fact.
+    public A factA;
 
     public final Object[] store;
 

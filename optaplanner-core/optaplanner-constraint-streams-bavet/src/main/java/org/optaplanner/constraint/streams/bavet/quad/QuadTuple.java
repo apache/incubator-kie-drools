@@ -21,10 +21,11 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 public final class QuadTuple<A, B, C, D> implements Tuple {
 
-    public final A factA;
-    public final B factB;
-    public final C factC;
-    public final D factD;
+    // Only a tuple's origin node may modify a fact.
+    public A factA;
+    public B factB;
+    public C factC;
+    public D factD;
 
     public final Object[] store;
 

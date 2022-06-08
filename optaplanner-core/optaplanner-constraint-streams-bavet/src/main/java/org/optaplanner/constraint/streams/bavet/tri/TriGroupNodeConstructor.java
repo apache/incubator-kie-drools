@@ -23,7 +23,8 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 @FunctionalInterface
 interface TriGroupNodeConstructor<A, B, C, Tuple_ extends Tuple> {
 
-    AbstractGroupTriNode<A, B, C, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert,
-            Consumer<Tuple_> retract, int outputStoreSize);
+    AbstractGroupTriNode<A, B, C, Tuple_, ?, ?, ?> apply(int inputStoreIndex,
+            Consumer<Tuple_> insert, Consumer<Tuple_> update, Consumer<Tuple_> retract,
+            int outputStoreSize);
 
 }

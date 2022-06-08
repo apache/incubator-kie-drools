@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
 final class Group1Mapping1CollectorBiNode<OldA, OldB, A, B, ResultContainer_>
@@ -30,9 +29,10 @@ final class Group1Mapping1CollectorBiNode<OldA, OldB, A, B, ResultContainer_>
 
     public Group1Mapping1CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
             BiConstraintCollector<OldA, OldB, ResultContainer_, B> collector,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesUpdate,
+            Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, collector, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
@@ -43,10 +43,13 @@ final class Group1Mapping1CollectorBiNode<OldA, OldB, A, B, ResultContainer_>
     }
 
     @Override
-    protected BiTuple<A, B> createOutTuple(Group<BiTuple<A, B>, A, ResultContainer_> group) {
-        A factA = group.groupKey;
-        B factB = finisher.apply(group.resultContainer);
-        return new BiTuple<>(factA, factB, outputStoreSize);
+    protected BiTuple<A, B> createOutTuple(A a) {
+        return new BiTuple<>(a, null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, B b) {
+        outTuple.factB = b;
     }
 
     @Override

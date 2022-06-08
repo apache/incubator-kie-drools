@@ -25,4 +25,5 @@ final class GroupPart<Group_> {
         this.group = group;
         this.undoAccumulator = undoAccumulator;
     }
+
 }

@@ -218,6 +218,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 outTuple.setState(BavetTupleState.UPDATING);
                 dirtyTupleQueue.add(outTuple);
                 break;
+            // Impossible because they shouldn't linger in the indexes
+            case DYING:
+            case ABORTING:
+            case DEAD:
             default:
                 throw new IllegalStateException("Impossible state: The tuple (" + outTuple.getState() + ") in node (" +
                         this + ") is in an unexpected state (" + outTuple.getState() + ").");
@@ -240,7 +244,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 // Kill the original propagation
                 outTuple.setState(BavetTupleState.DYING);
                 break;
-            // DYING and ABORTING are impossible because they shouldn't linger in the indexes.
+            // Impossible because they shouldn't linger in the indexes
+            case DYING:
+            case ABORTING:
+            case DEAD:
             default:
                 throw new IllegalStateException("Impossible state: The tuple (" + outTuple.getState() + ") in node (" +
                         this + ") is in an unexpected state (" + outTuple.getState() + ").");
@@ -266,9 +273,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 case ABORTING:
                     tuple.setState(BavetTupleState.DEAD);
                     break;
+                case OK:
                 case DEAD:
-                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                            this + ") is already in the dead state (" + tuple.getState() + ").");
                 default:
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in an unexpected state (" + tuple.getState() + ").");

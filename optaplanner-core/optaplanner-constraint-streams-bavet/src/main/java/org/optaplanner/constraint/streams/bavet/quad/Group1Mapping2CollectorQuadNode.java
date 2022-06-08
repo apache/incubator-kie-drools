@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
@@ -33,10 +32,11 @@ final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, Res
     public Group1Mapping2CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesUpdate,
+            Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, Group0Mapping2CollectorQuadNode.mergeCollectors(collectorB, collectorC), nextNodesInsert,
-                nextNodesRetract);
+        super(groupStoreIndex, Group0Mapping2CollectorQuadNode.mergeCollectors(collectorB, collectorC),
+                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
@@ -51,10 +51,14 @@ final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, Res
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, A, Object> group) {
-        A a = group.groupKey;
-        Pair<B, C> result = finisher.apply(group.resultContainer);
-        return new TriTuple<>(a, result.getKey(), result.getValue(), outputStoreSize);
+    protected TriTuple<A, B, C> createOutTuple(A a) {
+        return new TriTuple<>(a, null, null, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Pair<B, C> result) {
+        outTuple.factB = result.getKey();
+        outTuple.factC = result.getValue();
     }
 
     @Override

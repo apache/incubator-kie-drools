@@ -68,11 +68,12 @@ final class BavetQuadGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         Consumer<QuadTuple<NewA, NewB, NewC, NewD>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
+        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> update = buildHelper.getAggregatedUpdate(groupStream.getChildStreamList());
         Consumer<QuadTuple<NewA, NewB, NewC, NewD>> retract =
                 buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<QuadTuple<A, B, C, D>, QuadTuple<NewA, NewB, NewC, NewD>, ?, ?> node =
-                nodeConstructor.apply(inputStoreIndex, insert, retract, outputStoreSize);
+        AbstractGroupNode<QuadTuple<A, B, C, D>, QuadTuple<NewA, NewB, NewC, NewD>, ?, ?, ?> node =
+                nodeConstructor.apply(inputStoreIndex, insert, update, retract, outputStoreSize);
         buildHelper.addNode(node);
         buildHelper.putInsertUpdateRetract(this, node::insert, node::update, node::retract);
     }
