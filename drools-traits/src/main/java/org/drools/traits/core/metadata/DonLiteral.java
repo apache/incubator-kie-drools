@@ -22,8 +22,11 @@ import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.traits.core.util.StandaloneTraitFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class DonLiteral<K, T extends Metadatable> extends AbstractWMTask<T> implements Don<K,T> {
+    private static final Logger LOG = LoggerFactory.getLogger(DonLiteral.class);
     protected K core;
     private URI key;
     protected AbstractTraitFactory factory;
@@ -69,7 +72,7 @@ public abstract class DonLiteral<K, T extends Metadatable> extends AbstractWMTas
                 }
                 return x;
             } catch ( LogicalTypeInconsistencyException e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         } else {
             throw new UnsupportedOperationException(  );

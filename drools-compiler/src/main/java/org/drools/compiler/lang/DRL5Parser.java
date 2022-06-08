@@ -69,6 +69,8 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.util.StringUtils;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,6 +78,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class DRL5Parser extends AbstractDRLParser implements DRLParser {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DRL5Parser.class);
 
     private final DRL5Expressions exprParser;
 
@@ -1111,7 +1115,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                         requiresType ); // can never throw exception
         } catch ( RecognitionException re ) {
             System.err.println( "impossible: " + re );
-            re.printStackTrace();
+            LOG.error("Exception", re);
         }
         boolean success = !state.failed;
         input.rewind( start );
@@ -3132,7 +3136,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
             positionalConstraints( null ); // can never throw exception
         } catch ( RecognitionException re ) {
             System.err.println( "impossible: " + re );
-            re.printStackTrace();
+            LOG.error("Exception", re);
         }
         boolean success = !state.failed;
         input.rewind( start );
@@ -4113,7 +4117,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
             exprParser.fullAnnotation( null );
         } catch ( RecognitionException re ) {
             System.err.println( "impossible: " + re );
-            re.printStackTrace();
+            LOG.error("Exception", re);
         }
         boolean success = ! state.failed;
         input.rewind( start );

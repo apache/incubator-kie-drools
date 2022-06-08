@@ -107,10 +107,14 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaDialect
         implements
         Dialect {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JavaDialect.class);
 
     public static final String ID = "java";
 
@@ -464,9 +468,9 @@ public class JavaDialect
                 out = new FileOutputStream(target);
                 out.write(this.src.getBytes(aClass));
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             } finally {
                 if (out != null) try {
                     out.close();

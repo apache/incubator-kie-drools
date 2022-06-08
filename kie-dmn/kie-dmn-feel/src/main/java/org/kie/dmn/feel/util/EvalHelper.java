@@ -421,7 +421,7 @@ public class EvalHelper {
                         result = java.time.Instant.ofEpochMilli(((java.util.Date) result).getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
                     }
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    e.printStackTrace();
+                    LOG.error("Exception", e);
                     return PropertyValueResult.of(Either.ofLeft(e));
                 }
             } else {

@@ -37,9 +37,12 @@ import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MiningSegmentation {
-	private Miningmodel owner;
+    private static final Logger LOG = LoggerFactory.getLogger(MiningSegmentation.class);
+    private Miningmodel owner;
 	private String segmentationId;
 	private MULTIPLEMODELMETHOD multipleModelMethod;
 	private List<MiningSegment> miningSegments;
@@ -132,8 +135,8 @@ public class MiningSegmentation {
 					InputStream strm = res.getInputStream();
 					templates.addNamedTemplate(mmm.name(), TemplateCompiler.compileTemplate(strm));
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+                    // TODO Auto-generated catch block
+                    LOG.error("Exception", e);
 				}
 			}
 		}

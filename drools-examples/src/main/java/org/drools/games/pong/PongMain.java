@@ -19,11 +19,15 @@ import org.drools.games.invaders.FPSTimer;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PongMain {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PongMain.class);
 
     /**
      * @param args
@@ -55,7 +59,7 @@ public class PongMain {
                 try {
                     ksession.fireUntilHalt();
                 } catch ( Exception e ) {
-                    e.printStackTrace();
+                    LOG.error("Exception", e);
                 }
             }
         });

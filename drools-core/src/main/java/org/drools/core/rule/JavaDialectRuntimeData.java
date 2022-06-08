@@ -57,6 +57,8 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.utils.FastClassLoader;
 import org.kie.memorycompiler.WritableClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -65,6 +67,8 @@ public class JavaDialectRuntimeData
                                    implements
                                    DialectRuntimeData,
                                    Externalizable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JavaDialectRuntimeData.class);
 
     private static final long              serialVersionUID = 510l;
 
@@ -437,7 +441,7 @@ public class JavaDialectRuntimeData
                 }
                 this.wireList.add( resourceName );
             } catch (final Exception e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
                 throw new RuntimeException( e );
             }
         }

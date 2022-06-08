@@ -20,12 +20,16 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.PrintStream;
 
 
 public class NamedKieSessionFromFileExample {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NamedKieSessionFromFileExample.class);
 
     public void go(PrintStream out) {
         KieServices ks = KieServices.Factory.get();
@@ -53,7 +57,7 @@ public class NamedKieSessionFromFileExample {
             Class cl = kContainer.getClassLoader().loadClass("org.drools.example.api.namedkiesession.Message");
             o = cl.getConstructor(new Class[]{String.class, String.class}).newInstance(name, text);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return o;
     }

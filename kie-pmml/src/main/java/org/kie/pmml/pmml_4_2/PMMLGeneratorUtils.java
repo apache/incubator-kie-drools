@@ -18,6 +18,8 @@ package org.kie.pmml.pmml_4_2;
 
 
 import org.dmg.pmml.pmml_4_2.descr.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -27,6 +29,7 @@ import java.io.Writer;
 import java.math.BigInteger;
 
 public class PMMLGeneratorUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(PMMLGeneratorUtils.class);
 
 
 
@@ -48,7 +51,7 @@ public class PMMLGeneratorUtils {
             marshaller.marshal( pmml, out );
             return true;
         } catch ( JAXBException e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return false;
     }
@@ -59,7 +62,7 @@ public class PMMLGeneratorUtils {
             marshaller.marshal( pmml, out );
             return true;
         } catch ( JAXBException e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return false;
     }

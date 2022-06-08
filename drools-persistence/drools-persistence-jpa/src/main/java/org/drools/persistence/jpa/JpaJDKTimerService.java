@@ -124,6 +124,8 @@ public class JpaJDKTimerService extends JDKTimerService {
         implements
         ExecutableCommand<Void> {
 
+        private static final Logger LOG = LoggerFactory.getLogger(JDKCallableJobCommand.class);
+
         private static final long serialVersionUID = 4L;
 
         private JpaJDKCallableJob job;
@@ -136,7 +138,7 @@ public class JpaJDKTimerService extends JDKTimerService {
             try {
                 return job.internalCall();
             } catch ( Exception e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
             return null;
         }
