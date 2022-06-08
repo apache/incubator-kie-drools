@@ -20,6 +20,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-verifier-api</artifactId>
         </dependency>
