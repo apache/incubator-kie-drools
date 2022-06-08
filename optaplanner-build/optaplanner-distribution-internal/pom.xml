@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
-    <version>8.23.0-SNAPSHOT</version>
+    <version>8.24.0-SNAPSHOT</version>
     <relativePath>../optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
