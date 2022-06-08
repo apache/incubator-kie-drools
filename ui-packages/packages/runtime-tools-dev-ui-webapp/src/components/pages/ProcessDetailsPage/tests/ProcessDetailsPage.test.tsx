@@ -26,6 +26,11 @@ import ProcessDetailsPage from '../ProcessDetailsPage';
 import { MemoryRouter } from 'react-router-dom';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
 import { ProcessDetailsGatewayApi } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
+import * as RuntimeToolsDevUIAppContext from '../../../contexts/DevUIAppContext';
+import { User } from '@kogito-apps/consoles-common';
+import { CustomLabels } from '../../../../api/CustomLabels';
+import { UserChangeListener } from '../../../contexts/DevUIAppContext';
+import { UnSubscribeHandler } from '../../../contexts/DevUIAppContext';
 
 describe('WebApp - ProcessDetailsPage tests', () => {
   const props = {
@@ -145,6 +150,26 @@ describe('WebApp - ProcessDetailsPage tests', () => {
   jest
     .spyOn(ProcessDetailsContext, 'useProcessDetailsGatewayApi')
     .mockImplementation(() => gatewayApi);
+
+  jest
+    .spyOn(RuntimeToolsDevUIAppContext, 'useDevUIAppContext')
+    .mockImplementation(() => {
+      return {
+        isProcessEnabled: true,
+        isTracingEnabled: true,
+        getCurrentUser: jest.fn(),
+        getAllUsers: jest.fn(),
+        switchUser: jest.fn(),
+        onUserChange: jest.fn(),
+        getDevUIUrl: jest.fn(),
+        getOpenApiPath: jest.fn(),
+        omittedProcessTimelineEvents: [],
+        customLabels: {
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }
+      };
+    });
 
   beforeEach(() => {
     jest.clearAllMocks();

@@ -78,7 +78,9 @@ describe('ProcessListChildTable test', () => {
       setSelectableInstances: jest.fn(),
       onSkipClick: jest.fn(),
       onRetryClick: jest.fn(),
-      onAbortClick: jest.fn()
+      onAbortClick: jest.fn(),
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve(props.processInstances);
@@ -113,7 +115,9 @@ describe('ProcessListChildTable test', () => {
       setSelectableInstances: jest.fn(),
       onSkipClick: jest.fn(),
       onRetryClick: jest.fn(),
-      onAbortClick: jest.fn()
+      onAbortClick: jest.fn(),
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
     driverGetChildQueryMock.mockImplementation(() => {
       throw new Error('404 error');
@@ -153,7 +157,9 @@ describe('ProcessListChildTable test', () => {
       setSelectableInstances: jest.fn(),
       onSkipClick: jest.fn(),
       onRetryClick: jest.fn(),
-      onAbortClick: jest.fn()
+      onAbortClick: jest.fn(),
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve([]);
@@ -189,7 +195,9 @@ describe('ProcessListChildTable test', () => {
       setSelectableInstances: jest.fn(),
       onSkipClick: jest.fn(),
       onRetryClick: jest.fn(),
-      onAbortClick: jest.fn()
+      onAbortClick: jest.fn(),
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve(props.processInstances);
@@ -231,7 +239,9 @@ describe('ProcessListChildTable test', () => {
       setSelectableInstances: jest.fn(),
       onSkipClick: jest.fn(),
       onRetryClick: jest.fn(),
-      onAbortClick: jest.fn()
+      onAbortClick: jest.fn(),
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve(props.processInstances);

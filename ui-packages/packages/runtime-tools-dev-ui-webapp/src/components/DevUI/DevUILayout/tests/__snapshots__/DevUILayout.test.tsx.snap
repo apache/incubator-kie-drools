@@ -313,7 +313,7 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
                                 onClick={[Function]}
                                 tabIndex={null}
                               >
-                                Processes
+                                Workflows
                               </a>
                             </LinkAnchor>
                           </Link>
@@ -631,7 +631,7 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
                                 onClick={[Function]}
                                 tabIndex={null}
                               >
-                                Processes
+                                Workflows
                               </a>
                             </LinkAnchor>
                           </Link>

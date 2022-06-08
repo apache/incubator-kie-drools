@@ -58,6 +58,6 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
 
     this.ackCapturedInitRequest();
 
-    this.args.view().initialize(initArgs.initialState);
+    this.args.view().initialize(initArgs);
   };
 }

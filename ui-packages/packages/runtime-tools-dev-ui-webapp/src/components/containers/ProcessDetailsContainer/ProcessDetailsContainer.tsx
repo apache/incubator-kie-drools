@@ -21,13 +21,22 @@ import { EmbeddedProcessDetails } from '@kogito-apps/process-details';
 import { ProcessDetailsGatewayApi } from '../../../channel/ProcessDetails';
 import { useProcessDetailsGatewayApi } from '../../../channel/ProcessDetails/ProcessDetailsContext';
 import { useHistory } from 'react-router-dom';
+import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
 
 interface ProcessDetailsContainerProps {
   processInstance: ProcessInstance;
+  omittedProcessTimelineEvents: string[];
+  diagramPreviewSize?: DiagramPreviewSize;
 }
 
 const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
-  OUIAProps> = ({ processInstance, ouiaId, ouiaSafe }) => {
+  OUIAProps> = ({
+  processInstance,
+  omittedProcessTimelineEvents,
+  diagramPreviewSize,
+  ouiaId,
+  ouiaSafe
+}) => {
   const history = useHistory();
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
   useEffect(() => {
@@ -49,6 +58,8 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
       driver={gatewayApi}
       targetOrigin={'*'}
       processInstance={processInstance}
+      omittedProcessTimelineEvents={omittedProcessTimelineEvents}
+      diagramPreviewSize={diagramPreviewSize}
     />
   );
 };

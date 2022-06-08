@@ -74,7 +74,7 @@ const InlineEdit: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           <TextInput
             value={inputValue}
             type="text"
-            placeholder={'Enter buisness key'}
+            placeholder={'Enter business key'}
             onChange={setInputValue}
             aria-label="text input example"
           />

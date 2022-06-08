@@ -5,6 +5,7 @@ exports[`ProcessDefinition list toolbar tests render toolbar 1`] = `
   applyFilter={[MockFunction]}
   filterProcessNames={Array []}
   setFilterProcessNames={[MockFunction]}
+  singularProcessLabel="Workflow"
 >
   <Toolbar
     className="pf-m-toggle-group-container"
@@ -136,7 +137,7 @@ exports[`ProcessDefinition list toolbar tests render toolbar 1`] = `
                                   name="processName"
                                   onChange={[Function]}
                                   onKeyPress={[Function]}
-                                  placeholder="Filter by process name"
+                                  placeholder="Filter by workflow name"
                                   type="search"
                                   value=""
                                 >
@@ -153,7 +154,7 @@ exports[`ProcessDefinition list toolbar tests render toolbar 1`] = `
                                     onChange={[Function]}
                                     onKeyPress={[Function]}
                                     ouiaSafe={true}
-                                    placeholder="Filter by process name"
+                                    placeholder="Filter by workflow name"
                                     type="search"
                                     validated="default"
                                     value=""
@@ -172,7 +173,7 @@ exports[`ProcessDefinition list toolbar tests render toolbar 1`] = `
                                       onChange={[Function]}
                                       onFocus={[Function]}
                                       onKeyPress={[Function]}
-                                      placeholder="Filter by process name"
+                                      placeholder="Filter by workflow name"
                                       readOnly={false}
                                       required={false}
                                       type="search"

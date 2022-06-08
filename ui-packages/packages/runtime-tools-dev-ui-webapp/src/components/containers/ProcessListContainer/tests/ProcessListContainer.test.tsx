@@ -21,6 +21,9 @@ import ProcessListContainer from '../ProcessListContainer';
 import * as ProcessListContext from '../../../../channel/ProcessList/ProcessListContext';
 import { ProcessListQueries } from '../../../../channel/ProcessList/ProcessListQueries';
 import { ProcessListGatewayApiImpl } from '../../../../channel/ProcessList/ProcessListGatewayApi';
+import { MemoryRouter } from 'react-router-dom';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import { EmbeddedProcessList } from '@kogito-apps/process-list';
 
 const MockQueries = jest.fn<ProcessListQueries, []>(() => ({
   getProcessInstances: jest.fn(),
@@ -36,11 +39,25 @@ describe('ProcessListContainer tests', () => {
     initialState: {} as ProcessListState
   };
   it('Snapshot', () => {
-    const wrapper = mount(<ProcessListContainer {...props} />);
+    const wrapper = mount(
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
+      >
+        <ProcessListContainer {...props} />
+      </DevUIAppContextProvider>
+    );
 
     expect(wrapper).toMatchSnapshot();
 
-    const forwardRef = wrapper.childAt(0);
+    const forwardRef = wrapper.find(EmbeddedProcessList);
 
     expect(forwardRef.props().driver).not.toBeNull();
     expect(forwardRef.props().targetOrigin).toBe('*');

@@ -17,12 +17,12 @@
 {#include main fluid=true}
 {#style}
 .main-container {
-margin: 0;
-padding: 0;
+    margin: 0;
+    padding: 0;
 }
 #envelope-app {
-width: 100vw;
-height: calc(100vh - 98px);
+    width: 100vw;
+    height: calc(100vh - 98px);
 }
 {/style}
 {#title}Runtime UI{/title}
@@ -32,15 +32,15 @@ height: calc(100vh - 98px);
 <script src="resources/webapp/standalone.js"></script>
 <script>
     const devUI = RuntimeToolsDevUI.open({
-    container: document.getElementById("envelope-app"),
-    isProcessEnabled: {info:isProcessEnabled},
-    isTracingEnabled: {info:isTracingEnabled},
-    users: {info:userInfo.arrayRepresentation.raw},
-    dataIndexUrl: "{config:property('kogito.data-index.url') ?: 'http://localhost:8180'}/graphql",
-    trustyServiceUrl: "{config:property('kogito.trusty.http.url') ?: 'http://localhost:1336'}",
-    page: "JobsManagement",
-    devUIUrl: "http://localhost:{config:property('quarkus.http.port') or '8080'}",
-    openApiPath: "{config:property('quarkus.smallrye-openapi.path') or '/q/openapi.json'}"
+        container: document.getElementById("envelope-app"),
+        isDataIndexAvailable: {info:isProcessEnabled},
+        isTracingEnabled: {info:isTracingEnabled},
+        users: {info:userInfo.arrayRepresentation.raw},
+        dataIndexUrl: "{config:property('kogito.data-index.url') ?: 'http://localhost:8180'}/graphql",
+        trustyServiceUrl: "{config:property('kogito.trusty.http.url') ?: 'http://localhost:1336'}",
+        page: "JobsManagement",
+        devUIUrl: "http://localhost:{config:property('quarkus.http.port') or '8080'}",
+        openApiPath: "{config:property('quarkus.smallrye-openapi.path') or '/q/openapi.json'}"
     })
 </script>
 {/body}

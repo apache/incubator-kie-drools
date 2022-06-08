@@ -17,9 +17,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import ProcessesPage from '../ProcessesPage';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import * as H from 'history';
 import { act } from 'react-dom/test-utils';
+import * as RuntimeToolsDevUIAppContext from '../../../contexts/DevUIAppContext';
+import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
 jest.mock('../../../containers/ProcessListContainer/ProcessListContainer');
 jest.mock(
   '../../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer'
@@ -37,11 +39,24 @@ describe('ProcessesPage tests', () => {
     location: H.createLocation(''),
     history: H.createBrowserHistory()
   };
+
   it('Snapshot - processList page', () => {
     const wrapper = mount(
-      <BrowserRouter>
-        <ProcessesPage {...props} />
-      </BrowserRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
+      >
+        <MemoryRouter>
+          <ProcessesPage {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
 
     expect(wrapper.find(ProcessesPage)).toMatchSnapshot();
@@ -50,9 +65,21 @@ describe('ProcessesPage tests', () => {
 
   it('Snapshot - processDefinitionList page', async () => {
     const wrapper = mount(
-      <BrowserRouter>
-        <ProcessesPage {...props} />
-      </BrowserRouter>
+      <DevUIAppContextProvider
+        users={[]}
+        devUIUrl="http://devUIUrl"
+        openApiPath="http://openApiPath"
+        isProcessEnabled={true}
+        isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Process',
+          pluralProcessLabel: 'Processes'
+        }}
+      >
+        <MemoryRouter>
+          <ProcessesPage {...props} />
+        </MemoryRouter>
+      </DevUIAppContextProvider>
     );
     await act(async () => {
       wrapper

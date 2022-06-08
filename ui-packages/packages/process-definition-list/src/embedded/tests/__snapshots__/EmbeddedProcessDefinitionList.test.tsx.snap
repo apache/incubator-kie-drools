@@ -11,6 +11,7 @@ exports[`EmbeddedProcessDefinitionList tests Snapshot 1`] = `
     }
   }
   envelopePath="path"
+  singularProcessLabel="Workflow"
   targetOrigin="origin"
 >
   <ForwardRef>

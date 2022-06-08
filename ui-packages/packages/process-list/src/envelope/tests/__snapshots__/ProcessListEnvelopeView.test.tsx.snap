@@ -46,7 +46,17 @@ exports[`ProcessListEnvelopeView tests Snapshot 2`] = `
         },
       }
     }
+    initialState={
+      Object {
+        "filters": Object {
+          "status": Array [],
+        },
+        "sortBy": Object {},
+      }
+    }
     isEnvelopeConnectedToChannel={true}
+    pluralProcessLabel="Workflows"
+    singularProcessLabel="Workflow"
   />
 </ForwardRef>
 `;

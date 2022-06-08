@@ -142,6 +142,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
   }
   id="a1e139d5-4e77-48c9-84ae-34578e904e5a"
   isEnvelopeConnectedToChannel={true}
+  omittedProcessTimelineEvents={Array []}
   processDetails={
     Object {
       "addons": Array [
@@ -1252,6 +1253,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                     },
                   ]
                 }
+                omittedProcessTimelineEvents={Array []}
               />
             </div>
           </FlexItem>

@@ -40,15 +40,20 @@ import _ from 'lodash';
 import { alterOrderByObj } from '../utils/ProcessListUtils';
 
 import '../styles.css';
+
 interface ProcessListProps {
   isEnvelopeConnectedToChannel: boolean;
   driver: ProcessListDriver;
   initialState: ProcessListState;
+  singularProcessLabel: string;
+  pluralProcessLabel: string;
 }
 const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   driver,
   isEnvelopeConnectedToChannel,
   initialState,
+  singularProcessLabel,
+  pluralProcessLabel,
   ouiaId,
   ouiaSafe
 }) => {
@@ -258,6 +263,8 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
             selectableInstances={selectableInstances}
             setSelectableInstances={setSelectableInstances}
             setIsAllChecked={setIsAllChecked}
+            singularProcessLabel={singularProcessLabel}
+            pluralProcessLabel={pluralProcessLabel}
           />
           {mustShowLoadMore && (
             <LoadMore

@@ -24,10 +24,12 @@ import { ProcessDefinitionListGatewayApi } from '../../../channel/ProcessDefinit
 import { useProcessDefinitionListGatewayApi } from '../../../channel/ProcessDefinitionList/ProcessDefinitionListContext';
 import { useHistory } from 'react-router-dom';
 
-const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({
-  ouiaId,
-  ouiaSafe
-}) => {
+interface ProcessDefinitionListProps {
+  singularProcessLabel: string;
+}
+
+const ProcessDefinitionListContainer: React.FC<ProcessDefinitionListProps &
+  OUIAProps> = ({ singularProcessLabel, ouiaId, ouiaSafe }) => {
   const history = useHistory();
   const gatewayApi: ProcessDefinitionListGatewayApi = useProcessDefinitionListGatewayApi();
 
@@ -56,6 +58,7 @@ const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({
       )}
       driver={gatewayApi}
       targetOrigin={'*'}
+      singularProcessLabel={singularProcessLabel}
     />
   );
 };

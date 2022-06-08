@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import { CustomLabels } from './CustomLabels';
+import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
+
 export interface RuntimeToolsDevUIEnvelopeApi {
   runtimeToolsDevUI_initRequest(
     association: Association,
@@ -32,12 +35,16 @@ export interface User {
 }
 
 export interface RuntimeToolsDevUIInitArgs {
-  users: User[];
+  users?: User[];
   dataIndexUrl: string;
-  trustyServiceUrl: string;
+  trustyServiceUrl?: string;
   page: string;
   devUIUrl: string;
   openApiPath: string;
-  isProcessEnabled: boolean;
-  isTracingEnabled: boolean;
+  isDataIndexAvailable: boolean;
+  isTracingEnabled?: boolean;
+  availablePages?: string[];
+  customLabels: CustomLabels;
+  omittedProcessTimelineEvents?: string[];
+  diagramPreviewSize?: DiagramPreviewSize;
 }

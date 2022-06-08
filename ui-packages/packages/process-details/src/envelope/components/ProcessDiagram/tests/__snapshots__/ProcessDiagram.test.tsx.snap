@@ -11,7 +11,7 @@ exports[`ProcessDiagram component tests Snapshot testing  with default props 1`]
         headingLevel="h3"
         size="xl"
       >
-        Process Diagram
+        Diagram
       </Title>
     </CardHeader>
     <CardBody>

@@ -5,11 +5,13 @@ exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process and Tracing enabl
 exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process and Tracing enabled 2`] = `
 <ForwardRef>
   <RuntimeTools
+    availablePages={Array []}
     dataIndexUrl="http://localhost:4000"
     devUIUrl="http://localhost:8080"
     isProcessEnabled={true}
     isTracingEnabled={true}
     navigate="test"
+    omittedProcessTimelineEvents={Array []}
     openApiPath="/docs/openapi.json"
     trustyServiceUrl="http://localhost:1336"
     users={Array []}
@@ -22,11 +24,13 @@ exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process disabled, Trusty 
 exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process disabled, Trusty enabled 1`] = `
 <ForwardRef>
   <RuntimeTools
+    availablePages={Array []}
     dataIndexUrl="http://localhost:4000"
     devUIUrl=""
     isProcessEnabled={false}
     isTracingEnabled={true}
     navigate="test"
+    omittedProcessTimelineEvents={Array []}
     openApiPath=""
     trustyServiceUrl="http://localhost:8081"
     users={Array []}
@@ -37,11 +41,13 @@ exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process disabled, Trusty 
 exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process enabled, Trusty disabled 1`] = `
 <ForwardRef>
   <RuntimeTools
+    availablePages={Array []}
     dataIndexUrl="http://localhost:4000"
     devUIUrl=""
     isProcessEnabled={true}
     isTracingEnabled={false}
     navigate="test"
+    omittedProcessTimelineEvents={Array []}
     openApiPath=""
     trustyServiceUrl="http://localhost:8081"
     users={Array []}

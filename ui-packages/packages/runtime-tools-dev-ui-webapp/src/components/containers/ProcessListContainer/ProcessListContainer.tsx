@@ -24,6 +24,7 @@ import {
   ProcessInstance,
   ProcessListState
 } from '@kogito-apps/management-console-shared';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface ProcessListContainerProps {
   initialState: ProcessListState;
@@ -36,6 +37,7 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
 }) => {
   const history = useHistory();
   const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();
+  const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const unsubscriber = gatewayApi.onOpenProcessListen({
@@ -57,6 +59,8 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
       driver={gatewayApi}
       targetOrigin={'*'}
       initialState={initialState}
+      singularProcessLabel={appContext.customLabels.singularProcessLabel}
+      pluralProcessLabel={appContext.customLabels.pluralProcessLabel}
     />
   );
 };

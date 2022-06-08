@@ -163,7 +163,8 @@ const props1 = {
       nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1'
     }
   ],
-  driver
+  driver,
+  omittedProcessTimelineEvents: []
 };
 
 const props2 = {
@@ -237,7 +238,8 @@ const props2 = {
       endpoint: 'http://localhost:4000'
     }
   ],
-  driver
+  driver,
+  omittedProcessTimelineEvents: []
 };
 
 const props3 = {
@@ -311,7 +313,8 @@ const props3 = {
       endpoint: 'http://localhost:4000'
     }
   ],
-  driver
+  driver,
+  omittedProcessTimelineEvents: ['StartProcess']
 };
 
 const props4 = {
@@ -367,7 +370,8 @@ const props4 = {
     childProcessInstances: []
   },
   jobs: [],
-  driver
+  driver,
+  omittedProcessTimelineEvents: []
 };
 
 describe('ProcessDetailsTimelinePanel component tests', () => {

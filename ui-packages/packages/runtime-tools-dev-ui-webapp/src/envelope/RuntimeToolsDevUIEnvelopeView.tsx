@@ -19,6 +19,7 @@ import '@patternfly/patternfly/patternfly.css';
 import { RuntimeToolsDevUIEnvelopeViewApi } from './RuntimeToolsDevUIEnvelopeViewApi';
 import RuntimeTools from '../components/DevUI/RuntimeTools/RuntimeTools';
 import { User } from '@kogito-apps/consoles-common';
+import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
 
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
   RuntimeToolsDevUIEnvelopeViewApi
@@ -31,6 +32,15 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
   const [openApiPath, setOpenApiPath] = React.useState<string>('');
   const [isProcessEnabled, setProcessEnabled] = React.useState(false);
   const [isTracingEnabled, setTracingEnabled] = React.useState(false);
+  const [availablePages, setAvailablePages] = React.useState<string[]>([]);
+  const [customLabels, setCustomLabels] = React.useState(undefined);
+  const [
+    omittedProcessTimelineEvents,
+    setOmittedProcessTimelineEvents
+  ] = React.useState<string[]>([]);
+  const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<
+    DiagramPreviewSize
+  >();
 
   useImperativeHandle(
     forwardingRef,
@@ -59,6 +69,18 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
         },
         setTracingEnabled: isTracingEnabled => {
           setTracingEnabled(isTracingEnabled);
+        },
+        setAvailablePages: availablePages => {
+          setAvailablePages(availablePages);
+        },
+        setCustomLabels: customLabels => {
+          setCustomLabels(customLabels);
+        },
+        setOmittedProcessTimelineEvents: omittedProcessTimelineEvents => {
+          setOmittedProcessTimelineEvents(omittedProcessTimelineEvents);
+        },
+        setDiagramPreviewSize: diagramPreviewSize => {
+          setDiagramPreviewSize(diagramPreviewSize);
         }
       };
     },
@@ -76,6 +98,10 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<
           devUIUrl={devUIUrl}
           isProcessEnabled={isProcessEnabled}
           isTracingEnabled={isTracingEnabled}
+          availablePages={availablePages}
+          customLabels={customLabels}
+          omittedProcessTimelineEvents={omittedProcessTimelineEvents}
+          diagramPreviewSize={diagramPreviewSize}
         />
       )}
     </>

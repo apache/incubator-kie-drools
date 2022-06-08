@@ -29,6 +29,10 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={true}
         isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/Processes'} />
@@ -54,6 +58,10 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={true}
         isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/JobsManagement'} />
@@ -79,6 +87,10 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={true}
         isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/Forms'} />
@@ -104,6 +116,10 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={true}
         isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/Audit'} />
@@ -131,6 +147,10 @@ describe('DevUINav tests::Sections disabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={true}
         isTracingEnabled={false}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/Processes'} />
@@ -165,6 +185,10 @@ describe('DevUINav tests::Sections disabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={true}
         isTracingEnabled={false}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/JobsManagement'} />
@@ -199,6 +223,10 @@ describe('DevUINav tests::Sections disabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={true}
         isTracingEnabled={false}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/Forms'} />
@@ -233,6 +261,10 @@ describe('DevUINav tests::Sections disabled', () => {
         openApiPath="http://openApiPath"
         isProcessEnabled={false}
         isTracingEnabled={true}
+        customLabels={{
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }}
       >
         <MemoryRouter>
           <DevUINav pathname={'/Audit'} />

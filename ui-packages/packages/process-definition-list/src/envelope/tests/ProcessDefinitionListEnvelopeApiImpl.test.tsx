@@ -44,10 +44,15 @@ describe('ProcessDefinitionListEnvelopeApiImpl tests', () => {
 
     const envelopeApi = new ProcessDefinitionListEnvelopeApiImpl(args);
 
-    envelopeApi.processDefinitionList__init({
-      envelopeServerId: 'envelopeServerId',
-      origin: 'origin'
-    });
+    envelopeApi.processDefinitionList__init(
+      {
+        envelopeServerId: 'envelopeServerId',
+        origin: 'origin'
+      },
+      {
+        singularProcessLabel: 'Workflow'
+      }
+    );
 
     expect(envelopeBusController.associate).toHaveBeenCalledWith(
       'origin',

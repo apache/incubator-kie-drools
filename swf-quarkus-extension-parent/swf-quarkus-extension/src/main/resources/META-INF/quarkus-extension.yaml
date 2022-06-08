@@ -1,0 +1,9 @@
+name: Kogito Serverless Workflow Tools
+metadata:
+  keywords:
+    - "kogito"
+    - "workflows"
+  guide: "https://quarkus.io/guides/kogito"
+  categories:
+    - "business-automation"
+  status: "preview"

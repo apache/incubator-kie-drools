@@ -83,7 +83,7 @@ exports[`inline edit tests snapshot 1`] = `
         <TextInput
           aria-label="text input example"
           onChange={[Function]}
-          placeholder="Enter buisness key"
+          placeholder="Enter business key"
           type="text"
           value=""
         >
@@ -97,7 +97,7 @@ exports[`inline edit tests snapshot 1`] = `
             isRequired={false}
             onChange={[Function]}
             ouiaSafe={true}
-            placeholder="Enter buisness key"
+            placeholder="Enter business key"
             type="text"
             validated="default"
             value=""
@@ -113,7 +113,7 @@ exports[`inline edit tests snapshot 1`] = `
               onBlur={[Function]}
               onChange={[Function]}
               onFocus={[Function]}
-              placeholder="Enter buisness key"
+              placeholder="Enter business key"
               readOnly={false}
               required={false}
               type="text"

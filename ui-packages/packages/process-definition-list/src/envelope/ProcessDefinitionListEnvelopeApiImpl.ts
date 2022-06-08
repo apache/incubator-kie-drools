@@ -19,7 +19,8 @@ import { ProcessDefinitionListEnvelopeViewApi } from './ProcessDefinitionListEnv
 import {
   Association,
   ProcessDefinitionListChannelApi,
-  ProcessDefinitionListEnvelopeApi
+  ProcessDefinitionListEnvelopeApi,
+  ProcessDefinitionListInitArgs
 } from '../api';
 import { ProcessDefinitionListEnvelopeContext } from './ProcessDefinitionListEnvelopeContext';
 
@@ -47,7 +48,8 @@ export class ProcessDefinitionListEnvelopeApiImpl
   }
 
   processDefinitionList__init = async (
-    association: Association
+    association: Association,
+    initArgs: ProcessDefinitionListInitArgs
   ): Promise<void> => {
     this.args.envelopeBusController.associate(
       association.origin,
@@ -59,6 +61,6 @@ export class ProcessDefinitionListEnvelopeApiImpl
     }
 
     this.ackCapturedInitRequest();
-    this.args.view().initialize();
+    this.args.view().initialize(initArgs);
   };
 }

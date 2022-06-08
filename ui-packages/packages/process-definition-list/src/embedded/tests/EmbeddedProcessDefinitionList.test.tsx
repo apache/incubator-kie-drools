@@ -24,7 +24,8 @@ describe('EmbeddedProcessDefinitionList tests', () => {
     const props = {
       targetOrigin: 'origin',
       envelopePath: 'path',
-      driver: new MockedProcessDefinitionListDriver()
+      driver: new MockedProcessDefinitionListDriver(),
+      singularProcessLabel: 'Workflow'
     };
 
     const wrapper = mount(<EmbeddedProcessDefinitionList {...props} />);

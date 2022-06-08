@@ -101,48 +101,6 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for comple
         </SplitItem>
         <SplitItem />
       </Split>
-      <Split
-        className="kogito-process-details--timeline-item"
-        hasGutter={true}
-        key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
-      >
-        <SplitItem>
-          <Tooltip
-            content="Active"
-          >
-            <OnRunningIcon
-              className="kogito-process-details--timeline-status"
-            />
-          </Tooltip>
-        </SplitItem>
-        <SplitItem
-          isFilled={true}
-        >
-          <TextContent>
-            <Text
-              component="p"
-            >
-              StartProcess
-              <span>
-                <Tooltip
-                  content="Human task"
-                >
-                  <UserIcon
-                    className="pf-u-ml-sm"
-                    color="var(--pf-global--icon--Color--light)"
-                  />
-                </Tooltip>
-              </span>
-              <Text
-                component="small"
-              >
-                Active
-              </Text>
-            </Text>
-          </TextContent>
-        </SplitItem>
-        <SplitItem />
-      </Split>
     </Stack>
   </CardBody>
   <JobsDetailsModal
@@ -1569,6 +1527,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
     }
   }
   jobs={Array []}
+  omittedProcessTimelineEvents={Array []}
 >
   <Card
     data-ouia-component-id="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"

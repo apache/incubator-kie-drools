@@ -35,6 +35,7 @@ import ProcessListContainer from '../../containers/ProcessListContainer/ProcessL
 import '../../styles.css';
 import { ProcessListState } from '@kogito-apps/management-console-shared';
 import ProcessDefinitionListContainer from '../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface MatchProps {
   instanceID: string;
@@ -46,6 +47,8 @@ const ProcessesPage: React.FC<RouteComponentProps<
   H.LocationState
 > &
   OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+  const apiContext = useDevUIAppContext();
+
   const [activeTabKey, setActiveTabKey] = useState<ReactText>(0);
   useEffect(() => {
     return ouiaPageTypeAndObjectId('process-instances');
@@ -60,10 +63,16 @@ const ProcessesPage: React.FC<RouteComponentProps<
   return (
     <React.Fragment>
       {activeTabKey === 0 && (
-        <PageSectionHeader titleText="Process Instances" ouiaId={ouiaId} />
+        <PageSectionHeader
+          titleText={`${apiContext.customLabels.singularProcessLabel} Instances`}
+          ouiaId={ouiaId}
+        />
       )}
       {activeTabKey === 1 && (
-        <PageSectionHeader titleText="Process Definitions" ouiaId={ouiaId} />
+        <PageSectionHeader
+          titleText={`${apiContext.customLabels.singularProcessLabel} Definitions`}
+          ouiaId={ouiaId}
+        />
       )}
       <div>
         <Tabs
@@ -78,7 +87,11 @@ const ProcessesPage: React.FC<RouteComponentProps<
           <Tab
             id="process-list-tab"
             eventKey={0}
-            title={<TabTitleText>Process Instances</TabTitleText>}
+            title={
+              <TabTitleText>
+                {apiContext.customLabels.singularProcessLabel} Instances
+              </TabTitleText>
+            }
           >
             <PageSection
               {...componentOuiaProps(
@@ -92,23 +105,33 @@ const ProcessesPage: React.FC<RouteComponentProps<
               </Card>
             </PageSection>
           </Tab>
-          <Tab
-            id="process-definitions-tab"
-            eventKey={1}
-            title={<TabTitleText>Process Definitions</TabTitleText>}
-          >
-            <PageSection
-              {...componentOuiaProps(
-                ouiaId,
-                'process-definition-list-page-section',
-                ouiaSafe
-              )}
+          {apiContext.customLabels.singularProcessLabel === 'Process' && (
+            <Tab
+              id="process-definitions-tab"
+              eventKey={1}
+              title={
+                <TabTitleText>
+                  {apiContext.customLabels.singularProcessLabel} Definitions
+                </TabTitleText>
+              }
             >
-              <Card className="Dev-ui__card-size">
-                <ProcessDefinitionListContainer />
-              </Card>
-            </PageSection>
-          </Tab>
+              <PageSection
+                {...componentOuiaProps(
+                  ouiaId,
+                  'process-definition-list-page-section',
+                  ouiaSafe
+                )}
+              >
+                <Card className="Dev-ui__card-size">
+                  <ProcessDefinitionListContainer
+                    singularProcessLabel={
+                      apiContext.customLabels.singularProcessLabel
+                    }
+                  />
+                </Card>
+              </PageSection>
+            </Tab>
+          )}
         </Tabs>
       </div>
     </React.Fragment>

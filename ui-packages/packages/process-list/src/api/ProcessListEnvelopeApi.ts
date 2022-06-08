@@ -54,4 +54,6 @@ export interface ProcessListState {
 
 export interface ProcessListInitArgs {
   initialState: ProcessListState;
+  singularProcessLabel: string;
+  pluralProcessLabel: string;
 }

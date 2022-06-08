@@ -27,6 +27,7 @@ describe('ProcessDefinition list toolbar tests', () => {
         applyFilter={jest.fn()}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -39,6 +40,7 @@ describe('ProcessDefinition list toolbar tests', () => {
         applyFilter={applyFilter}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
       />
     );
     act(() => {
@@ -65,6 +67,7 @@ describe('ProcessDefinition list toolbar tests', () => {
         applyFilter={applyFilter}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
       />
     );
     act(() => {
@@ -83,6 +86,7 @@ describe('ProcessDefinition list toolbar tests', () => {
         applyFilter={applyFilter}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
       />
     );
     act(() => {
@@ -101,6 +105,7 @@ describe('ProcessDefinition list toolbar tests', () => {
         applyFilter={applyFilter}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
       />
     );
     act(() => {
@@ -128,6 +133,7 @@ describe('ProcessDefinition list toolbar tests', () => {
         applyFilter={applyFilter}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={['process1']}
+        singularProcessLabel={'Workflow'}
       />
     );
     act(() => {

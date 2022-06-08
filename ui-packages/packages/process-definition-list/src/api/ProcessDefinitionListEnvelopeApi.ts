@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-/**
- * Envelope Api
- */
 export interface ProcessDefinitionListEnvelopeApi {
-  /**
-   * Initializes the envelope.
-   * @param association
-   */
-  processDefinitionList__init(association: Association): Promise<void>;
+  processDefinitionList__init(
+    association: Association,
+    initArgs: ProcessDefinitionListInitArgs
+  ): Promise<void>;
 }
 
 export interface Association {
@@ -33,4 +29,8 @@ export interface Association {
 export interface ProcessDefinition {
   processName: string;
   endpoint: string;
+}
+
+export interface ProcessDefinitionListInitArgs {
+  singularProcessLabel: string;
 }

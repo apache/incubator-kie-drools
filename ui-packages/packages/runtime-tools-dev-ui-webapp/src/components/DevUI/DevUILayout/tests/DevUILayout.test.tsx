@@ -37,7 +37,11 @@ describe('DevUILayout tests', () => {
       devUIUrl: 'http://localhost:8080',
       openApiPath: '/docs/opeapi.json',
       isProcessEnabled: true,
-      isTracingEnabled: true
+      isTracingEnabled: true,
+      customLabels: {
+        singularProcessLabel: 'Workflow',
+        pluralProcessLabel: 'Workflows'
+      }
     };
     const wrapper = mount(
       <DevUILayout {...props}>
@@ -76,7 +80,11 @@ describe('DevUILayout tests', () => {
       devUIUrl: 'http://localhost:8080',
       openApiPath: '/docs/opeapi.json',
       isProcessEnabled: false,
-      isTracingEnabled: true
+      isTracingEnabled: true,
+      customLabels: {
+        singularProcessLabel: 'Workflow',
+        pluralProcessLabel: 'Workflows'
+      }
     };
     const wrapper = mount(
       <DevUILayout {...props}>
@@ -115,7 +123,11 @@ describe('DevUILayout tests', () => {
       devUIUrl: 'http://localhost:8080',
       openApiPath: '/docs/opeapi.json',
       isProcessEnabled: true,
-      isTracingEnabled: false
+      isTracingEnabled: false,
+      customLabels: {
+        singularProcessLabel: 'Workflow',
+        pluralProcessLabel: 'Workflows'
+      }
     };
     const wrapper = mount(
       <DevUILayout {...props}>

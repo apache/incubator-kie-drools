@@ -18,6 +18,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
   }
   isLoading={false}
   onSort={[MockFunction]}
+  pluralProcessLabel="Workflows"
   processInstances={
     Array [
       Object {
@@ -146,6 +147,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
   setProcessInstances={[MockFunction]}
   setSelectableInstances={[MockFunction]}
   setSelectedInstances={[MockFunction]}
+  singularProcessLabel="Workflow"
   sortBy={
     Object {
       "lastUpdate": "DESC",
@@ -2217,6 +2219,7 @@ exports[`ProcessListTable test snapshot test for process list - with expanded 1`
   onSkipClick={[Function]}
   ouiaId="538f9feb-5a14-4096-b791-2055b38da7c6"
   parentProcessId="538f9feb-5a14-4096-b791-2055b38da7c6"
+  pluralProcessLabel="Workflows"
   processInstances={
     Array [
       Object {
@@ -2442,5 +2445,6 @@ exports[`ProcessListTable test snapshot test for process list - with expanded 1`
     }
   }
   setSelectedInstances={[MockFunction]}
+  singularProcessLabel="Workflow"
 />
 `;

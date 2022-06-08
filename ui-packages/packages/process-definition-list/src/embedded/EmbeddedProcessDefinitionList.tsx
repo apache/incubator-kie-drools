@@ -29,6 +29,7 @@ import { init } from '../envelope';
 export interface Props {
   targetOrigin: string;
   driver: ProcessDefinitionListDriver;
+  singularProcessLabel: string;
 }
 
 export const EmbeddedProcessDefinitionList = React.forwardRef<
@@ -55,10 +56,15 @@ export const EmbeddedProcessDefinitionList = React.forwardRef<
           }
         }
       });
-      return envelopeServer.envelopeApi.requests.processDefinitionList__init({
-        origin: envelopeServer.origin,
-        envelopeServerId: envelopeServer.id
-      });
+      return envelopeServer.envelopeApi.requests.processDefinitionList__init(
+        {
+          origin: envelopeServer.origin,
+          envelopeServerId: envelopeServer.id
+        },
+        {
+          singularProcessLabel: props.singularProcessLabel
+        }
+      );
     },
     []
   );

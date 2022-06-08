@@ -39,7 +39,16 @@ describe('ProcessListEnvelopeView tests', () => {
 
     act(() => {
       if (forwardRef.current) {
-        forwardRef.current.initialize();
+        forwardRef.current.initialize({
+          initialState: {
+            filters: {
+              status: []
+            },
+            sortBy: {}
+          },
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        });
       }
       wrapper = wrapper.update();
     });

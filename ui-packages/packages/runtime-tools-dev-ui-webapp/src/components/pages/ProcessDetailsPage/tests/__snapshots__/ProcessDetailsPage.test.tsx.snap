@@ -42,7 +42,7 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
   }
 >
   <PageSectionHeader
-    titleText="Process Details"
+    titleText="Workflow Details"
   >
     <PageSection
       data-ouia-component-type="page-section-header"
@@ -55,7 +55,7 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
         data-ouia-safe={true}
       >
         <PageTitle
-          title="Process Details"
+          title="Workflow Details"
         >
           <Flex
             data-ouia-component-type="page-title"
@@ -86,7 +86,7 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
                       data-ouia-component-type="PF4/Title"
                       data-ouia-safe={true}
                     >
-                      Process Details
+                      Workflow Details
                     </h1>
                   </Title>
                 </div>

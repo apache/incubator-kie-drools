@@ -56,6 +56,8 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
       driver={gatewayApi}
       targetOrigin={window.location.origin}
       initialState={initialState}
+      singularProcessLabel={'Process'}
+      pluralProcessLabel={'Processes'}
     />
   );
 };

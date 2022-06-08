@@ -37,7 +37,7 @@ describe('ItemDescriptor component tests', () => {
     const wrapper = shallow(<ItemDescriptor itemDescription={item1} />);
     expect(wrapper).toMatchSnapshot();
   });
-  it('snapshot testing for buisness key null', () => {
+  it('snapshot testing for business key null', () => {
     const wrapper = shallow(<ItemDescriptor itemDescription={item2} />);
     expect(wrapper).toMatchSnapshot();
   });

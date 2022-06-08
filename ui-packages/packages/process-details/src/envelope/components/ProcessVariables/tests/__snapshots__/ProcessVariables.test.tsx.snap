@@ -84,7 +84,7 @@ exports[`ProcessVariables component tests snapshot testing with variables 1`] = 
               data-ouia-component-type="PF4/Title"
               data-ouia-safe={true}
             >
-              Process Variables
+              Variables
             </h3>
           </Title>
           <Label
@@ -198,7 +198,7 @@ exports[`ProcessVariables component tests snapshot testing without variables 1`]
       headingLevel="h3"
       size="xl"
     >
-      Process Variables
+      Variables
     </Title>
     <Label
       className="kogito-process-details--variables__label-fadeOut"

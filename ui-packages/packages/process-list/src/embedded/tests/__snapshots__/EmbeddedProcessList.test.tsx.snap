@@ -30,6 +30,8 @@ exports[`EmbeddedProcessList tests Snapshot 1`] = `
       },
     }
   }
+  pluralProcessLabel="Workflows"
+  singularProcessLabel="Workflow"
   targetOrigin="origin"
 >
   <ForwardRef>

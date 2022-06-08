@@ -4,6 +4,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
 <ProcessDefinitionList
   driver={MockedProcessDefinitionListDriver {}}
   isEnvelopeConnectedToChannel={true}
+  singularProcessLabel="Workflow"
 >
   <div
     data-ouia-component-type="process-definition-list"
@@ -13,6 +14,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
       applyFilter={[Function]}
       filterProcessNames={Array []}
       setFilterProcessNames={[Function]}
+      singularProcessLabel="Workflow"
     >
       <Toolbar
         className="pf-m-toggle-group-container"
@@ -144,7 +146,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
                                       name="processName"
                                       onChange={[Function]}
                                       onKeyPress={[Function]}
-                                      placeholder="Filter by process name"
+                                      placeholder="Filter by workflow name"
                                       type="search"
                                       value=""
                                     >
@@ -161,7 +163,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
                                         onChange={[Function]}
                                         onKeyPress={[Function]}
                                         ouiaSafe={true}
-                                        placeholder="Filter by process name"
+                                        placeholder="Filter by workflow name"
                                         type="search"
                                         validated="default"
                                         value=""
@@ -180,7 +182,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
                                           onChange={[Function]}
                                           onFocus={[Function]}
                                           onKeyPress={[Function]}
-                                          placeholder="Filter by process name"
+                                          placeholder="Filter by workflow name"
                                           readOnly={false}
                                           required={false}
                                           type="search"
@@ -597,7 +599,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
         <Bullseye>
           <KogitoSpinner
             ouiaId="forms-list-loading-process-definitions"
-            spinnerText="Loading process definitions..."
+            spinnerText="Loading workflow definitions..."
           />
         </Bullseye>
       }
@@ -605,7 +607,7 @@ exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] 
         Array [
           Object {
             "bodyCellTransformer": [Function],
-            "label": "Process Name",
+            "label": "Workflow Name",
             "path": "processName",
           },
           Object {

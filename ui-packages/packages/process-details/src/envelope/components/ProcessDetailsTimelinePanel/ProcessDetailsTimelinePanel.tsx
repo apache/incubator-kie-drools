@@ -68,6 +68,7 @@ export interface IOwnProps {
   >;
   driver: ProcessDetailsDriver;
   jobs: Job[];
+  omittedProcessTimelineEvents?: string[];
 }
 enum TitleType {
   SUCCESS = 'success',
@@ -77,6 +78,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   data,
   jobs,
   driver,
+  omittedProcessTimelineEvents,
   ouiaId,
   ouiaSafe
 }) => {
@@ -428,73 +430,78 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
       <CardBody>
         <Stack hasGutter className="kogito-process-details--timeline">
           {data.nodes &&
-            data.nodes.map((content, idx) => {
-              return (
-                <Split
-                  hasGutter
-                  className={'kogito-process-details--timeline-item'}
-                  key={content.id}
-                >
-                  <SplitItem>
-                    {
-                      <>
-                        {data.error &&
-                        content.definitionId === data.error.nodeDefinitionId ? (
-                          <Tooltip content={data.error.message}>
-                            <ErrorCircleOIcon
-                              color="var(--pf-global--danger-color--100)"
-                              className="kogito-process-details--timeline-status"
-                            />
-                          </Tooltip>
-                        ) : content.exit === null ? (
-                          <Tooltip content={'Active'}>
-                            <OnRunningIcon className="kogito-process-details--timeline-status" />
-                          </Tooltip>
-                        ) : (
-                          <Tooltip content={'Completed'}>
-                            <CheckCircleIcon
-                              color="var(--pf-global--success-color--100)"
-                              className="kogito-process-details--timeline-status"
-                            />
-                          </Tooltip>
-                        )}
-                      </>
-                    }
-                  </SplitItem>
-                  <SplitItem isFilled>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        {content.name}
-                        <span>
-                          {content.type === 'HumanTaskNode' && (
-                            <Tooltip content={'Human task'}>
-                              <UserIcon
-                                className="pf-u-ml-sm"
-                                color="var(--pf-global--icon--Color--light)"
+            data.nodes
+              .filter(
+                content => !omittedProcessTimelineEvents?.includes(content.name)
+              )
+              .map((content, idx) => {
+                return (
+                  <Split
+                    hasGutter
+                    className={'kogito-process-details--timeline-item'}
+                    key={content.id}
+                  >
+                    <SplitItem>
+                      {
+                        <>
+                          {data.error &&
+                          content.definitionId ===
+                            data.error.nodeDefinitionId ? (
+                            <Tooltip content={data.error.message}>
+                              <ErrorCircleOIcon
+                                color="var(--pf-global--danger-color--100)"
+                                className="kogito-process-details--timeline-status"
+                              />
+                            </Tooltip>
+                          ) : content.exit === null ? (
+                            <Tooltip content={'Active'}>
+                              <OnRunningIcon className="kogito-process-details--timeline-status" />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip content={'Completed'}>
+                              <CheckCircleIcon
+                                color="var(--pf-global--success-color--100)"
+                                className="kogito-process-details--timeline-status"
                               />
                             </Tooltip>
                           )}
-                          {renderTimerIcon(content.id)}
-                        </span>
+                        </>
+                      }
+                    </SplitItem>
+                    <SplitItem isFilled>
+                      <TextContent>
+                        <Text component={TextVariants.p}>
+                          {content.name}
+                          <span>
+                            {content.type === 'HumanTaskNode' && (
+                              <Tooltip content={'Human task'}>
+                                <UserIcon
+                                  className="pf-u-ml-sm"
+                                  color="var(--pf-global--icon--Color--light)"
+                                />
+                              </Tooltip>
+                            )}
+                            {renderTimerIcon(content.id)}
+                          </span>
 
-                        <Text component={TextVariants.small}>
-                          {content.exit === null ? (
-                            'Active'
-                          ) : (
-                            <Moment fromNow>
-                              {new Date(`${content.exit}`)}
-                            </Moment>
-                          )}
+                          <Text component={TextVariants.small}>
+                            {content.exit === null ? (
+                              'Active'
+                            ) : (
+                              <Moment fromNow>
+                                {new Date(`${content.exit}`)}
+                              </Moment>
+                            )}
+                          </Text>
                         </Text>
-                      </Text>
-                    </TextContent>
-                  </SplitItem>
-                  <SplitItem>
-                    {processManagementKebabButtons(content, idx)}
-                  </SplitItem>
-                </Split>
-              );
-            })}
+                      </TextContent>
+                    </SplitItem>
+                    <SplitItem>
+                      {processManagementKebabButtons(content, idx)}
+                    </SplitItem>
+                  </Split>
+                );
+              })}
         </Stack>
       </CardBody>
       <JobsDetailsModal

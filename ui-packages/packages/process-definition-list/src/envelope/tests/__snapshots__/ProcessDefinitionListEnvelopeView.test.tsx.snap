@@ -35,6 +35,7 @@ exports[`ProcessDefinitionListEnvelopeView tests Snapshot 2`] = `
       }
     }
     isEnvelopeConnectedToChannel={true}
+    singularProcessLabel="Workflow"
   />
 </ForwardRef>
 `;

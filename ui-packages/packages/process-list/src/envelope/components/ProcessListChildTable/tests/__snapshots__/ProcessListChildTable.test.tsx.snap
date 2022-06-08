@@ -11,8 +11,8 @@ exports[`ProcessListChildTable test error in query 1`] = `
 
 exports[`ProcessListChildTable test no results found 1`] = `
 <KogitoEmptyState
-  body="This process has no related sub processes"
-  title="No child process instances"
+  body="This workflow has no related sub workflows"
+  title="No child workflow instances"
   type={3}
 >
   <MockedComponent />
@@ -152,6 +152,7 @@ exports[`ProcessListChildTable test render table 1`] = `
   onRetryClick={[MockFunction]}
   onSkipClick={[MockFunction]}
   parentProcessId="e4448857-fa0c-403b-ad69-f0a353458b9d"
+  pluralProcessLabel="Workflows"
   processInstances={
     Array [
       Object {
@@ -336,6 +337,7 @@ exports[`ProcessListChildTable test render table 1`] = `
     }
   }
   setSelectedInstances={[MockFunction]}
+  singularProcessLabel="Workflow"
 >
   <Table
     aria-label="Process List Child Table"

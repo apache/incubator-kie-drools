@@ -77,7 +77,9 @@ const props = {
   setSelectedInstances: jest.fn(),
   selectableInstances: 0,
   setSelectableInstances: jest.fn(),
-  setIsAllChecked: jest.fn()
+  setIsAllChecked: jest.fn(),
+  singularProcessLabel: 'Workflow',
+  pluralProcessLabel: 'Workflows'
 };
 describe('ProcessListTable test', () => {
   it('initial render with data', () => {

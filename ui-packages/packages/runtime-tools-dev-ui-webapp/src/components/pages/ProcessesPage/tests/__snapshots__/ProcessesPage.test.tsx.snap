@@ -42,7 +42,7 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
   }
 >
   <PageSectionHeader
-    titleText="Process Instances"
+    titleText="Workflow Instances"
   >
     <PageSection
       data-ouia-component-type="page-section-header"
@@ -55,7 +55,7 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
         data-ouia-safe={true}
       >
         <PageTitle
-          title="Process Instances"
+          title="Workflow Instances"
         >
           <Flex
             data-ouia-component-type="page-title"
@@ -86,7 +86,7 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
                       data-ouia-component-type="PF4/Title"
                       data-ouia-safe={true}
                     >
-                      Process Instances
+                      Workflow Instances
                     </h1>
                   </Title>
                 </div>
@@ -173,7 +173,8 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
             key=".0"
             title={
               <TabTitleText>
-                Process Instances
+                Workflow
+                 Instances
               </TabTitleText>
             }
           >
@@ -183,7 +184,8 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
               innerRef={null}
               title={
                 <TabTitleText>
-                  Process Instances
+                  Workflow
+                   Instances
                 </TabTitleText>
               }
             >
@@ -208,56 +210,8 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
                       <span
                         className="pf-c-tabs__item-text"
                       >
-                        Process Instances
-                      </span>
-                    </TabTitleText>
-                  </button>
-                </TabButton>
-              </li>
-            </TabBase>
-          </Tab>
-          <Tab
-            eventKey={1}
-            id="process-definitions-tab"
-            key=".1"
-            title={
-              <TabTitleText>
-                Process Definitions
-              </TabTitleText>
-            }
-          >
-            <TabBase
-              eventKey={1}
-              id="process-definitions-tab"
-              innerRef={null}
-              title={
-                <TabTitleText>
-                  Process Definitions
-                </TabTitleText>
-              }
-            >
-              <li
-                className="pf-c-tabs__item"
-              >
-                <TabButton
-                  aria-controls="pf-tab-section-1-process-definitions-tab"
-                  className="pf-c-tabs__link"
-                  id="pf-tab-1-process-definitions-tab"
-                  onClick={[Function]}
-                >
-                  <button
-                    aria-controls="pf-tab-section-1-process-definitions-tab"
-                    className="pf-c-tabs__link"
-                    data-ouia-component-type="PF4/TabButton"
-                    data-ouia-safe={true}
-                    id="pf-tab-1-process-definitions-tab"
-                    onClick={[Function]}
-                  >
-                    <TabTitleText>
-                      <span
-                        className="pf-c-tabs__item-text"
-                      >
-                        Process Definitions
+                        Workflow
+                         Instances
                       </span>
                     </TabTitleText>
                   </button>
@@ -307,7 +261,8 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
             id="process-list-tab"
             title={
               <TabTitleText>
-                Process Instances
+                Workflow
+                 Instances
               </TabTitleText>
             }
           >
@@ -334,7 +289,8 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
               id="process-list-tab"
               title={
                 <TabTitleText>
-                  Process Instances
+                  Workflow
+                   Instances
                 </TabTitleText>
               }
             >
@@ -383,97 +339,6 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
                     id=""
                   >
                     <MockedProcessListContainer />
-                  </article>
-                </Card>
-              </section>
-            </PageSection>
-          </section>
-        </TabContentBase>
-      </ForwardRef>
-      <ForwardRef
-        activeKey={0}
-        child={
-          <Tab
-            eventKey={1}
-            id="process-definitions-tab"
-            title={
-              <TabTitleText>
-                Process Definitions
-              </TabTitleText>
-            }
-          >
-            <PageSection
-              data-ouia-component-type="process-definition-list-page-section"
-              data-ouia-safe={true}
-            >
-              <Card
-                className="Dev-ui__card-size"
-              >
-                <MockedProcessDefinitionContainer />
-              </Card>
-            </PageSection>
-          </Tab>
-        }
-        id="process-definitions-tab"
-        key="1"
-      >
-        <TabContentBase
-          activeKey={0}
-          child={
-            <Tab
-              eventKey={1}
-              id="process-definitions-tab"
-              title={
-                <TabTitleText>
-                  Process Definitions
-                </TabTitleText>
-              }
-            >
-              <PageSection
-                data-ouia-component-type="process-definition-list-page-section"
-                data-ouia-safe={true}
-              >
-                <Card
-                  className="Dev-ui__card-size"
-                >
-                  <MockedProcessDefinitionContainer />
-                </Card>
-              </PageSection>
-            </Tab>
-          }
-          id="process-definitions-tab"
-          innerRef={null}
-        >
-          <section
-            aria-labelledby="pf-tab-1-process-definitions-tab"
-            className="pf-c-tab-content pf-m-light-300"
-            data-ouia-component-type="PF4/TabContent"
-            data-ouia-safe={true}
-            hidden={true}
-            id="pf-tab-section-1-process-definitions-tab"
-            role="tabpanel"
-            tabIndex={0}
-          >
-            <PageSection
-              data-ouia-component-type="process-definition-list-page-section"
-              data-ouia-safe={true}
-            >
-              <section
-                className="pf-c-page__main-section"
-                data-ouia-component-type="process-definition-list-page-section"
-                data-ouia-safe={true}
-              >
-                <Card
-                  className="Dev-ui__card-size"
-                >
-                  <article
-                    className="pf-c-card Dev-ui__card-size"
-                    data-ouia-component-id="OUIA-Generated-Card-2"
-                    data-ouia-component-type="PF4/Card"
-                    data-ouia-safe={true}
-                    id=""
-                  >
-                    <MockedProcessDefinitionContainer />
                   </article>
                 </Card>
               </section>

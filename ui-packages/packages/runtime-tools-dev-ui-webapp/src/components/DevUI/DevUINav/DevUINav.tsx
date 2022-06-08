@@ -25,60 +25,79 @@ interface IOwnProps {
 }
 
 const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
-  const { isProcessEnabled, isTracingEnabled } = useDevUIAppContext();
+  const {
+    isProcessEnabled,
+    isTracingEnabled,
+    customLabels,
+    availablePages
+  } = useDevUIAppContext();
 
   return (
     <Nav aria-label="Nav" theme="dark">
       <NavList>
         {isProcessEnabled && (
           <>
-            <NavItem key={'processes-nav'} isActive={pathname === '/Processes'}>
-              <Link
-                to="/Processes"
-                {...ouiaAttribute('data-ouia-navigation-name', 'processes-nav')}
+            {(!availablePages || availablePages.includes('Processes')) && (
+              <NavItem
+                key={'processes-nav'}
+                isActive={pathname === '/Processes'}
               >
-                Processes
-              </Link>
-            </NavItem>
-            <NavItem
-              key={'jobs-management-nav'}
-              isActive={pathname === '/JobsManagement'}
-            >
-              <Link
-                to="/JobsManagement"
-                {...ouiaAttribute(
-                  'data-ouia-navigation-name',
-                  'jobs-management-nav'
-                )}
+                <Link
+                  to="/Processes"
+                  {...ouiaAttribute(
+                    'data-ouia-navigation-name',
+                    'processes-nav'
+                  )}
+                >
+                  {customLabels.pluralProcessLabel}
+                </Link>
+              </NavItem>
+            )}
+            {(!availablePages || availablePages.includes('Jobs')) && (
+              <NavItem
+                key={'jobs-management-nav'}
+                isActive={pathname === '/JobsManagement'}
               >
-                Jobs
-              </Link>
-            </NavItem>
-            <NavItem
-              key={'task-inbox-nav'}
-              isActive={pathname === '/TaskInbox'}
-            >
-              <Link
-                to="/TaskInbox"
-                {...ouiaAttribute(
-                  'data-ouia-navigation-name',
-                  'task-inbox-nav'
-                )}
+                <Link
+                  to="/JobsManagement"
+                  {...ouiaAttribute(
+                    'data-ouia-navigation-name',
+                    'jobs-management-nav'
+                  )}
+                >
+                  Jobs
+                </Link>
+              </NavItem>
+            )}
+            {(!availablePages || availablePages.includes('Tasks')) && (
+              <NavItem
+                key={'task-inbox-nav'}
+                isActive={pathname === '/TaskInbox'}
               >
-                Tasks
-              </Link>
-            </NavItem>
-            <NavItem key={'forms-list-nav'} isActive={pathname === '/Forms'}>
-              <Link
-                to="/Forms"
-                {...ouiaAttribute(
-                  'data-ouia-navigation-name',
-                  'forms-list-nav'
-                )}
-              >
-                Forms
-              </Link>
-            </NavItem>
+                <Link
+                  to="/TaskInbox"
+                  {...ouiaAttribute(
+                    'data-ouia-navigation-name',
+                    'task-inbox-nav'
+                  )}
+                >
+                  Tasks
+                </Link>
+              </NavItem>
+            )}
+            {(!availablePages || availablePages.includes('Forms')) && (
+              <NavItem key={'forms-list-nav'} isActive={pathname === '/Forms'}>
+                <Link
+                  to="/Forms"
+                  {...ouiaAttribute(
+                    'data-ouia-navigation-name',
+                    'forms-list-nav'
+                  )}
+                >
+                  Forms
+                </Link>
+              </NavItem>
+            )}
           </>
         )}
         {isTracingEnabled && (

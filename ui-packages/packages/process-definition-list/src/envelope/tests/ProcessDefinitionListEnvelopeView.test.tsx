@@ -42,7 +42,7 @@ describe('ProcessDefinitionListEnvelopeView tests', () => {
 
     act(() => {
       if (forwardRef.current) {
-        forwardRef.current.initialize();
+        forwardRef.current.initialize({ singularProcessLabel: 'Workflow' });
       }
     });
 

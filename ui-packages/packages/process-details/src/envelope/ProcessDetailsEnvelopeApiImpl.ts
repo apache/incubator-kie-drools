@@ -56,6 +56,6 @@ export class ProcessDetailsEnvelopeApiImpl
     }
 
     this.ackCapturedInitRequest();
-    this.args.view().initialize(initArgs.processInstance);
+    this.args.view().initialize(initArgs);
   };
 }

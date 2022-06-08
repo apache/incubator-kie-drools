@@ -16,13 +16,16 @@
 
 import React, { useImperativeHandle, useState } from 'react';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
-import { ProcessDefinitionListChannelApi } from '../api';
+import {
+  ProcessDefinitionListChannelApi,
+  ProcessDefinitionListInitArgs
+} from '../api';
 import ProcessDefinitionList from './components/ProcessDefinitionList/ProcessDefinitionList';
 import ProcessDefinitionListEnvelopeViewDriver from './ProcessDefinitionListEnvelopeViewDriver';
 import '@patternfly/patternfly/patternfly.css';
 
 export interface ProcessDefinitionListEnvelopeViewApi {
-  initialize: () => void;
+  initialize: (initArgs: ProcessDefinitionListInitArgs) => void;
 }
 
 interface Props {
@@ -37,10 +40,13 @@ export const ProcessDefinitionListEnvelopeView = React.forwardRef<
     isEnvelopeConnectedToChannel,
     setEnvelopeConnectedToChannel
   ] = useState<boolean>(false);
+  const [singularProcessLabel, setSingularProcessLabel] = useState<string>('');
+
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: () => {
+      initialize: initArgs => {
+        setSingularProcessLabel(initArgs.singularProcessLabel);
         setEnvelopeConnectedToChannel(true);
       }
     }),
@@ -52,6 +58,7 @@ export const ProcessDefinitionListEnvelopeView = React.forwardRef<
       <ProcessDefinitionList
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
         driver={new ProcessDefinitionListEnvelopeViewDriver(props.channelApi)}
+        singularProcessLabel={singularProcessLabel}
       />
     </React.Fragment>
   );

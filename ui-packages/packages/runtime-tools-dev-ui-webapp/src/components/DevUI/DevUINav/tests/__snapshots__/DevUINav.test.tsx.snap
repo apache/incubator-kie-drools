@@ -62,7 +62,7 @@ exports[`DevUINav tests::Process and Tracing enabled Snapshot testing audit inve
                     onClick={[Function]}
                     tabIndex={null}
                   >
-                    Processes
+                    Workflows
                   </a>
                 </LinkAnchor>
               </Link>
@@ -305,7 +305,7 @@ exports[`DevUINav tests::Process and Tracing enabled Snapshot testing with forms
                     onClick={[Function]}
                     tabIndex={null}
                   >
-                    Processes
+                    Workflows
                   </a>
                 </LinkAnchor>
               </Link>
@@ -548,7 +548,7 @@ exports[`DevUINav tests::Process and Tracing enabled Snapshot testing with jobs 
                     onClick={[Function]}
                     tabIndex={null}
                   >
-                    Processes
+                    Workflows
                   </a>
                 </LinkAnchor>
               </Link>
@@ -791,7 +791,7 @@ exports[`DevUINav tests::Process and Tracing enabled Snapshot testing with proce
                     onClick={[Function]}
                     tabIndex={null}
                   >
-                    Processes
+                    Workflows
                   </a>
                 </LinkAnchor>
               </Link>
@@ -1109,7 +1109,7 @@ exports[`DevUINav tests::Sections disabled Snapshot testing with forms list prop
                     onClick={[Function]}
                     tabIndex={null}
                   >
-                    Processes
+                    Workflows
                   </a>
                 </LinkAnchor>
               </Link>
@@ -1310,7 +1310,7 @@ exports[`DevUINav tests::Sections disabled Snapshot testing with jobs management
                     onClick={[Function]}
                     tabIndex={null}
                   >
-                    Processes
+                    Workflows
                   </a>
                 </LinkAnchor>
               </Link>
@@ -1511,7 +1511,7 @@ exports[`DevUINav tests::Sections disabled Snapshot testing with processes props
                     onClick={[Function]}
                     tabIndex={null}
                   >
-                    Processes
+                    Workflows
                   </a>
                 </LinkAnchor>
               </Link>

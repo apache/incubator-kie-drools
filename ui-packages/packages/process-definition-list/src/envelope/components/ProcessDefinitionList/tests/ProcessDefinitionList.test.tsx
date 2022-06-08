@@ -27,7 +27,8 @@ describe('ProcessDefinition list tests', () => {
   it('envelope not connected to channel', async () => {
     const props = {
       isEnvelopeConnectedToChannel: false,
-      driver: null
+      driver: null,
+      singularProcessLabel: 'Workflow'
     };
     let wrapper;
     await act(async () => {
@@ -43,7 +44,8 @@ describe('ProcessDefinition list tests', () => {
   it('render ProcessDefinition list - table', async () => {
     const props = {
       isEnvelopeConnectedToChannel: true,
-      driver: driver
+      driver: driver,
+      singularProcessLabel: 'Workflow'
     };
     let wrapper;
     await act(async () => {

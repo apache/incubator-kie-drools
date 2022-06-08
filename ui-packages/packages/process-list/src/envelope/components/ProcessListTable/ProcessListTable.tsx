@@ -76,6 +76,8 @@ interface ProcessListTableProps {
   selectableInstances: number;
   setSelectableInstances: React.Dispatch<React.SetStateAction<number>>;
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  singularProcessLabel: string;
+  pluralProcessLabel: string;
 }
 
 const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
@@ -91,6 +93,8 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   selectableInstances,
   setSelectableInstances,
   setIsAllChecked,
+  singularProcessLabel,
+  pluralProcessLabel,
   driver,
   ouiaId,
   ouiaSafe
@@ -313,6 +317,8 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
           selectedInstances={selectedInstances}
           setSelectedInstances={setSelectedInstances}
           setSelectableInstances={setSelectableInstances}
+          singularProcessLabel={singularProcessLabel}
+          pluralProcessLabel={pluralProcessLabel}
           driver={driver}
           onSkipClick={onSkipClick}
           onRetryClick={onRetryClick}
