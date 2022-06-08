@@ -85,10 +85,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <outputDirectory>src/main/resources</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.parent.basedir}/integration-tests-jobs-service-common/src/main/resources</directory>
+                  <directory>${common.test.resources.dir}</directory>
                   <includes>
                     <include>**/*.bpmn</include>
                   </includes>

@@ -12,16 +12,26 @@
   <name>Kogito Apps :: Integration Tests :: Jobs Service :: Quarkus :: Management</name>
   <description>Quarkus jobs service integration tests based on the Jobs Management Addon</description>
 
-  <properties>
-    <common.test.resources.skip>false</common.test.resources.skip>
-    <common.test.resources.dir>${project.parent.basedir}/../integration-tests-jobs-service-common/src/main/resources</common.test.resources.dir>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-jobs-management</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${common.test.resources.dir}</directory>
+        <includes>
+          <include>**/*.bpmn</include>
+          <include>**/*.sw.json</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 
 </project>

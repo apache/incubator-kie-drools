@@ -10,6 +10,10 @@
   <name>Kogito Apps :: Integration Tests :: Jobs Service</name>
   <packaging>pom</packaging>
 
+  <properties>
+    <common.test.resources.dir>${project.root.dir}/apps-integration-tests/integration-tests-jobs-service/integration-tests-jobs-service-common/src/main/resources</common.test.resources.dir>
+  </properties>
+
   <modules>
     <module>integration-tests-jobs-service-common</module>
     <module>integration-tests-jobs-service-common-quarkus</module>

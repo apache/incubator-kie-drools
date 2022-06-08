@@ -12,7 +12,6 @@
   <packaging>pom</packaging>
 
   <properties>
-    <common.test.resources.skip>true</common.test.resources.skip>
     <failsafe.include>**/*IT.java</failsafe.include>
   </properties>
 
@@ -88,43 +87,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <skip>${common.test.resources.skip}</skip>
-              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${common.test.resources.dir}</directory>
-                  <includes>
-                    <include>**/*.bpmn</include>
-                    <include>**/*.sw.json</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${project.basedir}/src/main/resources/org</directory>
-              <includes>
-                <include>**</include>
-              </includes>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
