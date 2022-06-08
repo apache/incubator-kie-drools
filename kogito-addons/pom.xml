@@ -29,18 +29,4 @@
     </dependencies>
   </dependencyManagement>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>deprecated</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>
