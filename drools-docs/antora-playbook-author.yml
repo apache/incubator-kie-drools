@@ -7,7 +7,7 @@ site:
 content:
   edit_url: '{web_url}/edit/main/{path}'
   sources:
-    - url: ../..
+    - url: ..
       branches: [HEAD]
       start_path: drools-docs/src
 ui:

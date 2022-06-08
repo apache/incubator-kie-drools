@@ -1,1 +1,20 @@
-!.index.adoc
+# Local files
+/target
+/local
+/build
+/node
+/node_modules
+.index.adoc
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.gitignore
+!.gitattributes
+!.htaccess
+/nbproject
+/*.ipr
+/*.iws
+/*.iml
+
+# Repository wide ignore mac DS_Store files
+.DS_Store

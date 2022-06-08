@@ -2,6 +2,8 @@
 
 https://www.drools.org/docs[www.drools.org/docs]
 
+NOTE: The instructions below are to generate Antora site manually. This drools-docs is already configured to generate Antora site with maven plugins.
+
 == Prerequisite
 
 Running Antora with Lunr extension (required to generate self-hosted search) requires Node.js v16.0.0 or above.
