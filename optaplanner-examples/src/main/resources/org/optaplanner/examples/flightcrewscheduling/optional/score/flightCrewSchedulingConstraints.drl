@@ -74,14 +74,14 @@ end
 // ############################################################################
 
 
-rule "First assignment departing from home"
+rule "First assignment not departing from home"
     when
         Employee(!isFirstAssignmentDepartingFromHome())
     then
         scoreHolder.addSoftConstraintMatch(kcontext, -1_000_000);
 end
 
-rule "Last assignment arriving at home"
+rule "Last assignment not arriving at home"
     when
         Employee(!isLastAssignmentArrivingAtHome())
     then
