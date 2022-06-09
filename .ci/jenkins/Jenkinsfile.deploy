@@ -34,7 +34,7 @@ pipeline {
     environment {
         // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
 
-        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
@@ -57,7 +57,6 @@ pipeline {
                     if (isRelease() || isCreatePr()) {
                         // Verify version is set
                         assert getProjectVersion()
-                        assert getDroolsVersion()
 
                         if (isRelease()) {
                             // Verify if on right release branch
@@ -74,7 +73,6 @@ pipeline {
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
-                        setDeployPropertyIfNeeded('drools.version', getDroolsVersion())
                     }
                 }
             }
@@ -107,7 +105,6 @@ pipeline {
             }
             steps {
                 script {
-                    maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
                     maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
 
                     mavenCleanInstallOptaPlannerParents()
@@ -294,7 +291,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
+        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], "cc @*optaplanner-team*")
     } else {
         echo 'No notification sent per configuration'
     }
@@ -524,10 +521,6 @@ String getGitAuthor() {
 
 String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
-}
-
-String getDroolsVersion() {
-    return params.DROOLS_VERSION
 }
 
 String getProjectVersion() {

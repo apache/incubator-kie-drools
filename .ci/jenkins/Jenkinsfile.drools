@@ -1,0 +1,170 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+droolsRepo = 'drools'
+optaplannerRepo = 'optaplanner'
+quickstartsRepo = 'optaplanner-quickstarts'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    environment {
+        // DROOLS_BRANCH should be defined directly into the job environment
+
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+    }
+    tools {
+        maven 'kie-maven-3.8.1'
+        jdk 'kie-jdk11'
+    }
+    options {
+        timestamps()
+        timeout(time: 360, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutDroolsRepo()
+                    checkoutOptaplannerRepo()
+                    checkoutOptaplannerQuickstartsRepo()
+                }
+            }
+        }
+        stage('Build drools') {
+            steps {
+                script {
+                    getMavenCommand(droolsRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+
+        stage('Retrieve drools snapshot version') {
+            steps {
+                script {
+                    dir(droolsRepo) {
+                        // query mvn to get the latest version
+                        env.DROOLS_VERSION = """${sh (
+                                script: 'mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout',
+                                returnStdout: true
+                            ).trim()}"""
+                        assert env.DROOLS_VERSION != ''
+                        echo "Drools version is: ${env.DROOLS_VERSION}"
+                    }
+                }
+            }
+        }
+
+        stage('Build optaplanner') {
+            steps {
+                script {
+                    getMavenCommand(optaplannerRepo)
+                        .withProperty('maven.test.failure.ignore', true)
+                        .withProperty('version.org.drools', env.DROOLS_VERSION)
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+
+        stage('Build optaplanner-quickstarts') {
+            steps {
+                script {
+                    getMavenCommand(quickstartsRepo)
+                        .withProperty('maven.test.failure.ignore', true)
+                        .withProperty('version.org.drools', env.DROOLS_VERSION)
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
+}
+
+void checkoutOptaplannerRepo() {
+    dir(optaplannerRepo) {
+        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getBuildBranch(), false))
+    }
+}
+
+void checkoutOptaplannerQuickstartsRepo() {
+    // If the PR to OptaPlanner targets the 'main' branch, we assume the branch 'development' for quickstarts.
+    String quickstartsChangeTarget = getBuildBranch() != 'main' ?: 'development'
+
+    dir(quickstartsRepo) {
+        checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))
+    }
+}
+
+void checkoutDroolsRepo() {
+    dir(droolsRepo) {
+        checkout(githubscm.resolveRepository(droolsRepo, 'kiegroup', getDroolsBranch(), false))
+    }
+}
+
+MavenCommand getMavenCommand(String directory) {
+    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
+                .withSettingsXmlId('kogito_release_settings')
+                // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
+                // https://github.com/quarkusio/quarkus/issues/23205
+                .withProperty('quarkus.bootstrap.effective-model-builder', true)
+                .inDirectory(directory)
+    if (env.BUILD_MVN_OPTS) {
+        mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
+    }
+    return mvnCmd
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getDroolsBranch() {
+    return env['DROOLS_BRANCH'] ?: 'main'
+}
+
+void cleanContainers() {
+    cloud.cleanContainersAndImages('docker')
+}

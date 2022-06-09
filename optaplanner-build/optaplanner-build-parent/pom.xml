@@ -20,7 +20,7 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.drools>8.24.0-SNAPSHOT</version.org.drools>
+    <version.org.drools>8.22.1.Beta</version.org.drools>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>

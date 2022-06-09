@@ -34,7 +34,7 @@ pipeline {
     environment {
         // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
 
-        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
@@ -54,7 +54,6 @@ pipeline {
                     if (isRelease()) {
                         // Verify version is set and if on right release branch
                         assert getProjectVersion()
-                        assert getDroolsVersion()
 
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
@@ -170,7 +169,6 @@ pipeline {
                         prepareForPR(optaplannerRepository)
                         String nextSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
 
-                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.drools', getNextMicroSnapshotVersion(getDroolsVersion()))
                         maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
 
                         String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
@@ -269,7 +267,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
+        mailer.sendMarkdownTestSummaryNotification('Promote', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], "cc @*optaplanner-team*")
     } else {
         echo 'No notification sent per configuration'
     }
@@ -328,10 +326,6 @@ boolean isRelease() {
 
 String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
-}
-
-String getDroolsVersion() {
-    return getParamOrDeployProperty('DROOLS_VERSION', 'drools.version')
 }
 
 String getNextMicroSnapshotVersion(String currentVersion) {

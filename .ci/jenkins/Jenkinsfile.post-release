@@ -31,7 +31,7 @@ pipeline {
     environment {
         // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
 
-        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
@@ -131,7 +131,7 @@ pipeline {
 }
 
 void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification('Post-release', "[${getBuildBranch()}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], 'cc @*optaplanner-team*')
+    mailer.sendMarkdownTestSummaryNotification('Post-release', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], 'cc @*optaplanner-team*')
 }
 
 //////////////////////////////////////////////////////////////////////////////
