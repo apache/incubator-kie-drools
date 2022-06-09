@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -129,13 +130,26 @@ class OrderByMoveIndexBlockingQueueTest {
         assertResult("a2", -2, queue.take());
 
         queue.startNextStep(1);
-        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.of(-1)));
-        executorService.submit(() -> queue.addUndoableMove(1, 0, 4, new DummyMove("a4")));
-        executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0"))).get();
+
+        CountDownLatch allPrecedingTasksFinished = new CountDownLatch(3);
+        executorService.submit(() -> {
+            queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.of(-1));
+            allPrecedingTasksFinished.countDown();
+        });
+        executorService.submit(() -> {
+            queue.addUndoableMove(1, 0, 4, new DummyMove("a4"));
+            allPrecedingTasksFinished.countDown();
+        });
+        executorService.submit(() -> {
+            queue.addUndoableMove(1, 1, 0, new DummyMove("b0"));
+            allPrecedingTasksFinished.countDown();
+        });
+        allPrecedingTasksFinished.await();
+
         IllegalArgumentException exception = new IllegalArgumentException();
         Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
         exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet or the next task finishes earlier
-        executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.of(-2)));
+        executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.of(-2))).get();
         assertResult("b0", false, queue.take());
         assertResult("b1", -1, queue.take());
         assertThatThrownBy(queue::take).hasCause(exception);
