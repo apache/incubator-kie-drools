@@ -30,12 +30,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.kie.api.definition.type.PropertyReactive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @PropertyReactive
 @XmlType(name = "PMML4Result")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "pmml4Result")
 public class PMML4Result {
+    private static final Logger LOG = LoggerFactory.getLogger(PMML4Result.class);
     @XmlAttribute(name="correlationId", required=true)
     private String correlationId;
     @XmlElement(name="segmentationId")
@@ -192,7 +195,7 @@ public class PMML4Result {
                         }
                     }
                 } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-                    e1.printStackTrace();
+                    LOG.error("Exception", e1);
                 }
             } else {
                 value = holder;

@@ -41,8 +41,12 @@ import org.drools.core.rule.consequence.Activation;
 import org.drools.core.base.ObjectType;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.abductive.Abductive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbductiveQuery extends QueryImpl implements Externalizable, AcceptsClassObjectType {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbductiveQuery.class);
 
     private ObjectType returnType;
     private transient Constructor cachedConstructor;
@@ -155,7 +159,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
             try {
                 findConstructor( null );
             } catch ( NoSuchMethodException e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
                 cachedConstructor = null;
                 returnType = null;
             }
@@ -224,7 +228,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
             }
             return constructor.newInstance( args );
         } catch ( Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             return null;
         }
     }
