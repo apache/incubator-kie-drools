@@ -17,12 +17,12 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.quad.BavetGroupQuadConstraintStream;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.Score;
@@ -69,15 +69,12 @@ final class BavetQuadGroupBridgeUniConstraintStream<Solution_, A, NewA, NewB, Ne
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
-        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> update = buildHelper.getAggregatedUpdate(groupStream.getChildStreamList());
-        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> retract =
-                buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
+        TupleLifecycle<QuadTuple<NewA, NewB, NewC, NewD>> tupleLifecycle =
+                buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupNode<UniTuple<A>, QuadTuple<NewA, NewB, NewC, NewD>, ?, ?, ?> node =
-                nodeConstructor.apply(inputStoreIndex, insert, update, retract, outputStoreSize);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this, node::insert, node::update, node::retract);
+                nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
+        buildHelper.addNode(node, this);
     }
 
     @Override

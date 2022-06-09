@@ -20,14 +20,15 @@ import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> extends AbstractNode {
+public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
+        extends AbstractNode
+        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     private final boolean shouldExist;
     private final Function<Right_, IndexProperties> mappingRight;
@@ -36,11 +37,8 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
     /**
      * Calls for example {@link AbstractScorer#insert(Tuple)}, and/or ...
      */
-    private final Consumer<LeftTuple_> nextNodesInsert;
-    /**
-     * Calls for example {@link AbstractScorer#retract(Tuple)}, and/or ...
-     */
-    private final Consumer<LeftTuple_> nextNodesRetract;
+    private final TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle;
+
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
 
     private final Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft;
@@ -50,20 +48,20 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
     protected AbstractIfExistsNode(boolean shouldExist,
             Function<Right_, IndexProperties> mappingRight,
             int inputStoreIndexLeft, int inputStoreIndexRight,
-            Consumer<LeftTuple_> nextNodesInsert, Consumer<LeftTuple_> nextNodesRetract,
+            TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
             Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft,
             Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight) {
         this.shouldExist = shouldExist;
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeft = inputStoreIndexLeft;
         this.inputStoreIndexRight = inputStoreIndexRight;
-        this.nextNodesInsert = nextNodesInsert;
-        this.nextNodesRetract = nextNodesRetract;
+        this.nextNodesTupleLifecycle = nextNodeTupleLifecycle;
         this.indexerLeft = indexerLeft;
         this.indexerRight = indexerRight;
         dirtyCounterQueue = new ArrayDeque<>(1000);
     }
 
+    @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         if (tupleStore[inputStoreIndexLeft] != null) {
@@ -89,12 +87,14 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
         }
     }
 
-    public void updateLeft(LeftTuple_ leftTuple) {
+    @Override
+    public final void updateLeft(LeftTuple_ leftTuple) {
         // TODO Implement actual update
         retractLeft(leftTuple);
         insertLeft(leftTuple);
     }
 
+    @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
@@ -119,12 +119,14 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
         }
     }
 
-    public void updateRight(UniTuple<Right_> rightTuple) {
+    @Override
+    public final void updateRight(UniTuple<Right_> rightTuple) {
         // TODO Implement actual update
         retractRight(rightTuple);
         insertRight(rightTuple);
     }
 
+    @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
         if (rightTuple.store[inputStoreIndexRight] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
@@ -151,6 +153,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
         });
     }
 
+    @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
         Object[] tupleStore = rightTuple.store;
         IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
@@ -236,16 +239,15 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
         dirtyCounterQueue.forEach(counter -> {
             switch (counter.state) {
                 case CREATING:
-                    nextNodesInsert.accept(counter.leftTuple);
+                    nextNodesTupleLifecycle.insert(counter.leftTuple);
                     counter.state = BavetTupleState.OK;
                     break;
                 case UPDATING:
-                    nextNodesRetract.accept(counter.leftTuple);
-                    nextNodesInsert.accept(counter.leftTuple);
+                    nextNodesTupleLifecycle.update(counter.leftTuple);
                     counter.state = BavetTupleState.OK;
                     break;
                 case DYING:
-                    nextNodesRetract.accept(counter.leftTuple);
+                    nextNodesTupleLifecycle.retract(counter.leftTuple);
                     counter.state = BavetTupleState.DEAD;
                     break;
                 case ABORTING:

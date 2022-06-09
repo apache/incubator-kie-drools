@@ -21,14 +21,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple> extends AbstractNode {
+public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple>
+        extends AbstractNode
+        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     private final Function<Right_, IndexProperties> mappingRight;
     private final int inputStoreIndexLeft;
@@ -36,34 +37,25 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     /**
      * Calls for example {@link AbstractScorer#insert(Tuple)} and/or ...
      */
-    private final Consumer<OutTuple_> nextNodesInsert;
-    /**
-     * Calls for example {@link AbstractScorer#update(Tuple)} and/or ...
-     */
-    private final Consumer<OutTuple_> nextNodesUpdate;
-    /**
-     * Calls for example {@link AbstractScorer#retract(Tuple)} and/or ...
-     */
-    private final Consumer<OutTuple_> nextNodesRetract;
+    private final TupleLifecycle<OutTuple_> nextNodesTupleLifecycle;
     private final Indexer<LeftTuple_, Map<UniTuple<Right_>, OutTuple_>> indexerLeft;
     private final Indexer<UniTuple<Right_>, Map<LeftTuple_, OutTuple_>> indexerRight;
     private final Queue<OutTuple_> dirtyTupleQueue;
 
     protected AbstractJoinNode(Function<Right_, IndexProperties> mappingRight, int inputStoreIndexLeft,
-            int inputStoreIndexRight, Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesUpdate,
-            Consumer<OutTuple_> nextNodesRetract, Indexer<LeftTuple_, Map<UniTuple<Right_>, OutTuple_>> indexerLeft,
+            int inputStoreIndexRight, TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
+            Indexer<LeftTuple_, Map<UniTuple<Right_>, OutTuple_>> indexerLeft,
             Indexer<UniTuple<Right_>, Map<LeftTuple_, OutTuple_>> indexerRight) {
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeft = inputStoreIndexLeft;
         this.inputStoreIndexRight = inputStoreIndexRight;
-        this.nextNodesInsert = nextNodesInsert;
-        this.nextNodesUpdate = nextNodesUpdate;
-        this.nextNodesRetract = nextNodesRetract;
+        this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.indexerLeft = indexerLeft;
         this.indexerRight = indexerRight;
         dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
+    @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         if (tupleStore[inputStoreIndexLeft] != null) {
@@ -88,7 +80,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
-    public void updateLeft(LeftTuple_ leftTuple) {
+    @Override
+    public final void updateLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
         if (oldIndexProperties == null) {
@@ -117,6 +110,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         }
     }
 
+    @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
@@ -132,6 +126,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         }
     }
 
+    @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
         if (rightTuple.store[inputStoreIndexRight] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
@@ -152,7 +147,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
-    public void updateRight(UniTuple<Right_> rightTuple) {
+    @Override
+    public final void updateRight(UniTuple<Right_> rightTuple) {
         IndexProperties oldIndexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
@@ -194,6 +190,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
+    @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
         IndexProperties indexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
         if (indexProperties == null) {
@@ -259,15 +256,15 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         for (OutTuple_ tuple : dirtyTupleQueue) {
             switch (tuple.getState()) {
                 case CREATING:
-                    nextNodesInsert.accept(tuple);
+                    nextNodesTupleLifecycle.insert(tuple);
                     tuple.setState(BavetTupleState.OK);
                     break;
                 case UPDATING:
-                    nextNodesUpdate.accept(tuple);
+                    nextNodesTupleLifecycle.update(tuple);
                     tuple.setState(BavetTupleState.OK);
                     break;
                 case DYING:
-                    nextNodesRetract.accept(tuple);
+                    nextNodesTupleLifecycle.retract(tuple);
                     tuple.setState(BavetTupleState.DEAD);
                     break;
                 case ABORTING:

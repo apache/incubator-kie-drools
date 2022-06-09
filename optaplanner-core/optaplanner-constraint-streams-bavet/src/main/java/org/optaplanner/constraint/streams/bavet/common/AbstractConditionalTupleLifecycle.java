@@ -17,21 +17,35 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
-public abstract class AbstractInserter<Tuple_ extends Tuple> implements Consumer<Tuple_> {
+public abstract class AbstractConditionalTupleLifecycle<Tuple_ extends Tuple>
+        implements TupleLifecycle<Tuple_> {
 
-    private final Consumer<Tuple_> insert;
+    private final TupleLifecycle<Tuple_> tupleLifecycle;
 
-    protected AbstractInserter(Consumer<Tuple_> insert) {
-        this.insert = Objects.requireNonNull(insert);
+    protected AbstractConditionalTupleLifecycle(TupleLifecycle<Tuple_> tupleLifecycle) {
+        this.tupleLifecycle = Objects.requireNonNull(tupleLifecycle);
     }
 
     @Override
-    public final void accept(Tuple_ tuple) {
+    public final void insert(Tuple_ tuple) {
         if (test(tuple)) {
-            insert.accept(tuple);
+            tupleLifecycle.insert(tuple);
         }
+    }
+
+    @Override
+    public final void update(Tuple_ tuple) {
+        if (test(tuple)) {
+            tupleLifecycle.update(tuple);
+        } else {
+            tupleLifecycle.retract(tuple);
+        }
+    }
+
+    @Override
+    public final void retract(Tuple_ tuple) {
+        tupleLifecycle.retract(tuple);
     }
 
     abstract protected boolean test(Tuple_ tuple);

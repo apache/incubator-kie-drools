@@ -18,12 +18,9 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractInserter;
-import org.optaplanner.constraint.streams.bavet.common.AbstractUpdater;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
@@ -67,37 +64,7 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         buildHelper.<UniTuple<A>> putInsertUpdateRetract(this, childStreamList,
-                insert -> new ConditionalUniInserter<>(predicate, insert),
-                (update, retract) -> new ConditionalUniUpdater<>(predicate, update, retract));
-    }
-
-    private static final class ConditionalUniInserter<A> extends AbstractInserter<UniTuple<A>> {
-        private final Predicate<A> predicate;
-
-        public ConditionalUniInserter(Predicate<A> predicate, Consumer<UniTuple<A>> insert) {
-            super(insert);
-            this.predicate = predicate;
-        }
-
-        @Override
-        protected boolean test(UniTuple<A> tuple) {
-            return predicate.test(tuple.factA);
-        }
-    }
-
-    private static final class ConditionalUniUpdater<A> extends AbstractUpdater<UniTuple<A>> {
-        private final Predicate<A> predicate;
-
-        public ConditionalUniUpdater(Predicate<A> predicate, Consumer<UniTuple<A>> update,
-                Consumer<UniTuple<A>> retract) {
-            super(update, retract);
-            this.predicate = predicate;
-        }
-
-        @Override
-        protected boolean test(UniTuple<A> tuple) {
-            return predicate.test(tuple.factA);
-        }
+                tupleLifecycle -> new ConditionalUniTupleLifecycle<>(predicate, tupleLifecycle));
     }
 
     // ************************************************************************

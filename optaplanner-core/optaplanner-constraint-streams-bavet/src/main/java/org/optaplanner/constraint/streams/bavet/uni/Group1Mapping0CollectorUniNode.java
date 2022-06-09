@@ -16,8 +16,9 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 final class Group1Mapping0CollectorUniNode<OldA, A>
         extends AbstractGroupUniNode<OldA, UniTuple<A>, A, Void, Void> {
@@ -26,10 +27,8 @@ final class Group1Mapping0CollectorUniNode<OldA, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesUpdate,
-            Consumer<UniTuple<A>> nextNodesRetract,
-            int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, null, nextNodesTupleLifecycle);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }

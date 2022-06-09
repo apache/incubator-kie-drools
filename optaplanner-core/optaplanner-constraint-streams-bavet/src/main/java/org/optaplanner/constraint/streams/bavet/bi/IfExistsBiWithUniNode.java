@@ -18,10 +18,10 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -35,12 +35,11 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTuple<
     public IfExistsBiWithUniNode(boolean shouldExist,
             BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
             int inputStoreIndexAB, int inputStoreIndexC,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            TupleLifecycle<BiTuple<A, B>> tupleLifecycle,
             Indexer<BiTuple<A, B>, Counter<BiTuple<A, B>>> indexerAB,
             Indexer<UniTuple<C>, Set<Counter<BiTuple<A, B>>>> indexerC,
             TriPredicate<A, B, C> filtering) {
-        super(shouldExist, mappingC, inputStoreIndexAB, inputStoreIndexC, nextNodesInsert, nextNodesRetract, indexerAB,
-                indexerC);
+        super(shouldExist, mappingC, inputStoreIndexAB, inputStoreIndexC, tupleLifecycle, indexerAB, indexerC);
         this.mappingAB = mappingAB;
         this.filtering = filtering;
     }

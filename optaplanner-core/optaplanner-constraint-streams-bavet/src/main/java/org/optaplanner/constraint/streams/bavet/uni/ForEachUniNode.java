@@ -20,10 +20,10 @@ import java.util.ArrayDeque;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 public final class ForEachUniNode<A> extends AbstractNode {
 
@@ -31,29 +31,16 @@ public final class ForEachUniNode<A> extends AbstractNode {
     /**
      * Calls for example {@link UniScorer#insert(UniTuple)}, and/or ...
      */
-    private final Consumer<UniTuple<A>> nextNodesInsert;
-    /**
-     * Calls for example {@link UniScorer#update(UniTuple)}, and/or ...
-     */
-    private final Consumer<UniTuple<A>> nextNodesUpdate;
-    /**
-     * Calls for example {@link UniScorer#retract(UniTuple)}, and/or ...
-     */
-    private final Consumer<UniTuple<A>> nextNodesRetract;
+    private final TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle;
     private final int outputStoreSize;
 
     private final Map<A, UniTuple<A>> tupleMap = new IdentityHashMap<>(1000);
     private final Queue<UniTuple<A>> dirtyTupleQueue;
 
     public ForEachUniNode(Class<A> forEachClass,
-            Consumer<UniTuple<A>> nextNodesInsert,
-            Consumer<UniTuple<A>> nextNodesUpdate,
-            Consumer<UniTuple<A>> nextNodesRetract,
-            int outputStoreSize) {
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
         this.forEachClass = forEachClass;
-        this.nextNodesInsert = nextNodesInsert;
-        this.nextNodesUpdate = nextNodesUpdate;
-        this.nextNodesRetract = nextNodesRetract;
+        this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.outputStoreSize = outputStoreSize;
         dirtyTupleQueue = new ArrayDeque<>(1000);
     }
@@ -104,15 +91,15 @@ public final class ForEachUniNode<A> extends AbstractNode {
         for (UniTuple<A> tuple : dirtyTupleQueue) {
             switch (tuple.state) {
                 case CREATING:
-                    nextNodesInsert.accept(tuple);
+                    nextNodesTupleLifecycle.insert(tuple);
                     tuple.state = BavetTupleState.OK;
                     break;
                 case UPDATING:
-                    nextNodesUpdate.accept(tuple);
+                    nextNodesTupleLifecycle.update(tuple);
                     tuple.state = BavetTupleState.OK;
                     break;
                 case DYING:
-                    nextNodesRetract.accept(tuple);
+                    nextNodesTupleLifecycle.retract(tuple);
                     tuple.state = BavetTupleState.DEAD;
                     break;
                 case ABORTING:

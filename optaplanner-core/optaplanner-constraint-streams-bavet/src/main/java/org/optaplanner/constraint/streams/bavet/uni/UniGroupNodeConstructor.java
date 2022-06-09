@@ -16,15 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 @FunctionalInterface
 interface UniGroupNodeConstructor<A, Tuple_ extends Tuple> {
 
-    AbstractGroupUniNode<A, Tuple_, ?, ?, ?> apply(int inputStoreIndex,
-            Consumer<Tuple_> insert, Consumer<Tuple_> update, Consumer<Tuple_> retract,
+    AbstractGroupUniNode<A, Tuple_, ?, ?, ?> apply(int inputStoreIndex, TupleLifecycle<Tuple_> tupleLifecycle,
             int outputStoreSize);
 
 }

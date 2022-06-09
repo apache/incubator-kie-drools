@@ -19,8 +19,8 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import static org.optaplanner.constraint.streams.bavet.bi.Group0Mapping3CollectorBiNode.mergeCollectors;
 
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
@@ -35,11 +35,8 @@ final class Group1Mapping3CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
             BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
             BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
             BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesUpdate,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-            int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorB, collectorC, collectorD),
-                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, mergeCollectors(collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }

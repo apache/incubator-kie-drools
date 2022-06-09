@@ -16,8 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.function.Consumer;
-
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
@@ -34,11 +33,8 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
             UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
             UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
             UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesUpdate,
-            Consumer<TriTuple<A, B, C>> nextNodesRetract,
-            int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC),
-                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

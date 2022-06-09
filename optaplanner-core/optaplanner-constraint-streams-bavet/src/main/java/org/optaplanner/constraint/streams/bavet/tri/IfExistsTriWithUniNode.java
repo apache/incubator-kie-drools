@@ -17,10 +17,10 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -35,11 +35,11 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     public IfExistsTriWithUniNode(boolean shouldExist,
             TriFunction<A, B, C, IndexProperties> mappingABC, Function<D, IndexProperties> mappingD,
             int inputStoreIndexABC, int inputStoreIndexD,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
             Indexer<TriTuple<A, B, C>, Counter<TriTuple<A, B, C>>> indexerABC,
             Indexer<UniTuple<D>, Set<Counter<TriTuple<A, B, C>>>> indexerD,
             QuadPredicate<A, B, C, D> filtering) {
-        super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesInsert, nextNodesRetract, indexerABC,
+        super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABC,
                 indexerD);
         this.mappingABC = mappingABC;
         this.filtering = filtering;

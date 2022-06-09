@@ -16,8 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.function.Consumer;
-
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.util.Quadruple;
@@ -34,10 +33,8 @@ final class Group4Mapping0CollectorTriNode<OldA, OldB, OldC, A, B, C, D>
     public Group4Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
             TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriFunction<OldA, OldB, OldC, C> groupKeyMappingC,
             TriFunction<OldA, OldB, OldC, D> groupKeyMappingD, int groupStoreIndex,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesUpdate,
-            Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
-            int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, null, nextNodesTupleLifecycle);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.groupKeyMappingC = groupKeyMappingC;

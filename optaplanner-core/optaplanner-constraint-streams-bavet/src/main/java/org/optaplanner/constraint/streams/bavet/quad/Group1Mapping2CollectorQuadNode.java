@@ -16,8 +16,7 @@
 
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import java.util.function.Consumer;
-
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
@@ -32,11 +31,9 @@ final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, Res
     public Group1Mapping2CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesUpdate,
-            Consumer<TriTuple<A, B, C>> nextNodesRetract,
-            int outputStoreSize) {
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, Group0Mapping2CollectorQuadNode.mergeCollectors(collectorB, collectorC),
-                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+                nextNodesTupleLifecycle);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }

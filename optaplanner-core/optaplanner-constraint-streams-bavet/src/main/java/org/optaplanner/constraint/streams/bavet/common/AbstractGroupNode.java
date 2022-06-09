@@ -21,12 +21,12 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractNode {
+        extends AbstractNode
+        implements TupleLifecycle<InTuple_> {
 
     private final int groupStoreIndex;
     private final Supplier<ResultContainer_> supplier;
@@ -39,35 +39,24 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     /**
      * Calls for example {@link AbstractScorer#insert(Tuple)}, and/or ...
      */
-    private final Consumer<OutTuple_> nextNodesInsert;
-    /**
-     * Calls for example {@link AbstractScorer#update(Tuple)}, and/or ...
-     */
-    private final Consumer<OutTuple_> nextNodesUpdate;
-    /**
-     * Calls for example {@link AbstractScorer#retract(Tuple)}, and/or ...
-     */
-    private final Consumer<OutTuple_> nextNodesRetract;
+    private final TupleLifecycle<OutTuple_> nextNodesTupleLifecycle;
     private final Map<GroupKey_, Group<OutTuple_, GroupKey_, ResultContainer_>> groupMap;
     private final Queue<Group<OutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
     protected AbstractGroupNode(int groupStoreIndex,
             Supplier<ResultContainer_> supplier,
             Function<ResultContainer_, Result_> finisher,
-            Consumer<OutTuple_> nextNodesInsert,
-            Consumer<OutTuple_> nextNodesUpdate,
-            Consumer<OutTuple_> nextNodesRetract) {
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
         this.groupStoreIndex = groupStoreIndex;
         this.supplier = supplier;
         this.finisher = finisher;
         this.hasCollector = supplier != null;
-        this.nextNodesInsert = nextNodesInsert;
-        this.nextNodesUpdate = nextNodesUpdate;
-        this.nextNodesRetract = nextNodesRetract;
+        this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.groupMap = new HashMap<>(1000);
         this.dirtyGroupQueue = new ArrayDeque<>(1000);
     }
 
+    @Override
     public void insert(InTuple_ tuple) {
         Object[] tupleStore = tuple.getStore();
         if (tupleStore[groupStoreIndex] != null) {
@@ -112,6 +101,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
+    @Override
     public void update(InTuple_ tuple) {
         Object[] tupleStore = tuple.getStore();
         GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> oldGroupPart =
@@ -220,6 +210,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
+    @Override
     public void retract(InTuple_ tuple) {
         Object[] tupleStore = tuple.getStore();
         GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> groupPart =
@@ -278,16 +269,16 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             switch (outTuple.getState()) {
                 case CREATING:
                     updateOutTupleToFinisher(outTuple, group.resultContainer);
-                    nextNodesInsert.accept(outTuple);
+                    nextNodesTupleLifecycle.insert(outTuple);
                     outTuple.setState(BavetTupleState.OK);
                     break;
                 case UPDATING:
                     updateOutTupleToFinisher(group.outTuple, group.resultContainer);
-                    nextNodesUpdate.accept(outTuple);
+                    nextNodesTupleLifecycle.update(outTuple);
                     outTuple.setState(BavetTupleState.OK);
                     break;
                 case DYING:
-                    nextNodesRetract.accept(outTuple);
+                    nextNodesTupleLifecycle.retract(outTuple);
                     outTuple.setState(BavetTupleState.DEAD);
                     break;
                 case ABORTING:

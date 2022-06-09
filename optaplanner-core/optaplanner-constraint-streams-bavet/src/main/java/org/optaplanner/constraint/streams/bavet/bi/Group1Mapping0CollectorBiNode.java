@@ -17,8 +17,8 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
@@ -28,10 +28,8 @@ final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesUpdate,
-            Consumer<UniTuple<A>> nextNodesRetract,
-            int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, null, nextNodesTupleLifecycle);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }

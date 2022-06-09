@@ -16,22 +16,19 @@
 
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinBridgeTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
@@ -80,21 +77,14 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
-        Consumer<QuadTuple<A, B, C, D>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<QuadTuple<A, B, C, D>> update = buildHelper.getAggregatedUpdate(childStreamList);
-        Consumer<QuadTuple<A, B, C, D>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<TriTuple<A, B, C>, Map<UniTuple<D>, QuadTuple<A, B, C, D>>> indexerABC = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<D>, Map<TriTuple<A, B, C>, QuadTuple<A, B, C, D>>> indexerD = indexerFactory.buildIndexer(false);
-        JoinQuadNode<A, B, C, D> node = new JoinQuadNode<>(
+        AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>> node = new JoinQuadNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexAB, inputStoreIndexC,
-                insert, update, retract,
-                outputStoreSize, indexerABC, indexerD);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(leftParent, node::insertLeft, node::updateLeft, node::retractLeft);
-        buildHelper.putInsertUpdateRetract(rightParent, node::insertRight, node::updateRight, node::retractRight);
+                buildHelper.getAggregatedTupleLifecycle(childStreamList),
+                outputStoreSize, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        buildHelper.addNode(node, leftParent, rightParent);
     }
 
     // ************************************************************************

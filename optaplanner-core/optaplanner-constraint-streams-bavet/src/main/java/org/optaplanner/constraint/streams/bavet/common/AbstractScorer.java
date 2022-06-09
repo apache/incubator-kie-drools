@@ -20,7 +20,7 @@ import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-public abstract class AbstractScorer<Tuple_ extends Tuple> {
+public abstract class AbstractScorer<Tuple_ extends Tuple> implements TupleLifecycle<Tuple_> {
 
     private final String constraintId;
     private final Score<?> constraintWeight;
@@ -33,6 +33,7 @@ public abstract class AbstractScorer<Tuple_ extends Tuple> {
         this.inputStoreIndex = inputStoreIndex;
     }
 
+    @Override
     public final void insert(Tuple_ tuple) {
         Object[] tupleStore = tuple.getStore();
         if (tupleStore[inputStoreIndex] != null) {
@@ -42,6 +43,7 @@ public abstract class AbstractScorer<Tuple_ extends Tuple> {
         tupleStore[inputStoreIndex] = impact(tuple);
     }
 
+    @Override
     public final void update(Tuple_ tuple) {
         Object[] tupleStore = tuple.getStore();
         UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleStore[inputStoreIndex];
@@ -54,6 +56,7 @@ public abstract class AbstractScorer<Tuple_ extends Tuple> {
 
     protected abstract UndoScoreImpacter impact(Tuple_ tuple);
 
+    @Override
     public final void retract(Tuple_ tuple) {
         Object[] tupleStore = tuple.getStore();
         UndoScoreImpacter undoScoreImpacter = (UndoScoreImpacter) tupleStore[inputStoreIndex];

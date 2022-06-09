@@ -150,7 +150,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
         }
         UniScorer<A> scorer = new UniScorer<>(constraint.getConstraintPackage(), constraint.getConstraintName(),
                 constraintWeight, scoreImpacter, buildHelper.reserveTupleStoreIndex(parent.getTupleSource()));
-        buildHelper.putInsertUpdateRetract(this, scorer::insert, scorer::update, scorer::retract);
+        buildHelper.putInsertUpdateRetract(this, scorer);
     }
 
     // ************************************************************************

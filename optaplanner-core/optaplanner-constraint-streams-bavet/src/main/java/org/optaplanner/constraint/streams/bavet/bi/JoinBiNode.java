@@ -17,10 +17,10 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -32,15 +32,11 @@ final class JoinBiNode<A, B> extends AbstractJoinNode<UniTuple<A>, B, BiTuple<A,
 
     public JoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
-            Consumer<BiTuple<A, B>> nextNodesInsert,
-            Consumer<BiTuple<A, B>> nextNodesUpdate,
-            Consumer<BiTuple<A, B>> nextNodesRetract,
+            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle,
             int outputStoreSize,
             Indexer<UniTuple<A>, Map<UniTuple<B>, BiTuple<A, B>>> indexerA,
             Indexer<UniTuple<B>, Map<UniTuple<A>, BiTuple<A, B>>> indexerB) {
-        super(mappingB, inputStoreIndexA, inputStoreIndexB,
-                nextNodesInsert, nextNodesUpdate, nextNodesRetract,
-                indexerA, indexerB);
+        super(mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesTupleLifecycle, indexerA, indexerB);
         this.mappingA = mappingA;
         this.outputStoreSize = outputStoreSize;
     }

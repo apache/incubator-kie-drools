@@ -18,11 +18,11 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -34,15 +34,11 @@ final class JoinTriNode<A, B, C> extends AbstractJoinNode<BiTuple<A, B>, C, TriT
 
     public JoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
             int inputStoreIndexAB, int inputStoreIndexC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert,
-            Consumer<TriTuple<A, B, C>> nextNodesUpdate,
-            Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
             int outputStoreSize,
             Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB,
             Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC) {
-        super(mappingC, inputStoreIndexAB, inputStoreIndexC,
-                nextNodesInsert, nextNodesUpdate, nextNodesRetract,
-                indexerAB, indexerC);
+        super(mappingC, inputStoreIndexAB, inputStoreIndexC, nextNodesTupleLifecycle, indexerAB, indexerC);
         this.mappingAB = mappingAB;
         this.outputStoreSize = outputStoreSize;
     }

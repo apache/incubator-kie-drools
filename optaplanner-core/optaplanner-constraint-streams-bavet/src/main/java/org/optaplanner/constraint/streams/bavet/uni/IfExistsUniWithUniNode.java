@@ -18,10 +18,10 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 
@@ -33,10 +33,10 @@ final class IfExistsUniWithUniNode<A, B> extends AbstractIfExistsNode<UniTuple<A
     public IfExistsUniWithUniNode(boolean shouldExist,
             Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
-            Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle,
             Indexer<UniTuple<A>, Counter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>, Set<Counter<UniTuple<A>>>> indexerB,
             BiPredicate<A, B> filtering) {
-        super(shouldExist, mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesInsert, nextNodesRetract, indexerA, indexerB);
+        super(shouldExist, mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesTupleLifecycle, indexerA, indexerB);
         this.mappingA = mappingA;
         this.filtering = filtering;
     }

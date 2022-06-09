@@ -16,22 +16,19 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBridgeBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
@@ -80,21 +77,14 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
-        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<TriTuple<A, B, C>> update = buildHelper.getAggregatedUpdate(childStreamList);
-        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
-        JoinTriNode<A, B, C> node = new JoinTriNode<>(
+        AbstractJoinNode<BiTuple<A, B>, C, TriTuple<A, B, C>> node = new JoinTriNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexAB, inputStoreIndexC,
-                insert, update, retract,
-                outputStoreSize, indexerAB, indexerC);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(leftParent, node::insertLeft, node::updateLeft, node::retractLeft);
-        buildHelper.putInsertUpdateRetract(rightParent, node::insertRight, node::updateRight, node::retractRight);
+                buildHelper.getAggregatedTupleLifecycle(childStreamList),
+                outputStoreSize, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        buildHelper.addNode(node, leftParent, rightParent);
     }
 
     // ************************************************************************

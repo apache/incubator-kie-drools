@@ -17,12 +17,12 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -67,14 +67,12 @@ final class BavetUniGroupBridgeUniConstraintStream<Solution_, A, NewA>
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        Consumer<UniTuple<NewA>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
-        Consumer<UniTuple<NewA>> update = buildHelper.getAggregatedUpdate(groupStream.getChildStreamList());
-        Consumer<UniTuple<NewA>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
+        TupleLifecycle<UniTuple<NewA>> tupleLifecycle =
+                buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<UniTuple<A>, UniTuple<NewA>, ?, ?, ?> node = nodeConstructor.apply(inputStoreIndex,
-                insert, update, retract, outputStoreSize);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this, node::insert, node::update, node::retract);
+        AbstractGroupNode<UniTuple<A>, UniTuple<NewA>, ?, ?, ?> node =
+                nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
+        buildHelper.addNode(node, this);
     }
 
     @Override

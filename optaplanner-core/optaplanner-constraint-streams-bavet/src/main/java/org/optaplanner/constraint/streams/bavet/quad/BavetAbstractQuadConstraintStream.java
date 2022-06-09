@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.quad;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
@@ -163,11 +162,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         QuadGroupNodeConstructor<A, B, C, D, UniTuple<Result_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<UniTuple<Result_>> insert,
-                        Consumer<UniTuple<Result_>> update,
-                        Consumer<UniTuple<Result_>> retract,
-                        int outputStoreSize) -> new Group0Mapping1CollectorQuadNode<>(inputStoreIndex, collector,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping1CollectorQuadNode<>(inputStoreIndex,
+                        collector, tupleLifecycle, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
 
@@ -185,11 +181,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadConstraintCollector<A, B, C, D, ResultContainerA_, ResultA_> collectorA,
             QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB) {
         QuadGroupNodeConstructor<A, B, C, D, BiTuple<ResultA_, ResultB_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<BiTuple<ResultA_, ResultB_>> insert,
-                        Consumer<BiTuple<ResultA_, ResultB_>> update,
-                        Consumer<BiTuple<ResultA_, ResultB_>> retract,
-                        int outputStoreSize) -> new Group0Mapping2CollectorQuadNode<>(inputStoreIndex, collectorA, collectorB,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping2CollectorQuadNode<>(inputStoreIndex,
+                        collectorA, collectorB, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -209,11 +202,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC) {
         QuadGroupNodeConstructor<A, B, C, D, TriTuple<ResultA_, ResultB_, ResultC_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> insert,
-                        Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> update,
-                        Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> retract,
-                        int outputStoreSize) -> new Group0Mapping3CollectorQuadNode<>(inputStoreIndex, collectorA, collectorB,
-                                collectorC, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping3CollectorQuadNode<>(inputStoreIndex,
+                        collectorA, collectorB, collectorC, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -234,11 +224,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
         QuadGroupNodeConstructor<A, B, C, D, QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> insert,
-                        Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> update,
-                        Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group0Mapping4CollectorQuadNode<>(inputStoreIndex, collectorA, collectorB,
-                                collectorC, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping4CollectorQuadNode<>(inputStoreIndex,
+                        collectorA, collectorB, collectorC, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -254,11 +241,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping) {
         QuadGroupNodeConstructor<A, B, C, D, UniTuple<GroupKey_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<UniTuple<GroupKey_>> insert,
-                        Consumer<UniTuple<GroupKey_>> update,
-                        Consumer<UniTuple<GroupKey_>> retract,
-                        int outputStoreSize) -> new Group1Mapping0CollectorQuadNode<>(groupKeyMapping, inputStoreIndex,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping0CollectorQuadNode<>(groupKeyMapping,
+                        inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
 
@@ -268,11 +252,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC) {
         QuadGroupNodeConstructor<A, B, C, D, TriTuple<GroupKey_, ResultB_, ResultC_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> insert,
-                        Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> update,
-                        Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> retract,
-                        int outputStoreSize) -> new Group1Mapping2CollectorQuadNode<>(groupKeyMapping, inputStoreIndex,
-                                collectorB, collectorC, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping2CollectorQuadNode<>(groupKeyMapping,
+                        inputStoreIndex, collectorB, collectorC, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -284,11 +265,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
         QuadGroupNodeConstructor<A, B, C, D, QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> insert,
-                        Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> update,
-                        Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group1Mapping3CollectorQuadNode<>(groupKeyMapping, inputStoreIndex,
-                                collectorB, collectorC, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping3CollectorQuadNode<>(groupKeyMapping,
+                        inputStoreIndex, collectorB, collectorC, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -297,11 +275,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         QuadGroupNodeConstructor<A, B, C, D, BiTuple<GroupKey_, Result_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<BiTuple<GroupKey_, Result_>> insert,
-                        Consumer<BiTuple<GroupKey_, Result_>> update,
-                        Consumer<BiTuple<GroupKey_, Result_>> retract,
-                        int outputStoreSize) -> new Group1Mapping1CollectorQuadNode<>(groupKeyMapping, inputStoreIndex,
-                                collector, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping1CollectorQuadNode<>(groupKeyMapping,
+                        inputStoreIndex, collector, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -310,12 +285,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping) {
         QuadGroupNodeConstructor<A, B, C, D, BiTuple<GroupKeyA_, GroupKeyB_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> insert,
-                        Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> update,
-                        Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> retract,
-                        int outputStoreSize) -> new Group2Mapping0CollectorQuadNode<>(groupKeyAMapping, groupKeyBMapping,
-                                inputStoreIndex,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping0CollectorQuadNode<>(groupKeyAMapping,
+                        groupKeyBMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -325,11 +296,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
         QuadGroupNodeConstructor<A, B, C, D, TriTuple<GroupKeyA_, GroupKeyB_, Result_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> insert,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> update,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> retract,
-                        int outputStoreSize) -> new Group2Mapping1CollectorQuadNode<>(groupKeyAMapping, groupKeyBMapping,
-                                inputStoreIndex, collector, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping1CollectorQuadNode<>(groupKeyAMapping,
+                        groupKeyBMapping, inputStoreIndex, collector, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -341,11 +309,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
         QuadGroupNodeConstructor<A, B, C, D, QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> insert,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> update,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group2Mapping2CollectorQuadNode<>(groupKeyAMapping, groupKeyBMapping,
-                                inputStoreIndex, collectorC, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping2CollectorQuadNode<>(groupKeyAMapping,
+                        groupKeyBMapping, inputStoreIndex, collectorC, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -354,12 +319,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping, QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
             QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping) {
         QuadGroupNodeConstructor<A, B, C, D, TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> insert,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> update,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> retract,
-                        int outputStoreSize) -> new Group3Mapping0CollectorQuadNode<>(groupKeyAMapping, groupKeyBMapping,
-                                groupKeyCMapping,
-                                inputStoreIndex, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping0CollectorQuadNode<>(groupKeyAMapping,
+                        groupKeyBMapping, groupKeyCMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -371,11 +332,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
         QuadGroupNodeConstructor<A, B, C, D, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> insert,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> update,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group3Mapping1CollectorQuadNode<>(groupKeyAMapping, groupKeyBMapping,
-                                groupKeyCMapping, inputStoreIndex, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping1CollectorQuadNode<>(groupKeyAMapping,
+                        groupKeyBMapping, groupKeyCMapping, inputStoreIndex, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -386,11 +344,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping,
                     QuadFunction<A, B, C, D, GroupKeyD_> groupKeyDMapping) {
         QuadGroupNodeConstructor<A, B, C, D, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> insert,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> update,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> retract,
-                        int outputStoreSize) -> new Group4Mapping0CollectorQuadNode<>(groupKeyAMapping, groupKeyBMapping,
-                                groupKeyCMapping, groupKeyDMapping, inputStoreIndex, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group4Mapping0CollectorQuadNode<>(groupKeyAMapping,
+                        groupKeyBMapping, groupKeyCMapping, groupKeyDMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 

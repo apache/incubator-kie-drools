@@ -16,9 +16,8 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
@@ -33,10 +32,8 @@ final class Group0Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, ResultContain
     public Group0Mapping2CollectorTriNode(int groupStoreIndex,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerA_, A> collectorA,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesUpdate,
-            Consumer<BiTuple<A, B>> nextNodesRetract,
-            int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

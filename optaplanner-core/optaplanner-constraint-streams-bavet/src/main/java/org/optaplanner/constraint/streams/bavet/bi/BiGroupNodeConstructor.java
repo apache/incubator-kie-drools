@@ -16,15 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 @FunctionalInterface
 interface BiGroupNodeConstructor<A, B, Tuple_ extends Tuple> {
 
-    AbstractGroupBiNode<A, B, Tuple_, ?, ?, ?> apply(int inputStoreIndex,
-            Consumer<Tuple_> insert, Consumer<Tuple_> update, Consumer<Tuple_> retract,
+    AbstractGroupBiNode<A, B, Tuple_, ?, ?, ?> apply(int inputStoreIndex, TupleLifecycle<Tuple_> tupleLifecycle,
             int outputStoreSize);
 
 }

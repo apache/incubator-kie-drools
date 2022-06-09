@@ -18,11 +18,8 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractInserter;
-import org.optaplanner.constraint.streams.bavet.common.AbstractUpdater;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -69,37 +66,7 @@ public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         buildHelper.<QuadTuple<A, B, C, D>> putInsertUpdateRetract(this, childStreamList,
-                insert -> new ConditionalQuadInserter<>(predicate, insert),
-                (update, retract) -> new ConditionalQuadUpdater<>(predicate, update, retract));
-    }
-
-    private static final class ConditionalQuadInserter<A, B, C, D> extends AbstractInserter<QuadTuple<A, B, C, D>> {
-        private final QuadPredicate<A, B, C, D> predicate;
-
-        public ConditionalQuadInserter(QuadPredicate<A, B, C, D> predicate, Consumer<QuadTuple<A, B, C, D>> insert) {
-            super(insert);
-            this.predicate = predicate;
-        }
-
-        @Override
-        protected boolean test(QuadTuple<A, B, C, D> tuple) {
-            return predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
-        }
-    }
-
-    private static final class ConditionalQuadUpdater<A, B, C, D> extends AbstractUpdater<QuadTuple<A, B, C, D>> {
-        private final QuadPredicate<A, B, C, D> predicate;
-
-        public ConditionalQuadUpdater(QuadPredicate<A, B, C, D> predicate, Consumer<QuadTuple<A, B, C, D>> update,
-                Consumer<QuadTuple<A, B, C, D>> retract) {
-            super(update, retract);
-            this.predicate = predicate;
-        }
-
-        @Override
-        protected boolean test(QuadTuple<A, B, C, D> tuple) {
-            return predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
-        }
+                tupleLifecycle -> new ConditionalQuadTupleLifecycle<>(predicate, tupleLifecycle));
     }
 
     // ************************************************************************

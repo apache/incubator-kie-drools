@@ -16,10 +16,9 @@
 
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
@@ -30,13 +29,11 @@ abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends T
 
     protected AbstractGroupQuadNode(int groupStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, Result_> collector,
-            Consumer<OutTuple_> nextNodesInsert,
-            Consumer<OutTuple_> nextNodesUpdate,
-            Consumer<OutTuple_> nextNodesRetract) {
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
         super(groupStoreIndex,
                 collector == null ? null : collector.supplier(),
                 collector == null ? null : collector.finisher(),
-                nextNodesInsert, nextNodesUpdate, nextNodesRetract);
+                nextNodesTupleLifecycle);
         accumulator = collector == null ? null : collector.accumulator();
     }
 

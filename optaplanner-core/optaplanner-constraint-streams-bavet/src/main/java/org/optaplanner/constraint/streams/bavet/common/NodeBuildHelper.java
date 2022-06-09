@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
@@ -37,9 +35,7 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
     private final Set<? extends ConstraintStream> activeStreamSet;
     private final Map<Constraint, Score_> constraintWeightMap;
     private final AbstractScoreInliner<Score_> scoreInliner;
-    private final Map<ConstraintStream, Consumer<? extends Tuple>> insertMap;
-    private final Map<ConstraintStream, Consumer<? extends Tuple>> updateMap;
-    private final Map<ConstraintStream, Consumer<? extends Tuple>> retractMap;
+    private final Map<ConstraintStream, TupleLifecycle<? extends Tuple>> tupleLifecycleMap;
     private final Map<ConstraintStream, Integer> storeIndexMap;
 
     private List<AbstractNode> reversedNodeList;
@@ -50,10 +46,7 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
         this.constraintWeightMap = constraintWeightMap;
         this.scoreInliner = scoreInliner;
         int activeStreamSetSize = activeStreamSet.size();
-        int consumerMapSize = Math.max(16, activeStreamSetSize);
-        this.insertMap = new HashMap<>(consumerMapSize);
-        this.updateMap = new HashMap<>(consumerMapSize);
-        this.retractMap = new HashMap<>(consumerMapSize);
+        this.tupleLifecycleMap = new HashMap<>(Math.max(16, activeStreamSetSize));
         this.storeIndexMap = new HashMap<>(Math.max(16, activeStreamSetSize / 2));
         this.reversedNodeList = new ArrayList<>(activeStreamSetSize);
     }
@@ -74,78 +67,52 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
         reversedNodeList.add(node);
     }
 
-    public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream, Consumer<Tuple_> insert,
-            Consumer<Tuple_> update, Consumer<Tuple_> retract) {
-        insertMap.put(stream, insert);
-        updateMap.put(stream, update);
-        retractMap.put(stream, retract);
+    public void addNode(AbstractNode node, ConstraintStream parent) {
+        addNode(node);
+        putInsertUpdateRetract(parent, (TupleLifecycle<? extends Tuple>) node);
+    }
+
+    public void addNode(AbstractNode node, ConstraintStream leftParent, ConstraintStream rightParent) {
+        addNode(node);
+        putInsertUpdateRetract(leftParent, TupleLifecycle.ofLeft((LeftTupleLifecycle<? extends Tuple>) node));
+        putInsertUpdateRetract(rightParent, TupleLifecycle.ofRight((RightTupleLifecycle<? extends Tuple>) node));
+    }
+
+    public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream, TupleLifecycle<Tuple_> tupleLifecycle) {
+        tupleLifecycleMap.put(stream, tupleLifecycle);
     }
 
     public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream,
             List<? extends AbstractConstraintStream> childStreamList,
-            Function<Consumer<Tuple_>, AbstractInserter<Tuple_>> inserterConstructor,
-            BiFunction<Consumer<Tuple_>, Consumer<Tuple_>, AbstractUpdater<Tuple_>> updaterConstructor) {
-        Consumer<Tuple_> insert = getAggregatedInsert(childStreamList);
-        Consumer<Tuple_> update = getAggregatedUpdate(childStreamList);
-        Consumer<Tuple_> retract = getAggregatedRetract(childStreamList);
-        putInsertUpdateRetract(stream,
-                inserterConstructor.apply(insert),
-                updaterConstructor.apply(update, retract),
-                retract);
+            Function<TupleLifecycle<Tuple_>, AbstractConditionalTupleLifecycle<Tuple_>> tupleLifecycleFunction) {
+        TupleLifecycle<Tuple_> tupleLifecycle = getAggregatedTupleLifecycle(childStreamList);
+        putInsertUpdateRetract(stream, tupleLifecycleFunction.apply(tupleLifecycle));
     }
 
-    public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedInsert(List<? extends ConstraintStream> streamList) {
-        return getAggregatedConsumer(streamList, insertMap);
-    }
-
-    public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedUpdate(List<? extends ConstraintStream> streamList) {
-        return getAggregatedConsumer(streamList, updateMap);
-    }
-
-    public <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedRetract(List<? extends ConstraintStream> streamList) {
-        return getAggregatedConsumer(streamList, retractMap);
-    }
-
-    private <Tuple_ extends Tuple> Consumer<Tuple_> getAggregatedConsumer(List<? extends ConstraintStream> streamList,
-            Map<ConstraintStream, Consumer<? extends Tuple>> consumerMap) {
-        Consumer<Tuple_>[] consumers = streamList.stream()
+    public <Tuple_ extends Tuple> TupleLifecycle<Tuple_> getAggregatedTupleLifecycle(
+            List<? extends ConstraintStream> streamList) {
+        TupleLifecycle<Tuple_>[] tupleLifecycles = streamList.stream()
                 .filter(this::isStreamActive)
-                .map(s -> getConsumer(s, consumerMap))
-                .toArray(Consumer[]::new);
-        switch (consumers.length) {
+                .map(s -> getTupleLifecycle(s, tupleLifecycleMap))
+                .toArray(TupleLifecycle[]::new);
+        switch (tupleLifecycles.length) {
             case 0:
                 throw new IllegalStateException("Impossible state: None of the streamList (" + streamList
                         + ") are active.");
             case 1:
-                return consumers[0];
+                return tupleLifecycles[0];
             default:
-                return new AggregatedConsumer<>(consumers);
+                return new AggregatedTupleLifecycle<>(tupleLifecycles);
         }
     }
 
-    private static final class AggregatedConsumer<Tuple_ extends Tuple> implements Consumer<Tuple_> {
-        private final Consumer<Tuple_>[] consumers;
-
-        public AggregatedConsumer(Consumer<Tuple_>[] consumers) {
-            this.consumers = consumers;
-        }
-
-        @Override
-        public void accept(Tuple_ tuple) {
-            for (Consumer<Tuple_> consumer : consumers) {
-                consumer.accept(tuple);
-            }
-        }
-
-    }
-
-    private static <Tuple_ extends Tuple> Consumer<Tuple_> getConsumer(ConstraintStream stream,
-            Map<ConstraintStream, Consumer<? extends Tuple>> consumerMap) {
-        Consumer<Tuple_> consumer = (Consumer<Tuple_>) consumerMap.get(stream);
-        if (consumer == null) {
+    private static <Tuple_ extends Tuple> TupleLifecycle<Tuple_> getTupleLifecycle(ConstraintStream stream,
+            Map<ConstraintStream, TupleLifecycle<? extends Tuple>> tupleLifecycleMap) {
+        TupleLifecycle<Tuple_> tupleLifecycle = (TupleLifecycle<Tuple_>) tupleLifecycleMap.get(stream);
+        if (tupleLifecycle == null) {
             throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't built a node yet.");
         }
-        return consumer;
+        return tupleLifecycle;
     }
 
     public int reserveTupleStoreIndex(ConstraintStream tupleSourceStream) {

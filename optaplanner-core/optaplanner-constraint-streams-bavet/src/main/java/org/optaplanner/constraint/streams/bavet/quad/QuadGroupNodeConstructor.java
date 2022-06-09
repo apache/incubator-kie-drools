@@ -16,15 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 @FunctionalInterface
 interface QuadGroupNodeConstructor<A, B, C, D, Tuple_ extends Tuple> {
 
     AbstractGroupQuadNode<A, B, C, D, Tuple_, ?, ?, ?> apply(int inputStoreIndex,
-            Consumer<Tuple_> insert, Consumer<Tuple_> update, Consumer<Tuple_> retract,
-            int outputStoreSize);
+            TupleLifecycle<Tuple_> nextNodesTupleLifecycle, int outputStoreSize);
 
 }

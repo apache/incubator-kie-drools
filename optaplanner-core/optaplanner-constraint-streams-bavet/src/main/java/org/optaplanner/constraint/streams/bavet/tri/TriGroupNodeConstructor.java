@@ -16,15 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.function.Consumer;
-
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 @FunctionalInterface
 interface TriGroupNodeConstructor<A, B, C, Tuple_ extends Tuple> {
 
-    AbstractGroupTriNode<A, B, C, Tuple_, ?, ?, ?> apply(int inputStoreIndex,
-            Consumer<Tuple_> insert, Consumer<Tuple_> update, Consumer<Tuple_> retract,
+    AbstractGroupTriNode<A, B, C, Tuple_, ?, ?, ?> apply(int inputStoreIndex, TupleLifecycle<Tuple_> tupleLifecycle,
             int outputStoreSize);
 
 }

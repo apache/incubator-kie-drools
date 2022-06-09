@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
@@ -193,11 +192,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         BiGroupNodeConstructor<A, B, UniTuple<Result_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<UniTuple<Result_>> insert,
-                        Consumer<UniTuple<Result_>> update,
-                        Consumer<UniTuple<Result_>> retract,
-                        int outputStoreSize) -> new Group0Mapping1CollectorBiNode<>(inputStoreIndex, collector,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping1CollectorBiNode<>(inputStoreIndex,
+                        collector, tupleLifecycle, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
 
@@ -214,11 +210,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
             BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB) {
         BiGroupNodeConstructor<A, B, BiTuple<ResultA_, ResultB_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<BiTuple<ResultA_, ResultB_>> insert,
-                        Consumer<BiTuple<ResultA_, ResultB_>> update,
-                        Consumer<BiTuple<ResultA_, ResultB_>> retract,
-                        int outputStoreSize) -> new Group0Mapping2CollectorBiNode<>(inputStoreIndex, collectorA, collectorB,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping2CollectorBiNode<>(inputStoreIndex,
+                        collectorA, collectorB, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -238,11 +231,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC) {
         BiGroupNodeConstructor<A, B, TriTuple<ResultA_, ResultB_, ResultC_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> insert,
-                        Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> update,
-                        Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> retract,
-                        int outputStoreSize) -> new Group0Mapping3CollectorBiNode<>(inputStoreIndex, collectorA, collectorB,
-                                collectorC, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping3CollectorBiNode<>(inputStoreIndex,
+                        collectorA, collectorB, collectorC, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -263,11 +253,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
         BiGroupNodeConstructor<A, B, QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> insert,
-                        Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> update,
-                        Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group0Mapping4CollectorBiNode<>(inputStoreIndex, collectorA, collectorB,
-                                collectorC, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping4CollectorBiNode<>(inputStoreIndex,
+                        collectorA, collectorB, collectorC, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -283,11 +270,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
         BiGroupNodeConstructor<A, B, UniTuple<GroupKey_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<UniTuple<GroupKey_>> insert,
-                        Consumer<UniTuple<GroupKey_>> update,
-                        Consumer<UniTuple<GroupKey_>> retract,
-                        int outputStoreSize) -> new Group1Mapping0CollectorBiNode<>(groupKeyMapping, inputStoreIndex,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping0CollectorBiNode<>(groupKeyMapping,
+                        inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
 
@@ -297,11 +281,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC) {
         BiGroupNodeConstructor<A, B, TriTuple<GroupKey_, ResultB_, ResultC_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> insert,
-                        Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> update,
-                        Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> retract,
-                        int outputStoreSize) -> new Group1Mapping2CollectorBiNode<>(groupKeyMapping, inputStoreIndex,
-                                collectorB, collectorC, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping2CollectorBiNode<>(groupKeyMapping,
+                        inputStoreIndex, collectorB, collectorC, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -313,11 +294,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
         BiGroupNodeConstructor<A, B, QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> insert,
-                        Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> update,
-                        Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group1Mapping3CollectorBiNode<>(groupKeyMapping, inputStoreIndex,
-                                collectorB, collectorC, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping3CollectorBiNode<>(groupKeyMapping,
+                        inputStoreIndex, collectorB, collectorC, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -326,11 +304,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         BiGroupNodeConstructor<A, B, BiTuple<GroupKey_, Result_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<BiTuple<GroupKey_, Result_>> insert,
-                        Consumer<BiTuple<GroupKey_, Result_>> update,
-                        Consumer<BiTuple<GroupKey_, Result_>> retract,
-                        int outputStoreSize) -> new Group1Mapping1CollectorBiNode<>(groupKeyMapping, inputStoreIndex, collector,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping1CollectorBiNode<>(groupKeyMapping,
+                        inputStoreIndex, collector, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -338,12 +313,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
         BiGroupNodeConstructor<A, B, BiTuple<GroupKeyA_, GroupKeyB_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> insert,
-                        Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> update,
-                        Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> retract,
-                        int outputStoreSize) -> new Group2Mapping0CollectorBiNode<>(groupKeyAMapping, groupKeyBMapping,
-                                inputStoreIndex,
-                                insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping0CollectorBiNode<>(groupKeyAMapping,
+                        groupKeyBMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -352,11 +323,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         BiGroupNodeConstructor<A, B, TriTuple<GroupKeyA_, GroupKeyB_, Result_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> insert,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> update,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> retract,
-                        int outputStoreSize) -> new Group2Mapping1CollectorBiNode<>(groupKeyAMapping, groupKeyBMapping,
-                                inputStoreIndex, collector, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping1CollectorBiNode<>(groupKeyAMapping,
+                        groupKeyBMapping, inputStoreIndex, collector, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -367,11 +335,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
         BiGroupNodeConstructor<A, B, QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> insert,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> update,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group2Mapping2CollectorBiNode<>(groupKeyAMapping, groupKeyBMapping,
-                                inputStoreIndex, collectorC, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping2CollectorBiNode<>(groupKeyAMapping,
+                        groupKeyBMapping, inputStoreIndex, collectorC, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -380,12 +345,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
             BiFunction<A, B, GroupKeyC_> groupKeyCMapping) {
         BiGroupNodeConstructor<A, B, TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> insert,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> update,
-                        Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> retract,
-                        int outputStoreSize) -> new Group3Mapping0CollectorBiNode<>(groupKeyAMapping, groupKeyBMapping,
-                                groupKeyCMapping,
-                                inputStoreIndex, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping0CollectorBiNode<>(groupKeyAMapping,
+                        groupKeyBMapping, groupKeyCMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -396,11 +357,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiFunction<A, B, GroupKeyC_> groupKeyCMapping,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
         BiGroupNodeConstructor<A, B, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> insert,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> update,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> retract,
-                        int outputStoreSize) -> new Group3Mapping1CollectorBiNode<>(groupKeyAMapping, groupKeyBMapping,
-                                groupKeyCMapping, inputStoreIndex, collectorD, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping1CollectorBiNode<>(groupKeyAMapping,
+                        groupKeyBMapping, groupKeyCMapping, inputStoreIndex, collectorD, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -409,11 +367,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
                     BiFunction<A, B, GroupKeyC_> groupKeyCMapping, BiFunction<A, B, GroupKeyD_> groupKeyDMapping) {
         BiGroupNodeConstructor<A, B, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> nodeConstructor =
-                (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> insert,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> update,
-                        Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> retract,
-                        int outputStoreSize) -> new Group4Mapping0CollectorBiNode<>(groupKeyAMapping, groupKeyBMapping,
-                                groupKeyCMapping, groupKeyDMapping, inputStoreIndex, insert, update, retract, outputStoreSize);
+                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group4Mapping0CollectorBiNode<>(groupKeyAMapping,
+                        groupKeyBMapping, groupKeyCMapping, groupKeyDMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 

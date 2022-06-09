@@ -19,11 +19,8 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractInserter;
-import org.optaplanner.constraint.streams.bavet.common.AbstractUpdater;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
@@ -68,39 +65,7 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         buildHelper.<BiTuple<A, B>> putInsertUpdateRetract(this, childStreamList,
-                insert -> new ConditionalBiInserter<>(predicate, insert),
-                (update, retract) -> new ConditionalBiUpdater<>(predicate, update, retract));
-    }
-
-    private static final class ConditionalBiInserter<A, B> extends AbstractInserter<BiTuple<A, B>> {
-        private final BiPredicate<A, B> predicate;
-
-        public ConditionalBiInserter(BiPredicate<A, B> predicate, Consumer<BiTuple<A, B>> insert) {
-            super(insert);
-            this.predicate = predicate;
-        }
-
-        @Override
-        protected boolean test(BiTuple<A, B> tuple) {
-            return predicate.test(tuple.factA, tuple.factB);
-        }
-
-    }
-
-    private static final class ConditionalBiUpdater<A, B> extends AbstractUpdater<BiTuple<A, B>> {
-        private final BiPredicate<A, B> predicate;
-
-        public ConditionalBiUpdater(BiPredicate<A, B> predicate, Consumer<BiTuple<A, B>> update,
-                Consumer<BiTuple<A, B>> retract) {
-            super(update, retract);
-            this.predicate = predicate;
-        }
-
-        @Override
-        protected boolean test(BiTuple<A, B> tuple) {
-            return predicate.test(tuple.factA, tuple.factB);
-        }
-
+                tupleLifecycle -> new ConditionalBiTupleLifecycle<>(predicate, tupleLifecycle));
     }
 
     // ************************************************************************
