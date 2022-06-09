@@ -180,7 +180,7 @@ public class AnnotationDefinition implements Externalizable,
                 }
                 return returnType.getMethod("valueOf", String.class).invoke(null, value);
             } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-                LOG.error("Exception", e);
+                throw new RuntimeException(e);
             }
         } else if (String.class.equals(returnType)) {
             return unquote(value.toString().trim());
