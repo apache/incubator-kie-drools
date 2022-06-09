@@ -3,12 +3,13 @@
 import org.kie.jenkins.MavenCommand
 
 droolsRepo = 'drools'
+optaplannerRepo = 'optaplanner'
 kogitoRuntimesRepo = 'kogito-runtimes'
 kogitoAppsRepo = 'kogito-apps'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g && !master'
+        label 'kie-rhel7 && kie-mem16g'
     }
     tools {
         maven 'kie-maven-3.8.1'
@@ -27,6 +28,7 @@ pipeline {
             steps {
                 script {
                     checkoutDroolsRepo()
+                    checkoutOptaplannerRepo()
                     checkoutKogitoRepo(kogitoRuntimesRepo)
                     checkoutKogitoRepo(kogitoAppsRepo)
                 }
@@ -38,6 +40,30 @@ pipeline {
                     getMavenCommand(droolsRepo)
                         .withProperty('quickly')
                         .run('clean install')
+                }
+            }
+        }
+        stage('Build Optaplanner') {
+            steps {
+                script {
+                    getMavenCommand(optaplannerRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+        }
+        stage('Retrieve optaplanner snapshot version') {
+            steps {
+                script {
+                    dir(optaplannerRepo) {
+                        // query mvn to get the latest version
+                        env.OPTAPLANNER_VERSION = """${sh (
+                                script: 'mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout',
+                                returnStdout: true
+                            ).trim()}"""
+                        assert env.OPTAPLANNER_VERSION != ''
+                        echo "Optaplanner version is: ${env.OPTAPLANNER_VERSION}"
+                    }
                 }
             }
         }
@@ -56,6 +82,7 @@ pipeline {
                     getNativeMavenCommand(kogitoAppsRepo)
                         .withProperty('skipUI')
                         .withProperty('maven.test.failure.ignore', true)
+                        .withProperty('version.org.optaplanner', env.OPTAPLANNER_VERSION)
                         .run('clean install')
                 }
             }
@@ -103,6 +130,13 @@ void checkoutDroolsRepo() {
     }
 }
 
+void checkoutOptaplannerRepo() {
+    dir(optaplannerRepo) {
+        checkout(githubscm.resolveRepository(optaplannerRepo, 'kiegroup', getOptaPlannerBranch(), false))
+    }
+}
+
+
 String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
@@ -127,6 +161,10 @@ String getTargetBranch(Integer addToMajor) {
         echo "Cannot parse targetBranch as release branch so going further with current value: ${targetBranch}"
         }
     return targetBranch
+}
+
+String getOptaPlannerBranch() {
+    return env['OPTAPLANNER_BRANCH'] ?: 'main'
 }
 
 MavenCommand getMavenCommand(String directory) {

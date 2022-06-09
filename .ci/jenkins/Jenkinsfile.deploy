@@ -50,7 +50,6 @@ pipeline {
                     if (isRelease() || isCreatePr()) {
                         // Verify version is set
                         assert getProjectVersion()
-                        assert getOptaPlannerVersion()
 
                         if (isRelease()) {
                             // Verify if on right release branch
@@ -68,7 +67,6 @@ pipeline {
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
-                        setDeployPropertyIfNeeded('optaplanner.version', getOptaPlannerVersion())
                     }
                 }
             }
@@ -89,8 +87,6 @@ pipeline {
             steps {
                 script {
                     maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getProjectVersion(), !isRelease())
-                    // Update Optaplanner version
-                    maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.optaplanner', getOptaPlannerVersion())
                 }
             }
         }
@@ -267,10 +263,6 @@ String getBuildBranch() {
 
 String getProjectVersion() {
     return params.PROJECT_VERSION
-}
-
-String getOptaPlannerVersion() {
-    return params.OPTAPLANNER_VERSION
 }
 
 String getBotBranch() {

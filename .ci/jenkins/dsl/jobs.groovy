@@ -56,6 +56,16 @@ setupMandrelJob()
 setupDeployJob(Folder.RELEASE)
 setupPromoteJob(Folder.RELEASE)
 
+// Update Optaplanner tools job
+KogitoJobUtils.createVersionUpdateToolsJob(this, 'kogito-apps', 'Optaplanner', [
+  modules: [ 'kogito-apps-build-parent' ],
+  properties: [ 'version.org.optaplanner' ],
+])
+
+if (Utils.isMainBranch(this)) {
+    setupOptaplannerJob('main')
+}
+
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
@@ -96,6 +106,23 @@ void setupMandrelJob() {
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         NOTIFICATION_JOB_NAME: 'Mandrel check',
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+    }
+}
+
+void setupOptaplannerJob(String optaplannerBranch) {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps-optaplanner-snapshot', Folder.NIGHTLY_ECOSYSTEM, "${jenkins_path}/Jenkinsfile.optaplanner", 'Kogito Apps Testing against Optaplanner snapshot')
+    jobParams.triggers = [ cron : 'H 6 * * *' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: 'Optaplanner snapshot check',
+        OPTAPLANNER_BRANCH: optaplannerBranch,
+
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -158,7 +185,6 @@ void setupDeployJob(Folder jobFolder) {
 
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
-            stringParam('OPTAPLANNER_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
@@ -195,7 +221,6 @@ void setupPromoteJob(Folder jobFolder) {
 
             // Release information which can override `deployment.properties`
             stringParam('PROJECT_VERSION', '', 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
-            stringParam('OPTAPLANNER_VERSION', '', 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')

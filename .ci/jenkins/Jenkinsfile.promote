@@ -48,7 +48,6 @@ pipeline {
                     if (isRelease()) {
                         // Verify version is set and if on right release branch
                         assert getProjectVersion()
-                        assert getOptaPlannerVersion()
 
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
@@ -79,7 +78,6 @@ pipeline {
                         prepareForPR()
 
                         maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getSnapshotVersion(), true)
-                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.optaplanner', util.getNextVersion(getOptaPlannerVersion(), 'micro'))
 
                         commitAndCreatePR()
                     }
@@ -170,10 +168,6 @@ String getRepoName() {
 
 String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
-}
-
-String getOptaPlannerVersion() {
-    return getParamOrDeployProperty('OPTAPLANNER_VERSION', 'optaplanner.version')
 }
 
 String getSnapshotVersion() {
