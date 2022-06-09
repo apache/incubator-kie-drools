@@ -35,26 +35,26 @@ import org.kie.api.runtime.rule.EntryPoint;
 public class DSLRuleUnit {
 
     public static <T extends RuleUnitDefinition> RuleUnitInstance<T> instance(T ruleUnit) {
-        RulesContext rulesContext = new RulesContext(ruleUnit);
-        ruleUnit.defineRules(rulesContext);
-        return new ModelRuleUnit<>((Class<T>) ruleUnit.getClass(), rulesContext).createInstance(ruleUnit);
+        RulesFactory rulesFactory = new RulesFactory(ruleUnit);
+        ruleUnit.defineRules(rulesFactory);
+        return new ModelRuleUnit<>((Class<T>) ruleUnit.getClass(), rulesFactory).createInstance(ruleUnit);
     }
 
     public static class ModelRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {
 
-        private final RulesContext rulesContext;
+        private final RulesFactory rulesFactory;
         private final RuleBase ruleBase;
 
-        private ModelRuleUnit(Class<T> type, RulesContext rulesContext) {
+        private ModelRuleUnit(Class<T> type, RulesFactory rulesFactory) {
             super(type.getCanonicalName(), DummyRuleUnits.INSTANCE);
-            this.rulesContext = rulesContext;
-            this.ruleBase = KieBaseBuilder.createKieBaseFromModel( rulesContext.toModel() );
+            this.rulesFactory = rulesFactory;
+            this.ruleBase = KieBaseBuilder.createKieBaseFromModel( rulesFactory.toModel() );
         }
 
         @Override
         public RuleUnitInstance<T> internalCreateInstance(T data) {
             ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
-            return new DSLRuleUnitInstance<>(this, data, reteEvaluator, rulesContext);
+            return new DSLRuleUnitInstance<>(this, data, reteEvaluator, rulesFactory);
         }
     }
 
@@ -70,17 +70,17 @@ public class DSLRuleUnit {
 
     public static class DSLRuleUnitInstance<T extends RuleUnitData> extends ReteEvaluatorBasedRuleUnitInstance<T> {
 
-        public DSLRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, RulesContext rulesContext) {
+        public DSLRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, RulesFactory rulesFactory) {
             super(unit, workingMemory, reteEvaluator);
-            internalBind(reteEvaluator, rulesContext);
+            internalBind(reteEvaluator, rulesFactory);
         }
 
         protected void bind(ReteEvaluator reteEvaluator, T workingMemory) {
             // empty to allow a subsequent bind also using the RulesContext
         }
 
-        private void internalBind(ReteEvaluator reteEvaluator, RulesContext rulesContext) {
-            for (Map.Entry<Object, Global> entry : rulesContext.getGlobals().entrySet()) {
+        private void internalBind(ReteEvaluator reteEvaluator, RulesFactory rulesFactory) {
+            for (Map.Entry<Object, Global> entry : rulesFactory.getGlobals().entrySet()) {
                 String dataSourceName = entry.getValue().getName();
                 Object v = entry.getKey();
                 if (v instanceof DataSource) {

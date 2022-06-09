@@ -45,11 +45,11 @@ public class SelfJoin implements RuleUnitDefinition {
     }
 
     @Override
-    public void defineRules(RulesContext rulesContext) {
-        rulesContext.addRule()
+    public void defineRules(RulesFactory rulesFactory) {
+        rulesFactory.addRule()
                 .from(strings)
                 .join(strings)
-                .filterJoin(s -> s.substring(0,1), EQUAL, s -> s.substring(1,2))
+                .filter(s -> s.substring(0,1), EQUAL, s -> s.substring(1,2))
                 .execute(results, (r, s1, s2) -> r.add("Found '" + s1 + "' and '" + s2 + "'"));
     }
 }

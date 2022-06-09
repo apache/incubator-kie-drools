@@ -43,13 +43,13 @@ public class InferenceUnit implements RuleUnitDefinition {
     }
 
     @Override
-    public void defineRules(RulesContext rulesContext) {
-        rulesContext.addRule()
+    public void defineRules(RulesFactory rulesFactory) {
+        rulesFactory.addRule()
                 .from(strings)
                 .filter(s -> s.length(), GREATER_THAN, 5)
                 .execute(ints, (i, s) -> i.add(s.length()));
 
-        rulesContext.addRule()
+        rulesFactory.addRule()
                 .from(ints)
                 .filter(GREATER_THAN, 5)
                 .execute(strings, s -> s.add("ok"));

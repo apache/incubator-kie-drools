@@ -18,5 +18,5 @@ package org.drools.ruleunits.dsl;
 import org.drools.ruleunits.api.RuleUnitData;
 
 public interface RuleUnitDefinition extends RuleUnitData {
-    void defineRules(RulesContext rulesContext);
+    void defineRules(RulesFactory rulesFactory);
 }
