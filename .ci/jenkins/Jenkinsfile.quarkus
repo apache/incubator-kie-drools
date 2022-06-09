@@ -29,7 +29,6 @@ pipeline {
                     checkoutDroolsRepo()
                     checkoutRepo('kogito-runtimes')
                     checkoutRepo('kogito-runtimes', 'integration-tests')
-                    checkoutOptaplannerRepo()
                     checkoutRepo('kogito-apps')
                     checkoutRepo('kogito-examples')
                     checkoutRepo('kogito-examples', 'kogito-examples-persistence')
@@ -75,24 +74,6 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-runtimes')
-                        .withProperty('maven.test.failure.ignore', true)
-                        .run('clean install')
-                }
-            }
-            post {
-                always {
-                    script {
-                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
-                        util.archiveConsoleLog()
-                        cleanContainers()
-                    }
-                }
-            }
-        }
-        stage('Build optaplanner') {
-            steps {
-                script {
-                    getMavenCommand('optaplanner')
                         .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
                 }
@@ -213,22 +194,6 @@ void checkoutRepo(String repoName, String dirName=repoName) {
 void checkoutQuarkusRepo() {
     dir('quarkus') {
         checkout(githubscm.resolveRepository('quarkus', 'quarkusio', getQuarkusBranch(), false))
-    }
-}
-
-void checkoutOptaplannerRepo() {
-    String targetBranch = params.BUILD_BRANCH_NAME
-    String [] versionSplit = targetBranch.split("\\.")
-    if (versionSplit.length == 3
-        && versionSplit[0].isNumber()
-        && versionSplit[1].isNumber()
-       && versionSplit[2] == 'x') {
-        targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit[1]}.x"
-    } else {
-        echo "Cannot parse branch as release branch so going further with current value: ${targetBranch}"
-    }
-    dir('optaplanner') {
-        checkout(githubscm.resolveRepository('optaplanner', params.GIT_AUTHOR, targetBranch, false))
     }
 }
 

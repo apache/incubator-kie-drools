@@ -73,7 +73,7 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-runtimes', [
 /////////////////////////////////////////////////////////////////
 
 void setupQuarkusJob(Folder quarkusFolder) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-ecosystem', quarkusFolder, "${jenkins_path}/Jenkinsfile.quarkus", 'Kogito Runtimes Quarkus Snapshot')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-all', quarkusFolder, "${jenkins_path}/Jenkinsfile.quarkus", 'Kogito Runtimes Quarkus Snapshot')
     jobParams.triggers = [ cron : 'H 4 * * *' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
